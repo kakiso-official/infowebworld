@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - TechRadar Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Inter',sans-serif;font-size:14px;color:#1A1A2E;background:#F1F5F9;}a{text-decoration:none;color:#1B6CA8;}a:hover{color:#0F4C75;}
+.dashboard{display:grid;grid-template-columns:240px 1fr;min-height:100vh;}
+
+/* Sidebar */
+.sidebar{background:#1A1A2E;color:#fff;padding:20px 0;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.sidebar-logo{padding:0 20px 20px;font-size:18px;font-weight:700;color:#fff;border-bottom:1px solid #2D2D44;}
+.sidebar-logo span{color:#E74C3C;}
+.sidebar-company{padding:16px 20px;border-bottom:1px solid #2D2D44;margin-bottom:8px;}
+.sidebar-company .name{font-size:14px;font-weight:600;}.sidebar-company .plan{font-size:11px;color:#94A3B8;margin-top:2px;}
+.sidebar-nav{list-style:none;}
+.sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;color:#CBD5E1;transition:all .15s;}
+.sidebar-nav li a:hover{background:#2D2D44;color:#fff;}
+.sidebar-nav li a.active{background:#0F4C75;color:#fff;border-right:3px solid #E74C3C;}
+.nav-icon{width:18px;text-align:center;}
+
+/* Top bar */
+.topbar{background:#fff;border-bottom:1px solid #E2E8F0;padding:0 24px;height:56px;display:flex;align-items:center;gap:16px;}
+.topbar-title{font-size:16px;font-weight:600;}
+.topbar-actions{margin-left:auto;display:flex;align-items:center;gap:12px;}
+.notif-bell{width:36px;height:36px;border-radius:8px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:16px;}
+.notif-bell .dot{position:absolute;top:6px;right:6px;width:8px;height:8px;background:#E74C3C;border-radius:50%;}
+.avatar-sm{width:32px;height:32px;border-radius:50%;background:#0F4C75;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;}
+
+/* Content */
+.main-content{padding:24px;}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.stat-card{background:#fff;border-radius:12px;padding:20px;border:1px solid #F1F5F9;}
+.stat-card .label{font-size:12px;color:#64748B;margin-bottom:4px;font-weight:500;}
+.stat-card .value{font-size:28px;font-weight:700;color:#0F4C75;}
+.stat-card .change{font-size:12px;margin-top:4px;}
+.stat-card .change.up{color:#27AE60;}
+.stat-card .change.down{color:#E74C3C;}
+.stars{color:#F59E0B;}
+
+/* Quick Actions */
+.section-title{font-size:16px;font-weight:600;margin-bottom:12px;}
+.quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+.quick-action{background:#fff;border-radius:8px;padding:16px;border:1px solid #F1F5F9;text-align:center;cursor:pointer;transition:all .2s;}
+.quick-action:hover{border-color:#1B6CA8;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.quick-action .icon{font-size:24px;margin-bottom:6px;}
+.quick-action .text{font-size:12px;font-weight:500;color:#374151;}
+
+/* Activity */
+.content-grid{display:grid;grid-template-columns:1fr 360px;gap:24px;}
+.activity-card{background:#fff;border-radius:12px;padding:20px;border:1px solid #F1F5F9;}
+.activity-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #F8FAFC;align-items:flex-start;}
+.activity-item:last-child{border:none;}
+.activity-dot{width:8px;height:8px;border-radius:50%;margin-top:6px;flex-shrink:0;}
+.activity-dot.view{background:#1B6CA8;}.activity-dot.review{background:#27AE60;}.activity-dot.lead{background:#E67E22;}.activity-dot.click{background:#8E44AD;}
+.activity-text{font-size:13px;color:#374151;line-height:1.5;}
+.activity-time{font-size:11px;color:#94A3B8;margin-top:2px;}
+
+.alerts-card{background:#fff;border-radius:12px;padding:20px;border:1px solid #F1F5F9;}
+.alert-item{padding:12px;border-radius:8px;margin-bottom:8px;font-size:13px;line-height:1.5;}
+.alert-item.warning{background:#FFF8E1;border-left:3px solid #E67E22;color:#92400E;}
+.alert-item.info{background:#E8F4FD;border-left:3px solid #1B6CA8;color:#0F4C75;}
+.alert-item.success{background:#E8F8F0;border-left:3px solid #27AE60;color:#166534;}
+</style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+<div class="dashboard">
+
+<aside class="sidebar">
+  <div class="sidebar-logo"><a href="../index.html" style="color:#fff;">TechRadar<span>.</span></a></div>
+  <div class="sidebar-company"><div class="name">Jasper AI</div><div class="plan">Growth Plan &middot; $240/yr</div></div>
+  <ul class="sidebar-nav">
+    <li><a href="index.html" class="active"><span class="nav-icon">&#x1F3E0;</span> Home</a></li>
+    <li><a href="profile.html"><span class="nav-icon">&#x1F4CB;</span> Profile</a></li>
+    <li><a href="analytics.html"><span class="nav-icon">&#x1F4CA;</span> Analytics</a></li>
+    <li><a href="reviews.html"><span class="nav-icon">&#x2B50;</span> Reviews</a></li>
+    <li><a href="leads.html"><span class="nav-icon">&#x1F465;</span> Leads</a></li>
+    <li><a href="#"><span class="nav-icon">&#x1F3AF;</span> Buyer Intent</a></li>
+    <li><a href="#"><span class="nav-icon">&#x2696;</span> Comparisons</a></li>
+    <li><a href="#"><span class="nav-icon">&#x1F4F0;</span> News Mentions</a></li>
+    <li><a href="#"><span class="nav-icon">&#x1F3C5;</span> Badges</a></li>
+    <li><a href="billing.html"><span class="nav-icon">&#x1F4B3;</span> Billing</a></li>
+    <li><a href="settings.html"><span class="nav-icon">&#x2699;</span> Settings</a></li>
+    <li><a href="#"><span class="nav-icon">&#x2753;</span> Help</a></li>
+  </ul>
+</aside>
+
+<div>
+<div class="topbar">
+  <div class="topbar-title">Dashboard</div>
+  <div class="topbar-actions">
+    <div class="notif-bell">&#x1F514;<div class="dot"></div></div>
+    <div class="avatar-sm">JA</div>
+  </div>
+</div>
+
+<div class="main-content">
+  <div class="stats-grid">
+    <div class="stat-card"><div class="label">Profile Views</div><div class="value">2,345</div><div class="change up">+12.5% vs last month</div></div>
+    <div class="stat-card"><div class="label">Website Clicks</div><div class="value">567</div><div class="change up">+8.3% vs last month</div></div>
+    <div class="stat-card"><div class="label">Leads Generated</div><div class="value">23</div><div class="change up">+15.0% vs last month</div></div>
+    <div class="stat-card"><div class="label">Average Rating</div><div class="value"><span class="stars">&#9733;</span> 4.5</div><div class="change up">+0.1 from 234 reviews</div></div>
+  </div>
+
+  <div class="section-title">Quick Actions</div>
+  <div class="quick-actions">
+    <a href="profile.html" class="quick-action"><div class="icon">&#x270F;</div><div class="text">Edit Profile</div></a>
+    <a href="reviews.html" class="quick-action"><div class="icon">&#x2B50;</div><div class="text">View Reviews</div></a>
+    <a href="analytics.html" class="quick-action"><div class="icon">&#x1F4CA;</div><div class="text">Analytics</div></a>
+    <a href="leads.html" class="quick-action"><div class="icon">&#x1F4E5;</div><div class="text">View Leads</div></a>
+  </div>
+
+  <div class="content-grid">
+    <div class="activity-card">
+      <div class="section-title">Recent Activity</div>
+      <div class="activity-item"><div class="activity-dot review"></div><div><div class="activity-text"><strong>New review</strong> from Jessica Davis (5.0 stars) - "Jasper has been a game-changer..."</div><div class="activity-time">2 hours ago</div></div></div>
+      <div class="activity-item"><div class="activity-dot lead"></div><div><div class="activity-text"><strong>New lead</strong> - Tom Anderson from CloudTech Inc. requested a demo</div><div class="activity-time">4 hours ago</div></div></div>
+      <div class="activity-item"><div class="activity-dot view"></div><div><div class="activity-text">Your profile was viewed <strong>87 times</strong> today (above average)</div><div class="activity-time">6 hours ago</div></div></div>
+      <div class="activity-item"><div class="activity-dot click"></div><div><div class="activity-text"><strong>Featured</strong> on AI Writing category page this week</div><div class="activity-time">1 day ago</div></div></div>
+      <div class="activity-item"><div class="activity-dot review"></div><div><div class="activity-text"><strong>New review</strong> from Michael Park (4.0 stars) - "Solid tool for generating first drafts..."</div><div class="activity-time">2 days ago</div></div></div>
+      <div class="activity-item"><div class="activity-dot lead"></div><div><div class="activity-text"><strong>New lead</strong> - Sarah Lee from ScaleUp Inc. viewed pricing page</div><div class="activity-time">2 days ago</div></div></div>
+    </div>
+
+    <div>
+      <div class="alerts-card">
+        <div class="section-title">Alerts</div>
+        <div class="alert-item warning">&#x26A0; You have <strong>2 reviews</strong> pending response. Responding improves your rating.</div>
+        <div class="alert-item info">&#x1F4A1; Tip: Add more screenshots to increase profile views by up to 30%.</div>
+        <div class="alert-item success">&#x2705; Your profile is 85% complete. Add integrations to reach 100%.</div>
+        <div class="alert-item info">&#x1F4C8; You're trending in AI Writing category this week (#3).</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+</div>
+</body>
+</html>

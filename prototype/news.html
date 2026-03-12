@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tech News Feed - TechRadar Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;font-size:14px;color:#1A1A2E;background:#F8FAFC;}
+a{text-decoration:none;color:#1B6CA8;}a:hover{color:#0F4C75;}
+.container{max-width:1280px;margin:0 auto;padding:0 24px;}
+img{max-width:100%;}
+
+/* NAV */
+.nav{background:#fff;border-bottom:1px solid #E2E8F0;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);background:rgba(255,255,255,.95);}
+.nav-inner{display:flex;align-items:center;height:64px;gap:16px;}
+.logo{font-size:22px;font-weight:800;color:#0F4C75;letter-spacing:-0.5px;}.logo span{color:#E74C3C;}
+.nav-search{flex:1;max-width:480px;position:relative;}
+.nav-search input{width:100%;padding:9px 16px 9px 40px;border:1px solid #E2E8F0;border-radius:8px;font-size:14px;font-family:inherit;background:#F8FAFC;transition:all .2s;}
+.nav-search input:focus{outline:none;border-color:#1B6CA8;box-shadow:0 0 0 3px rgba(27,108,168,.1);background:#fff;}
+.nav-search::before{content:"🔍";position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;}
+.nav-link{padding:6px 12px;font-size:13px;color:#475569;font-weight:500;border-radius:6px;transition:all .15s;}
+.nav-link:hover{background:#F1F5F9;color:#0F4C75;}
+.nav-link.active{color:#0F4C75;font-weight:600;}
+.lang-select{padding:6px 8px;border:1px solid #E2E8F0;border-radius:6px;font-size:12px;font-family:inherit;background:#fff;cursor:pointer;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .2s;}
+.btn-primary{background:#0F4C75;color:#fff;}.btn-primary:hover{background:#0d3f63;box-shadow:0 2px 8px rgba(15,76,117,.3);}
+.btn-secondary{background:#fff;color:#0F4C75;border:1px solid #CBD5E1;}.btn-secondary:hover{background:#F1F5F9;border-color:#0F4C75;}
+
+/* HERO HEADER */
+.news-hero{background:linear-gradient(135deg,#0F4C75 0%,#1A1A2E 50%,#0F4C75 100%);padding:48px 0 32px;margin-bottom:0;}
+.news-hero-inner{text-align:center;color:#fff;}
+.news-hero h1{font-size:40px;font-weight:800;margin-bottom:8px;letter-spacing:-0.5px;}
+.news-hero p{font-size:16px;opacity:.8;max-width:600px;margin:0 auto 20px;}
+.news-stats{display:flex;gap:32px;justify-content:center;}
+.news-stat{text-align:center;}.news-stat-num{font-size:24px;font-weight:700;}.news-stat-label{font-size:11px;opacity:.6;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+.live-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(231,76,60,.15);border:1px solid rgba(231,76,60,.3);color:#E74C3C;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;margin-bottom:16px;}
+.live-dot{width:8px;height:8px;background:#E74C3C;border-radius:50%;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+/* CATEGORY TABS */
+.cat-tabs-wrapper{background:#fff;border-bottom:1px solid #E2E8F0;position:sticky;top:64px;z-index:90;}
+.cat-tabs{display:flex;gap:4px;padding:12px 0;overflow-x:auto;scrollbar-width:none;}
+.cat-tabs::-webkit-scrollbar{display:none;}
+.cat-tab{padding:8px 20px;border-radius:24px;font-size:13px;font-weight:500;background:transparent;border:1.5px solid #E2E8F0;color:#64748B;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;}
+.cat-tab:hover{border-color:#1B6CA8;color:#1B6CA8;background:rgba(27,108,168,.04);}
+.cat-tab.active{background:#0F4C75;color:#fff;border-color:#0F4C75;box-shadow:0 2px 8px rgba(15,76,117,.25);}
+.cat-tab .tab-count{font-size:10px;background:rgba(255,255,255,.2);padding:1px 6px;border-radius:10px;margin-left:4px;}
+.cat-tab:not(.active) .tab-count{background:#F1F5F9;color:#94A3B8;}
+
+/* MAIN LAYOUT */
+.news-layout{display:grid;grid-template-columns:1fr 320px;gap:32px;padding:32px 0;}
+
+/* FEATURED / BREAKING NEWS */
+.breaking-section{margin-bottom:28px;}
+.breaking-label{display:flex;align-items:center;gap:8px;margin-bottom:16px;font-size:14px;font-weight:700;color:#E74C3C;}
+.breaking-label .line{flex:1;height:1px;background:linear-gradient(to right,#E74C3C,transparent);}
+.featured-card{display:grid;grid-template-columns:1fr 1fr;border-radius:16px;overflow:hidden;background:#1A1A2E;color:#fff;min-height:280px;cursor:pointer;transition:transform .2s,box-shadow .2s;}
+.featured-card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.2);}
+.featured-img{background:linear-gradient(135deg,#0F4C75,#1B6CA8);display:flex;align-items:center;justify-content:center;font-size:72px;position:relative;overflow:hidden;}
+.featured-img::after{content:"";position:absolute;inset:0;background:linear-gradient(45deg,transparent 40%,rgba(255,255,255,.05) 50%,transparent 60%);animation:shimmer 3s infinite;}
+@keyframes shimmer{0%{transform:translateX(-100%);}100%{transform:translateX(100%)}}
+.featured-content{padding:32px;display:flex;flex-direction:column;justify-content:center;}
+.featured-content .news-tag{margin-bottom:12px;}
+.featured-content h2{font-size:24px;font-weight:700;line-height:1.3;margin-bottom:12px;letter-spacing:-0.3px;}
+.featured-content .summary{font-size:14px;opacity:.8;line-height:1.7;margin-bottom:16px;}
+.featured-content .meta{display:flex;align-items:center;gap:12px;font-size:12px;opacity:.6;}
+.featured-content .source-icon{width:20px;height:20px;border-radius:4px;background:rgba(255,255,255,.15);display:inline-flex;align-items:center;justify-content:center;font-size:10px;}
+.featured-content .read-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:8px;color:#fff;font-size:13px;font-weight:600;margin-top:auto;width:fit-content;transition:all .2s;}
+.featured-content .read-btn:hover{background:rgba(255,255,255,.2);}
+
+/* NEWS GRID */
+.news-section-label{display:flex;align-items:center;gap:12px;margin-bottom:20px;font-size:16px;font-weight:700;color:#1A1A2E;}
+.news-section-label .count{font-size:12px;font-weight:500;color:#94A3B8;background:#F1F5F9;padding:2px 10px;border-radius:12px;}
+.news-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+
+/* INSHORTS-STYLE CARDS */
+.news-card{background:#fff;border-radius:12px;overflow:hidden;border:1px solid #F1F5F9;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.news-card:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,.08);border-color:#E2E8F0;}
+.card-image{height:160px;position:relative;overflow:hidden;}
+.card-image .gradient-bg{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px;position:relative;}
+.card-image .time-badge{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.6);color:#fff;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:500;backdrop-filter:blur(4px);}
+.card-image .bookmark-btn{position:absolute;top:10px;left:10px;width:28px;height:28px;background:rgba(0,0,0,.4);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;backdrop-filter:blur(4px);opacity:0;transition:opacity .2s;}
+.news-card:hover .bookmark-btn{opacity:1;}
+.card-body{padding:16px;flex:1;display:flex;flex-direction:column;}
+.card-tag-row{display:flex;gap:6px;margin-bottom:8px;align-items:center;}
+.card-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;}
+.card-tag.ai{background:#EBF5FF;color:#0F4C75;}
+.card-tag.saas{background:#F0FDF4;color:#166534;}
+.card-tag.funding{background:#F0FDF4;color:#27AE60;}
+.card-tag.launch{background:#FFF7ED;color:#E67E22;}
+.card-tag.acq{background:#FAF5FF;color:#8E44AD;}
+.card-tag.startups{background:#FFF1F2;color:#E74C3C;}
+.card-tag.devops{background:#F0F9FF;color:#0369A1;}
+.card-tag.security{background:#FEF2F2;color:#DC2626;}
+.reading-time{font-size:10px;color:#94A3B8;margin-left:auto;}
+.card-title{font-size:15px;font-weight:700;line-height:1.4;margin-bottom:8px;color:#1A1A2E;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.card-summary{font-size:12.5px;color:#64748B;line-height:1.65;margin-bottom:12px;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid #F8FAFC;}
+.card-source{display:flex;align-items:center;gap:8px;font-size:11px;color:#94A3B8;}
+.source-favicon{width:16px;height:16px;border-radius:3px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#64748B;}
+.card-actions{display:flex;gap:4px;}
+.card-action{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#94A3B8;transition:all .15s;cursor:pointer;border:none;background:transparent;}
+.card-action:hover{background:#F1F5F9;color:#0F4C75;}
+
+/* LOAD MORE */
+.load-more{text-align:center;padding:24px 0 8px;}
+.load-more-btn{padding:12px 40px;font-size:14px;border-radius:10px;background:#fff;border:1.5px solid #E2E8F0;color:#475569;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit;}
+.load-more-btn:hover{border-color:#0F4C75;color:#0F4C75;box-shadow:0 4px 12px rgba(15,76,117,.1);}
+
+/* SIDEBAR */
+.sidebar{position:sticky;top:120px;}
+.sidebar-card{background:#fff;border-radius:12px;padding:20px;border:1px solid #F1F5F9;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.sidebar-card h4{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.sidebar-card h4 .icon{font-size:16px;}
+
+/* Trending Topics */
+.trending-topic{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F8FAFC;font-size:13px;color:#1A1A2E;cursor:pointer;transition:all .15s;}
+.trending-topic:last-child{border:none;}
+.trending-topic:hover{color:#0F4C75;}
+.trending-rank{width:24px;height:24px;border-radius:6px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#0F4C75;flex-shrink:0;}
+.trending-topic:nth-child(-n+3) .trending-rank{background:#0F4C75;color:#fff;}
+.trending-text{flex:1;}
+.trending-count{font-size:10px;color:#94A3B8;}
+
+/* Newsletter */
+.newsletter-card{background:linear-gradient(135deg,#0F4C75,#1B6CA8);color:#fff;border:none;}
+.newsletter-card h4{color:#fff;}.newsletter-card p{font-size:13px;opacity:.85;line-height:1.5;margin-bottom:14px;}
+.newsletter-input{width:100%;padding:11px 14px;border:1px solid rgba(255,255,255,.2);border-radius:8px;font-family:inherit;font-size:13px;margin-bottom:8px;background:rgba(255,255,255,.1);color:#fff;backdrop-filter:blur(4px);}
+.newsletter-input::placeholder{color:rgba(255,255,255,.5);}
+.newsletter-input:focus{outline:none;border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.15);}
+.newsletter-btn{width:100%;padding:10px;background:#fff;color:#0F4C75;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;}
+.newsletter-btn:hover{background:#F8FAFC;box-shadow:0 4px 12px rgba(0,0,0,.15);}
+.newsletter-perks{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+.newsletter-perk{font-size:11px;opacity:.75;display:flex;align-items:center;gap:6px;}
+
+/* Category Digest */
+.digest-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #F8FAFC;cursor:pointer;transition:all .15s;}
+.digest-item:last-child{border:none;}
+.digest-item:hover .digest-title{color:#0F4C75;}
+.digest-thumb{width:48px;height:48px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.digest-info{flex:1;}
+.digest-title{font-size:12px;font-weight:600;line-height:1.4;color:#1A1A2E;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.digest-meta{font-size:10px;color:#94A3B8;margin-top:3px;}
+
+/* FOOTER */
+.footer{background:#1A1A2E;color:#fff;padding:60px 0 24px;margin-top:48px;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;}
+.footer-brand p{font-size:13px;opacity:.7;line-height:1.6;margin-top:8px;}
+.footer h4{font-size:14px;font-weight:600;margin-bottom:16px;}
+.footer-links{list-style:none;}.footer-links li{margin-bottom:8px;}
+.footer-links a{color:#CBD5E1;font-size:13px;transition:color .15s;}.footer-links a:hover{color:#fff;}
+.footer-bottom{border-top:1px solid #334155;padding-top:24px;display:flex;justify-content:space-between;font-size:12px;opacity:.7;}
+.footer-social{display:flex;gap:12px;}
+.footer-social a{color:#CBD5E1;font-size:16px;transition:color .15s;}.footer-social a:hover{color:#fff;}
+
+</style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav class="nav"><div class="container nav-inner">
+  <a href="index.html" class="logo">TechRadar<span>.</span></a>
+  <div class="nav-search"><input type="text" placeholder="Search news, tools, categories..."></div>
+  <a class="nav-link" href="category.html">Categories</a>
+  <a class="nav-link active" href="news.html">News</a>
+  <a class="nav-link" href="best-of.html">Best Of</a>
+  <a class="nav-link" href="blog.html">Blog</a>
+  <a class="nav-link" href="comparison.html">Compare</a>
+  <select class="lang-select"><option>EN</option><option>ES</option><option>FR</option><option>DE</option><option>JA</option></select>
+  <a href="signin.html" class="btn btn-secondary">Sign In</a>
+  <a href="submit-listing.html" class="btn btn-primary">Get Listed</a>
+</div></nav>
+
+<!-- HERO HEADER -->
+<div class="news-hero"><div class="container news-hero-inner">
+  <div class="live-badge"><span class="live-dot"></span> LIVE FEED</div>
+  <h1>Tech News Feed</h1>
+  <p>AI-summarized news from across the AI, SaaS, and startup ecosystem — updated every 30 minutes</p>
+  <div class="news-stats">
+    <div class="news-stat"><div class="news-stat-num">1,247</div><div class="news-stat-label">Articles Today</div></div>
+    <div class="news-stat"><div class="news-stat-num">86</div><div class="news-stat-label">Sources</div></div>
+    <div class="news-stat"><div class="news-stat-num">12</div><div class="news-stat-label">Categories</div></div>
+    <div class="news-stat"><div class="news-stat-num">60s</div><div class="news-stat-label">Avg Read</div></div>
+  </div>
+</div></div>
+
+<!-- CATEGORY TABS -->
+<div class="cat-tabs-wrapper"><div class="container">
+  <div class="cat-tabs">
+    <span class="cat-tab active">All News <span class="tab-count">1,247</span></span>
+    <span class="cat-tab">🤖 AI Tools <span class="tab-count">342</span></span>
+    <span class="cat-tab">☁️ SaaS <span class="tab-count">218</span></span>
+    <span class="cat-tab">🚀 Startups <span class="tab-count">186</span></span>
+    <span class="cat-tab">💰 Funding <span class="tab-count">124</span></span>
+    <span class="cat-tab">🆕 Product Launches <span class="tab-count">156</span></span>
+    <span class="cat-tab">🤝 Acquisitions <span class="tab-count">67</span></span>
+    <span class="cat-tab">🔒 Security <span class="tab-count">54</span></span>
+    <span class="cat-tab">⚙️ DevOps <span class="tab-count">48</span></span>
+    <span class="cat-tab">📊 Analytics <span class="tab-count">52</span></span>
+  </div>
+</div></div>
+
+<!-- MAIN CONTENT -->
+<div class="container">
+<div class="news-layout">
+<div>
+
+<!-- BREAKING / FEATURED -->
+<div class="breaking-section">
+  <div class="breaking-label">🔴 Breaking News <span class="line"></span></div>
+  <a href="news-article.html" class="featured-card">
+    <div class="featured-img" style="background:linear-gradient(135deg,#0F4C75 0%,#1B6CA8 40%,#2e86c1 100%);">
+      <span style="font-size:80px;opacity:.3;">🤖</span>
+    </div>
+    <div class="featured-content">
+      <span class="card-tag ai" style="color:#fff;background:rgba(255,255,255,.15);">AI</span>
+      <h2>OpenAI Launches GPT-5 with Breakthrough Reasoning and Native Multimodal Understanding</h2>
+      <div class="summary">OpenAI announced GPT-5 with significant improvements in multi-step reasoning, reduced hallucinations by 73%, and native image/video/audio understanding. The model scores 92% on graduate-level benchmarks, making it the most capable AI system to date. Enterprise pricing starts at $0.03 per 1K tokens.</div>
+      <div class="meta">
+        <span class="source-icon">TC</span>
+        <span>TechCrunch</span>
+        <span>•</span>
+        <span>2 hours ago</span>
+        <span>•</span>
+        <span>60 sec read</span>
+      </div>
+      <div class="read-btn">Read Summary →</div>
+    </div>
+  </a>
+</div>
+
+<!-- NEWS GRID -->
+<div class="news-section-label">📰 Latest Stories <span class="count">Showing 12 of 1,247</span></div>
+<div class="news-grid">
+
+  <!-- Card 1 -->
+  <a href="news-article.html" class="news-card">
+    <div class="card-image"><div class="gradient-bg" style="background:linear-gradient(135deg,#1e3a5f,#2c5282);">💰</div><span class="time-badge">5h ago</span><span class="bookmark-btn">🔖</span></div>
+    <div class="card-body">
+      <div class="card-tag-row"><span class="card-tag funding">Funding</span><span class="reading-time">45 sec read</span></div>
+      <div class="card-title">Notion Raises $400M Series D at $15B Valuation to Build AI-First Workspace</div>
+      <div class="card-summary">Productivity giant Notion closed a massive Series D led by Sequoia to fuel its AI-first strategy. The funds will accelerate AI-powered project management, knowledge base features, and enterprise expansion across APAC and EMEA regions.</div>
+      <div class="card-footer">
+        <div class="card-source"><span class="source-favicon">B</span>Bloomberg</div>
+        <div class="card-actions">
+          <button class="card-action" title="Share on Twitter">𝕏</button>
+          <button class="card-action" title="Share on LinkedIn">in</button>
+          <button class="card-action" title="Copy link">🔗</button>
+        </div>
+      </div>
+    </div>
+  </a>
+
+  <!-- Card 2 -->
+  <a href="news-article.html" class="news-card">
+    <div class="card-image"><div class="gradient-bg" style="background:linear-gradient(135deg,#2c3e50,#8e44ad);">🎨</div><span class="time-badge">8h ago</span><span class="bookmark-btn">🔖</span></div>
+    <div class="card-body">
+      <div class="card-tag-row"><span class="card-tag launch">Product Launch</span><span class="reading-time">50 sec read</span></div>
+      <div class="card-title">Figma Introduces AI-Native Design Tools at Config 2026</div>
+      <div class="card-summary">Figma unveiled AI design tools that generate full UI layouts from text prompts. Designers can now iterate using natural language, auto-generate responsive variants for mobile/tablet/desktop, and create entire design systems in minutes.</div>
+      <div class="card-footer">
+        <div class="card-source"><span class="source-favicon">V</span>The Verge</div>
+        <div class="card-actions">
+          <button class="card-action" title="Share on Twitter">𝕏</button>
+          <button class="card-action" title="Share on LinkedIn">in</button>
+          <button class="card-action" title="Copy link">🔗</button>
+        </div>
+      </div>
+    </div>
+  </a>
+
+  <!-- Card 3 -->
+  <a href="news-article.html" class="news-card">
+    <div class="card-image"><div class="gradient-bg" style="background:linear-gradient(135deg,#1A1A2E,#6c3483);">🏢</div><span class="time-badge">12h ago</span><span class="bookmark-btn">🔖</span></div>
+    <div class="card-body">
+      <div class="card-tag-row"><span class="card-tag acq">Acquisition</span><span class="reading-time">55 sec read</span></div>
+      <div class="card-title">Salesforce Acquires Enterprise AI Startup Cohere for $8 Billion</div>
+      <div class="card-summary">Salesforce announced the acquisition of enterprise AI company Cohere to bolster its Einstein AI platform. The deal makes it the largest AI acquisition of 2026 and strengthens Salesforce's position in enterprise generative AI against Microsoft and Google.</div>
+      <div class="card-footer">
+        <div class="card-source"><span class="source-favicon">R</span>Reuters</div>
+        <div class="card-actions">
+          <button class="card-action" title="Share on Twitter">𝕏</button>
+          <button class="card-action" title="Share on LinkedIn">in</button>
+          <button class="card-action" title="Copy link">🔗</button>
+        </div>
+      </div>
+    </div>
+  </a>
+
+  <!-- Card 4 -->
+  <a href="news-article.html" class="news-card">
+    <div class="card-image"><div class="gradient-bg" style="background:linear-gradient(135deg,#1a5276,#2e86c1);">🧠</div><span class="time-badge">1d ago</span><span class="bookmark-btn">🔖</span></div>
+    <div class="card-body">
+      <div class="card-tag-row"><span class="card-tag ai">AI Tools</span><span class="reading-time">60 sec read</span></div>
+      <div class="card-title">Google DeepMind Releases Gemini 2.5 with Autonomous Agent Capabilities</div>
+      <div class="card-summary">Google's latest AI model can autonomously browse the web, write and test code, manage emails, and complete multi-step business tasks. Early benchmarks show it outperforms GPT-5 in specific agentic workflow scenarios.</div>
+      <div class="card-footer">
+        <div class="card-source"><span class="source-favicon">W</span>Wired</div>
+        <div class="card-actions">
+          <button class="card-action" title="Share on Twitter">𝕏</button>
+          <button class="card-action" title="Share on LinkedIn">in</button>
+          <button class="card-action" title="Copy link">🔗</button>
+        </div>
+      </div>
+    </div>
+  </a>
+
+  <!-- Card 5 -->
+  <a href="news-article.html" class="news-card">
+    <div class="card-image"><div class="gradient-bg" style="background:linear-gradient(135deg,#1e8449,#27ae60);">📋</div><span class="time-badge">1d ago</span><span class="bookmark-btn">🔖</span></div>
+    <div class="card-body">
+      <div class="card-tag-row"><span class="card-tag funding">Funding</span><span class="reading-time">40 sec read</span></div>
+      <div class="card-title">Linear Closes $100M Series C to Reinvent Project Management with AI</div>
+      <div class="card-summary">Developer-focused project management tool Linear raised $100M led by Benchmark at a $1.5B valuation. The company plans to expand into enterprise sales and add AI-powered sprint planning and automated issue triage.</div>
+      <div class="card-footer">
+        <div class="card-source"><span class="source-favicon">F</span>Fortune</div>
+        <div class="card-actions">
+          <button class="card-action" title="Share on Twitter">𝕏</button>
+          <button class="card-action" title="Share on LinkedIn">in</button>
+          <button class="card-action" title="Copy link">🔗</button>
+        </div>
+      </div>
+    </div>
+  </a>
+
+  <!-- Card 6 -->
+  <a href="news-article.html" class="news-card">
+    <div class="card-image"><div class="gradient-bg" style="background:linear-gradient(135deg,#922b21,#e74c3c);">⚡</div><span class="time-badge">1d ago</span><span class="bookmark-btn">🔖</span></div>
+    <div class="card-body">
+      <div class="card-tag-row"><span class="card-tag launch">Product Launch</span><span class="reading-time">55 sec read</span></div>
+      <div class="card-title">Vercel Launches v0 2.0 — AI That Builds Full Production Applications</div>
+      <div class="card-summary">Vercel's v0 can now generate full-stack applications complete with databases, authentication, and payment integration. The tool handles deployment automatically to Vercel's edge network and supports iterative refinement via chat.</div>
+      <div class="card-footer">
+        <div class="card-source"><span class="source-favicon">HN</span>Hacker News</div>
+        <div class="card-actions">
+          <button class="card-action" title="Share on Twitter">𝕏</button>
+          <button class="card-action" title="Share on LinkedIn">in</button>
+          <button class="card-action" title="Copy link">🔗</button>
+        </div>
+      </div>
+    </div>
+  </a>
+
+  <!-- Card 7 -->
+  <a href="news-article.html" class="news-card">
+    <div class="card-image"><div class="gradient-bg" style="background:linear-gradient(135deg,#4a235a,#7d3c98);">🤝</div><span class="time-badge">2d ago</span><span class="bookmark-btn">🔖</span></div>
+    <div class="card-body">
+      <div class="card-tag-row"><span class="card-tag ai">AI Tools</span><span class="reading-time">50 sec read</span></div>
+      <div class="card-title">Anthropic Claude Introduces Multi-Agent Orchestration for Enterprise</div>
+      <div class="card-summary">Anthropic announced Claude can now coordinate multiple specialized agents to complete complex business workflows — from market research to report generation, data analysis, and automated scheduling across teams.</div>
+      <div class="card-footer">
+        <div class="card-source"><span class="source-favicon">VB</span>VentureBeat</div>
+        <div class="card-actions">
+          <button class="card-action" title="Share on Twitter">𝕏</button>
+          <button class="card-action" title="Share on LinkedIn">in</button>
+          <button class="card-action" title="Copy link">🔗</button>
+        </div>
+      </div>
+    </div>
+  </a>
+
+  <!-- Card 8 -->
+  <a href="news-article.html" class="news-card">
+    <div class="card-image"><div class="gradient-bg" style="background:linear-gradient(135deg,#1b4f72,#2980b9);">📊</div><span class="time-badge">2d ago</span><span class="bookmark-btn">🔖</span></div>
+    <div class="card-body">
+      <div class="card-tag-row"><span class="card-tag acq">Acquisition</span><span class="reading-time">45 sec read</span></div>
+      <div class="card-title">HubSpot Completes Clearbit Acquisition to Supercharge Data Intelligence</div>
+      <div class="card-summary">HubSpot completed its acquisition of data enrichment platform Clearbit. The integration will provide HubSpot users with enhanced company and contact intelligence natively within the CRM, eliminating the need for third-party tools.</div>
+      <div class="card-footer">
+        <div class="card-source"><span class="source-favicon">TC</span>TechCrunch</div>
+        <div class="card-actions">
+          <button class="card-action" title="Share on Twitter">𝕏</button>
+          <button class="card-action" title="Share on LinkedIn">in</button>
+          <button class="card-action" title="Copy link">🔗</button>
+        </div>
+      </div>
+    </div>
+  </a>
+
+  <!-- Card 9 -->
+  <a href="news-article.html" class="news-card">
+    <div class="card-image"><div class="gradient-bg" style="background:linear-gradient(135deg,#0b5345,#1abc9c);">🔒</div><span class="time-badge">2d ago</span><span class="bookmark-btn">🔖</span></div>
+    <div class="card-body">
+      <div class="card-tag-row"><span class="card-tag security">Security</span><span class="reading-time">60 sec read</span></div>
+      <div class="card-title">Wiz Launches Cloud Security Platform with AI Threat Detection</div>
+      <div class="card-summary">Wiz unveiled its next-gen cloud security platform featuring AI-powered threat detection that identifies and remediates vulnerabilities in real-time across AWS, Azure, and GCP. The platform reduces mean time to detect by 90%.</div>
+      <div class="card-footer">
+        <div class="card-source"><span class="source-favicon">ZD</span>ZDNet</div>
+        <div class="card-actions">
+          <button class="card-action" title="Share on Twitter">𝕏</button>
+          <button class="card-action" title="Share on LinkedIn">in</button>
+          <button class="card-action" title="Copy link">🔗</button>
+        </div>
+      </div>
+    </div>
+  </a>
+
+  <!-- Card 10 -->
+  <a href="news-article.html" class="news-card">
+    <div class="card-image"><div class="gradient-bg" style="background:linear-gradient(135deg,#1a237e,#3f51b5);">🚀</div><span class="time-badge">3d ago</span><span class="bookmark-btn">🔖</span></div>
+    <div class="card-body">
+      <div class="card-tag-row"><span class="card-tag startups">Startups</span><span class="reading-time">50 sec read</span></div>
+      <div class="card-title">Y Combinator W26 Batch Features Record 47% AI-Native Startups</div>
+      <div class="card-summary">Y Combinator's Winter 2026 batch set a new record with 47% of accepted companies building AI-native products. Notable verticals include AI agents for healthcare, legal AI copilots, and AI-powered supply chain optimization.</div>
+      <div class="card-footer">
+        <div class="card-source"><span class="source-favicon">BI</span>Business Insider</div>
+        <div class="card-actions">
+          <button class="card-action" title="Share on Twitter">𝕏</button>
+          <button class="card-action" title="Share on LinkedIn">in</button>
+          <button class="card-action" title="Copy link">🔗</button>
+        </div>
+      </div>
+    </div>
+  </a>
+
+  <!-- Card 11 -->
+  <a href="news-article.html" class="news-card">
+    <div class="card-image"><div class="gradient-bg" style="background:linear-gradient(135deg,#b71c1c,#e53935);">⚙️</div><span class="time-badge">3d ago</span><span class="bookmark-btn">🔖</span></div>
+    <div class="card-body">
+      <div class="card-tag-row"><span class="card-tag devops">DevOps</span><span class="reading-time">55 sec read</span></div>
+      <div class="card-title">GitHub Copilot Workspace Now Auto-Resolves 60% of Production Incidents</div>
+      <div class="card-summary">GitHub announced that Copilot Workspace can now automatically detect, diagnose, and fix production incidents. In beta testing with enterprise customers, the system resolved 60% of P2-P4 incidents without human intervention.</div>
+      <div class="card-footer">
+        <div class="card-source"><span class="source-favicon">GH</span>GitHub Blog</div>
+        <div class="card-actions">
+          <button class="card-action" title="Share on Twitter">𝕏</button>
+          <button class="card-action" title="Share on LinkedIn">in</button>
+          <button class="card-action" title="Copy link">🔗</button>
+        </div>
+      </div>
+    </div>
+  </a>
+
+  <!-- Card 12 -->
+  <a href="news-article.html" class="news-card">
+    <div class="card-image"><div class="gradient-bg" style="background:linear-gradient(135deg,#004d40,#00897b);">☁️</div><span class="time-badge">3d ago</span><span class="bookmark-btn">🔖</span></div>
+    <div class="card-body">
+      <div class="card-tag-row"><span class="card-tag saas">SaaS</span><span class="reading-time">45 sec read</span></div>
+      <div class="card-title">Stripe Launches Revenue Optimization Suite for SaaS Companies</div>
+      <div class="card-summary">Stripe unveiled a comprehensive revenue optimization suite specifically for SaaS businesses, including AI-powered pricing recommendations, churn prediction, smart dunning, and automated expansion revenue workflows.</div>
+      <div class="card-footer">
+        <div class="card-source"><span class="source-favicon">S</span>Stripe Blog</div>
+        <div class="card-actions">
+          <button class="card-action" title="Share on Twitter">𝕏</button>
+          <button class="card-action" title="Share on LinkedIn">in</button>
+          <button class="card-action" title="Copy link">🔗</button>
+        </div>
+      </div>
+    </div>
+  </a>
+
+</div>
+
+<div class="load-more">
+  <button class="load-more-btn">Load More Stories ↓</button>
+  <p style="font-size:12px;color:#94A3B8;margin-top:8px;">Showing 12 of 1,247 articles</p>
+</div>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+  <!-- Trending Topics -->
+  <div class="sidebar-card">
+    <h4><span class="icon">🔥</span> Trending Topics</h4>
+    <div class="trending-topic"><span class="trending-rank">1</span><span class="trending-text">GPT-5 Launch</span><span class="trending-count">342 articles</span></div>
+    <div class="trending-topic"><span class="trending-rank">2</span><span class="trending-text">AI Agents</span><span class="trending-count">218 articles</span></div>
+    <div class="trending-topic"><span class="trending-rank">3</span><span class="trending-text">Mega Funding Rounds</span><span class="trending-count">156 articles</span></div>
+    <div class="trending-topic"><span class="trending-rank">4</span><span class="trending-text">AI Code Generation</span><span class="trending-count">134 articles</span></div>
+    <div class="trending-topic"><span class="trending-rank">5</span><span class="trending-text">Enterprise AI Adoption</span><span class="trending-count">98 articles</span></div>
+    <div class="trending-topic"><span class="trending-rank">6</span><span class="trending-text">SaaS Valuations 2026</span><span class="trending-count">87 articles</span></div>
+    <div class="trending-topic"><span class="trending-rank">7</span><span class="trending-text">EU AI Regulation</span><span class="trending-count">76 articles</span></div>
+    <div class="trending-topic"><span class="trending-rank">8</span><span class="trending-text">Cloud Security</span><span class="trending-count">64 articles</span></div>
+    <div class="trending-topic"><span class="trending-rank">9</span><span class="trending-text">DevOps Automation</span><span class="trending-count">52 articles</span></div>
+    <div class="trending-topic"><span class="trending-rank">10</span><span class="trending-text">Open Source AI</span><span class="trending-count">48 articles</span></div>
+  </div>
+
+  <!-- Newsletter -->
+  <div class="sidebar-card newsletter-card">
+    <h4><span class="icon">📧</span> Daily AI Digest</h4>
+    <p>Get the top 10 AI & SaaS stories summarized and delivered every morning at 8am.</p>
+    <input type="email" class="newsletter-input" placeholder="your@email.com">
+    <button class="newsletter-btn">Subscribe Free →</button>
+    <div class="newsletter-perks">
+      <div class="newsletter-perk">✓ 15,000+ subscribers</div>
+      <div class="newsletter-perk">✓ Unsubscribe anytime</div>
+      <div class="newsletter-perk">✓ No spam, ever</div>
+    </div>
+  </div>
+
+  <!-- Most Read This Week -->
+  <div class="sidebar-card">
+    <h4><span class="icon">📈</span> Most Read This Week</h4>
+    <div class="digest-item">
+      <div class="digest-thumb" style="background:linear-gradient(135deg,#0F4C75,#1B6CA8);">🤖</div>
+      <div class="digest-info">
+        <div class="digest-title">The Complete Guide to AI Agents in 2026</div>
+        <div class="digest-meta">12.4K reads • AI Tools</div>
+      </div>
+    </div>
+    <div class="digest-item">
+      <div class="digest-thumb" style="background:linear-gradient(135deg,#27AE60,#2ecc71);">💰</div>
+      <div class="digest-info">
+        <div class="digest-title">Q1 2026 SaaS Funding Report: $28B Raised</div>
+        <div class="digest-meta">8.7K reads • Funding</div>
+      </div>
+    </div>
+    <div class="digest-item">
+      <div class="digest-thumb" style="background:linear-gradient(135deg,#E74C3C,#c0392b);">🏆</div>
+      <div class="digest-info">
+        <div class="digest-title">Top 10 AI Writing Tools Compared</div>
+        <div class="digest-meta">7.2K reads • Reviews</div>
+      </div>
+    </div>
+    <div class="digest-item">
+      <div class="digest-thumb" style="background:linear-gradient(135deg,#8E44AD,#9b59b6);">📊</div>
+      <div class="digest-info">
+        <div class="digest-title">State of SaaS 2026: Key Metrics</div>
+        <div class="digest-meta">6.1K reads • Research</div>
+      </div>
+    </div>
+    <div class="digest-item">
+      <div class="digest-thumb" style="background:linear-gradient(135deg,#E67E22,#f39c12);">⚡</div>
+      <div class="digest-info">
+        <div class="digest-title">Why Every SaaS Needs AI Features Now</div>
+        <div class="digest-meta">5.5K reads • Strategy</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Categories Quick Links -->
+  <div class="sidebar-card">
+    <h4><span class="icon">📂</span> News by Category</h4>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+      <a href="category.html" style="padding:6px 12px;background:#F1F5F9;border-radius:6px;font-size:11px;color:#475569;font-weight:500;">AI Writing (42)</a>
+      <a href="category.html" style="padding:6px 12px;background:#F1F5F9;border-radius:6px;font-size:11px;color:#475569;font-weight:500;">CRM (38)</a>
+      <a href="category.html" style="padding:6px 12px;background:#F1F5F9;border-radius:6px;font-size:11px;color:#475569;font-weight:500;">Analytics (35)</a>
+      <a href="category.html" style="padding:6px 12px;background:#F1F5F9;border-radius:6px;font-size:11px;color:#475569;font-weight:500;">Marketing (31)</a>
+      <a href="category.html" style="padding:6px 12px;background:#F1F5F9;border-radius:6px;font-size:11px;color:#475569;font-weight:500;">DevOps (28)</a>
+      <a href="category.html" style="padding:6px 12px;background:#F1F5F9;border-radius:6px;font-size:11px;color:#475569;font-weight:500;">HR Tech (24)</a>
+      <a href="category.html" style="padding:6px 12px;background:#F1F5F9;border-radius:6px;font-size:11px;color:#475569;font-weight:500;">Fintech (22)</a>
+      <a href="category.html" style="padding:6px 12px;background:#F1F5F9;border-radius:6px;font-size:11px;color:#475569;font-weight:500;">E-commerce (19)</a>
+    </div>
+  </div>
+
+</aside>
+</div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer"><div class="container">
+  <div class="footer-grid">
+    <div class="footer-brand"><div class="logo" style="color:#fff;">TechRadar<span>.</span></div><p>Discover, Compare & Review the Best AI Tools, SaaS Products & Tech Startups. AI-powered news summaries updated every 30 minutes.</p></div>
+    <div><h4>Platform</h4><ul class="footer-links"><li><a href="category.html">Browse Tools</a></li><li><a href="comparison.html">Compare</a></li><li><a href="best-of.html">Best Of Guides</a></li><li><a href="news.html">News Feed</a></li><li><a href="blog.html">Blog</a></li></ul></div>
+    <div><h4>Company</h4><ul class="footer-links"><li><a href="about.html">About Us</a></li><li><a href="contact.html">Contact</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li></ul></div>
+    <div><h4>For Vendors</h4><ul class="footer-links"><li><a href="submit-listing.html">List Your Tool</a></li><li><a href="pricing.html">Pricing Plans</a></li><li><a href="dashboard/index.html">Dashboard</a></li><li><a href="#">API Access</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 TechRadar Directory. All rights reserved.</span>
+    <div class="footer-social">
+      <a href="#">𝕏</a>
+      <a href="#">in</a>
+      <a href="#">▶</a>
+      <a href="#">📘</a>
+    </div>
+  </div>
+</div></footer>
+
+</body>
+</html>

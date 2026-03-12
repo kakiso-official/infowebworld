@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up - TechRadar Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Inter',sans-serif;font-size:14px;color:#1A1A2E;background:#F8FAFC;min-height:100vh;display:flex;flex-direction:column;}a{text-decoration:none;color:#1B6CA8;}
+.nav{background:#fff;border-bottom:1px solid #E2E8F0;}.nav-inner{max-width:1280px;margin:0 auto;padding:0 20px;display:flex;align-items:center;height:64px;}.logo{font-size:20px;font-weight:700;color:#0F4C75;}.logo span{color:#E74C3C;}
+.signup-layout{flex:1;display:grid;grid-template-columns:1fr 1fr;max-width:1280px;margin:0 auto;width:100%;}
+.left-panel{background:linear-gradient(135deg,#0F4C75,#1B6CA8);color:#fff;padding:60px 48px;display:flex;flex-direction:column;justify-content:center;}
+.left-panel h1{font-size:32px;font-weight:700;margin-bottom:16px;line-height:1.3;}
+.left-panel p{font-size:16px;opacity:.9;line-height:1.7;margin-bottom:32px;}
+.benefit{display:flex;gap:12px;margin-bottom:20px;align-items:flex-start;}
+.benefit-icon{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;}
+.benefit-text{font-size:14px;line-height:1.5;}.benefit-text strong{display:block;margin-bottom:2px;}
+.testimonial-mini{margin-top:32px;padding-top:24px;border-top:1px solid rgba(255,255,255,.2);}
+.testimonial-mini p{font-style:italic;opacity:.9;margin-bottom:8px;line-height:1.6;}
+.testimonial-mini .author{font-size:13px;opacity:.7;}
+
+.right-panel{padding:60px 48px;display:flex;flex-direction:column;justify-content:center;background:#fff;}
+.right-panel h2{font-size:28px;font-weight:600;margin-bottom:8px;}
+.right-panel .subtitle{color:#64748B;margin-bottom:24px;}
+.toggle-group{display:flex;background:#F1F5F9;border-radius:8px;padding:4px;margin-bottom:24px;}
+.toggle-btn{flex:1;padding:10px;text-align:center;font-size:13px;font-weight:600;border-radius:6px;cursor:pointer;border:none;background:transparent;font-family:inherit;color:#64748B;transition:all .2s;}
+.toggle-btn.active{background:#fff;color:#0F4C75;box-shadow:0 1px 3px rgba(0,0,0,.1);}
+.social-auth{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
+.social-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border:1px solid #E2E8F0;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;background:#fff;font-family:inherit;transition:all .2s;}
+.social-btn:hover{border-color:#1B6CA8;background:#F8FAFC;}
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0;font-size:12px;color:#94A3B8;}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:#E2E8F0;}
+.form-group{margin-bottom:16px;}
+.form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;}
+.form-group input{width:100%;padding:10px 14px;border:1px solid #E2E8F0;border-radius:8px;font-family:inherit;font-size:14px;}
+.form-group input:focus{outline:none;border-color:#1B6CA8;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;border-radius:8px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .2s;width:100%;}
+.btn-primary{background:#0F4C75;color:#fff;}.btn-primary:hover{background:#0d3f63;}
+.terms{font-size:12px;color:#94A3B8;text-align:center;margin-top:16px;line-height:1.5;}
+.signin-link{text-align:center;margin-top:20px;font-size:13px;}
+</style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+<nav class="nav"><div class="nav-inner"><a href="index.html" class="logo">TechRadar<span>.</span></a></div></nav>
+
+<div class="signup-layout">
+<div class="left-panel">
+  <h1>Join 50,000+ professionals discovering the best tools</h1>
+  <p>Create your free account to save tools, write reviews, and get personalized recommendations.</p>
+  <div class="benefit"><div class="benefit-icon">&#x2B50;</div><div class="benefit-text"><strong>Write Verified Reviews</strong>Share your experience and help others make better decisions.</div></div>
+  <div class="benefit"><div class="benefit-icon">&#x1F516;</div><div class="benefit-text"><strong>Save & Compare Tools</strong>Build your shortlist and compare tools side-by-side.</div></div>
+  <div class="benefit"><div class="benefit-icon">&#x1F514;</div><div class="benefit-text"><strong>Get Personalized Alerts</strong>Be the first to know about new tools in your categories.</div></div>
+  <div class="testimonial-mini">
+    <p>"TechRadar Directory helped me find the perfect project management tool for my team in under 30 minutes."</p>
+    <div class="author">- David Kim, Engineering Manager at Stripe</div>
+  </div>
+</div>
+
+<div class="right-panel">
+  <h2>Create Your Account</h2>
+  <div class="subtitle">Free forever. No credit card required.</div>
+  <div class="toggle-group">
+    <button class="toggle-btn active">I want to review tools</button>
+    <button class="toggle-btn">I want to list my tool</button>
+  </div>
+  <div class="social-auth">
+    <button class="social-btn">&#x1F310; Continue with Google</button>
+    <button class="social-btn">&#x1F4BB; Continue with GitHub</button>
+    <button class="social-btn">in Continue with LinkedIn</button>
+  </div>
+  <div class="divider">or sign up with email</div>
+  <div class="form-group"><label>Full Name</label><input type="text" placeholder="John Doe"></div>
+  <div class="form-group"><label>Email Address</label><input type="email" placeholder="john@company.com"></div>
+  <div class="form-group"><label>Password</label><input type="password" placeholder="8+ characters"></div>
+  <button class="btn btn-primary">Create Account</button>
+  <div class="terms">By signing up, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</div>
+  <div class="signin-link">Already have an account? <a href="signin.html"><strong>Sign In</strong></a></div>
+</div>
+</div>
+</body>
+</html>

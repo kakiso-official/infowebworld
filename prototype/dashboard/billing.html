@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Billing - Dashboard - TechRadar Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Inter',sans-serif;font-size:14px;color:#1A1A2E;background:#F1F5F9;}a{text-decoration:none;color:#1B6CA8;}
+.dashboard{display:grid;grid-template-columns:240px 1fr;min-height:100vh;}
+.sidebar{background:#1A1A2E;color:#fff;padding:20px 0;position:sticky;top:0;height:100vh;overflow-y:auto;}.sidebar-logo{padding:0 20px 20px;font-size:18px;font-weight:700;color:#fff;border-bottom:1px solid #2D2D44;}.sidebar-logo span{color:#E74C3C;}.sidebar-company{padding:16px 20px;border-bottom:1px solid #2D2D44;margin-bottom:8px;}.sidebar-company .name{font-size:14px;font-weight:600;}.sidebar-company .plan{font-size:11px;color:#94A3B8;margin-top:2px;}.sidebar-nav{list-style:none;}.sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;color:#CBD5E1;transition:all .15s;}.sidebar-nav li a:hover{background:#2D2D44;color:#fff;}.sidebar-nav li a.active{background:#0F4C75;color:#fff;border-right:3px solid #E74C3C;}.nav-icon{width:18px;text-align:center;}
+.topbar{background:#fff;border-bottom:1px solid #E2E8F0;padding:0 24px;height:56px;display:flex;align-items:center;}.topbar-title{font-size:16px;font-weight:600;}.topbar-actions{margin-left:auto;display:flex;align-items:center;gap:12px;}
+.avatar-sm{width:32px;height:32px;border-radius:50%;background:#0F4C75;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .2s;}.btn-primary{background:#0F4C75;color:#fff;}.btn-secondary{background:#fff;color:#0F4C75;border:1px solid #E2E8F0;}
+
+.main-content{padding:24px;}
+
+.plan-card{background:#fff;border-radius:12px;padding:24px;border:2px solid #0F4C75;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;}
+.plan-info h3{font-size:18px;font-weight:600;color:#0F4C75;}
+.plan-info .price{font-size:28px;font-weight:700;margin:4px 0;}.plan-info .period{font-size:13px;color:#64748B;}
+.plan-info .renew{font-size:12px;color:#94A3B8;margin-top:4px;}
+
+.upgrade-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:24px;}
+.upgrade-card{background:#fff;border-radius:12px;padding:20px;border:1px solid #F1F5F9;}
+.upgrade-card h4{font-size:15px;font-weight:600;margin-bottom:4px;}
+.upgrade-card .price{font-size:20px;font-weight:700;color:#0F4C75;margin-bottom:8px;}
+.upgrade-card ul{list-style:none;margin-bottom:12px;}
+.upgrade-card li{font-size:12px;padding:3px 0;color:#374151;}
+.upgrade-card li::before{content:"\\2713 ";color:#27AE60;font-weight:700;}
+
+.invoice-table{width:100%;background:#fff;border-radius:12px;border:1px solid #F1F5F9;overflow:hidden;margin-bottom:24px;}
+.invoice-table th,.invoice-table td{padding:12px 16px;text-align:left;border-bottom:1px solid #F1F5F9;font-size:13px;}
+.invoice-table th{background:#F8FAFC;font-weight:600;color:#0F4C75;}
+.status-paid{color:#27AE60;font-weight:600;}
+
+.payment-card{background:#fff;border-radius:12px;padding:20px;border:1px solid #F1F5F9;display:flex;align-items:center;gap:16px;}
+.card-icon{width:48px;height:32px;background:#1A1A2E;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700;}
+.card-info .number{font-size:14px;font-weight:500;}.card-info .expiry{font-size:12px;color:#94A3B8;}
+</style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+<div class="dashboard">
+<aside class="sidebar">
+  <div class="sidebar-logo"><a href="../index.html" style="color:#fff;">TechRadar<span>.</span></a></div>
+  <div class="sidebar-company"><div class="name">Jasper AI</div><div class="plan">Growth Plan</div></div>
+  <ul class="sidebar-nav">
+    <li><a href="index.html"><span class="nav-icon">&#x1F3E0;</span> Home</a></li>
+    <li><a href="profile.html"><span class="nav-icon">&#x1F4CB;</span> Profile</a></li>
+    <li><a href="analytics.html"><span class="nav-icon">&#x1F4CA;</span> Analytics</a></li>
+    <li><a href="reviews.html"><span class="nav-icon">&#x2B50;</span> Reviews</a></li>
+    <li><a href="leads.html"><span class="nav-icon">&#x1F465;</span> Leads</a></li>
+    <li><a href="billing.html" class="active"><span class="nav-icon">&#x1F4B3;</span> Billing</a></li>
+    <li><a href="settings.html"><span class="nav-icon">&#x2699;</span> Settings</a></li>
+  </ul>
+</aside>
+
+<div>
+<div class="topbar"><div class="topbar-title">Billing</div><div class="topbar-actions"><div class="avatar-sm">JA</div></div></div>
+
+<div class="main-content">
+  <div class="plan-card">
+    <div class="plan-info">
+      <h3>Growth Plan</h3>
+      <div class="price">$240<span style="font-size:14px;font-weight:400;color:#64748B;">/year</span></div>
+      <div class="period">$20/month billed annually</div>
+      <div class="renew">Next renewal: March 15, 2027</div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-secondary">Change Plan</button>
+      <button class="btn" style="background:#E74C3C;color:#fff;font-size:12px;">Cancel</button>
+    </div>
+  </div>
+
+  <h3 style="font-size:16px;font-weight:600;margin-bottom:12px;">Upgrade Options</h3>
+  <div class="upgrade-grid">
+    <div class="upgrade-card">
+      <h4>Pro Plan</h4>
+      <div class="price">$599/yr</div>
+      <ul><li>Featured in category pages</li><li>CRM integration</li><li>Advanced analytics + exports</li><li>Comparison page placement</li></ul>
+      <a href="../pricing.html" class="btn btn-primary">Upgrade to Pro</a>
+    </div>
+    <div class="upgrade-card">
+      <h4>Enterprise Plan</h4>
+      <div class="price">$1,499/yr</div>
+      <ul><li>Homepage featured placement</li><li>Dedicated account manager</li><li>Buyer intent data</li><li>Custom API access</li></ul>
+      <a href="../contact.html" class="btn btn-primary">Contact Sales</a>
+    </div>
+  </div>
+
+  <h3 style="font-size:16px;font-weight:600;margin-bottom:12px;">Invoice History</h3>
+  <table class="invoice-table">
+    <thead><tr><th>Invoice</th><th>Date</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td>INV-2026-003</td><td>Mar 15, 2026</td><td>$240.00</td><td class="status-paid">Paid</td><td><a href="#">Download</a></td></tr>
+      <tr><td>INV-2025-012</td><td>Mar 15, 2025</td><td>$240.00</td><td class="status-paid">Paid</td><td><a href="#">Download</a></td></tr>
+      <tr><td>INV-2024-008</td><td>Mar 15, 2024</td><td>$199.00</td><td class="status-paid">Paid</td><td><a href="#">Download</a></td></tr>
+    </tbody>
+  </table>
+
+  <h3 style="font-size:16px;font-weight:600;margin-bottom:12px;">Payment Method</h3>
+  <div class="payment-card">
+    <div class="card-icon">VISA</div>
+    <div class="card-info"><div class="number">**** **** **** 4242</div><div class="expiry">Expires 09/2028</div></div>
+    <button class="btn btn-secondary" style="margin-left:auto;">Update Card</button>
+  </div>
+</div>
+</div>
+</div>
+</body>
+</html>

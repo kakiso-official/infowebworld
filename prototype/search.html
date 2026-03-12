@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search Results: project management - TechRadar Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Inter',sans-serif;font-size:14px;color:#1A1A2E;background:#F8FAFC;}a{text-decoration:none;color:#1B6CA8;}a:hover{color:#0F4C75;}.container{max-width:1280px;margin:0 auto;padding:0 20px;}h1{font-size:36px;font-weight:700;}h2{font-size:28px;font-weight:600;}h3{font-size:22px;font-weight:600;}
+.nav{background:#fff;border-bottom:1px solid #E2E8F0;position:sticky;top:0;z-index:100;}.nav-inner{display:flex;align-items:center;height:64px;gap:16px;}.logo{font-size:20px;font-weight:700;color:#0F4C75;}.logo span{color:#E74C3C;}.nav-search{flex:1;max-width:480px;position:relative;}.nav-search input{width:100%;padding:8px 16px 8px 40px;border:1px solid #E2E8F0;border-radius:8px;font-size:14px;font-family:inherit;background:#F8FAFC;}.nav-search::before{content:"\1F50D";position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;}.nav-link{padding:6px 12px;font-size:13px;color:#1A1A2E;font-weight:500;border-radius:4px;}.nav-link:hover{background:#F1F5F9;}.lang-select{padding:6px 8px;border:1px solid #E2E8F0;border-radius:4px;font-size:12px;font-family:inherit;background:#fff;}.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .2s;}.btn-primary{background:#0F4C75;color:#fff;}.btn-secondary{background:#fff;color:#0F4C75;border:1px solid #0F4C75;}
+
+.search-header{background:#fff;padding:24px 0;border-bottom:1px solid #E2E8F0;}
+.search-big{display:flex;gap:0;background:#F8FAFC;border:2px solid #0F4C75;border-radius:12px;overflow:hidden;max-width:700px;}
+.search-big input{flex:1;padding:14px 20px;border:none;font-size:16px;font-family:inherit;background:transparent;}
+.search-big input:focus{outline:none;}
+.search-big button{padding:14px 28px;background:#0F4C75;color:#fff;border:none;font-size:15px;font-weight:600;cursor:pointer;}
+.did-you-mean{margin-top:12px;font-size:13px;color:#64748B;}
+.did-you-mean a{font-weight:600;}
+
+.search-tabs{display:flex;gap:0;margin-top:16px;}
+.search-tab{padding:10px 20px;font-size:13px;font-weight:500;color:#64748B;border-bottom:2px solid transparent;cursor:pointer;}
+.search-tab:hover{color:#0F4C75;}
+.search-tab.active{color:#0F4C75;border-bottom-color:#0F4C75;font-weight:600;}
+
+.search-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;padding:24px 0 60px;}
+
+.filter-panel{background:#fff;border-radius:12px;padding:20px;border:1px solid #F1F5F9;position:sticky;top:80px;align-self:start;}
+.filter-panel h3{font-size:15px;margin-bottom:16px;}
+.filter-group{margin-bottom:16px;}
+.filter-group label{display:block;font-size:13px;font-weight:600;margin-bottom:8px;}
+.filter-option{display:flex;align-items:center;padding:4px 0;font-size:13px;}
+.filter-option input{margin-right:6px;}
+
+.result-item{background:#fff;border-radius:12px;padding:20px;border:1px solid #F1F5F9;margin-bottom:12px;transition:all .2s;}
+.result-item:hover{box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.result-header{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.result-logo{width:40px;height:40px;border-radius:10px;background:#E8F4FD;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.result-title{font-size:16px;font-weight:600;color:#1A1A2E;}
+.result-url{font-size:12px;color:#27AE60;}
+.result-desc{font-size:13px;line-height:1.6;color:#374151;margin-bottom:8px;}
+.result-desc mark{background:#FFF3CD;padding:0 2px;border-radius:2px;}
+.result-meta{display:flex;gap:8px;flex-wrap:wrap;}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;}
+.badge-category{background:#E8F4FD;color:#0F4C75;}
+.stars{color:#F59E0B;font-size:12px;}
+.review-count{font-size:12px;color:#94A3B8;}
+
+.related-cats{margin-top:24px;padding:20px;background:#fff;border-radius:12px;border:1px solid #F1F5F9;}
+.related-cats h4{font-size:14px;font-weight:600;margin-bottom:12px;}
+.cat-link{display:inline-block;padding:6px 12px;background:#F1F5F9;border-radius:6px;font-size:12px;margin:4px;color:#1A1A2E;font-weight:500;}
+.cat-link:hover{background:#E8F4FD;color:#0F4C75;}
+
+.pagination{display:flex;justify-content:center;gap:4px;margin-top:24px;}
+.pagination a,.pagination span{padding:8px 14px;border-radius:6px;font-size:13px;font-weight:500;border:1px solid #E2E8F0;background:#fff;}
+.pagination .active{background:#0F4C75;color:#fff;border-color:#0F4C75;}
+
+.footer{background:#1A1A2E;color:#fff;padding:60px 0 24px;}.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;}.footer-brand p{font-size:13px;opacity:.7;line-height:1.6;margin-top:8px;}.footer h4{font-size:14px;font-weight:600;margin-bottom:16px;}.footer-links{list-style:none;}.footer-links li{margin-bottom:8px;}.footer-links a{color:#CBD5E1;font-size:13px;}.footer-links a:hover{color:#fff;}.footer-bottom{border-top:1px solid #334155;padding-top:24px;display:flex;justify-content:space-between;font-size:12px;opacity:.7;}
+</style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+<nav class="nav"><div class="container nav-inner">
+  <a href="index.html" class="logo">TechRadar<span>.</span></a>
+  <div class="nav-search"><input type="text" value="project management"></div>
+  <a class="nav-link" href="category.html">Categories</a><a class="nav-link" href="news.html">News</a><a class="nav-link" href="best-of.html">Best Of</a>
+  <select class="lang-select"><option>EN</option><option>ES</option><option>FR</option><option>DE</option><option>JA</option></select>
+  <a href="signin.html" class="btn btn-secondary">Sign In</a><a href="submit-listing.html" class="btn btn-primary">Get Listed</a>
+</div></nav>
+
+<div class="search-header">
+<div class="container">
+  <div class="search-big">
+    <input type="text" value="project management">
+    <button>Search</button>
+  </div>
+  <div class="did-you-mean">Did you mean: <a href="search.html">project management software</a> | <a href="search.html">project management tools</a></div>
+  <div class="search-tabs">
+    <span class="search-tab active">All Results (44)</span>
+    <span class="search-tab">Tools (24)</span>
+    <span class="search-tab">News (12)</span>
+    <span class="search-tab">Reviews (8)</span>
+  </div>
+</div>
+</div>
+
+<div class="container">
+<div class="search-layout">
+<aside>
+  <div class="filter-panel">
+    <h3>Filters</h3>
+    <div class="filter-group">
+      <label>Category</label>
+      <div class="filter-option"><input type="checkbox" checked> Project Management</div>
+      <div class="filter-option"><input type="checkbox"> Task Management</div>
+      <div class="filter-option"><input type="checkbox"> Agile Tools</div>
+      <div class="filter-option"><input type="checkbox"> Collaboration</div>
+    </div>
+    <div class="filter-group">
+      <label>Rating</label>
+      <div class="filter-option"><input type="checkbox"> 4+ stars</div>
+      <div class="filter-option"><input type="checkbox"> 3+ stars</div>
+    </div>
+    <div class="filter-group">
+      <label>Pricing</label>
+      <div class="filter-option"><input type="checkbox"> Free</div>
+      <div class="filter-option"><input type="checkbox"> Freemium</div>
+      <div class="filter-option"><input type="checkbox"> Paid</div>
+    </div>
+  </div>
+</aside>
+
+<main>
+  <div style="font-size:13px;color:#64748B;margin-bottom:16px;">Showing 44 results for "<strong>project management</strong>"</div>
+
+  <a href="listing.html" class="result-item" style="display:block;">
+    <div class="result-header"><div class="result-logo">&#x1F680;</div><div><div class="result-title">Notion</div><div class="result-url">notion.so</div></div></div>
+    <div class="result-desc">All-in-one workspace for notes, docs, and <mark>project management</mark>. Features databases, kanban boards, calendars, and AI-powered writing assistance.</div>
+    <div class="result-meta"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span><span class="review-count">4.6 (987)</span><span class="badge badge-category">Project Management</span><span style="font-size:12px;color:#27AE60;">Free tier available</span></div>
+  </a>
+
+  <a href="listing.html" class="result-item" style="display:block;">
+    <div class="result-header"><div class="result-logo">&#x1F4CB;</div><div><div class="result-title">Asana</div><div class="result-url">asana.com</div></div></div>
+    <div class="result-desc">Enterprise <mark>project management</mark> platform with goals, portfolios, and workflow automation. Trusted by 130,000+ organizations worldwide.</div>
+    <div class="result-meta"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span><span class="review-count">4.4 (1,456)</span><span class="badge badge-category">Project Management</span><span style="font-size:12px;color:#27AE60;">From $10.99/mo</span></div>
+  </a>
+
+  <a href="listing.html" class="result-item" style="display:block;">
+    <div class="result-header"><div class="result-logo">&#x26A1;</div><div><div class="result-title">Linear</div><div class="result-url">linear.app</div></div></div>
+    <div class="result-desc">Modern <mark>project management</mark> built for high-performance software teams. Streamlined issue tracking, sprint planning, and product roadmaps.</div>
+    <div class="result-meta"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="review-count">4.8 (567)</span><span class="badge badge-category">Project Management</span><span style="font-size:12px;color:#27AE60;">Free for small teams</span></div>
+  </a>
+
+  <a href="listing.html" class="result-item" style="display:block;">
+    <div class="result-header"><div class="result-logo">&#x1F4CA;</div><div><div class="result-title">Monday.com</div><div class="result-url">monday.com</div></div></div>
+    <div class="result-desc">Visual <mark>project management</mark> platform with customizable workflows, dashboards, and integrations. Supports marketing, sales, and IT teams.</div>
+    <div class="result-meta"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span><span class="review-count">4.3 (2,100)</span><span class="badge badge-category">Project Management</span><span style="font-size:12px;color:#27AE60;">From $9/seat/mo</span></div>
+  </a>
+
+  <a href="listing.html" class="result-item" style="display:block;">
+    <div class="result-header"><div class="result-logo">&#x2705;</div><div><div class="result-title">ClickUp</div><div class="result-url">clickup.com</div></div></div>
+    <div class="result-desc">All-in-one <mark>project management</mark> and productivity platform. Combines docs, goals, chat, and dashboards in a single app.</div>
+    <div class="result-meta"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span><span class="review-count">4.2 (1,890)</span><span class="badge badge-category">Project Management</span><span style="font-size:12px;color:#27AE60;">Free tier available</span></div>
+  </a>
+
+  <div class="pagination">
+    <span class="active">1</span><a href="#">2</a><a href="#">3</a><a href="#">4</a><a href="#">5</a><a href="#">&rarr;</a>
+  </div>
+
+  <div class="related-cats">
+    <h4>Related Categories</h4>
+    <a href="category.html" class="cat-link">Agile Tools (34)</a>
+    <a href="category.html" class="cat-link">Task Management (45)</a>
+    <a href="category.html" class="cat-link">Team Collaboration (52)</a>
+    <a href="category.html" class="cat-link">Product Roadmap (18)</a>
+    <a href="category.html" class="cat-link">Time Tracking (26)</a>
+    <a href="category.html" class="cat-link">Gantt Charts (12)</a>
+  </div>
+</main>
+</div>
+</div>
+
+<footer class="footer"><div class="container">
+  <div class="footer-grid">
+    <div class="footer-brand"><div class="logo" style="color:#fff;">TechRadar<span>.</span></div><p>Discover, Compare & Review the Best AI Tools, SaaS Products & Tech Startups.</p></div>
+    <div><h4>Platform</h4><ul class="footer-links"><li><a href="category.html">Browse</a></li><li><a href="comparison.html">Compare</a></li><li><a href="news.html">News</a></li></ul></div>
+    <div><h4>Company</h4><ul class="footer-links"><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+    <div><h4>For Vendors</h4><ul class="footer-links"><li><a href="submit-listing.html">List Your Tool</a></li><li><a href="pricing.html">Pricing</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><span>&copy; 2026 TechRadar Directory. All rights reserved.</span></div>
+</div></footer>
+</body>
+</html>

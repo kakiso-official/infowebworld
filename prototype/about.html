@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us - TechRadar Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Inter',sans-serif;font-size:14px;color:#1A1A2E;background:#F8FAFC;}a{text-decoration:none;color:#1B6CA8;}a:hover{color:#0F4C75;}.container{max-width:1280px;margin:0 auto;padding:0 20px;}h1{font-size:36px;font-weight:700;}h2{font-size:28px;font-weight:600;}h3{font-size:22px;font-weight:600;}
+.nav{background:#fff;border-bottom:1px solid #E2E8F0;position:sticky;top:0;z-index:100;}.nav-inner{display:flex;align-items:center;height:64px;gap:16px;}.logo{font-size:20px;font-weight:700;color:#0F4C75;}.logo span{color:#E74C3C;}.nav-search{flex:1;max-width:480px;position:relative;}.nav-search input{width:100%;padding:8px 16px 8px 40px;border:1px solid #E2E8F0;border-radius:8px;font-size:14px;font-family:inherit;background:#F8FAFC;}.nav-search::before{content:"\1F50D";position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;}.nav-link{padding:6px 12px;font-size:13px;color:#1A1A2E;font-weight:500;border-radius:4px;}.nav-link:hover{background:#F1F5F9;}.lang-select{padding:6px 8px;border:1px solid #E2E8F0;border-radius:4px;font-size:12px;font-family:inherit;background:#fff;}.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .2s;}.btn-primary{background:#0F4C75;color:#fff;}.btn-primary:hover{background:#0d3f63;}.btn-secondary{background:#fff;color:#0F4C75;border:1px solid #0F4C75;}
+
+.hero-about{background:linear-gradient(135deg,#0F4C75,#1B6CA8);color:#fff;padding:80px 0;text-align:center;}
+.hero-about h1{margin-bottom:16px;}
+.hero-about p{font-size:18px;opacity:.9;max-width:700px;margin:0 auto;line-height:1.7;}
+
+.stats-bar{background:#fff;padding:40px 0;border-bottom:1px solid #E2E8F0;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center;}
+.stat-item .number{font-size:36px;font-weight:700;color:#0F4C75;}
+.stat-item .label{font-size:14px;color:#64748B;margin-top:4px;}
+
+.section{padding:60px 0;}
+.section h2{text-align:center;margin-bottom:32px;}
+.story{max-width:800px;margin:0 auto;font-size:16px;line-height:1.8;color:#374151;}
+.story p{margin-bottom:16px;}
+
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;}
+.team-card{background:#fff;border-radius:12px;padding:28px;text-align:center;border:1px solid #F1F5F9;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.team-avatar{width:80px;height:80px;border-radius:50%;background:#E8F4FD;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#0F4C75;margin:0 auto 12px;}
+.team-name{font-size:16px;font-weight:600;margin-bottom:2px;}
+.team-role{font-size:13px;color:#64748B;margin-bottom:8px;}
+.team-bio{font-size:12px;color:#94A3B8;line-height:1.5;}
+
+.press-logos{display:flex;justify-content:center;align-items:center;gap:48px;flex-wrap:wrap;padding:40px 0;}
+.press-logo{font-size:18px;font-weight:700;color:#CBD5E1;letter-spacing:1px;}
+
+.contact-info{max-width:600px;margin:0 auto;text-align:center;}
+.contact-info p{font-size:15px;line-height:1.7;color:#374151;margin-bottom:16px;}
+
+.footer{background:#1A1A2E;color:#fff;padding:60px 0 24px;}.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;}.footer-brand p{font-size:13px;opacity:.7;line-height:1.6;margin-top:8px;}.footer h4{font-size:14px;font-weight:600;margin-bottom:16px;}.footer-links{list-style:none;}.footer-links li{margin-bottom:8px;}.footer-links a{color:#CBD5E1;font-size:13px;}.footer-links a:hover{color:#fff;}.footer-bottom{border-top:1px solid #334155;padding-top:24px;display:flex;justify-content:space-between;font-size:12px;opacity:.7;}
+</style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+<nav class="nav"><div class="container nav-inner">
+  <a href="index.html" class="logo">TechRadar<span>.</span></a>
+  <div class="nav-search"><input type="text" placeholder="Search tools..."></div>
+  <a class="nav-link" href="category.html">Categories</a><a class="nav-link" href="news.html">News</a><a class="nav-link" href="best-of.html">Best Of</a>
+  <select class="lang-select"><option>EN</option><option>ES</option><option>FR</option><option>DE</option><option>JA</option></select>
+  <a href="signin.html" class="btn btn-secondary">Sign In</a><a href="submit-listing.html" class="btn btn-primary">Get Listed</a>
+</div></nav>
+
+<section class="hero-about">
+  <div class="container">
+    <h1>About TechRadar Directory</h1>
+    <p>We're on a mission to help businesses and professionals discover the right technology solutions through transparent reviews, honest comparisons, and curated recommendations.</p>
+  </div>
+</section>
+
+<section class="stats-bar">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item"><div class="number">500+</div><div class="label">Tools Listed</div></div>
+      <div class="stat-item"><div class="number">10K+</div><div class="label">Verified Reviews</div></div>
+      <div class="stat-item"><div class="number">50+</div><div class="label">Categories</div></div>
+      <div class="stat-item"><div class="number">120+</div><div class="label">Countries Reached</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2>Our Story</h2>
+    <div class="story">
+      <p>TechRadar Directory was founded in 2023 by a team of SaaS veterans who experienced firsthand the frustration of choosing the right tools from an overwhelming sea of options. With thousands of AI tools, SaaS products, and startups launching every year, we believed there needed to be a better way to discover, evaluate, and compare technology solutions.</p>
+      <p>We built TechRadar Directory with three core principles: transparency in reviews, depth in comparisons, and timeliness in industry news. Every review on our platform is verified, every comparison is data-driven, and our AI-powered news feed keeps you informed about the latest developments in the tech ecosystem.</p>
+      <p>Today, we serve over 50,000 monthly visitors from 120+ countries, helping them make informed technology decisions. Our platform has become a trusted resource for CTOs, marketing leaders, and startup founders alike.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:#fff;">
+  <div class="container">
+    <h2>Our Team</h2>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar">AJ</div>
+        <div class="team-name">Alex Johnson</div>
+        <div class="team-role">CEO & Co-Founder</div>
+        <div class="team-bio">Former VP Product at a Series C SaaS company. 12+ years in enterprise software.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">PR</div>
+        <div class="team-name">Priya Raghavan</div>
+        <div class="team-role">CTO & Co-Founder</div>
+        <div class="team-bio">Ex-Google engineer. Built ML systems at scale. Passionate about AI applications.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">MW</div>
+        <div class="team-name">Maria Weber</div>
+        <div class="team-role">Head of Content</div>
+        <div class="team-bio">Former editor at TechCrunch. Leads our editorial team and review quality standards.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">TN</div>
+        <div class="team-name">Tomoko Nakamura</div>
+        <div class="team-role">Head of Partnerships</div>
+        <div class="team-bio">10+ years in SaaS partnerships. Manages relationships with 500+ listed companies.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2>As Featured In</h2>
+    <div class="press-logos">
+      <span class="press-logo">TechCrunch</span>
+      <span class="press-logo">Forbes</span>
+      <span class="press-logo">VentureBeat</span>
+      <span class="press-logo">Product Hunt</span>
+      <span class="press-logo">Hacker News</span>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:#fff;">
+  <div class="container">
+    <h2>Get In Touch</h2>
+    <div class="contact-info">
+      <p>Have questions, partnership inquiries, or press requests? We'd love to hear from you.</p>
+      <p><strong>General:</strong> hello@techradardirectory.com<br><strong>Press:</strong> press@techradardirectory.com<br><strong>Partnerships:</strong> partners@techradardirectory.com</p>
+      <a href="contact.html" class="btn btn-primary" style="padding:12px 28px;">Contact Us</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer"><div class="container">
+  <div class="footer-grid">
+    <div class="footer-brand"><div class="logo" style="color:#fff;">TechRadar<span>.</span></div><p>Discover, Compare & Review the Best AI Tools, SaaS Products & Tech Startups.</p></div>
+    <div><h4>Platform</h4><ul class="footer-links"><li><a href="category.html">Browse</a></li><li><a href="comparison.html">Compare</a></li><li><a href="news.html">News</a></li></ul></div>
+    <div><h4>Company</h4><ul class="footer-links"><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+    <div><h4>For Vendors</h4><ul class="footer-links"><li><a href="submit-listing.html">List Your Tool</a></li><li><a href="pricing.html">Pricing</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><span>&copy; 2026 TechRadar Directory. All rights reserved.</span></div>
+</div></footer>
+</body>
+</html>

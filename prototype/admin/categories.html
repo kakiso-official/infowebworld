@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Category Manager - Admin - TechRadar Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Inter',sans-serif;font-size:14px;color:#1A1A2E;background:#F1F5F9;}a{text-decoration:none;color:#1B6CA8;}
+.dashboard{display:grid;grid-template-columns:240px 1fr;min-height:100vh;}
+.sidebar{background:#1A1A2E;color:#fff;padding:20px 0;position:sticky;top:0;height:100vh;overflow-y:auto;}.sidebar-logo{padding:0 20px 20px;font-size:18px;font-weight:700;color:#fff;border-bottom:1px solid #2D2D44;}.sidebar-logo span{color:#E74C3C;}.sidebar-label{padding:12px 20px 6px;font-size:10px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:1px;}.sidebar-nav{list-style:none;}.sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;color:#CBD5E1;transition:all .15s;}.sidebar-nav li a:hover{background:#2D2D44;color:#fff;}.sidebar-nav li a.active{background:#0F4C75;color:#fff;border-right:3px solid #E74C3C;}.nav-icon{width:18px;text-align:center;}
+.topbar{background:#fff;border-bottom:1px solid #E2E8F0;padding:0 24px;height:56px;display:flex;align-items:center;gap:16px;}.topbar-title{font-size:16px;font-weight:600;}.topbar-actions{margin-left:auto;}.avatar-sm{width:32px;height:32px;border-radius:50%;background:#E74C3C;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;}
+.btn{display:inline-flex;align-items:center;gap:4px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .2s;}.btn-primary{background:#0F4C75;color:#fff;}.btn-secondary{background:#F1F5F9;color:#374151;border:1px solid #E2E8F0;}
+
+.main-content{padding:24px;}
+.toolbar{display:flex;justify-content:space-between;margin-bottom:20px;}
+
+.tree-container{background:#fff;border-radius:12px;padding:24px;border:1px solid #F1F5F9;}
+.tree-item{padding:0;margin:0;}
+.tree-parent{display:flex;align-items:center;gap:8px;padding:12px 8px;border-bottom:1px solid #F8FAFC;cursor:pointer;font-weight:600;font-size:14px;}
+.tree-parent:hover{background:#F8FAFC;border-radius:6px;}
+.tree-toggle{width:20px;color:#94A3B8;font-size:12px;text-align:center;}
+.tree-icon{font-size:18px;}
+.tree-count{margin-left:auto;font-size:12px;color:#94A3B8;font-weight:400;}
+.tree-actions{display:flex;gap:4px;margin-left:8px;}
+.tree-actions button{padding:2px 8px;border:1px solid transparent;border-radius:4px;font-size:11px;cursor:pointer;background:transparent;font-family:inherit;color:#94A3B8;}
+.tree-actions button:hover{border-color:#E2E8F0;color:#1A1A2E;background:#F8FAFC;}
+
+.tree-children{padding-left:36px;}
+.tree-child{display:flex;align-items:center;gap:8px;padding:8px;border-bottom:1px solid #F8FAFC;font-size:13px;cursor:grab;}
+.tree-child:hover{background:#F8FAFC;border-radius:4px;}
+.drag-handle{color:#CBD5E1;cursor:grab;font-size:12px;}
+.tree-child .tree-count{font-size:11px;}
+.tree-child .tree-actions button{font-size:10px;}
+</style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+<div class="dashboard">
+<aside class="sidebar">
+  <div class="sidebar-logo"><a href="../index.html" style="color:#fff;">TechRadar<span>.</span></a></div>
+  <div class="sidebar-label">Admin Panel</div>
+  <ul class="sidebar-nav">
+    <li><a href="index.html"><span class="nav-icon">&#x1F3E0;</span> Home</a></li>
+    <li><a href="listings.html"><span class="nav-icon">&#x1F4CB;</span> Listings Queue</a></li>
+    <li><a href="reviews.html"><span class="nav-icon">&#x2B50;</span> Reviews Queue</a></li>
+    <li><a href="news.html"><span class="nav-icon">&#x1F4F0;</span> News</a></li>
+    <li><a href="users.html"><span class="nav-icon">&#x1F465;</span> Users</a></li>
+    <li><a href="categories.html" class="active"><span class="nav-icon">&#x1F4C2;</span> Categories</a></li>
+    <li><a href="revenue.html"><span class="nav-icon">&#x1F4B0;</span> Revenue</a></li>
+  </ul>
+</aside>
+
+<div>
+<div class="topbar"><div class="topbar-title">Category Manager</div><div class="topbar-actions"><div class="avatar-sm">AD</div></div></div>
+
+<div class="main-content">
+  <div class="toolbar">
+    <div style="font-size:13px;color:#64748B;">8 parent categories &middot; 52 subcategories &middot; 523 total listings</div>
+    <button class="btn btn-primary">+ Add Category</button>
+  </div>
+
+  <div class="tree-container">
+    <div class="tree-item">
+      <div class="tree-parent"><span class="tree-toggle">&#x25BC;</span><span class="tree-icon">&#x1F4DD;</span> AI Writing Tools<span class="tree-count">72 listings</span><div class="tree-actions"><button>Edit</button><button>Merge</button><button>Delete</button></div></div>
+      <div class="tree-children">
+        <div class="tree-child"><span class="drag-handle">&#x2630;</span> Content Writing<span class="tree-count">28</span><div class="tree-actions"><button>Edit</button><button>Delete</button></div></div>
+        <div class="tree-child"><span class="drag-handle">&#x2630;</span> Copywriting<span class="tree-count">19</span><div class="tree-actions"><button>Edit</button><button>Delete</button></div></div>
+        <div class="tree-child"><span class="drag-handle">&#x2630;</span> SEO Writing<span class="tree-count">14</span><div class="tree-actions"><button>Edit</button><button>Delete</button></div></div>
+        <div class="tree-child"><span class="drag-handle">&#x2630;</span> Email Writing<span class="tree-count">8</span><div class="tree-actions"><button>Edit</button><button>Delete</button></div></div>
+        <div class="tree-child"><span class="drag-handle">&#x2630;</span> Academic Writing<span class="tree-count">5</span><div class="tree-actions"><button>Edit</button><button>Delete</button></div></div>
+      </div>
+    </div>
+
+    <div class="tree-item">
+      <div class="tree-parent"><span class="tree-toggle">&#x25BC;</span><span class="tree-icon">&#x1F3A8;</span> AI Image Generation<span class="tree-count">58 listings</span><div class="tree-actions"><button>Edit</button><button>Merge</button><button>Delete</button></div></div>
+      <div class="tree-children">
+        <div class="tree-child"><span class="drag-handle">&#x2630;</span> Art Generation<span class="tree-count">22</span><div class="tree-actions"><button>Edit</button><button>Delete</button></div></div>
+        <div class="tree-child"><span class="drag-handle">&#x2630;</span> Photo Editing<span class="tree-count">18</span><div class="tree-actions"><button>Edit</button><button>Delete</button></div></div>
+        <div class="tree-child"><span class="drag-handle">&#x2630;</span> Logo Design<span class="tree-count">10</span><div class="tree-actions"><button>Edit</button><button>Delete</button></div></div>
+        <div class="tree-child"><span class="drag-handle">&#x2630;</span> Video Generation<span class="tree-count">8</span><div class="tree-actions"><button>Edit</button><button>Delete</button></div></div>
+      </div>
+    </div>
+
+    <div class="tree-item">
+      <div class="tree-parent"><span class="tree-toggle">&#x25B6;</span><span class="tree-icon">&#x1F4CA;</span> CRM Software<span class="tree-count">89 listings</span><div class="tree-actions"><button>Edit</button><button>Merge</button><button>Delete</button></div></div>
+    </div>
+    <div class="tree-item">
+      <div class="tree-parent"><span class="tree-toggle">&#x25B6;</span><span class="tree-icon">&#x1F4CB;</span> Project Management<span class="tree-count">64 listings</span><div class="tree-actions"><button>Edit</button><button>Merge</button><button>Delete</button></div></div>
+    </div>
+    <div class="tree-item">
+      <div class="tree-parent"><span class="tree-toggle">&#x25B6;</span><span class="tree-icon">&#x1F4C8;</span> Analytics & BI<span class="tree-count">51 listings</span><div class="tree-actions"><button>Edit</button><button>Merge</button><button>Delete</button></div></div>
+    </div>
+    <div class="tree-item">
+      <div class="tree-parent"><span class="tree-toggle">&#x25B6;</span><span class="tree-icon">&#x1F4E3;</span> Marketing Automation<span class="tree-count">67 listings</span><div class="tree-actions"><button>Edit</button><button>Merge</button><button>Delete</button></div></div>
+    </div>
+    <div class="tree-item">
+      <div class="tree-parent"><span class="tree-toggle">&#x25B6;</span><span class="tree-icon">&#x2699;&#xFE0F;</span> DevOps & CI/CD<span class="tree-count">43 listings</span><div class="tree-actions"><button>Edit</button><button>Merge</button><button>Delete</button></div></div>
+    </div>
+    <div class="tree-item">
+      <div class="tree-parent"><span class="tree-toggle">&#x25B6;</span><span class="tree-icon">&#x1F4AC;</span> Communication<span class="tree-count">55 listings</span><div class="tree-actions"><button>Edit</button><button>Merge</button><button>Delete</button></div></div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</body>
+</html>

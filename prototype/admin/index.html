@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard - TechRadar Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Inter',sans-serif;font-size:14px;color:#1A1A2E;background:#F1F5F9;}a{text-decoration:none;color:#1B6CA8;}
+.dashboard{display:grid;grid-template-columns:240px 1fr;min-height:100vh;}
+.sidebar{background:#1A1A2E;color:#fff;padding:20px 0;position:sticky;top:0;height:100vh;overflow-y:auto;}.sidebar-logo{padding:0 20px 20px;font-size:18px;font-weight:700;color:#fff;border-bottom:1px solid #2D2D44;}.sidebar-logo span{color:#E74C3C;}.sidebar-label{padding:12px 20px 6px;font-size:10px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:1px;}.sidebar-nav{list-style:none;}.sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;color:#CBD5E1;transition:all .15s;}.sidebar-nav li a:hover{background:#2D2D44;color:#fff;}.sidebar-nav li a.active{background:#0F4C75;color:#fff;border-right:3px solid #E74C3C;}.nav-icon{width:18px;text-align:center;}
+.topbar{background:#fff;border-bottom:1px solid #E2E8F0;padding:0 24px;height:56px;display:flex;align-items:center;}.topbar-title{font-size:16px;font-weight:600;}.topbar-badge{padding:3px 8px;background:#E74C3C;color:#fff;border-radius:4px;font-size:11px;font-weight:600;margin-left:8px;}.topbar-actions{margin-left:auto;display:flex;align-items:center;gap:12px;}.avatar-sm{width:32px;height:32px;border-radius:50%;background:#E74C3C;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;}
+
+.main-content{padding:24px;}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:24px;}
+.kpi-card{background:#fff;border-radius:12px;padding:20px;border:1px solid #F1F5F9;}
+.kpi-card .label{font-size:11px;color:#64748B;font-weight:500;text-transform:uppercase;letter-spacing:.5px;}
+.kpi-card .value{font-size:24px;font-weight:700;color:#0F4C75;margin:4px 0;}
+.kpi-card .change{font-size:12px;}.change.up{color:#27AE60;}.change.down{color:#E74C3C;}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.card{background:#fff;border-radius:12px;padding:20px;border:1px solid #F1F5F9;}
+.card h3{font-size:15px;font-weight:600;margin-bottom:14px;}
+
+.activity-table{width:100%;border-collapse:collapse;}
+.activity-table th,.activity-table td{padding:10px 0;text-align:left;border-bottom:1px solid #F8FAFC;font-size:12px;}
+.activity-table th{font-weight:600;color:#64748B;font-size:11px;text-transform:uppercase;}
+
+.alert-item{padding:12px;border-radius:8px;margin-bottom:8px;font-size:13px;display:flex;align-items:center;gap:8px;}
+.alert-item.urgent{background:#FEE2E2;border-left:3px solid #E74C3C;}.alert-item.warning{background:#FFF8E1;border-left:3px solid #E67E22;}.alert-item.info{background:#E8F4FD;border-left:3px solid #1B6CA8;}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;}
+.badge-new{background:#E8F4FD;color:#0F4C75;}.badge-pending{background:#FFF8E1;color:#E67E22;}
+</style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+<div class="dashboard">
+<aside class="sidebar">
+  <div class="sidebar-logo"><a href="../index.html" style="color:#fff;">TechRadar<span>.</span></a></div>
+  <div class="sidebar-label">Admin Panel</div>
+  <ul class="sidebar-nav">
+    <li><a href="index.html" class="active"><span class="nav-icon">&#x1F3E0;</span> Home</a></li>
+    <li><a href="listings.html"><span class="nav-icon">&#x1F4CB;</span> Listings Queue</a></li>
+    <li><a href="reviews.html"><span class="nav-icon">&#x2B50;</span> Reviews Queue</a></li>
+    <li><a href="news.html"><span class="nav-icon">&#x1F4F0;</span> News</a></li>
+    <li><a href="users.html"><span class="nav-icon">&#x1F465;</span> Users</a></li>
+    <li><a href="categories.html"><span class="nav-icon">&#x1F4C2;</span> Categories</a></li>
+    <li><a href="revenue.html"><span class="nav-icon">&#x1F4B0;</span> Revenue</a></li>
+    <li><a href="#"><span class="nav-icon">&#x1F50D;</span> SEO</a></li>
+    <li><a href="#"><span class="nav-icon">&#x1F4DD;</span> Content</a></li>
+    <li><a href="#"><span class="nav-icon">&#x2699;</span> Settings</a></li>
+  </ul>
+</aside>
+
+<div>
+<div class="topbar"><div class="topbar-title">Admin Dashboard</div><span class="topbar-badge">Admin</span><div class="topbar-actions"><div class="avatar-sm">AD</div></div></div>
+
+<div class="main-content">
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="label">Total Listings</div><div class="value">523</div><div class="change up">+8 this week</div></div>
+    <div class="kpi-card"><div class="label">Total Reviews</div><div class="value">10,234</div><div class="change up">+156 this week</div></div>
+    <div class="kpi-card"><div class="label">MRR</div><div class="value">$12,500</div><div class="change up">+$800 vs last month</div></div>
+    <div class="kpi-card"><div class="label">Monthly Traffic</div><div class="value">45K</div><div class="change up">+12% vs last month</div></div>
+    <div class="kpi-card"><div class="label">Signups Today</div><div class="value">12</div><div class="change up">+3 vs avg</div></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>Recent Activity</h3>
+      <table class="activity-table">
+        <thead><tr><th>Event</th><th>User</th><th>Time</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge badge-new">New Listing</span> ContentBot Pro</td><td>mike@contentbot.ai</td><td>12 min ago</td></tr>
+          <tr><td><span class="badge badge-pending">Review</span> for Notion AI</td><td>sarah.k@gmail.com</td><td>25 min ago</td></tr>
+          <tr><td><span class="badge badge-new">Signup</span> new vendor account</td><td>team@datapulse.io</td><td>1 hr ago</td></tr>
+          <tr><td><span class="badge badge-new">Upgrade</span> Free &rarr; Growth</td><td>hello@writesync.com</td><td>2 hrs ago</td></tr>
+          <tr><td><span class="badge badge-pending">Flag</span> suspicious review</td><td>system</td><td>3 hrs ago</td></tr>
+          <tr><td><span class="badge badge-new">News</span> article auto-generated</td><td>AI system</td><td>4 hrs ago</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Action Required</h3>
+      <div class="alert-item urgent">&#x1F6A8; <strong>3 listings</strong> pending approval in the queue</div>
+      <div class="alert-item urgent">&#x1F6A8; <strong>5 reviews</strong> flagged for fraud detection</div>
+      <div class="alert-item warning">&#x26A0; <strong>12 news articles</strong> ready for review and publishing</div>
+      <div class="alert-item warning">&#x26A0; <strong>2 users</strong> reported by community moderators</div>
+      <div class="alert-item info">&#x1F4A1; <strong>SEO audit</strong> found 8 pages with missing meta descriptions</div>
+      <div class="alert-item info">&#x1F4A1; Category "<strong>AI Agents</strong>" has 15 uncategorized tools</div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</body>
+</html>

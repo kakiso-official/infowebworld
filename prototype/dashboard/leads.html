@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leads - Dashboard - TechRadar Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Inter',sans-serif;font-size:14px;color:#1A1A2E;background:#F1F5F9;}a{text-decoration:none;color:#1B6CA8;}
+.dashboard{display:grid;grid-template-columns:240px 1fr;min-height:100vh;}
+.sidebar{background:#1A1A2E;color:#fff;padding:20px 0;position:sticky;top:0;height:100vh;overflow-y:auto;}.sidebar-logo{padding:0 20px 20px;font-size:18px;font-weight:700;color:#fff;border-bottom:1px solid #2D2D44;}.sidebar-logo span{color:#E74C3C;}.sidebar-company{padding:16px 20px;border-bottom:1px solid #2D2D44;margin-bottom:8px;}.sidebar-company .name{font-size:14px;font-weight:600;}.sidebar-company .plan{font-size:11px;color:#94A3B8;margin-top:2px;}.sidebar-nav{list-style:none;}.sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;color:#CBD5E1;transition:all .15s;}.sidebar-nav li a:hover{background:#2D2D44;color:#fff;}.sidebar-nav li a.active{background:#0F4C75;color:#fff;border-right:3px solid #E74C3C;}.nav-icon{width:18px;text-align:center;}
+.topbar{background:#fff;border-bottom:1px solid #E2E8F0;padding:0 24px;height:56px;display:flex;align-items:center;gap:16px;}.topbar-title{font-size:16px;font-weight:600;}.topbar-actions{margin-left:auto;display:flex;align-items:center;gap:12px;}
+.avatar-sm{width:32px;height:32px;border-radius:50%;background:#0F4C75;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .2s;}.btn-primary{background:#0F4C75;color:#fff;}.btn-secondary{background:#fff;color:#0F4C75;border:1px solid #E2E8F0;}
+
+.main-content{padding:24px;}
+.leads-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.leads-header h2{font-size:16px;font-weight:600;}
+
+.leads-table{width:100%;background:#fff;border-radius:12px;border:1px solid #F1F5F9;overflow:hidden;}
+.leads-table th,.leads-table td{padding:12px 16px;text-align:left;border-bottom:1px solid #F1F5F9;font-size:13px;}
+.leads-table th{background:#F8FAFC;font-weight:600;color:#0F4C75;font-size:12px;text-transform:uppercase;letter-spacing:.5px;}
+.leads-table tr:hover{background:#F8FAFC;}
+.status-badge{padding:3px 10px;border-radius:4px;font-size:11px;font-weight:600;}
+.status-new{background:#E8F4FD;color:#0F4C75;}
+.status-contacted{background:#FFF8E1;color:#E67E22;}
+.status-qualified{background:#E8F8F0;color:#27AE60;}
+.action-btn{padding:4px 10px;border:1px solid #E2E8F0;border-radius:4px;font-size:11px;cursor:pointer;background:#fff;font-family:inherit;margin-right:4px;}.action-btn:hover{border-color:#1B6CA8;}
+
+.crm-badges{display:flex;gap:12px;margin-top:20px;}
+.crm-badge{display:flex;align-items:center;gap:8px;padding:12px 16px;background:#fff;border:1px solid #F1F5F9;border-radius:8px;font-size:13px;font-weight:500;}
+.crm-badge .icon{width:28px;height:28px;border-radius:6px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;font-size:14px;}
+
+.lead-detail{background:#fff;border-radius:12px;padding:24px;border:1px solid #F1F5F9;margin-top:20px;}
+.lead-detail h3{font-size:15px;font-weight:600;margin-bottom:16px;}
+.detail-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F8FAFC;font-size:13px;}
+.detail-label{color:#64748B;}.detail-value{font-weight:500;}
+</style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+<div class="dashboard">
+<aside class="sidebar">
+  <div class="sidebar-logo"><a href="../index.html" style="color:#fff;">TechRadar<span>.</span></a></div>
+  <div class="sidebar-company"><div class="name">Jasper AI</div><div class="plan">Growth Plan</div></div>
+  <ul class="sidebar-nav">
+    <li><a href="index.html"><span class="nav-icon">&#x1F3E0;</span> Home</a></li>
+    <li><a href="profile.html"><span class="nav-icon">&#x1F4CB;</span> Profile</a></li>
+    <li><a href="analytics.html"><span class="nav-icon">&#x1F4CA;</span> Analytics</a></li>
+    <li><a href="reviews.html"><span class="nav-icon">&#x2B50;</span> Reviews</a></li>
+    <li><a href="leads.html" class="active"><span class="nav-icon">&#x1F465;</span> Leads</a></li>
+    <li><a href="billing.html"><span class="nav-icon">&#x1F4B3;</span> Billing</a></li>
+    <li><a href="settings.html"><span class="nav-icon">&#x2699;</span> Settings</a></li>
+  </ul>
+</aside>
+
+<div>
+<div class="topbar"><div class="topbar-title">Leads</div><div class="topbar-actions"><button class="btn btn-secondary">&#x1F4E5; Export CSV</button><div class="avatar-sm">JA</div></div></div>
+
+<div class="main-content">
+  <div class="leads-header">
+    <h2>23 Leads This Month</h2>
+    <div style="display:flex;gap:8px;">
+      <select style="padding:8px 12px;border:1px solid #E2E8F0;border-radius:6px;font-size:12px;font-family:inherit;"><option>All Status</option><option>New</option><option>Contacted</option><option>Qualified</option></select>
+    </div>
+  </div>
+
+  <table class="leads-table">
+    <thead><tr><th>Name</th><th>Email</th><th>Company</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Tom Anderson</strong></td><td>tom@cloudtech.io</td><td>CloudTech Inc.</td><td>Mar 10, 2026</td><td><span class="status-badge status-new">New</span></td><td><button class="action-btn">View</button><button class="action-btn">Email</button></td></tr>
+      <tr><td><strong>Emily Zhang</strong></td><td>emily@marketpro.com</td><td>MarketPro</td><td>Mar 9, 2026</td><td><span class="status-badge status-new">New</span></td><td><button class="action-btn">View</button><button class="action-btn">Email</button></td></tr>
+      <tr><td><strong>James Wilson</strong></td><td>james@startup.co</td><td>Startup.co</td><td>Mar 8, 2026</td><td><span class="status-badge status-contacted">Contacted</span></td><td><button class="action-btn">View</button><button class="action-btn">Email</button></td></tr>
+      <tr><td><strong>Maria Garcia</strong></td><td>maria@bigcorp.com</td><td>BigCorp Enterprise</td><td>Mar 7, 2026</td><td><span class="status-badge status-qualified">Qualified</span></td><td><button class="action-btn">View</button><button class="action-btn">Email</button></td></tr>
+      <tr><td><strong>David Kim</strong></td><td>david@techwave.io</td><td>TechWave</td><td>Mar 6, 2026</td><td><span class="status-badge status-contacted">Contacted</span></td><td><button class="action-btn">View</button><button class="action-btn">Email</button></td></tr>
+      <tr><td><strong>Lisa Brown</strong></td><td>lisa@agencyplus.com</td><td>Agency Plus</td><td>Mar 5, 2026</td><td><span class="status-badge status-qualified">Qualified</span></td><td><button class="action-btn">View</button><button class="action-btn">Email</button></td></tr>
+    </tbody>
+  </table>
+
+  <div class="lead-detail">
+    <h3>Lead Details: Tom Anderson</h3>
+    <div class="detail-row"><span class="detail-label">Full Name</span><span class="detail-value">Tom Anderson</span></div>
+    <div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">tom@cloudtech.io</span></div>
+    <div class="detail-row"><span class="detail-label">Company</span><span class="detail-value">CloudTech Inc.</span></div>
+    <div class="detail-row"><span class="detail-label">Team Size</span><span class="detail-value">51-200</span></div>
+    <div class="detail-row"><span class="detail-label">Submitted</span><span class="detail-value">March 10, 2026 at 2:34 PM</span></div>
+    <div class="detail-row"><span class="detail-label">Source</span><span class="detail-value">Category page &rarr; Profile &rarr; Lead form</span></div>
+  </div>
+
+  <div style="margin-top:20px;">
+    <h3 style="font-size:15px;font-weight:600;margin-bottom:12px;">CRM Integrations</h3>
+    <div class="crm-badges">
+      <div class="crm-badge"><div class="icon">&#x1F4CA;</div> HubSpot <span style="font-size:11px;color:#27AE60;font-weight:600;margin-left:4px;">Connected</span></div>
+      <div class="crm-badge"><div class="icon">&#x2601;</div> Salesforce <span style="font-size:11px;color:#94A3B8;margin-left:4px;">Connect</span></div>
+      <div class="crm-badge"><div class="icon">&#x1F4E7;</div> Pipedrive <span style="font-size:11px;color:#94A3B8;margin-left:4px;">Connect</span></div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</body>
+</html>

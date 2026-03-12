@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>News Management - Admin - TechRadar Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Inter',sans-serif;font-size:14px;color:#1A1A2E;background:#F1F5F9;}a{text-decoration:none;color:#1B6CA8;}
+.dashboard{display:grid;grid-template-columns:240px 1fr;min-height:100vh;}
+.sidebar{background:#1A1A2E;color:#fff;padding:20px 0;position:sticky;top:0;height:100vh;overflow-y:auto;}.sidebar-logo{padding:0 20px 20px;font-size:18px;font-weight:700;color:#fff;border-bottom:1px solid #2D2D44;}.sidebar-logo span{color:#E74C3C;}.sidebar-label{padding:12px 20px 6px;font-size:10px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:1px;}.sidebar-nav{list-style:none;}.sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;color:#CBD5E1;transition:all .15s;}.sidebar-nav li a:hover{background:#2D2D44;color:#fff;}.sidebar-nav li a.active{background:#0F4C75;color:#fff;border-right:3px solid #E74C3C;}.nav-icon{width:18px;text-align:center;}
+.topbar{background:#fff;border-bottom:1px solid #E2E8F0;padding:0 24px;height:56px;display:flex;align-items:center;}.topbar-title{font-size:16px;font-weight:600;}.topbar-badge{padding:3px 8px;background:#E67E22;color:#fff;border-radius:4px;font-size:11px;font-weight:600;margin-left:8px;}.topbar-actions{margin-left:auto;}.avatar-sm{width:32px;height:32px;border-radius:50%;background:#E74C3C;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;}
+.btn{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .2s;}.btn-approve{background:#27AE60;color:#fff;}.btn-reject{background:#E74C3C;color:#fff;}.btn-edit{background:#F1F5F9;color:#374151;border:1px solid #E2E8F0;}.btn-schedule{background:#E67E22;color:#fff;}
+
+.main-content{padding:24px;}
+
+.news-queue{background:#fff;border-radius:12px;border:1px solid #F1F5F9;overflow:hidden;}
+.news-item{padding:20px;border-bottom:1px solid #F1F5F9;}
+.news-item:last-child{border:none;}
+.news-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+.news-title{font-size:15px;font-weight:600;color:#1A1A2E;flex:1;}
+.news-source{display:flex;align-items:center;gap:6px;font-size:12px;}
+.source-badge{padding:3px 8px;border-radius:4px;font-size:10px;font-weight:600;}
+.source-high{background:#E8F8F0;color:#27AE60;}.source-medium{background:#FFF8E1;color:#E67E22;}.source-low{background:#FEE2E2;color:#E74C3C;}
+.news-summary{font-size:13px;line-height:1.6;color:#374151;margin:8px 0;padding:12px;background:#F8FAFC;border-radius:8px;border:1px solid #E2E8F0;}
+.news-summary-label{font-size:11px;font-weight:600;color:#0F4C75;margin-bottom:4px;}
+.news-meta{display:flex;align-items:center;gap:16px;font-size:12px;color:#94A3B8;margin-bottom:12px;}
+.news-actions{display:flex;gap:8px;}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;background:#E8F4FD;color:#0F4C75;}
+</style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+<div class="dashboard">
+<aside class="sidebar">
+  <div class="sidebar-logo"><a href="../index.html" style="color:#fff;">TechRadar<span>.</span></a></div>
+  <div class="sidebar-label">Admin Panel</div>
+  <ul class="sidebar-nav">
+    <li><a href="index.html"><span class="nav-icon">&#x1F3E0;</span> Home</a></li>
+    <li><a href="listings.html"><span class="nav-icon">&#x1F4CB;</span> Listings Queue</a></li>
+    <li><a href="reviews.html"><span class="nav-icon">&#x2B50;</span> Reviews Queue</a></li>
+    <li><a href="news.html" class="active"><span class="nav-icon">&#x1F4F0;</span> News</a></li>
+    <li><a href="users.html"><span class="nav-icon">&#x1F465;</span> Users</a></li>
+    <li><a href="categories.html"><span class="nav-icon">&#x1F4C2;</span> Categories</a></li>
+    <li><a href="revenue.html"><span class="nav-icon">&#x1F4B0;</span> Revenue</a></li>
+  </ul>
+</aside>
+
+<div>
+<div class="topbar"><div class="topbar-title">News Management</div><span class="topbar-badge">12 Ready</span><div class="topbar-actions"><div class="avatar-sm">AD</div></div></div>
+
+<div class="main-content">
+  <div class="news-queue">
+    <div class="news-item">
+      <div class="news-header">
+        <div class="news-title">Stripe Launches AI-Powered Revenue Optimization Suite</div>
+        <span class="source-badge source-high">&#x2713; High Reliability</span>
+      </div>
+      <div class="news-meta"><span class="tag">Fintech</span> <span>Source: TechCrunch</span> <span>2 hours ago</span> <span>AI-generated summary</span></div>
+      <div class="news-summary">
+        <div class="news-summary-label">AI Summary (editable):</div>
+        Stripe has unveiled a new AI-powered revenue optimization suite designed for SaaS businesses. The tool uses machine learning to predict churn, optimize pricing, and automate billing recovery. Early beta customers report 15% reduction in involuntary churn. Available to all Stripe Billing users starting next month.
+      </div>
+      <div class="news-actions"><button class="btn btn-approve">&#x2713; Publish Now</button><button class="btn btn-schedule">&#x1F4C5; Schedule</button><button class="btn btn-edit">&#x270F; Edit Summary</button><button class="btn btn-reject">&#x2717; Skip</button></div>
+    </div>
+
+    <div class="news-item">
+      <div class="news-header">
+        <div class="news-title">Perplexity AI Raises $500M at $9B Valuation</div>
+        <span class="source-badge source-high">&#x2713; High Reliability</span>
+      </div>
+      <div class="news-meta"><span class="tag">AI</span> <span class="tag">Funding</span> <span>Source: Bloomberg</span> <span>5 hours ago</span></div>
+      <div class="news-summary">
+        <div class="news-summary-label">AI Summary (editable):</div>
+        AI search startup Perplexity has closed a $500M funding round led by IVP, valuing the company at $9 billion. The funds will be used to expand enterprise offerings and develop new AI-powered research tools. Perplexity now handles over 100 million monthly queries.
+      </div>
+      <div class="news-actions"><button class="btn btn-approve">&#x2713; Publish Now</button><button class="btn btn-schedule">&#x1F4C5; Schedule</button><button class="btn btn-edit">&#x270F; Edit Summary</button><button class="btn btn-reject">&#x2717; Skip</button></div>
+    </div>
+
+    <div class="news-item">
+      <div class="news-header">
+        <div class="news-title">Slack Integrates AI Meeting Summarizer Across All Plans</div>
+        <span class="source-badge source-medium">&#x2049; Medium Reliability</span>
+      </div>
+      <div class="news-meta"><span class="tag">SaaS</span> <span class="tag">Product Launch</span> <span>Source: Product Blog</span> <span>8 hours ago</span></div>
+      <div class="news-summary">
+        <div class="news-summary-label">AI Summary (editable):</div>
+        Slack announced that its AI-powered meeting summarizer feature, previously limited to Enterprise plans, will now be available across all paid tiers. The feature automatically generates meeting notes, action items, and follow-up tasks from Huddle recordings.
+      </div>
+      <div class="news-actions"><button class="btn btn-approve">&#x2713; Publish Now</button><button class="btn btn-schedule">&#x1F4C5; Schedule</button><button class="btn btn-edit">&#x270F; Edit Summary</button><button class="btn btn-reject">&#x2717; Skip</button></div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings - Dashboard - TechRadar Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Inter',sans-serif;font-size:14px;color:#1A1A2E;background:#F1F5F9;}a{text-decoration:none;color:#1B6CA8;}
+.dashboard{display:grid;grid-template-columns:240px 1fr;min-height:100vh;}
+.sidebar{background:#1A1A2E;color:#fff;padding:20px 0;position:sticky;top:0;height:100vh;overflow-y:auto;}.sidebar-logo{padding:0 20px 20px;font-size:18px;font-weight:700;color:#fff;border-bottom:1px solid #2D2D44;}.sidebar-logo span{color:#E74C3C;}.sidebar-company{padding:16px 20px;border-bottom:1px solid #2D2D44;margin-bottom:8px;}.sidebar-company .name{font-size:14px;font-weight:600;}.sidebar-company .plan{font-size:11px;color:#94A3B8;margin-top:2px;}.sidebar-nav{list-style:none;}.sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;color:#CBD5E1;transition:all .15s;}.sidebar-nav li a:hover{background:#2D2D44;color:#fff;}.sidebar-nav li a.active{background:#0F4C75;color:#fff;border-right:3px solid #E74C3C;}.nav-icon{width:18px;text-align:center;}
+.topbar{background:#fff;border-bottom:1px solid #E2E8F0;padding:0 24px;height:56px;display:flex;align-items:center;}.topbar-title{font-size:16px;font-weight:600;}.topbar-actions{margin-left:auto;}.avatar-sm{width:32px;height:32px;border-radius:50%;background:#0F4C75;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .2s;}.btn-primary{background:#0F4C75;color:#fff;}.btn-secondary{background:#fff;color:#0F4C75;border:1px solid #E2E8F0;}.btn-danger{background:#fff;color:#E74C3C;border:1px solid #E74C3C;}
+
+.main-content{padding:24px;}
+.settings-section{background:#fff;border-radius:12px;padding:24px;border:1px solid #F1F5F9;margin-bottom:20px;}
+.settings-section h3{font-size:16px;font-weight:600;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #F1F5F9;}
+
+.team-table{width:100%;border-collapse:collapse;}
+.team-table th,.team-table td{padding:12px 0;text-align:left;border-bottom:1px solid #F1F5F9;font-size:13px;}
+.team-table th{font-weight:600;color:#64748B;font-size:12px;}
+.team-member{display:flex;align-items:center;gap:10px;}
+.team-avatar{width:32px;height:32px;border-radius:50%;background:#E8F4FD;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#0F4C75;}
+.role-badge{padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600;}
+.role-admin{background:#E8F4FD;color:#0F4C75;}.role-editor{background:#FFF8E1;color:#E67E22;}.role-viewer{background:#F1F5F9;color:#64748B;}
+
+.api-key{display:flex;align-items:center;gap:8px;padding:12px;background:#F8FAFC;border-radius:8px;margin-bottom:8px;}
+.api-key code{flex:1;font-family:monospace;font-size:13px;color:#374151;}
+.api-key button{font-size:11px;}
+
+.toggle-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #F8FAFC;}
+.toggle-row:last-child{border:none;}
+.toggle-label{font-size:13px;font-weight:500;}
+.toggle-desc{font-size:12px;color:#94A3B8;}
+.toggle{width:44px;height:24px;background:#E2E8F0;border-radius:12px;position:relative;cursor:pointer;transition:background .2s;}
+.toggle.on{background:#27AE60;}
+.toggle::after{content:"";position:absolute;width:20px;height:20px;background:#fff;border-radius:50%;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 2px rgba(0,0,0,.2);}
+.toggle.on::after{left:22px;}
+
+.integration-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.integration-card{padding:16px;border:1px solid #F1F5F9;border-radius:8px;text-align:center;}
+.integration-card .icon{font-size:24px;margin-bottom:8px;}
+.integration-card .name{font-size:13px;font-weight:600;margin-bottom:4px;}
+.integration-card .status{font-size:11px;}
+.connected{color:#27AE60;font-weight:600;}.disconnected{color:#94A3B8;}
+</style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+<div class="dashboard">
+<aside class="sidebar">
+  <div class="sidebar-logo"><a href="../index.html" style="color:#fff;">TechRadar<span>.</span></a></div>
+  <div class="sidebar-company"><div class="name">Jasper AI</div><div class="plan">Growth Plan</div></div>
+  <ul class="sidebar-nav">
+    <li><a href="index.html"><span class="nav-icon">&#x1F3E0;</span> Home</a></li>
+    <li><a href="profile.html"><span class="nav-icon">&#x1F4CB;</span> Profile</a></li>
+    <li><a href="analytics.html"><span class="nav-icon">&#x1F4CA;</span> Analytics</a></li>
+    <li><a href="reviews.html"><span class="nav-icon">&#x2B50;</span> Reviews</a></li>
+    <li><a href="leads.html"><span class="nav-icon">&#x1F465;</span> Leads</a></li>
+    <li><a href="billing.html"><span class="nav-icon">&#x1F4B3;</span> Billing</a></li>
+    <li><a href="settings.html" class="active"><span class="nav-icon">&#x2699;</span> Settings</a></li>
+  </ul>
+</aside>
+
+<div>
+<div class="topbar"><div class="topbar-title">Settings</div><div class="topbar-actions"><div class="avatar-sm">JA</div></div></div>
+
+<div class="main-content">
+  <div class="settings-section">
+    <h3>Team Members</h3>
+    <table class="team-table">
+      <thead><tr><th>Member</th><th>Email</th><th>Role</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td><div class="team-member"><div class="team-avatar">AJ</div><strong>Alex Johnson</strong></div></td><td>alex@jasper.ai</td><td><span class="role-badge role-admin">Admin</span></td><td></td></tr>
+        <tr><td><div class="team-member"><div class="team-avatar">SM</div><strong>Sarah Miller</strong></div></td><td>sarah@jasper.ai</td><td><span class="role-badge role-editor">Editor</span></td><td><button class="btn btn-secondary" style="font-size:11px;padding:4px 10px;">Edit</button></td></tr>
+        <tr><td><div class="team-member"><div class="team-avatar">JW</div><strong>James Wong</strong></div></td><td>james@jasper.ai</td><td><span class="role-badge role-viewer">Viewer</span></td><td><button class="btn btn-secondary" style="font-size:11px;padding:4px 10px;">Edit</button></td></tr>
+      </tbody>
+    </table>
+    <button class="btn btn-primary" style="margin-top:12px;">+ Invite Team Member</button>
+  </div>
+
+  <div class="settings-section">
+    <h3>API Keys</h3>
+    <div class="api-key"><code>sk_live_****************************a1b2</code><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;">Copy</button><button class="btn btn-danger" style="padding:4px 10px;font-size:11px;">Revoke</button></div>
+    <div class="api-key"><code>sk_test_****************************c3d4</code><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;">Copy</button><button class="btn btn-danger" style="padding:4px 10px;font-size:11px;">Revoke</button></div>
+    <button class="btn btn-primary" style="margin-top:8px;">Generate New Key</button>
+  </div>
+
+  <div class="settings-section">
+    <h3>Notification Preferences</h3>
+    <div class="toggle-row"><div><div class="toggle-label">New Reviews</div><div class="toggle-desc">Get notified when someone writes a review</div></div><div class="toggle on"></div></div>
+    <div class="toggle-row"><div><div class="toggle-label">New Leads</div><div class="toggle-desc">Get notified when a new lead is captured</div></div><div class="toggle on"></div></div>
+    <div class="toggle-row"><div><div class="toggle-label">Weekly Analytics Report</div><div class="toggle-desc">Receive weekly performance summary via email</div></div><div class="toggle on"></div></div>
+    <div class="toggle-row"><div><div class="toggle-label">Comparison Mentions</div><div class="toggle-desc">Alert when your tool is added to a comparison</div></div><div class="toggle"></div></div>
+    <div class="toggle-row"><div><div class="toggle-label">News Mentions</div><div class="toggle-desc">Alert when your company is mentioned in news</div></div><div class="toggle on"></div></div>
+  </div>
+
+  <div class="settings-section">
+    <h3>Integrations</h3>
+    <div class="integration-grid">
+      <div class="integration-card"><div class="icon">&#x1F4CA;</div><div class="name">HubSpot</div><div class="status connected">Connected</div></div>
+      <div class="integration-card"><div class="icon">&#x1F4E8;</div><div class="name">Slack</div><div class="status connected">Connected</div></div>
+      <div class="integration-card"><div class="icon">&#x2601;</div><div class="name">Salesforce</div><div class="status disconnected">Connect</div></div>
+      <div class="integration-card"><div class="icon">&#x1F4AC;</div><div class="name">Intercom</div><div class="status disconnected">Connect</div></div>
+      <div class="integration-card"><div class="icon">&#x26A1;</div><div class="name">Zapier</div><div class="status connected">Connected</div></div>
+      <div class="integration-card"><div class="icon">&#x1F4E7;</div><div class="name">Mailchimp</div><div class="status disconnected">Connect</div></div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Management - Admin - TechRadar Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Inter',sans-serif;font-size:14px;color:#1A1A2E;background:#F1F5F9;}a{text-decoration:none;color:#1B6CA8;}
+.dashboard{display:grid;grid-template-columns:240px 1fr;min-height:100vh;}
+.sidebar{background:#1A1A2E;color:#fff;padding:20px 0;position:sticky;top:0;height:100vh;overflow-y:auto;}.sidebar-logo{padding:0 20px 20px;font-size:18px;font-weight:700;color:#fff;border-bottom:1px solid #2D2D44;}.sidebar-logo span{color:#E74C3C;}.sidebar-label{padding:12px 20px 6px;font-size:10px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:1px;}.sidebar-nav{list-style:none;}.sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;color:#CBD5E1;transition:all .15s;}.sidebar-nav li a:hover{background:#2D2D44;color:#fff;}.sidebar-nav li a.active{background:#0F4C75;color:#fff;border-right:3px solid #E74C3C;}.nav-icon{width:18px;text-align:center;}
+.topbar{background:#fff;border-bottom:1px solid #E2E8F0;padding:0 24px;height:56px;display:flex;align-items:center;gap:16px;}.topbar-title{font-size:16px;font-weight:600;}.topbar-actions{margin-left:auto;}.avatar-sm{width:32px;height:32px;border-radius:50%;background:#E74C3C;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;}
+.btn{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .2s;}.btn-secondary{background:#F1F5F9;color:#374151;border:1px solid #E2E8F0;}.btn-danger{background:#FEE2E2;color:#E74C3C;border:1px solid #FCA5A5;}
+
+.main-content{padding:24px;}
+.search-bar{display:flex;gap:12px;margin-bottom:20px;}
+.search-bar input{flex:1;padding:10px 16px;border:1px solid #E2E8F0;border-radius:8px;font-size:14px;font-family:inherit;background:#fff;}
+.search-bar input:focus{outline:none;border-color:#1B6CA8;}
+
+.user-table{width:100%;background:#fff;border-radius:12px;border:1px solid #F1F5F9;overflow:hidden;}
+.user-table th,.user-table td{padding:12px 16px;text-align:left;border-bottom:1px solid #F1F5F9;font-size:13px;}
+.user-table th{background:#F8FAFC;font-weight:600;color:#0F4C75;}
+.user-table tr:hover{background:#F8FAFC;}
+.user-cell{display:flex;align-items:center;gap:10px;}
+.user-avatar{width:32px;height:32px;border-radius:50%;background:#E8F4FD;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#0F4C75;}
+.role-badge{padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600;}
+.role-user{background:#F1F5F9;color:#64748B;}.role-company{background:#E8F4FD;color:#0F4C75;}.role-admin{background:#FEE2E2;color:#E74C3C;}
+.action-btn{padding:4px 10px;border:1px solid #E2E8F0;border-radius:4px;font-size:11px;cursor:pointer;background:#fff;font-family:inherit;margin-right:4px;}.action-btn:hover{border-color:#1B6CA8;}
+</style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+<div class="dashboard">
+<aside class="sidebar">
+  <div class="sidebar-logo"><a href="../index.html" style="color:#fff;">TechRadar<span>.</span></a></div>
+  <div class="sidebar-label">Admin Panel</div>
+  <ul class="sidebar-nav">
+    <li><a href="index.html"><span class="nav-icon">&#x1F3E0;</span> Home</a></li>
+    <li><a href="listings.html"><span class="nav-icon">&#x1F4CB;</span> Listings Queue</a></li>
+    <li><a href="reviews.html"><span class="nav-icon">&#x2B50;</span> Reviews Queue</a></li>
+    <li><a href="news.html"><span class="nav-icon">&#x1F4F0;</span> News</a></li>
+    <li><a href="users.html" class="active"><span class="nav-icon">&#x1F465;</span> Users</a></li>
+    <li><a href="categories.html"><span class="nav-icon">&#x1F4C2;</span> Categories</a></li>
+    <li><a href="revenue.html"><span class="nav-icon">&#x1F4B0;</span> Revenue</a></li>
+  </ul>
+</aside>
+
+<div>
+<div class="topbar"><div class="topbar-title">User Management</div><div class="topbar-actions"><div class="avatar-sm">AD</div></div></div>
+
+<div class="main-content">
+  <div class="search-bar">
+    <input type="text" placeholder="Search users by name, email, or company...">
+    <select style="padding:10px 16px;border:1px solid #E2E8F0;border-radius:8px;font-family:inherit;font-size:13px;background:#fff;"><option>All Roles</option><option>User</option><option>Company</option><option>Admin</option></select>
+  </div>
+
+  <table class="user-table">
+    <thead><tr><th>User</th><th>Email</th><th>Role</th><th>Reviews</th><th>Joined</th><th>Actions</th></tr></thead>
+    <tbody>
+      <tr><td><div class="user-cell"><div class="user-avatar">SK</div><strong>Sarah Kim</strong></div></td><td>sarah.kim@acme.com</td><td><span class="role-badge role-user">User</span></td><td>12</td><td>Jan 2025</td><td><button class="action-btn">View</button><button class="action-btn">Edit</button></td></tr>
+      <tr><td><div class="user-cell"><div class="user-avatar">AJ</div><strong>Alex Johnson</strong></div></td><td>alex@jasper.ai</td><td><span class="role-badge role-company">Company</span></td><td>0</td><td>Mar 2024</td><td><button class="action-btn">View</button><button class="action-btn">Edit</button><button class="action-btn">Impersonate</button></td></tr>
+      <tr><td><div class="user-cell"><div class="user-avatar">MP</div><strong>Michael Park</strong></div></td><td>mpark@freelance.com</td><td><span class="role-badge role-user">User</span></td><td>8</td><td>Jun 2025</td><td><button class="action-btn">View</button><button class="action-btn">Edit</button></td></tr>
+      <tr><td><div class="user-cell"><div class="user-avatar">MW</div><strong>Maria Weber</strong></div></td><td>maria@techradar.com</td><td><span class="role-badge role-admin">Admin</span></td><td>0</td><td>Jan 2023</td><td><button class="action-btn">View</button></td></tr>
+      <tr><td><div class="user-cell"><div class="user-avatar">TN</div><strong>Tom Nguyen</strong></div></td><td>tom@startup.io</td><td><span class="role-badge role-company">Company</span></td><td>0</td><td>Dec 2025</td><td><button class="action-btn">View</button><button class="action-btn">Edit</button><button class="action-btn">Impersonate</button></td></tr>
+      <tr style="background:#FEF2F2;"><td><div class="user-cell"><div class="user-avatar" style="background:#FEE2E2;color:#E74C3C;">SU</div><strong style="color:#E74C3C;">Suspicious User</strong></div></td><td>fake123@tempmail.com</td><td><span class="role-badge role-user">User</span></td><td>3</td><td>Mar 2026</td><td><button class="action-btn">View</button><button class="action-btn" style="border-color:#E74C3C;color:#E74C3C;">Ban</button></td></tr>
+    </tbody>
+  </table>
+
+  <div style="display:flex;justify-content:center;gap:4px;margin-top:20px;">
+    <span style="padding:8px 14px;border-radius:6px;font-size:13px;background:#0F4C75;color:#fff;">1</span>
+    <a href="#" style="padding:8px 14px;border-radius:6px;font-size:13px;border:1px solid #E2E8F0;background:#fff;color:#1A1A2E;">2</a>
+    <a href="#" style="padding:8px 14px;border-radius:6px;font-size:13px;border:1px solid #E2E8F0;background:#fff;color:#1A1A2E;">3</a>
+    <a href="#" style="padding:8px 14px;border-radius:6px;font-size:13px;border:1px solid #E2E8F0;background:#fff;color:#1A1A2E;">&rarr;</a>
+  </div>
+</div>
+</div>
+</div>
+</body>
+</html>

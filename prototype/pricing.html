@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pricing - List Your Tool on TechRadar Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Inter',sans-serif;font-size:14px;color:#1A1A2E;background:#F8FAFC;}a{text-decoration:none;color:#1B6CA8;}a:hover{color:#0F4C75;}.container{max-width:1280px;margin:0 auto;padding:0 20px;}h1{font-size:36px;font-weight:700;}h2{font-size:28px;font-weight:600;}h3{font-size:22px;font-weight:600;}
+.nav{background:#fff;border-bottom:1px solid #E2E8F0;position:sticky;top:0;z-index:100;}.nav-inner{display:flex;align-items:center;height:64px;gap:16px;}.logo{font-size:20px;font-weight:700;color:#0F4C75;}.logo span{color:#E74C3C;}.nav-search{flex:1;max-width:480px;position:relative;}.nav-search input{width:100%;padding:8px 16px 8px 40px;border:1px solid #E2E8F0;border-radius:8px;font-size:14px;font-family:inherit;background:#F8FAFC;}.nav-search::before{content:"\1F50D";position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;}.nav-link{padding:6px 12px;font-size:13px;color:#1A1A2E;font-weight:500;border-radius:4px;}.nav-link:hover{background:#F1F5F9;}.lang-select{padding:6px 8px;border:1px solid #E2E8F0;border-radius:4px;font-size:12px;font-family:inherit;background:#fff;}.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .2s;}.btn-primary{background:#0F4C75;color:#fff;}.btn-primary:hover{background:#0d3f63;}.btn-secondary{background:#fff;color:#0F4C75;border:1px solid #0F4C75;}.btn-secondary:hover{background:#F1F5F9;}.btn-coral{background:#E74C3C;color:#fff;}.btn-coral:hover{background:#c0392b;}
+
+.pricing-header{text-align:center;padding:60px 0 40px;}
+.pricing-header h1{margin-bottom:12px;}
+.pricing-header p{font-size:16px;color:#64748B;max-width:600px;margin:0 auto;}
+
+.pricing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:60px;}
+.plan-card{background:#fff;border-radius:16px;padding:32px 24px;border:2px solid #F1F5F9;text-align:center;position:relative;transition:all .2s;}
+.plan-card:hover{box-shadow:0 8px 30px rgba(0,0,0,.1);}
+.plan-card.popular{border-color:#0F4C75;box-shadow:0 4px 20px rgba(15,76,117,.15);}
+.popular-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#0F4C75;color:#fff;padding:4px 16px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;}
+.plan-name{font-size:20px;font-weight:700;margin-bottom:4px;}
+.plan-price{font-size:40px;font-weight:700;color:#0F4C75;margin:16px 0 4px;}
+.plan-price span{font-size:14px;font-weight:400;color:#64748B;}
+.plan-period{font-size:13px;color:#94A3B8;margin-bottom:20px;}
+.plan-features{list-style:none;text-align:left;margin-bottom:24px;}
+.plan-features li{padding:8px 0;font-size:13px;border-bottom:1px solid #F8FAFC;display:flex;align-items:center;gap:8px;}
+.plan-features li::before{content:"\\2713";color:#27AE60;font-weight:700;font-size:12px;}
+.plan-features li.disabled{color:#CBD5E1;}
+.plan-features li.disabled::before{content:"\\2717";color:#CBD5E1;}
+
+.feature-matrix{margin-bottom:60px;}
+.feature-matrix h2{text-align:center;margin-bottom:24px;}
+.matrix-table{width:100%;background:#fff;border-radius:12px;border:1px solid #F1F5F9;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.matrix-table th,.matrix-table td{padding:12px 16px;text-align:center;border-bottom:1px solid #F1F5F9;font-size:13px;}
+.matrix-table th{background:#F8FAFC;font-weight:600;}.matrix-table th:first-child{text-align:left;width:280px;}
+.matrix-table td:first-child{text-align:left;font-weight:500;background:#FAFAFA;}
+.check{color:#27AE60;font-weight:700;}.cross{color:#CBD5E1;font-weight:700;}
+
+.faq-section{max-width:800px;margin:0 auto 60px;}
+.faq-section h2{text-align:center;margin-bottom:24px;}
+.faq-item{background:#fff;border-radius:8px;border:1px solid #F1F5F9;margin-bottom:8px;overflow:hidden;}
+.faq-q{padding:16px 20px;font-weight:600;font-size:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+.faq-q:hover{background:#F8FAFC;}
+.faq-a{padding:0 20px 16px;font-size:13px;line-height:1.7;color:#374151;display:none;}
+.faq-item.open .faq-a{display:block;}
+.faq-item.open .faq-q .arrow{transform:rotate(180deg);}
+.arrow{transition:transform .2s;}
+
+.testimonials{margin-bottom:60px;}
+.testimonials h2{text-align:center;margin-bottom:24px;}
+.test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.test-card{background:#fff;border-radius:12px;padding:24px;border:1px solid #F1F5F9;}
+.test-text{font-size:14px;line-height:1.6;color:#374151;font-style:italic;margin-bottom:12px;}
+.test-author{font-size:13px;font-weight:600;}.test-role{font-size:12px;color:#94A3B8;}
+
+.final-cta{text-align:center;padding:48px;background:linear-gradient(135deg,#0F4C75,#1B6CA8);border-radius:16px;color:#fff;margin-bottom:60px;}
+.final-cta h2{color:#fff;margin-bottom:8px;}
+.final-cta p{opacity:.9;margin-bottom:20px;}
+
+.footer{background:#1A1A2E;color:#fff;padding:60px 0 24px;}.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;}.footer-brand p{font-size:13px;opacity:.7;line-height:1.6;margin-top:8px;}.footer h4{font-size:14px;font-weight:600;margin-bottom:16px;}.footer-links{list-style:none;}.footer-links li{margin-bottom:8px;}.footer-links a{color:#CBD5E1;font-size:13px;}.footer-links a:hover{color:#fff;}.footer-bottom{border-top:1px solid #334155;padding-top:24px;display:flex;justify-content:space-between;font-size:12px;opacity:.7;}
+</style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+<nav class="nav"><div class="container nav-inner">
+  <a href="index.html" class="logo">TechRadar<span>.</span></a>
+  <div class="nav-search"><input type="text" placeholder="Search tools..."></div>
+  <a class="nav-link" href="category.html">Categories</a><a class="nav-link" href="news.html">News</a><a class="nav-link" href="best-of.html">Best Of</a>
+  <select class="lang-select"><option>EN</option><option>ES</option><option>FR</option><option>DE</option><option>JA</option></select>
+  <a href="signin.html" class="btn btn-secondary">Sign In</a><a href="submit-listing.html" class="btn btn-primary">Get Listed</a>
+</div></nav>
+
+<div class="container">
+<div class="pricing-header">
+  <h1>Get Your Tool Discovered by Thousands</h1>
+  <p>Join 500+ companies already listed on TechRadar Directory. Choose the plan that fits your growth stage.</p>
+</div>
+
+<div class="pricing-grid">
+  <div class="plan-card">
+    <div class="plan-name">Free</div>
+    <div class="plan-price">$0<span>/yr</span></div>
+    <div class="plan-period">Free forever</div>
+    <ul class="plan-features">
+      <li>Basic listing profile</li>
+      <li>Up to 3 screenshots</li>
+      <li>Collect reviews</li>
+      <li>Basic analytics</li>
+      <li class="disabled">Dofollow backlink</li>
+      <li class="disabled">Lead capture form</li>
+      <li class="disabled">Comparison pages</li>
+      <li class="disabled">Priority support</li>
+    </ul>
+    <a href="submit-listing.html" class="btn btn-secondary" style="width:100%;justify-content:center;">Get Started Free</a>
+  </div>
+
+  <div class="plan-card popular">
+    <span class="popular-badge">Most Popular</span>
+    <div class="plan-name">Growth</div>
+    <div class="plan-price">$240<span>/yr</span></div>
+    <div class="plan-period">$20/month billed annually</div>
+    <ul class="plan-features">
+      <li>Enhanced listing profile</li>
+      <li>Up to 10 screenshots</li>
+      <li>Collect & respond to reviews</li>
+      <li>Full analytics dashboard</li>
+      <li>Dofollow backlink</li>
+      <li>Lead capture form</li>
+      <li class="disabled">Featured placement</li>
+      <li class="disabled">API access</li>
+    </ul>
+    <a href="submit-listing.html" class="btn btn-primary" style="width:100%;justify-content:center;">Start Growth Plan</a>
+  </div>
+
+  <div class="plan-card">
+    <div class="plan-name">Pro</div>
+    <div class="plan-price">$599<span>/yr</span></div>
+    <div class="plan-period">$50/month billed annually</div>
+    <ul class="plan-features">
+      <li>Premium listing profile</li>
+      <li>Unlimited screenshots</li>
+      <li>Review management suite</li>
+      <li>Advanced analytics + exports</li>
+      <li>Dofollow backlink</li>
+      <li>Lead capture + CRM sync</li>
+      <li>Featured in category pages</li>
+      <li>Comparison page placement</li>
+    </ul>
+    <a href="submit-listing.html" class="btn btn-primary" style="width:100%;justify-content:center;">Start Pro Plan</a>
+  </div>
+
+  <div class="plan-card">
+    <div class="plan-name">Enterprise</div>
+    <div class="plan-price">$1,499<span>/yr</span></div>
+    <div class="plan-period">$125/month billed annually</div>
+    <ul class="plan-features">
+      <li>Everything in Pro</li>
+      <li>Homepage featured placement</li>
+      <li>Dedicated account manager</li>
+      <li>Buyer intent data</li>
+      <li>Custom integrations & API</li>
+      <li>Priority review moderation</li>
+      <li>Sponsored news mentions</li>
+      <li>Quarterly performance reports</li>
+    </ul>
+    <a href="contact.html" class="btn btn-coral" style="width:100%;justify-content:center;">Contact Sales</a>
+  </div>
+</div>
+
+<div class="feature-matrix">
+  <h2>Feature Comparison</h2>
+  <table class="matrix-table">
+    <thead><tr><th>Feature</th><th>Free</th><th>Growth</th><th>Pro</th><th>Enterprise</th></tr></thead>
+    <tbody>
+      <tr><td>Listing Profile</td><td>Basic</td><td>Enhanced</td><td>Premium</td><td>Premium+</td></tr>
+      <tr><td>Screenshots</td><td>3</td><td>10</td><td>Unlimited</td><td>Unlimited</td></tr>
+      <tr><td>Dofollow Backlink</td><td class="cross">&#x2717;</td><td class="check">&#x2713;</td><td class="check">&#x2713;</td><td class="check">&#x2713;</td></tr>
+      <tr><td>Analytics Dashboard</td><td>Basic</td><td>Full</td><td>Advanced</td><td>Advanced+</td></tr>
+      <tr><td>Lead Capture</td><td class="cross">&#x2717;</td><td class="check">&#x2713;</td><td class="check">&#x2713;</td><td class="check">&#x2713;</td></tr>
+      <tr><td>Review Responses</td><td class="cross">&#x2717;</td><td class="check">&#x2713;</td><td class="check">&#x2713;</td><td class="check">&#x2713;</td></tr>
+      <tr><td>CRM Integration</td><td class="cross">&#x2717;</td><td class="cross">&#x2717;</td><td class="check">&#x2713;</td><td class="check">&#x2713;</td></tr>
+      <tr><td>Featured Placement</td><td class="cross">&#x2717;</td><td class="cross">&#x2717;</td><td>Category</td><td>Homepage</td></tr>
+      <tr><td>Buyer Intent Data</td><td class="cross">&#x2717;</td><td class="cross">&#x2717;</td><td class="cross">&#x2717;</td><td class="check">&#x2713;</td></tr>
+      <tr><td>API Access</td><td class="cross">&#x2717;</td><td class="cross">&#x2717;</td><td class="cross">&#x2717;</td><td class="check">&#x2713;</td></tr>
+      <tr><td>Support</td><td>Email</td><td>Email</td><td>Priority</td><td>Dedicated AM</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="faq-section">
+  <h2>Frequently Asked Questions</h2>
+  <div class="faq-item open">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What's included in the free listing? <span class="arrow">&#x25BC;</span></div>
+    <div class="faq-a">The free listing includes a basic profile with your tool's name, description, category, and up to 3 screenshots. Users can write reviews about your tool, and you'll get basic analytics showing page views.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What is a dofollow backlink and why does it matter? <span class="arrow">&#x25BC;</span></div>
+    <div class="faq-a">A dofollow backlink from TechRadar Directory passes SEO authority to your website, helping improve your search engine rankings. Our domain has high authority, making these backlinks particularly valuable for your SEO strategy.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Can I upgrade or downgrade my plan? <span class="arrow">&#x25BC;</span></div>
+    <div class="faq-a">Yes, you can upgrade at any time and we'll prorate the difference. Downgrades take effect at the end of your current billing period. No long-term contracts required.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">How does the lead capture form work? <span class="arrow">&#x25BC;</span></div>
+    <div class="faq-a">On Growth plans and above, a customizable lead capture form appears on your listing page. Visitors can submit their contact info, which is delivered to you via email and available in your dashboard. Pro plans include CRM sync with HubSpot, Salesforce, and more.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What is buyer intent data? <span class="arrow">&#x25BC;</span></div>
+    <div class="faq-a">Enterprise plans include access to buyer intent signals: you can see which companies are viewing your listing, comparing you with competitors, and reading reviews. This helps your sales team prioritize outreach to warm leads.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Do you offer refunds? <span class="arrow">&#x25BC;</span></div>
+    <div class="faq-a">We offer a 30-day money-back guarantee on all paid plans. If you're not satisfied, contact us within 30 days for a full refund, no questions asked.</div>
+  </div>
+</div>
+
+<div class="testimonials">
+  <h2>Trusted by Leading Companies</h2>
+  <div class="test-grid">
+    <div class="test-card"><div class="test-text">"Our listing on TechRadar generates 150+ qualified leads per month. The ROI on the Growth plan is incredible."</div><div class="test-author">David Chen</div><div class="test-role">Head of Growth, Basecamp</div></div>
+    <div class="test-card"><div class="test-text">"The dofollow backlink alone justified the cost. Our domain authority increased by 5 points within 3 months."</div><div class="test-author">Emma Wilson</div><div class="test-role">SEO Manager, Slack</div></div>
+    <div class="test-card"><div class="test-text">"Enterprise plan buyer intent data helped our sales team close 40% more deals by reaching out to warm leads at the right time."</div><div class="test-author">James Park</div><div class="test-role">VP Sales, Figma</div></div>
+  </div>
+</div>
+
+<div class="final-cta">
+  <h2>Start Free, Upgrade Anytime</h2>
+  <p>Join 500+ companies already growing with TechRadar Directory</p>
+  <a href="submit-listing.html" class="btn btn-coral" style="padding:14px 32px;font-size:16px;">List Your Tool for Free &rarr;</a>
+</div>
+</div>
+
+<footer class="footer"><div class="container">
+  <div class="footer-grid">
+    <div class="footer-brand"><div class="logo" style="color:#fff;">TechRadar<span>.</span></div><p>Discover, Compare & Review the Best AI Tools, SaaS Products & Tech Startups.</p></div>
+    <div><h4>Platform</h4><ul class="footer-links"><li><a href="category.html">Browse</a></li><li><a href="comparison.html">Compare</a></li><li><a href="news.html">News</a></li></ul></div>
+    <div><h4>Company</h4><ul class="footer-links"><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+    <div><h4>For Vendors</h4><ul class="footer-links"><li><a href="submit-listing.html">List Your Tool</a></li><li><a href="pricing.html">Pricing</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><span>&copy; 2026 TechRadar Directory. All rights reserved.</span></div>
+</div></footer>
+</body>
+</html>

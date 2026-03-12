@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Review Moderation - Admin - TechRadar Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Inter',sans-serif;font-size:14px;color:#1A1A2E;background:#F1F5F9;}a{text-decoration:none;color:#1B6CA8;}
+.dashboard{display:grid;grid-template-columns:240px 1fr;min-height:100vh;}
+.sidebar{background:#1A1A2E;color:#fff;padding:20px 0;position:sticky;top:0;height:100vh;overflow-y:auto;}.sidebar-logo{padding:0 20px 20px;font-size:18px;font-weight:700;color:#fff;border-bottom:1px solid #2D2D44;}.sidebar-logo span{color:#E74C3C;}.sidebar-label{padding:12px 20px 6px;font-size:10px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:1px;}.sidebar-nav{list-style:none;}.sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;color:#CBD5E1;transition:all .15s;}.sidebar-nav li a:hover{background:#2D2D44;color:#fff;}.sidebar-nav li a.active{background:#0F4C75;color:#fff;border-right:3px solid #E74C3C;}.nav-icon{width:18px;text-align:center;}
+.topbar{background:#fff;border-bottom:1px solid #E2E8F0;padding:0 24px;height:56px;display:flex;align-items:center;}.topbar-title{font-size:16px;font-weight:600;}.topbar-badge{padding:3px 8px;background:#E74C3C;color:#fff;border-radius:4px;font-size:11px;font-weight:600;margin-left:8px;}.topbar-actions{margin-left:auto;}.avatar-sm{width:32px;height:32px;border-radius:50%;background:#E74C3C;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;}
+.btn{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .2s;}.btn-approve{background:#27AE60;color:#fff;}.btn-reject{background:#E74C3C;color:#fff;}.btn-edit{background:#F1F5F9;color:#374151;border:1px solid #E2E8F0;}
+.stars{color:#F59E0B;}
+
+.main-content{padding:24px;}
+
+.review-queue{background:#fff;border-radius:12px;border:1px solid #F1F5F9;overflow:hidden;}
+.review-item{padding:20px;border-bottom:1px solid #F1F5F9;}
+.review-item:last-child{border:none;}
+.review-item.flagged{border-left:4px solid #E74C3C;background:#FFFBFB;}
+.review-top{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.review-avatar{width:32px;height:32px;border-radius:50%;background:#E8F4FD;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#0F4C75;}
+.review-author{font-weight:600;font-size:13px;}
+.review-meta{font-size:11px;color:#94A3B8;}
+.review-product{font-size:12px;color:#0F4C75;font-weight:500;margin-left:auto;}
+.review-text{font-size:13px;line-height:1.6;color:#374151;margin:8px 0 12px;}
+.fraud-indicators{display:flex;gap:8px;margin-bottom:12px;}
+.fraud-badge{padding:3px 8px;border-radius:4px;font-size:10px;font-weight:600;}
+.fraud-high{background:#FEE2E2;color:#E74C3C;}.fraud-medium{background:#FFF8E1;color:#E67E22;}.fraud-low{background:#E8F8F0;color:#27AE60;}
+.review-actions{display:flex;gap:8px;}
+</style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+<div class="dashboard">
+<aside class="sidebar">
+  <div class="sidebar-logo"><a href="../index.html" style="color:#fff;">TechRadar<span>.</span></a></div>
+  <div class="sidebar-label">Admin Panel</div>
+  <ul class="sidebar-nav">
+    <li><a href="index.html"><span class="nav-icon">&#x1F3E0;</span> Home</a></li>
+    <li><a href="listings.html"><span class="nav-icon">&#x1F4CB;</span> Listings Queue</a></li>
+    <li><a href="reviews.html" class="active"><span class="nav-icon">&#x2B50;</span> Reviews Queue</a></li>
+    <li><a href="news.html"><span class="nav-icon">&#x1F4F0;</span> News</a></li>
+    <li><a href="users.html"><span class="nav-icon">&#x1F465;</span> Users</a></li>
+    <li><a href="categories.html"><span class="nav-icon">&#x1F4C2;</span> Categories</a></li>
+    <li><a href="revenue.html"><span class="nav-icon">&#x1F4B0;</span> Revenue</a></li>
+  </ul>
+</aside>
+
+<div>
+<div class="topbar"><div class="topbar-title">Review Moderation</div><span class="topbar-badge">5 Flagged</span><div class="topbar-actions"><div class="avatar-sm">AD</div></div></div>
+
+<div class="main-content">
+  <div class="review-queue">
+    <div class="review-item flagged">
+      <div class="review-top">
+        <div class="review-avatar">??</div>
+        <div><div class="review-author">Anonymous User</div><div class="review-meta">New account &middot; 1 review &middot; Mar 10, 2026</div></div>
+        <div class="review-product"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> 5.0 for <strong>ContentBot Pro</strong></div>
+      </div>
+      <div class="review-text">This is the best AI writing tool ever! I love it so much! Everyone should buy it immediately! 10/10 would recommend to everyone!</div>
+      <div class="fraud-indicators">
+        <span class="fraud-badge fraud-high">&#x26A0; High Risk: New account</span>
+        <span class="fraud-badge fraud-high">&#x26A0; Same IP as vendor</span>
+        <span class="fraud-badge fraud-medium">&#x26A0; Generic language</span>
+      </div>
+      <div class="review-actions"><button class="btn btn-approve">Approve</button><button class="btn btn-reject">Reject</button><button class="btn btn-edit">Investigate</button></div>
+    </div>
+
+    <div class="review-item flagged">
+      <div class="review-top">
+        <div class="review-avatar">BT</div>
+        <div><div class="review-author">Bot-like Account</div><div class="review-meta">2 reviews in 5 minutes &middot; Mar 9, 2026</div></div>
+        <div class="review-product"><span class="stars">&#9733;&#9734;&#9734;&#9734;&#9734;</span> 1.0 for <strong>Jasper AI</strong></div>
+      </div>
+      <div class="review-text">Terrible product. Doesn't work at all. Complete waste of money. Do not buy. Worst experience ever.</div>
+      <div class="fraud-indicators">
+        <span class="fraud-badge fraud-high">&#x26A0; Competitor IP detected</span>
+        <span class="fraud-badge fraud-high">&#x26A0; Rapid-fire reviews</span>
+        <span class="fraud-badge fraud-medium">&#x26A0; No specifics</span>
+      </div>
+      <div class="review-actions"><button class="btn btn-approve">Approve</button><button class="btn btn-reject">Reject</button><button class="btn btn-edit">Investigate</button></div>
+    </div>
+
+    <div class="review-item">
+      <div class="review-top">
+        <div class="review-avatar">RK</div>
+        <div><div class="review-author">Rachel Kim</div><div class="review-meta">Verified user &middot; 5 reviews &middot; Mar 9, 2026</div></div>
+        <div class="review-product"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span> 4.0 for <strong>Copy.ai</strong></div>
+      </div>
+      <div class="review-text">Good tool for quick social media posts and ad copy. The workflow automation is impressive. Wish the long-form editor was better, but for short-form content, it's hard to beat at this price point.</div>
+      <div class="fraud-indicators">
+        <span class="fraud-badge fraud-low">&#x2713; Low Risk</span>
+      </div>
+      <div class="review-actions"><button class="btn btn-approve">Approve</button><button class="btn btn-reject">Reject</button></div>
+    </div>
+
+    <div class="review-item flagged">
+      <div class="review-top">
+        <div class="review-avatar">DL</div>
+        <div><div class="review-author">David Liu</div><div class="review-meta">User flagged by community &middot; Mar 8, 2026</div></div>
+        <div class="review-product"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> 5.0 for <strong>Writesonic</strong></div>
+      </div>
+      <div class="review-text">Amazing tool! The team is incredibly helpful. I particularly love the blog writing feature and how it integrates with our SEO workflow. Highly recommended for any content team.</div>
+      <div class="fraud-indicators">
+        <span class="fraud-badge fraud-medium">&#x26A0; Community flagged</span>
+        <span class="fraud-badge fraud-low">&#x2713; Verified email</span>
+      </div>
+      <div class="review-actions"><button class="btn btn-approve">Approve</button><button class="btn btn-reject">Reject</button><button class="btn btn-edit">Investigate</button></div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Listing Moderation - Admin - TechRadar Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Inter',sans-serif;font-size:14px;color:#1A1A2E;background:#F1F5F9;}a{text-decoration:none;color:#1B6CA8;}
+.dashboard{display:grid;grid-template-columns:240px 1fr;min-height:100vh;}
+.sidebar{background:#1A1A2E;color:#fff;padding:20px 0;position:sticky;top:0;height:100vh;overflow-y:auto;}.sidebar-logo{padding:0 20px 20px;font-size:18px;font-weight:700;color:#fff;border-bottom:1px solid #2D2D44;}.sidebar-logo span{color:#E74C3C;}.sidebar-label{padding:12px 20px 6px;font-size:10px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:1px;}.sidebar-nav{list-style:none;}.sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;color:#CBD5E1;transition:all .15s;}.sidebar-nav li a:hover{background:#2D2D44;color:#fff;}.sidebar-nav li a.active{background:#0F4C75;color:#fff;border-right:3px solid #E74C3C;}.nav-icon{width:18px;text-align:center;}
+.topbar{background:#fff;border-bottom:1px solid #E2E8F0;padding:0 24px;height:56px;display:flex;align-items:center;}.topbar-title{font-size:16px;font-weight:600;}.topbar-badge{padding:3px 8px;background:#E74C3C;color:#fff;border-radius:4px;font-size:11px;font-weight:600;margin-left:8px;}.topbar-actions{margin-left:auto;}.avatar-sm{width:32px;height:32px;border-radius:50%;background:#E74C3C;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;}
+.btn{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .2s;}.btn-approve{background:#27AE60;color:#fff;}.btn-reject{background:#E74C3C;color:#fff;}.btn-edit{background:#F1F5F9;color:#374151;border:1px solid #E2E8F0;}
+
+.main-content{padding:24px;}
+
+.queue-table{width:100%;background:#fff;border-radius:12px;border:1px solid #F1F5F9;overflow:hidden;}
+.queue-table th,.queue-table td{padding:14px 16px;text-align:left;border-bottom:1px solid #F1F5F9;font-size:13px;}
+.queue-table th{background:#F8FAFC;font-weight:600;color:#0F4C75;}
+.queue-table tr:hover{background:#F8FAFC;}
+.status-badge{padding:3px 10px;border-radius:4px;font-size:11px;font-weight:600;}
+.status-pending{background:#FFF8E1;color:#E67E22;}.status-approved{background:#E8F8F0;color:#27AE60;}.status-rejected{background:#FEE2E2;color:#E74C3C;}
+
+.preview-panel{background:#fff;border-radius:12px;padding:24px;border:1px solid #F1F5F9;margin-top:20px;}
+.preview-panel h3{font-size:16px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.preview-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #F1F5F9;}
+.preview-logo{width:48px;height:48px;border-radius:10px;background:#E8F4FD;display:flex;align-items:center;justify-content:center;font-size:24px;}
+.preview-name{font-size:18px;font-weight:600;}
+.preview-url{font-size:12px;color:#64748B;}
+.preview-desc{font-size:13px;line-height:1.6;color:#374151;margin-bottom:16px;}
+.preview-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.meta-item{font-size:12px;padding:8px;background:#F8FAFC;border-radius:6px;}
+.meta-item strong{color:#0F4C75;}
+.preview-actions{display:flex;gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9;}
+</style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+<div class="dashboard">
+<aside class="sidebar">
+  <div class="sidebar-logo"><a href="../index.html" style="color:#fff;">TechRadar<span>.</span></a></div>
+  <div class="sidebar-label">Admin Panel</div>
+  <ul class="sidebar-nav">
+    <li><a href="index.html"><span class="nav-icon">&#x1F3E0;</span> Home</a></li>
+    <li><a href="listings.html" class="active"><span class="nav-icon">&#x1F4CB;</span> Listings Queue</a></li>
+    <li><a href="reviews.html"><span class="nav-icon">&#x2B50;</span> Reviews Queue</a></li>
+    <li><a href="news.html"><span class="nav-icon">&#x1F4F0;</span> News</a></li>
+    <li><a href="users.html"><span class="nav-icon">&#x1F465;</span> Users</a></li>
+    <li><a href="categories.html"><span class="nav-icon">&#x1F4C2;</span> Categories</a></li>
+    <li><a href="revenue.html"><span class="nav-icon">&#x1F4B0;</span> Revenue</a></li>
+  </ul>
+</aside>
+
+<div>
+<div class="topbar"><div class="topbar-title">Listing Moderation Queue</div><span class="topbar-badge">3 Pending</span><div class="topbar-actions"><div class="avatar-sm">AD</div></div></div>
+
+<div class="main-content">
+  <table class="queue-table">
+    <thead><tr><th>Company</th><th>Submitted By</th><th>Date</th><th>Category</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+      <tr style="background:#FFFDE7;"><td><strong>ContentBot Pro</strong></td><td>mike@contentbot.ai</td><td>Mar 10, 2026</td><td>AI Writing</td><td><span class="status-badge status-pending">Pending</span></td><td><button class="btn btn-approve">Approve</button> <button class="btn btn-reject">Reject</button> <button class="btn btn-edit">Edit</button></td></tr>
+      <tr style="background:#FFFDE7;"><td><strong>DataSync Cloud</strong></td><td>anna@datasync.io</td><td>Mar 9, 2026</td><td>DevOps</td><td><span class="status-badge status-pending">Pending</span></td><td><button class="btn btn-approve">Approve</button> <button class="btn btn-reject">Reject</button> <button class="btn btn-edit">Edit</button></td></tr>
+      <tr style="background:#FFFDE7;"><td><strong>QuickChat AI</strong></td><td>support@quickchat.ai</td><td>Mar 8, 2026</td><td>Communication</td><td><span class="status-badge status-pending">Pending</span></td><td><button class="btn btn-approve">Approve</button> <button class="btn btn-reject">Reject</button> <button class="btn btn-edit">Edit</button></td></tr>
+      <tr><td><strong>WriteFlow</strong></td><td>team@writeflow.com</td><td>Mar 7, 2026</td><td>AI Writing</td><td><span class="status-badge status-approved">Approved</span></td><td><button class="btn btn-edit">Edit</button></td></tr>
+      <tr><td><strong>MeetingBot</strong></td><td>ceo@meetingbot.io</td><td>Mar 6, 2026</td><td>Communication</td><td><span class="status-badge status-approved">Approved</span></td><td><button class="btn btn-edit">Edit</button></td></tr>
+    </tbody>
+  </table>
+
+  <div class="preview-panel">
+    <h3>&#x1F50D; Preview: ContentBot Pro</h3>
+    <div class="preview-header">
+      <div class="preview-logo">&#x1F680;</div>
+      <div><div class="preview-name">ContentBot Pro</div><div class="preview-url">contentbot.ai</div></div>
+    </div>
+    <div class="preview-desc">ContentBot Pro is an AI-powered content creation platform for agencies and content teams. Generate blog posts, social media content, and marketing copy at scale with custom brand voice training and multi-language support.</div>
+    <div class="preview-meta">
+      <div class="meta-item"><strong>Category:</strong> AI Writing Tools</div>
+      <div class="meta-item"><strong>Pricing:</strong> From $29/mo</div>
+      <div class="meta-item"><strong>Founded:</strong> 2024</div>
+      <div class="meta-item"><strong>HQ:</strong> San Francisco, CA</div>
+    </div>
+    <div class="preview-actions">
+      <button class="btn btn-approve" style="padding:10px 24px;">&#x2713; Approve Listing</button>
+      <button class="btn btn-reject" style="padding:10px 24px;">&#x2717; Reject</button>
+      <button class="btn btn-edit" style="padding:10px 24px;">&#x270F; Edit Before Publishing</button>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</body>
+</html>

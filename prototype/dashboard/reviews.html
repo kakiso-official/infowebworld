@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reviews - Dashboard - TechRadar Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Inter',sans-serif;font-size:14px;color:#1A1A2E;background:#F1F5F9;}a{text-decoration:none;color:#1B6CA8;}
+.dashboard{display:grid;grid-template-columns:240px 1fr;min-height:100vh;}
+.sidebar{background:#1A1A2E;color:#fff;padding:20px 0;position:sticky;top:0;height:100vh;overflow-y:auto;}.sidebar-logo{padding:0 20px 20px;font-size:18px;font-weight:700;color:#fff;border-bottom:1px solid #2D2D44;}.sidebar-logo span{color:#E74C3C;}.sidebar-company{padding:16px 20px;border-bottom:1px solid #2D2D44;margin-bottom:8px;}.sidebar-company .name{font-size:14px;font-weight:600;}.sidebar-company .plan{font-size:11px;color:#94A3B8;margin-top:2px;}.sidebar-nav{list-style:none;}.sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;color:#CBD5E1;transition:all .15s;}.sidebar-nav li a:hover{background:#2D2D44;color:#fff;}.sidebar-nav li a.active{background:#0F4C75;color:#fff;border-right:3px solid #E74C3C;}.nav-icon{width:18px;text-align:center;}
+.topbar{background:#fff;border-bottom:1px solid #E2E8F0;padding:0 24px;height:56px;display:flex;align-items:center;gap:16px;}.topbar-title{font-size:16px;font-weight:600;}.topbar-actions{margin-left:auto;display:flex;align-items:center;gap:12px;}
+.avatar-sm{width:32px;height:32px;border-radius:50%;background:#0F4C75;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .2s;}.btn-primary{background:#0F4C75;color:#fff;}.btn-secondary{background:#fff;color:#0F4C75;border:1px solid #E2E8F0;}
+.stars{color:#F59E0B;}
+
+.main-content{padding:24px;}
+
+.summary-grid{display:grid;grid-template-columns:200px 1fr;gap:24px;background:#fff;border-radius:12px;padding:24px;border:1px solid #F1F5F9;margin-bottom:24px;}
+.overall{text-align:center;}
+.overall .number{font-size:48px;font-weight:700;color:#0F4C75;}
+.overall .count{font-size:13px;color:#64748B;margin-top:4px;}
+.bars{display:flex;flex-direction:column;gap:6px;justify-content:center;}
+.bar-row{display:flex;align-items:center;gap:8px;font-size:13px;}
+.bar-label{width:90px;color:#64748B;}.bar-track{flex:1;height:8px;background:#F1F5F9;border-radius:4px;overflow:hidden;}.bar-fill{height:100%;background:#F59E0B;border-radius:4px;}.bar-val{width:28px;text-align:right;font-weight:600;}
+
+.filter-row{display:flex;gap:8px;margin-bottom:16px;}
+.filter-btn{padding:8px 14px;border:1px solid #E2E8F0;background:#fff;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;}.filter-btn.active{background:#0F4C75;color:#fff;border-color:#0F4C75;}
+
+.review-card{background:#fff;border-radius:12px;padding:20px;border:1px solid #F1F5F9;margin-bottom:12px;}
+.review-header{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.review-avatar{width:36px;height:36px;border-radius:50%;background:#E8F4FD;display:flex;align-items:center;justify-content:center;font-weight:600;color:#0F4C75;font-size:12px;}
+.review-author{font-weight:600;font-size:14px;}
+.review-meta{font-size:12px;color:#94A3B8;}
+.review-text{font-size:13px;line-height:1.6;color:#374151;margin:10px 0;}
+.review-actions{display:flex;gap:8px;margin-top:12px;}
+.status-badge{padding:3px 10px;border-radius:4px;font-size:11px;font-weight:600;}
+.status-pending{background:#FFF8E1;color:#E67E22;}
+.status-responded{background:#E8F8F0;color:#27AE60;}
+
+.campaign-card{background:#fff;border-radius:12px;padding:24px;border:1px solid #F1F5F9;margin-top:24px;}
+.campaign-card h3{font-size:16px;font-weight:600;margin-bottom:12px;}
+.campaign-card p{font-size:13px;color:#64748B;line-height:1.6;margin-bottom:16px;}
+</style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+<div class="dashboard">
+<aside class="sidebar">
+  <div class="sidebar-logo"><a href="../index.html" style="color:#fff;">TechRadar<span>.</span></a></div>
+  <div class="sidebar-company"><div class="name">Jasper AI</div><div class="plan">Growth Plan</div></div>
+  <ul class="sidebar-nav">
+    <li><a href="index.html"><span class="nav-icon">&#x1F3E0;</span> Home</a></li>
+    <li><a href="profile.html"><span class="nav-icon">&#x1F4CB;</span> Profile</a></li>
+    <li><a href="analytics.html"><span class="nav-icon">&#x1F4CA;</span> Analytics</a></li>
+    <li><a href="reviews.html" class="active"><span class="nav-icon">&#x2B50;</span> Reviews</a></li>
+    <li><a href="leads.html"><span class="nav-icon">&#x1F465;</span> Leads</a></li>
+    <li><a href="billing.html"><span class="nav-icon">&#x1F4B3;</span> Billing</a></li>
+    <li><a href="settings.html"><span class="nav-icon">&#x2699;</span> Settings</a></li>
+  </ul>
+</aside>
+
+<div>
+<div class="topbar"><div class="topbar-title">Reviews Management</div><div class="topbar-actions"><div class="avatar-sm">JA</div></div></div>
+
+<div class="main-content">
+  <div class="summary-grid">
+    <div class="overall"><div class="number">4.5</div><div class="stars" style="font-size:20px;">&#9733;&#9733;&#9733;&#9733;&#9734;</div><div class="count">234 total reviews</div></div>
+    <div class="bars">
+      <div class="bar-row"><span class="bar-label">Ease of Use</span><div class="bar-track"><div class="bar-fill" style="width:94%;"></div></div><span class="bar-val">4.7</span></div>
+      <div class="bar-row"><span class="bar-label">Features</span><div class="bar-track"><div class="bar-fill" style="width:86%;"></div></div><span class="bar-val">4.3</span></div>
+      <div class="bar-row"><span class="bar-label">Support</span><div class="bar-track"><div class="bar-fill" style="width:84%;"></div></div><span class="bar-val">4.2</span></div>
+      <div class="bar-row"><span class="bar-label">Value</span><div class="bar-track"><div class="bar-fill" style="width:82%;"></div></div><span class="bar-val">4.1</span></div>
+    </div>
+  </div>
+
+  <div class="filter-row">
+    <button class="filter-btn active">All (234)</button>
+    <button class="filter-btn">Pending Response (2)</button>
+    <button class="filter-btn">Responded (45)</button>
+  </div>
+
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-avatar">JD</div>
+      <div><div class="review-author">Jessica Davis</div><div class="review-meta">Content Manager at TechFlow &middot; Mar 2, 2026</div></div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:8px;"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> <strong>5.0</strong> <span class="status-badge status-pending">Pending Response</span></div>
+    </div>
+    <div class="review-text">Jasper has been a game-changer for our content team. We've tripled our blog output while maintaining quality. The Brand Voice feature ensures consistency across all our marketing channels.</div>
+    <div class="review-actions">
+      <button class="btn btn-primary" style="font-size:12px;padding:6px 12px;">&#x1F4AC; Respond</button>
+      <button class="btn btn-secondary" style="font-size:12px;padding:6px 12px;">&#x1F44D; Thank</button>
+    </div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-avatar">MP</div>
+      <div><div class="review-author">Michael Park</div><div class="review-meta">Freelance Copywriter &middot; Feb 18, 2026</div></div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:8px;"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span> <strong>4.0</strong> <span class="status-badge status-pending">Pending Response</span></div>
+    </div>
+    <div class="review-text">Solid tool for generating first drafts quickly. The long-form editor is particularly good for blog posts. However, the output still needs human editing to truly shine.</div>
+    <div class="review-actions">
+      <button class="btn btn-primary" style="font-size:12px;padding:6px 12px;">&#x1F4AC; Respond</button>
+      <button class="btn btn-secondary" style="font-size:12px;padding:6px 12px;">&#x1F44D; Thank</button>
+    </div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-avatar">SL</div>
+      <div><div class="review-author">Sarah Lee</div><div class="review-meta">Marketing Director at ScaleUp Inc &middot; Jan 30, 2026</div></div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:8px;"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span> <strong>4.5</strong> <span class="status-badge status-responded">Responded</span></div>
+    </div>
+    <div class="review-text">We switched from Copy.ai to Jasper last year and haven't looked back. The team collaboration features and enterprise security compliance were the deciding factors.</div>
+    <div style="background:#F8FAFC;border-radius:8px;padding:12px;margin-top:10px;font-size:13px;border-left:3px solid #0F4C75;">
+      <strong>Jasper AI Team:</strong> Thank you for the kind review, Sarah! We're glad the enterprise features met your needs. If there's anything else we can help with, please reach out to our customer success team.
+    </div>
+  </div>
+
+  <div class="campaign-card">
+    <h3>&#x1F4E7; Review Request Campaign</h3>
+    <p>Send email invitations to your customers asking them to leave a review. Customers who complete reviews get featured as verified buyers.</p>
+    <button class="btn btn-primary">Create Campaign</button>
+  </div>
+</div>
+</div>
+</div>
+</body>
+</html>
