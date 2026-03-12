@@ -54,6 +54,7 @@ function initApp() {
     initStaggerAnimations();
     initHeroRotate();
     initMobileNav();
+    initTrendBars();
   });
 }
 
@@ -89,7 +90,7 @@ function initStaggerAnimations() {
   var staggerObserver = new IntersectionObserver(function(entries) {
     entries.forEach(function(entry) {
       if (entry.isIntersecting) {
-        var children = entry.target.querySelectorAll('.cat-card, .listing-card, .review-card, .review-card-v2, .review-featured, .trending-item, .prop-card, .test-card, .news-compact');
+        var children = entry.target.querySelectorAll('.cat-card, .listing-card, .review-card, .review-card-v2, .review-featured, .trending-item, .trend-podium-card, .trend-row, .trend-item, .prop-card, .test-card, .news-compact, .news-card-v2');
         children.forEach(function(child, i) {
           child.style.opacity = '0';
           child.style.transform = 'translateY(16px)';
@@ -107,7 +108,7 @@ function initStaggerAnimations() {
     });
   }, { threshold: 0.05 });
 
-  document.querySelectorAll('.categories-grid, .featured-masonry, .featured-grid, .reviews-grid-v2, .trending-grid, .props-grid, .testimonials-grid, .news-stack').forEach(function(grid) {
+  document.querySelectorAll('.categories-grid, .featured-masonry, .featured-grid, .reviews-grid-v2, .trend-grid, .props-grid, .testimonials-grid, .news-grid-v2').forEach(function(grid) {
     staggerObserver.observe(grid);
   });
 }
@@ -148,6 +149,30 @@ function initMobileNav() {
   toggle.addEventListener('click', openDrawer);
   if (close) close.addEventListener('click', closeDrawer);
   if (overlay) overlay.addEventListener('click', closeDrawer);
+}
+
+// Animated progress bars in trending section
+function initTrendBars() {
+  var bars = document.querySelectorAll('.trend-bar[data-width]');
+  if (!bars.length) return;
+  var barObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var barsInView = entry.target.querySelectorAll('.trend-bar[data-width]');
+        barsInView.forEach(function(bar, i) {
+          setTimeout(function() {
+            bar.style.width = bar.getAttribute('data-width') + '%';
+          }, i * 80);
+        });
+        barObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  // Observe the parent containers
+  var podium = document.querySelector('.trend-podium');
+  var leaderboard = document.querySelector('.trend-leaderboard');
+  if (podium) barObserver.observe(podium);
+  if (leaderboard) barObserver.observe(leaderboard);
 }
 
 // Initialize when DOM is ready
