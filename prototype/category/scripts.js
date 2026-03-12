@@ -25,6 +25,7 @@
     initFilterDrawer();
     initPagination();
     initRatingFilter();
+    initCompare();
   }
 
   /* ---- Collapsible filter cards ---- */
@@ -119,6 +120,28 @@
         window.scrollTo({top:document.querySelector('.cat-toolbar').offsetTop-80,behavior:'smooth'});
       });
     });
+  }
+
+  /* ---- Compare floating bar ---- */
+  function initCompare(){
+    const bar=document.getElementById('compare-bar');
+    const countEl=document.getElementById('cmp-count');
+    const clearBtn=document.getElementById('cmp-clear');
+    if(!bar||!countEl) return;
+    function updateBar(){
+      const checked=document.querySelectorAll('.cmp-check:checked').length;
+      countEl.textContent=checked;
+      if(checked>0) bar.classList.add('visible'); else bar.classList.remove('visible');
+    }
+    document.addEventListener('change',function(e){
+      if(e.target.classList.contains('cmp-check')) updateBar();
+    });
+    if(clearBtn){
+      clearBtn.addEventListener('click',function(){
+        document.querySelectorAll('.cmp-check:checked').forEach(cb=>{cb.checked=false});
+        updateBar();
+      });
+    }
   }
 
   /* ---- Boot ---- */
