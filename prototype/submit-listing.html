@@ -3,122 +3,647 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Submit Your Listing - InfoWebWorld Directory</title>
+<title>Submit Your Business - InfoWebWorld Directory</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Inter',sans-serif;font-size:14px;color:#1A1A2E;background:#F8FAFC;}a{text-decoration:none;color:#1B6CA8;}a:hover{color:#0F4C75;}.container{max-width:1280px;margin:0 auto;padding:0 20px;}h1{font-size:36px;font-weight:700;}h2{font-size:28px;font-weight:600;}h3{font-size:22px;font-weight:600;}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .2s;}.btn-primary{background:#0F4C75;color:#fff;}.btn-primary:hover{background:#0d3f63;}.btn-secondary{background:#fff;color:#0F4C75;border:1px solid #0F4C75;}
-
-.wizard-container{max-width:720px;margin:0 auto;padding:40px 20px 80px;}
-.wizard-header{text-align:center;margin-bottom:40px;}
-.wizard-header h1{font-size:28px;margin-bottom:8px;}
-.wizard-header p{color:#64748B;}
-
-/* Progress */
-.progress-bar{display:flex;justify-content:space-between;margin-bottom:40px;position:relative;}
-.progress-bar::before{content:"";position:absolute;top:20px;left:60px;right:60px;height:2px;background:#E2E8F0;}
-.progress-bar::after{content:"";position:absolute;top:20px;left:60px;width:0%;height:2px;background:#0F4C75;}
-.step{display:flex;flex-direction:column;align-items:center;position:relative;z-index:1;}
-.step-circle{width:40px;height:40px;border-radius:50%;background:#E2E8F0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#94A3B8;margin-bottom:8px;}
-.step.active .step-circle{background:#0F4C75;color:#fff;}
-.step.done .step-circle{background:#27AE60;color:#fff;}
-.step-label{font-size:12px;color:#94A3B8;font-weight:500;}
-.step.active .step-label{color:#0F4C75;font-weight:600;}
-
-/* Form */
-.form-card{background:#fff;border-radius:16px;padding:40px;border:1px solid #F1F5F9;box-shadow:0 1px 3px rgba(0,0,0,.06);}
-.form-card h2{margin-bottom:8px;}
-.form-card .desc{color:#64748B;margin-bottom:28px;line-height:1.6;}
-.form-group{margin-bottom:20px;}
-.form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;}
-.form-group input,.form-group select{width:100%;padding:12px 16px;border:1px solid #E2E8F0;border-radius:8px;font-family:inherit;font-size:14px;}
-.form-group input:focus,.form-group select:focus{outline:none;border-color:#1B6CA8;}
-.url-input{display:flex;gap:0;border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;}
-.url-input span{padding:12px 16px;background:#F8FAFC;color:#64748B;font-size:14px;border-right:1px solid #E2E8F0;white-space:nowrap;}
-.url-input input{border:none;flex:1;padding:12px 16px;font-size:14px;font-family:inherit;}
-.url-input input:focus{outline:none;}
-
-.preview-card{background:#F8FAFC;border-radius:12px;padding:20px;border:1px dashed #CBD5E1;margin-top:20px;}
-.preview-card h4{font-size:13px;font-weight:600;color:#0F4C75;margin-bottom:12px;}
-.preview-item{display:flex;gap:12px;align-items:center;}
-.preview-logo{width:48px;height:48px;border-radius:10px;background:#E2E8F0;display:flex;align-items:center;justify-content:center;color:#94A3B8;font-size:11px;}
-.preview-title{font-size:15px;font-weight:600;color:#1A1A2E;}
-.preview-url{font-size:12px;color:#64748B;}
-
-.form-actions{display:flex;justify-content:space-between;margin-top:28px;}
-.btn-lg{padding:12px 32px;font-size:15px;}
-
-
-</style>
 <link rel="stylesheet" href="shared/shared.css">
-<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+body{font-family:'Inter',sans-serif;color:var(--gray-700);background:var(--bg)}
+
+/* ---- Hero header ---- */
+.submit-hero{background:#111113;position:relative;overflow:hidden;padding:clamp(2.5rem,5vw,3.5rem) 0;text-align:center}
+.submit-hero-orb{position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none;opacity:.15}
+.submit-hero-orb--1{width:400px;height:400px;background:#6C72F1;top:-150px;right:-100px}
+.submit-hero-orb--2{width:300px;height:300px;background:#8B7CF6;bottom:-100px;left:-80px}
+.submit-hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;mask-image:radial-gradient(ellipse 60% 50% at 50% 50%,black 20%,transparent 100%)}
+.submit-hero-content{position:relative;z-index:2;max-width:600px;margin:0 auto;padding:0 1.5rem}
+.submit-hero-badge{display:inline-flex;align-items:center;gap:.5rem;font-size:.6875rem;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:rgba(255,255,255,.6);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);padding:.375rem 1rem;border-radius:999px;margin-bottom:1.25rem}
+.submit-hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--emerald);animation:pulse-badge 2s infinite}
+@keyframes pulse-badge{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(47,174,106,.4)}50%{opacity:.8;box-shadow:0 0 0 6px rgba(47,174,106,0)}}
+.submit-hero h1{font-size:clamp(1.375rem,3vw,1.875rem);font-weight:500;color:#fff;margin-bottom:.5rem;letter-spacing:-.01em}
+.submit-hero p{font-size:.9375rem;font-weight:300;color:rgba(255,255,255,.45);line-height:1.6}
+
+/* ---- Trust bar ---- */
+.submit-trust{display:flex;align-items:center;justify-content:center;gap:2rem;margin-top:1.5rem;flex-wrap:wrap}
+.submit-trust-item{display:flex;align-items:center;gap:.375rem}
+.submit-trust-item svg{width:14px;height:14px;stroke:rgba(255,255,255,.4);fill:none;stroke-width:1.5}
+.submit-trust-item span{font-size:.75rem;font-weight:300;color:rgba(255,255,255,.35)}
+
+/* ---- Wizard container ---- */
+.wizard{max-width:760px;margin:-2rem auto 0;padding:0 1.5rem 4rem;position:relative;z-index:3}
+
+/* ---- Progress stepper ---- */
+.stepper{display:flex;align-items:center;background:var(--white);border:1px solid var(--gray-200);border-radius:var(--r-lg);padding:1.25rem 2rem;margin-bottom:1.5rem;box-shadow:var(--shadow-sm)}
+.stepper-step{display:flex;align-items:center;gap:.75rem;flex:1;cursor:pointer;transition:opacity .2s}
+.stepper-step:hover{opacity:.8}
+.stepper-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8125rem;font-weight:500;background:var(--gray-100);color:var(--gray-400);transition:all .35s cubic-bezier(.16,1,.3,1);flex-shrink:0}
+.stepper-step.active .stepper-num{background:var(--accent-gradient);color:#fff;box-shadow:0 4px 12px rgba(108,114,241,.25)}
+.stepper-step.done .stepper-num{background:var(--emerald);color:#fff}
+.stepper-info{min-width:0}
+.stepper-label{font-size:.8125rem;font-weight:400;color:var(--gray-800);white-space:nowrap}
+.stepper-sub{font-size:.625rem;font-weight:300;color:var(--gray-400);white-space:nowrap}
+.stepper-step.active .stepper-label{color:var(--accent);font-weight:500}
+.stepper-step.done .stepper-label{color:var(--emerald)}
+.stepper-line{flex:0 0 auto;width:32px;height:2px;background:var(--gray-200);margin:0 .5rem;border-radius:999px;transition:background .35s}
+.stepper-line.done{background:var(--emerald)}
+
+/* ---- Form card ---- */
+.form-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--r-lg);padding:clamp(1.5rem,3vw,2.5rem);box-shadow:var(--shadow-sm);display:none}
+.form-card.active{display:block;animation:cardIn .4s cubic-bezier(.16,1,.3,1)}
+@keyframes cardIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.form-card-header{margin-bottom:1.75rem}
+.form-card-header h2{font-size:1.25rem;font-weight:500;color:var(--gray-900);margin-bottom:.375rem}
+.form-card-header p{font-size:.875rem;font-weight:300;color:var(--gray-500);line-height:1.6}
+
+/* ---- Form fields ---- */
+.f-group{margin-bottom:1.25rem}
+.f-group label{display:block;font-size:.75rem;font-weight:500;color:var(--gray-700);margin-bottom:.375rem}
+.f-group label span{font-weight:300;color:var(--gray-400)}
+.f-input{width:100%;padding:.75rem 1rem;border:1px solid var(--gray-200);border-radius:var(--r);font-family:inherit;font-size:.875rem;font-weight:300;color:var(--gray-800);transition:all .2s;background:var(--white)}
+.f-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.f-input::placeholder{color:var(--gray-400);font-weight:300}
+textarea.f-input{resize:vertical;min-height:100px;line-height:1.6}
+select.f-input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='1.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;padding-right:2.5rem}
+.f-hint{font-size:.6875rem;font-weight:300;color:var(--gray-400);margin-top:.375rem}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.f-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+
+/* URL input */
+.f-url{display:flex;border:1px solid var(--gray-200);border-radius:var(--r);overflow:hidden;transition:all .2s}
+.f-url:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.f-url-prefix{padding:.75rem 1rem;background:var(--gray-50);color:var(--gray-500);font-size:.875rem;font-weight:300;border-right:1px solid var(--gray-200);white-space:nowrap;display:flex;align-items:center}
+.f-url input{border:none;flex:1;padding:.75rem 1rem;font-size:.875rem;font-family:inherit;font-weight:300;color:var(--gray-800);outline:none;background:transparent}
+.f-url input::placeholder{color:var(--gray-400)}
+
+/* File upload */
+.f-upload{border:2px dashed var(--gray-200);border-radius:var(--r);padding:1.5rem;text-align:center;cursor:pointer;transition:all .25s}
+.f-upload:hover{border-color:var(--accent);background:var(--accent-soft)}
+.f-upload svg{width:28px;height:28px;stroke:var(--gray-400);fill:none;stroke-width:1.5;margin-bottom:.5rem}
+.f-upload:hover svg{stroke:var(--accent)}
+.f-upload-text{font-size:.8125rem;font-weight:400;color:var(--gray-600)}
+.f-upload-hint{font-size:.6875rem;font-weight:300;color:var(--gray-400);margin-top:.25rem}
+
+/* Preview card */
+.f-preview{background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--r);padding:1.25rem;margin-top:1rem;display:flex;align-items:center;gap:1rem}
+.f-preview-logo{width:48px;height:48px;border-radius:var(--r-sm);background:var(--gray-200);display:flex;align-items:center;justify-content:center}
+.f-preview-logo svg{width:20px;height:20px;stroke:var(--gray-400);fill:none;stroke-width:1.5}
+.f-preview-title{font-size:.9375rem;font-weight:500;color:var(--gray-800)}
+.f-preview-url{font-size:.75rem;font-weight:300;color:var(--gray-400)}
+.f-preview-hint{font-size:.6875rem;font-weight:300;color:var(--gray-400);margin-top:.125rem}
+
+/* Category chips */
+.f-chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem}
+.f-chip{display:inline-flex;align-items:center;gap:.375rem;padding:.5rem .875rem;border:1px solid var(--gray-200);border-radius:999px;font-size:.8125rem;font-weight:400;color:var(--gray-600);cursor:pointer;transition:all .25s;background:var(--white)}
+.f-chip:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.f-chip.selected{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);font-weight:500}
+.f-chip.selected::after{content:'';display:inline-block;width:14px;height:14px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236C72F1' stroke-width='2'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/contain no-repeat}
+.f-chip-icon{width:20px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.f-chip-icon svg{width:12px;height:12px;fill:none;stroke-width:1.5}
+
+/* Tags input */
+.f-tags{display:flex;flex-wrap:wrap;gap:.375rem;padding:.5rem .75rem;border:1px solid var(--gray-200);border-radius:var(--r);min-height:44px;align-items:center;transition:all .2s;cursor:text}
+.f-tags:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.f-tag{display:inline-flex;align-items:center;gap:.25rem;padding:.25rem .625rem;background:var(--accent-soft);border:1px solid rgba(108,114,241,.15);border-radius:999px;font-size:.75rem;font-weight:400;color:var(--accent)}
+.f-tag-x{cursor:pointer;opacity:.6;transition:opacity .2s;font-size:.875rem}
+.f-tag-x:hover{opacity:1}
+.f-tags input{border:none;outline:none;font-family:inherit;font-size:.8125rem;font-weight:300;flex:1;min-width:100px;padding:.25rem 0;color:var(--gray-800)}
+.f-tags input::placeholder{color:var(--gray-400)}
+
+/* Plan cards */
+.plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem}
+.plan-card{border:2px solid var(--gray-200);border-radius:var(--r-lg);padding:1.5rem;cursor:pointer;transition:all .3s cubic-bezier(.16,1,.3,1);position:relative;text-align:center}
+.plan-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 8px 24px rgba(108,114,241,.1)}
+.plan-card.selected{border-color:var(--accent);background:rgba(108,114,241,.03)}
+.plan-card.popular{border-color:var(--accent)}
+.plan-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--accent-gradient);color:#fff;padding:.2rem .75rem;border-radius:999px;font-size:.625rem;font-weight:500;letter-spacing:.03em;white-space:nowrap}
+.plan-name{font-size:.9375rem;font-weight:500;color:var(--gray-800);margin-bottom:.25rem}
+.plan-price{font-size:1.75rem;font-weight:500;color:var(--gray-900);margin-bottom:.125rem}
+.plan-price span{font-size:.8125rem;font-weight:300;color:var(--gray-400)}
+.plan-period{font-size:.6875rem;font-weight:300;color:var(--gray-400);margin-bottom:1rem}
+.plan-features{text-align:left}
+.plan-feature{display:flex;align-items:center;gap:.375rem;font-size:.75rem;font-weight:300;color:var(--gray-600);padding:.25rem 0}
+.plan-feature svg{width:14px;height:14px;stroke:var(--emerald);fill:none;stroke-width:2;flex-shrink:0}
+.plan-feature.disabled{color:var(--gray-300)}
+.plan-feature.disabled svg{stroke:var(--gray-300)}
+.plan-selected-indicator{display:none;width:20px;height:20px;background:var(--accent-gradient);border-radius:50%;position:absolute;top:1rem;right:1rem}
+.plan-selected-indicator svg{width:12px;height:12px;stroke:#fff;fill:none;stroke-width:2.5;position:absolute;top:4px;left:4px}
+.plan-card.selected .plan-selected-indicator{display:block}
+
+/* Payment info */
+.f-payment-icons{display:flex;gap:.5rem;margin-bottom:1rem}
+.f-payment-icon{width:48px;height:30px;border:1px solid var(--gray-200);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:.625rem;font-weight:500;color:var(--gray-500)}
+
+/* ---- Actions bar ---- */
+.form-actions{display:flex;justify-content:space-between;align-items:center;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--gray-100)}
+.btn-back{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.25rem;border-radius:var(--r);font-size:.8125rem;font-weight:400;color:var(--gray-600);background:var(--gray-50);border:1px solid var(--gray-200);cursor:pointer;font-family:inherit;transition:all .25s}
+.btn-back:hover{background:var(--gray-100);transform:translateX(-2px)}
+.btn-back svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.5}
+.btn-next{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.75rem;border-radius:var(--r);font-size:.875rem;font-weight:500;color:#fff;background:var(--accent-gradient);cursor:pointer;font-family:inherit;border:none;transition:all .3s cubic-bezier(.16,1,.3,1)}
+.btn-next:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(108,114,241,.25)}
+.btn-next svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;transition:transform .3s}
+.btn-next:hover svg{transform:translateX(3px)}
+.btn-submit{background:linear-gradient(135deg,var(--emerald),#14B8A6)}
+.btn-submit:hover{box-shadow:0 8px 24px rgba(47,174,106,.25)}
+
+/* ---- Responsive ---- */
+@media(max-width:768px){
+  .stepper{padding:1rem;gap:0;flex-wrap:nowrap;overflow-x:auto}
+  .stepper-sub{display:none}
+  .stepper-line{width:20px}
+  .f-row,.f-row-3{grid-template-columns:1fr}
+  .plan-grid{grid-template-columns:1fr}
+  .submit-trust{gap:1rem}
+}
+@media(max-width:480px){
+  .stepper-info{display:none}
+  .stepper{justify-content:center;gap:.5rem}
+  .stepper-line{width:16px}
+}
+</style>
 </head>
 <body>
 <div id="s-nav"></div>
 
-<div class="wizard-container">
-<div class="wizard-header">
-  <h1>List Your Tool on InfoWebWorld Directory</h1>
-  <p>Reach thousands of potential customers actively searching for solutions like yours.</p>
-</div>
-
-<div class="progress-bar">
-  <div class="step active">
-    <div class="step-circle">1</div>
-    <div class="step-label">Website</div>
-  </div>
-  <div class="step">
-    <div class="step-circle">2</div>
-    <div class="step-label">Details</div>
-  </div>
-  <div class="step">
-    <div class="step-circle">3</div>
-    <div class="step-label">Categories</div>
-  </div>
-  <div class="step">
-    <div class="step-circle">4</div>
-    <div class="step-label">Plan & Pay</div>
-  </div>
-</div>
-
-<div class="form-card">
-  <h2>Enter Your Website URL</h2>
-  <div class="desc">We'll auto-populate your listing with information from your website. You can edit everything before publishing.</div>
-
-  <div class="form-group">
-    <label>Website URL</label>
-    <div class="url-input">
-      <span>https://</span>
-      <input type="text" placeholder="yourcompany.com">
+<!-- Hero -->
+<div class="submit-hero">
+  <div class="submit-hero-orb submit-hero-orb--1"></div>
+  <div class="submit-hero-orb submit-hero-orb--2"></div>
+  <div class="submit-hero-grid"></div>
+  <div class="submit-hero-content">
+    <div class="submit-hero-badge">
+      <span class="submit-hero-badge-dot"></span>
+      2,500+ businesses already listed
+    </div>
+    <h1>List Your Business on InfoWebWorld</h1>
+    <p>Reach thousands of customers actively searching for solutions like yours. Setup takes under 5 minutes.</p>
+    <div class="submit-trust">
+      <div class="submit-trust-item">
+        <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        <span>Dofollow backlink included</span>
+      </div>
+      <div class="submit-trust-item">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>Verified listing badge</span>
+      </div>
+      <div class="submit-trust-item">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>Cancel anytime</span>
+      </div>
     </div>
   </div>
+</div>
 
-  <div class="preview-card">
-    <h4>Preview (auto-populated)</h4>
-    <div class="preview-item">
-      <div class="preview-logo">Logo</div>
-      <div>
-        <div class="preview-title">Your Company Name</div>
-        <div class="preview-url">yourcompany.com</div>
-        <div style="font-size:12px;color:#94A3B8;margin-top:4px;">Enter your URL to see an auto-populated preview</div>
+<!-- Wizard -->
+<div class="wizard">
+
+  <!-- Stepper -->
+  <div class="stepper" id="stepper">
+    <div class="stepper-step active" data-step="0">
+      <div class="stepper-num">1</div>
+      <div class="stepper-info">
+        <div class="stepper-label">Website</div>
+        <div class="stepper-sub">Your URL & email</div>
+      </div>
+    </div>
+    <div class="stepper-line"></div>
+    <div class="stepper-step" data-step="1">
+      <div class="stepper-num">2</div>
+      <div class="stepper-info">
+        <div class="stepper-label">Details</div>
+        <div class="stepper-sub">Business info</div>
+      </div>
+    </div>
+    <div class="stepper-line"></div>
+    <div class="stepper-step" data-step="2">
+      <div class="stepper-num">3</div>
+      <div class="stepper-info">
+        <div class="stepper-label">Categories</div>
+        <div class="stepper-sub">Industry & tags</div>
+      </div>
+    </div>
+    <div class="stepper-line"></div>
+    <div class="stepper-step" data-step="3">
+      <div class="stepper-num">4</div>
+      <div class="stepper-info">
+        <div class="stepper-label">Plan & Pay</div>
+        <div class="stepper-sub">Choose your plan</div>
       </div>
     </div>
   </div>
 
-  <div class="form-group" style="margin-top:20px;">
-    <label>Your Work Email</label>
-    <input type="email" placeholder="you@yourcompany.com">
-    <div style="font-size:11px;color:#94A3B8;margin-top:4px;">Must match your company domain for verification</div>
+  <!-- ============ STEP 1: Website ============ -->
+  <div class="form-card active" id="step-0">
+    <div class="form-card-header">
+      <h2>Enter Your Website URL</h2>
+      <p>We'll auto-populate your listing with information from your website. You can edit everything before publishing.</p>
+    </div>
+
+    <div class="f-group">
+      <label>Website URL</label>
+      <div class="f-url">
+        <span class="f-url-prefix">https://</span>
+        <input type="text" placeholder="yourcompany.com" id="url-input">
+      </div>
+    </div>
+
+    <div class="f-preview" id="url-preview">
+      <div class="f-preview-logo">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      </div>
+      <div>
+        <div class="f-preview-title" id="preview-name">Your Company Name</div>
+        <div class="f-preview-url" id="preview-url">yourcompany.com</div>
+        <div class="f-preview-hint">Enter your URL above to auto-populate</div>
+      </div>
+    </div>
+
+    <div class="f-group" style="margin-top:1.25rem">
+      <label>Your Work Email</label>
+      <input type="email" class="f-input" placeholder="you@yourcompany.com">
+      <div class="f-hint">Must match your company domain for verification</div>
+    </div>
+
+    <div class="form-actions">
+      <a href="index.html" class="btn-back">
+        <svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        Cancel
+      </a>
+      <button class="btn-next" onclick="goToStep(1)">
+        Continue to Details
+        <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </button>
+    </div>
   </div>
 
-  <div class="form-actions">
-    <a href="index.html" class="btn btn-secondary btn-lg">Cancel</a>
-    <button class="btn btn-primary btn-lg">Continue to Details &rarr;</button>
+  <!-- ============ STEP 2: Details ============ -->
+  <div class="form-card" id="step-1">
+    <div class="form-card-header">
+      <h2>Business Details</h2>
+      <p>Tell potential customers about your business. The more detail you provide, the better your listing will perform.</p>
+    </div>
+
+    <div class="f-row">
+      <div class="f-group">
+        <label>Business Name</label>
+        <input type="text" class="f-input" placeholder="e.g. CloudSync Pro">
+      </div>
+      <div class="f-group">
+        <label>Tagline <span>(optional)</span></label>
+        <input type="text" class="f-input" placeholder="e.g. Cloud storage made simple">
+      </div>
+    </div>
+
+    <div class="f-group">
+      <label>Description</label>
+      <textarea class="f-input" placeholder="Describe what your business does, who it serves, and what makes it unique..."></textarea>
+      <div class="f-hint">150-500 characters recommended for best results</div>
+    </div>
+
+    <div class="f-row">
+      <div class="f-group">
+        <label>Founded Year</label>
+        <select class="f-input">
+          <option value="">Select year</option>
+          <option>2024</option><option>2023</option><option>2022</option><option>2021</option><option>2020</option><option>2019</option><option>2018</option><option>2017</option><option>2016</option><option>2015</option><option>Before 2015</option>
+        </select>
+      </div>
+      <div class="f-group">
+        <label>Company Size</label>
+        <select class="f-input">
+          <option value="">Select size</option>
+          <option>1-10 employees</option><option>11-50 employees</option><option>51-200 employees</option><option>201-1000 employees</option><option>1000+ employees</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="f-row">
+      <div class="f-group">
+        <label>Headquarters</label>
+        <input type="text" class="f-input" placeholder="e.g. San Francisco, CA">
+      </div>
+      <div class="f-group">
+        <label>Phone <span>(optional)</span></label>
+        <input type="tel" class="f-input" placeholder="+1 (555) 000-0000">
+      </div>
+    </div>
+
+    <div class="f-group">
+      <label>Business Logo</label>
+      <div class="f-upload" id="logo-upload">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <div class="f-upload-text">Click to upload or drag and drop</div>
+        <div class="f-upload-hint">PNG, JPG or SVG. Max 2MB. 400x400px recommended.</div>
+      </div>
+    </div>
+
+    <div class="f-group">
+      <label>Pricing Model</label>
+      <select class="f-input">
+        <option value="">Select pricing model</option>
+        <option>Free</option><option>Freemium</option><option>Subscription</option><option>One-time purchase</option><option>Pay per use</option><option>Contact for pricing</option>
+      </select>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-back" onclick="goToStep(0)">
+        <svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        Back
+      </button>
+      <button class="btn-next" onclick="goToStep(2)">
+        Continue to Categories
+        <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </button>
+    </div>
   </div>
-</div>
+
+  <!-- ============ STEP 3: Categories ============ -->
+  <div class="form-card" id="step-2">
+    <div class="form-card-header">
+      <h2>Industry & Categories</h2>
+      <p>Select the categories that best describe your business. This helps customers find you in the right searches.</p>
+    </div>
+
+    <div class="f-group">
+      <label>Primary Industry</label>
+      <div class="f-chips" id="industry-chips">
+        <div class="f-chip" data-value="technology">
+          <span class="f-chip-icon" style="background:rgba(108,114,241,.1)"><svg viewBox="0 0 24 24" stroke="var(--accent)"><path d="M16 18l6-6-6-6"/><path d="M8 6l-6 6 6 6"/></svg></span>
+          Technology & SaaS
+        </div>
+        <div class="f-chip" data-value="restaurants">
+          <span class="f-chip-icon" style="background:rgba(239,107,74,.1)"><svg viewBox="0 0 24 24" stroke="var(--coral)"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/></svg></span>
+          Restaurants & Food
+        </div>
+        <div class="f-chip" data-value="healthcare">
+          <span class="f-chip-icon" style="background:rgba(47,174,106,.1)"><svg viewBox="0 0 24 24" stroke="var(--emerald)"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
+          Healthcare
+        </div>
+        <div class="f-chip" data-value="real-estate">
+          <span class="f-chip-icon" style="background:rgba(59,130,246,.1)"><svg viewBox="0 0 24 24" stroke="var(--azure)"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+          Real Estate
+        </div>
+        <div class="f-chip" data-value="legal">
+          <span class="f-chip-icon" style="background:rgba(139,92,246,.1)"><svg viewBox="0 0 24 24" stroke="var(--plum)"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v3"/></svg></span>
+          Legal & Financial
+        </div>
+        <div class="f-chip" data-value="education">
+          <span class="f-chip-icon" style="background:rgba(20,184,166,.1)"><svg viewBox="0 0 24 24" stroke="var(--teal)"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+          Education
+        </div>
+        <div class="f-chip" data-value="marketing">
+          <span class="f-chip-icon" style="background:rgba(236,72,153,.1)"><svg viewBox="0 0 24 24" stroke="var(--rose)"><path d="M3 11l18-5v12L3 13v-2z"/></svg></span>
+          Marketing
+        </div>
+        <div class="f-chip" data-value="home-services">
+          <span class="f-chip-icon" style="background:rgba(245,158,11,.1)"><svg viewBox="0 0 24 24" stroke="var(--amber)"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
+          Home Services
+        </div>
+      </div>
+    </div>
+
+    <div class="f-group">
+      <label>Tags <span>(press Enter to add)</span></label>
+      <div class="f-tags" id="tags-container">
+        <span class="f-tag">cloud storage <span class="f-tag-x">&times;</span></span>
+        <span class="f-tag">SaaS <span class="f-tag-x">&times;</span></span>
+        <input type="text" placeholder="Add a tag..." id="tag-input">
+      </div>
+      <div class="f-hint">Add up to 10 tags that describe your business. These improve search visibility.</div>
+    </div>
+
+    <div class="f-row">
+      <div class="f-group">
+        <label>Target Market</label>
+        <select class="f-input">
+          <option value="">Select market</option>
+          <option>B2B (Business to Business)</option>
+          <option>B2C (Business to Consumer)</option>
+          <option>Both B2B & B2C</option>
+          <option>B2G (Government)</option>
+        </select>
+      </div>
+      <div class="f-group">
+        <label>Service Area</label>
+        <select class="f-input">
+          <option value="">Select area</option>
+          <option>Local (City/Region)</option>
+          <option>National</option>
+          <option>International</option>
+          <option>Global (Worldwide)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-back" onclick="goToStep(1)">
+        <svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        Back
+      </button>
+      <button class="btn-next" onclick="goToStep(3)">
+        Choose Your Plan
+        <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ STEP 4: Plan & Pay ============ -->
+  <div class="form-card" id="step-3">
+    <div class="form-card-header">
+      <h2>Choose Your Plan</h2>
+      <p>All plans include a verified listing badge, dofollow backlink, and access to your vendor dashboard.</p>
+    </div>
+
+    <div class="plan-grid" id="plan-grid">
+      <div class="plan-card" data-plan="starter">
+        <div class="plan-selected-indicator"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="plan-name">Starter</div>
+        <div class="plan-price">$99<span>/yr</span></div>
+        <div class="plan-period">Billed annually</div>
+        <div class="plan-features">
+          <div class="plan-feature"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Basic listing page</div>
+          <div class="plan-feature"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Dofollow backlink</div>
+          <div class="plan-feature"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Review collection</div>
+          <div class="plan-feature disabled"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Lead generation</div>
+          <div class="plan-feature disabled"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Analytics dashboard</div>
+        </div>
+      </div>
+
+      <div class="plan-card popular selected" data-plan="growth">
+        <div class="plan-badge">Most Popular</div>
+        <div class="plan-selected-indicator"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="plan-name">Growth</div>
+        <div class="plan-price">$249<span>/yr</span></div>
+        <div class="plan-period">Billed annually</div>
+        <div class="plan-features">
+          <div class="plan-feature"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Enhanced listing page</div>
+          <div class="plan-feature"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Dofollow backlink</div>
+          <div class="plan-feature"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Review collection</div>
+          <div class="plan-feature"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Lead generation</div>
+          <div class="plan-feature"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Analytics dashboard</div>
+        </div>
+      </div>
+
+      <div class="plan-card" data-plan="enterprise">
+        <div class="plan-selected-indicator"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="plan-name">Enterprise</div>
+        <div class="plan-price">$599<span>/yr</span></div>
+        <div class="plan-period">Billed annually</div>
+        <div class="plan-features">
+          <div class="plan-feature"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Premium listing + badge</div>
+          <div class="plan-feature"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Priority placement</div>
+          <div class="plan-feature"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Unlimited leads</div>
+          <div class="plan-feature"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Advanced analytics</div>
+          <div class="plan-feature"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Dedicated support</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card-header" style="margin-bottom:1.25rem">
+      <h2 style="font-size:1.0625rem">Payment Information</h2>
+      <p>Secure payment powered by Stripe. Your card will be charged annually.</p>
+    </div>
+
+    <div class="f-payment-icons">
+      <div class="f-payment-icon">Visa</div>
+      <div class="f-payment-icon">MC</div>
+      <div class="f-payment-icon">Amex</div>
+      <div class="f-payment-icon">PayPal</div>
+    </div>
+
+    <div class="f-group">
+      <label>Cardholder Name</label>
+      <input type="text" class="f-input" placeholder="Name on card">
+    </div>
+    <div class="f-group">
+      <label>Card Number</label>
+      <input type="text" class="f-input" placeholder="1234 5678 9012 3456">
+    </div>
+    <div class="f-row-3">
+      <div class="f-group">
+        <label>Expiry</label>
+        <input type="text" class="f-input" placeholder="MM/YY">
+      </div>
+      <div class="f-group">
+        <label>CVC</label>
+        <input type="text" class="f-input" placeholder="123">
+      </div>
+      <div class="f-group">
+        <label>ZIP Code</label>
+        <input type="text" class="f-input" placeholder="10001">
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-back" onclick="goToStep(2)">
+        <svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        Back
+      </button>
+      <button class="btn-next btn-submit">
+        <svg viewBox="0 0 24 24" style="stroke:#fff;fill:none;stroke-width:1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Submit & Pay
+      </button>
+    </div>
+  </div>
+
 </div>
 
 <div id="s-footer"></div>
 <script src="shared/shared.js"></script>
+<script>
+// ---- Wizard step navigation ----
+var currentStep = 0;
+var totalSteps = 4;
+
+function goToStep(n) {
+  if (n < 0 || n >= totalSteps) return;
+
+  // Hide current
+  document.getElementById('step-' + currentStep).classList.remove('active');
+
+  // Update stepper
+  var steps = document.querySelectorAll('.stepper-step');
+  var lines = document.querySelectorAll('.stepper-line');
+
+  steps.forEach(function(s, i) {
+    s.classList.remove('active', 'done');
+    if (i < n) s.classList.add('done');
+    if (i === n) s.classList.add('active');
+  });
+  lines.forEach(function(l, i) {
+    l.classList.toggle('done', i < n);
+  });
+
+  // Show new step
+  currentStep = n;
+  document.getElementById('step-' + currentStep).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Clickable stepper
+document.querySelectorAll('.stepper-step').forEach(function(step) {
+  step.addEventListener('click', function() {
+    var idx = parseInt(this.getAttribute('data-step'));
+    goToStep(idx);
+  });
+});
+
+// ---- Category chip toggle ----
+document.querySelectorAll('#industry-chips .f-chip').forEach(function(chip) {
+  chip.addEventListener('click', function() {
+    this.classList.toggle('selected');
+  });
+});
+
+// ---- Tag input ----
+var tagInput = document.getElementById('tag-input');
+var tagsContainer = document.getElementById('tags-container');
+if (tagInput) {
+  tagInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && this.value.trim()) {
+      e.preventDefault();
+      var tag = document.createElement('span');
+      tag.className = 'f-tag';
+      tag.innerHTML = this.value.trim() + ' <span class="f-tag-x">&times;</span>';
+      tagsContainer.insertBefore(tag, this);
+      this.value = '';
+      bindTagClose();
+    }
+  });
+}
+function bindTagClose() {
+  document.querySelectorAll('.f-tag-x').forEach(function(x) {
+    x.onclick = function() { this.parentElement.remove(); };
+  });
+}
+bindTagClose();
+
+// ---- Plan selection ----
+document.querySelectorAll('#plan-grid .plan-card').forEach(function(card) {
+  card.addEventListener('click', function() {
+    document.querySelectorAll('#plan-grid .plan-card').forEach(function(c) {
+      c.classList.remove('selected');
+    });
+    this.classList.add('selected');
+  });
+});
+
+// ---- URL preview ----
+var urlInput = document.getElementById('url-input');
+if (urlInput) {
+  urlInput.addEventListener('input', function() {
+    var val = this.value.trim();
+    var nameEl = document.getElementById('preview-name');
+    var urlEl = document.getElementById('preview-url');
+    if (val) {
+      var name = val.replace(/^www\./, '').split('.')[0];
+      name = name.charAt(0).toUpperCase() + name.slice(1);
+      nameEl.textContent = name;
+      urlEl.textContent = val;
+    } else {
+      nameEl.textContent = 'Your Company Name';
+      urlEl.textContent = 'yourcompany.com';
+    }
+  });
+}
+</script>
 </body>
 </html>

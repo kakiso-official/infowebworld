@@ -5,57 +5,198 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sign In - InfoWebWorld Directory</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Inter',sans-serif;font-size:14px;color:#1A1A2E;background:#F8FAFC;min-height:100vh;display:flex;flex-direction:column;}a{text-decoration:none;color:#1B6CA8;}
-
-.signin-container{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
-.signin-card{background:#fff;border-radius:16px;padding:40px;width:100%;max-width:420px;border:1px solid #F1F5F9;box-shadow:0 4px 20px rgba(0,0,0,.06);}
-.signin-card h1{font-size:28px;text-align:center;margin-bottom:4px;}
-.signin-card .subtitle{text-align:center;color:#64748B;margin-bottom:28px;font-size:14px;}
-.social-auth{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
-.social-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border:1px solid #E2E8F0;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;background:#fff;font-family:inherit;transition:all .2s;}
-.social-btn:hover{border-color:#1B6CA8;background:#F8FAFC;}
-.divider{display:flex;align-items:center;gap:12px;margin:20px 0;font-size:12px;color:#94A3B8;}
-.divider::before,.divider::after{content:"";flex:1;height:1px;background:#E2E8F0;}
-.form-group{margin-bottom:16px;}
-.form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;}
-.form-group input{width:100%;padding:10px 14px;border:1px solid #E2E8F0;border-radius:8px;font-family:inherit;font-size:14px;}
-.form-group input:focus{outline:none;border-color:#1B6CA8;}
-.form-options{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;font-size:13px;}
-.form-options label{display:flex;align-items:center;gap:6px;cursor:pointer;}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;border-radius:8px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .2s;width:100%;}
-.btn-primary{background:#0F4C75;color:#fff;}.btn-primary:hover{background:#0d3f63;}
-.btn-magic{background:#F8FAFC;color:#1B6CA8;border:1px solid #E2E8F0;margin-top:12px;}
-.btn-magic:hover{background:#E8F4FD;border-color:#1B6CA8;}
-.signup-link{text-align:center;margin-top:20px;font-size:13px;}
-</style>
-<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
 <link rel="stylesheet" href="shared/shared.css">
+<style>
+body{font-family:'Inter',sans-serif;color:var(--gray-700);background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
+
+/* ---- Layout ---- */
+.auth-wrapper{flex:1;display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 64px)}
+
+/* ---- Left panel — brand showcase ---- */
+.auth-brand{background:#111113;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;padding:clamp(2.5rem,5vw,4rem)}
+.auth-brand-orb{position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none;opacity:.18}
+.auth-brand-orb--1{width:400px;height:400px;background:#6C72F1;top:-120px;right:-80px;animation:authFloat 10s ease-in-out infinite}
+.auth-brand-orb--2{width:300px;height:300px;background:#8B7CF6;bottom:-80px;left:-60px;animation:authFloat 12s ease-in-out infinite 2s}
+.auth-brand-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;mask-image:radial-gradient(ellipse 60% 60% at 50% 50%,black 20%,transparent 100%)}
+@keyframes authFloat{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(10px,-15px) scale(1.05)}}
+.auth-brand-content{position:relative;z-index:2;max-width:440px}
+.auth-brand-badge{display:inline-flex;align-items:center;gap:.5rem;font-size:.6875rem;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:rgba(255,255,255,.6);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);padding:.375rem 1rem;border-radius:999px;margin-bottom:1.5rem}
+.auth-brand-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--emerald);animation:pulse-badge 2s infinite}
+.auth-brand h1{font-size:clamp(1.5rem,3vw,2rem);font-weight:500;color:#fff;line-height:1.35;margin-bottom:1rem;letter-spacing:-.01em}
+.auth-brand p{font-size:.9375rem;font-weight:300;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:2.5rem}
+
+/* Stats */
+.auth-stats{display:flex;gap:2rem;margin-bottom:2.5rem}
+.auth-stat-num{font-size:1.5rem;font-weight:500;color:#fff;display:block}
+.auth-stat-text{font-size:.6875rem;font-weight:300;color:rgba(255,255,255,.4)}
+
+/* Testimonial */
+.auth-testimonial{padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.08)}
+.auth-testimonial-text{font-size:.875rem;font-weight:300;font-style:italic;color:rgba(255,255,255,.55);line-height:1.7;margin-bottom:.875rem}
+.auth-testimonial-author{display:flex;align-items:center;gap:.625rem}
+.auth-testimonial-avatar{width:36px;height:36px;border-radius:50%;background:var(--accent-gradient);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:500;color:#fff}
+.auth-testimonial-name{font-size:.8125rem;font-weight:400;color:rgba(255,255,255,.7)}
+.auth-testimonial-role{font-size:.6875rem;font-weight:300;color:rgba(255,255,255,.35)}
+
+/* ---- Right panel — form ---- */
+.auth-form-panel{display:flex;align-items:center;justify-content:center;padding:clamp(2rem,4vw,3rem)}
+.auth-card{width:100%;max-width:400px}
+.auth-card h2{font-size:1.5rem;font-weight:500;color:var(--gray-900);margin-bottom:.375rem}
+.auth-card .auth-subtitle{font-size:.875rem;font-weight:300;color:var(--gray-500);margin-bottom:2rem}
+
+/* Social buttons */
+.auth-social{display:flex;gap:.75rem;margin-bottom:1.5rem}
+.auth-social-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem;border:1px solid var(--gray-200);border-radius:var(--r);font-size:.8125rem;font-weight:400;color:var(--gray-700);cursor:pointer;background:var(--white);font-family:inherit;transition:all .25s cubic-bezier(.16,1,.3,1)}
+.auth-social-btn:hover{border-color:var(--accent);background:var(--accent-soft);transform:translateY(-2px);box-shadow:0 4px 12px rgba(108,114,241,.08)}
+.auth-social-btn svg{width:18px;height:18px;flex-shrink:0}
+
+/* Divider */
+.auth-divider{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem}
+.auth-divider::before,.auth-divider::after{content:"";flex:1;height:1px;background:var(--gray-200)}
+.auth-divider span{font-size:.6875rem;font-weight:400;color:var(--gray-400);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+
+/* Form fields */
+.auth-field{margin-bottom:1rem}
+.auth-field label{display:block;font-size:.75rem;font-weight:500;color:var(--gray-700);margin-bottom:.375rem}
+.auth-input{width:100%;padding:.75rem 1rem;border:1px solid var(--gray-200);border-radius:var(--r);font-family:inherit;font-size:.875rem;font-weight:300;color:var(--gray-800);transition:all .2s;background:var(--white)}
+.auth-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.auth-input::placeholder{color:var(--gray-400);font-weight:300}
+
+/* Options row */
+.auth-options{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+.auth-check{display:flex;align-items:center;gap:.5rem;font-size:.8125rem;font-weight:300;color:var(--gray-600);cursor:pointer}
+.auth-check input{accent-color:var(--accent);width:15px;height:15px}
+.auth-forgot{font-size:.8125rem;font-weight:400;color:var(--accent);transition:opacity .2s}
+.auth-forgot:hover{opacity:.75}
+
+/* Primary button */
+.auth-btn{width:100%;padding:.75rem;border-radius:var(--r);background:var(--accent-gradient);color:#fff;font-size:.875rem;font-weight:500;font-family:inherit;cursor:pointer;border:none;transition:all .3s cubic-bezier(.16,1,.3,1);display:flex;align-items:center;justify-content:center;gap:.5rem}
+.auth-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(108,114,241,.25)}
+.auth-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;transition:transform .3s}
+.auth-btn:hover svg{transform:translateX(3px)}
+
+/* Magic link */
+.auth-magic{width:100%;padding:.75rem;border-radius:var(--r);background:var(--gray-50);border:1px solid var(--gray-200);color:var(--gray-600);font-size:.8125rem;font-weight:400;font-family:inherit;cursor:pointer;transition:all .25s;margin-top:.75rem;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.auth-magic:hover{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.auth-magic svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.5}
+
+/* Footer link */
+.auth-footer-link{text-align:center;margin-top:1.5rem;font-size:.8125rem;font-weight:300;color:var(--gray-500)}
+.auth-footer-link a{color:var(--accent);font-weight:500;transition:opacity .2s}
+.auth-footer-link a:hover{opacity:.75}
+
+/* ---- Responsive ---- */
+@media(max-width:900px){
+  .auth-wrapper{grid-template-columns:1fr}
+  .auth-brand{display:none}
+}
+@media(max-width:480px){
+  .auth-form-panel{padding:1.5rem 1rem}
+  .auth-social{flex-direction:column}
+}
+</style>
 </head>
 <body>
 <div id="s-nav"></div>
 
-<div class="signin-container">
-<div class="signin-card">
-  <h1>Welcome Back</h1>
-  <div class="subtitle">Sign in to your InfoWebWorld Directory account</div>
-  <div class="social-auth">
-    <button class="social-btn">&#x1F310; Continue with Google</button>
-    <button class="social-btn">&#x1F4BB; Continue with GitHub</button>
-    <button class="social-btn">in Continue with LinkedIn</button>
+<div class="auth-wrapper">
+
+  <!-- Left: Brand Panel -->
+  <div class="auth-brand">
+    <div class="auth-brand-orb auth-brand-orb--1"></div>
+    <div class="auth-brand-orb auth-brand-orb--2"></div>
+    <div class="auth-brand-grid"></div>
+    <div class="auth-brand-content">
+      <div class="auth-brand-badge">
+        <span class="auth-brand-badge-dot"></span>
+        Trusted by 2,500+ businesses
+      </div>
+      <h1>Discover, compare, and review businesses across every industry</h1>
+      <p>Sign in to save listings, write verified reviews, and get personalized recommendations for your business needs.</p>
+
+      <div class="auth-stats">
+        <div>
+          <span class="auth-stat-num">50K+</span>
+          <span class="auth-stat-text">Active users</span>
+        </div>
+        <div>
+          <span class="auth-stat-num">2,500+</span>
+          <span class="auth-stat-text">Businesses listed</span>
+        </div>
+        <div>
+          <span class="auth-stat-num">25K+</span>
+          <span class="auth-stat-text">Verified reviews</span>
+        </div>
+      </div>
+
+      <div class="auth-testimonial">
+        <p class="auth-testimonial-text">"InfoWebWorld helped me find the perfect project management tool for my team in under 30 minutes. The verified reviews made the decision easy."</p>
+        <div class="auth-testimonial-author">
+          <div class="auth-testimonial-avatar">DK</div>
+          <div>
+            <div class="auth-testimonial-name">David Kim</div>
+            <div class="auth-testimonial-role">Engineering Manager at Stripe</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="divider">or sign in with email</div>
-  <div class="form-group"><label>Email Address</label><input type="email" placeholder="john@company.com"></div>
-  <div class="form-group"><label>Password</label><input type="password" placeholder="Enter your password"></div>
-  <div class="form-options">
-    <label><input type="checkbox"> Remember me</label>
-    <a href="#">Forgot password?</a>
+
+  <!-- Right: Sign In Form -->
+  <div class="auth-form-panel">
+    <div class="auth-card">
+      <h2>Welcome back</h2>
+      <p class="auth-subtitle">Sign in to your InfoWebWorld account</p>
+
+      <div class="auth-social">
+        <button class="auth-social-btn">
+          <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          Google
+        </button>
+        <button class="auth-social-btn">
+          <svg viewBox="0 0 24 24" fill="var(--gray-900)"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </button>
+        <button class="auth-social-btn">
+          <svg viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn
+        </button>
+      </div>
+
+      <div class="auth-divider"><span>or continue with email</span></div>
+
+      <div class="auth-field">
+        <label>Email Address</label>
+        <input type="email" class="auth-input" placeholder="john@company.com">
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input type="password" class="auth-input" placeholder="Enter your password">
+      </div>
+
+      <div class="auth-options">
+        <label class="auth-check"><input type="checkbox"> Remember me</label>
+        <a href="#" class="auth-forgot">Forgot password?</a>
+      </div>
+
+      <button class="auth-btn">
+        Sign In
+        <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </button>
+
+      <button class="auth-magic">
+        <svg viewBox="0 0 24 24"><path d="M15 4V2"/><path d="M15 16v-2"/><path d="M8 9h2"/><path d="M20 9h2"/><path d="M17.8 11.8L19 13"/><path d="M15 9h0"/><path d="M17.8 6.2L19 5"/><path d="m3 21 9-9"/><path d="M12.2 6.2L11 5"/></svg>
+        Send Magic Link Instead
+      </button>
+
+      <div class="auth-footer-link">
+        Don't have an account? <a href="signup.html">Sign Up Free</a>
+      </div>
+    </div>
   </div>
-  <button class="btn btn-primary">Sign In</button>
-  <button class="btn btn-magic">&#x2728; Send Magic Link</button>
-  <div class="signup-link">Don't have an account? <a href="signup.html"><strong>Sign Up Free</strong></a></div>
+
 </div>
-</div>
+
 <script src="shared/shared.js"></script>
 </body>
 </html>
