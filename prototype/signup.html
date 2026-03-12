@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sign Up - TechRadar Directory</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Sign Up - InfoWebWorld Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Inter',sans-serif;font-size:14px;color:#1A1A2E;background:#F8FAFC;min-height:100vh;display:flex;flex-direction:column;}a{text-decoration:none;color:#1B6CA8;}
-.nav{background:#fff;border-bottom:1px solid #E2E8F0;}.nav-inner{max-width:1280px;margin:0 auto;padding:0 20px;display:flex;align-items:center;height:64px;}.logo{font-size:20px;font-weight:700;color:#0F4C75;}.logo span{color:#E74C3C;}
+
 .signup-layout{flex:1;display:grid;grid-template-columns:1fr 1fr;max-width:1280px;margin:0 auto;width:100%;}
 .left-panel{background:linear-gradient(135deg,#0F4C75,#1B6CA8);color:#fff;padding:60px 48px;display:flex;flex-direction:column;justify-content:center;}
 .left-panel h1{font-size:32px;font-weight:700;margin-bottom:16px;line-height:1.3;}
@@ -40,9 +40,10 @@
 .signin-link{text-align:center;margin-top:20px;font-size:13px;}
 </style>
 <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<link rel="stylesheet" href="shared/shared.css">
 </head>
 <body>
-<nav class="nav"><div class="nav-inner"><a href="index.html" class="logo">TechRadar<span>.</span></a></div></nav>
+<div id="s-nav"></div>
 
 <div class="signup-layout">
 <div class="left-panel">
@@ -52,7 +53,7 @@
   <div class="benefit"><div class="benefit-icon">&#x1F516;</div><div class="benefit-text"><strong>Save & Compare Tools</strong>Build your shortlist and compare tools side-by-side.</div></div>
   <div class="benefit"><div class="benefit-icon">&#x1F514;</div><div class="benefit-text"><strong>Get Personalized Alerts</strong>Be the first to know about new tools in your categories.</div></div>
   <div class="testimonial-mini">
-    <p>"TechRadar Directory helped me find the perfect project management tool for my team in under 30 minutes."</p>
+    <p>"InfoWebWorld Directory helped me find the perfect project management tool for my team in under 30 minutes."</p>
     <div class="author">- David Kim, Engineering Manager at Stripe</div>
   </div>
 </div>
@@ -78,5 +79,6 @@
   <div class="signin-link">Already have an account? <a href="signin.html"><strong>Sign In</strong></a></div>
 </div>
 </div>
+<script src="shared/shared.js"></script>
 </body>
 </html>

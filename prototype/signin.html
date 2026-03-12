@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sign In - TechRadar Directory</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Sign In - InfoWebWorld Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Inter',sans-serif;font-size:14px;color:#1A1A2E;background:#F8FAFC;min-height:100vh;display:flex;flex-direction:column;}a{text-decoration:none;color:#1B6CA8;}
-.nav{background:#fff;border-bottom:1px solid #E2E8F0;}.nav-inner{max-width:1280px;margin:0 auto;padding:0 20px;display:flex;align-items:center;height:64px;}.logo{font-size:20px;font-weight:700;color:#0F4C75;}.logo span{color:#E74C3C;}
+
 .signin-container{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
 .signin-card{background:#fff;border-radius:16px;padding:40px;width:100%;max-width:420px;border:1px solid #F1F5F9;box-shadow:0 4px 20px rgba(0,0,0,.06);}
 .signin-card h1{font-size:28px;text-align:center;margin-bottom:4px;}
@@ -30,14 +30,15 @@
 .signup-link{text-align:center;margin-top:20px;font-size:13px;}
 </style>
 <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<link rel="stylesheet" href="shared/shared.css">
 </head>
 <body>
-<nav class="nav"><div class="nav-inner"><a href="index.html" class="logo">TechRadar<span>.</span></a></div></nav>
+<div id="s-nav"></div>
 
 <div class="signin-container">
 <div class="signin-card">
   <h1>Welcome Back</h1>
-  <div class="subtitle">Sign in to your TechRadar Directory account</div>
+  <div class="subtitle">Sign in to your InfoWebWorld Directory account</div>
   <div class="social-auth">
     <button class="social-btn">&#x1F310; Continue with Google</button>
     <button class="social-btn">&#x1F4BB; Continue with GitHub</button>
@@ -55,5 +56,6 @@
   <div class="signup-link">Don't have an account? <a href="signup.html"><strong>Sign Up Free</strong></a></div>
 </div>
 </div>
+<script src="shared/shared.js"></script>
 </body>
 </html>

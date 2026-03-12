@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>404 - Page Not Found - TechRadar Directory</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>404 - Page Not Found - InfoWebWorld Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Inter',sans-serif;font-size:14px;color:#1A1A2E;background:#F8FAFC;min-height:100vh;display:flex;flex-direction:column;}a{text-decoration:none;color:#1B6CA8;}.container{max-width:1280px;margin:0 auto;padding:0 20px;}
-.nav{background:#fff;border-bottom:1px solid #E2E8F0;}.nav-inner{display:flex;align-items:center;height:64px;gap:16px;max-width:1280px;margin:0 auto;padding:0 20px;}.logo{font-size:20px;font-weight:700;color:#0F4C75;}.logo span{color:#E74C3C;}.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .2s;}.btn-primary{background:#0F4C75;color:#fff;}.btn-secondary{background:#fff;color:#0F4C75;border:1px solid #0F4C75;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .2s;}.btn-primary{background:#0F4C75;color:#fff;}.btn-secondary{background:#fff;color:#0F4C75;border:1px solid #0F4C75;}
 
 .error-page{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;padding:40px 20px;}
 .error-content{max-width:520px;}
@@ -24,15 +24,10 @@
 .popular-link:hover{border-color:#1B6CA8;color:#1B6CA8;}
 </style>
 <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<link rel="stylesheet" href="shared/shared.css">
 </head>
 <body>
-<nav class="nav"><div class="nav-inner">
-  <a href="index.html" class="logo">TechRadar<span>.</span></a>
-  <div style="margin-left:auto;display:flex;gap:8px;">
-    <a href="index.html" class="btn btn-secondary">Home</a>
-    <a href="category.html" class="btn btn-primary">Browse Tools</a>
-  </div>
-</div></nav>
+<div id="s-nav"></div>
 
 <div class="error-page">
 <div class="error-content">
@@ -55,5 +50,6 @@
   </div>
 </div>
 </div>
+<script src="shared/shared.js"></script>
 </body>
 </html>

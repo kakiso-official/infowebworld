@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tech News Feed - TechRadar Directory</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>Tech News Feed - InfoWebWorld</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Inter',sans-serif;font-size:14px;color:#1A1A2E;background:#F8FAFC;}
@@ -12,18 +12,6 @@ a{text-decoration:none;color:#1B6CA8;}a:hover{color:#0F4C75;}
 .container{max-width:1280px;margin:0 auto;padding:0 24px;}
 img{max-width:100%;}
 
-/* NAV */
-.nav{background:#fff;border-bottom:1px solid #E2E8F0;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);background:rgba(255,255,255,.95);}
-.nav-inner{display:flex;align-items:center;height:64px;gap:16px;}
-.logo{font-size:22px;font-weight:800;color:#0F4C75;letter-spacing:-0.5px;}.logo span{color:#E74C3C;}
-.nav-search{flex:1;max-width:480px;position:relative;}
-.nav-search input{width:100%;padding:9px 16px 9px 40px;border:1px solid #E2E8F0;border-radius:8px;font-size:14px;font-family:inherit;background:#F8FAFC;transition:all .2s;}
-.nav-search input:focus{outline:none;border-color:#1B6CA8;box-shadow:0 0 0 3px rgba(27,108,168,.1);background:#fff;}
-.nav-search::before{content:"🔍";position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;}
-.nav-link{padding:6px 12px;font-size:13px;color:#475569;font-weight:500;border-radius:6px;transition:all .15s;}
-.nav-link:hover{background:#F1F5F9;color:#0F4C75;}
-.nav-link.active{color:#0F4C75;font-weight:600;}
-.lang-select{padding:6px 8px;border:1px solid #E2E8F0;border-radius:6px;font-size:12px;font-family:inherit;background:#fff;cursor:pointer;}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .2s;}
 .btn-primary{background:#0F4C75;color:#fff;}.btn-primary:hover{background:#0d3f63;box-shadow:0 2px 8px rgba(15,76,117,.3);}
 .btn-secondary{background:#fff;color:#0F4C75;border:1px solid #CBD5E1;}.btn-secondary:hover{background:#F1F5F9;border-color:#0F4C75;}
@@ -144,35 +132,14 @@ img{max-width:100%;}
 .digest-title{font-size:12px;font-weight:600;line-height:1.4;color:#1A1A2E;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .digest-meta{font-size:10px;color:#94A3B8;margin-top:3px;}
 
-/* FOOTER */
-.footer{background:#1A1A2E;color:#fff;padding:60px 0 24px;margin-top:48px;}
-.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;}
-.footer-brand p{font-size:13px;opacity:.7;line-height:1.6;margin-top:8px;}
-.footer h4{font-size:14px;font-weight:600;margin-bottom:16px;}
-.footer-links{list-style:none;}.footer-links li{margin-bottom:8px;}
-.footer-links a{color:#CBD5E1;font-size:13px;transition:color .15s;}.footer-links a:hover{color:#fff;}
-.footer-bottom{border-top:1px solid #334155;padding-top:24px;display:flex;justify-content:space-between;font-size:12px;opacity:.7;}
-.footer-social{display:flex;gap:12px;}
-.footer-social a{color:#CBD5E1;font-size:16px;transition:color .15s;}.footer-social a:hover{color:#fff;}
 
 </style>
+<link rel="stylesheet" href="shared/shared.css">
 <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
 </head>
 <body>
 
-<!-- NAVIGATION -->
-<nav class="nav"><div class="container nav-inner">
-  <a href="index.html" class="logo">TechRadar<span>.</span></a>
-  <div class="nav-search"><input type="text" placeholder="Search news, tools, categories..."></div>
-  <a class="nav-link" href="category.html">Categories</a>
-  <a class="nav-link active" href="news.html">News</a>
-  <a class="nav-link" href="best-of.html">Best Of</a>
-  <a class="nav-link" href="blog.html">Blog</a>
-  <a class="nav-link" href="comparison.html">Compare</a>
-  <select class="lang-select"><option>EN</option><option>ES</option><option>FR</option><option>DE</option><option>JA</option></select>
-  <a href="signin.html" class="btn btn-secondary">Sign In</a>
-  <a href="submit-listing.html" class="btn btn-primary">Get Listed</a>
-</div></nav>
+<div id="s-nav"></div>
 
 <!-- HERO HEADER -->
 <div class="news-hero"><div class="container news-hero-inner">
@@ -550,24 +517,7 @@ img{max-width:100%;}
 </div>
 </div>
 
-<!-- FOOTER -->
-<footer class="footer"><div class="container">
-  <div class="footer-grid">
-    <div class="footer-brand"><div class="logo" style="color:#fff;">TechRadar<span>.</span></div><p>Discover, Compare & Review the Best AI Tools, SaaS Products & Tech Startups. AI-powered news summaries updated every 30 minutes.</p></div>
-    <div><h4>Platform</h4><ul class="footer-links"><li><a href="category.html">Browse Tools</a></li><li><a href="comparison.html">Compare</a></li><li><a href="best-of.html">Best Of Guides</a></li><li><a href="news.html">News Feed</a></li><li><a href="blog.html">Blog</a></li></ul></div>
-    <div><h4>Company</h4><ul class="footer-links"><li><a href="about.html">About Us</a></li><li><a href="contact.html">Contact</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li></ul></div>
-    <div><h4>For Vendors</h4><ul class="footer-links"><li><a href="submit-listing.html">List Your Tool</a></li><li><a href="pricing.html">Pricing Plans</a></li><li><a href="dashboard/index.html">Dashboard</a></li><li><a href="#">API Access</a></li></ul></div>
-  </div>
-  <div class="footer-bottom">
-    <span>&copy; 2026 TechRadar Directory. All rights reserved.</span>
-    <div class="footer-social">
-      <a href="#">𝕏</a>
-      <a href="#">in</a>
-      <a href="#">▶</a>
-      <a href="#">📘</a>
-    </div>
-  </div>
-</div></footer>
-
+<div id="s-footer"></div>
+<script src="shared/shared.js"></script>
 </body>
 </html>
