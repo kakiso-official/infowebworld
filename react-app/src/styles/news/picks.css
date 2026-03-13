@@ -1,5 +1,5 @@
 /* ===== Editor's Picks (horizontal scroll) ===== */
-.nws-picks{padding:20px 0;border-bottom:1px solid var(--gray-100)}
+.nws-picks{padding:20px 0;border-bottom:1px solid var(--gray-100);width:100%;min-width:0}
 .nws-picks-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .nws-picks-title{font-size:15px;font-weight:500;color:var(--gray-900);display:flex;align-items:center;gap:6px}
 .nws-picks-title svg{width:16px;height:16px;stroke:var(--gold);fill:none;stroke-width:1.5}
@@ -11,7 +11,7 @@
 .nws-pick-num{position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;background:var(--gray-50);
   display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:var(--gray-400)}
 .nws-pick-card h4{font-size:13px;font-weight:500;color:var(--gray-900);line-height:1.4;margin-bottom:6px;margin-top:4px;padding-right:28px;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;transition:color .2s}
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;transition:color .2s;word-break:break-word}
 .nws-pick-card:hover h4{color:var(--accent)}
 .nws-pick-card p{font-size:11px;font-weight:300;color:var(--gray-500);line-height:1.5;margin-bottom:8px;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -19,22 +19,39 @@
 .nws-pick-meta{font-size:10px;font-weight:300;color:var(--gray-400);display:flex;align-items:center;gap:6px}
 .nws-pick-meta svg{width:10px;height:10px;stroke:var(--gray-400);fill:none;stroke-width:1.5}
 
-/* --- Responsive --- */
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
 @media(max-width:768px){
-  .nws-picks{padding:10px 0}
-  .nws-picks-title{font-size:13px}
+  .nws-picks{padding:10px 0;border-bottom-color:var(--gray-100)}
   .nws-picks-header{margin-bottom:8px}
-  .nws-pick-card{min-width:180px;max-width:200px;padding:10px}
-  .nws-pick-card h4{font-size:11.5px;padding-right:22px;margin-bottom:4px}
+  .nws-picks-title{font-size:13px;gap:5px}
+  .nws-picks-title svg{width:14px;height:14px}
+  .nws-picks-scroll{gap:8px}
+  .nws-pick-card{min-width:200px;max-width:220px;padding:10px;border-radius:10px}
+  .nws-pick-card:hover{transform:none}
+  .nws-pick-card h4{font-size:12px;padding-right:24px;margin-bottom:4px;line-height:1.35}
   .nws-pick-card p{font-size:10px;-webkit-line-clamp:1;margin-bottom:6px}
   .nws-pick-num{width:18px;height:18px;font-size:9px;top:8px;right:8px}
   .nws-pick-footer{gap:4px}
-  .nws-pick-meta{font-size:9px}
+  .nws-pick-meta{font-size:9px;gap:4px}
+  .nws-pick-meta svg{width:9px;height:9px}
 }
-@media(max-width:375px){
-  .nws-pick-card{min-width:150px;max-width:170px;padding:8px}
-  .nws-pick-card h4{font-size:10.5px;padding-right:20px}
-  .nws-pick-card p{display:none}
+
+@media(max-width:480px){
+  .nws-pick-card{min-width:170px;max-width:190px;padding:8px}
+  .nws-pick-card h4{font-size:11px;padding-right:20px}
+  .nws-pick-card p{-webkit-line-clamp:1;font-size:9.5px;margin-bottom:4px}
   .nws-pick-num{width:16px;height:16px;font-size:8px;top:6px;right:6px}
   .nws-pick-meta{font-size:8.5px}
+}
+
+@media(max-width:375px){
+  .nws-picks{padding:8px 0}
+  .nws-picks-title{font-size:12px}
+  .nws-pick-card{min-width:150px;max-width:165px;padding:7px}
+  .nws-pick-card h4{font-size:10.5px;padding-right:18px;margin-bottom:3px}
+  .nws-pick-card p{display:none}
+  .nws-pick-num{width:15px;height:15px;font-size:7.5px;top:5px;right:5px}
+  .nws-pick-meta{font-size:8px}
 }

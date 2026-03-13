@@ -1,14 +1,46 @@
-/* ===== NEWS PAGE — Base & Layout ===== */
-.nws-page-wrap{width:100%;overflow-x:hidden}
-.nws-page-wrap *{box-sizing:border-box}
+/* ===== NEWS PAGE — Base, Tokens & Layout ===== */
 
-/* Breadcrumb */
+/* --- Design tokens (self-contained so page works standalone) --- */
+:root{
+  --accent:#6C72F1;--accent-hover:#5B61E0;
+  --accent-gradient:linear-gradient(135deg,#6C72F1,#8B7CF6);
+  --gray-50:#FAFBFC;--gray-100:#F1F5F9;--gray-200:#E2E8F0;--gray-300:#CBD5E1;
+  --gray-400:#94A3B8;--gray-500:#64748B;--gray-600:#475569;--gray-700:#334155;--gray-800:#1E293B;--gray-900:#18191B;
+  --emerald:#2FAE6A;--azure:#3B82F6;--coral:#EF6B4A;--plum:#8B5CF6;--teal:#14B8A6;--amber:#F59E0B;--rose:#EC4899;--gold:#E5A100;
+  --r:12px;--r-sm:8px;--r-lg:16px;--r-xl:20px;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.05);--shadow:0 2px 8px rgba(0,0,0,.06);--shadow-lg:0 8px 30px rgba(0,0,0,.1);
+}
+
+/* --- Container (news page needs its own — it's NOT in shared.css) --- */
+.container{width:100%;max-width:1320px;margin:0 auto;padding:0 clamp(16px,3vw,24px)}
+
+/* --- Page wrapper: the overflow gatekeeper --- */
+.nws-page-wrap{
+  width:100%;
+  max-width:100vw;
+  overflow-x:hidden;
+  background:var(--gray-50);
+  min-height:100vh;
+}
+
+/* Nuclear overflow prevention — every child must respect parent width */
+.nws-page-wrap,
+.nws-page-wrap *{box-sizing:border-box}
+.nws-page-wrap img,
+.nws-page-wrap video,
+.nws-page-wrap svg:not(:root){max-width:100%}
+.nws-page-wrap .container{max-width:100%;overflow:visible}
+
+/* Force ALL flex/grid children to allow shrinking */
+.nws-page-wrap [class*="nws-"]{min-width:0;max-width:100%}
+
+/* --- Breadcrumb --- */
 .nws-breadcrumb{padding:12px 0 0;font-size:12px;font-weight:300;color:var(--gray-400);display:flex;align-items:center;gap:6px}
 .nws-breadcrumb a{color:var(--gray-500);transition:color .2s}
 .nws-breadcrumb a:hover{color:var(--accent)}
 .nws-breadcrumb svg{width:12px;height:12px;stroke:var(--gray-300);fill:none;stroke-width:2;flex-shrink:0}
 
-/* Tags (shared) */
+/* --- Tags (shared across all news widgets) --- */
 .nws-tag{display:inline-flex;align-items:center;gap:3px;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:500;
   letter-spacing:.02em;text-transform:uppercase;transition:all .2s;white-space:nowrap}
 .nws-tag--accent{background:rgba(108,114,241,.1);color:var(--accent)}
@@ -23,10 +55,11 @@
 .nws-tag--trending{background:rgba(239,107,74,.1);color:var(--coral);display:inline-flex;align-items:center;gap:3px}
 .nws-tag--trending svg{width:10px;height:10px}
 
-/* Content layout (grid + sidebar) */
-.nws-content{display:grid;grid-template-columns:1fr 320px;gap:28px;padding:20px 0 40px}
+/* --- Content layout (main grid + sidebar) --- */
+.nws-content{display:grid;grid-template-columns:1fr 320px;gap:28px;padding:20px 0 40px;min-width:0}
+.nws-content>*{min-width:0}
 
-/* Scroll-to-top FAB */
+/* --- Scroll-to-top FAB --- */
 .nws-scroll-top{position:fixed;bottom:24px;right:24px;width:40px;height:40px;border-radius:50%;background:#fff;border:1px solid var(--gray-200);
   display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow);z-index:50;
   transition:all .3s cubic-bezier(.16,1,.3,1);opacity:0;transform:translateY(20px);pointer-events:none}
@@ -35,7 +68,7 @@
 .nws-scroll-top svg{width:16px;height:16px;stroke:var(--gray-600);fill:none;stroke-width:2}
 .nws-scroll-top:hover svg{stroke:var(--accent)}
 
-/* Load more */
+/* --- Load more --- */
 .nws-load-more{text-align:center;padding:20px 0}
 .nws-load-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 28px;border-radius:var(--r-sm);font-size:13px;font-weight:400;
   color:var(--gray-600);background:#fff;border:1px solid var(--gray-200);transition:all .2s;cursor:pointer;font-family:inherit}
@@ -43,24 +76,35 @@
 .nws-load-btn svg{width:14px;height:14px}
 .nws-results-text{font-size:11px;font-weight:300;color:var(--gray-400);margin-top:8px}
 
-/* --- Responsive --- */
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
 @media(max-width:1200px){
   .nws-content{grid-template-columns:1fr 280px;gap:20px}
 }
+
 @media(max-width:1024px){
-  .nws-content{grid-template-columns:1fr}
+  .nws-content{grid-template-columns:1fr;gap:16px}
 }
+
 @media(max-width:768px){
-  .nws-breadcrumb{padding:8px 0 0;font-size:11px}
-  .nws-content{gap:16px;padding:10px 0 24px}
+  .nws-breadcrumb{padding:8px 0 0;font-size:11px;gap:4px}
+  .nws-breadcrumb svg{width:10px;height:10px}
+  .nws-content{gap:14px;padding:10px 0 24px}
   .nws-load-more{padding:12px 0}
-  .nws-load-btn{width:100%;justify-content:center;padding:10px 16px;font-size:12px}
+  .nws-load-btn{width:100%;justify-content:center;padding:10px 16px;font-size:12px;border-radius:8px}
   .nws-results-text{font-size:10px;margin-top:4px}
   .nws-scroll-top{bottom:16px;right:16px;width:34px;height:34px}
   .nws-scroll-top svg{width:14px;height:14px}
+  .nws-tag{font-size:9px;padding:2px 7px;border-radius:3px}
 }
-@media(max-width:375px){
+
+@media(max-width:480px){
   .nws-tag{font-size:8px;padding:2px 5px}
+}
+
+@media(max-width:375px){
+  .nws-tag{font-size:7.5px;padding:2px 4px}
 }
 
 /* Print */
