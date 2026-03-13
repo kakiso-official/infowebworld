@@ -1,0 +1,51 @@
+export default function ValueProps() {
+  return (
+    <section className="section fade-section">
+      <div className="container">
+        <div className="section-header">
+          <div className="section-label">Why InfoWebWorld</div>
+          <h2 className="section-title">Built for Every Business</h2>
+          <p className="section-subtitle">Everything you need to grow your business, reach new customers, and build trust online.</p>
+        </div>
+        <div className="props-grid">
+          <div className="prop-card">
+            <div className="prop-card-header"><div className="prop-icon prop-icon--link"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg></div><div className="prop-number">01</div></div>
+            <div className="prop-title">Dofollow Backlinks</div>
+            <div className="prop-desc">Every listing includes a high-authority dofollow backlink that boosts your domain ranking and drives organic traffic to your business.</div>
+            <div className="prop-highlight"><svg viewBox="0 0 24 24" stroke="var(--emerald)" fill="none" strokeWidth="1.5"><polyline points="20 6 9 17 4 12" /></svg><span>Avg. DA 72+ backlink included</span></div>
+          </div>
+          <div className="prop-card">
+            <div className="prop-card-header"><div className="prop-icon prop-icon--shield"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg></div><div className="prop-number">02</div></div>
+            <div className="prop-title">Verified Reviews</div>
+            <div className="prop-desc">Every review goes through our verification pipeline to ensure authenticity. Real customers, real experiences, zero fake reviews.</div>
+            <div className="prop-highlight"><svg viewBox="0 0 24 24" stroke="var(--emerald)" fill="none" strokeWidth="1.5"><polyline points="20 6 9 17 4 12" /></svg><span>98% review authenticity rate</span></div>
+          </div>
+          <div className="prop-card">
+            <div className="prop-card-header"><div className="prop-icon prop-icon--globe"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></div><div className="prop-number">03</div></div>
+            <div className="prop-title">Global Visibility</div>
+            <div className="prop-desc">Reach customers across 12 countries and 80+ industries. Your business gets discovered by the right audience, wherever they are.</div>
+            <div className="prop-highlight"><svg viewBox="0 0 24 24" stroke="var(--emerald)" fill="none" strokeWidth="1.5"><polyline points="20 6 9 17 4 12" /></svg><span>12 countries, 80+ industries</span></div>
+          </div>
+          <div className="prop-card">
+            <div className="prop-card-header"><div className="prop-icon prop-icon--compare"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="8.5" cy="7" r="4" /><path d="M20 8v6M23 11h-6" /></svg></div><div className="prop-number">04</div></div>
+            <div className="prop-title">Comparison Engine</div>
+            <div className="prop-desc">Let customers compare your business side-by-side with competitors using detailed feature matrices and satisfaction scores.</div>
+            <div className="prop-highlight"><svg viewBox="0 0 24 24" stroke="var(--emerald)" fill="none" strokeWidth="1.5"><polyline points="20 6 9 17 4 12" /></svg><span>Side-by-side feature comparison</span></div>
+          </div>
+          <div className="prop-card">
+            <div className="prop-card-header"><div className="prop-icon prop-icon--leads"><svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6" /></svg></div><div className="prop-number">05</div></div>
+            <div className="prop-title">Lead Generation</div>
+            <div className="prop-desc">Receive qualified leads directly from your listing page with built-in analytics, conversion tracking, and inquiry forms.</div>
+            <div className="prop-highlight"><svg viewBox="0 0 24 24" stroke="var(--emerald)" fill="none" strokeWidth="1.5"><polyline points="20 6 9 17 4 12" /></svg><span>40+ avg. monthly leads per listing</span></div>
+          </div>
+          <div className="prop-card">
+            <div className="prop-card-header"><div className="prop-icon prop-icon--insights"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg></div><div className="prop-number">06</div></div>
+            <div className="prop-title">Industry Insights</div>
+            <div className="prop-desc">Stay ahead with real-time news, market trends, and competitive intelligence curated for your specific industry.</div>
+            <div className="prop-highlight"><svg viewBox="0 0 24 24" stroke="var(--emerald)" fill="none" strokeWidth="1.5"><polyline points="20 6 9 17 4 12" /></svg><span>Daily trend reports delivered</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}

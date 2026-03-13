@@ -1,0 +1,8 @@
+/* News Page — Widget-based CSS Architecture */
+@import './news/base.css';
+@import './news/ticker.css';
+@import './news/hero.css';
+@import './news/picks.css';
+@import './news/filter.css';
+@import './news/cards.css';
+@import './news/sidebar.css';
