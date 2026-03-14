@@ -1,0 +1,72 @@
+/* ============================================================
+   TESTIMONIALS
+   ============================================================ */
+.testimonials{background:var(--bg-alt)}
+
+/* Social proof bar */
+.test-proof-bar{display:flex;align-items:center;justify-content:center;gap:1rem;background:var(--white);border:1px solid var(--gray-200);border-radius:var(--r);padding:.4rem 1rem;margin-bottom:.75rem}
+.test-proof-item{display:flex;align-items:center;gap:.3rem}
+.test-proof-item svg{width:14px;height:14px;flex-shrink:0}
+.test-proof-num{font-size:.8125rem;font-weight:500;color:var(--gray-900)}
+.test-proof-text{font-size:.625rem;font-weight:300;color:var(--gray-500)}
+.test-proof-divider{width:1px;height:18px;background:var(--gray-200)}
+
+/* Hero testimonial */
+.test-hero{display:grid;grid-template-columns:1.5fr 1fr;gap:0;background:var(--white);border:1px solid var(--gray-200);border-radius:var(--r-lg);overflow:hidden;margin-bottom:.75rem;transition:all .35s}
+.test-hero:hover{border-color:var(--accent);box-shadow:0 12px 40px rgba(108,114,241,.08)}
+.test-hero-quote{padding:1rem 1.25rem;display:flex;flex-direction:column;gap:.5rem}
+.test-hero-quote-icon{width:24px;height:24px;opacity:.3;flex-shrink:0}
+.test-hero-text{font-size:.875rem;font-weight:300;font-style:italic;color:var(--gray-700);line-height:1.6;flex:1}
+.test-hero-stars{display:flex;gap:2px}
+.test-hero-stars svg{width:13px;height:13px}
+.test-hero-right{border-left:1px solid var(--gray-100);display:flex;flex-direction:column}
+.test-hero-img{flex:1;overflow:hidden}
+.test-hero-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.16,1,.3,1)}
+.test-hero:hover .test-hero-img img{transform:scale(1.05)}
+.test-hero-author{background:var(--gray-50);padding:.875rem 1rem;display:flex;align-items:center;gap:.5rem;border-top:1px solid var(--gray-100)}
+
+/* Shared avatar/name */
+.test-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6875rem;font-weight:500;color:#fff;flex-shrink:0}
+.test-avatar--lg{width:42px;height:42px;font-size:.8125rem}
+.test-name{font-size:.6875rem;font-weight:400;color:var(--gray-800)}
+.test-role{font-size:.5625rem;font-weight:300;color:var(--gray-400)}
+.test-result{display:flex;align-items:center;gap:.25rem;margin-top:.2rem}
+.test-result svg{width:12px;height:12px;flex-shrink:0}
+.test-result span{font-size:.625rem;font-weight:500;color:var(--emerald)}
+.test-result--sm{margin-top:0}
+.test-result--sm svg{width:10px;height:10px}
+.test-result--sm span{font-size:.5625rem}
+
+/* Card grid */
+.testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.625rem}
+.test-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--r-lg);padding:.875rem;transition:all .35s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column}
+.test-card:hover{border-color:var(--accent);box-shadow:0 8px 32px rgba(108,114,241,.08);transform:translateY(-3px)}
+.test-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.5rem}
+.test-card-quote{width:20px;height:20px;opacity:.4;flex-shrink:0}
+.test-stars{display:flex;gap:2px}
+.test-stars svg{width:12px;height:12px}
+.test-text{font-size:.6875rem;font-weight:300;font-style:italic;color:var(--gray-600);line-height:1.55;margin-bottom:.625rem;flex:1}
+.test-card-footer{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding-top:.5rem;border-top:1px solid var(--gray-100)}
+.test-author{display:flex;align-items:center;gap:.375rem}
+
+@media(max-width:1024px){
+  .testimonials-grid{grid-template-columns:repeat(2,1fr)}
+  .test-hero{grid-template-columns:1.3fr 1fr}
+}
+@media(max-width:768px){
+  .testimonials-grid{grid-template-columns:1fr}
+  .test-hero{grid-template-columns:1fr}
+  .test-hero-right{border-left:none;border-top:1px solid var(--gray-100)}
+  .test-hero-img{max-height:180px}
+  .test-hero-author{padding:.625rem .75rem}
+  .test-hero-quote{padding:.875rem}
+  .test-proof-bar{flex-wrap:wrap;gap:.5rem;padding:.4rem .625rem}
+  .test-proof-divider{display:none}
+  .test-card-footer{flex-direction:column;align-items:flex-start}
+}
+@media(max-width:480px){
+  .test-hero-quote{padding:.75rem}
+  .test-hero-author{padding:.625rem .75rem}
+  .test-card{padding:.75rem}
+  .test-hero-text{font-size:.8125rem}
+}

@@ -30,12 +30,17 @@ export default function Testimonials() {
             <p className="test-hero-text">InfoWebWorld helped us reach corporate clients we never had access to before. Within three months, our catering inquiries tripled and we expanded into two new cities. The ROI has been incredible.</p>
             <div className="test-hero-stars"><Stars5 /></div>
           </div>
-          <div className="test-hero-author">
-            <div className="test-avatar test-avatar--lg" style={{background:'var(--accent-gradient)'}}>EW</div>
-            <div>
-              <div className="test-name">Elena Wu</div>
-              <div className="test-role">VP of Operations, FreshBite Catering</div>
-              <div className="test-result"><TrendUp /><span>3x more inquiries in 90 days</span></div>
+          <div className="test-hero-right">
+            <div className="test-hero-img">
+              <img src="/images/man-restroom-reading-newspaper.jpg" alt="Business owner testimonial" loading="lazy" />
+            </div>
+            <div className="test-hero-author">
+              <div className="test-avatar test-avatar--lg" style={{background:'var(--accent-gradient)'}}>EW</div>
+              <div>
+                <div className="test-name">Elena Wu</div>
+                <div className="test-role">VP of Operations, FreshBite Catering</div>
+                <div className="test-result"><TrendUp /><span>3x more inquiries in 90 days</span></div>
+              </div>
             </div>
           </div>
         </div>

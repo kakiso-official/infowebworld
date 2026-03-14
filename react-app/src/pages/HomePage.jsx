@@ -64,8 +64,8 @@ export default function HomePage() {
       <LandingNav />
       <Hero />
       <Logos />
-      <Categories />
       <Featured />
+      <Categories />
       <Reviews />
       <News />
       <Trending />

@@ -22,7 +22,7 @@ export default function LandingNav() {
       <nav className={`nav${scrolled ? ' scrolled' : ''}`} id="nav">
         <div className="container nav-inner">
           <Link to="/" className="nav-logo">
-            <img src="/logo/infowebworld-logo.png" alt="InfoWebWorld" style={{height:'180px',width:'auto'}} />
+            <img src="/logo/infowebworld-logo.png" alt="InfoWebWorld" />
           </Link>
           <div className="nav-links">
             <div className="mega-menu-wrapper">
@@ -55,7 +55,7 @@ export default function LandingNav() {
       <div className={`nav-mobile-overlay${drawerOpen ? ' open' : ''}`} id="nav-overlay" onClick={close}></div>
       <div className={`nav-mobile-drawer${drawerOpen ? ' open' : ''}`} id="nav-drawer">
         <div className="nav-mobile-header">
-          <Link to="/" className="nav-logo"><img src="/logo/infowebworld-logo.png" alt="InfoWebWorld" style={{height:'140px',width:'auto'}} /></Link>
+          <Link to="/" className="nav-logo"><img src="/logo/infowebworld-logo.png" alt="InfoWebWorld" /></Link>
           <button className="nav-mobile-close" aria-label="Close menu" onClick={close}><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg></button>
         </div>
         <div className="nav-mobile-body">

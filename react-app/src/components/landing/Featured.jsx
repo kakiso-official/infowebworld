@@ -141,13 +141,11 @@ export default function Featured() {
             <ActionBar likes={203} dislikes={12} />
           </div>
 
-          {/* 5. BrightPath Academy - TALL */}
+          {/* 5. BrightPath Academy - TALL + IMAGE */}
           <div className="listing-card listing-card--tall">
             <Link to="/listing?biz=brightpath-academy" className="listing-link">
-              <div className="listing-top" style={{background:'linear-gradient(135deg,rgba(20,184,166,.14),rgba(59,130,246,.08))'}}>
-                <div className="listing-icon-wrap">
-                  <svg viewBox="0 0 24 24" stroke="var(--teal)"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></svg>
-                </div>
+              <div className="listing-top listing-top--img">
+                <img src="/images/man-restroom-reading-newspaper.jpg" alt="BrightPath Academy" loading="lazy" />
                 <span className="listing-badge listing-badge--verified">Verified</span>
               </div>
               <div className="listing-body">
@@ -193,13 +191,11 @@ export default function Featured() {
             <ActionBar likes={45} dislikes={2} />
           </div>
 
-          {/* 7. PrecisionFix Plumbing - TALL, DESKTOP ONLY */}
+          {/* 7. PrecisionFix Plumbing - TALL + IMAGE, DESKTOP ONLY */}
           <div className="listing-card listing-card--tall listing-card--desktop-only">
             <Link to="/listing?biz=precisionfix-plumbing" className="listing-link">
-              <div className="listing-top" style={{background:'linear-gradient(135deg,rgba(245,158,11,.14),rgba(239,107,74,.08))'}}>
-                <div className="listing-icon-wrap">
-                  <svg viewBox="0 0 24 24" stroke="var(--amber)"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" /></svg>
-                </div>
+              <div className="listing-top listing-top--img">
+                <img src="/images/anthropomorphic-portrait-animal-dressed-human-clothes-doing-daily-activities.jpg" alt="PrecisionFix Plumbing" loading="lazy" />
                 <span className="listing-badge listing-badge--verified">Verified</span>
               </div>
               <div className="listing-body">

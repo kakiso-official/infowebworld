@@ -8,7 +8,7 @@ export default function LandingFooter() {
       <div className="container">
         <div className="footer-grid">
           <div className="footer-brand">
-            <div className="footer-brand-logo" style={{marginBottom:'.25rem'}}><img src="/logo/infowebworld-logo.png" alt="InfoWebWorld" style={{height:'180px',width:'auto'}} /></div>
+            <div className="footer-brand-logo"><img src="/logo/infowebworld-logo.png" alt="InfoWebWorld" /></div>
             <p className="footer-brand-desc">The trusted global directory for discovering, comparing, and reviewing businesses across every industry. From local services to enterprise solutions.</p>
             <div className="footer-newsletter">
               <div className="footer-newsletter-wrap">

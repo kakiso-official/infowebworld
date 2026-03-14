@@ -1,0 +1,74 @@
+/* ============================================================
+   TRENDING
+   ============================================================ */
+.trending{background:var(--bg-alt)}
+
+/* Stats ribbon */
+.trend-stats-bar{display:flex;align-items:center;justify-content:center;gap:1rem;background:var(--white);border:1px solid var(--gray-200);border-radius:var(--r);padding:.4rem 1rem;margin-bottom:.75rem}
+.trend-stat-pill{display:flex;align-items:center;gap:.3rem}
+.trend-stat-pill svg{width:14px;height:14px;flex-shrink:0}
+.trend-stat-num{font-size:.8125rem;font-weight:500;color:var(--gray-900)}
+.trend-stat-text{font-size:.625rem;font-weight:300;color:var(--gray-500)}
+.trend-stat-divider{width:1px;height:18px;background:var(--gray-200)}
+
+/* 2-Column Grid */
+.trend-grid{display:grid;grid-template-columns:1fr 1fr;gap:.625rem}
+.trend-col{display:flex;flex-direction:column;gap:.25rem;background:var(--white);border:1px solid var(--gray-200);border-radius:var(--r-lg);padding:.25rem}
+
+/* Individual item row */
+.trend-item{display:flex;align-items:center;gap:.5rem;padding:.4rem .625rem;border-radius:var(--r);transition:all .25s cubic-bezier(.16,1,.3,1);text-decoration:none;color:inherit}
+.trend-item:hover{background:var(--accent-soft);transform:translateX(3px)}
+
+/* Rank number */
+.trend-item-rank{font-size:.8125rem;font-weight:500;color:var(--gray-300);width:16px;text-align:center;flex-shrink:0;transition:color .25s}
+.trend-item:hover .trend-item-rank{color:var(--accent)}
+
+/* Top 3 rank accents */
+.trend-item--gold .trend-item-rank{color:#E5A100;font-weight:500}
+.trend-item--silver .trend-item-rank{color:#9CA3AF;font-weight:500}
+.trend-item--bronze .trend-item-rank{color:#D97706;font-weight:500}
+.trend-item--gold{border-left:2px solid rgba(229,161,0,.3);background:linear-gradient(90deg,rgba(229,161,0,.02) 0%,transparent 40%)}
+.trend-item--silver{border-left:2px solid rgba(156,163,175,.25)}
+.trend-item--bronze{border-left:2px solid rgba(217,119,6,.25)}
+
+/* Item icon */
+.trend-item-icon{width:30px;height:30px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .3s}
+.trend-item-icon svg{width:15px;height:15px}
+.trend-item:hover .trend-item-icon{transform:scale(1.1)}
+
+/* Item body */
+.trend-item-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:.1rem}
+.trend-item-top{display:flex;align-items:center;gap:.3rem}
+.trend-item-name{font-size:.6875rem;font-weight:400;color:var(--gray-800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trend-item-cat{font-size:.5rem;font-weight:300;color:var(--gray-400);white-space:nowrap;flex-shrink:0}
+.trend-item-bottom{display:flex;align-items:center;gap:.5rem}
+
+/* Item rating */
+.trend-item-rating{display:flex;align-items:center;gap:.15rem}
+.trend-item-rating svg{width:10px;height:10px}
+.trend-item-rating span{font-size:.625rem;font-weight:500;color:var(--gray-700)}
+
+/* Item votes */
+.trend-item-votes{font-size:.5rem;font-weight:300;color:var(--gray-400)}
+
+/* Item change badge */
+.trend-item-change{font-size:.5rem;font-weight:500;padding:.1rem .35rem;border-radius:999px;flex-shrink:0;white-space:nowrap}
+.trend-item-change--up{color:var(--emerald);background:rgba(47,174,106,.08)}
+
+@media(max-width:1024px){
+  .trend-grid{grid-template-columns:1fr 1fr;gap:.5rem}
+}
+@media(max-width:768px){
+  .trend-grid{grid-template-columns:1fr}
+  .trend-stats-bar{flex-wrap:wrap;gap:.5rem;padding:.4rem .625rem}
+  .trend-stat-divider{display:none}
+  .trend-item{padding:.35rem .5rem;gap:.375rem}
+  .trend-item-cat{display:none}
+  .trend-item-votes{display:none}
+}
+@media(max-width:480px){
+  .trend-col{padding:.2rem}
+  .trend-item{padding:.3rem .4rem}
+  .trend-item-icon{width:26px;height:26px}
+  .trend-item-icon svg{width:13px;height:13px}
+}

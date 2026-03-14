@@ -36,9 +36,8 @@ export default function News() {
                 </div>
               </div>
             </div>
-            <div className="news-hero-visual">
-              <div className="news-hero-icon-wrap"><svg viewBox="0 0 24 24" stroke="#fff" fill="none" strokeWidth="1.5"><path d="M23 6l-9.5 9.5-5-5L1 18" /><path d="M17 6h6v6" /></svg></div>
-              <div className="news-hero-visual-label">Business</div>
+            <div className="news-hero-visual news-hero-visual--img">
+              <img src="/images/front-view-woman-reading-newspaper.jpg" alt="Business news" loading="lazy" />
             </div>
           </Link>
           <div className="news-grid-v2">

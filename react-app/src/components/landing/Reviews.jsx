@@ -31,18 +31,21 @@ export default function Reviews() {
               <div className="review-stars review-stars--lg"><Stars5 /></div>
               <h3 className="review-hero-title">"An absolutely transformative dining experience"</h3>
               <p className="review-hero-text">The Garden Table exceeded every expectation. The seasonal tasting menu was exquisite, and the service was impeccable. From the moment we walked in, the ambiance felt warm yet sophisticated. Already booked our next visit.</p>
+              <div className="review-hero-meta">
+                <div className="review-hero-biz">
+                  <div className="review-biz-icon" style={{background:'rgba(239,107,74,.1)'}}><svg viewBox="0 0 24 24" stroke="var(--coral)" fill="none" strokeWidth="1.5"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" /><path d="M7 2v20" /><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7" /></svg></div>
+                  <div><div className="review-biz-name">The Garden Table</div><div className="review-biz-cat">Restaurant &amp; Cafe</div></div>
+                </div>
+                <div className="review-hero-divider"></div>
+                <div className="review-author">
+                  <div className="review-avatar" style={{background:'var(--accent-gradient)'}}>SM</div>
+                  <div><div className="review-name">Sarah Mitchell <VerifiedBadge /></div><div className="review-meta">Food blogger · 1 hour ago</div></div>
+                </div>
+                <div className="review-helpful"><ThumbSvg />42 found this helpful</div>
+              </div>
             </div>
-            <div className="review-hero-right">
-              <div className="review-hero-biz">
-                <div className="review-biz-icon" style={{background:'rgba(239,107,74,.1)'}}><svg viewBox="0 0 24 24" stroke="var(--coral)" fill="none" strokeWidth="1.5"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" /><path d="M7 2v20" /><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7" /></svg></div>
-                <div><div className="review-biz-name">The Garden Table</div><div className="review-biz-cat">Restaurant &amp; Cafe</div></div>
-              </div>
-              <div className="review-hero-divider"></div>
-              <div className="review-author">
-                <div className="review-avatar" style={{background:'var(--accent-gradient)'}}>SM</div>
-                <div><div className="review-name">Sarah Mitchell <VerifiedBadge /></div><div className="review-meta">Food blogger · 1 hour ago</div></div>
-              </div>
-              <div className="review-helpful"><ThumbSvg />42 found this helpful</div>
+            <div className="review-hero-img">
+              <img src="/images/anthropomorphic-portrait-animal-dressed-human-clothes-doing-daily-activities.jpg" alt="Review highlight" loading="lazy" />
             </div>
           </Link>
           <div className="reviews-grid-v2">
