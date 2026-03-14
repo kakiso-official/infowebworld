@@ -21,7 +21,7 @@
 
 /* ---- Base Reset ---- */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
 body{font-family:'Inter',sans-serif;font-size:14px;color:var(--gray-900);background:var(--gray-50);
   -webkit-font-smoothing:antialiased;overflow-x:hidden;width:100%;max-width:100%}
 img,video,iframe{max-width:100%}
