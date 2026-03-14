@@ -204,6 +204,65 @@
 .db-quick-action-icon svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:1.5}
 .db-quick-action span{font-size:12px;font-weight:400;color:var(--gray-700);text-align:center}
 
+/* ═══ Welcome Hero Banner ═══ */
+.db-welcome{position:relative;border-radius:var(--r-lg);overflow:hidden;margin-bottom:24px;padding:clamp(24px,3vw,36px) clamp(24px,4vw,40px);color:#fff}
+.db-welcome-bg{position:absolute;inset:0;background:linear-gradient(135deg,#6C72F1 0%,#8B7CF6 40%,#5B61E0 70%,#4B46B8 100%);z-index:0}
+.db-welcome-bg::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 400px 300px at 80% 20%,rgba(255,255,255,.12),transparent),radial-gradient(ellipse 300px 200px at 20% 80%,rgba(20,184,166,.15),transparent)}
+.db-welcome-bg::after{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.db-welcome-content{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.db-welcome-text{max-width:560px}
+.db-welcome-title{font-size:clamp(1.25rem,2.5vw,1.75rem);font-weight:600;margin-bottom:8px;letter-spacing:-.01em}
+.db-welcome-desc{font-size:clamp(.8125rem,1.2vw,.9375rem);font-weight:300;opacity:.85;line-height:1.65;margin-bottom:16px}
+.db-welcome-desc strong{font-weight:600;opacity:1}
+.db-welcome-actions{display:flex;gap:10px;flex-wrap:wrap}
+.db-welcome-stats-mini{display:flex;flex-direction:column;gap:8px}
+.db-welcome-stat-pill{display:flex;align-items:center;gap:8px;padding:8px 16px;background:rgba(255,255,255,.1);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15);border-radius:var(--r);font-size:12px;font-weight:400;color:rgba(255,255,255,.9)}
+.db-welcome-stat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* ═══ Conversion Funnel ═══ */
+.db-funnel-step{margin-bottom:14px}
+.db-funnel-step:last-child{margin-bottom:0}
+.db-funnel-bar-wrap{height:28px;background:var(--gray-50);border-radius:var(--r-sm);overflow:hidden;margin-bottom:4px}
+.db-funnel-bar{height:100%;border-radius:var(--r-sm);transition:width .8s cubic-bezier(.16,1,.3,1);display:flex;align-items:center;justify-content:flex-end;padding-right:8px;min-width:40px}
+.db-funnel-info{display:flex;align-items:center;gap:8px}
+.db-funnel-label{font-size:11.5px;font-weight:400;color:var(--gray-600);flex:1}
+.db-funnel-value{font-size:12px;font-weight:600;color:var(--gray-800)}
+.db-funnel-conv{font-size:10px;font-weight:500;color:var(--emerald);background:rgba(47,174,106,.08);padding:1px 6px;border-radius:4px}
+
+/* ═══ Listing Health Ring ═══ */
+.db-health-ring{position:relative;display:inline-block;margin-bottom:8px}
+.db-health-ring-value{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.db-health-score{font-size:32px;font-weight:700;color:var(--gray-900);line-height:1}
+.db-health-label{font-size:11px;font-weight:300;color:var(--gray-400)}
+.db-health-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--gray-50)}
+.db-health-item:last-child{border-bottom:none}
+.db-health-dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;font-weight:600}
+.db-health-dot--ok{background:rgba(47,174,106,.1);color:var(--emerald)}
+.db-health-dot--warn{background:rgba(245,158,11,.1);color:var(--amber)}
+.db-health-item-label{flex:1;font-size:12px;font-weight:350;color:var(--gray-600)}
+.db-health-item-score{font-size:12px;font-weight:500;color:var(--gray-800)}
+
+/* ═══ Donut Chart ═══ */
+.db-donut-wrap{display:flex;justify-content:center;margin-bottom:16px}
+
+/* ═══ Competitor Snapshot ═══ */
+.db-competitor-you{display:flex;align-items:center;gap:12px;padding:12px 14px;background:linear-gradient(135deg,rgba(108,114,241,.06),rgba(139,92,246,.04));border:1px solid rgba(108,114,241,.15);border-radius:var(--r-sm);margin-bottom:12px}
+.db-competitor-rank{width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.db-competitor-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--gray-100)}
+.db-competitor-row:last-child{border-bottom:none}
+
+/* ═══ Growth Tips ═══ */
+.db-tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.db-tip{display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--gray-100);border-right:1px solid var(--gray-100);transition:background .2s}
+.db-tip:hover{background:var(--gray-50)}
+.db-tip:nth-child(2n){border-right:none}
+.db-tip:nth-last-child(-n+2){border-bottom:none}
+.db-tip-icon{width:40px;height:40px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.db-tip-icon svg{width:18px;height:18px}
+.db-tip-content{flex:1;min-width:0}
+.db-tip-title{font-size:13px;font-weight:500;color:var(--gray-800);margin-bottom:2px}
+.db-tip-desc{font-size:11.5px;font-weight:300;color:var(--gray-500);line-height:1.5}
+
 /* ============================================================
    RESPONSIVE
    ============================================================ */
@@ -211,6 +270,10 @@
   .db-grid-2{grid-template-columns:1fr}
   .db-grid-3{grid-template-columns:1fr 1fr}
   .db-plan-features{grid-template-columns:1fr}
+  .db-tips-grid{grid-template-columns:1fr}
+  .db-tip{border-right:none}
+  .db-tip:nth-last-child(-n+2){border-bottom:1px solid var(--gray-100)}
+  .db-tip:last-child{border-bottom:none}
 }
 
 @media(max-width:768px){
@@ -224,7 +287,9 @@
   .db-profile-hero{flex-direction:column;text-align:center}
   .db-table{font-size:12px}
   .db-table th,.db-table td{padding:8px 10px}
-  .db-quick-actions{grid-template-columns:repeat(2,1fr)}
+  .db-quick-actions{grid-template-columns:repeat(3,1fr)}
+  .db-welcome-content{flex-direction:column;align-items:flex-start}
+  .db-welcome-stats-mini{flex-direction:row;flex-wrap:wrap}
 }
 
 @media(max-width:480px){
