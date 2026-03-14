@@ -263,6 +263,11 @@
 .db-tip-title{font-size:13px;font-weight:500;color:var(--gray-800);margin-bottom:2px}
 .db-tip-desc{font-size:11.5px;font-weight:300;color:var(--gray-500);line-height:1.5}
 
+/* ═══ Analytics Pulse Indicator ═══ */
+.an-pulse{width:10px;height:10px;border-radius:50%;background:#4ade80;display:inline-block;position:relative;flex-shrink:0}
+.an-pulse::before{content:'';position:absolute;inset:-4px;border-radius:50%;background:rgba(74,222,128,.3);animation:an-pulse-ring 2s ease-out infinite}
+@keyframes an-pulse-ring{0%{transform:scale(.8);opacity:1}100%{transform:scale(2.2);opacity:0}}
+
 /* ============================================================
    RESPONSIVE
    ============================================================ */
