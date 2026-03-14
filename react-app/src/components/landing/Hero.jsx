@@ -86,13 +86,13 @@ export default function Hero() {
     ? categorySuggestions.filter(c => c.name.toLowerCase().includes(q)).slice(0, 3)
     : []
 
-  const showDropdown = focused && q.length > 0
+  const showDropdown = focused
   const totalResults = filtered.length + matchedCats.length
 
   const handleSearch = (e) => {
     e.preventDefault()
-    setFocused(false)
-    navigate(`/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(locationVal)}`)
+    // Don't navigate on form submit — only navigate when a result is selected
+    setFocused(true)
   }
 
   const goToResult = (name) => {
@@ -102,7 +102,12 @@ export default function Hero() {
 
   const goToCategory = (slug) => {
     setFocused(false)
-    navigate(`/category?cat=${slug}`)
+    navigate(`/search?q=${encodeURIComponent(slug)}&location=${encodeURIComponent(locationVal)}`)
+  }
+
+  const viewAllResults = () => {
+    setFocused(false)
+    navigate(`/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(locationVal)}`)
   }
 
   // Keyboard navigation
@@ -197,87 +202,138 @@ export default function Hero() {
               <div className="search-dropdown" ref={dropdownRef}>
                 <div className="search-dropdown-glass"></div>
                 <div className="search-dropdown-content">
-                  {/* Searching indicator */}
-                  <div className="search-dd-searching">
-                    <div className="search-dd-ripple">
-                      <span></span><span></span><span></span>
-                    </div>
-                    <span className="search-dd-searching-text">
-                      {totalResults > 0 ? `${totalResults} results found` : 'Searching...'}
-                    </span>
-                  </div>
 
-                  {/* Business results */}
-                  {filtered.length > 0 && (
-                    <div className="search-dd-section">
-                      <div className="search-dd-label">
-                        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v3" /></svg>
-                        Businesses
-                      </div>
-                      {filtered.map((s, i) => (
-                        <div
-                          key={i}
-                          className={`search-dd-item${activeIdx === i ? ' search-dd-item--active' : ''}`}
-                          onClick={() => goToResult(s.name)}
-                          onMouseEnter={() => setActiveIdx(i)}
-                          onMouseMove={handleItemMouse}
-                          style={{ '--delay': `${i * 50}ms` }}
-                        >
-                          <div className="search-dd-item-icon" style={{ background: `color-mix(in srgb, ${s.color} 12%, transparent)` }}>
-                            <svg viewBox="0 0 24 24" stroke={s.color} fill="none" strokeWidth="1.5">{s.icon}</svg>
-                          </div>
-                          <div className="search-dd-item-info">
-                            <div className="search-dd-item-name">{highlightMatch(s.name, q)}</div>
-                            <div className="search-dd-item-cat">{s.cat}</div>
-                          </div>
-                          <div className="search-dd-item-rating">
-                            <svg viewBox="0 0 24 24" fill="var(--gold)" stroke="var(--gold)" strokeWidth="1"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                            <span>{s.rating}</span>
-                          </div>
-                          <svg className="search-dd-item-arrow" viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                  {/* ── Empty query: show trending + categories ── */}
+                  {q.length === 0 && (
+                    <>
+                      <div className="search-dd-section">
+                        <div className="search-dd-label">
+                          <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
+                          Trending Searches
                         </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Category results */}
-                  {matchedCats.length > 0 && (
-                    <div className="search-dd-section">
-                      <div className="search-dd-label">
-                        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></svg>
-                        Categories
-                      </div>
-                      {matchedCats.map((c, i) => (
-                        <div
-                          key={i}
-                          className={`search-dd-item search-dd-item--cat${activeIdx === filtered.length + i ? ' search-dd-item--active' : ''}`}
-                          onClick={() => goToCategory(c.slug)}
-                          onMouseEnter={() => setActiveIdx(filtered.length + i)}
-                          onMouseMove={handleItemMouse}
-                          style={{ '--delay': `${(filtered.length + i) * 50}ms` }}
-                        >
-                          <div className="search-dd-cat-dot" style={{ background: c.color }}></div>
-                          <span className="search-dd-cat-name">{highlightMatch(c.name, q)}</span>
-                          <svg className="search-dd-item-arrow" viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                        <div className="search-dd-trending">
+                          {['Restaurants', 'SaaS Tools', 'Marketing Agency', 'Real Estate', 'Healthcare'].map((t, i) => (
+                            <button
+                              key={i}
+                              className="search-dd-trend-tag"
+                              onClick={() => setQuery(t)}
+                              onMouseMove={handleItemMouse}
+                              style={{ '--delay': `${i * 40}ms` }}
+                            >
+                              <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /><polyline points="17 6 23 6 23 12" /></svg>
+                              {t}
+                            </button>
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                      <div className="search-dd-section">
+                        <div className="search-dd-label">
+                          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></svg>
+                          Popular Categories
+                        </div>
+                        {categorySuggestions.slice(0, 5).map((c, i) => (
+                          <div
+                            key={i}
+                            className="search-dd-item search-dd-item--cat"
+                            onClick={() => goToCategory(c.slug)}
+                            onMouseMove={handleItemMouse}
+                            style={{ '--delay': `${i * 50}ms` }}
+                          >
+                            <div className="search-dd-cat-dot" style={{ background: c.color }}></div>
+                            <span className="search-dd-cat-name">{c.name}</span>
+                            <svg className="search-dd-item-arrow" viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                          </div>
+                        ))}
+                      </div>
+                    </>
                   )}
 
-                  {/* No results */}
-                  {totalResults === 0 && q.length > 1 && (
-                    <div className="search-dd-empty">
-                      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /><line x1="8" y1="11" x2="14" y2="11" /></svg>
-                      <span>No results for "{query}"</span>
-                    </div>
-                  )}
+                  {/* ── Has query: show filtered results ── */}
+                  {q.length > 0 && (
+                    <>
+                      {/* Searching indicator */}
+                      <div className="search-dd-searching">
+                        <div className="search-dd-ripple">
+                          <span></span><span></span><span></span>
+                        </div>
+                        <span className="search-dd-searching-text">
+                          {totalResults > 0 ? `${totalResults} results found` : 'Searching...'}
+                        </span>
+                      </div>
 
-                  {/* View all */}
-                  {totalResults > 0 && (
-                    <div className="search-dd-footer" onClick={handleSearch}>
-                      <span>View all results for "{query}"</span>
-                      <svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
-                    </div>
+                      {/* Business results */}
+                      {filtered.length > 0 && (
+                        <div className="search-dd-section">
+                          <div className="search-dd-label">
+                            <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v3" /></svg>
+                            Businesses
+                          </div>
+                          {filtered.map((s, i) => (
+                            <div
+                              key={i}
+                              className={`search-dd-item${activeIdx === i ? ' search-dd-item--active' : ''}`}
+                              onClick={() => goToResult(s.name)}
+                              onMouseEnter={() => setActiveIdx(i)}
+                              onMouseMove={handleItemMouse}
+                              style={{ '--delay': `${i * 50}ms` }}
+                            >
+                              <div className="search-dd-item-icon" style={{ background: `color-mix(in srgb, ${s.color} 12%, transparent)` }}>
+                                <svg viewBox="0 0 24 24" stroke={s.color} fill="none" strokeWidth="1.5">{s.icon}</svg>
+                              </div>
+                              <div className="search-dd-item-info">
+                                <div className="search-dd-item-name">{highlightMatch(s.name, q)}</div>
+                                <div className="search-dd-item-cat">{s.cat}</div>
+                              </div>
+                              <div className="search-dd-item-rating">
+                                <svg viewBox="0 0 24 24" fill="var(--gold)" stroke="var(--gold)" strokeWidth="1"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                                <span>{s.rating}</span>
+                              </div>
+                              <svg className="search-dd-item-arrow" viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Category results */}
+                      {matchedCats.length > 0 && (
+                        <div className="search-dd-section">
+                          <div className="search-dd-label">
+                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></svg>
+                            Categories
+                          </div>
+                          {matchedCats.map((c, i) => (
+                            <div
+                              key={i}
+                              className={`search-dd-item search-dd-item--cat${activeIdx === filtered.length + i ? ' search-dd-item--active' : ''}`}
+                              onClick={() => goToCategory(c.slug)}
+                              onMouseEnter={() => setActiveIdx(filtered.length + i)}
+                              onMouseMove={handleItemMouse}
+                              style={{ '--delay': `${(filtered.length + i) * 50}ms` }}
+                            >
+                              <div className="search-dd-cat-dot" style={{ background: c.color }}></div>
+                              <span className="search-dd-cat-name">{highlightMatch(c.name, q)}</span>
+                              <svg className="search-dd-item-arrow" viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* No results */}
+                      {totalResults === 0 && q.length > 1 && (
+                        <div className="search-dd-empty">
+                          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /><line x1="8" y1="11" x2="14" y2="11" /></svg>
+                          <span>No results for "{query}"</span>
+                        </div>
+                      )}
+
+                      {/* View all */}
+                      {totalResults > 0 && (
+                        <div className="search-dd-footer" onClick={viewAllResults}>
+                          <span>View all results for "{query}"</span>
+                          <svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               </div>
@@ -286,11 +342,9 @@ export default function Hero() {
 
           <div className="quick-tags">
             <span className="quick-tags-label">Popular:</span>
-            <Link to="/search?q=Restaurants" className="quick-tag">Restaurants</Link>
-            <Link to="/search?q=Software" className="quick-tag">Software</Link>
-            <Link to="/search?q=Dentists" className="quick-tag">Dentists</Link>
-            <Link to="/search?q=Real+Estate" className="quick-tag">Real Estate</Link>
-            <Link to="/search?q=Marketing" className="quick-tag">Marketing</Link>
+            {['Restaurants', 'Software', 'Dentists', 'Real Estate', 'Marketing'].map(tag => (
+              <button key={tag} className="quick-tag" onClick={() => { setQuery(tag); setFocused(true) }}>{tag}</button>
+            ))}
           </div>
           <div className="hero-trust-bar">
             <div className="hero-trust-item"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>Verified Reviews</div>

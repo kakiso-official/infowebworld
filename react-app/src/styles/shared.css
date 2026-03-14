@@ -139,6 +139,240 @@ ul{list-style:none}
 .s-footer-lang svg{width:14px;height:14px;stroke:var(--gray-400);fill:none;stroke-width:1.5}
 
 /* ============================================================
+   NAVBAR LIQUID GLASS SEARCH — Full-screen glassmorphism overlay
+   ============================================================ */
+
+/* ── Dark overlay behind search ── */
+.ns-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  opacity:0;pointer-events:none;transition:opacity .4s cubic-bezier(.16,1,.3,1)}
+.ns-overlay--open{opacity:1;pointer-events:auto}
+
+/* ── Main search container — drops from top ── */
+.ns-container{position:fixed;top:0;left:50%;z-index:2001;
+  width:min(680px,calc(100% - 2rem));
+  transform:translateX(-50%) translateY(-20px) scale(.97);
+  opacity:0;pointer-events:none;
+  transition:all .45s cubic-bezier(.34,1.56,.64,1);
+  margin-top:80px}
+.ns-container--open{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0) scale(1)}
+
+/* ── Multi-layer glass background ── */
+.ns-glass{position:absolute;inset:0;border-radius:24px;
+  background:linear-gradient(165deg,rgba(255,255,255,.97) 0%,rgba(245,246,255,.96) 30%,rgba(255,255,255,.97) 60%,rgba(240,243,255,.95) 100%);
+  backdrop-filter:blur(48px) saturate(1.8);-webkit-backdrop-filter:blur(48px) saturate(1.8);
+  border:1.5px solid rgba(108,114,241,.15);
+  box-shadow:
+    0 25px 80px rgba(108,114,241,.18),
+    0 10px 30px rgba(0,0,0,.08),
+    0 0 0 1px rgba(255,255,255,.5) inset,
+    0 1px 0 rgba(255,255,255,.9) inset;
+  overflow:hidden}
+
+/* Liquid refraction — rotating conic shimmer */
+.ns-glass-refraction{position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+  background:conic-gradient(from 0deg at 50% 50%,
+    transparent 0deg,rgba(108,114,241,.05) 60deg,transparent 120deg,
+    rgba(139,92,246,.04) 180deg,transparent 240deg,rgba(20,184,166,.04) 300deg,transparent 360deg);
+  animation:nsRefraction 8s linear infinite;pointer-events:none}
+@keyframes nsRefraction{to{transform:rotate(360deg)}}
+
+/* Water caustics — subtle moving light patches */
+.ns-glass-caustics{position:absolute;inset:0;border-radius:inherit;
+  background:
+    radial-gradient(ellipse 120px 80px at 15% 25%,rgba(108,114,241,.06),transparent),
+    radial-gradient(ellipse 80px 120px at 85% 55%,rgba(139,92,246,.04),transparent),
+    radial-gradient(ellipse 140px 50px at 50% 85%,rgba(20,184,166,.03),transparent);
+  animation:nsCaustics 5s ease-in-out infinite alternate;pointer-events:none}
+@keyframes nsCaustics{
+  0%{opacity:.5;transform:scale(1) translate(0,0)}
+  100%{opacity:1;transform:scale(1.06) translate(6px,-4px)}
+}
+
+/* ── Animated gradient border ── */
+@property --ns-angle{syntax:"<angle>";initial-value:0deg;inherits:false}
+.ns-glass::before{content:'';position:absolute;inset:-1.5px;border-radius:inherit;
+  background:conic-gradient(from var(--ns-angle),
+    rgba(108,114,241,.35),rgba(139,92,246,.25),rgba(20,184,166,.2),
+    rgba(59,130,246,.2),rgba(108,114,241,.35));
+  z-index:-1;animation:nsBorderSpin 4s linear infinite;
+  mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  mask-composite:exclude;-webkit-mask-composite:xor;padding:1.5px}
+@keyframes nsBorderSpin{to{--ns-angle:360deg}}
+
+.ns-inner{position:relative;z-index:1;padding:1.25rem}
+
+/* ── Input row ── */
+.ns-input-row{display:flex;align-items:center;gap:.625rem;padding-bottom:1rem;
+  border-bottom:1px solid rgba(108,114,241,.1)}
+
+.ns-input-icon{position:relative;width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.ns-input-icon svg{width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:1.5;position:relative;z-index:1}
+
+/* Ripple rings on icon */
+.ns-icon-ripple{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.ns-icon-ripple span{position:absolute;width:8px;height:8px;border-radius:50%;border:1.5px solid rgba(108,114,241,.3);
+  animation:nsIconRipple 2s ease-out infinite}
+.ns-icon-ripple span:nth-child(2){animation-delay:.6s}
+@keyframes nsIconRipple{
+  0%{width:8px;height:8px;opacity:.7}
+  100%{width:36px;height:36px;opacity:0}
+}
+
+.ns-input{flex:1;border:none;outline:none;font-size:1.0625rem;font-family:inherit;font-weight:400;
+  color:var(--gray-900);background:transparent;min-width:0}
+.ns-input::placeholder{color:var(--gray-400);font-weight:300}
+
+.ns-clear{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:rgba(108,114,241,.08);border:none;cursor:pointer;flex-shrink:0;transition:all .3s}
+.ns-clear:hover{background:rgba(108,114,241,.15);transform:rotate(90deg)}
+.ns-clear svg{width:12px;height:12px;stroke:var(--gray-500);fill:none;stroke-width:2}
+
+.ns-submit{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  background:var(--accent-gradient);border:none;cursor:pointer;flex-shrink:0;transition:all .3s;position:relative;overflow:hidden}
+.ns-submit:hover{transform:scale(1.08);box-shadow:0 4px 16px rgba(108,114,241,.35)}
+.ns-submit svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2;position:relative;z-index:1}
+/* Shimmer */
+.ns-submit::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);animation:nsShimmer 2.5s ease-in-out infinite}
+@keyframes nsShimmer{0%{left:-100%}50%,100%{left:150%}}
+
+.ns-close{padding:.25rem .625rem;border-radius:6px;background:var(--gray-100);border:1px solid var(--gray-200);
+  cursor:pointer;flex-shrink:0;transition:all .2s;display:flex;align-items:center}
+.ns-close span{font-size:.625rem;font-weight:600;color:var(--gray-400);font-family:inherit;letter-spacing:.03em}
+.ns-close:hover{background:var(--gray-200);border-color:var(--gray-300)}
+
+/* ── Dropdown area ── */
+.ns-dropdown{max-height:420px;overflow-y:auto;padding-top:.75rem;
+  scrollbar-width:thin;scrollbar-color:rgba(108,114,241,.15) transparent}
+.ns-dropdown::-webkit-scrollbar{width:4px}
+.ns-dropdown::-webkit-scrollbar-thumb{background:rgba(108,114,241,.15);border-radius:4px}
+
+/* Status indicator */
+.ns-status{display:flex;align-items:center;gap:.5rem;padding:.25rem .5rem;margin-bottom:.5rem}
+.ns-status span{font-size:.6875rem;font-weight:500;color:var(--gray-500)}
+.ns-status-ripple{position:relative;width:16px;height:16px;display:flex;align-items:center;justify-content:center}
+.ns-status-ripple span{position:absolute;width:4px;height:4px;border-radius:50%;border:1.5px solid var(--accent);
+  animation:nsStatusRipple 1.5s ease-out infinite}
+.ns-status-ripple span:nth-child(1){animation-delay:0s}
+.ns-status-ripple span:nth-child(2){animation-delay:.4s}
+.ns-status-ripple span:nth-child(3){animation-delay:.8s}
+@keyframes nsStatusRipple{
+  0%{width:3px;height:3px;opacity:.8}
+  100%{width:18px;height:18px;opacity:0}
+}
+
+/* Section labels */
+.ns-section{margin-bottom:.5rem}
+.ns-label{display:flex;align-items:center;gap:.35rem;font-size:.625rem;font-weight:600;color:var(--gray-400);
+  text-transform:uppercase;letter-spacing:.06em;padding:.35rem .5rem}
+.ns-label svg{width:12px;height:12px;stroke:var(--gray-400);fill:none;stroke-width:1.5}
+
+/* ── Result items with fluid entrance + liquid glow ── */
+.ns-item{display:flex;align-items:center;gap:.625rem;padding:.625rem .75rem;border-radius:var(--r);cursor:pointer;
+  transition:all .3s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden;
+  animation:nsItemIn .4s cubic-bezier(.34,1.56,.64,1) both;animation-delay:var(--delay,0ms)}
+@keyframes nsItemIn{
+  0%{opacity:0;transform:translateY(8px) scale(.97);filter:blur(2px)}
+  60%{filter:blur(0)}
+  100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+}
+
+/* Mouse-tracking liquid glow */
+.ns-item::before{content:'';position:absolute;inset:0;border-radius:inherit;opacity:0;transition:opacity .3s;
+  background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(108,114,241,.12) 0%,transparent 60%)}
+.ns-item:hover::before,.ns-item--active::before{opacity:1}
+.ns-item:hover,.ns-item--active{
+  background:rgba(108,114,241,.05);
+  box-shadow:0 2px 16px rgba(108,114,241,.1),inset 0 0 0 1px rgba(108,114,241,.08);
+  transform:translateX(4px)}
+
+.ns-item-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .35s cubic-bezier(.16,1,.3,1);position:relative}
+.ns-item-icon svg{width:16px;height:16px;position:relative;z-index:1}
+.ns-item-icon::after{content:'';position:absolute;inset:0;border-radius:inherit;
+  background:linear-gradient(135deg,rgba(255,255,255,.5),transparent);pointer-events:none}
+.ns-item:hover .ns-item-icon{transform:scale(1.1) rotate(-3deg);box-shadow:0 4px 14px rgba(0,0,0,.08)}
+
+.ns-item-info{flex:1;min-width:0}
+.ns-item-name{font-size:.875rem;font-weight:600;color:var(--gray-900);transition:color .2s}
+.ns-item:hover .ns-item-name{color:var(--accent)}
+.ns-item-cat{font-size:.6875rem;font-weight:400;color:var(--gray-500)}
+
+.ns-item-rating{display:flex;align-items:center;gap:.2rem;flex-shrink:0}
+.ns-item-rating svg{width:12px;height:12px}
+.ns-item-rating span{font-size:.8125rem;font-weight:700;color:var(--gray-800)}
+
+.ns-item-arrow{width:16px;height:16px;stroke:var(--gray-300);fill:none;stroke-width:2;flex-shrink:0;
+  transition:all .35s cubic-bezier(.16,1,.3,1);opacity:0;transform:translateX(-6px)}
+.ns-item:hover .ns-item-arrow,.ns-item--active .ns-item-arrow{
+  opacity:1;transform:translateX(0);stroke:var(--accent)}
+
+/* Highlight match */
+.ns-highlight{background:linear-gradient(135deg,rgba(108,114,241,.18),rgba(139,92,246,.12));color:var(--accent);
+  border-radius:3px;padding:1px 3px;font-weight:700;box-shadow:0 0 8px rgba(108,114,241,.15)}
+
+/* Category dot in results */
+.ns-item .ns-cat-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;transition:all .3s;
+  box-shadow:0 0 0 2px rgba(0,0,0,.04)}
+.ns-item:hover .ns-cat-dot{transform:scale(1.3);box-shadow:0 0 10px currentColor}
+
+/* ── Trending tags ── */
+.ns-trending{display:flex;flex-wrap:wrap;gap:.375rem;padding:.25rem .5rem}
+.ns-trending-tag{display:inline-flex;align-items:center;gap:.3rem;padding:.375rem .75rem;border-radius:999px;
+  background:rgba(108,114,241,.05);border:1px solid rgba(108,114,241,.1);
+  font-size:.75rem;font-weight:500;color:var(--gray-700);cursor:pointer;
+  transition:all .3s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden;
+  animation:nsItemIn .4s cubic-bezier(.34,1.56,.64,1) both;animation-delay:var(--delay,0ms)}
+.ns-trending-tag::before{content:'';position:absolute;inset:0;border-radius:inherit;opacity:0;transition:opacity .3s;
+  background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(108,114,241,.12) 0%,transparent 60%)}
+.ns-trending-tag:hover::before{opacity:1}
+.ns-trending-tag:hover{background:rgba(108,114,241,.1);border-color:rgba(108,114,241,.25);color:var(--accent);
+  transform:translateY(-2px);box-shadow:0 4px 14px rgba(108,114,241,.12)}
+.ns-trending-tag svg{width:12px;height:12px;stroke:var(--accent);fill:none;stroke-width:1.5}
+
+/* ── Category pills grid ── */
+.ns-cats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.375rem;padding:.25rem .5rem}
+.ns-cat-pill{display:flex;align-items:center;gap:.5rem;padding:.5rem .75rem;border-radius:var(--r);cursor:pointer;
+  transition:all .3s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden;
+  animation:nsItemIn .4s cubic-bezier(.34,1.56,.64,1) both;animation-delay:var(--delay,0ms)}
+.ns-cat-pill::before{content:'';position:absolute;inset:0;border-radius:inherit;opacity:0;transition:opacity .3s;
+  background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(108,114,241,.1) 0%,transparent 60%)}
+.ns-cat-pill:hover::before{opacity:1}
+.ns-cat-pill:hover{background:rgba(108,114,241,.05);transform:translateX(3px);
+  box-shadow:inset 0 0 0 1px rgba(108,114,241,.08)}
+.ns-cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:all .3s;
+  box-shadow:0 0 0 2px rgba(0,0,0,.04)}
+.ns-cat-pill:hover .ns-cat-dot{transform:scale(1.4);box-shadow:0 0 8px currentColor}
+.ns-cat-name{font-size:.8125rem;font-weight:500;color:var(--gray-700);flex:1;transition:color .2s}
+.ns-cat-pill:hover .ns-cat-name{color:var(--accent)}
+.ns-cat-arrow{width:14px;height:14px;stroke:var(--gray-300);fill:none;stroke-width:2;flex-shrink:0;
+  opacity:0;transform:translateX(-4px);transition:all .3s}
+.ns-cat-pill:hover .ns-cat-arrow{opacity:1;transform:translateX(0);stroke:var(--accent)}
+
+/* ── Empty state ── */
+.ns-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.35rem;
+  padding:2rem 1rem;color:var(--gray-500);text-align:center}
+.ns-empty svg{width:28px;height:28px;stroke:var(--gray-300);fill:none;stroke-width:1.5;margin-bottom:.25rem;
+  animation:nsEmptyFloat 3s ease-in-out infinite}
+@keyframes nsEmptyFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-5px) rotate(5deg)}}
+.ns-empty span{font-size:.875rem;font-weight:400}
+.ns-empty strong{color:var(--gray-700)}
+.ns-empty-hint{font-size:.75rem;color:var(--gray-400);font-weight:300}
+
+/* ── Footer — view all ── */
+.ns-footer{display:flex;align-items:center;justify-content:center;gap:.375rem;padding:.875rem;
+  margin-top:.5rem;border-top:1px solid transparent;
+  background-image:linear-gradient(rgba(255,255,255,.5),rgba(255,255,255,.5)),
+    linear-gradient(90deg,transparent,rgba(108,114,241,.12),rgba(139,92,246,.08),transparent);
+  background-origin:border-box;background-clip:padding-box,border-box;
+  font-size:.8125rem;font-weight:600;color:var(--accent);cursor:pointer;transition:all .3s;border-radius:0 0 20px 20px}
+.ns-footer:hover{background-color:rgba(108,114,241,.05);letter-spacing:.02em}
+.ns-footer svg{width:14px;height:14px;stroke:var(--accent);fill:none;stroke-width:2;transition:transform .3s}
+.ns-footer:hover svg{transform:translateX(4px)}
+.ns-footer strong{font-weight:700}
+
+/* ============================================================
    RESPONSIVE
    ============================================================ */
 @media(max-width:1024px){
@@ -153,11 +387,17 @@ ul{list-style:none}
   .s-footer-grid{grid-template-columns:1fr}
   .s-footer-bottom{flex-direction:column;align-items:flex-start}
   .s-footer-bottom-right{width:100%;justify-content:space-between}
+  .ns-container{margin-top:70px;width:calc(100% - 1rem)}
+  .ns-cats-grid{grid-template-columns:1fr}
+  .ns-inner{padding:1rem}
 }
 @media(max-width:480px){
   .s-nav-logo img{height:28px}
   .s-footer-brand-logo img{height:28px}
   .s-nav-drawer-header img{height:28px}
+  .ns-container{margin-top:60px;border-radius:16px}
+  .ns-glass{border-radius:16px}
+  .ns-input{font-size:.9375rem}
 }
 @media(max-width:375px){
   .s-nav-logo img{height:26px}
