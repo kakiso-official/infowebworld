@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import RotatingImage, { allImages } from './RotatingImage'
 
 const StarSvg = ({filled=true}) => <svg viewBox="0 0 24 24" fill={filled?"var(--gold)":"none"} stroke="var(--gold)" strokeWidth="1"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
 const Stars5 = () => <>{[1,2,3,4,5].map(i=><StarSvg key={i}/>)}</>
@@ -41,11 +42,11 @@ export default function Featured() {
         </div>
         <div className="featured-masonry">
 
-          {/* 1. CloudSync Pro - TALL + IMAGE */}
+          {/* 1. CloudSync Pro - TALL + ROTATING IMAGE */}
           <div className="listing-card listing-card--tall">
             <Link to="/listing?biz=cloudsync-pro" className="listing-link">
               <div className="listing-top listing-top--img">
-                <img src="/images/Gusranda26 Author Portfolio _ Freepik.jpeg" alt="CloudSync Pro" loading="lazy" />
+                <RotatingImage alt="CloudSync Pro" startIndex={0} interval={5000} />
                 <span className="listing-badge listing-badge--featured">Featured</span>
               </div>
               <div className="listing-body">
@@ -91,11 +92,11 @@ export default function Featured() {
             <ActionBar likes={89} dislikes={3} />
           </div>
 
-          {/* 3. MindBridge Wellness - REGULAR + IMAGE */}
+          {/* 3. MindBridge Wellness - REGULAR + ROTATING IMAGE */}
           <div className="listing-card">
             <Link to="/listing?biz=mindbridge-wellness" className="listing-link">
               <div className="listing-top listing-top--img">
-                <img src="/images/Homeopathy Close Up.jpeg" alt="MindBridge Wellness" loading="lazy" />
+                <RotatingImage alt="MindBridge Wellness" startIndex={2} interval={6000} />
                 <span className="listing-badge listing-badge--new">New</span>
               </div>
               <div className="listing-body">
@@ -141,11 +142,11 @@ export default function Featured() {
             <ActionBar likes={203} dislikes={12} />
           </div>
 
-          {/* 5. BrightPath Academy - TALL + IMAGE */}
+          {/* 5. BrightPath Academy - TALL + ROTATING IMAGE */}
           <div className="listing-card listing-card--tall">
             <Link to="/listing?biz=brightpath-academy" className="listing-link">
               <div className="listing-top listing-top--img">
-                <img src="/images/man-restroom-reading-newspaper.jpg" alt="BrightPath Academy" loading="lazy" />
+                <RotatingImage alt="BrightPath Academy" startIndex={4} interval={5500} />
                 <span className="listing-badge listing-badge--verified">Verified</span>
               </div>
               <div className="listing-body">
@@ -191,11 +192,11 @@ export default function Featured() {
             <ActionBar likes={45} dislikes={2} />
           </div>
 
-          {/* 7. PrecisionFix Plumbing - TALL + IMAGE, DESKTOP ONLY */}
+          {/* 7. PrecisionFix Plumbing - TALL + ROTATING IMAGE, DESKTOP ONLY */}
           <div className="listing-card listing-card--tall listing-card--desktop-only">
             <Link to="/listing?biz=precisionfix-plumbing" className="listing-link">
               <div className="listing-top listing-top--img">
-                <img src="/images/anthropomorphic-portrait-animal-dressed-human-clothes-doing-daily-activities.jpg" alt="PrecisionFix Plumbing" loading="lazy" />
+                <RotatingImage alt="PrecisionFix Plumbing" startIndex={3} interval={7000} />
                 <span className="listing-badge listing-badge--verified">Verified</span>
               </div>
               <div className="listing-body">
@@ -215,11 +216,11 @@ export default function Featured() {
             <ActionBar likes={92} dislikes={4} />
           </div>
 
-          {/* 8. Summit Legal Group - REGULAR + IMAGE, DESKTOP ONLY */}
+          {/* 8. Summit Legal Group - REGULAR + ROTATING IMAGE, DESKTOP ONLY */}
           <div className="listing-card listing-card--desktop-only">
             <Link to="/listing?biz=summit-legal" className="listing-link">
               <div className="listing-top listing-top--img">
-                <img src="/images/Office 📍.jpeg" alt="Summit Legal Group" loading="lazy" />
+                <RotatingImage alt="Summit Legal Group" startIndex={5} interval={6500} />
                 <span className="listing-badge listing-badge--featured">Featured</span>
               </div>
               <div className="listing-body">
@@ -239,11 +240,11 @@ export default function Featured() {
             <ActionBar likes={187} dislikes={9} />
           </div>
 
-          {/* 9. Evergreen Fitness Co - TALL + IMAGE, DESKTOP ONLY */}
+          {/* 9. Evergreen Fitness Co - TALL + ROTATING IMAGE, DESKTOP ONLY */}
           <div className="listing-card listing-card--tall listing-card--desktop-only">
             <Link to="/listing?biz=evergreen-fitness" className="listing-link">
               <div className="listing-top listing-top--img">
-                <img src="/images/#fitness #workout #gym #gymlife #health….jpeg" alt="Evergreen Fitness Co" loading="lazy" />
+                <RotatingImage alt="Evergreen Fitness Co" startIndex={6} interval={4500} />
                 <span className="listing-badge listing-badge--new">New</span>
               </div>
               <div className="listing-body">

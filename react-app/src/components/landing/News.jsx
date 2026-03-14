@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import RotatingImage from './RotatingImage'
 
 export default function News() {
   return (
@@ -20,24 +21,26 @@ export default function News() {
           <div className="news-stat-pill"><svg viewBox="0 0 24 24" stroke="var(--azure)" fill="none" strokeWidth="1.5"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg><span className="news-stat-num">~4 min</span><span className="news-stat-text">avg read</span></div>
         </div>
         <div className="news-v2-layout">
-          <Link to="/news-article?id=small-biz-directory-growth" className="news-hero">
-            <div className="news-hero-content">
+          {/* Magazine-style hero: image bg + overlay text */}
+          <Link to="/news-article?id=small-biz-directory-growth" className="news-hero-mag">
+            <div className="news-hero-mag-bg">
+              <RotatingImage alt="Business news" startIndex={4} interval={5000} />
+            </div>
+            <div className="news-hero-mag-overlay"></div>
+            <div className="news-hero-mag-content">
               <div className="news-hero-tag-row">
                 <span className="news-tag-v2 news-tag-v2--accent">Business Spotlight</span>
                 <span className="news-trending-pill"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth="1.5"><path d="M23 6l-9.5 9.5-5-5L1 18" /><path d="M17 6h6v6" /></svg>Trending</span>
               </div>
-              <h3 className="news-hero-title">Small Businesses See 40% Growth Through Digital Directory Listings in 2026</h3>
-              <p className="news-hero-excerpt">A new industry report reveals that small and medium businesses listed on verified directories experienced significantly higher customer acquisition rates compared to traditional advertising channels. The data, compiled from over 50,000 business profiles, shows directory presence has become a critical growth lever.</p>
-              <div className="news-hero-footer">
-                <div className="news-author-row"><div className="news-author-avatar" style={{background:'var(--accent-gradient)'}}>RP</div><div><div className="news-author-name">Rachel Park</div><div className="news-author-role">Senior Editor</div></div></div>
-                <div className="news-hero-meta-pills">
-                  <span className="news-meta-pill"><svg viewBox="0 0 24 24"><path d="M8 2v4" /><path d="M16 2v4" /><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M3 10h18" /></svg>Mar 10, 2026</span>
-                  <span className="news-meta-pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>6 min read</span>
+              <h3 className="news-hero-mag-title">Small Businesses See 40% Growth Through Digital Directory Listings in 2026</h3>
+              <p className="news-hero-mag-excerpt">A new industry report reveals that small and medium businesses listed on verified directories experienced significantly higher customer acquisition rates compared to traditional advertising.</p>
+              <div className="news-hero-mag-footer">
+                <div className="news-author-row"><div className="news-author-avatar" style={{background:'var(--accent-gradient)'}}>RP</div><div><div className="news-author-name" style={{color:'#fff'}}>Rachel Park</div><div className="news-author-role" style={{color:'rgba(255,255,255,.5)'}}>Senior Editor</div></div></div>
+                <div className="news-hero-mag-pills">
+                  <span className="news-hero-mag-pill"><svg viewBox="0 0 24 24"><path d="M8 2v4" /><path d="M16 2v4" /><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M3 10h18" /></svg>Mar 10, 2026</span>
+                  <span className="news-hero-mag-pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>6 min read</span>
                 </div>
               </div>
-            </div>
-            <div className="news-hero-visual news-hero-visual--img">
-              <img src="/images/front-view-woman-reading-newspaper.jpg" alt="Business news" loading="lazy" />
             </div>
           </Link>
           <div className="news-grid-v2">

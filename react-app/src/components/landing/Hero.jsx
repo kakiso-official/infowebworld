@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 const words = ['restaurant', 'agency', 'consultant', 'contractor', 'software', 'clinic']
@@ -19,11 +19,42 @@ const stats = [
   { num: '12', label: 'Countries' },
 ]
 
+/* ── Search suggestions database ── */
+const allSuggestions = [
+  { name: 'CloudSync Pro', cat: 'Technology', rating: '4.9', color: 'var(--accent)', icon: <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" /> },
+  { name: 'The Garden Table', cat: 'Restaurant', rating: '4.9', color: 'var(--coral)', icon: <><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" /><path d="M7 2v20" /></> },
+  { name: 'MindBridge Wellness', cat: 'Healthcare', rating: '4.8', color: 'var(--emerald)', icon: <path d="M22 12h-4l-3 9L9 3l-3 9H2" /> },
+  { name: 'BrightPath Academy', cat: 'Education', rating: '4.8', color: 'var(--teal)', icon: <><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></> },
+  { name: 'UrbanNest Realty', cat: 'Real Estate', rating: '4.7', color: 'var(--azure)', icon: <><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></> },
+  { name: 'PrecisionFix Plumbing', cat: 'Home Services', rating: '4.9', color: 'var(--amber)', icon: <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" /> },
+  { name: 'Summit Legal Group', cat: 'Legal', rating: '4.7', color: 'var(--plum)', icon: <><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v3" /></> },
+  { name: 'CreativeForge Studio', cat: 'Marketing', rating: '4.7', color: 'var(--rose)', icon: <><path d="M12 19l7-7 3 3-7 7-3-3z" /><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" /></> },
+  { name: 'NovaByte Analytics', cat: 'Technology', rating: '4.8', color: 'var(--accent)', icon: <><path d="M18 20V10" /><path d="M12 20V4" /><path d="M6 20v-6" /></> },
+  { name: 'FreshBite Catering', cat: 'Restaurant', rating: '4.8', color: 'var(--coral)', icon: <><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" /><path d="M7 2v20" /></> },
+  { name: 'Evergreen Fitness Co', cat: 'Healthcare', rating: '4.8', color: 'var(--emerald)', icon: <path d="M22 12h-4l-3 9L9 3l-3 9H2" /> },
+  { name: 'SparkClean Pro', cat: 'Home Services', rating: '4.7', color: 'var(--amber)', icon: <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" /> },
+]
+
+const categorySuggestions = [
+  { name: 'Technology & SaaS', slug: 'technology', color: 'var(--accent)' },
+  { name: 'Restaurants & Food', slug: 'restaurants', color: 'var(--coral)' },
+  { name: 'Healthcare & Wellness', slug: 'healthcare', color: 'var(--emerald)' },
+  { name: 'Real Estate', slug: 'real-estate', color: 'var(--azure)' },
+  { name: 'Home Services', slug: 'home-services', color: 'var(--amber)' },
+  { name: 'Education & Training', slug: 'education', color: 'var(--teal)' },
+  { name: 'Legal & Financial', slug: 'legal', color: 'var(--plum)' },
+  { name: 'Marketing & Creative', slug: 'marketing', color: 'var(--rose)' },
+]
+
 export default function Hero() {
   const [current, setCurrent] = useState(0)
   const [query, setQuery] = useState('')
   const [locationVal, setLocationVal] = useState('')
+  const [focused, setFocused] = useState(false)
+  const [activeIdx, setActiveIdx] = useState(-1)
   const navigate = useNavigate()
+  const dropdownRef = useRef(null)
+  const searchWrapRef = useRef(null)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -32,10 +63,79 @@ export default function Hero() {
     return () => clearInterval(interval)
   }, [])
 
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handler = (e) => {
+      if (searchWrapRef.current && !searchWrapRef.current.contains(e.target)) {
+        setFocused(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  // Filter suggestions
+  const q = query.trim().toLowerCase()
+  const filtered = q.length > 0
+    ? allSuggestions.filter(s =>
+        s.name.toLowerCase().includes(q) || s.cat.toLowerCase().includes(q)
+      ).slice(0, 5)
+    : []
+
+  const matchedCats = q.length > 0
+    ? categorySuggestions.filter(c => c.name.toLowerCase().includes(q)).slice(0, 3)
+    : []
+
+  const showDropdown = focused && q.length > 0
+  const totalResults = filtered.length + matchedCats.length
+
   const handleSearch = (e) => {
     e.preventDefault()
+    setFocused(false)
     navigate(`/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(locationVal)}`)
   }
+
+  const goToResult = (name) => {
+    setFocused(false)
+    navigate(`/search?q=${encodeURIComponent(name)}&location=${encodeURIComponent(locationVal)}`)
+  }
+
+  const goToCategory = (slug) => {
+    setFocused(false)
+    navigate(`/category?cat=${slug}`)
+  }
+
+  // Keyboard navigation
+  const handleKeyDown = (e) => {
+    if (!showDropdown) return
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      setActiveIdx(prev => Math.min(prev + 1, totalResults - 1))
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      setActiveIdx(prev => Math.max(prev - 1, -1))
+    } else if (e.key === 'Enter' && activeIdx >= 0) {
+      e.preventDefault()
+      if (activeIdx < filtered.length) {
+        goToResult(filtered[activeIdx].name)
+      } else {
+        goToCategory(matchedCats[activeIdx - filtered.length].slug)
+      }
+    } else if (e.key === 'Escape') {
+      setFocused(false)
+    }
+  }
+
+  // Mouse tracking for liquid glow
+  const handleItemMouse = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = ((e.clientX - rect.left) / rect.width) * 100
+    const y = ((e.clientY - rect.top) / rect.height) * 100
+    e.currentTarget.style.setProperty('--mx', `${x}%`)
+    e.currentTarget.style.setProperty('--my', `${y}%`)
+  }
+
+  useEffect(() => { setActiveIdx(-1) }, [query])
 
   return (
     <section className="hero">
@@ -59,21 +159,131 @@ export default function Hero() {
             </span>
             <br />for <em>your needs</em></h1>
           <p className="hero-sub">Search, compare, and review businesses across 80+ industries in 12 countries. Verified reviews. Real results.</p>
-          <form className="search-bar" onSubmit={handleSearch}>
-            <div className="search-field search-field--what">
-              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
-              <input type="text" className="search-input" placeholder="What are you looking for?" value={query} onChange={e => setQuery(e.target.value)} />
-            </div>
-            <div className="search-divider"></div>
-            <div className="search-field search-field--where">
-              <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
-              <input type="text" className="search-input" placeholder="City or zip code" value={locationVal} onChange={e => setLocationVal(e.target.value)} />
-            </div>
-            <button type="submit" className="search-btn">
-              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
-              Search
-            </button>
-          </form>
+
+          {/* ── Search with liquid glass dropdown ── */}
+          <div className={`search-wrap${showDropdown ? ' search-wrap--active' : ''}`} ref={searchWrapRef}>
+            <form className={`search-bar${showDropdown ? ' search-bar--open' : ''}`} onSubmit={handleSearch}>
+              <div className="search-field search-field--what">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="What are you looking for?"
+                  value={query}
+                  onChange={e => setQuery(e.target.value)}
+                  onFocus={() => setFocused(true)}
+                  onKeyDown={handleKeyDown}
+                  autoComplete="off"
+                />
+                {query && (
+                  <button type="button" className="search-clear" onClick={() => { setQuery(''); setFocused(false) }}>
+                    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                  </button>
+                )}
+              </div>
+              <div className="search-divider"></div>
+              <div className="search-field search-field--where">
+                <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
+                <input type="text" className="search-input" placeholder="City or zip code" value={locationVal} onChange={e => setLocationVal(e.target.value)} />
+              </div>
+              <button type="submit" className="search-btn">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
+                Search
+              </button>
+            </form>
+
+            {/* ── Liquid Glass Dropdown ── */}
+            {showDropdown && (
+              <div className="search-dropdown" ref={dropdownRef}>
+                <div className="search-dropdown-glass"></div>
+                <div className="search-dropdown-content">
+                  {/* Searching indicator */}
+                  <div className="search-dd-searching">
+                    <div className="search-dd-ripple">
+                      <span></span><span></span><span></span>
+                    </div>
+                    <span className="search-dd-searching-text">
+                      {totalResults > 0 ? `${totalResults} results found` : 'Searching...'}
+                    </span>
+                  </div>
+
+                  {/* Business results */}
+                  {filtered.length > 0 && (
+                    <div className="search-dd-section">
+                      <div className="search-dd-label">
+                        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v3" /></svg>
+                        Businesses
+                      </div>
+                      {filtered.map((s, i) => (
+                        <div
+                          key={i}
+                          className={`search-dd-item${activeIdx === i ? ' search-dd-item--active' : ''}`}
+                          onClick={() => goToResult(s.name)}
+                          onMouseEnter={() => setActiveIdx(i)}
+                          onMouseMove={handleItemMouse}
+                          style={{ '--delay': `${i * 50}ms` }}
+                        >
+                          <div className="search-dd-item-icon" style={{ background: `color-mix(in srgb, ${s.color} 12%, transparent)` }}>
+                            <svg viewBox="0 0 24 24" stroke={s.color} fill="none" strokeWidth="1.5">{s.icon}</svg>
+                          </div>
+                          <div className="search-dd-item-info">
+                            <div className="search-dd-item-name">{highlightMatch(s.name, q)}</div>
+                            <div className="search-dd-item-cat">{s.cat}</div>
+                          </div>
+                          <div className="search-dd-item-rating">
+                            <svg viewBox="0 0 24 24" fill="var(--gold)" stroke="var(--gold)" strokeWidth="1"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <span>{s.rating}</span>
+                          </div>
+                          <svg className="search-dd-item-arrow" viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Category results */}
+                  {matchedCats.length > 0 && (
+                    <div className="search-dd-section">
+                      <div className="search-dd-label">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></svg>
+                        Categories
+                      </div>
+                      {matchedCats.map((c, i) => (
+                        <div
+                          key={i}
+                          className={`search-dd-item search-dd-item--cat${activeIdx === filtered.length + i ? ' search-dd-item--active' : ''}`}
+                          onClick={() => goToCategory(c.slug)}
+                          onMouseEnter={() => setActiveIdx(filtered.length + i)}
+                          onMouseMove={handleItemMouse}
+                          style={{ '--delay': `${(filtered.length + i) * 50}ms` }}
+                        >
+                          <div className="search-dd-cat-dot" style={{ background: c.color }}></div>
+                          <span className="search-dd-cat-name">{highlightMatch(c.name, q)}</span>
+                          <svg className="search-dd-item-arrow" viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* No results */}
+                  {totalResults === 0 && q.length > 1 && (
+                    <div className="search-dd-empty">
+                      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /><line x1="8" y1="11" x2="14" y2="11" /></svg>
+                      <span>No results for "{query}"</span>
+                    </div>
+                  )}
+
+                  {/* View all */}
+                  {totalResults > 0 && (
+                    <div className="search-dd-footer" onClick={handleSearch}>
+                      <span>View all results for "{query}"</span>
+                      <svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
           <div className="quick-tags">
             <span className="quick-tags-label">Popular:</span>
             <Link to="/search?q=Restaurants" className="quick-tag">Restaurants</Link>
@@ -93,7 +303,6 @@ export default function Hero() {
 
         {/* ── RIGHT: Visual side ── */}
         <div className="hero-right">
-          {/* Floating category cards */}
           <div className="hero-float-cats">
             {categories.map(c => (
               <Link to={`/category?cat=${c.slug}`} className="hero-float-cat" key={c.slug}>
@@ -104,8 +313,6 @@ export default function Hero() {
               </Link>
             ))}
           </div>
-
-          {/* Stats strip */}
           <div className="hero-stats-card">
             {stats.map((s, i) => (
               <div className="hero-stat" key={i}>
@@ -114,8 +321,6 @@ export default function Hero() {
               </div>
             ))}
           </div>
-
-          {/* Decorative floating review card */}
           <div className="hero-float-review">
             <div className="hero-float-review-stars">
               {[...Array(5)].map((_, i) => (
@@ -131,8 +336,6 @@ export default function Hero() {
               </div>
             </div>
           </div>
-
-          {/* Floating live indicator */}
           <div className="hero-float-live">
             <span className="hero-float-live-dot"></span>
             <span>42 people searching now</span>
@@ -140,5 +343,19 @@ export default function Hero() {
         </div>
       </div>
     </section>
+  )
+}
+
+/* Highlight matching text */
+function highlightMatch(text, query) {
+  if (!query) return text
+  const idx = text.toLowerCase().indexOf(query.toLowerCase())
+  if (idx === -1) return text
+  return (
+    <>
+      {text.slice(0, idx)}
+      <mark className="search-dd-highlight">{text.slice(idx, idx + query.length)}</mark>
+      {text.slice(idx + query.length)}
+    </>
   )
 }
