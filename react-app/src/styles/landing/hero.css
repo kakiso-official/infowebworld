@@ -272,14 +272,14 @@
   .hero-split{grid-template-columns:1fr;text-align:center}
   .hero-left{text-align:center}
   .hero-sub{margin-left:auto;margin-right:auto}
-  .search-wrap{max-width:100%;margin-left:auto;margin-right:auto}
+  .search-wrap{max-width:100%;margin-left:auto;margin-right:auto;width:100%}
   .search-bar{flex-wrap:wrap;border-radius:var(--r-lg)}
   .search-bar--open{border-radius:var(--r-lg) var(--r-lg) 0 0}
   .search-field{width:100%;padding:0 .875rem;height:40px}
   .search-field--where{flex:1}
   .search-divider{width:100%;height:1px;background:var(--gray-200)}
   .search-btn{width:calc(100% - .5rem);margin:.25rem;justify-content:center;border-radius:var(--r)}
-  .search-dropdown{border-radius:0 0 var(--r-lg) var(--r-lg)}
+  .search-dropdown{border-radius:0 0 var(--r-lg) var(--r-lg);max-height:50vh;overflow-y:auto}
   .search-dropdown-glass{border-radius:0 0 var(--r-lg) var(--r-lg)}
   .search-dropdown-content{padding:.5rem}
   .search-dd-item{padding:.4rem .5rem;gap:.4rem}
@@ -295,6 +295,7 @@
   .search-dd-searching{padding:.25rem .5rem}
   .search-dd-searching-text{font-size:.6rem}
   .search-dd-cat-name{font-size:.7rem}
+  .search-dd-cat-dot{width:6px;height:6px}
   .search-dd-footer{padding:.5rem;font-size:.625rem;border-radius:0 0 12px 12px}
   .search-dd-footer svg{width:10px;height:10px}
   .search-dd-trending{gap:.25rem;padding:.2rem .5rem}
@@ -318,12 +319,15 @@
   .hero-h1{font-size:1.5rem}
   .hero-badge{font-size:.575rem;padding:.2rem .625rem}
   .hero-sub{font-size:.75rem;margin-bottom:.875rem}
+  .search-wrap{width:100%;max-width:100%}
   .search-field{height:36px;padding:0 .625rem}
+  .search-field svg{width:14px;height:14px}
   .search-input{font-size:.8rem}
   .search-btn{height:34px;font-size:.7rem;padding:0 1rem}
   .search-btn svg{width:12px;height:12px}
   .search-clear{width:18px;height:18px}
   .search-clear svg{width:9px;height:9px}
+  .search-dropdown{max-height:45vh}
   .search-dropdown-content{padding:.375rem}
   .search-dd-item{padding:.35rem .375rem;gap:.35rem;border-radius:8px}
   .search-dd-item-icon{width:26px;height:26px;border-radius:6px}
@@ -334,12 +338,14 @@
   .search-dd-item-rating span{font-size:.65rem}
   .search-dd-item-arrow{width:11px;height:11px}
   .search-dd-label{font-size:.5rem;padding:.2rem .375rem}
+  .search-dd-label svg{width:9px;height:9px}
   .search-dd-searching{padding:.2rem .375rem;gap:.4rem}
   .search-dd-searching-text{font-size:.55rem}
   .search-dd-ripple{width:16px;height:16px}
-  .search-dd-cat-dot{width:6px;height:6px}
+  .search-dd-cat-dot{width:5px;height:5px}
   .search-dd-cat-name{font-size:.65rem}
-  .search-dd-footer{padding:.4rem;font-size:.6rem}
+  .search-dd-footer{padding:.4rem;font-size:.6rem;border-radius:0 0 10px 10px}
+  .search-dd-footer svg{width:10px;height:10px}
   .search-dd-trending{gap:.2rem;padding:.15rem .375rem}
   .search-dd-trend-tag{padding:.2rem .4rem;font-size:.575rem}
   .search-dd-trend-tag svg{width:9px;height:9px}
@@ -359,13 +365,17 @@
 
 @media(max-width:375px){
   .hero-h1{font-size:1.375rem}
+  .search-wrap{width:100%;max-width:100%}
   .search-field{height:34px}
   .search-input{font-size:.75rem}
   .search-btn{height:32px;font-size:.65rem}
+  .search-dropdown{max-height:40vh}
   .search-dropdown-content{padding:.25rem}
   .search-dd-item{padding:.3rem .3rem}
   .search-dd-item-icon{width:24px;height:24px}
+  .search-dd-item-icon svg{width:11px;height:11px}
   .search-dd-item-name{font-size:.65rem}
+  .search-dd-item-cat{font-size:.45rem}
   .search-dd-trend-tag{padding:.175rem .35rem;font-size:.55rem}
   .hero-float-cats{grid-template-columns:repeat(2,1fr)}
   .hero-float-cat-name{font-size:.5625rem}
