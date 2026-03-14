@@ -1,6 +1,4 @@
 /* Landing page overrides — global resets are in shared.css */
-html{overflow-x:hidden}
-body{overflow-x:hidden;width:100%;max-width:100%}
 #app{color:var(--gray-700);line-height:1.6}
 
 /* ---- UTILITIES ---- */
