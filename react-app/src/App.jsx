@@ -34,6 +34,11 @@ import AdminNewsPage from './pages/AdminNewsPage'
 import AdminRevenuePage from './pages/AdminRevenuePage'
 import AdminReviewsPage from './pages/AdminReviewsPage'
 import AdminUsersPage from './pages/AdminUsersPage'
+import AccountPage from './pages/AccountPage'
+import AccountReviewsPage from './pages/AccountReviewsPage'
+import AccountSavedPage from './pages/AccountSavedPage'
+import AccountNotificationsPage from './pages/AccountNotificationsPage'
+import AccountSettingsPage from './pages/AccountSettingsPage'
 import NotFoundPage from './pages/NotFoundPage'
 
 function App() {
@@ -65,6 +70,11 @@ function App() {
       <Route path="/dashboard/profile" element={<DashboardProfilePage />} />
       <Route path="/dashboard/reviews" element={<DashboardReviewsPage />} />
       <Route path="/dashboard/settings" element={<DashboardSettingsPage />} />
+      <Route path="/account" element={<AccountPage />} />
+      <Route path="/account/reviews" element={<AccountReviewsPage />} />
+      <Route path="/account/saved" element={<AccountSavedPage />} />
+      <Route path="/account/notifications" element={<AccountNotificationsPage />} />
+      <Route path="/account/settings" element={<AccountSettingsPage />} />
       <Route path="/admin" element={<AdminPage />} />
       <Route path="/admin/categories" element={<AdminCategoriesPage />} />
       <Route path="/admin/listings" element={<AdminListingsPage />} />
