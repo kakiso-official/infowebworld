@@ -1,7 +1,7 @@
 /* ============================================================
    HERO — Split layout: content left, visual right
    ============================================================ */
-.hero{position:relative;padding:clamp(1.5rem,3vw,2.5rem) 0 clamp(1rem,2vw,1.5rem);overflow:visible}
+.hero{position:relative;padding:clamp(1.5rem,3vw,2.5rem) 0 clamp(1rem,2vw,1.5rem);overflow-x:clip;overflow-y:visible}
 
 /* Animated dot-grid background */
 .hero-grid-bg{position:absolute;inset:0;background-image:radial-gradient(circle,var(--gray-300) .75px,transparent .75px);background-size:28px 28px;opacity:.35;pointer-events:none;mask-image:radial-gradient(ellipse 70% 60% at 50% 40%,#000 20%,transparent 70%);-webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 40%,#000 20%,transparent 70%)}
