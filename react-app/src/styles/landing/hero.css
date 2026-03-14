@@ -281,6 +281,27 @@
   .search-btn{width:calc(100% - .5rem);margin:.25rem;justify-content:center;border-radius:var(--r)}
   .search-dropdown{border-radius:0 0 var(--r-lg) var(--r-lg)}
   .search-dropdown-glass{border-radius:0 0 var(--r-lg) var(--r-lg)}
+  .search-dropdown-content{padding:.5rem}
+  .search-dd-item{padding:.4rem .5rem;gap:.4rem}
+  .search-dd-item-icon{width:30px;height:30px;border-radius:8px}
+  .search-dd-item-icon svg{width:13px;height:13px}
+  .search-dd-item-name{font-size:.75rem}
+  .search-dd-item-cat{font-size:.5625rem}
+  .search-dd-item-rating svg{width:10px;height:10px}
+  .search-dd-item-rating span{font-size:.7rem}
+  .search-dd-item-arrow{width:12px;height:12px}
+  .search-dd-label{font-size:.5625rem;padding:.25rem .5rem}
+  .search-dd-label svg{width:10px;height:10px}
+  .search-dd-searching{padding:.25rem .5rem}
+  .search-dd-searching-text{font-size:.6rem}
+  .search-dd-cat-name{font-size:.7rem}
+  .search-dd-footer{padding:.5rem;font-size:.625rem;border-radius:0 0 12px 12px}
+  .search-dd-footer svg{width:10px;height:10px}
+  .search-dd-trending{gap:.25rem;padding:.2rem .5rem}
+  .search-dd-trend-tag{padding:.25rem .5rem;font-size:.625rem}
+  .search-dd-trend-tag svg{width:10px;height:10px}
+  .search-dd-empty{padding:1rem;font-size:.7rem}
+  .search-dd-empty svg{width:18px;height:18px}
   .quick-tags{justify-content:center}
   .hero-trust-bar{justify-content:center}
   .hero-trust-sep{display:none}
@@ -297,6 +318,35 @@
   .hero-h1{font-size:1.5rem}
   .hero-badge{font-size:.575rem;padding:.2rem .625rem}
   .hero-sub{font-size:.75rem;margin-bottom:.875rem}
+  .search-field{height:36px;padding:0 .625rem}
+  .search-input{font-size:.8rem}
+  .search-btn{height:34px;font-size:.7rem;padding:0 1rem}
+  .search-btn svg{width:12px;height:12px}
+  .search-clear{width:18px;height:18px}
+  .search-clear svg{width:9px;height:9px}
+  .search-dropdown-content{padding:.375rem}
+  .search-dd-item{padding:.35rem .375rem;gap:.35rem;border-radius:8px}
+  .search-dd-item-icon{width:26px;height:26px;border-radius:6px}
+  .search-dd-item-icon svg{width:12px;height:12px}
+  .search-dd-item-name{font-size:.7rem}
+  .search-dd-item-cat{font-size:.5rem}
+  .search-dd-item-rating svg{width:9px;height:9px}
+  .search-dd-item-rating span{font-size:.65rem}
+  .search-dd-item-arrow{width:11px;height:11px}
+  .search-dd-label{font-size:.5rem;padding:.2rem .375rem}
+  .search-dd-searching{padding:.2rem .375rem;gap:.4rem}
+  .search-dd-searching-text{font-size:.55rem}
+  .search-dd-ripple{width:16px;height:16px}
+  .search-dd-cat-dot{width:6px;height:6px}
+  .search-dd-cat-name{font-size:.65rem}
+  .search-dd-footer{padding:.4rem;font-size:.6rem}
+  .search-dd-trending{gap:.2rem;padding:.15rem .375rem}
+  .search-dd-trend-tag{padding:.2rem .4rem;font-size:.575rem}
+  .search-dd-trend-tag svg{width:9px;height:9px}
+  .search-dd-empty{padding:.75rem .5rem}
+  .search-dd-empty svg{width:16px;height:16px}
+  .search-dd-empty span{font-size:.65rem}
+  .search-dd-highlight{font-size:.65rem;padding:0 2px}
   .hero-float-cats{grid-template-columns:repeat(2,1fr);gap:.375rem}
   .hero-float-cat{padding:.35rem .5rem}
   .hero-float-cat-icon{width:26px;height:26px}
@@ -309,6 +359,14 @@
 
 @media(max-width:375px){
   .hero-h1{font-size:1.375rem}
+  .search-field{height:34px}
+  .search-input{font-size:.75rem}
+  .search-btn{height:32px;font-size:.65rem}
+  .search-dropdown-content{padding:.25rem}
+  .search-dd-item{padding:.3rem .3rem}
+  .search-dd-item-icon{width:24px;height:24px}
+  .search-dd-item-name{font-size:.65rem}
+  .search-dd-trend-tag{padding:.175rem .35rem;font-size:.55rem}
   .hero-float-cats{grid-template-columns:repeat(2,1fr)}
   .hero-float-cat-name{font-size:.5625rem}
 }

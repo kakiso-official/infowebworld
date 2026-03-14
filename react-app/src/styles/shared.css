@@ -387,20 +387,74 @@ ul{list-style:none}
   .s-footer-grid{grid-template-columns:1fr}
   .s-footer-bottom{flex-direction:column;align-items:flex-start}
   .s-footer-bottom-right{width:100%;justify-content:space-between}
-  .ns-container{margin-top:70px;width:calc(100% - 1rem)}
+  /* Nav search overlay — tablet */
+  .ns-container{margin-top:70px;width:calc(100% - 1rem);max-height:calc(100vh - 90px)}
+  .ns-glass{border-radius:20px}
   .ns-cats-grid{grid-template-columns:1fr}
   .ns-inner{padding:1rem}
+  .ns-dropdown{max-height:340px}
+  .ns-input{font-size:1rem}
+  .ns-item{padding:.5rem .625rem;gap:.5rem}
+  .ns-item-icon{width:34px;height:34px}
+  .ns-item-icon svg{width:14px;height:14px}
+  .ns-item-name{font-size:.8125rem}
+  .ns-item-cat{font-size:.625rem}
+  .ns-trending{gap:.3rem}
+  .ns-trending-tag{padding:.3rem .625rem;font-size:.7rem}
 }
 @media(max-width:480px){
   .s-nav-logo img{height:28px}
   .s-footer-brand-logo img{height:28px}
   .s-nav-drawer-header img{height:28px}
-  .ns-container{margin-top:60px;border-radius:16px}
+  /* Nav search overlay — mobile */
+  .ns-container{margin-top:56px;width:calc(100% - .5rem);border-radius:16px;max-height:calc(100vh - 70px)}
   .ns-glass{border-radius:16px}
+  .ns-inner{padding:.75rem}
   .ns-input{font-size:.9375rem}
+  .ns-input-row{gap:.4rem;padding-bottom:.75rem}
+  .ns-input-icon{width:30px;height:30px}
+  .ns-input-icon svg{width:17px;height:17px}
+  .ns-submit{width:32px;height:32px;border-radius:8px}
+  .ns-submit svg{width:14px;height:14px}
+  .ns-close{padding:.2rem .5rem}
+  .ns-close span{font-size:.5625rem}
+  .ns-dropdown{max-height:300px;padding-top:.5rem}
+  .ns-label{font-size:.5625rem;padding:.25rem .375rem}
+  .ns-label svg{width:10px;height:10px}
+  .ns-item{padding:.4rem .5rem;gap:.4rem;border-radius:8px}
+  .ns-item-icon{width:30px;height:30px;border-radius:8px}
+  .ns-item-icon svg{width:13px;height:13px}
+  .ns-item-name{font-size:.75rem}
+  .ns-item-cat{font-size:.5625rem}
+  .ns-item-rating svg{width:10px;height:10px}
+  .ns-item-rating span{font-size:.7rem}
+  .ns-item-arrow{width:13px;height:13px}
+  .ns-trending{gap:.25rem;padding:.2rem .375rem}
+  .ns-trending-tag{padding:.25rem .5rem;font-size:.65rem}
+  .ns-trending-tag svg{width:10px;height:10px}
+  .ns-cat-pill{padding:.375rem .5rem;gap:.375rem}
+  .ns-cat-dot{width:7px;height:7px}
+  .ns-cat-name{font-size:.75rem}
+  .ns-cat-arrow{width:12px;height:12px}
+  .ns-footer{padding:.625rem;font-size:.75rem}
+  .ns-footer svg{width:12px;height:12px}
+  .ns-status{padding:.2rem .375rem}
+  .ns-status span{font-size:.625rem}
+  .ns-empty{padding:1.25rem .75rem}
+  .ns-empty svg{width:22px;height:22px}
+  .ns-empty span{font-size:.75rem}
+  .ns-empty-hint{font-size:.65rem}
 }
 @media(max-width:375px){
   .s-nav-logo img{height:26px}
   .s-footer-brand-logo img{height:26px}
   .s-nav-drawer-header img{height:26px}
+  .ns-container{width:100%;margin-top:52px;border-radius:0 0 14px 14px}
+  .ns-glass{border-radius:0 0 14px 14px}
+  .ns-inner{padding:.625rem}
+  .ns-input{font-size:.875rem}
+  .ns-dropdown{max-height:260px}
+  .ns-item{padding:.35rem .4rem}
+  .ns-item-icon{width:28px;height:28px}
+  .ns-trending-tag{padding:.2rem .4rem;font-size:.6rem}
 }
