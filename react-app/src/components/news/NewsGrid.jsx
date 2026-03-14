@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { allArticles } from '../../data/articles'
 
 /* Category icon map for card visuals */
 const catIcons = {
@@ -14,105 +15,6 @@ const catIcons = {
   finance: { paths: [<line key="a" x1="12" y1="1" x2="12" y2="23" />, <path key="b" d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />], gradient: 'linear-gradient(135deg,var(--accent),var(--plum))' },
   business: { paths: [<path key="a" d="M23 6l-9.5 9.5-5-5L1 18" />, <path key="b" d="M17 6h6v6" />], gradient: 'linear-gradient(135deg,var(--teal),var(--emerald))' },
 }
-
-const allArticles = [
-  {
-    id: 'cloud-security-trends',
-    tag: 'Technology', tagClass: 'nws-tag--coral', color: 'var(--coral)',
-    title: 'Cloud Security Spending Surges 35% as Enterprises Prioritize Zero-Trust Architecture',
-    excerpt: 'Organizations worldwide are doubling down on cloud security investments, with zero-trust frameworks becoming the gold standard for enterprise protection strategies.',
-    author: 'James Wu', initials: 'JW', avatarBg: 'linear-gradient(135deg,var(--coral),var(--amber))',
-    date: 'Mar 10, 2026', readTime: '5 min', category: 'technology'
-  },
-  {
-    id: 'restaurant-ai-ordering',
-    tag: 'Food & Dining', tagClass: 'nws-tag--amber', color: 'var(--amber)',
-    title: 'AI-Powered Ordering Systems Increase Restaurant Revenue by 25%, Study Finds',
-    excerpt: 'New research from the National Restaurant Association shows that AI-driven ordering platforms are transforming the dining experience and boosting bottom lines.',
-    author: 'Maria Santos', initials: 'MS', avatarBg: 'linear-gradient(135deg,var(--amber),var(--coral))',
-    date: 'Mar 9, 2026', readTime: '4 min', category: 'food'
-  },
-  {
-    id: 'legal-tech-automation',
-    tag: 'Legal', tagClass: 'nws-tag--plum', color: 'var(--plum)',
-    title: 'Legal Tech Automation Reduces Contract Review Time by 80% for Mid-Size Firms',
-    excerpt: 'AI-powered contract analysis tools are enabling mid-size law firms to compete with larger practices, processing thousands of documents in hours instead of weeks.',
-    author: 'David Mitchell', initials: 'DM', avatarBg: 'linear-gradient(135deg,var(--plum),var(--rose))',
-    date: 'Mar 9, 2026', readTime: '6 min', category: 'legal'
-  },
-  {
-    id: 'edtech-corporate-training',
-    tag: 'Education', tagClass: 'nws-tag--azure', color: 'var(--azure)',
-    title: 'Corporate Training Platforms See Record Enrollment as Upskilling Becomes Priority',
-    excerpt: 'Fortune 500 companies are investing heavily in digital learning platforms, with employee enrollment in professional development courses rising 150% year-over-year.',
-    author: 'Nina Kapoor', initials: 'NK', avatarBg: 'linear-gradient(135deg,var(--azure),var(--accent))',
-    date: 'Mar 8, 2026', readTime: '4 min', category: 'education'
-  },
-  {
-    id: 'real-estate-proptech',
-    tag: 'Real Estate', tagClass: 'nws-tag--emerald', color: 'var(--emerald)',
-    title: 'PropTech Startups Raise $12B in Q1 2026, Signaling Market Confidence',
-    excerpt: 'Venture capital flows into property technology continue to accelerate, with AI-powered valuation tools and virtual staging platforms leading the charge.',
-    author: 'Sarah Chen', initials: 'SC', avatarBg: 'linear-gradient(135deg,var(--emerald),var(--teal))',
-    date: 'Mar 8, 2026', readTime: '5 min', category: 'realestate'
-  },
-  {
-    id: 'home-services-marketplace',
-    tag: 'Home Services', tagClass: 'nws-tag--teal', color: 'var(--teal)',
-    title: 'Home Services Marketplaces Disrupt Traditional Contractor Referral Networks',
-    excerpt: 'Digital platforms connecting homeowners with verified contractors are growing 60% annually, reshaping how consumers find and hire service professionals.',
-    author: 'Alex Rivera', initials: 'AR', avatarBg: 'linear-gradient(135deg,var(--teal),var(--emerald))',
-    date: 'Mar 7, 2026', readTime: '4 min', category: 'home'
-  },
-  {
-    id: 'marketing-attribution-ai',
-    tag: 'Marketing', tagClass: 'nws-tag--rose', color: 'var(--rose)',
-    title: 'AI Attribution Models Finally Solve the Multi-Touch Marketing Puzzle',
-    excerpt: 'New machine learning approaches to marketing attribution are giving CMOs unprecedented clarity on which channels actually drive conversions and revenue.',
-    author: 'Lisa Tran', initials: 'LT', avatarBg: 'linear-gradient(135deg,var(--rose),var(--plum))',
-    date: 'Mar 7, 2026', readTime: '7 min', category: 'marketing'
-  },
-  {
-    id: 'healthcare-wearables-data',
-    tag: 'Healthcare', tagClass: 'nws-tag--emerald', color: 'var(--emerald)',
-    title: 'Wearable Health Data Integration Creates New Opportunities for Clinics',
-    excerpt: 'Healthcare providers that integrate wearable device data into patient records report 40% better outcomes for chronic disease management programs.',
-    author: 'Sara Lopez', initials: 'SL', avatarBg: 'linear-gradient(135deg,var(--emerald),var(--azure))',
-    date: 'Mar 6, 2026', readTime: '5 min', category: 'healthcare'
-  },
-  {
-    id: 'fintech-embedded-finance',
-    tag: 'Finance', tagClass: 'nws-tag--accent', color: 'var(--accent)',
-    title: 'Embedded Finance Revolution: Every SaaS Company Is Becoming a Fintech',
-    excerpt: 'From invoicing tools to project management platforms, software companies are embedding financial services to unlock new revenue streams and customer stickiness.',
-    author: 'Michael Torres', initials: 'MT', avatarBg: 'linear-gradient(135deg,var(--accent),var(--plum))',
-    date: 'Mar 6, 2026', readTime: '6 min', category: 'finance'
-  },
-  {
-    id: 'sustainability-business-directories',
-    tag: 'Business', tagClass: 'nws-tag--teal', color: 'var(--teal)',
-    title: 'Green Business Directories See 300% Traffic Growth as Consumers Prioritize Sustainability',
-    excerpt: 'Eco-conscious consumers are increasingly using sustainability-focused business directories to find environmentally responsible service providers.',
-    author: 'Emma Collins', initials: 'EC', avatarBg: 'linear-gradient(135deg,var(--teal),var(--emerald))',
-    date: 'Mar 5, 2026', readTime: '4 min', category: 'business'
-  },
-  {
-    id: 'cybersecurity-smb-threats',
-    tag: 'Technology', tagClass: 'nws-tag--coral', color: 'var(--coral)',
-    title: 'Cyberattacks on Small Businesses Spike 70%: What Directory Listings Can Do to Help',
-    excerpt: 'Security experts recommend verified business directories as a trust signal that helps customers distinguish legitimate businesses from fraudulent ones.',
-    author: 'James Wu', initials: 'JW', avatarBg: 'linear-gradient(135deg,var(--coral),var(--amber))',
-    date: 'Mar 5, 2026', readTime: '5 min', category: 'technology'
-  },
-  {
-    id: 'remote-work-tools-ranking',
-    tag: 'Workplace', tagClass: 'nws-tag--azure', color: 'var(--azure)',
-    title: 'The Definitive Ranking: Top 20 Remote Work Tools for 2026',
-    excerpt: 'Our annual analysis of remote work platforms reveals the tools that are actually making distributed teams more productive, based on user reviews and satisfaction data.',
-    author: 'Nina Kapoor', initials: 'NK', avatarBg: 'linear-gradient(135deg,var(--azure),var(--accent))',
-    date: 'Mar 4, 2026', readTime: '10 min', category: 'technology'
-  },
-]
 
 const categories = [
   { key: 'all', label: 'All News', count: allArticles.length },
