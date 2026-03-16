@@ -27,6 +27,7 @@ import DashboardLeadsPage from './pages/DashboardLeadsPage'
 import DashboardProfilePage from './pages/DashboardProfilePage'
 import DashboardReviewsPage from './pages/DashboardReviewsPage'
 import DashboardSettingsPage from './pages/DashboardSettingsPage'
+import DashboardListingPage from './pages/DashboardListingPage'
 import AdminPage from './pages/AdminPage'
 import AdminCategoriesPage from './pages/AdminCategoriesPage'
 import AdminListingsPage from './pages/AdminListingsPage'
@@ -39,6 +40,7 @@ import AccountReviewsPage from './pages/AccountReviewsPage'
 import AccountSavedPage from './pages/AccountSavedPage'
 import AccountNotificationsPage from './pages/AccountNotificationsPage'
 import AccountSettingsPage from './pages/AccountSettingsPage'
+import ClaimListingPage from './pages/ClaimListingPage'
 import NotFoundPage from './pages/NotFoundPage'
 
 function App() {
@@ -64,6 +66,7 @@ function App() {
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/write-review" element={<WriteReviewPage />} />
       <Route path="/dashboard" element={<DashboardPage />} />
+      <Route path="/dashboard/listing" element={<DashboardListingPage />} />
       <Route path="/dashboard/analytics" element={<DashboardAnalyticsPage />} />
       <Route path="/dashboard/billing" element={<DashboardBillingPage />} />
       <Route path="/dashboard/leads" element={<DashboardLeadsPage />} />
@@ -82,6 +85,7 @@ function App() {
       <Route path="/admin/revenue" element={<AdminRevenuePage />} />
       <Route path="/admin/reviews" element={<AdminReviewsPage />} />
       <Route path="/admin/users" element={<AdminUsersPage />} />
+      <Route path="/claim-listing" element={<ClaimListingPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   )
