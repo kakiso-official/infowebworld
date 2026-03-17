@@ -51,6 +51,38 @@ import AustraliaLandingPage from './pages/landing/AustraliaLandingPage'
 import CanadaLandingPage from './pages/landing/CanadaLandingPage'
 import UKLandingPage from './pages/landing/UKLandingPage'
 
+/* Country code → news countryCode mapping */
+const countryNewsMap = { in: 'in', eu: 'eu', au: 'au', ca: 'ca', uk: 'uk' }
+
+/* Public pages that should work under every country prefix */
+function PublicRoutes({ prefix = '', countryCode = 'us' }) {
+  const p = prefix ? `/${prefix}` : ''
+  const nc = countryNewsMap[countryCode] || 'us'
+  return (
+    <>
+      <Route path={`${p}/category`} element={<CategoryPage />} />
+      <Route path={`${p}/listing`} element={<ListingPage />} />
+      <Route path={`${p}/signin`} element={<SignInPage />} />
+      <Route path={`${p}/signup`} element={<SignUpPage />} />
+      <Route path={`${p}/submit-listing`} element={<SubmitListingPage />} />
+      <Route path={`${p}/search`} element={<SearchPage />} />
+      <Route path={`${p}/pricing`} element={<PricingPage />} />
+      <Route path={`${p}/blog`} element={<BlogPage />} />
+      <Route path={`${p}/blog-article`} element={<BlogArticlePage />} />
+      <Route path={`${p}/news`} element={<NewsPage countryCode={nc} />} />
+      <Route path={`${p}/news-article`} element={<NewsArticlePage />} />
+      <Route path={`${p}/about`} element={<AboutPage />} />
+      <Route path={`${p}/contact`} element={<ContactPage />} />
+      <Route path={`${p}/comparison`} element={<ComparisonPage />} />
+      <Route path={`${p}/alternatives`} element={<AlternativesPage />} />
+      <Route path={`${p}/best-of`} element={<BestOfPage />} />
+      <Route path={`${p}/profile`} element={<ProfilePage />} />
+      <Route path={`${p}/write-review`} element={<WriteReviewPage />} />
+      <Route path={`${p}/claim-listing`} element={<ClaimListingPage />} />
+    </>
+  )
+}
+
 function App() {
   return (
     <Routes>
@@ -62,29 +94,18 @@ function App() {
       <Route path="/en-au" element={<AustraliaLandingPage />} />
       <Route path="/en-ca" element={<CanadaLandingPage />} />
       <Route path="/en-uk" element={<UKLandingPage />} />
-      <Route path="/category" element={<CategoryPage />} />
-      <Route path="/listing" element={<ListingPage />} />
-      <Route path="/signin" element={<SignInPage />} />
-      <Route path="/signup" element={<SignUpPage />} />
-      <Route path="/submit-listing" element={<SubmitListingPage />} />
-      <Route path="/search" element={<SearchPage />} />
-      <Route path="/pricing" element={<PricingPage />} />
-      <Route path="/blog" element={<BlogPage />} />
-      <Route path="/blog-article" element={<BlogArticlePage />} />
-      <Route path="/news" element={<NewsPage />} />
-      <Route path="/en-in/news" element={<NewsPage countryCode="in" />} />
-      <Route path="/en-eu/news" element={<NewsPage countryCode="eu" />} />
-      <Route path="/en-au/news" element={<NewsPage countryCode="au" />} />
-      <Route path="/en-ca/news" element={<NewsPage countryCode="ca" />} />
-      <Route path="/en-uk/news" element={<NewsPage countryCode="uk" />} />
-      <Route path="/news-article" element={<NewsArticlePage />} />
-      <Route path="/about" element={<AboutPage />} />
-      <Route path="/contact" element={<ContactPage />} />
-      <Route path="/comparison" element={<ComparisonPage />} />
-      <Route path="/alternatives" element={<AlternativesPage />} />
-      <Route path="/best-of" element={<BestOfPage />} />
-      <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/write-review" element={<WriteReviewPage />} />
+
+      {/* ── Public pages — root (US) ── */}
+      {PublicRoutes({ prefix: '', countryCode: 'us' })}
+
+      {/* ── Public pages — per country ── */}
+      {PublicRoutes({ prefix: 'en-in', countryCode: 'in' })}
+      {PublicRoutes({ prefix: 'en-eu', countryCode: 'eu' })}
+      {PublicRoutes({ prefix: 'en-au', countryCode: 'au' })}
+      {PublicRoutes({ prefix: 'en-ca', countryCode: 'ca' })}
+      {PublicRoutes({ prefix: 'en-uk', countryCode: 'uk' })}
+
+      {/* ── Dashboard (no country prefix needed) ── */}
       <Route path="/dashboard" element={<DashboardPage />} />
       <Route path="/dashboard/listing" element={<DashboardListingPage />} />
       <Route path="/dashboard/listing/create" element={<DashboardCreateListingPage />} />
@@ -106,7 +127,6 @@ function App() {
       <Route path="/admin/revenue" element={<AdminRevenuePage />} />
       <Route path="/admin/reviews" element={<AdminReviewsPage />} />
       <Route path="/admin/users" element={<AdminUsersPage />} />
-      <Route path="/claim-listing" element={<ClaimListingPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   )
