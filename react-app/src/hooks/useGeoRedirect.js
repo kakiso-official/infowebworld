@@ -55,7 +55,27 @@ export default function useGeoRedirect() {
     // Only auto-redirect when user is on the root path
     if (location.pathname !== '/') return
 
-    // Check if user manually chose to stay (via ?stay=1 or sessionStorage)
+    // URL param override: ?country=us, ?country=uk, ?country=in, etc.
+    const params = new URLSearchParams(location.search)
+    const forceCountry = params.get('country')
+    if (forceCountry) {
+      const upper = forceCountry.toUpperCase()
+      cacheCountry(upper)
+      const route = getRouteForCountry(upper)
+      if (route) {
+        navigate(route, { replace: true })
+      }
+      // If no route (e.g. US), stay on / — clear old cache so it doesn't redirect
+      return
+    }
+
+    // ?stay=1 skips geo-redirect for this session
+    if (params.get('stay') === '1') {
+      try { sessionStorage.setItem('iww_geo_skip', '1') } catch {}
+      return
+    }
+
+    // Check if user manually chose to stay
     try {
       if (sessionStorage.getItem('iww_geo_skip')) return
     } catch {}
