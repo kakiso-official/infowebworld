@@ -28,6 +28,7 @@ import DashboardProfilePage from './pages/DashboardProfilePage'
 import DashboardReviewsPage from './pages/DashboardReviewsPage'
 import DashboardSettingsPage from './pages/DashboardSettingsPage'
 import DashboardListingPage from './pages/DashboardListingPage'
+import DashboardCreateListingPage from './pages/DashboardCreateListingPage'
 import AdminPage from './pages/AdminPage'
 import AdminCategoriesPage from './pages/AdminCategoriesPage'
 import AdminListingsPage from './pages/AdminListingsPage'
@@ -67,6 +68,7 @@ function App() {
       <Route path="/write-review" element={<WriteReviewPage />} />
       <Route path="/dashboard" element={<DashboardPage />} />
       <Route path="/dashboard/listing" element={<DashboardListingPage />} />
+      <Route path="/dashboard/listing/create" element={<DashboardCreateListingPage />} />
       <Route path="/dashboard/analytics" element={<DashboardAnalyticsPage />} />
       <Route path="/dashboard/billing" element={<DashboardBillingPage />} />
       <Route path="/dashboard/leads" element={<DashboardLeadsPage />} />
