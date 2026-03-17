@@ -163,7 +163,7 @@ export default function useNewsApi(countryCode = 'us', category = 'general') {
     setLoading(true)
     setError(null)
 
-    const url = `${BASE_URL}/top-headlines?category=${category}&lang=en&country=${gnewsCountry}&max=10&apikey=${API_KEY}`
+    const url = `${BASE_URL}/top-headlines?category=${category}&lang=en&country=${gnewsCountry}&max=100&apikey=${API_KEY}`
 
     fetch(url)
       .then(res => {
