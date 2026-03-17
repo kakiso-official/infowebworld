@@ -9,20 +9,24 @@ const LikeSvg = () => <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4
 const DislikeSvg = () => <svg viewBox="0 0 24 24"><path d="M10 15V19a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z" /><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17" /></svg>
 const SaveSvg = () => <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" /></svg>
 const ShareSvg = () => <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" /><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" /></svg>
+const VoteSvg = () => <svg viewBox="0 0 24 24"><path d="M12 4l3 5h5l-4 4 1.5 5.5L12 15l-5.5 3.5L8 13l-4-4h5l3-5z" /></svg>
 
-function ActionBar({likes, dislikes}) {
+function ActionBar({likes, dislikes, votes}) {
   return (
     <div className="listing-actions">
-      <button className="listing-act listing-act--like" aria-label="Like" onClick={e => e.currentTarget.classList.toggle('active')}>
+      <button className="listing-act listing-act--vote" aria-label="Vote" onClick={e => { e.preventDefault(); e.currentTarget.classList.toggle('active') }}>
+        <VoteSvg />{votes != null && <span className="listing-act-count">{votes}</span>}
+      </button>
+      <button className="listing-act listing-act--like" aria-label="Like" onClick={e => { e.preventDefault(); e.currentTarget.classList.toggle('active') }}>
         <LikeSvg />{likes != null && <span className="listing-act-count">{likes}</span>}
       </button>
-      <button className="listing-act listing-act--dislike" aria-label="Dislike" onClick={e => e.currentTarget.classList.toggle('active')}>
+      <button className="listing-act listing-act--dislike" aria-label="Dislike" onClick={e => { e.preventDefault(); e.currentTarget.classList.toggle('active') }}>
         <DislikeSvg />{dislikes != null && <span className="listing-act-count">{dislikes}</span>}
       </button>
-      <button className="listing-act listing-act--save" aria-label="Save" onClick={e => e.currentTarget.classList.toggle('active')}>
+      <button className="listing-act listing-act--save" aria-label="Save" onClick={e => { e.preventDefault(); e.currentTarget.classList.toggle('active') }}>
         <SaveSvg />
       </button>
-      <button className="listing-act listing-act--share" aria-label="Share" onClick={e => e.currentTarget.classList.toggle('active')}>
+      <button className="listing-act listing-act--share" aria-label="Share" onClick={e => { e.preventDefault(); e.currentTarget.classList.toggle('active') }}>
         <ShareSvg />
       </button>
     </div>
@@ -65,7 +69,7 @@ export default function Featured() {
                 </div>
               </div>
             </Link>
-            <ActionBar likes={124} dislikes={8} />
+            <ActionBar votes={247} likes={124} dislikes={8} />
           </div>
 
           {/* 2. The Garden Table - SHORT */}
@@ -91,7 +95,7 @@ export default function Featured() {
                 </div>
               </div>
             </Link>
-            <ActionBar likes={89} dislikes={3} />
+            <ActionBar votes={182} likes={89} dislikes={3} />
           </div>
 
           {/* 3. MindBridge Wellness - REGULAR + ROTATING IMAGE */}
@@ -115,7 +119,7 @@ export default function Featured() {
                 </div>
               </div>
             </Link>
-            <ActionBar likes={67} dislikes={5} />
+            <ActionBar votes={156} likes={67} dislikes={5} />
           </div>
 
           {/* 4. UrbanNest Realty - SHORT */}
@@ -141,7 +145,7 @@ export default function Featured() {
                 </div>
               </div>
             </Link>
-            <ActionBar likes={203} dislikes={12} />
+            <ActionBar votes={318} likes={203} dislikes={12} />
           </div>
 
           {/* 5. BrightPath Academy - TALL + ROTATING IMAGE */}
@@ -165,7 +169,7 @@ export default function Featured() {
                 </div>
               </div>
             </Link>
-            <ActionBar likes={156} dislikes={6} />
+            <ActionBar votes={289} likes={156} dislikes={6} />
           </div>
 
           {/* 6. CreativeForge Studio - SHORT */}
@@ -191,7 +195,7 @@ export default function Featured() {
                 </div>
               </div>
             </Link>
-            <ActionBar likes={45} dislikes={2} />
+            <ActionBar votes={103} likes={45} dislikes={2} />
           </div>
 
           {/* 7. PrecisionFix Plumbing - TALL + ROTATING IMAGE, DESKTOP ONLY */}
@@ -215,7 +219,7 @@ export default function Featured() {
                 </div>
               </div>
             </Link>
-            <ActionBar likes={92} dislikes={4} />
+            <ActionBar votes={201} likes={92} dislikes={4} />
           </div>
 
           {/* 8. Summit Legal Group - REGULAR + ROTATING IMAGE, DESKTOP ONLY */}
@@ -239,7 +243,7 @@ export default function Featured() {
                 </div>
               </div>
             </Link>
-            <ActionBar likes={187} dislikes={9} />
+            <ActionBar votes={342} likes={187} dislikes={9} />
           </div>
 
           {/* 9. Evergreen Fitness Co - TALL + ROTATING IMAGE, DESKTOP ONLY */}
@@ -263,7 +267,7 @@ export default function Featured() {
                 </div>
               </div>
             </Link>
-            <ActionBar likes={78} dislikes={2} />
+            <ActionBar votes={167} likes={78} dislikes={2} />
           </div>
 
           {/* 10. NovaByte Analytics - SHORT, DESKTOP ONLY */}
@@ -289,7 +293,7 @@ export default function Featured() {
                 </div>
               </div>
             </Link>
-            <ActionBar likes={63} dislikes={3} />
+            <ActionBar votes={134} likes={63} dislikes={3} />
           </div>
 
           {/* 11. Bloom Florist & Events - TALL, DESKTOP ONLY */}
@@ -315,7 +319,7 @@ export default function Featured() {
                 </div>
               </div>
             </Link>
-            <ActionBar likes={134} dislikes={1} />
+            <ActionBar votes={276} likes={134} dislikes={1} />
           </div>
 
           {/* 12. TrueNorth Accounting - REGULAR, DESKTOP ONLY */}
@@ -341,7 +345,7 @@ export default function Featured() {
                 </div>
               </div>
             </Link>
-            <ActionBar likes={112} dislikes={7} />
+            <ActionBar votes={223} likes={112} dislikes={7} />
           </div>
 
           {/* 13. SparkClean Pro - SHORT, DESKTOP ONLY */}
@@ -367,7 +371,7 @@ export default function Featured() {
                 </div>
               </div>
             </Link>
-            <ActionBar likes={98} dislikes={5} />
+            <ActionBar votes={189} likes={98} dislikes={5} />
           </div>
 
           {/* 14. Harbor View Hotel - REGULAR, DESKTOP ONLY */}
@@ -393,7 +397,7 @@ export default function Featured() {
                 </div>
               </div>
             </Link>
-            <ActionBar likes={245} dislikes={11} />
+            <ActionBar votes={412} likes={245} dislikes={11} />
           </div>
 
           {/* 15. Pixel & Code Studio - TALL, DESKTOP ONLY */}
@@ -419,7 +423,7 @@ export default function Featured() {
                 </div>
               </div>
             </Link>
-            <ActionBar likes={87} dislikes={4} />
+            <ActionBar votes={178} likes={87} dislikes={4} />
           </div>
 
         </div>

@@ -11,6 +11,10 @@ const CompareSvg = () => (
   <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
 )
 
+const VoteSvg = () => (
+  <svg viewBox="0 0 24 24"><path d="M12 4l3 5h5l-4 4 1.5 5.5L12 15l-5.5 3.5L8 13l-4-4h5l3-5z" /></svg>
+)
+
 const listings = [
   {
     id: 'cloudsync-pro',
@@ -36,6 +40,7 @@ const listings = [
     category: 'Cloud Storage',
     verified: true,
     price: 'From $29/mo',
+    votes: 247,
     sponsored: false,
   },
   {
@@ -62,6 +67,7 @@ const listings = [
     category: 'Data Analytics',
     verified: true,
     price: 'From $79/mo',
+    votes: 312,
     sponsored: false,
   },
   {
@@ -88,6 +94,7 @@ const listings = [
     category: 'Cybersecurity',
     verified: true,
     price: 'Custom',
+    votes: 189,
     sponsored: false,
   },
   {
@@ -114,6 +121,7 @@ const listings = [
     category: 'CRM',
     verified: false,
     price: 'From $49/mo',
+    votes: 156,
     sponsored: true,
   },
   {
@@ -140,6 +148,7 @@ const listings = [
     category: 'DevOps',
     verified: true,
     price: 'Free tier',
+    votes: 421,
     sponsored: false,
   },
   {
@@ -166,6 +175,7 @@ const listings = [
     category: 'Project Mgmt',
     verified: false,
     price: 'From $12/mo',
+    votes: 267,
     sponsored: false,
   },
   {
@@ -192,6 +202,7 @@ const listings = [
     category: 'Automation',
     verified: true,
     price: 'Free tier',
+    votes: 356,
     sponsored: false,
   },
   {
@@ -218,6 +229,7 @@ const listings = [
     category: 'DevOps',
     verified: true,
     price: 'Free tier',
+    votes: 198,
     sponsored: false,
   },
 ]
@@ -351,6 +363,13 @@ export default function CategoryListings({ onToggleFilters }) {
             </div>
 
             <div className="cat-card-actions">
+              <button
+                className="cat-card-vote"
+                onClick={(e) => { e.preventDefault(); e.currentTarget.classList.toggle('active') }}
+              >
+                <VoteSvg />
+                <span className="cat-card-vote-count">{item.votes}</span>
+              </button>
               <label
                 className={`cat-card-cmp${compareSet.has(item.id) ? ' active' : ''}`}
                 onClick={(e) => { e.preventDefault(); toggleCompare(item.id) }}

@@ -14,6 +14,8 @@ const TABS = [
 export default function ListingHeader({ activeTab, onTabChange }) {
   const [saveActive, setSaveActive] = useState(false)
   const [shareActive, setShareActive] = useState(false)
+  const [voteActive, setVoteActive] = useState(false)
+  const [voteCount, setVoteCount] = useState(342)
 
   return (
     <>
@@ -103,6 +105,13 @@ export default function ListingHeader({ activeTab, onTabChange }) {
 
               {/* Actions */}
               <div className="ls-hero-actions">
+                <button
+                  className={`ls-btn ls-btn-vote${voteActive ? ' active' : ''}`}
+                  onClick={() => { setVoteActive(!voteActive); setVoteCount(c => voteActive ? c - 1 : c + 1) }}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 4l3 5h5l-4 4 1.5 5.5L12 15l-5.5 3.5L8 13l-4-4h5l3-5z" /></svg>
+                  Vote <span className="ls-vote-count">{voteCount}</span>
+                </button>
                 <a href="#" className="ls-btn ls-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                   Visit Website
