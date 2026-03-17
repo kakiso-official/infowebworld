@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useCountry } from '../../context/CountryContext'
 
 const StarSvg = () => <svg viewBox="0 0 24 24" fill="var(--gold)" stroke="var(--gold)" strokeWidth="1"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
 
@@ -29,6 +30,7 @@ const MedalIcon = ({ type }) => {
 }
 
 export default function Trending() {
+  const country = useCountry()
   // Podium order: silver(#2), gold(#1), bronze(#3)
   const podium = [items[1], items[0], items[2]]
   const leaderboard = items.slice(3)
@@ -39,8 +41,8 @@ export default function Trending() {
         <div className="section-header-row">
           <div className="section-header">
             <div className="section-label">Popular</div>
-            <h2 className="section-title">Trending This Week</h2>
-            <p className="section-subtitle">The most searched and highest-voted businesses across every category.</p>
+            <h2 className="section-title">{country?.trending?.heading || 'Trending This Week'}</h2>
+            <p className="section-subtitle">{country?.trending?.sub || 'The most searched and highest-voted businesses across every category.'}</p>
           </div>
           <Link to="/best-of" className="view-all-link">View Full Rankings <svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></Link>
         </div>

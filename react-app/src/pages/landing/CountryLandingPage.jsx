@@ -1,21 +1,26 @@
 import { useEffect } from 'react'
-import useGeoRedirect from '../hooks/useGeoRedirect'
-import '../styles/landing.css'
-import LandingNav from '../components/landing/LandingNav'
-import Hero from '../components/landing/Hero'
-import Logos from '../components/landing/Logos'
-import Categories from '../components/landing/Categories'
-import Featured from '../components/landing/Featured'
-import Reviews from '../components/landing/Reviews'
-import News from '../components/landing/News'
-import Trending from '../components/landing/Trending'
-import ValueProps from '../components/landing/ValueProps'
-import Testimonials from '../components/landing/Testimonials'
-import Cta from '../components/landing/Cta'
-import LandingFooter from '../components/landing/LandingFooter'
+import { CountryProvider } from '../../context/CountryContext'
+import '../../styles/landing.css'
+import LandingNav from '../../components/landing/LandingNav'
+import Hero from '../../components/landing/Hero'
+import Logos from '../../components/landing/Logos'
+import Categories from '../../components/landing/Categories'
+import Featured from '../../components/landing/Featured'
+import Reviews from '../../components/landing/Reviews'
+import News from '../../components/landing/News'
+import Trending from '../../components/landing/Trending'
+import ValueProps from '../../components/landing/ValueProps'
+import Testimonials from '../../components/landing/Testimonials'
+import Cta from '../../components/landing/Cta'
+import LandingFooter from '../../components/landing/LandingFooter'
 
-export default function HomePage() {
-  useGeoRedirect()
+export default function CountryLandingPage({ country }) {
+  useEffect(() => {
+    // SEO: update document title
+    if (country?.meta?.title) {
+      document.title = country.meta.title
+    }
+  }, [country])
 
   useEffect(() => {
     // Fade-in animations
@@ -63,19 +68,21 @@ export default function HomePage() {
   }, [])
 
   return (
-    <div id="app">
-      <LandingNav />
-      <Hero />
-      <Logos />
-      <Featured />
-      <Categories />
-      <Reviews />
-      <News />
-      <Trending />
-      <ValueProps />
-      <Testimonials />
-      <Cta />
-      <LandingFooter />
-    </div>
+    <CountryProvider country={country}>
+      <div id="app" data-country={country.code}>
+        <LandingNav />
+        <Hero />
+        <Logos />
+        <Featured />
+        <Categories />
+        <Reviews />
+        <News />
+        <Trending />
+        <ValueProps />
+        <Testimonials />
+        <Cta />
+        <LandingFooter />
+      </div>
+    </CountryProvider>
   )
 }

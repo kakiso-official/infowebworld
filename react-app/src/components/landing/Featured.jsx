@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useCountry } from '../../context/CountryContext'
 import RotatingImage, { allImages } from './RotatingImage'
 
 const StarSvg = ({filled=true}) => <svg viewBox="0 0 24 24" fill={filled?"var(--gold)":"none"} stroke="var(--gold)" strokeWidth="1"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
@@ -29,14 +30,15 @@ function ActionBar({likes, dislikes}) {
 }
 
 export default function Featured() {
+  const country = useCountry()
   return (
     <section className="section featured fade-section">
       <div className="container">
         <div className="section-header-row">
           <div className="section-header">
             <div className="section-label">Curated</div>
-            <h2 className="section-title">Featured Listings</h2>
-            <p className="section-subtitle">Hand-picked businesses with verified reviews</p>
+            <h2 className="section-title">{country?.featured?.heading || 'Featured Listings'}</h2>
+            <p className="section-subtitle">{country?.featured?.sub || 'Hand-picked businesses with verified reviews'}</p>
           </div>
           <Link to="/search" className="view-all-link">View All Businesses <svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></Link>
         </div>

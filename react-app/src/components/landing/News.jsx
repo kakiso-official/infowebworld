@@ -1,15 +1,17 @@
 import { Link } from 'react-router-dom'
+import { useCountry } from '../../context/CountryContext'
 import RotatingImage from './RotatingImage'
 
 export default function News() {
+  const country = useCountry()
   return (
     <section className="section fade-section" style={{background:'var(--bg-alt)'}}>
       <div className="container">
         <div className="section-header-row">
           <div className="section-header">
             <div className="section-label">Stay Informed</div>
-            <h2 className="section-title">Latest News</h2>
-            <p className="section-subtitle">Industry insights, business trends, and the stories shaping every sector.</p>
+            <h2 className="section-title">{country?.news?.heading || 'Latest News'}</h2>
+            <p className="section-subtitle">{country?.news?.sub || 'Industry insights, business trends, and the stories shaping every sector.'}</p>
           </div>
           <Link to="/news" className="view-all-link">View All News <svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></Link>
         </div>

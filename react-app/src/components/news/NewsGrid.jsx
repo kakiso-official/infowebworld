@@ -16,26 +16,37 @@ const catIcons = {
   business: { paths: [<path key="a" d="M23 6l-9.5 9.5-5-5L1 18" />, <path key="b" d="M17 6h6v6" />], gradient: 'linear-gradient(135deg,var(--teal),var(--emerald))' },
 }
 
-const categories = [
-  { key: 'all', label: 'All News', count: allArticles.length },
-  { key: 'technology', label: 'Technology', count: allArticles.filter(a => a.category === 'technology').length },
-  { key: 'business', label: 'Business', count: allArticles.filter(a => a.category === 'business').length },
-  { key: 'healthcare', label: 'Healthcare', count: allArticles.filter(a => a.category === 'healthcare').length },
-  { key: 'realestate', label: 'Real Estate', count: allArticles.filter(a => a.category === 'realestate').length },
-  { key: 'education', label: 'Education', count: allArticles.filter(a => a.category === 'education').length },
-  { key: 'finance', label: 'Finance', count: allArticles.filter(a => a.category === 'finance').length },
-  { key: 'food', label: 'Food & Dining', count: allArticles.filter(a => a.category === 'food').length },
-  { key: 'legal', label: 'Legal', count: allArticles.filter(a => a.category === 'legal').length },
-]
+function buildCategories(articles) {
+  const base = [
+    { key: 'all', label: 'All News' },
+    { key: 'technology', label: 'Technology' },
+    { key: 'business', label: 'Business' },
+    { key: 'healthcare', label: 'Healthcare' },
+    { key: 'realestate', label: 'Real Estate' },
+    { key: 'education', label: 'Education' },
+    { key: 'finance', label: 'Finance' },
+    { key: 'food', label: 'Food & Dining' },
+    { key: 'legal', label: 'Legal' },
+    { key: 'marketing', label: 'Marketing' },
+  ]
+  return base.map(c => ({
+    ...c,
+    count: c.key === 'all' ? articles.length : articles.filter(a => a.category === c.key).length,
+  })).filter(c => c.key === 'all' || c.count > 0)
+}
 
-export default function NewsGrid() {
+export default function NewsGrid({ apiArticles = [], loading = false, error = null }) {
   const [activeTab, setActiveTab] = useState('all')
   const [viewMode, setViewMode] = useState('grid')
   const [search, setSearch] = useState('')
   const [savedIds, setSavedIds] = useState([])
   const [visibleCount, setVisibleCount] = useState(8)
 
-  const filtered = allArticles.filter(a => {
+  // Use API articles if available, otherwise fall back to hardcoded
+  const sourceArticles = apiArticles.length > 0 ? apiArticles : allArticles
+  const categories = buildCategories(sourceArticles)
+
+  const filtered = sourceArticles.filter(a => {
     const matchCat = activeTab === 'all' || a.category === activeTab
     const matchSearch = !search || a.title.toLowerCase().includes(search.toLowerCase()) || a.excerpt.toLowerCase().includes(search.toLowerCase())
     return matchCat && matchSearch
@@ -89,15 +100,54 @@ export default function NewsGrid() {
         </div>
       </div>
 
+      {/* Loading skeleton */}
+      {loading && (
+        <div className="nws-grid">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div className="nws-card nws-card--skeleton" key={i}>
+              <div className="nws-card-visual">
+                <div className="nws-skeleton-block" style={{ height: 180 }} />
+              </div>
+              <div className="nws-card-body">
+                <div className="nws-skeleton-line" style={{ width: '80%' }} />
+                <div className="nws-skeleton-line" style={{ width: '100%' }} />
+                <div className="nws-skeleton-line" style={{ width: '60%' }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* API key missing notice */}
+      {error === 'no-key' && (
+        <div className="nws-api-notice">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
+          <div>
+            <strong>Live news requires an API key.</strong>
+            <p>Get a free key at <a href="https://gnews.io" target="_blank" rel="noopener noreferrer">gnews.io</a> and add it to <code>.env</code> as <code>VITE_GNEWS_API_KEY</code>. Showing sample articles below.</p>
+          </div>
+        </div>
+      )}
+
       {/* Grid */}
       <div className={`nws-grid${viewMode === 'list' ? ' list-view' : ''}`}>
         {visible.map(article => {
           const icon = getCatIcon(article.category)
+          const isApi = article.isApi
+          const CardWrapper = isApi ? 'a' : Link
+          const cardProps = isApi
+            ? { href: article.externalUrl, target: '_blank', rel: 'noopener noreferrer' }
+            : { to: `/news-article?id=${article.id}` }
+
           return (
-            <Link to={`/news-article?id=${article.id}`} className="nws-card" key={article.id} style={{ '--card-accent': article.color }}>
-              {/* Visual header with gradient */}
+            <CardWrapper {...cardProps} className={`nws-card${isApi ? ' nws-card--api' : ''}`} key={article.id} style={{ '--card-accent': article.color }}>
+              {/* Visual header — image for API articles, gradient for hardcoded */}
               <div className="nws-card-visual">
-                <div className="nws-card-visual-bg" style={{ background: article.color, opacity: .08 }} />
+                {isApi && article.image ? (
+                  <img className="nws-card-img" src={article.image} alt="" loading="lazy" />
+                ) : (
+                  <div className="nws-card-visual-bg" style={{ background: article.color, opacity: .08 }} />
+                )}
                 <div className="nws-card-visual-content">
                   <div className="nws-card-visual-top">
                     <span className={`nws-tag ${article.tagClass}`}>{article.tag}</span>
@@ -108,11 +158,18 @@ export default function NewsGrid() {
                   </div>
                   <h3>{article.title}</h3>
                 </div>
-                <div className="nws-card-visual-icon" style={{ background: icon.gradient }}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    {icon.paths}
-                  </svg>
-                </div>
+                {!isApi && (
+                  <div className="nws-card-visual-icon" style={{ background: icon.gradient }}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      {icon.paths}
+                    </svg>
+                  </div>
+                )}
+                {isApi && (
+                  <div className="nws-card-live-badge">
+                    <span className="nws-live-dot" />Live
+                  </div>
+                )}
               </div>
 
               {/* Body */}
@@ -127,7 +184,11 @@ export default function NewsGrid() {
                     </div>
                   </div>
                   <div className="nws-card-arrow">
-                    <svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                    {isApi ? (
+                      <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
+                    ) : (
+                      <svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                    )}
                   </div>
                 </div>
               </div>
@@ -140,7 +201,7 @@ export default function NewsGrid() {
               >
                 <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" /></svg>
               </button>
-            </Link>
+            </CardWrapper>
           )
         })}
       </div>

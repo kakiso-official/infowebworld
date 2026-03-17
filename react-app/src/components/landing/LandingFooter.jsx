@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useCountry } from '../../context/CountryContext'
 
 export default function LandingFooter() {
+  const country = useCountry()
   const [email, setEmail] = useState('')
   return (
     <footer className="footer fade-section">
@@ -67,7 +69,7 @@ export default function LandingFooter() {
             </div>
             <div className="footer-lang">
               <svg viewBox="0 0 24 24" stroke="var(--gray-400)" fill="none" strokeWidth="1.5"><circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
-              <span>English (US)</span>
+              <span>{country?.footer?.languageLabel || 'English (US)'}</span>
             </div>
           </div>
         </div>

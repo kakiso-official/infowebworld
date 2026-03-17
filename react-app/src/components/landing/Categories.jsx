@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useCountry } from '../../context/CountryContext'
 import RotatingImage, { allImages } from './RotatingImage'
 
 const cats = [
@@ -13,14 +14,15 @@ const cats = [
 ]
 
 export default function Categories() {
+  const country = useCountry()
   return (
     <section className="section fade-section">
       <div className="container">
         <div className="section-header-row">
           <div className="section-header">
             <div className="section-label">Explore</div>
-            <h2 className="section-title">Browse by Industry</h2>
-            <p className="section-subtitle">Discover top-rated businesses across the industries that matter most.</p>
+            <h2 className="section-title">{country?.categories?.heading || 'Browse by Industry'}</h2>
+            <p className="section-subtitle">{country?.categories?.sub || 'Discover top-rated businesses across the industries that matter most.'}</p>
           </div>
           <Link to="/category" className="view-all-link">View All Industries <svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></Link>
         </div>

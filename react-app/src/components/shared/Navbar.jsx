@@ -96,6 +96,10 @@ export default function Navbar() {
   const closeDrawer = () => { setDrawerOpen(false); document.body.style.overflow = '' }
   const isActive = (path) => location.pathname === path ? 'active' : ''
 
+  // Detect country prefix from current URL (e.g. /en-in, /en-uk, /en-eu...)
+  const countryMatch = location.pathname.match(/^(\/en-(?:in|eu|au|ca|uk))/)
+  const countryPrefix = countryMatch ? countryMatch[1] : ''
+
   const toggleSearch = (e) => {
     e.preventDefault()
     setSearchOpen(prev => !prev)
@@ -168,7 +172,7 @@ export default function Navbar() {
     <>
       <nav className={`s-nav${scrolled ? ' scrolled' : ''}`} id="s-nav-bar">
         <div className="s-container s-nav-inner">
-          <Link to="/" className="s-nav-logo">
+          <Link to={countryPrefix || '/'} className="s-nav-logo">
             <img src="/logo/infowebworld-logo.png" alt="InfoWebWorld" />
           </Link>
           <div className="s-nav-links">
@@ -188,7 +192,7 @@ export default function Navbar() {
               </div>
             </div>
             <Link to="/best-of" className={`s-nav-link ${isActive('/best-of')}`}>Featured</Link>
-            <Link to="/news" className={`s-nav-link ${isActive('/news')}`}>News</Link>
+            <Link to={`${countryPrefix}/news`} className={`s-nav-link ${isActive(`${countryPrefix}/news`)}`}>News</Link>
             <Link to="/pricing" className={`s-nav-link ${isActive('/pricing')}`}>Pricing</Link>
           </div>
           <div className="s-nav-right">
@@ -386,13 +390,13 @@ export default function Navbar() {
       <div className={`s-nav-overlay${drawerOpen ? ' open' : ''}`} onClick={closeDrawer}></div>
       <div className={`s-nav-drawer${drawerOpen ? ' open' : ''}`}>
         <div className="s-nav-drawer-header">
-          <Link to="/"><img src="/logo/infowebworld-logo.png" alt="InfoWebWorld" /></Link>
+          <Link to={countryPrefix || '/'}><img src="/logo/infowebworld-logo.png" alt="InfoWebWorld" /></Link>
           <button className="s-nav-drawer-close" aria-label="Close" onClick={closeDrawer}><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg></button>
         </div>
         <div className="s-nav-drawer-body">
           <Link to="/search" className="s-nav-drawer-link">Search</Link>
           <Link to="/best-of" className="s-nav-drawer-link">Featured</Link>
-          <Link to="/news" className="s-nav-drawer-link">News</Link>
+          <Link to={`${countryPrefix}/news`} className="s-nav-drawer-link">News</Link>
           <Link to="/pricing" className="s-nav-drawer-link">Pricing</Link>
           <div className="s-nav-drawer-label">Browse Categories</div>
           <Link to="/category?cat=technology-saas" className="s-nav-drawer-cat"><span className="s-nav-drawer-cat-icon" style={{background:'rgba(108,114,241,.1)'}}><svg viewBox="0 0 24 24" stroke="var(--accent)"><path d="M16 18l6-6-6-6" /><path d="M8 6l-6 6 6 6" /></svg></span>Technology &amp; SaaS</Link>

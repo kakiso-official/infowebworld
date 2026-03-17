@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useCountry } from '../../context/CountryContext'
 
-const words = ['restaurant', 'agency', 'consultant', 'contractor', 'software', 'clinic']
+const defaultWords = ['restaurant', 'agency', 'consultant', 'contractor', 'software', 'clinic']
 
 const categories = [
   { name: 'Technology', slug: 'technology', color: 'var(--accent)', bg: 'rgba(108,114,241,.1)', icon: <><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></> },
@@ -12,7 +13,7 @@ const categories = [
   { name: 'Education', slug: 'education', color: 'var(--teal)', bg: 'rgba(20,184,166,.1)', icon: <><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></> },
 ]
 
-const stats = [
+const defaultStats = [
   { num: '2,500+', label: 'Businesses' },
   { num: '25K+', label: 'Reviews' },
   { num: '80+', label: 'Industries' },
@@ -47,10 +48,18 @@ const categorySuggestions = [
 ]
 
 export default function Hero() {
+  const country = useCountry()
+  const words = country?.hero?.words || defaultWords
+  const heroStats = country?.hero?.stats || defaultStats
+  const locationPlaceholder = country?.hero?.locationPlaceholder || 'City or ZIP code'
+  const locations = country?.locations || []
+
   const [current, setCurrent] = useState(0)
   const [query, setQuery] = useState('')
   const [locationVal, setLocationVal] = useState('')
   const [focused, setFocused] = useState(false)
+  const [locFocused, setLocFocused] = useState(false)
+  const [hoveredStateIdx, setHoveredStateIdx] = useState(null)
   const [activeIdx, setActiveIdx] = useState(-1)
   const navigate = useNavigate()
   const dropdownRef = useRef(null)
@@ -61,13 +70,28 @@ export default function Hero() {
       setCurrent(prev => (prev + 1) % words.length)
     }, 2400)
     return () => clearInterval(interval)
-  }, [])
+  }, [words.length])
+
+  // Filter locations based on typed value
+  const locQ = locationVal.trim().toLowerCase()
+  const filteredLocations = locQ.length > 0
+    ? locations.map(loc => {
+        const stateMatch = loc.state.toLowerCase().includes(locQ)
+        const matchedCities = loc.cities.filter(c => c.toLowerCase().includes(locQ))
+        if (stateMatch || matchedCities.length > 0) {
+          return { ...loc, cities: stateMatch ? loc.cities : matchedCities }
+        }
+        return null
+      }).filter(Boolean)
+    : locations
 
   // Close dropdown on outside click
   useEffect(() => {
     const handler = (e) => {
       if (searchWrapRef.current && !searchWrapRef.current.contains(e.target)) {
         setFocused(false)
+        setLocFocused(false)
+        setHoveredStateIdx(null)
       }
     }
     document.addEventListener('mousedown', handler)
@@ -176,7 +200,7 @@ export default function Hero() {
                   placeholder="What are you looking for?"
                   value={query}
                   onChange={e => setQuery(e.target.value)}
-                  onFocus={() => setFocused(true)}
+                  onFocus={() => { setFocused(true); setLocFocused(false) }}
                   onKeyDown={handleKeyDown}
                   autoComplete="off"
                 />
@@ -189,7 +213,20 @@ export default function Hero() {
               <div className="search-divider"></div>
               <div className="search-field search-field--where">
                 <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
-                <input type="text" className="search-input" placeholder="City or zip code" value={locationVal} onChange={e => setLocationVal(e.target.value)} />
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder={locationPlaceholder}
+                  value={locationVal}
+                  onChange={e => { setLocationVal(e.target.value); setLocFocused(true); setHoveredStateIdx(null) }}
+                  onFocus={() => { setLocFocused(true); setFocused(false); setHoveredStateIdx(null) }}
+                  autoComplete="off"
+                />
+                {locationVal && (
+                  <button type="button" className="search-clear" onClick={() => { setLocationVal(''); setLocFocused(false) }}>
+                    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                  </button>
+                )}
               </div>
               <button type="submit" className="search-btn">
                 <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
@@ -197,8 +234,54 @@ export default function Hero() {
               </button>
             </form>
 
+            {/* ── Location Dropdown: States + Cities ── */}
+            {locFocused && filteredLocations.length > 0 && (
+              <div className="loc-dropdown">
+                <div className="search-dropdown-glass"></div>
+                <div className="loc-dropdown-inner">
+                  <div className="loc-states">
+                    <div className="search-dd-label">
+                      <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
+                      {country?.code === 'eu' ? 'Select Country' : 'Select State'}
+                    </div>
+                    {filteredLocations.map((loc, i) => (
+                      <div
+                        key={loc.state}
+                        className={`loc-state-item${hoveredStateIdx === i ? ' loc-state-item--active' : ''}`}
+                        onMouseEnter={() => setHoveredStateIdx(i)}
+                        onClick={() => { setLocationVal(loc.state); setLocFocused(false); setHoveredStateIdx(null) }}
+                      >
+                        <svg viewBox="0 0 24 24" className="loc-state-icon"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
+                        <span className="loc-state-name">{loc.state}</span>
+                        <span className="loc-state-count">{loc.cities.length}</span>
+                        <svg viewBox="0 0 24 24" className="loc-state-arrow"><path d="m9 18 6-6-6-6" /></svg>
+                      </div>
+                    ))}
+                  </div>
+                  {hoveredStateIdx !== null && filteredLocations[hoveredStateIdx] && (
+                    <div className="loc-cities">
+                      <div className="loc-cities-header">
+                        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
+                        <span>Cities in {filteredLocations[hoveredStateIdx].state}</span>
+                      </div>
+                      {filteredLocations[hoveredStateIdx].cities.map(city => (
+                        <div
+                          key={city}
+                          className="loc-city-item"
+                          onClick={() => { setLocationVal(`${city}, ${filteredLocations[hoveredStateIdx].state}`); setLocFocused(false); setHoveredStateIdx(null) }}
+                        >
+                          <svg viewBox="0 0 24 24" className="loc-city-icon"><circle cx="12" cy="12" r="3" /></svg>
+                          <span>{city}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* ── Liquid Glass Dropdown ── */}
-            {showDropdown && (
+            {showDropdown && !locFocused && (
               <div className="search-dropdown" ref={dropdownRef}>
                 <div className="search-dropdown-glass"></div>
                 <div className="search-dropdown-content">
@@ -368,7 +451,7 @@ export default function Hero() {
             ))}
           </div>
           <div className="hero-stats-card">
-            {stats.map((s, i) => (
+            {heroStats.map((s, i) => (
               <div className="hero-stat" key={i}>
                 <div className="hero-stat-num">{s.num}</div>
                 <div className="hero-stat-label">{s.label}</div>

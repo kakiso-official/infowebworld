@@ -44,10 +44,24 @@ import AccountSettingsPage from './pages/AccountSettingsPage'
 import ClaimListingPage from './pages/ClaimListingPage'
 import NotFoundPage from './pages/NotFoundPage'
 
+/* ── Country Landing Pages ── */
+import IndiaLandingPage from './pages/landing/IndiaLandingPage'
+import EuropeLandingPage from './pages/landing/EuropeLandingPage'
+import AustraliaLandingPage from './pages/landing/AustraliaLandingPage'
+import CanadaLandingPage from './pages/landing/CanadaLandingPage'
+import UKLandingPage from './pages/landing/UKLandingPage'
+
 function App() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
+
+      {/* ── Country-Specific Landings ── */}
+      <Route path="/en-in" element={<IndiaLandingPage />} />
+      <Route path="/en-eu" element={<EuropeLandingPage />} />
+      <Route path="/en-au" element={<AustraliaLandingPage />} />
+      <Route path="/en-ca" element={<CanadaLandingPage />} />
+      <Route path="/en-uk" element={<UKLandingPage />} />
       <Route path="/category" element={<CategoryPage />} />
       <Route path="/listing" element={<ListingPage />} />
       <Route path="/signin" element={<SignInPage />} />
@@ -58,6 +72,11 @@ function App() {
       <Route path="/blog" element={<BlogPage />} />
       <Route path="/blog-article" element={<BlogArticlePage />} />
       <Route path="/news" element={<NewsPage />} />
+      <Route path="/en-in/news" element={<NewsPage countryCode="in" />} />
+      <Route path="/en-eu/news" element={<NewsPage countryCode="eu" />} />
+      <Route path="/en-au/news" element={<NewsPage countryCode="au" />} />
+      <Route path="/en-ca/news" element={<NewsPage countryCode="ca" />} />
+      <Route path="/en-uk/news" element={<NewsPage countryCode="uk" />} />
       <Route path="/news-article" element={<NewsArticlePage />} />
       <Route path="/about" element={<AboutPage />} />
       <Route path="/contact" element={<ContactPage />} />

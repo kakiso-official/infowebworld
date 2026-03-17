@@ -92,6 +92,10 @@ export default function LandingNav() {
     }
   }, [searchOpen])
 
+  // Detect country prefix from current URL (e.g. /en-in, /en-uk, /en-eu...)
+  const countryMatch = location.pathname.match(/^(\/en-(?:in|eu|au|ca|uk))/)
+  const countryPrefix = countryMatch ? countryMatch[1] : ''
+
   const open = () => { setDrawerOpen(true); document.body.style.overflow = 'hidden' }
   const close = () => { setDrawerOpen(false); document.body.style.overflow = '' }
 
@@ -166,7 +170,7 @@ export default function LandingNav() {
     <>
       <nav className={`nav${scrolled ? ' scrolled' : ''}`} id="nav">
         <div className="container nav-inner">
-          <Link to="/" className="nav-logo">
+          <Link to={countryPrefix || '/'} className="nav-logo">
             <img src="/logo/infowebworld-logo.png" alt="InfoWebWorld" />
           </Link>
           <div className="nav-links">
@@ -186,7 +190,7 @@ export default function LandingNav() {
               </div>
             </div>
             <Link to="/best-of" className="nav-link">Featured</Link>
-            <Link to="/news" className="nav-link">News</Link>
+            <Link to={`${countryPrefix}/news`} className="nav-link">News</Link>
             <Link to="/pricing" className="nav-link">Pricing</Link>
           </div>
           <div className="nav-right">
@@ -339,13 +343,13 @@ export default function LandingNav() {
       <div className={`nav-mobile-overlay${drawerOpen ? ' open' : ''}`} id="nav-overlay" onClick={close}></div>
       <div className={`nav-mobile-drawer${drawerOpen ? ' open' : ''}`} id="nav-drawer">
         <div className="nav-mobile-header">
-          <Link to="/" className="nav-logo"><img src="/logo/infowebworld-logo.png" alt="InfoWebWorld" /></Link>
+          <Link to={countryPrefix || '/'} className="nav-logo"><img src="/logo/infowebworld-logo.png" alt="InfoWebWorld" /></Link>
           <button className="nav-mobile-close" aria-label="Close menu" onClick={close}><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg></button>
         </div>
         <div className="nav-mobile-body">
           <button className="nav-mobile-link" onClick={toggleSearch} style={{width:'100%',textAlign:'left',background:'none',border:'none',cursor:'pointer'}}>Search</button>
           <Link to="/best-of" className="nav-mobile-link">Featured</Link>
-          <Link to="/news" className="nav-mobile-link">News</Link>
+          <Link to={`${countryPrefix}/news`} className="nav-mobile-link">News</Link>
           <Link to="/pricing" className="nav-mobile-link">Pricing</Link>
           <div className="nav-mobile-label">Browse Categories</div>
           <Link to="/category?cat=technology-saas" className="nav-mobile-cat"><span className="nav-mobile-cat-icon" style={{background:'rgba(108,114,241,.1)'}}><svg viewBox="0 0 24 24" stroke="var(--accent)"><path d="M16 18l6-6-6-6" /><path d="M8 6l-6 6 6 6" /></svg></span>Technology &amp; SaaS</Link>

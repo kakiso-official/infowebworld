@@ -1,7 +1,7 @@
 /* ===== Article Cards ===== */
 
 /* Grid */
-.nws-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;min-width:0;width:100%}
+.nws-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;min-width:0;width:100%}
 .nws-grid>*{min-width:0}
 .nws-grid.list-view{grid-template-columns:1fr;gap:12px}
 
@@ -48,6 +48,46 @@
 .nws-card-bookmark.saved svg{fill:var(--accent);stroke:var(--accent)}
 .nws-card-bookmark:hover{background:#fff;border-color:var(--accent);transform:scale(1.1)}
 
+/* ===== API Article Cards (with real images) ===== */
+.nws-card--api{text-decoration:none;color:inherit}
+.nws-card--api .nws-card-visual{padding:0;min-height:0;overflow:hidden;aspect-ratio:16/10}
+.nws-card-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s cubic-bezier(.16,1,.3,1)}
+.nws-card--api:hover .nws-card-img{transform:scale(1.04)}
+.nws-card--api .nws-card-visual-content{position:absolute;bottom:0;left:0;right:0;padding:14px 16px;
+  background:linear-gradient(transparent 0%,rgba(0,0,0,.55) 50%,rgba(0,0,0,.8) 100%);z-index:2}
+.nws-card--api .nws-card-visual-top .nws-tag{background:rgba(255,255,255,.18);backdrop-filter:blur(6px);color:#fff;border-color:rgba(255,255,255,.2)}
+.nws-card--api .nws-card-read{color:rgba(255,255,255,.7)}
+.nws-card--api .nws-card-read svg{stroke:rgba(255,255,255,.7)}
+.nws-card--api h3{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.3)}
+.nws-card--api:hover h3{color:#fff}
+
+/* Live badge */
+.nws-card-live-badge{position:absolute;top:12px;left:12px;display:flex;align-items:center;gap:5px;
+  font-size:9px;font-weight:600;color:#fff;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);
+  padding:3px 8px;border-radius:20px;z-index:3;letter-spacing:.3px;text-transform:uppercase}
+.nws-live-dot{width:6px;height:6px;border-radius:50%;background:var(--emerald);animation:livePulse 1.5s ease-in-out infinite}
+@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
+
+/* Skeleton loading */
+.nws-card--skeleton{pointer-events:none}
+.nws-card--skeleton .nws-card-visual{padding:0}
+.nws-skeleton-block{background:linear-gradient(90deg,var(--gray-100) 25%,var(--gray-50) 50%,var(--gray-100) 75%);
+  background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:0}
+.nws-skeleton-line{height:12px;border-radius:6px;margin-bottom:8px;
+  background:linear-gradient(90deg,var(--gray-100) 25%,var(--gray-50) 50%,var(--gray-100) 75%);
+  background-size:200% 100%;animation:shimmer 1.5s infinite}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* API notice banner */
+.nws-api-notice{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;margin-bottom:16px;
+  background:var(--amber-50,#fffbeb);border:1px solid var(--amber-200,#fde68a);border-radius:var(--r-sm);font-size:12px;color:var(--gray-700)}
+.nws-api-notice svg{width:18px;height:18px;stroke:var(--amber,#f59e0b);flex-shrink:0;margin-top:1px}
+.nws-api-notice strong{display:block;font-size:12.5px;margin-bottom:2px;color:var(--gray-900)}
+.nws-api-notice p{margin:0;font-weight:300;line-height:1.4;color:var(--gray-600)}
+.nws-api-notice code{background:rgba(0,0,0,.06);padding:1px 4px;border-radius:3px;font-size:11px}
+.nws-api-notice a{color:var(--accent);text-decoration:none;font-weight:500}
+.nws-api-notice a:hover{text-decoration:underline}
+
 /* List view (desktop) */
 .nws-grid.list-view .nws-card{flex-direction:row;align-items:stretch}
 .nws-grid.list-view .nws-card-visual{width:200px;min-height:auto;flex-shrink:0;padding:14px}
@@ -57,6 +97,11 @@
 .nws-grid.list-view .nws-card h3{-webkit-line-clamp:1;font-size:14px}
 .nws-grid.list-view .nws-card p{-webkit-line-clamp:1;font-size:12px}
 .nws-grid.list-view .nws-card-bookmark{top:8px;right:8px;width:24px;height:24px}
+
+/* 2-col fallback when sidebar eats space */
+@media(max-width:1024px){
+  .nws-grid{grid-template-columns:repeat(2,1fr)}
+}
 
 /* ============================================================
    MOBILE CARDS — Compact feed items with colored left accent.
@@ -72,6 +117,13 @@
   .nws-card{border-radius:10px;border:1px solid var(--gray-100);border-left:3px solid var(--card-accent, var(--accent));
     box-shadow:0 1px 2px rgba(0,0,0,.03)}
   .nws-card:hover{transform:none;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+
+  /* API cards on mobile — keep image but smaller */
+  .nws-card--api{border-left:none}
+  .nws-card--api .nws-card-visual{min-height:0;padding:0;display:block;aspect-ratio:16/9}
+  .nws-card-img{height:100%}
+  .nws-card-live-badge{top:8px;left:8px;font-size:8px;padding:2px 6px}
+  .nws-api-notice{font-size:11px;padding:10px 12px}
 
   /* Flatten the gradient visual to an inline tag row */
   .nws-card-visual{min-height:0;padding:10px 12px 2px;display:block}

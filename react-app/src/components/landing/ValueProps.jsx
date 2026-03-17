@@ -1,11 +1,14 @@
+import { useCountry } from '../../context/CountryContext'
+
 export default function ValueProps() {
+  const country = useCountry()
   return (
     <section className="section fade-section">
       <div className="container">
         <div className="section-header">
           <div className="section-label">Why InfoWebWorld</div>
-          <h2 className="section-title">Built for Every Business</h2>
-          <p className="section-subtitle">Everything you need to grow your business, reach new customers, and build trust online.</p>
+          <h2 className="section-title">{country?.valueProps?.heading || 'Built for Every Business'}</h2>
+          <p className="section-subtitle">{country?.valueProps?.sub || 'Everything you need to grow your business, reach new customers, and build trust online.'}</p>
         </div>
         <div className="props-grid">
           <div className="prop-card">

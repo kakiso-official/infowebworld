@@ -12,7 +12,7 @@
 }
 
 /* --- Container (news page needs its own — it's NOT in shared.css) --- */
-.container{width:100%;max-width:1320px;margin:0 auto;padding:0 clamp(16px,3vw,24px)}
+.container{width:100%;max-width:1100px;margin:0 auto;padding:0 clamp(16px,3vw,24px)}
 
 /* --- Page wrapper: the overflow gatekeeper --- */
 .nws-page-wrap{
@@ -32,7 +32,7 @@
 .nws-page-wrap .container{max-width:100%;overflow:visible}
 
 /* Force ALL flex/grid children to allow shrinking */
-.nws-page-wrap [class*="nws-"]{min-width:0;max-width:100%}
+.nws-page-wrap [class*="nws-"]{min-width:0}
 
 /* --- Breadcrumb --- */
 .nws-breadcrumb{padding:12px 0 0;font-size:12px;font-weight:300;color:var(--gray-400);display:flex;align-items:center;gap:6px}
@@ -56,7 +56,7 @@
 .nws-tag--trending svg{width:10px;height:10px}
 
 /* --- Content layout (main grid + sidebar) --- */
-.nws-content{display:grid;grid-template-columns:1fr 320px;gap:28px;padding:20px 0 40px;min-width:0}
+.nws-content{display:grid;grid-template-columns:1fr 280px;gap:24px;padding:20px 0 40px;min-width:0}
 .nws-content>*{min-width:0}
 
 /* --- Scroll-to-top FAB --- */
@@ -80,7 +80,7 @@
    RESPONSIVE
    ============================================================ */
 @media(max-width:1200px){
-  .nws-content{grid-template-columns:1fr 280px;gap:20px}
+  .nws-content{grid-template-columns:1fr 260px;gap:20px}
 }
 
 @media(max-width:1024px){

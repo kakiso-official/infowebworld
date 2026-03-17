@@ -7,10 +7,17 @@ import NewsHero from '../components/news/NewsHero'
 import EditorsPicks from '../components/news/EditorsPicks'
 import NewsGrid from '../components/news/NewsGrid'
 import NewsSidebar from '../components/news/NewsSidebar'
+import useNewsApi from '../hooks/useNewsApi'
 import '../styles/news.css'
 
-export default function NewsPage() {
+export default function NewsPage({ countryCode = 'us' }) {
   const [showScrollTop, setShowScrollTop] = useState(false)
+  const { articles: apiArticles, loading, error } = useNewsApi(countryCode)
+
+  // Split API articles: hero gets first 5, picks gets next 5, grid gets rest
+  const heroArticles = apiArticles.slice(0, 5)
+  const picksArticles = apiArticles.slice(5, 10)
+  const gridArticles = apiArticles.slice(10)
 
   useEffect(() => {
     const onScroll = () => setShowScrollTop(window.scrollY > 500)
@@ -38,19 +45,19 @@ export default function NewsPage() {
       window.removeEventListener('scroll', onScroll)
       observer.disconnect()
     }
-  }, [])
+  }, [apiArticles])
 
   return (
     <div className="nws-page-wrap">
       <Navbar />
       <NewsTicker />
-      <NewsHero />
-      <EditorsPicks />
+      <NewsHero articles={heroArticles} />
+      <EditorsPicks articles={picksArticles} countryCode={countryCode} />
 
       <div className="container">
         {/* Breadcrumb */}
         <nav className="nws-breadcrumb">
-          <Link to="/">Home</Link>
+          <Link to={countryCode === 'us' ? '/' : `/en-${countryCode}`}>Home</Link>
           <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" /></svg>
           <span>News & Insights</span>
         </nav>
@@ -58,7 +65,7 @@ export default function NewsPage() {
         {/* Content + Sidebar */}
         <div className="nws-content">
           <div>
-            <NewsGrid />
+            <NewsGrid countryCode={countryCode} apiArticles={gridArticles} loading={loading} error={error} />
           </div>
           <NewsSidebar />
         </div>

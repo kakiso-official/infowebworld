@@ -379,4 +379,127 @@
   .search-dd-trend-tag{padding:.175rem .35rem;font-size:.55rem}
   .hero-float-cats{grid-template-columns:repeat(2,1fr)}
   .hero-float-cat-name{font-size:.5625rem}
+  .loc-dropdown-inner{flex-direction:column}
+  .loc-states{max-height:200px;border-right:none;border-bottom:1px solid var(--gray-100)}
+  .loc-cities{max-height:160px;min-width:0}
+  .loc-state-arrow{display:none}
+}
+
+/* ============================================================
+   LOCATION DROPDOWN — States + Cities two-panel
+   ============================================================ */
+.loc-dropdown{
+  position:absolute;top:100%;left:0;right:0;margin-top:6px;
+  border-radius:var(--r);overflow:hidden;z-index:200;
+  background:var(--glass-bg,rgba(255,255,255,.92));
+  border:1px solid var(--gray-100);
+  box-shadow:0 12px 40px rgba(0,0,0,.12),0 4px 12px rgba(0,0,0,.06);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  animation:ddSlideIn .2s cubic-bezier(.16,1,.3,1);
+}
+.loc-dropdown .search-dropdown-glass{
+  position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(135deg,rgba(255,255,255,.5),rgba(255,255,255,.1));
+  border-radius:inherit;z-index:0;
+}
+.loc-dropdown-inner{
+  position:relative;z-index:1;display:flex;
+  max-height:340px;
+}
+
+/* ── States panel (left) ── */
+.loc-states{
+  flex:0 0 52%;min-width:0;overflow-y:auto;
+  padding:.5rem;border-right:1px solid var(--gray-100);
+}
+.loc-states .search-dd-label{
+  padding:.35rem .5rem;margin-bottom:.25rem;
+  font-size:.675rem;font-weight:600;color:var(--gray-400);
+  display:flex;align-items:center;gap:.375rem;
+}
+.loc-states .search-dd-label svg{width:13px;height:13px;stroke:var(--gray-400);fill:none;stroke-width:1.5}
+
+.loc-state-item{
+  display:flex;align-items:center;gap:.5rem;
+  padding:.5rem .625rem;border-radius:var(--r-sm);
+  cursor:pointer;transition:background .15s,color .15s;
+  font-size:.8rem;color:var(--gray-700);
+}
+.loc-state-item:hover,.loc-state-item--active{
+  background:var(--accent);color:#fff;
+}
+.loc-state-item:hover .loc-state-count,.loc-state-item--active .loc-state-count{
+  background:rgba(255,255,255,.2);color:#fff;
+}
+.loc-state-item:hover .loc-state-icon,.loc-state-item--active .loc-state-icon{
+  stroke:#fff;
+}
+.loc-state-item:hover .loc-state-arrow,.loc-state-item--active .loc-state-arrow{
+  stroke:#fff;opacity:1;
+}
+
+.loc-state-icon{
+  width:14px;height:14px;flex-shrink:0;
+  stroke:var(--gray-400);fill:none;stroke-width:1.5;
+}
+.loc-state-name{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.loc-state-count{
+  font-size:.6rem;font-weight:600;
+  background:var(--gray-100);color:var(--gray-500);
+  padding:.125rem .375rem;border-radius:100px;
+  transition:background .15s,color .15s;
+}
+.loc-state-arrow{
+  width:14px;height:14px;flex-shrink:0;
+  stroke:var(--gray-300);fill:none;stroke-width:2;
+  opacity:.5;transition:stroke .15s,opacity .15s;
+}
+
+/* ── Cities panel (right, shown on state hover) ── */
+.loc-cities{
+  flex:1;min-width:0;overflow-y:auto;padding:.5rem;
+  animation:locCitiesIn .18s ease-out;
+}
+@keyframes locCitiesIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:translateX(0)}}
+
+.loc-cities-header{
+  display:flex;align-items:center;gap:.375rem;
+  padding:.35rem .5rem;margin-bottom:.25rem;
+  font-size:.675rem;font-weight:600;color:var(--accent);
+}
+.loc-cities-header svg{width:13px;height:13px;stroke:var(--accent);fill:none;stroke-width:1.5}
+
+.loc-city-item{
+  display:flex;align-items:center;gap:.5rem;
+  padding:.425rem .625rem;border-radius:var(--r-sm);
+  cursor:pointer;transition:background .15s;
+  font-size:.775rem;color:var(--gray-600);
+}
+.loc-city-item:hover{background:rgba(108,114,241,.06);color:var(--accent)}
+.loc-city-item:hover .loc-city-icon{stroke:var(--accent)}
+
+.loc-city-icon{
+  width:10px;height:10px;flex-shrink:0;
+  stroke:var(--gray-300);fill:none;stroke-width:2;
+}
+
+/* ── Scrollbar styling ── */
+.loc-states::-webkit-scrollbar,.loc-cities::-webkit-scrollbar{width:4px}
+.loc-states::-webkit-scrollbar-track,.loc-cities::-webkit-scrollbar-track{background:transparent}
+.loc-states::-webkit-scrollbar-thumb,.loc-cities::-webkit-scrollbar-thumb{background:var(--gray-200);border-radius:100px}
+.loc-states::-webkit-scrollbar-thumb:hover,.loc-cities::-webkit-scrollbar-thumb:hover{background:var(--gray-300)}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .loc-dropdown-inner{flex-direction:column}
+  .loc-states{flex:none;max-height:200px;border-right:none;border-bottom:1px solid var(--gray-100)}
+  .loc-cities{flex:none;max-height:160px}
+  .loc-state-arrow{display:none}
+}
+@media(max-width:480px){
+  .loc-dropdown-inner{max-height:280px}
+  .loc-states{max-height:160px}
+  .loc-cities{max-height:120px}
+  .loc-state-item{font-size:.725rem;padding:.4rem .5rem}
+  .loc-city-item{font-size:.7rem;padding:.35rem .5rem}
 }

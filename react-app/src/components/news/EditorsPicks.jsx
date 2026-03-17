@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-const picks = [
+const fallbackPicks = [
   {
     id: 'directory-listing-roi',
     tag: 'Business',
@@ -58,7 +58,11 @@ const picks = [
   }
 ]
 
-export default function EditorsPicks() {
+export default function EditorsPicks({ articles = [], countryCode = 'us' }) {
+  const picks = articles.length > 0 ? articles : fallbackPicks
+  const hasApi = articles.length > 0
+  const newsPath = countryCode === 'us' ? '/news' : `/en-${countryCode}/news`
+
   return (
     <div className="nws-picks">
       <div className="container">
@@ -67,28 +71,42 @@ export default function EditorsPicks() {
             <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z" /></svg>
             Editor's Picks
           </div>
-          <Link to="/news" className="nws-side-card-link">
+          <Link to={newsPath} className="nws-side-card-link">
             View all
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
           </Link>
         </div>
         <div className="nws-picks-scroll">
-          {picks.map((p, i) => (
-            <Link to={`/news-article?id=${p.id}`} className="nws-pick-card" key={p.id} style={{ '--pick-color': p.color }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, borderRadius: '12px 12px 0 0', background: p.color }} />
-              <span className="nws-pick-num">{i + 1}</span>
-              <span className={`nws-tag ${p.tagClass}`}>{p.tag}</span>
-              <h4>{p.title}</h4>
-              <p>{p.excerpt}</p>
-              <div className="nws-pick-footer">
-                <span className="nws-pick-meta">
-                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
-                  {p.readTime}
-                </span>
-                <span className="nws-pick-meta">{p.date}</span>
-              </div>
-            </Link>
-          ))}
+          {picks.map((p, i) => {
+            const isApi = p.isApi
+            const Tag = isApi && p.externalUrl ? 'a' : Link
+            const linkProps = isApi && p.externalUrl
+              ? { href: p.externalUrl, target: '_blank', rel: 'noopener noreferrer' }
+              : { to: `/news-article?id=${p.id}` }
+
+            return (
+              <Tag {...linkProps} className={`nws-pick-card${isApi && p.image ? ' nws-pick-card--api' : ''}`} key={p.id} style={{ '--pick-color': p.color }}>
+                {isApi && p.image ? (
+                  <div className="nws-pick-img-wrap">
+                    <img className="nws-pick-img" src={p.image} alt="" loading="lazy" />
+                  </div>
+                ) : (
+                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, borderRadius: '12px 12px 0 0', background: p.color }} />
+                )}
+                <span className="nws-pick-num">{i + 1}</span>
+                <span className={`nws-tag ${p.tagClass}`}>{p.tag}</span>
+                <h4>{p.title}</h4>
+                <p>{p.excerpt}</p>
+                <div className="nws-pick-footer">
+                  <span className="nws-pick-meta">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
+                    {p.readTime}
+                  </span>
+                  <span className="nws-pick-meta">{p.date}</span>
+                </div>
+              </Tag>
+            )
+          })}
         </div>
       </div>
     </div>

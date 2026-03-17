@@ -5,7 +5,7 @@
 .nws-picks-title svg{width:16px;height:16px;stroke:var(--gold);fill:none;stroke-width:1.5}
 .nws-picks-scroll{display:flex;gap:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px}
 .nws-picks-scroll::-webkit-scrollbar{display:none}
-.nws-pick-card{min-width:260px;max-width:280px;flex-shrink:0;background:#fff;border-radius:var(--r);border:1px solid var(--gray-100);
+.nws-pick-card{width:210px;min-width:210px;max-width:210px;flex-shrink:0;background:#fff;border-radius:var(--r);border:1px solid var(--gray-100);
   padding:14px;cursor:pointer;transition:all .25s;position:relative}
 .nws-pick-card:hover{border-color:var(--accent);box-shadow:0 4px 16px rgba(0,0,0,.06);transform:translateY(-2px)}
 .nws-pick-num{position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;background:var(--gray-50);
@@ -19,6 +19,20 @@
 .nws-pick-meta{font-size:10px;font-weight:300;color:var(--gray-400);display:flex;align-items:center;gap:6px}
 .nws-pick-meta svg{width:10px;height:10px;stroke:var(--gray-400);fill:none;stroke-width:1.5}
 
+/* ===== API pick cards with images ===== */
+.nws-pick-card--api{padding:0;overflow:hidden;text-decoration:none;color:inherit}
+.nws-pick-img-wrap{width:100%;height:80px;overflow:hidden;border-radius:var(--r) var(--r) 0 0}
+.nws-pick-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s cubic-bezier(.16,1,.3,1)}
+.nws-pick-card--api:hover .nws-pick-img{transform:scale(1.05)}
+.nws-pick-card--api .nws-tag,
+.nws-pick-card--api h4,
+.nws-pick-card--api p,
+.nws-pick-card--api .nws-pick-footer{padding-left:10px;padding-right:10px}
+.nws-pick-card--api .nws-tag{margin-top:8px}
+.nws-pick-card--api p{-webkit-line-clamp:1;margin-bottom:4px}
+.nws-pick-card--api .nws-pick-footer{padding-bottom:10px}
+.nws-pick-card--api .nws-pick-num{background:rgba(0,0,0,.45);color:#fff;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.15)}
+
 /* ============================================================
    RESPONSIVE
    ============================================================ */
@@ -29,6 +43,8 @@
   .nws-picks-title svg{width:14px;height:14px}
   .nws-picks-scroll{gap:8px}
   .nws-pick-card{min-width:200px;max-width:220px;padding:10px;border-radius:10px}
+  .nws-pick-card--api{padding:0}
+  .nws-pick-img-wrap{height:65px}
   .nws-pick-card:hover{transform:none}
   .nws-pick-card h4{font-size:12px;padding-right:24px;margin-bottom:4px;line-height:1.35}
   .nws-pick-card p{font-size:10px;-webkit-line-clamp:1;margin-bottom:6px}
@@ -40,6 +56,8 @@
 
 @media(max-width:480px){
   .nws-pick-card{min-width:170px;max-width:190px;padding:8px}
+  .nws-pick-card--api{padding:0}
+  .nws-pick-img-wrap{height:55px}
   .nws-pick-card h4{font-size:11px;padding-right:20px}
   .nws-pick-card p{-webkit-line-clamp:1;font-size:9.5px;margin-bottom:4px}
   .nws-pick-num{width:16px;height:16px;font-size:8px;top:6px;right:6px}
