@@ -36,7 +36,7 @@ export default function CategoryPage() {
     <>
       <Navbar />
       <CategoryHeader />
-      <div className="container">
+      <div className="cat-container">
         <div className="cat-layout">
           <aside className={`cat-filters${filtersOpen ? ' open' : ''}`}>
             <CategoryFilters />

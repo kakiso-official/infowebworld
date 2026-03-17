@@ -7,7 +7,7 @@ export default function CategoryHeader() {
   const [activeChip, setActiveChip] = useState('All')
 
   return (
-    <div className="container">
+    <div className="cat-container">
       <div className="cat-breadcrumb">
         <Link to="/">Home</Link>
         <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
