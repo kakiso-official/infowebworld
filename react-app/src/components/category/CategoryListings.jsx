@@ -12,7 +12,7 @@ const CompareSvg = () => (
 )
 
 const VoteSvg = () => (
-  <svg viewBox="0 0 24 24"><path d="M12 4l3 5h5l-4 4 1.5 5.5L12 15l-5.5 3.5L8 13l-4-4h5l3-5z" /></svg>
+  <svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7" /></svg>
 )
 
 const listings = [

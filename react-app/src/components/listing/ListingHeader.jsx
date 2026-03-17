@@ -109,7 +109,7 @@ export default function ListingHeader({ activeTab, onTabChange }) {
                   className={`ls-btn ls-btn-vote${voteActive ? ' active' : ''}`}
                   onClick={() => { setVoteActive(!voteActive); setVoteCount(c => voteActive ? c - 1 : c + 1) }}
                 >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 4l3 5h5l-4 4 1.5 5.5L12 15l-5.5 3.5L8 13l-4-4h5l3-5z" /></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 19V5M5 12l7-7 7 7" /></svg>
                   Vote <span className="ls-vote-count">{voteCount}</span>
                 </button>
                 <a href="#" className="ls-btn ls-btn-primary">

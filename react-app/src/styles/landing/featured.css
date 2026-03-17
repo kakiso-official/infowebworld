@@ -53,9 +53,9 @@
 .listing-act:hover .listing-act-count{color:var(--gray-600)}
 
 /* Active states */
-.listing-act--vote svg{stroke:var(--amber);fill:none}
-.listing-act--vote.active svg{stroke:var(--amber);fill:var(--amber);transform:scale(1.2)}
-.listing-act--vote.active .listing-act-count{color:var(--amber);font-weight:500}
+.listing-act--vote svg{stroke:var(--amber);fill:none;stroke-width:2}
+.listing-act--vote.active svg{stroke:var(--accent);transform:scale(1.2)}
+.listing-act--vote.active .listing-act-count{color:var(--accent);font-weight:500}
 .listing-act--vote:active svg{transform:scale(.85)}
 .listing-act--like.active svg{stroke:var(--accent);fill:var(--accent);transform:scale(1.2)}
 .listing-act--like.active .listing-act-count{color:var(--accent)}
