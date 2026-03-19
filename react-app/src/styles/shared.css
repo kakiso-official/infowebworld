@@ -158,7 +158,7 @@ ul{list-style:none}
 
 /* ── Multi-layer glass background ── */
 .ns-glass{position:absolute;inset:0;border-radius:24px;
-  background:linear-gradient(165deg,rgba(255,255,255,.97) 0%,rgba(245,246,255,.96) 30%,rgba(255,255,255,.97) 60%,rgba(240,243,255,.95) 100%);
+  background:linear-gradient(165deg,rgba(255,255,255,.97) 0%,rgba(255,250,245,.96) 30%,rgba(255,255,255,.97) 60%,rgba(252,247,242,.95) 100%);
   backdrop-filter:blur(48px) saturate(1.8);-webkit-backdrop-filter:blur(48px) saturate(1.8);
   border:1.5px solid rgba(108,114,241,.15);
   box-shadow:

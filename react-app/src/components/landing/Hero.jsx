@@ -1,23 +1,43 @@
 import { useState, useEffect, useRef } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useCountry } from '../../context/CountryContext'
 
 const defaultWords = ['restaurant', 'agency', 'consultant', 'contractor', 'software', 'clinic']
 
-const categories = [
-  { name: 'Technology', slug: 'technology', color: 'var(--accent)', bg: 'rgba(108,114,241,.1)', icon: <><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></> },
-  { name: 'Restaurants', slug: 'restaurants', color: 'var(--coral)', bg: 'rgba(239,107,74,.1)', icon: <><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" /><path d="M7 2v20" /><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7" /></> },
-  { name: 'Healthcare', slug: 'healthcare', color: 'var(--emerald)', bg: 'rgba(47,174,106,.1)', icon: <path d="M22 12h-4l-3 9L9 3l-3 9H2" /> },
-  { name: 'Real Estate', slug: 'real-estate', color: 'var(--azure)', bg: 'rgba(59,130,246,.1)', icon: <><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></> },
-  { name: 'Legal', slug: 'legal', color: 'var(--plum)', bg: 'rgba(139,92,246,.1)', icon: <><rect x="2" y="7" width="20" height="14" rx="2" ry="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></> },
-  { name: 'Education', slug: 'education', color: 'var(--teal)', bg: 'rgba(20,184,166,.1)', icon: <><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></> },
+/* Category pills — vibrant pastel solids, draggable with physics */
+const heroCats = [
+  { name: 'Technology', slug: 'technology', color: '#2B4C8C', text: '#fff' },
+  { name: 'Restaurants', slug: 'restaurants', color: '#E8644A', text: '#fff' },
+  { name: 'Healthcare', slug: 'healthcare', color: '#5CB8A2', text: '#fff' },
+  { name: 'Real Estate', slug: 'real-estate', color: '#F2C85A', text: '#1A1A1A' },
+  { name: 'Legal', slug: 'legal', color: '#F4B4C0', text: '#1A1A1A' },
+  { name: 'Education', slug: 'education', color: '#4361EE', text: '#fff' },
+  { name: 'Marketing', slug: 'marketing', color: '#E85D9A', text: '#fff' },
+  { name: 'Home Services', slug: 'home-services', color: '#F09C4A', text: '#1A1A1A' },
+  { name: 'SaaS', slug: 'technology', color: '#7C5CFC', text: '#fff' },
+  { name: 'Fitness', slug: 'healthcare', color: '#3DBBAE', text: '#fff' },
+  { name: 'Finance', slug: 'legal', color: '#2A7B5B', text: '#fff' },
+  { name: 'Design', slug: 'marketing', color: '#FF6B8A', text: '#fff' },
+  { name: 'Travel', slug: 'restaurants', color: '#4A9BDE', text: '#fff' },
+  { name: 'Automotive', slug: 'home-services', color: '#6B7280', text: '#fff' },
 ]
 
-const defaultStats = [
-  { num: '2,500+', label: 'Businesses' },
-  { num: '25K+', label: 'Reviews' },
-  { num: '80+', label: 'Industries' },
-  { num: '12', label: 'Countries' },
+/* Home offsets for organic scattered layout */
+const catHomes = [
+  { x: 0, y: -8 }, { x: 8, y: 6 }, { x: -5, y: -4 },
+  { x: 6, y: 10 }, { x: -4, y: -2 }, { x: 5, y: 7 },
+  { x: -6, y: 8 }, { x: 4, y: -6 }, { x: -3, y: 5 },
+  { x: 7, y: -3 }, { x: -5, y: 9 }, { x: 3, y: -7 },
+  { x: -7, y: 4 }, { x: 6, y: -5 },
+]
+
+/* ── Cards for the swipeable 3D stack (listing + review) ── */
+const heroReviews = [
+  { business: 'CreativeForge Studio', category: 'Marketing', tagline: 'Full-service creative & digital marketing agency', color: '#E8553D', score: '4.9', reviews: 412, votes: 847, badge: 'Featured', img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&h=800&fit=crop&q=80', text: 'Found the perfect marketing agency in minutes. The comparison tools are unmatched.', author: 'James R.', role: 'Marketing Director', avatar: 'J' },
+  { business: 'CloudSync Pro', category: 'Technology', tagline: 'Enterprise cloud infrastructure & sync platform', color: '#4361EE', score: '4.8', reviews: 287, votes: 623, badge: 'Verified', img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&h=800&fit=crop&q=80', text: 'Best directory for finding tech partners. Saved our startup weeks of research.', author: 'Sarah K.', role: 'CTO, NovaByte', avatar: 'S' },
+  { business: 'MindBridge Wellness', category: 'Healthcare', tagline: 'Holistic mental health & wellness clinic', color: '#5CB8A2', score: '4.8', reviews: 198, votes: 534, badge: 'Verified', img: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1200&h=800&fit=crop&q=80', text: 'The verified reviews gave us real confidence in our choice.', author: 'Michael T.', role: 'HR Manager', avatar: 'M' },
+  { business: 'The Garden Table', category: 'Restaurant', tagline: 'Farm-to-table dining with seasonal menus', color: '#D4A028', score: '4.9', reviews: 523, votes: 1102, badge: 'Featured', img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&h=800&fit=crop&q=80', text: 'Outstanding restaurant listings with incredible detail.', author: 'Elena P.', role: 'Food Blogger', avatar: 'E' },
+  { business: 'Summit Legal Group', category: 'Legal', tagline: 'Corporate law, IP, and startup advisory', color: '#6B7FBA', score: '4.7', reviews: 156, votes: 389, badge: 'Verified', img: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1200&h=800&fit=crop&q=80', text: 'Helped us find legal counsel fast. Verified listings made the difference.', author: 'David L.', role: 'Startup Founder', avatar: 'D' },
 ]
 
 /* ── Search suggestions database ── */
@@ -50,7 +70,6 @@ const categorySuggestions = [
 export default function Hero() {
   const country = useCountry()
   const words = country?.hero?.words || defaultWords
-  const heroStats = country?.hero?.stats || defaultStats
   const locationPlaceholder = country?.hero?.locationPlaceholder || 'City or ZIP code'
   const locations = country?.locations || []
 
@@ -115,7 +134,6 @@ export default function Hero() {
 
   const handleSearch = (e) => {
     e.preventDefault()
-    // Don't navigate on form submit — only navigate when a result is selected
     setFocused(true)
   }
 
@@ -166,30 +184,215 @@ export default function Hero() {
 
   useEffect(() => { setActiveIdx(-1) }, [query])
 
+  /* ── Draggable category pills: physics engine ── */
+  const catEls = useRef([])
+  const catP = useRef(
+    heroCats.map((_, i) => ({
+      x: catHomes[i].x + (Math.random() - 0.5) * 60,
+      y: catHomes[i].y - 50 - Math.random() * 30,
+      hx: catHomes[i].x, hy: catHomes[i].y,
+      vx: 0, vy: 0, rot: 0,
+      drag: false, moved: false,
+      lx: 0, ly: 0, sx: 0, sy: 0
+    }))
+  )
+
+  useEffect(() => {
+    let raf
+    const step = () => {
+      catP.current.forEach((p, i) => {
+        const el = catEls.current[i]
+        if (!el) return
+        if (!p.drag) {
+          p.vx *= 0.92
+          p.vy *= 0.92
+          p.vx += (p.hx - p.x) * 0.025
+          p.vy += (p.hy - p.y) * 0.025
+          p.x += p.vx
+          p.y += p.vy
+          p.rot += (p.vx * 0.35 - p.rot) * 0.09
+          if (Math.abs(p.x - p.hx) < 0.15 && Math.abs(p.y - p.hy) < 0.15 &&
+              Math.abs(p.vx) < 0.02 && Math.abs(p.vy) < 0.02) {
+            p.x = p.hx; p.y = p.hy; p.vx = 0; p.vy = 0; p.rot = 0
+          }
+        }
+        const s = p.drag ? 1.1 : 1
+        el.style.transform = `translate3d(${p.x}px,${p.y}px,0) rotate(${p.rot}deg) scale(${s})`
+        el.style.opacity = '1'
+      })
+      raf = requestAnimationFrame(step)
+    }
+    raf = requestAnimationFrame(step)
+    return () => cancelAnimationFrame(raf)
+  }, [])
+
+  const catDown = (e, i) => {
+    const p = catP.current[i]
+    p.drag = true; p.moved = false
+    p.vx = 0; p.vy = 0
+    p.lx = e.clientX; p.ly = e.clientY
+    p.sx = e.clientX; p.sy = e.clientY
+    catEls.current[i]?.classList.add('hero-cat--grab')
+    e.currentTarget.setPointerCapture(e.pointerId)
+    e.preventDefault()
+  }
+
+  const catMove = (e, i) => {
+    const p = catP.current[i]
+    if (!p.drag) return
+    const dx = e.clientX - p.lx, dy = e.clientY - p.ly
+    p.x += dx; p.y += dy
+    p.vx = dx * 0.7; p.vy = dy * 0.7
+    p.lx = e.clientX; p.ly = e.clientY
+    if (Math.abs(e.clientX - p.sx) + Math.abs(e.clientY - p.sy) > 5) p.moved = true
+  }
+
+  const catUp = (e, i) => {
+    const p = catP.current[i]
+    p.drag = false
+    catEls.current[i]?.classList.remove('hero-cat--grab')
+    if (!p.moved) navigate(`/category?cat=${heroCats[i].slug}`)
+  }
+
+  /* ── Right side: 3D swipeable review card stack ── */
+  const [topCard, setTopCard] = useState(0)
+  const topRef = useRef(0)
+  const stackRefs = useRef([])
+  const swipeRef = useRef({ active: false, x: 0, y: 0, vx: 0, vy: 0, lx: 0, ly: 0, sx: 0, moved: false, history: [] })
+  const dismissingRef = useRef(false)
+  const autoRef = useRef(null)
+
+  useEffect(() => { topRef.current = topCard }, [topCard])
+
+  const resetAuto = () => {
+    clearInterval(autoRef.current)
+    autoRef.current = setInterval(() => dismissCard(-1), 4500)
+  }
+
+  const dismissCard = (dir) => {
+    if (dismissingRef.current) return
+    dismissingRef.current = true
+    const idx = topRef.current
+    const el = stackRefs.current[idx]
+    if (!el) { dismissingRef.current = false; return }
+
+    // Velocity-aware dismiss speed
+    const speed = Math.min(Math.max(Math.abs(swipeRef.current.vx) * 30, 350), 550)
+    el.style.transition = `transform ${speed}ms cubic-bezier(.32,.94,.6,1), opacity ${speed * 0.8}ms ease-out`
+    el.style.transform = `translateX(${dir * 120}%) rotate(${dir * 12}deg)`
+    el.style.opacity = '0'
+
+    setTimeout(() => {
+      // 1. Kill transition so reset is instant
+      el.style.transition = 'none'
+      // 2. Park card at back-of-stack position
+      el.style.transform = 'translateY(48px) scale(.85)'
+      el.style.opacity = '0'
+      // 3. Update React state
+      setTopCard(prev => (prev + 1) % heroReviews.length)
+      // 4. After paint, re-enable transitions
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          el.style.transition = ''
+          el.style.transform = ''
+          el.style.opacity = ''
+          dismissingRef.current = false
+        })
+      })
+    }, speed + 30)
+  }
+
+  useEffect(() => {
+    resetAuto()
+    const onVis = () => {
+      if (document.hidden) clearInterval(autoRef.current)
+      else resetAuto()
+    }
+    document.addEventListener('visibilitychange', onVis)
+    return () => { clearInterval(autoRef.current); document.removeEventListener('visibilitychange', onVis) }
+  }, [])
+
+  const swStart = (e) => {
+    if (dismissingRef.current) return
+    clearInterval(autoRef.current)
+    const s = swipeRef.current
+    s.active = true; s.moved = false; s.x = 0; s.y = 0; s.vx = 0; s.vy = 0
+    s.lx = e.clientX; s.ly = e.clientY; s.sx = e.clientX
+    s.history = []
+    const el = stackRefs.current[topRef.current]
+    if (el) el.style.transition = 'none'
+    e.currentTarget.setPointerCapture(e.pointerId)
+    e.preventDefault()
+  }
+
+  const swMove = (e) => {
+    const s = swipeRef.current
+    if (!s.active) return
+    const dx = e.clientX - s.lx
+    const dy = e.clientY - s.ly
+    s.x += dx; s.y += dy * 0.25
+    s.lx = e.clientX; s.ly = e.clientY
+    // Rolling velocity average (last 4 frames)
+    s.history.push(dx)
+    if (s.history.length > 4) s.history.shift()
+    s.vx = s.history.reduce((a, b) => a + b, 0) / s.history.length
+    if (Math.abs(e.clientX - s.sx) > 5) s.moved = true
+    const el = stackRefs.current[topRef.current]
+    if (!el) return
+    // Progressive opacity: fades as card moves away
+    const progress = Math.min(Math.abs(s.x) / 250, 1)
+    const opacity = 1 - progress * 0.4
+    el.style.transform = `translate3d(${s.x}px,${s.y}px,0) rotate(${s.x * 0.05}deg)`
+    el.style.opacity = `${opacity}`
+  }
+
+  const swEnd = () => {
+    const s = swipeRef.current
+    if (!s.active) return
+    s.active = false
+    const el = stackRefs.current[topRef.current]
+    if (!el) return
+    if (Math.abs(s.x) > 80 || Math.abs(s.vx) > 4) {
+      dismissCard(s.x > 0 ? 1 : -1)
+    } else {
+      // Spring back
+      el.style.transition = 'transform .45s cubic-bezier(.34,1.56,.64,1), opacity .3s ease-out'
+      el.style.transform = ''
+      el.style.opacity = ''
+    }
+    s.x = 0; s.y = 0; s.vx = 0; s.history = []
+    resetAuto()
+  }
+
+  const swCancel = () => {
+    const s = swipeRef.current
+    if (!s.active) return
+    s.active = false
+    const el = stackRefs.current[topRef.current]
+    if (el) {
+      el.style.transition = 'transform .4s cubic-bezier(.34,1.56,.64,1), opacity .3s'
+      el.style.transform = ''
+      el.style.opacity = ''
+    }
+    s.x = 0; s.y = 0; s.vx = 0; s.history = []
+    resetAuto()
+  }
+
   return (
     <section className="hero">
-      <div className="hero-grid-bg" aria-hidden="true"></div>
-      <div className="hero-orb hero-orb--1"></div>
-      <div className="hero-orb hero-orb--2"></div>
-
       <div className="container hero-split">
         {/* ── LEFT: Content ── */}
         <div className="hero-left">
-          <div className="hero-badge">
-            <span className="hero-badge-dot"></span>
-            <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><path d="M22 4 12 14.01l-3-3" /></svg>
-            2,500+ businesses listed this month
-          </div>
-          <h1 className="hero-h1">Find the right
+          <h1 className="hero-h1">Find the Best{' '}
             <span className="hero-rotate-wrap">
               {words.map((word, i) => (
                 <span key={word} className={`hero-rotate-word${i === current ? ' active' : ''}`}>{word}</span>
               ))}
             </span>
-            <br />for <em>your needs</em></h1>
+            <br />Near <em>You</em></h1>
           <p className="hero-sub">Search, compare, and review businesses across 80+ industries in 12 countries. Verified reviews. Real results.</p>
 
-          {/* ── Search with liquid glass dropdown ── */}
+          {/* ── Search with dropdown ── */}
           <div className={`search-wrap${showDropdown ? ' search-wrap--active' : ''}`} ref={searchWrapRef}>
             <form className={`search-bar${showDropdown ? ' search-bar--open' : ''}`} onSubmit={handleSearch}>
               <div className="search-field search-field--what">
@@ -237,7 +440,6 @@ export default function Hero() {
             {/* ── Location Dropdown: States + Cities ── */}
             {locFocused && filteredLocations.length > 0 && (
               <div className="loc-dropdown">
-                <div className="search-dropdown-glass"></div>
                 <div className="loc-dropdown-inner">
                   <div className="loc-states">
                     <div className="search-dd-label">
@@ -280,10 +482,9 @@ export default function Hero() {
               </div>
             )}
 
-            {/* ── Liquid Glass Dropdown ── */}
+            {/* ── Search Dropdown ── */}
             {showDropdown && !locFocused && (
               <div className="search-dropdown" ref={dropdownRef}>
-                <div className="search-dropdown-glass"></div>
                 <div className="search-dropdown-content">
 
                   {/* ── Empty query: show trending + categories ── */}
@@ -334,7 +535,6 @@ export default function Hero() {
                   {/* ── Has query: show filtered results ── */}
                   {q.length > 0 && (
                     <>
-                      {/* Searching indicator */}
                       <div className="search-dd-searching">
                         <div className="search-dd-ripple">
                           <span></span><span></span><span></span>
@@ -344,7 +544,6 @@ export default function Hero() {
                         </span>
                       </div>
 
-                      {/* Business results */}
                       {filtered.length > 0 && (
                         <div className="search-dd-section">
                           <div className="search-dd-label">
@@ -377,7 +576,6 @@ export default function Hero() {
                         </div>
                       )}
 
-                      {/* Category results */}
                       {matchedCats.length > 0 && (
                         <div className="search-dd-section">
                           <div className="search-dd-label">
@@ -401,7 +599,6 @@ export default function Hero() {
                         </div>
                       )}
 
-                      {/* No results */}
                       {totalResults === 0 && q.length > 1 && (
                         <div className="search-dd-empty">
                           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /><line x1="8" y1="11" x2="14" y2="11" /></svg>
@@ -409,7 +606,6 @@ export default function Hero() {
                         </div>
                       )}
 
-                      {/* View all */}
                       {totalResults > 0 && (
                         <div className="search-dd-footer" onClick={viewAllResults}>
                           <span>View all results for "{query}"</span>
@@ -423,59 +619,145 @@ export default function Hero() {
             )}
           </div>
 
-          <div className="quick-tags">
-            <span className="quick-tags-label">Popular:</span>
-            {['Restaurants', 'Software', 'Dentists', 'Real Estate', 'Marketing'].map(tag => (
-              <button key={tag} className="quick-tag" onClick={() => { setQuery(tag); setFocused(true) }}>{tag}</button>
+          {/* ── Colorful category pills ── */}
+          <div className="hero-cats">
+            {heroCats.map((cat, i) => (
+              <div
+                key={cat.slug}
+                ref={el => catEls.current[i] = el}
+                className="hero-cat"
+                style={{ background: cat.color, color: cat.text }}
+                onPointerDown={e => catDown(e, i)}
+                onPointerMove={e => catMove(e, i)}
+                onPointerUp={e => catUp(e, i)}
+              >
+                {cat.name}
+              </div>
             ))}
           </div>
+
           <div className="hero-trust-bar">
-            <div className="hero-trust-item"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>Verified Reviews</div>
-            <span className="hero-trust-sep"></span>
-            <div className="hero-trust-item"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>Dofollow Backlinks</div>
-            <span className="hero-trust-sep"></span>
-            <div className="hero-trust-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>Updated Daily</div>
+            <div className="hero-trust-item" style={{ '--ti': '0' }}>
+              <span className="hero-trust-icon" style={{ background: '#2FAE6A' }}>
+                <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><path d="M22 4 12 14.01l-3-3" /></svg>
+              </span>
+              <span className="hero-trust-text">Verified Reviews</span>
+            </div>
+            <div className="hero-trust-item" style={{ '--ti': '1' }}>
+              <span className="hero-trust-icon" style={{ background: '#4361EE' }}>
+                <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
+              </span>
+              <span className="hero-trust-text">Dofollow Backlinks</span>
+            </div>
+            <div className="hero-trust-item" style={{ '--ti': '2' }}>
+              <span className="hero-trust-icon" style={{ background: '#E8553D' }}>
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
+              </span>
+              <span className="hero-trust-text">Updated Daily</span>
+            </div>
           </div>
         </div>
 
-        {/* ── RIGHT: Visual side ── */}
+        {/* ── RIGHT: 3D swipeable review card stack ── */}
         <div className="hero-right">
-          <div className="hero-float-cats">
-            {categories.map(c => (
-              <Link to={`/category?cat=${c.slug}`} className="hero-float-cat" key={c.slug}>
-                <span className="hero-float-cat-icon" style={{ background: c.bg }}>
-                  <svg viewBox="0 0 24 24" stroke={c.color}>{c.icon}</svg>
-                </span>
-                <span className="hero-float-cat-name">{c.name}</span>
-              </Link>
+          {/* Animated gradient blobs */}
+          {/* Background image — syncs with current top card */}
+          <div className="hr-bg" aria-hidden="true">
+            {heroReviews.map((r, i) => (
+              <img
+                key={i}
+                src={r.img}
+                alt=""
+                className={`hr-bg-img${(i - topCard + heroReviews.length) % heroReviews.length === 0 ? ' hr-bg-img--active' : ''}`}
+                draggable="false"
+              />
             ))}
           </div>
-          <div className="hero-stats-card">
-            {heroStats.map((s, i) => (
-              <div className="hero-stat" key={i}>
-                <div className="hero-stat-num">{s.num}</div>
-                <div className="hero-stat-label">{s.label}</div>
-              </div>
-            ))}
+
+          {/* Card stack */}
+          <div className="hr-stack">
+            {heroReviews.map((r, i) => {
+              const pos = (i - topCard + heroReviews.length) % heroReviews.length
+              return (
+                <div
+                  key={i}
+                  ref={el => stackRefs.current[i] = el}
+                  className="hr-scard"
+                  style={{
+                    zIndex: heroReviews.length - pos,
+                    transform: pos < 3
+                      ? `translateY(${pos * 16}px) scale(${1 - pos * 0.05})`
+                      : 'translateY(48px) scale(.85)',
+                    opacity: pos < 3 ? 1 - pos * 0.15 : 0,
+                    pointerEvents: pos === 0 ? 'auto' : 'none',
+                  }}
+                  onPointerDown={pos === 0 ? swStart : undefined}
+                  onPointerMove={pos === 0 ? swMove : undefined}
+                  onPointerUp={pos === 0 ? swEnd : undefined}
+                  onPointerCancel={pos === 0 ? swCancel : undefined}
+                >
+                  {/* ── Image area ── */}
+                  <div className="hr-sc-top">
+                    <img src={r.img} alt={r.business} draggable="false" />
+                    <span className="hr-sc-badge" style={{ background: r.badge === 'Featured' ? 'var(--h-accent)' : 'var(--emerald)' }}>{r.badge}</span>
+                  </div>
+                  {/* ── Listing body ── */}
+                  <div className="hr-sc-body">
+                    <div className="hr-sc-meta">
+                      <span className="hr-sc-cat" style={{ background: `${r.color}12`, color: r.color }}>{r.category}</span>
+                    </div>
+                    <div className="hr-sc-title">{r.business}</div>
+                    <div className="hr-sc-tagline">{r.tagline}</div>
+                    <div className="hr-sc-rating">
+                      <div className="hr-sc-stars">
+                        {[...Array(5)].map((_, j) => (
+                          <svg key={j} viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+                        ))}
+                      </div>
+                      <span className="hr-sc-score">{r.score}</span>
+                      <span className="hr-sc-revcount">({r.reviews})</span>
+                    </div>
+                  </div>
+                  {/* ── Action bar ── */}
+                  <div className="hr-sc-actions">
+                    <div className="hr-sc-act">
+                      <svg viewBox="0 0 24 24"><path d="M12 19V5" /><path d="m5 12 7-7 7 7" /></svg>
+                      <span>{r.votes}</span>
+                    </div>
+                    <div className="hr-sc-act">
+                      <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z" /><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" /></svg>
+                    </div>
+                    <div className="hr-sc-act">
+                      <svg viewBox="0 0 24 24"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z" /><path d="M17 2h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3" /></svg>
+                    </div>
+                    <div className="hr-sc-act">
+                      <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" /></svg>
+                    </div>
+                    <div className="hr-sc-act hr-sc-act--end">
+                      <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" /><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" /></svg>
+                    </div>
+                  </div>
+                  {/* ── Review quote ── */}
+                  <div className="hr-sc-review">
+                    <div className="hr-sc-quote">"{r.text}"</div>
+                    <div className="hr-sc-author">
+                      <div className="hr-sc-avatar" style={{ background: r.color }}>{r.avatar}</div>
+                      <div className="hr-sc-ainfo">
+                        <span className="hr-sc-aname">{r.author}</span>
+                        <span className="hr-sc-arole">{r.role}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
           </div>
-          <div className="hero-float-review">
-            <div className="hero-float-review-stars">
-              {[...Array(5)].map((_, i) => (
-                <svg key={i} viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
-              ))}
-            </div>
-            <p className="hero-float-review-text">"Found the perfect agency in minutes. Incredible platform!"</p>
-            <div className="hero-float-review-author">
-              <div className="hero-float-review-avatar">J</div>
-              <div>
-                <div className="hero-float-review-name">James R.</div>
-                <div className="hero-float-review-role">Marketing Director</div>
-              </div>
-            </div>
-          </div>
-          <div className="hero-float-live">
-            <span className="hero-float-live-dot"></span>
-            <span>42 people searching now</span>
+
+          {/* Swipe hint */}
+          <div className="hr-hint">
+            <svg viewBox="0 0 24 24"><path d="M14 8l-4 4 4 4" /></svg>
+            Swipe to explore
+            <svg viewBox="0 0 24 24"><path d="M10 8l4 4-4 4" /></svg>
           </div>
         </div>
       </div>
