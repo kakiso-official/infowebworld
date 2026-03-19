@@ -1,0 +1,288 @@
+/* ============================================================
+   ADMIN PANEL — Platform Control Panel (extends dashboard.css)
+   Prefix: adm-*
+   ============================================================ */
+
+/* --- Admin Badge in Sidebar --- */
+.adm-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--coral), #e74c3c);
+  color: #fff;
+  margin-left: 8px;
+  line-height: 1.6;
+}
+
+/* --- Pulse Banner --- */
+.adm-pulse {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  border-radius: var(--r-md);
+  color: #fff;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.adm-pulse-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.adm-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: adm-blink 2s infinite;
+}
+.adm-pulse-dot--green { background: var(--emerald); box-shadow: 0 0 6px var(--emerald); }
+.adm-pulse-dot--amber { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+.adm-pulse-dot--red { background: var(--coral); box-shadow: 0 0 6px var(--coral); }
+@keyframes adm-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.adm-pulse-value {
+  font-weight: 700;
+  font-size: 15px;
+}
+.adm-pulse-label {
+  opacity: 0.6;
+  font-size: 11px;
+}
+
+/* --- Quick Actions Grid --- */
+.adm-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.adm-action-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #fff;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  color: inherit;
+}
+.adm-action-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 12px rgba(108, 114, 241, 0.12);
+  transform: translateY(-1px);
+}
+.adm-action-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.adm-action-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke: #fff;
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.adm-action-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+.adm-action-desc {
+  font-size: 11px;
+  color: var(--text-light);
+  margin-top: 2px;
+}
+
+/* --- Approval Queue --- */
+.adm-queue {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+.adm-queue-card {
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: #fefce8;
+  transition: all 0.2s;
+}
+.adm-queue-card:hover {
+  border-color: var(--amber);
+}
+.adm-queue-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.adm-queue-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+.adm-queue-meta {
+  font-size: 11px;
+  color: var(--text-light);
+  margin-bottom: 12px;
+}
+.adm-queue-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* --- Content Calendar --- */
+.adm-calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+.adm-cal-header {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-light);
+  text-align: center;
+  padding: 6px 0;
+}
+.adm-cal-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-xs);
+  font-size: 12px;
+  color: var(--text);
+  position: relative;
+  border: 1px solid transparent;
+}
+.adm-cal-day--empty {
+  opacity: 0;
+}
+.adm-cal-day--today {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+.adm-cal-day--has-content {
+  border-color: var(--border);
+  cursor: pointer;
+}
+.adm-cal-day--has-content:hover {
+  border-color: var(--accent);
+  background: rgba(108, 114, 241, 0.04);
+}
+.adm-cal-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-top: 2px;
+}
+
+/* --- Moderation Queue --- */
+.adm-mod-card {
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--coral);
+  border-radius: var(--r-sm);
+  margin-bottom: 8px;
+  background: #fff;
+}
+.adm-mod-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.adm-mod-reason {
+  font-size: 11px;
+  color: var(--coral);
+  font-weight: 500;
+}
+.adm-mod-text {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+.adm-mod-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* --- Bulk Actions Toolbar --- */
+.adm-bulk {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--r-sm);
+  margin-bottom: 12px;
+  font-size: 13px;
+  position: sticky;
+  top: 60px;
+  z-index: 10;
+}
+.adm-bulk-count {
+  font-weight: 600;
+  margin-right: 4px;
+}
+.adm-bulk-btn {
+  padding: 4px 12px;
+  border-radius: var(--r-xs);
+  border: 1px solid rgba(255,255,255,0.3);
+  background: transparent;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.adm-bulk-btn:hover {
+  background: rgba(255,255,255,0.15);
+}
+.adm-bulk-btn--danger {
+  border-color: var(--coral);
+  background: rgba(239,107,74,0.2);
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .adm-pulse {
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px 16px;
+  }
+  .adm-actions {
+    grid-template-columns: 1fr;
+  }
+  .adm-queue {
+    grid-template-columns: 1fr;
+  }
+  .adm-bulk {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}

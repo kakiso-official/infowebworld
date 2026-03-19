@@ -1,12 +1,30 @@
-import SharedLayout from '../components/shared/SharedLayout'
+import AdminLayout from '../components/admin/AdminLayout'
+import RevenueKPIs from '../components/admin/revenue/RevenueKPIs'
+import RevenueTrendChart from '../components/admin/revenue/RevenueTrendChart'
+import PlanDistributionChart from '../components/admin/revenue/PlanDistributionChart'
+import RevenueByCategory from '../components/admin/revenue/RevenueByCategory'
+import TopPayingCustomers from '../components/admin/revenue/TopPayingCustomers'
+import RecentTransactions from '../components/admin/revenue/RecentTransactions'
+import PaymentFailures from '../components/admin/revenue/PaymentFailures'
+import ChurnAnalysis from '../components/admin/revenue/ChurnAnalysis'
+import GrowthProjections from '../components/admin/revenue/GrowthProjections'
 
 export default function AdminRevenuePage() {
   return (
-    <SharedLayout>
-      <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', padding: '2rem' }}>
-        <h1>Admin Revenue</h1>
-        <p style={{ color: '#666', marginTop: '0.5rem' }}>Coming soon</p>
+    <AdminLayout title="Revenue" subtitle="March 2026 financial overview">
+      <RevenueKPIs />
+      <RevenueTrendChart />
+      <div className="db-grid-2">
+        <PlanDistributionChart />
+        <RevenueByCategory />
       </div>
-    </SharedLayout>
+      <TopPayingCustomers />
+      <RecentTransactions />
+      <div className="db-grid-2">
+        <PaymentFailures />
+        <ChurnAnalysis />
+      </div>
+      <GrowthProjections />
+    </AdminLayout>
   )
 }

@@ -1,0 +1,18 @@
+import DashboardCard from '../../dashboard/shared/DashboardCard'
+import AdminDonutChart from '../shared/AdminDonutChart'
+import { categoryDistribution } from '../../../data/admin/listingsData'
+
+export default function CategoryDistChart() {
+  return (
+    <DashboardCard
+      title="Listings by Category"
+      icon={<><line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" /></>}
+    >
+      <AdminDonutChart
+        segments={categoryDistribution}
+        centerValue="3,847"
+        centerLabel="Total"
+      />
+    </DashboardCard>
+  )
+}

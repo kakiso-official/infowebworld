@@ -1,0 +1,30 @@
+export const allCategories = [
+  { id: 1, name: 'Cloud Security', slug: 'cloud-security', icon: '☁️', listings: 847, activeListings: 812, status: 'active', views: 145200, growth: '+18%', growthUp: true, created: 'Jan 1, 2024', description: 'Cloud infrastructure and SaaS security solutions' },
+  { id: 2, name: 'Data Protection', slug: 'data-protection', icon: '🛡️', listings: 623, activeListings: 598, status: 'active', views: 112400, growth: '+12%', growthUp: true, created: 'Jan 1, 2024', description: 'Data encryption, backup, and DLP solutions' },
+  { id: 3, name: 'Network Security', slug: 'network-security', icon: '🌐', listings: 534, activeListings: 510, status: 'active', views: 98700, growth: '+8%', growthUp: true, created: 'Jan 1, 2024', description: 'Firewalls, IDS/IPS, and network monitoring' },
+  { id: 4, name: 'IAM Solutions', slug: 'iam-solutions', icon: '🔑', listings: 412, activeListings: 395, status: 'active', views: 87300, growth: '+22%', growthUp: true, created: 'Jan 1, 2024', description: 'Identity and access management platforms' },
+  { id: 5, name: 'Endpoint Security', slug: 'endpoint-security', icon: '💻', listings: 389, activeListings: 372, status: 'active', views: 76500, growth: '+5%', growthUp: true, created: 'Feb 15, 2024', description: 'Antivirus, EDR, and device management' },
+  { id: 6, name: 'Threat Detection', slug: 'threat-detection', icon: '🔍', listings: 298, activeListings: 285, status: 'active', views: 65400, growth: '+28%', growthUp: true, created: 'Mar 1, 2024', description: 'SIEM, SOAR, and threat intelligence' },
+  { id: 7, name: 'Compliance', slug: 'compliance', icon: '📋', listings: 276, activeListings: 264, status: 'active', views: 54200, growth: '+15%', growthUp: true, created: 'Mar 1, 2024', description: 'GRC, audit, and regulatory compliance tools' },
+  { id: 8, name: 'Email Security', slug: 'email-security', icon: '📧', listings: 234, activeListings: 221, status: 'active', views: 43800, growth: '+3%', growthUp: true, created: 'Apr 10, 2024', description: 'Anti-phishing, email encryption, and filtering' },
+  { id: 9, name: 'Penetration Testing', slug: 'penetration-testing', icon: '🎯', listings: 198, activeListings: 189, status: 'active', views: 38900, growth: '+10%', growthUp: true, created: 'May 1, 2024', description: 'Pen testing tools and services' },
+  { id: 10, name: 'VPN Services', slug: 'vpn-services', icon: '🔒', listings: 178, activeListings: 165, status: 'active', views: 67800, growth: '-2%', growthUp: false, created: 'May 1, 2024', description: 'Virtual private network providers' },
+  { id: 11, name: 'Password Management', slug: 'password-management', icon: '🗝️', listings: 156, activeListings: 148, status: 'active', views: 52100, growth: '+7%', growthUp: true, created: 'Jun 15, 2024', description: 'Password vaults and credential managers' },
+  { id: 12, name: 'AI Security', slug: 'ai-security', icon: '🤖', listings: 89, activeListings: 85, status: 'active', views: 34500, growth: '+45%', growthUp: true, created: 'Sep 1, 2025', description: 'AI/ML security tools and platforms' },
+  { id: 13, name: 'Zero Trust', slug: 'zero-trust', icon: '🔐', listings: 67, activeListings: 64, status: 'active', views: 28900, growth: '+35%', growthUp: true, created: 'Nov 1, 2025', description: 'Zero trust architecture solutions' },
+  { id: 14, name: 'IoT Security', slug: 'iot-security', icon: '📡', listings: 45, activeListings: 42, status: 'active', views: 18700, growth: '+20%', growthUp: true, created: 'Jan 5, 2026', description: 'Internet of Things security platforms' },
+  { id: 15, name: 'Blockchain Security', slug: 'blockchain-security', icon: '⛓️', listings: 23, activeListings: 21, status: 'inactive', views: 8900, growth: '-12%', growthUp: false, created: 'Feb 1, 2026', description: 'Smart contract and blockchain auditing' },
+]
+
+export const categoryPerformance = [
+  { label: 'Cloud Security', value: 145200, color: 'var(--accent)' },
+  { label: 'Data Protection', value: 112400, color: 'var(--emerald)' },
+  { label: 'Network Security', value: 98700, color: 'var(--azure)' },
+  { label: 'IAM Solutions', value: 87300, color: 'var(--amber)' },
+  { label: 'VPN Services', value: 67800, color: 'var(--coral)' },
+  { label: 'Endpoint Security', value: 76500, color: 'var(--plum)' },
+  { label: 'Threat Detection', value: 65400, color: 'var(--teal)' },
+  { label: 'Compliance', value: 54200, color: 'var(--rose)' },
+  { label: 'Password Mgmt', value: 52100, color: 'var(--accent)' },
+  { label: 'Email Security', value: 43800, color: 'var(--emerald)' },
+]
