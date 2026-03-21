@@ -1,0 +1,29 @@
+/* ============================================================
+   HOW IT WORKS
+   ============================================================ */
+.how-section {
+  padding: clamp(3rem, 6vw, 5rem) 0;
+  background: #fff;
+}
+.how-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem; max-width: 960px; margin: 0 auto;
+}
+.how-step {
+  text-align: center; position: relative;
+}
+.how-num {
+  font-family: 'Soria'; font-size: 2rem; color: rgba(var(--h-accent-rgb), .15);
+  margin-bottom: .25rem;
+}
+.how-icon {
+  width: 48px; height: 48px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto .75rem;
+}
+.how-icon svg { width: 22px; height: 22px; stroke: #fff; fill: none; stroke-width: 1.5 }
+.how-title { font-size: .85rem; font-weight: 700; color: var(--h-heading); margin-bottom: .3rem }
+.how-desc { font-size: .75rem; color: var(--h-body); line-height: 1.5 }
+
+@media (max-width: 768px) { .how-grid { grid-template-columns: repeat(2, 1fr) } }
+@media (max-width: 480px) { .how-grid { grid-template-columns: 1fr } }

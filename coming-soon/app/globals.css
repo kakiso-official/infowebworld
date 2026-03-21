@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+/* ── Local Soria font ── */
+@font-face {
+  font-family: 'Soria';
+  src: url('/fonts/soria-font.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ============================================================
+   DESIGN TOKENS — Same warm premium palette as React app
+   ============================================================ */
+:root {
+  --bg: #FAFBFC;
+  --bg-alt: #F4F5F7;
+  --white: #FFFFFF;
+  --gray-50: #F9FAFB;
+  --gray-100: #F3F4F6;
+  --gray-200: #E5E7EB;
+  --gray-300: #D1D5DB;
+  --gray-400: #9CA3AF;
+  --gray-500: #6B7280;
+  --gray-600: #4B5563;
+  --gray-700: #374151;
+  --gray-800: #1F2937;
+  --gray-900: #111827;
+
+  --accent: #6C72F1;
+  --accent-hover: #5B61E0;
+  --emerald: #2FAE6A;
+  --azure: #3B82F6;
+  --coral: #EF6B4A;
+  --plum: #8B5CF6;
+  --teal: #14B8A6;
+  --amber: #F59E0B;
+  --rose: #EC4899;
+  --gold: #E5A100;
+
+  --h-accent: #E8553D;
+  --h-accent-rgb: 232, 85, 61;
+  --h-accent-hover: #D44A33;
+  --h-bg: #FAF5F0;
+  --h-heading: #1A1A1A;
+  --h-body: #5C5C5C;
+  --h-muted: #9A9590;
+  --h-border: #E8E3DE;
+  --h-border-light: #F0EBE6;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.08);
+
+  --r: 12px;
+  --r-sm: 8px;
+  --r-lg: 16px;
+  --r-xl: 20px;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0 }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; overflow-x: clip }
+body {
+  font-family: var(--font-nunito), 'Nunito', 'Inter', sans-serif;
+  color: var(--h-heading);
+  background: var(--h-bg);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+a { text-decoration: none; color: inherit }
+button { font-family: inherit; cursor: pointer; border: none; background: none }
+img { max-width: 100%; display: block }
+input, textarea { font-family: inherit }
+
+/* ── Container ── */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 3vw, 2rem);
+}
+
+/* ── Section imports ── */
+@import "./styles/nav.css";
+@import "./styles/hero.css";
+@import "./styles/countdown.css";
+@import "./styles/stats.css";
+@import "./styles/tiers.css";
+@import "./styles/pricing.css";
+@import "./styles/benefits.css";
+@import "./styles/comparison.css";
+@import "./styles/final-cta.css";
+@import "./styles/how-it-works.css";
+@import "./styles/interests.css";
+@import "./styles/footer.css";
+@import "./styles/listing.css";
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
+}

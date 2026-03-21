@@ -1,0 +1,21 @@
+/* ============================================================
+   SOCIAL PROOF / STATS
+   ============================================================ */
+.stats-section {
+  padding: clamp(2rem, 4vw, 3rem) 0;
+  background: var(--h-heading);
+}
+.stats-grid {
+  display: flex; justify-content: center; gap: clamp(2rem, 5vw, 5rem);
+  flex-wrap: wrap;
+}
+.stat-item { text-align: center }
+.stat-num {
+  font-family: var(--font-nunito), 'Nunito', sans-serif; font-weight: 800; font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  color: #fff; line-height: 1.1;
+}
+.stat-num em { font-style: normal; color: var(--h-accent) }
+.stat-label {
+  font-size: .7rem; font-weight: 600; color: rgba(255,255,255,.5);
+  text-transform: uppercase; letter-spacing: .06em; margin-top: .25rem;
+}

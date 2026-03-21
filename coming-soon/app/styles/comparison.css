@@ -1,0 +1,40 @@
+/* ============================================================
+   COMPARISON TABLE
+   ============================================================ */
+.comparison-section {
+  padding: clamp(3rem, 6vw, 5rem) 0;
+  background: var(--h-bg);
+}
+.comparison-table-wrap {
+  max-width: 800px; margin: 0 auto;
+  border-radius: var(--r-lg); overflow: hidden;
+  border: 1px solid var(--h-border); background: #fff;
+}
+.comparison-table {
+  width: 100%; border-collapse: collapse;
+}
+.comparison-table th,
+.comparison-table td {
+  padding: .75rem 1rem; text-align: center;
+  font-size: .8rem; border-bottom: 1px solid var(--h-border-light);
+}
+.comparison-table th:first-child,
+.comparison-table td:first-child { text-align: left; font-weight: 600 }
+.comparison-table thead th {
+  background: var(--h-bg); font-weight: 700; font-size: .72rem;
+  text-transform: uppercase; letter-spacing: .04em; color: var(--h-muted);
+}
+.comparison-table thead th.comparison-highlight {
+  background: var(--h-accent); color: #fff;
+  border-radius: var(--r) var(--r) 0 0;
+}
+.comparison-table td.comparison-highlight {
+  background: rgba(var(--h-accent-rgb), .04); font-weight: 700;
+}
+.comparison-check { color: var(--emerald); font-weight: 700 }
+.comparison-cross { color: var(--gray-300) }
+.comparison-partial { color: var(--amber); font-size: .7rem }
+
+@media (max-width: 600px) {
+  .comparison-table th, .comparison-table td { padding: .5rem .4rem; font-size: .68rem }
+}

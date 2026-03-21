@@ -1,0 +1,435 @@
+/* ============================================================
+   GET LISTED — Multi-step listing form
+   ============================================================ */
+.listing-section {
+  padding: clamp(2rem, 4vw, 3rem) 0 clamp(3rem, 6vw, 5rem);
+  background: var(--h-bg); min-height: 70vh;
+}
+
+/* ── Progress bar ── */
+.listing-progress {
+  display: flex; align-items: flex-start; justify-content: center;
+  gap: clamp(2rem, 5vw, 4rem); margin-bottom: 2rem;
+  position: relative; max-width: 600px; margin-left: auto; margin-right: auto;
+}
+.listing-progress-step {
+  display: flex; flex-direction: column; align-items: center; gap: .35rem;
+  position: relative; z-index: 1;
+}
+.listing-progress-dot {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .75rem; font-weight: 700; color: var(--h-muted);
+  background: #fff; border: 2px solid var(--h-border);
+  transition: all .35s cubic-bezier(.16,1,.3,1);
+}
+.listing-progress-step--active .listing-progress-dot {
+  background: var(--h-accent); border-color: var(--h-accent); color: #fff;
+}
+.listing-progress-step--done .listing-progress-dot {
+  background: #2FAE6A; border-color: #2FAE6A; color: #fff;
+}
+.listing-progress-dot svg {
+  width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2.5;
+}
+.listing-progress-label {
+  font-size: .65rem; font-weight: 600; color: var(--h-muted);
+  white-space: nowrap;
+}
+.listing-progress-step--active .listing-progress-label { color: var(--h-accent) }
+.listing-progress-step--done .listing-progress-label { color: #2FAE6A }
+
+.listing-progress-line {
+  position: absolute; top: 18px; left: 10%; right: 10%;
+  height: 2px; background: var(--h-border); z-index: 0;
+}
+.listing-progress-line-fill {
+  height: 100%; background: #2FAE6A; border-radius: 999px;
+  transition: width .5s cubic-bezier(.16,1,.3,1);
+}
+
+/* ── Main card ── */
+.listing-card {
+  max-width: 780px; margin: 0 auto;
+  background: #fff; border: 1px solid var(--h-border);
+  border-radius: var(--r-xl); padding: clamp(1.5rem, 3vw, 2.5rem);
+  box-shadow: 0 4px 24px rgba(0,0,0,.04);
+}
+
+/* ── Step header ── */
+.listing-step-header { margin-bottom: 1.5rem }
+.listing-step-title {
+  font-family: 'Soria'; font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  color: var(--h-heading); margin-bottom: .3rem;
+}
+.listing-step-desc {
+  font-size: .85rem; color: var(--h-body);
+}
+
+/* ── Form fields ── */
+.listing-fields { display: flex; flex-direction: column; gap: 1.25rem }
+.listing-field { display: flex; flex-direction: column; gap: .35rem; position: relative }
+.listing-label {
+  font-size: .75rem; font-weight: 700; color: var(--h-heading);
+}
+.listing-label span { color: var(--h-accent) }
+
+.listing-input {
+  height: 46px; border: 1.5px solid var(--h-border);
+  border-radius: var(--r); padding: 0 .875rem;
+  font-size: .85rem; color: var(--h-heading);
+  background: var(--h-bg); outline: none;
+  transition: border-color .3s, box-shadow .3s;
+}
+.listing-input:focus {
+  border-color: var(--h-accent);
+  box-shadow: 0 0 0 3px rgba(var(--h-accent-rgb), .08);
+  background: #fff;
+}
+.listing-input::placeholder { color: var(--h-muted) }
+
+.listing-textarea {
+  height: auto; padding: .75rem .875rem;
+  resize: vertical; min-height: 100px;
+  line-height: 1.5;
+}
+
+.listing-select {
+  appearance: none; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239A9590' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right .75rem center;
+  padding-right: 2.25rem;
+}
+
+.listing-char-count {
+  position: absolute; right: .5rem; bottom: .5rem;
+  font-size: .6rem; color: var(--h-muted); font-weight: 500;
+}
+
+.listing-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+}
+@media (max-width: 480px) { .listing-row { grid-template-columns: 1fr } }
+
+/* ── Category chips ── */
+.listing-cats {
+  display: flex; flex-wrap: wrap; gap: .5rem;
+}
+.listing-cat-chip {
+  padding: .5rem 1rem; border-radius: 999px;
+  font-size: .75rem; font-weight: 700;
+  border: 2px solid transparent;
+  cursor: pointer; transition: all .3s cubic-bezier(.16,1,.3,1);
+  white-space: nowrap;
+}
+.listing-cat-chip:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 4px 14px rgba(0,0,0,.08);
+}
+.listing-cat-chip--selected {
+  transform: scale(1.05);
+  box-shadow: 0 4px 14px rgba(0,0,0,.1);
+}
+
+/* ── Plan selection ── */
+.listing-plans {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+@media (max-width: 768px) { .listing-plans { grid-template-columns: 1fr } }
+
+.listing-plan {
+  position: relative; text-align: left;
+  background: var(--h-bg); border: 2px solid var(--h-border);
+  border-radius: var(--r-lg); padding: 1.25rem;
+  cursor: pointer; transition: all .35s cubic-bezier(.16,1,.3,1);
+}
+.listing-plan:hover { border-color: rgba(var(--h-accent-rgb), .3); transform: translateY(-2px) }
+.listing-plan--selected {
+  border-color: var(--h-accent); background: #fff;
+  box-shadow: 0 8px 30px rgba(var(--h-accent-rgb), .1);
+}
+.listing-plan--featured {
+  border-color: rgba(var(--h-accent-rgb), .2);
+}
+
+.listing-plan-popular {
+  position: absolute; top: -10px; left: 50%;
+  transform: translateX(-50%); padding: .2rem .7rem;
+  border-radius: 999px; background: var(--h-accent); color: #fff;
+  font-size: .55rem; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; white-space: nowrap;
+}
+
+.listing-plan-radio {
+  position: absolute; top: 1rem; right: 1rem;
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid var(--h-border);
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color .3s;
+}
+.listing-plan--selected .listing-plan-radio { border-color: var(--h-accent) }
+
+.listing-plan-radio-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: transparent; transition: background .3s;
+}
+.listing-plan-radio-dot--active { background: var(--h-accent) }
+
+.listing-plan-tag {
+  display: inline-block; padding: .2rem .55rem; border-radius: 999px;
+  font-size: .58rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .04em; margin-bottom: .5rem;
+}
+.listing-plan-name {
+  font-family: 'Soria'; font-size: 1.15rem; color: var(--h-heading); margin-bottom: .35rem;
+}
+.listing-plan-price {
+  display: flex; align-items: baseline; gap: .15rem; margin-bottom: .1rem;
+}
+.listing-plan-currency { font-size: .85rem; font-weight: 700; color: var(--h-heading) }
+.listing-plan-amount { font-family: 'Soria'; font-size: 2rem; color: var(--h-heading); line-height: 1 }
+.listing-plan-period { font-size: .7rem; color: var(--h-muted); font-weight: 500 }
+.listing-plan-note { font-size: .62rem; color: var(--h-muted); margin-bottom: .75rem }
+
+.listing-plan-features {
+  list-style: none; display: flex; flex-direction: column; gap: .3rem;
+}
+.listing-plan-features li {
+  display: flex; align-items: center; gap: .4rem;
+  font-size: .72rem; color: var(--h-body);
+}
+
+.listing-portfolio-note {
+  display: flex; align-items: flex-start; gap: .5rem;
+  margin-top: 1.25rem; padding: .85rem 1rem;
+  border-radius: var(--r); background: rgba(47,174,106,.06);
+  border: 1px solid rgba(47,174,106,.12);
+  font-size: .75rem; color: var(--h-body); line-height: 1.5;
+}
+
+/* ── Review step ── */
+.listing-review {
+  display: flex; flex-direction: column; gap: 1.25rem;
+}
+.listing-review-section {
+  border: 1px solid var(--h-border-light); border-radius: var(--r);
+  overflow: hidden;
+}
+.listing-review-section-title {
+  display: flex; align-items: center; gap: .4rem;
+  padding: .75rem 1rem; background: var(--h-bg);
+  font-size: .75rem; font-weight: 700; color: var(--h-heading);
+  border-bottom: 1px solid var(--h-border-light);
+}
+.listing-review-section-title svg {
+  width: 15px; height: 15px; stroke: var(--h-accent); fill: none; stroke-width: 1.5;
+}
+.listing-review-edit {
+  margin-left: auto; font-size: .65rem; font-weight: 700;
+  color: var(--h-accent); cursor: pointer;
+  padding: .2rem .5rem; border-radius: 999px;
+  transition: background .2s;
+}
+.listing-review-edit:hover { background: rgba(var(--h-accent-rgb), .08) }
+
+.listing-review-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  padding: .25rem 0;
+}
+.listing-review-item { padding: .5rem 1rem }
+.listing-review-item--full { grid-column: 1 / -1 }
+.listing-review-label {
+  display: block; font-size: .6rem; font-weight: 600;
+  color: var(--h-muted); text-transform: uppercase; letter-spacing: .04em;
+  margin-bottom: .1rem;
+}
+.listing-review-value {
+  font-size: .82rem; font-weight: 500; color: var(--h-heading);
+  word-break: break-word;
+}
+
+.listing-review-plan { padding: 1rem }
+.listing-review-plan-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: .75rem;
+}
+.listing-review-plan-name {
+  font-family: 'Soria'; font-size: 1.15rem; color: var(--h-heading);
+}
+.listing-review-plan-tag {
+  font-size: .62rem; font-weight: 700;
+}
+.listing-review-plan-price {
+  font-family: 'Soria'; font-size: 1.5rem; color: var(--h-heading);
+}
+.listing-review-plan-price span {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .7rem; color: var(--h-muted); font-weight: 500;
+}
+.listing-review-plan-features {
+  list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: .3rem;
+}
+.listing-review-plan-features li {
+  display: flex; align-items: center; gap: .4rem;
+  font-size: .72rem; color: var(--h-body);
+}
+
+.listing-submit-note {
+  display: flex; align-items: center; gap: .5rem;
+  margin-top: 1rem; padding: .65rem .85rem;
+  border-radius: var(--r-sm); background: var(--h-bg);
+  border: 1px solid var(--h-border-light);
+  font-size: .7rem; color: var(--h-muted); line-height: 1.4;
+}
+
+/* ── Action buttons ── */
+.listing-actions {
+  display: flex; align-items: center; gap: 1rem;
+  margin-top: 1.5rem; padding-top: 1.5rem;
+  border-top: 1px solid var(--h-border-light);
+}
+.listing-btn {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .65rem 1.5rem; border-radius: 999px;
+  font-size: .8125rem; font-weight: 700;
+  transition: all .35s cubic-bezier(.16,1,.3,1);
+  white-space: nowrap; cursor: pointer;
+  text-decoration: none;
+}
+.listing-btn svg {
+  width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2;
+}
+.listing-btn--primary {
+  background: var(--h-accent); color: #fff; border: none;
+}
+.listing-btn--primary:hover {
+  background: var(--h-accent-hover); transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(var(--h-accent-rgb), .28);
+}
+.listing-btn--primary:disabled {
+  opacity: .4; cursor: not-allowed; transform: none; box-shadow: none;
+}
+.listing-btn--secondary {
+  background: #fff; color: var(--h-body);
+  border: 1.5px solid var(--h-border);
+}
+.listing-btn--secondary:hover {
+  border-color: var(--h-accent); color: var(--h-accent); transform: translateY(-2px);
+}
+.listing-btn--submit {
+  padding: .75rem 2rem; font-size: .875rem;
+}
+
+@media (max-width: 480px) {
+  .listing-progress { gap: 1.5rem }
+  .listing-progress-dot { width: 30px; height: 30px; font-size: .65rem }
+  .listing-progress-label { font-size: .55rem }
+  .listing-card { padding: 1.25rem }
+  .listing-review-grid { grid-template-columns: 1fr }
+  .listing-review-plan-features { grid-template-columns: 1fr }
+  .listing-actions { flex-wrap: wrap }
+  .listing-btn { flex: 1; justify-content: center }
+}
+
+/* ── Success state ── */
+.listing-success {
+  max-width: 640px; margin: 0 auto; text-align: center;
+}
+.listing-success-icon {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: #2FAE6A; margin: 0 auto 1.25rem;
+  display: flex; align-items: center; justify-content: center;
+  animation: successPop .5s cubic-bezier(.34,1.56,.64,1) both;
+}
+.listing-success-icon svg {
+  width: 36px; height: 36px; stroke: #fff; fill: none; stroke-width: 2;
+}
+@keyframes successPop {
+  0% { transform: scale(0); opacity: 0 }
+  100% { transform: scale(1); opacity: 1 }
+}
+
+.listing-success-title {
+  font-family: 'Soria'; font-size: clamp(1.75rem, 3vw, 2.5rem);
+  color: var(--h-heading); margin-bottom: .5rem;
+}
+.listing-success-sub {
+  font-size: .9rem; color: var(--h-body); margin-bottom: 1.5rem;
+}
+
+.listing-success-plan {
+  display: inline-flex; flex-direction: column; align-items: center; gap: .35rem;
+  padding: 1rem 2rem; border-radius: var(--r-lg);
+  background: var(--h-bg); border: 1px solid var(--h-border);
+  margin-bottom: 2rem;
+}
+.listing-success-plan-tag {
+  padding: .25rem .65rem; border-radius: 999px;
+  font-size: .62rem; font-weight: 700; color: #fff;
+  text-transform: uppercase; letter-spacing: .04em;
+}
+.listing-success-plan-price {
+  font-family: 'Soria'; font-size: 1.75rem; color: var(--h-heading);
+}
+.listing-success-plan-price span {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .75rem; color: var(--h-muted); font-weight: 500;
+}
+
+.listing-success-benefits {
+  text-align: left; margin-bottom: 2rem;
+  background: var(--h-bg); border: 1px solid var(--h-border-light);
+  border-radius: var(--r-lg); padding: 1.5rem;
+}
+.listing-success-benefits h3 {
+  font-family: 'Soria'; font-size: 1.1rem; color: var(--h-heading);
+  margin-bottom: 1rem;
+}
+
+.listing-success-steps {
+  display: flex; flex-direction: column; gap: .75rem;
+}
+.listing-success-step {
+  display: flex; align-items: flex-start; gap: .75rem;
+}
+.listing-success-step-num {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  background: var(--h-accent); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .7rem; font-weight: 700;
+}
+.listing-success-step strong {
+  display: block; font-size: .82rem; color: var(--h-heading); margin-bottom: .1rem;
+}
+.listing-success-step p {
+  font-size: .75rem; color: var(--h-body); line-height: 1.5; margin: 0;
+}
+
+.listing-success-perks {
+  text-align: left; margin-bottom: 2rem;
+  background: #fff; border: 1px solid var(--h-border-light);
+  border-radius: var(--r-lg); padding: 1.5rem;
+}
+.listing-success-perks h3 {
+  font-family: 'Soria'; font-size: 1.1rem; color: var(--h-heading);
+  margin-bottom: .75rem;
+}
+.listing-success-perks ul {
+  list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: .4rem;
+}
+.listing-success-perks li {
+  display: flex; align-items: center; gap: .4rem;
+  font-size: .78rem; color: var(--h-body);
+}
+
+.listing-success-actions {
+  display: flex; justify-content: center; gap: 1rem;
+}
+
+@media (max-width: 480px) {
+  .listing-success-perks ul { grid-template-columns: 1fr }
+  .listing-success-actions { flex-direction: column }
+  .listing-success-actions .listing-btn { width: 100%; justify-content: center }
+}

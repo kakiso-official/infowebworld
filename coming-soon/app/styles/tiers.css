@@ -1,0 +1,165 @@
+/* ============================================================
+   EARLY BIRD TIERS — clean pricing timeline
+   ============================================================ */
+.tiers-section {
+  padding: clamp(3rem, 6vw, 5rem) 0;
+  background: #fff;
+}
+
+/* ── Shared section pieces ── */
+.section-header { text-align: center; margin-bottom: clamp(2rem, 4vw, 3rem) }
+.section-tag {
+  display: inline-flex; align-items: center; gap: .35rem;
+  padding: .3rem .75rem; border-radius: 999px;
+  background: rgba(var(--h-accent-rgb), .08);
+  border: 1px solid rgba(var(--h-accent-rgb), .12);
+  font-size: .65rem; font-weight: 700; color: var(--h-accent);
+  text-transform: uppercase; letter-spacing: .06em;
+  margin-bottom: .75rem;
+}
+.section-desc {
+  font-size: clamp(.875rem, 1.2vw, 1rem); color: var(--h-body);
+  max-width: 580px; margin: 0 auto;
+}
+.section-desc strong { color: var(--h-accent); font-weight: 700 }
+.tiers-heading {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 800; color: var(--h-heading);
+  line-height: 1.1; letter-spacing: -.02em; margin-bottom: .5rem;
+}
+.tiers-heading em { font-style: normal; color: var(--h-accent) }
+
+/* ============================================================
+   THE TIMELINE TRACK
+   ============================================================ */
+.tier-track {
+  display: flex; align-items: stretch;
+  position: relative;
+  max-width: 700px; margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* ── Connecting line ── */
+.tier-line {
+  position: absolute;
+  left: 0; right: 0;
+  top: calc(clamp(2.5rem, 5vw, 3.25rem) + .5rem + 7px);
+  height: 3px; background: var(--h-border);
+  border-radius: 999px;
+  z-index: 0;
+  transform: translateY(-50%);
+}
+.tier-line-fill {
+  height: 100%; border-radius: 999px;
+  background: var(--h-accent);
+}
+
+/* ── Location marker pin ── */
+.tier-marker {
+  position: absolute; top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex; flex-direction: column; align-items: center;
+  z-index: 2;
+}
+.tier-marker-pin {
+  width: 28px; height: 28px;
+  margin-bottom: .15rem;
+  animation: markerBounce 2s ease-in-out infinite;
+}
+.tier-marker-pin svg {
+  width: 100%; height: 100%;
+  fill: var(--h-accent); stroke: none;
+}
+.tier-marker-pin svg circle {
+  fill: #fff;
+}
+.tier-marker-label {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .6rem; font-weight: 800;
+  color: var(--h-accent);
+  white-space: nowrap;
+  background: #fff;
+  padding: .1rem .4rem; border-radius: 999px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08);
+}
+@keyframes markerBounce {
+  0%, 100% { transform: translateY(0) }
+  50% { transform: translateY(-4px) }
+}
+
+/* ── Each step ── */
+.tier-step {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center;
+  position: relative; z-index: 1;
+}
+
+/* ── Price above the dot ── */
+.tier-price {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: clamp(.8rem, 1.5vw, 1rem);
+  color: var(--h-muted);
+  margin-bottom: .5rem;
+  min-height: clamp(2.5rem, 5vw, 3.25rem);
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.tier-step--active .tier-price {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  color: var(--h-heading);
+}
+.tier-price-sub {
+  font-size: .55em; font-weight: 600;
+  color: var(--h-muted); margin-left: .1em;
+}
+
+/* ── The dot ── */
+.tier-dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--h-border);
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 1px var(--h-border);
+  position: relative;
+  transition: all .3s;
+}
+.tier-step--active .tier-dot {
+  width: 14px; height: 14px;
+  background: var(--h-accent);
+  border-color: #fff;
+  box-shadow: 0 0 0 2px var(--h-accent), 0 0 0 6px rgba(var(--h-accent-rgb), .15);
+}
+
+/* ── Ping animation — disabled ── */
+.tier-dot-ping { display: none }
+
+/* ── Label below the dot ── */
+.tier-label {
+  font-size: clamp(.58rem, 1.1vw, .72rem);
+  font-weight: 600; color: var(--h-muted);
+  margin-top: .5rem;
+  white-space: nowrap;
+}
+.tier-step--active .tier-label {
+  color: var(--h-accent); font-weight: 700;
+}
+
+/* ── Bottom note ── */
+.tier-note {
+  text-align: center;
+  margin-top: clamp(1.5rem, 3vw, 2rem);
+  font-size: clamp(.75rem, 1.2vw, .88rem);
+  color: var(--h-body);
+}
+.tier-note strong {
+  color: var(--h-accent); font-weight: 700;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .tier-track { padding: 0 }
+  .tier-dot { width: 12px; height: 12px }
+  .tier-step--active .tier-dot { width: 16px; height: 16px }
+  .tier-line { height: 2px }
+}
