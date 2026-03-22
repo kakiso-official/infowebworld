@@ -1,28 +1,29 @@
+'use client'
+import { useState, useEffect } from 'react'
+import { getConfig } from '../config/site-config'
+
 export default function Stats() {
+  const [cfg, setCfg] = useState({ statWaitlist: '10,000+', statListings: '500+', statIndustries: '80+', statCountries: '12', statLanguages: '8' })
+  useEffect(() => { const c = getConfig(); setCfg({ statWaitlist: c.statWaitlist, statListings: c.statListings, statIndustries: c.statIndustries, statCountries: c.statCountries, statLanguages: c.statLanguages }) }, [])
+
+  const stats = [
+    { num: cfg.statWaitlist, label: 'Waitlist Target' },
+    { num: cfg.statListings, label: 'Launch Listings' },
+    { num: cfg.statIndustries, label: 'Industries' },
+    { num: cfg.statCountries, label: 'Countries' },
+    { num: cfg.statLanguages, label: 'Languages' },
+  ]
+
   return (
     <section className="stats-section">
       <div className="container">
         <div className="stats-grid">
-          <div className="stat-item">
-            <div className="stat-num">10,000<em>+</em></div>
-            <div className="stat-label">Waitlist Target</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-num">500<em>+</em></div>
-            <div className="stat-label">Launch Listings</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-num">80<em>+</em></div>
-            <div className="stat-label">Industries</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-num">12</div>
-            <div className="stat-label">Countries</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-num">8</div>
-            <div className="stat-label">Languages</div>
-          </div>
+          {stats.map(s => (
+            <div key={s.label} className="stat-item">
+              <div className="stat-num" dangerouslySetInnerHTML={{ __html: s.num.replace('+', '<em>+</em>') }} />
+              <div className="stat-label">{s.label}</div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

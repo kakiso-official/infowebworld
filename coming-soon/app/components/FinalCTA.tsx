@@ -1,24 +1,82 @@
 'use client'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { getConfig } from '../config/site-config'
+import { addToWaitlist } from '../iww-hq/data/waitlist-storage'
 
 export default function FinalCTA() {
+  const [cfg, setCfg] = useState({ pioneerJoined: 15, pioneerTotal: 200, foundingPrice: 240 })
+  useEffect(() => { const c = getConfig(); setCfg({ pioneerJoined: c.pioneerJoined, pioneerTotal: c.pioneerTotal, foundingPrice: c.foundingPrice }) }, [])
+  const JOINED = cfg.pioneerJoined, TOTAL = cfg.pioneerTotal, LEFT = TOTAL - JOINED
+  const PCT = Math.round((JOINED / TOTAL) * 100)
+
+  const trustPoints = [
+    { num: String(TOTAL), label: 'Founding Spots' },
+    { num: `$${cfg.foundingPrice}`, label: 'Lifetime Access' },
+    { num: '30-Day', label: 'Money Back' },
+  ]
+  const [fctaEmail, setFctaEmail] = useState('')
+  const [fctaMsg, setFctaMsg] = useState('')
+
+  const handleFctaJoin = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!fctaEmail) return
+    const ok = addToWaitlist(fctaEmail, 'cta')
+    setFctaMsg(ok ? "You're on the list!" : 'Already on the waitlist!')
+    if (ok) setFctaEmail('')
+    setTimeout(() => setFctaMsg(''), 3000)
+  }
+
   return (
-    <section className="final-cta-section">
+    <section className="fcta-section">
       <div className="container">
-        <div className="final-cta-inner">
-          <div className="section-tag">Don&apos;t Miss Out</div>
-          <h2 className="section-title">The Pioneer Tier Is <em>72% Full</em></h2>
-          <p className="section-desc">
-            Lock in your founding member pricing before spots run out. Join 2,847+ businesses already on the waitlist.
-          </p>
-          <form className="final-cta-form" onSubmit={e => e.preventDefault()}>
-            <input type="email" className="final-input" placeholder="Enter your email" required />
-            <button type="submit" className="final-btn">Join Waitlist</button>
-          </form>
-          <div style={{ marginTop: '1rem' }}>
-            <Link href="/get-listed" className="final-listed-link">
-              or <strong>Get Listed Now</strong> &rarr;
-            </Link>
+        <div className="fcta-card">
+          {/* Left — content */}
+          <div className="fcta-content">
+            <div className="section-tag">Don&apos;t Miss Out</div>
+            <h2 className="fcta-heading">
+              Only <em>{LEFT} Pioneer Spots</em> Remain
+            </h2>
+            <p className="fcta-desc">
+              Lock in $240 lifetime access before the price jumps to $99/yr. Join now and never pay again.
+            </p>
+
+            <form className="fcta-form" onSubmit={handleFctaJoin}>
+              <input type="email" className="fcta-input" placeholder="Enter your work email" required value={fctaEmail} onChange={e => setFctaEmail(e.target.value)} />
+              <button type="submit" className="fcta-btn">{fctaMsg || 'Join Waitlist'}</button>
+            </form>
+
+            <div className="fcta-alt">
+              <Link href="/get-listed" className="fcta-alt-link">
+                or <strong>Get Listed Now</strong>
+              </Link>
+            </div>
+          </div>
+
+          {/* Right — progress + trust */}
+          <div className="fcta-sidebar">
+            <div className="fcta-progress">
+              <svg viewBox="0 0 120 120" className="fcta-ring">
+                <circle cx="60" cy="60" r="52" className="fcta-ring-bg" />
+                <circle cx="60" cy="60" r="52" className="fcta-ring-fill"
+                  strokeDasharray={`${2 * Math.PI * 52}`}
+                  strokeDashoffset={`${2 * Math.PI * 52 * (1 - PCT / 100)}`}
+                />
+              </svg>
+              <div className="fcta-ring-text">
+                <span className="fcta-ring-pct">{PCT}%</span>
+                <span className="fcta-ring-label">filled</span>
+              </div>
+            </div>
+
+            <div className="fcta-trust-row">
+              {trustPoints.map(t => (
+                <div key={t.label} className="fcta-trust">
+                  <span className="fcta-trust-num">{t.num}</span>
+                  <span className="fcta-trust-label">{t.label}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

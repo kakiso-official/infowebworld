@@ -1,20 +1,21 @@
 'use client'
-
-const JOINED = 15
-const PIONEER_TOTAL = 200
-const TOTAL_SPOTS = 10200 // 200 + 1000 + 5000 + 4000
+import { useState, useEffect } from 'react'
+import { getConfig } from '../config/site-config'
 
 const tiers = [
   { price: '$240', sub: 'lifetime', label: 'first 200', active: true },
-  { price: '$140', sub: '/yr', label: 'first 1k', active: false },
-  { price: '$120', sub: '/yr', label: 'first 5k', active: false },
-  { price: '$168', sub: '/yr', label: 'after 5k', active: false },
+  { price: '$99', sub: '/yr', label: 'first 1k', active: false },
+  { price: '$140', sub: '/yr', label: 'first 2k', active: false },
+  { price: '$240', sub: '/yr', label: 'first 5k', active: false },
 ]
 
 export default function EarlyBirdTiers() {
+  const [cfg, setCfg] = useState({ pioneerJoined: 15, pioneerTotal: 200 })
+  useEffect(() => { const c = getConfig(); setCfg({ pioneerJoined: c.pioneerJoined, pioneerTotal: c.pioneerTotal }) }, [])
+  const JOINED = cfg.pioneerJoined
+  const PIONEER_TOTAL = cfg.pioneerTotal
   const spotsLeft = PIONEER_TOTAL - JOINED
-  // Position of marker on the full track (percentage of first tier segment)
-  const markerPct = (JOINED / PIONEER_TOTAL) * 25 // first tier is ~25% of the track
+  const markerPct = (JOINED / PIONEER_TOTAL) * 25
 
   return (
     <section className="tiers-section" id="tiers">
@@ -51,7 +52,7 @@ export default function EarlyBirdTiers() {
         </div>
 
         <p className="tier-note">
-          You&apos;re in the <strong>Pioneer</strong> window — lock in $240 lifetime before it fills up.
+          You&apos;re in the <strong>Pioneer</strong> window — lock in $240 lifetime before the price jumps to $99/yr.
         </p>
       </div>
     </section>

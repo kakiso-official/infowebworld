@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Nunito, Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
+import PageTracker from "./components/PageTracker";
 
 const nunito = Nunito({
   variable: "--font-nunito",
@@ -82,10 +83,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/infowebworld/favicon.ico" sizes="any" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/infowebworld/logo/favicon-32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/infowebworld/logo/favicon-16.png" />
+        <link rel="apple-touch-icon" href="/infowebworld/logo/apple-touch-icon.png" />
         <meta name="theme-color" content="#FAF5F0" />
       </head>
-      <body className={`${nunito.variable} ${bricolage.variable}`}>{children}</body>
+      <body className={`${nunito.variable} ${bricolage.variable}`}><PageTracker />{children}</body>
     </html>
   );
 }

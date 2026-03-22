@@ -130,6 +130,25 @@
 }
 .cs-rotate-word.active { position: relative; opacity: 1; transform: translateY(0) }
 
+/* CSS-only fallback for word rotation when JS doesn't load */
+@keyframes wordCycleDesktop {
+  0%     { opacity: 0; transform: translateY(8px) }
+  3%     { opacity: 1; transform: translateY(0) }
+  10%    { opacity: 1; transform: translateY(0) }
+  12.5%, 100% { opacity: 0; transform: translateY(-8px) }
+}
+.cs-rotate-wrap:not(.js-active) .cs-rotate-word {
+  animation: wordCycleDesktop 17.6s infinite;
+}
+.cs-rotate-wrap:not(.js-active) .cs-rotate-word:nth-child(1) { animation-delay: 0s }
+.cs-rotate-wrap:not(.js-active) .cs-rotate-word:nth-child(2) { animation-delay: 2.2s }
+.cs-rotate-wrap:not(.js-active) .cs-rotate-word:nth-child(3) { animation-delay: 4.4s }
+.cs-rotate-wrap:not(.js-active) .cs-rotate-word:nth-child(4) { animation-delay: 6.6s }
+.cs-rotate-wrap:not(.js-active) .cs-rotate-word:nth-child(5) { animation-delay: 8.8s }
+.cs-rotate-wrap:not(.js-active) .cs-rotate-word:nth-child(6) { animation-delay: 11s }
+.cs-rotate-wrap:not(.js-active) .cs-rotate-word:nth-child(7) { animation-delay: 13.2s }
+.cs-rotate-wrap:not(.js-active) .cs-rotate-word:nth-child(8) { animation-delay: 15.4s }
+
 /* Description */
 .cs-desc {
   font-size: clamp(.9rem, 1.2vw, 1.0625rem);
@@ -264,6 +283,25 @@
     position: absolute; opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
+
+  /* ── CSS-only fallback when JS doesn't load (network/mobile) ── */
+  @keyframes wordCycle {
+    0%     { opacity: 0; transform: translateX(-50%) translateY(8px) }
+    3%     { opacity: 1; transform: translateX(-50%) translateY(0) }
+    10%    { opacity: 1; transform: translateX(-50%) translateY(0) }
+    12.5%, 100% { opacity: 0; transform: translateX(-50%) translateY(-8px) }
+  }
+  .cs-rotate-wrap:not(.js-active) .cs-rotate-word {
+    animation: wordCycle 17.6s infinite;
+  }
+  .cs-rotate-wrap:not(.js-active) .cs-rotate-word:nth-child(1) { animation-delay: 0s }
+  .cs-rotate-wrap:not(.js-active) .cs-rotate-word:nth-child(2) { animation-delay: 2.2s }
+  .cs-rotate-wrap:not(.js-active) .cs-rotate-word:nth-child(3) { animation-delay: 4.4s }
+  .cs-rotate-wrap:not(.js-active) .cs-rotate-word:nth-child(4) { animation-delay: 6.6s }
+  .cs-rotate-wrap:not(.js-active) .cs-rotate-word:nth-child(5) { animation-delay: 8.8s }
+  .cs-rotate-wrap:not(.js-active) .cs-rotate-word:nth-child(6) { animation-delay: 11s }
+  .cs-rotate-wrap:not(.js-active) .cs-rotate-word:nth-child(7) { animation-delay: 13.2s }
+  .cs-rotate-wrap:not(.js-active) .cs-rotate-word:nth-child(8) { animation-delay: 15.4s }
 
   /* ── Description — fluid font + width ── */
   .cs-desc {

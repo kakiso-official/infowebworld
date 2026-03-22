@@ -1,101 +1,187 @@
-const check = <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><path d="M22 4 12 14.01l-3-3" /></svg>
+'use client'
+import { useRef, useEffect, useState } from 'react'
+import { getConfig } from '../config/site-config'
+
+const Ck = () => (
+  <svg viewBox="0 0 24 24" className="pr-ck"><path d="M20 6 9 17l-5-5" /></svg>
+)
+
+const plans = [
+  {
+    name: 'Founding Company',
+    badge: 'First 200 Only',
+    price: 240,
+    period: 'one-time',
+    note: 'Lifetime listing — pay once, listed forever',
+    save: 'Save $720+ over 4 years',
+    pastel: 'pr--coral',
+    cta: 'Claim Founding Spot',
+    locked: false,
+    lockNote: '',
+    features: [
+      'Permanent lifetime listing',
+      'Founding Member badge',
+      'Dofollow backlink (DA 72+)',
+      'Priority search placement',
+      'Verified business profile',
+      'Analytics dashboard',
+      'Unlimited photos & media',
+    ],
+  },
+  {
+    name: 'Early Adopter',
+    badge: 'First 1,000',
+    price: 99,
+    period: '/year',
+    note: '59% off standard yearly price',
+    save: '',
+    pastel: 'pr--azure',
+    cta: '',
+    locked: true,
+    lockNote: 'Unlocks after 200 Founding spots fill',
+    features: [
+      'Full business listing',
+      'Dofollow backlink (DA 72+)',
+      'Verified profile badge',
+      'Review management',
+      'Analytics dashboard',
+      'Lead generation tools',
+      'Priority support',
+      'Social media integration',
+    ],
+  },
+  {
+    name: 'Standard',
+    badge: 'Post-Launch',
+    price: 240,
+    period: '/year',
+    note: 'Regular launch pricing',
+    save: '',
+    pastel: 'pr--emerald',
+    cta: '',
+    locked: true,
+    lockNote: 'Unlocks after Early Adopter tier fills',
+    features: [
+      'Full business listing',
+      'Dofollow backlink (DA 72+)',
+      'Verified profile badge',
+      'Review management',
+      'Analytics dashboard',
+      'Lead generation tools',
+    ],
+  },
+]
 
 export default function Pricing() {
+  const gridRef = useRef<HTMLDivElement>(null)
+  const [visible, setVisible] = useState(false)
+  const [cfg, setCfg] = useState({ pioneerJoined: 15, pioneerTotal: 200 })
+  useEffect(() => { const c = getConfig(); setCfg({ pioneerJoined: c.pioneerJoined, pioneerTotal: c.pioneerTotal }) }, [])
+  const JOINED = cfg.pioneerJoined, TOTAL = cfg.pioneerTotal, LEFT = TOTAL - JOINED
+
+  useEffect(() => {
+    const el = gridRef.current
+    if (!el) return
+
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect() } },
+      { threshold: 0.1 }
+    )
+    obs.observe(el)
+
+    /* Fallback: show cards even if observer never fires (mobile network) */
+    const timer = setTimeout(() => setVisible(true), 4000)
+
+    return () => { obs.disconnect(); clearTimeout(timer) }
+  }, [])
+
   return (
-    <section className="pricing-section" id="pricing">
+    <section className="pr-section" id="pricing">
       <div className="container">
         <div className="section-header">
           <div className="section-tag">Pricing</div>
-          <h2 className="section-title">Listing Plans for <em>Every Business</em></h2>
+          <h2 className="pr-heading">
+            Listing Plans for <em>Every Business</em>
+          </h2>
           <p className="section-desc">
-            Lock in founding member pricing before launch. These rates will never be this low again.
+            Price rises as spots fill. Lock in the lowest rate now — it will never be this low again.
           </p>
         </div>
 
-        <div className="pricing-grid">
-          {/* Founding Company */}
-          <div className="pricing-card">
-            <div className="pricing-badge" style={{ background: 'rgba(232,85,61,.08)', color: '#E8553D' }}>
-              First 200 Only
-            </div>
-            <div className="pricing-name">Founding Company</div>
-            <div className="pricing-desc">Be a founding member forever</div>
-            <div className="pricing-price">
-              <span className="pricing-currency">$</span>
-              <span className="pricing-amount">240</span>
-            </div>
-            <div className="pricing-period">one-time payment</div>
-            <div className="pricing-note">Lifetime listing — pay once, listed forever</div>
-            <ul className="pricing-features">
-              <li>{check} Permanent lifetime listing</li>
-              <li>{check} Founding Member badge</li>
-              <li>{check} Dofollow backlink</li>
-              <li>{check} Priority placement in search</li>
-              <li>{check} Verified business profile</li>
-              <li>{check} Analytics dashboard</li>
-              <li>{check} Unlimited photos &amp; media</li>
-            </ul>
-            <a href="#hero" className="pricing-cta">Claim Founding Spot</a>
-          </div>
+        <div
+          ref={gridRef}
+          className={`pr-grid${visible ? ' pr-grid--visible' : ''}`}
+        >
+          {plans.map((p, i) => (
+            <div
+              key={p.name}
+              className={`pr-card ${p.pastel}${!p.locked ? ' pr-card--active' : ' pr-card--locked'}`}
+              style={{ '--card-i': i } as React.CSSProperties}
+            >
+              {!p.locked && <div className="pr-popular">Now Open</div>}
 
-          {/* Early Adopter — Featured */}
-          <div className="pricing-card pricing-card--featured">
-            <div className="pricing-badge" style={{ background: 'rgba(67,97,238,.08)', color: '#4361EE' }}>
-              First 1,000
-            </div>
-            <div className="pricing-name">Early Adopter</div>
-            <div className="pricing-desc">Best value for growing businesses</div>
-            <div className="pricing-price">
-              <span className="pricing-currency">$</span>
-              <span className="pricing-amount">140</span>
-            </div>
-            <div className="pricing-period">/year</div>
-            <div className="pricing-note">42% off standard yearly price</div>
-            <ul className="pricing-features">
-              <li>{check} Full business listing</li>
-              <li>{check} Dofollow backlink</li>
-              <li>{check} Verified profile badge</li>
-              <li>{check} Review management</li>
-              <li>{check} Analytics dashboard</li>
-              <li>{check} Lead generation tools</li>
-              <li>{check} Priority support</li>
-              <li>{check} Social media integration</li>
-            </ul>
-            <a href="#hero" className="pricing-cta pricing-cta--primary">Join as Early Adopter</a>
-          </div>
+              <div className="pr-card-body">
+                <div className="pr-badge">{p.badge}</div>
+                <div className="pr-name">{p.name}</div>
 
-          {/* Standard */}
-          <div className="pricing-card">
-            <div className="pricing-badge" style={{ background: 'rgba(47,174,106,.08)', color: '#2FAE6A' }}>
-              Post-Launch
+                <div className="pr-price-row">
+                  <span className="pr-currency">$</span>
+                  <span className="pr-amount">{p.price}</span>
+                </div>
+                <div className="pr-period">{p.period}</div>
+                <div className="pr-note">{p.note}</div>
+
+                {p.save && <div className="pr-save">{p.save}</div>}
+
+                {!p.locked && p.name === 'Founding Company' && (
+                  <div className="pr-spots">
+                    <div className="pr-spots-bar">
+                      <div
+                        className="pr-spots-fill"
+                        style={{ width: `${(JOINED / TOTAL) * 100}%` }}
+                      />
+                    </div>
+                    <div className="pr-spots-text">
+                      <span className="pr-spots-left">{LEFT} spots remaining</span>
+                      <span className="pr-spots-total">{JOINED}/{TOTAL} claimed</span>
+                    </div>
+                  </div>
+                )}
+
+                <ul className="pr-features">
+                  {p.features.map(f => (
+                    <li key={f}><Ck />{f}</li>
+                  ))}
+                </ul>
+
+                {p.locked ? (
+                  <div className="pr-lock-note">{p.lockNote}</div>
+                ) : (
+                  <a href="#hero" className="pr-cta pr-cta--primary">{p.cta}</a>
+                )}
+              </div>
             </div>
-            <div className="pricing-name">Standard</div>
-            <div className="pricing-desc">Regular launch pricing</div>
-            <div className="pricing-price">
-              <span className="pricing-currency">$</span>
-              <span className="pricing-amount">240</span>
-            </div>
-            <div className="pricing-period">/year</div>
-            <div className="pricing-note">or $999 for lifetime access</div>
-            <ul className="pricing-features">
-              <li>{check} Full business listing</li>
-              <li>{check} Dofollow backlink</li>
-              <li>{check} Verified profile badge</li>
-              <li>{check} Review management</li>
-              <li>{check} Analytics dashboard</li>
-              <li>{check} Lead generation tools</li>
-            </ul>
-            <a href="#hero" className="pricing-cta">Join Waitlist</a>
-          </div>
+          ))}
         </div>
 
-        {/* Portfolio / Incubator offer */}
-        <div className="pricing-extra">
-          <div className="pricing-extra-title">Incubators &amp; Portfolio Companies</div>
-          <p className="pricing-extra-desc">
-            Companies with <strong>5+ tools, apps, or startups</strong> get free listings for their entire portfolio.
-            Contact us to set up your portfolio account.
-          </p>
+        <div className="pr-bottom">
+          <div className="pr-bottom-item">
+            <span className="pr-bottom-num pr-bottom-num--coral">30</span>
+            <div>
+              <div className="pr-bottom-title">Day Money-Back Guarantee</div>
+              <div className="pr-bottom-desc">Not satisfied? Full refund, no questions asked.</div>
+            </div>
+          </div>
+
+          <div className="pr-bottom-sep" />
+
+          <div className="pr-bottom-item">
+            <span className="pr-bottom-num pr-bottom-num--azure">5+</span>
+            <div>
+              <div className="pr-bottom-title">Free Portfolio Listings</div>
+              <div className="pr-bottom-desc">Companies with 5+ products get every one listed free.</div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

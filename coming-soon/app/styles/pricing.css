@@ -1,92 +1,415 @@
 /* ============================================================
-   PRICING SECTION
+   PRICING — Sequential tier system with active/locked states
    ============================================================ */
-.pricing-section {
+.pr-section {
   padding: clamp(3rem, 6vw, 5rem) 0;
   background: var(--h-bg);
 }
-.pricing-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem; max-width: 960px; margin: 0 auto;
+.pr-heading {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 800; color: var(--h-heading);
+  line-height: 1.1; letter-spacing: -.02em; margin-bottom: .5rem;
 }
-.pricing-card {
-  background: #fff; border: 1.5px solid var(--h-border);
-  border-radius: var(--r-xl); padding: 1.75rem 1.5rem;
-  text-align: center; position: relative;
-  transition: all .35s cubic-bezier(.16,1,.3,1);
-}
-.pricing-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,.08) }
-.pricing-card--featured {
-  border-color: var(--h-accent); transform: scale(1.04);
-  box-shadow: 0 12px 40px rgba(var(--h-accent-rgb), .12);
-}
-.pricing-card--featured:hover { transform: scale(1.04) translateY(-4px) }
-.pricing-card--featured::before {
-  content: 'MOST POPULAR'; position: absolute; top: -12px; left: 50%;
-  transform: translateX(-50%); padding: .3rem .85rem; border-radius: 999px;
-  background: var(--h-accent); color: #fff;
-  font-size: .6rem; font-weight: 700; letter-spacing: .08em; white-space: nowrap;
+.pr-heading em { font-style: normal; color: var(--h-accent) }
+
+/* ============================================================
+   CARD GRID
+   ============================================================ */
+.pr-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  max-width: 980px;
+  margin: 0 auto;
+  align-items: center;
 }
 
-.pricing-badge {
-  display: inline-block; padding: .25rem .65rem; border-radius: 999px;
-  font-size: .6rem; font-weight: 700; text-transform: uppercase;
-  letter-spacing: .06em; margin-bottom: .75rem;
+/* ── Scroll-triggered staggered entrance ── */
+.pr-grid .pr-card {
+  opacity: 0;
+  transform: translateY(48px);
+  will-change: transform, opacity;
 }
-.pricing-name {
-  font-family: 'Soria'; font-size: 1.3rem; color: var(--h-heading); margin-bottom: .15rem;
+.pr-grid--visible .pr-card {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity .7s cubic-bezier(.16, 1, .3, 1),
+              transform .7s cubic-bezier(.16, 1, .3, 1);
+  transition-delay: calc(var(--card-i) * 150ms);
 }
-.pricing-desc { font-size: .75rem; color: var(--h-body); margin-bottom: 1rem }
+.pr-grid--visible .pr-card--active {
+  transform: translateY(-16px);
+}
 
-.pricing-price {
-  display: flex; align-items: baseline; justify-content: center; gap: .25rem;
+@media (prefers-reduced-motion: reduce) {
+  .pr-grid .pr-card { opacity: 1; transform: none; transition: none }
+}
+
+/* ============================================================
+   CARD BASE — pastel gradient wash
+   ============================================================ */
+.pr-card {
+  border-radius: 20px;
+  border: 1.5px solid var(--h-border);
+  position: relative;
+  transition: transform .4s cubic-bezier(.16, 1, .3, 1),
+              box-shadow .4s cubic-bezier(.16, 1, .3, 1);
+}
+.pr--coral  { background: linear-gradient(to bottom, #FDDDD6 0%, #fff 120px) }
+.pr--azure  { background: linear-gradient(to bottom, #DBEAFE 0%, #fff 120px) }
+.pr--emerald { background: linear-gradient(to bottom, #D4F5E2 0%, #fff 120px) }
+
+/* ============================================================
+   ACTIVE CARD — the currently open tier
+   ============================================================ */
+.pr-card--active {
+  border-color: var(--h-accent);
+  border-width: 2px;
+}
+.pr-card--active:hover {
+  transform: translateY(-22px);
+  box-shadow: 0 28px 64px rgba(232, 85, 61, .1);
+}
+
+/* ── "Now Open" floating pill ── */
+.pr-popular {
+  position: absolute;
+  top: -13px; left: 50%;
+  transform: translateX(-50%);
+  padding: .3rem 1.1rem;
+  border-radius: 999px;
+  background: var(--h-accent);
+  color: #fff;
+  font-size: .58rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  z-index: 2;
+}
+
+/* ============================================================
+   LOCKED CARD — upcoming tiers, not yet available
+   ============================================================ */
+.pr-card--locked {
+  overflow: hidden;
+}
+.pr-card--locked::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 19px;
+  background: rgba(255, 255, 255, .55);
+  pointer-events: none;
+  z-index: 1;
+  transition: background .4s cubic-bezier(.16, 1, .3, 1);
+}
+.pr-card--locked:hover::after {
+  background: rgba(255, 255, 255, .4);
+}
+.pr-card--locked:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .04);
+}
+
+/* ============================================================
+   CARD BODY
+   ============================================================ */
+.pr-card-body {
+  padding: 2rem 1.5rem 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+.pr-card--active .pr-card-body { padding-top: 2.5rem }
+
+/* ── Badge pill ── */
+.pr-badge {
+  display: inline-flex;
+  align-self: center;
+  padding: .22rem .65rem;
+  border-radius: 999px;
+  font-size: .58rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-bottom: .6rem;
+}
+.pr--coral .pr-badge  { background: rgba(232, 85, 61, .08); color: #E8553D }
+.pr--azure .pr-badge  { background: rgba(67, 97, 238, .08); color: #4361EE }
+.pr--emerald .pr-badge { background: rgba(47, 174, 106, .08); color: #2FAE6A }
+
+/* ── Plan name ── */
+.pr-name {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--h-heading);
+  letter-spacing: -.01em;
+  margin-bottom: .2rem;
+}
+
+/* ── Price display ── */
+.pr-price-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: .15rem;
+  margin-bottom: .1rem;
+}
+.pr-currency {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--h-heading);
+  align-self: flex-start;
+  margin-top: .55rem;
+}
+.pr-amount {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--h-heading);
+  line-height: 1;
+}
+.pr-card--active .pr-amount { font-size: 3.5rem }
+
+.pr-period {
+  font-size: .78rem;
+  font-weight: 500;
+  color: var(--h-muted);
   margin-bottom: .15rem;
 }
-.pricing-currency { font-size: 1rem; font-weight: 700; color: var(--h-heading) }
-.pricing-amount {
-  font-family: 'Soria'; font-size: 2.5rem; color: var(--h-heading); line-height: 1;
+.pr-note {
+  font-size: .66rem;
+  color: var(--h-muted);
+  margin-bottom: .65rem;
 }
-.pricing-period { font-size: .75rem; color: var(--h-muted); font-weight: 500 }
-.pricing-note { font-size: .65rem; color: var(--h-muted); margin-bottom: 1.25rem }
 
-.pricing-features { list-style: none; text-align: left; margin-bottom: 1.5rem }
-.pricing-features li {
-  display: flex; align-items: flex-start; gap: .5rem;
-  font-size: .78rem; color: var(--h-body); padding: .35rem 0;
+/* ── Savings pill ── */
+.pr-save {
+  display: inline-flex;
+  align-self: center;
+  padding: .22rem .65rem;
+  border-radius: 999px;
+  font-size: .58rem;
+  font-weight: 700;
+  background: rgba(47, 174, 106, .1);
+  color: var(--emerald);
+  margin-bottom: 1.25rem;
+}
+
+/* When no save pill, increase note bottom margin */
+.pr-note:has(+ .pr-features) { margin-bottom: 1.25rem }
+
+/* ============================================================
+   SPOTS REMAINING — progress bar in active Founding card
+   ============================================================ */
+.pr-spots {
+  margin-bottom: 1.25rem;
+}
+.pr-spots-bar {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--h-border);
+  overflow: hidden;
+  margin-bottom: .4rem;
+}
+.pr-spots-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--h-accent);
+  transition: width 1s cubic-bezier(.16, 1, .3, 1);
+}
+.pr-spots-text {
+  display: flex;
+  justify-content: space-between;
+  font-size: .6rem;
+  font-weight: 700;
+}
+.pr-spots-left { color: var(--h-accent) }
+.pr-spots-total { color: var(--h-muted) }
+
+/* ============================================================
+   FEATURE LIST
+   ============================================================ */
+.pr-features {
+  list-style: none;
+  text-align: left;
+  margin-bottom: 1.5rem;
+  flex: 1;
+}
+.pr-features li {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .78rem;
+  color: var(--h-body);
+  padding: .38rem 0;
   border-bottom: 1px solid var(--h-border-light);
 }
-.pricing-features li:last-child { border-bottom: none }
-.pricing-features li svg {
-  width: 14px; height: 14px; stroke: var(--emerald); fill: none;
-  stroke-width: 2; flex-shrink: 0; margin-top: 2px;
+.pr-features li:last-child { border-bottom: none }
+
+.pr-ck {
+  width: 15px; height: 15px;
+  flex-shrink: 0;
+  stroke: var(--emerald);
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.pricing-cta {
-  display: block; width: 100%; padding: .7rem;
-  border-radius: 999px; font-size: .8125rem; font-weight: 700;
-  text-align: center; transition: all .3s cubic-bezier(.16,1,.3,1);
+/* ============================================================
+   CTA BUTTON (active card only)
+   ============================================================ */
+.pr-cta {
+  display: block;
+  width: 100%;
+  padding: .75rem;
+  border-radius: 999px;
+  font-size: .8125rem;
+  font-weight: 700;
+  text-align: center;
   border: 1.5px solid var(--h-border);
-  color: var(--h-heading); background: #fff;
+  color: var(--h-heading);
+  background: #fff;
+  transition: all .3s cubic-bezier(.16, 1, .3, 1);
 }
-.pricing-cta:hover { border-color: var(--h-accent); color: var(--h-accent); transform: translateY(-2px) }
-.pricing-cta--primary {
-  background: var(--h-accent); color: #fff; border-color: var(--h-accent);
+.pr-cta:hover {
+  border-color: var(--h-accent);
+  color: var(--h-accent);
+  transform: translateY(-2px);
 }
-.pricing-cta--primary:hover {
-  background: var(--h-accent-hover); border-color: var(--h-accent-hover);
-  color: #fff; box-shadow: 0 6px 20px rgba(var(--h-accent-rgb), .28);
+.pr-cta--primary {
+  background: var(--h-accent);
+  color: #fff;
+  border-color: var(--h-accent);
+}
+.pr-cta--primary:hover {
+  background: var(--h-accent-hover);
+  border-color: var(--h-accent-hover);
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(232, 85, 61, .22);
 }
 
-.pricing-extra {
-  text-align: center; margin-top: 2rem;
-  padding: 1.25rem; border-radius: var(--r-lg);
-  background: #fff; border: 1.5px dashed var(--h-border);
-  max-width: 700px; margin-left: auto; margin-right: auto;
+/* ============================================================
+   LOCK NOTE — replaces CTA on locked cards
+   ============================================================ */
+.pr-lock-note {
+  position: relative;
+  z-index: 2;
+  padding: .6rem 1rem;
+  border-radius: 999px;
+  background: var(--h-border);
+  color: var(--h-muted);
+  font-size: .7rem;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.35;
 }
-.pricing-extra-title {
-  font-family: 'Soria'; font-size: 1.1rem; color: var(--h-heading); margin-bottom: .35rem;
-}
-.pricing-extra-desc { font-size: .8rem; color: var(--h-body); line-height: 1.5 }
-.pricing-extra-desc strong { color: var(--emerald); font-weight: 700 }
 
-@media (max-width: 768px) { .pricing-grid { grid-template-columns: 1fr } .pricing-card--featured { transform: none } .pricing-card--featured:hover { transform: translateY(-4px) } }
+/* ============================================================
+   BOTTOM BANNER — typography-driven, no icons
+   ============================================================ */
+.pr-bottom {
+  display: flex;
+  align-items: center;
+  max-width: 980px;
+  margin: 2.5rem auto 0;
+  padding: 1.5rem 2rem;
+  border-radius: 20px;
+  background: #F3EDE7;
+}
+
+.pr-bottom-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pr-bottom-num {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  font-weight: 800;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.pr-bottom-num--coral { color: var(--h-accent) }
+.pr-bottom-num--azure { color: var(--azure) }
+
+.pr-bottom-sep {
+  width: 1.5px;
+  align-self: stretch;
+  background: var(--h-border);
+  margin: 0 1.5rem;
+  flex-shrink: 0;
+}
+
+.pr-bottom-title {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(.8rem, 1.2vw, .92rem);
+  font-weight: 800;
+  color: var(--h-heading);
+  letter-spacing: -.01em;
+  margin-bottom: .1rem;
+}
+.pr-bottom-desc {
+  font-size: clamp(.65rem, 1vw, .74rem);
+  color: var(--h-body);
+  line-height: 1.45;
+}
+
+/* ============================================================
+   RESPONSIVE — Tablet & Mobile
+   ============================================================ */
+@media (max-width: 768px) {
+  .pr-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    max-width: 420px;
+  }
+
+  /* Active card appears first on mobile */
+  .pr-card--active { order: -1 }
+
+  /* No vertical offset or stagger on mobile */
+  .pr-grid--visible .pr-card,
+  .pr-grid--visible .pr-card--active {
+    transform: translateY(0);
+    transition-delay: 0s;
+  }
+  .pr-card--active:hover { transform: translateY(-4px) }
+  .pr-card--locked:hover { transform: translateY(-2px) }
+
+  /* Slightly smaller price on mobile */
+  .pr-amount { font-size: 2.5rem }
+  .pr-card--active .pr-amount { font-size: 2.75rem }
+
+  /* Bottom banner stacks */
+  .pr-bottom {
+    flex-direction: column;
+    gap: 0;
+    padding: 1.25rem 1.5rem;
+  }
+  .pr-bottom-item { gap: .75rem }
+  .pr-bottom-sep {
+    width: 100%;
+    height: 1.5px;
+    margin: 1rem 0;
+  }
+}
+
+/* ── Extra-small phones ── */
+@media (max-width: 380px) {
+  .pr-card-body { padding: 1.15rem }
+  .pr-name { font-size: 1.15rem }
+  .pr-amount { font-size: 2.25rem }
+  .pr-card--active .pr-amount { font-size: 2.5rem }
+  .pr-features li { font-size: .72rem }
+  .pr-lock-note { font-size: .62rem; padding: .5rem .75rem }
+  .pr-bottom { padding: 1rem 1.15rem }
+  .pr-bottom-num { font-size: 1.75rem }
+}

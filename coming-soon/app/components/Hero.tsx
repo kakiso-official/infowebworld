@@ -2,16 +2,30 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import CurvedLoop from './CurvedLoop'
+import { addToWaitlist } from '../iww-hq/data/waitlist-storage'
 
 const words = ['Restaurants', 'Agencies', 'SaaS Tools', 'Clinics', 'Startups', 'Consultants', 'Studios', 'Law Firms']
 
 export default function Hero() {
   const [current, setCurrent] = useState(0)
+  const [jsReady, setJsReady] = useState(false)
+  const [heroEmail, setHeroEmail] = useState('')
+  const [heroMsg, setHeroMsg] = useState('')
 
   useEffect(() => {
+    setJsReady(true)
     const interval = setInterval(() => setCurrent(prev => (prev + 1) % words.length), 2200)
     return () => clearInterval(interval)
   }, [])
+
+  const handleHeroJoin = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!heroEmail) return
+    const ok = addToWaitlist(heroEmail, 'hero')
+    setHeroMsg(ok ? 'You\'re on the list!' : 'Already on the waitlist!')
+    if (ok) setHeroEmail('')
+    setTimeout(() => setHeroMsg(''), 3000)
+  }
 
   return (
     <section className="cs-hero" id="hero">
@@ -21,7 +35,7 @@ export default function Hero() {
         <h1 className="cs-h1">
           The Platform Where<br />
           <span className="cs-h1-line2">
-            <span className="cs-rotate-wrap">
+            <span className={`cs-rotate-wrap${jsReady ? ' js-active' : ''}`}>
               {words.map((word, i) => (
                 <span key={word} className={`cs-rotate-word${i === current ? ' active' : ''}`}>{word}</span>
               ))}
@@ -40,9 +54,9 @@ export default function Hero() {
             Get Listed Now
             <svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
           </Link>
-          <form className="cs-form" onSubmit={e => e.preventDefault()}>
-            <input type="email" className="cs-input" placeholder="or join waitlist with email" required />
-            <button type="submit" className="cs-submit">Join</button>
+          <form className="cs-form" onSubmit={handleHeroJoin}>
+            <input type="email" className="cs-input" placeholder="or join waitlist with email" required value={heroEmail} onChange={e => setHeroEmail(e.target.value)} />
+            <button type="submit" className="cs-submit">{heroMsg || 'Join'}</button>
           </form>
         </div>
 

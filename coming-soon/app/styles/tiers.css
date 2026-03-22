@@ -113,6 +113,17 @@
   font-size: .55em; font-weight: 600;
   color: var(--h-muted); margin-left: .1em;
 }
+.tier-step--active .tier-price-sub {
+  font-size: .45em;
+  font-weight: 800;
+  color: var(--h-accent);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-left: .3em;
+  background: rgba(var(--h-accent-rgb), .1);
+  padding: .15em .55em;
+  border-radius: 999px;
+}
 
 /* ── The dot ── */
 .tier-dot {

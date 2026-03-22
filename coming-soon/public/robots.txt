@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /iww-hq/
+Disallow: /iww-hq
 
 Sitemap: https://infowebworld.com/sitemap.xml

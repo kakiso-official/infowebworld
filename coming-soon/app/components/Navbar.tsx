@@ -2,7 +2,8 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
-const bp = ''
+import { BASE } from '../config/base-path'
+const bp = BASE
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -21,9 +22,9 @@ export default function Navbar() {
     <>
       <nav className={`nav${scrolled ? ' scrolled' : ''}`}>
         <div className="container nav-inner">
-          <a href="#" className="nav-logo">
+          <Link href="/" className="nav-logo">
             <img src={`${bp}/logo/infowebworld-logo.png`} alt="InfoWebWorld" />
-          </a>
+          </Link>
           <div className="nav-links">
             <a href="#benefits" className="nav-link">Benefits</a>
             <a href="#pricing" className="nav-link">Pricing</a>
@@ -43,9 +44,9 @@ export default function Navbar() {
       <div className={`nav-mobile-overlay${drawerOpen ? ' open' : ''}`} onClick={close} />
       <div className={`nav-mobile-drawer${drawerOpen ? ' open' : ''}`}>
         <div className="nav-mobile-header">
-          <a href="#" className="nav-logo">
+          <Link href="/" className="nav-logo">
             <img src={`${bp}/logo/infowebworld-logo.png`} alt="InfoWebWorld" />
-          </a>
+          </Link>
           <button className="nav-mobile-close" aria-label="Close menu" onClick={close}>
             <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
           </button>

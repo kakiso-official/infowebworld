@@ -1,40 +1,232 @@
 /* ============================================================
-   COMPARISON TABLE
+   COMPARISON — Premium CSS Grid table with highlighted column
    ============================================================ */
-.comparison-section {
+.cmp-section {
   padding: clamp(3rem, 6vw, 5rem) 0;
   background: var(--h-bg);
 }
-.comparison-table-wrap {
-  max-width: 800px; margin: 0 auto;
-  border-radius: var(--r-lg); overflow: hidden;
-  border: 1px solid var(--h-border); background: #fff;
+.cmp-heading {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 800; color: var(--h-heading);
+  line-height: 1.1; letter-spacing: -.02em; margin-bottom: .5rem;
 }
-.comparison-table {
-  width: 100%; border-collapse: collapse;
-}
-.comparison-table th,
-.comparison-table td {
-  padding: .75rem 1rem; text-align: center;
-  font-size: .8rem; border-bottom: 1px solid var(--h-border-light);
-}
-.comparison-table th:first-child,
-.comparison-table td:first-child { text-align: left; font-weight: 600 }
-.comparison-table thead th {
-  background: var(--h-bg); font-weight: 700; font-size: .72rem;
-  text-transform: uppercase; letter-spacing: .04em; color: var(--h-muted);
-}
-.comparison-table thead th.comparison-highlight {
-  background: var(--h-accent); color: #fff;
-  border-radius: var(--r) var(--r) 0 0;
-}
-.comparison-table td.comparison-highlight {
-  background: rgba(var(--h-accent-rgb), .04); font-weight: 700;
-}
-.comparison-check { color: var(--emerald); font-weight: 700 }
-.comparison-cross { color: var(--gray-300) }
-.comparison-partial { color: var(--amber); font-size: .7rem }
+.cmp-heading em { font-style: normal; color: var(--h-accent) }
 
+/* ============================================================
+   TABLE WRAPPER
+   ============================================================ */
+.cmp-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1.5px solid var(--h-border);
+  background: #fff;
+}
+
+/* ============================================================
+   ROW — CSS Grid, 5 columns
+   ============================================================ */
+.cmp-row {
+  display: grid;
+  grid-template-columns: 1.6fr repeat(4, 1fr);
+}
+.cmp-row:last-child .cmp-cell { border-bottom: none }
+
+/* Alternating row tint */
+.cmp-row:nth-child(even):not(.cmp-row--header) .cmp-cell {
+  background: rgba(0, 0, 0, .015);
+}
+.cmp-row:nth-child(even):not(.cmp-row--header) .cmp-cell--hero {
+  background: rgba(232, 85, 61, .06);
+}
+
+/* Row hover */
+.cmp-row:not(.cmp-row--header):hover .cmp-cell {
+  background: rgba(0, 0, 0, .025);
+}
+.cmp-row:not(.cmp-row--header):hover .cmp-cell--hero {
+  background: rgba(232, 85, 61, .08);
+}
+
+/* ============================================================
+   CELL
+   ============================================================ */
+.cmp-cell {
+  padding: .8rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .8rem;
+  color: var(--h-body);
+  border-bottom: 1px solid var(--h-border-light);
+  transition: background .2s;
+}
+
+/* Feature name — left aligned, bold */
+.cmp-cell--feature {
+  justify-content: flex-start;
+  font-weight: 700;
+  color: var(--h-heading);
+  font-size: .82rem;
+}
+
+/* InfoWebWorld column — persistent coral tint */
+.cmp-cell--hero {
+  background: rgba(232, 85, 61, .04);
+}
+
+/* ============================================================
+   HEADER ROW
+   ============================================================ */
+.cmp-row--header .cmp-cell {
+  font-size: .65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--h-muted);
+  background: var(--h-bg);
+  border-bottom: 1.5px solid var(--h-border);
+  padding: .7rem 1rem;
+}
+.cmp-row--header .cmp-cell--hero {
+  background: var(--h-accent);
+  color: #fff;
+  font-size: .7rem;
+  letter-spacing: .06em;
+}
+
+/* ============================================================
+   VALUE INDICATORS
+   ============================================================ */
+
+/* ── Check — filled circle + white tick ── */
+.cmp-ck {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.cmp-ck circle { fill: var(--emerald) }
+.cmp-ck path {
+  fill: none; stroke: #fff;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Hero column checks → coral */
+.cmp-cell--hero .cmp-ck circle { fill: var(--h-accent) }
+
+/* ── No — muted dash ── */
+.cmp-no {
+  color: var(--h-border);
+  font-size: 1.1rem;
+  font-weight: 300;
+  line-height: 1;
+}
+
+/* ── Partial — amber pill ── */
+.cmp-partial {
+  display: inline-block;
+  padding: .12rem .45rem;
+  border-radius: 999px;
+  background: rgba(245, 158, 11, .1);
+  color: #D97706;
+  font-size: .6rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   FOOTER — summary score
+   ============================================================ */
+.cmp-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  margin-top: 1.5rem;
+}
+.cmp-footer-score {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
+  color: var(--h-accent);
+  line-height: 1;
+}
+.cmp-footer-text {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.72rem, 1.1vw, .85rem);
+  color: var(--h-body);
+}
+
+/* ============================================================
+   RESPONSIVE — Tablet
+   ============================================================ */
+@media (max-width: 768px) {
+  .cmp-cell { padding: .65rem .6rem; font-size: .72rem }
+  .cmp-cell--feature { font-size: .72rem }
+  .cmp-row--header .cmp-cell { font-size: .58rem; padding: .55rem .6rem }
+  .cmp-ck { width: 17px; height: 17px }
+  .cmp-partial { font-size: .55rem; padding: .1rem .35rem }
+}
+
+/* ============================================================
+   RESPONSIVE — Mobile: horizontal scroll + sticky feature col
+   ============================================================ */
 @media (max-width: 600px) {
-  .comparison-table th, .comparison-table td { padding: .5rem .4rem; font-size: .68rem }
+  .cmp-wrap {
+    border-radius: 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Force scroll — keep the grid table intact */
+  .cmp-row {
+    min-width: 560px;
+    grid-template-columns: 145px repeat(4, 1fr);
+  }
+
+  .cmp-cell { padding: .6rem .5rem; font-size: .7rem }
+
+  /* Sticky feature column — always visible on left */
+  .cmp-cell--feature {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: #fff;
+    font-size: .72rem;
+    padding-left: .75rem;
+    padding-right: .5rem;
+  }
+  /* Solid bg on sticky cell so it covers scrolling content */
+  .cmp-row--header .cmp-cell--feature { background: var(--h-bg) }
+  .cmp-row:nth-child(even):not(.cmp-row--header) .cmp-cell--feature { background: #fdfcfb }
+
+  /* Subtle shadow on sticky edge */
+  .cmp-cell--feature::after {
+    content: '';
+    position: absolute;
+    top: 0; right: -6px; bottom: 0;
+    width: 6px;
+    background: linear-gradient(to right, rgba(0, 0, 0, .04), transparent);
+    pointer-events: none;
+  }
+
+  .cmp-row--header .cmp-cell { font-size: .56rem; padding: .5rem .5rem }
+  .cmp-ck { width: 16px; height: 16px }
+  .cmp-partial { font-size: .52rem; padding: .08rem .3rem }
+
+  .cmp-footer { flex-direction: column; gap: .25rem }
+  .cmp-footer-text { text-align: center; font-size: .75rem }
+}
+
+/* ── Extra-small phones ── */
+@media (max-width: 380px) {
+  .cmp-row { min-width: 500px; grid-template-columns: 125px repeat(4, 1fr) }
+  .cmp-cell { padding: .5rem .4rem; font-size: .64rem }
+  .cmp-cell--feature { font-size: .66rem; padding-left: .6rem }
+  .cmp-row--header .cmp-cell { font-size: .5rem }
 }

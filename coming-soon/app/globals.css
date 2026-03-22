@@ -1,9 +1,10 @@
 @import "tailwindcss";
+@source "../app";
 
 /* ── Local Soria font ── */
 @font-face {
   font-family: 'Soria';
-  src: url('/fonts/soria-font.ttf') format('truetype');
+  src: url('/infowebworld/fonts/soria-font.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -95,6 +96,7 @@ input, textarea { font-family: inherit }
 @import "./styles/interests.css";
 @import "./styles/footer.css";
 @import "./styles/listing.css";
+@import "./styles/blog.css";
 
 /* ============================================================
    UTILITIES
