@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { clearSession } from '../utils/hash'
-import { getConfig, saveConfig, getDefaults, type SiteConfig } from '../../config/site-config'
+import { fetchConfig, saveConfigToAPI, defaults, type SiteConfig } from '../../config/site-config'
 
 const lbl: React.CSSProperties = { display: 'block', fontSize: '.65rem', fontWeight: 700, color: 'var(--h-heading)', marginBottom: '.3rem' }
 const inp: React.CSSProperties = { width: '100%', height: 40, padding: '0 .75rem', borderRadius: 10, border: '1.5px solid var(--h-border)', background: 'var(--h-bg)', fontSize: '.8rem', color: 'var(--h-heading)', outline: 'none', fontFamily: "var(--font-nunito), 'Nunito', sans-serif", transition: 'border-color .3s, box-shadow .3s' }
@@ -23,27 +23,30 @@ const Row = ({ label, children }: { label: string; children: React.ReactNode }) 
 )
 
 export default function Settings() {
-  const [cfg, setCfg] = useState<SiteConfig>(getDefaults())
+  const [cfg, setCfg] = useState<SiteConfig>({ ...defaults })
   const [saved, setSaved] = useState(false)
+  const [loading, setLoading] = useState(true)
 
-  useEffect(() => { setCfg(getConfig()) }, [])
+  useEffect(() => { fetchConfig().then(c => { setCfg(c); setLoading(false) }) }, [])
 
   const set = <K extends keyof SiteConfig>(k: K, v: SiteConfig[K]) => setCfg(prev => ({ ...prev, [k]: v }))
 
-  const handleSave = () => {
-    saveConfig(cfg)
+  const handleSave = async () => {
+    const ok = await saveConfigToAPI(cfg)
+    setSaved(true)
+    setTimeout(() => setSaved(false), 2000)
+    if (!ok) alert('Failed to save — check API connection')
+  }
+
+  const handleReset = async () => {
+    if (!confirm('Reset all config to defaults?')) return
+    setCfg({ ...defaults })
+    await saveConfigToAPI({ ...defaults })
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
   }
 
-  const handleReset = () => {
-    if (!confirm('Reset all config to defaults?')) return
-    const d = getDefaults()
-    setCfg(d)
-    saveConfig(d)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
-  }
+  if (loading) return <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--h-muted)' }}>Loading settings...</div>
 
   return (
     <div style={{ maxWidth: 560, margin: '0 auto' }}>
@@ -112,30 +115,40 @@ export default function Settings() {
         </div>
       </Card>
 
+      {/* ── Data Source Toggle ── */}
+      <Card title="Data Source">
+        <Row label="Use real database counts on landing page">
+          <button onClick={() => set('useRealData', !cfg.useRealData)} style={{ width: 48, height: 26, borderRadius: 999, border: 'none', background: cfg.useRealData ? '#2FAE6A' : 'var(--h-border)', cursor: 'pointer', position: 'relative', transition: 'background .3s' }}>
+            <span style={{ position: 'absolute', top: 3, left: cfg.useRealData ? 24 : 3, width: 20, height: 20, borderRadius: '50%', background: '#fff', transition: 'left .3s', boxShadow: '0 1px 3px rgba(0,0,0,.2)' }} />
+          </button>
+        </Row>
+        <p style={{ fontSize: '.6rem', color: 'var(--h-muted)', marginTop: '.4rem', lineHeight: 1.5 }}>
+          {cfg.useRealData ? 'Landing page shows live waitlist/submission counts from DB.' : 'Landing page shows the curated numbers you set above.'}
+        </p>
+      </Card>
+
       {/* Save / Reset buttons */}
       <div style={{ display: 'flex', gap: '.65rem', marginBottom: '1.5rem' }}>
         <button onClick={handleSave} style={{ flex: 1, height: 44, borderRadius: 999, border: 'none', background: '#E8553D', color: '#fff', fontSize: '.82rem', fontWeight: 700, cursor: 'pointer', fontFamily: "var(--font-nunito)", transition: 'all .3s' }}>
-          {saved ? 'Saved!' : 'Save All Changes'}
+          {saved ? 'Saved to Database!' : 'Save All Changes'}
         </button>
         <button onClick={handleReset} style={{ height: 44, padding: '0 1.25rem', borderRadius: 999, border: '1.5px solid var(--h-border)', background: '#fff', color: 'var(--h-body)', fontSize: '.78rem', fontWeight: 700, cursor: 'pointer', fontFamily: "var(--font-nunito)", transition: 'all .3s' }}>
-          Reset to Defaults
+          Reset
         </button>
       </div>
 
-      {/* ── Session Info ── */}
+      {/* ── Session ── */}
       <Card title="Session">
         <Row label="Status"><span style={{ fontSize: '.58rem', fontWeight: 700, padding: '.2rem .6rem', borderRadius: 999, background: 'rgba(47,174,106,.1)', color: '#2FAE6A' }}>Active</span></Row>
-        <Row label="Expiry"><span style={{ fontSize: '.72rem', fontWeight: 500, color: 'var(--h-heading)' }}>4 hours from login</span></Row>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '.6rem 0' }}>
           <span style={{ fontSize: '.72rem', fontWeight: 600, color: 'var(--h-body)' }}>Storage</span>
-          <span style={{ fontSize: '.72rem', fontWeight: 500, color: 'var(--h-heading)' }}>Session only (closes with tab)</span>
+          <span style={{ fontSize: '.72rem', fontWeight: 500, color: 'var(--h-heading)' }}>Database (MySQL)</span>
         </div>
       </Card>
 
-      {/* ── Danger Zone ── */}
       <Card title="Danger Zone" color="#E8553D">
         <p style={{ fontSize: '.72rem', color: 'var(--h-body)', marginBottom: '1rem', lineHeight: 1.5 }}>End your current session.</p>
-        <button onClick={() => { clearSession(); window.location.href = '/iww-hq' }}
+        <button onClick={() => { clearSession(); window.location.href = '/infowebworld/iww-hq' }}
           style={{ padding: '.55rem 1.5rem', borderRadius: 999, border: 'none', background: '#E8553D', color: '#fff', fontSize: '.78rem', fontWeight: 700, cursor: 'pointer', fontFamily: "var(--font-nunito)" }}>
           Logout
         </button>

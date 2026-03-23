@@ -94,11 +94,21 @@
   display: -webkit-box; -webkit-line-clamp: 2;
   -webkit-box-orient: vertical; overflow: hidden;
 }
+.blog-card-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: .75rem; padding-top: .6rem;
+  border-top: 1px solid var(--h-border-light);
+}
+.blog-card-author {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .6rem; font-weight: 600; color: var(--h-muted);
+}
 .blog-card-read {
-  display: inline-block; margin-top: .65rem;
   font-family: var(--font-nunito), 'Nunito', sans-serif;
   font-size: .68rem; font-weight: 700; color: var(--h-accent);
+  transition: gap .3s;
 }
+.blog-card:hover .blog-card-read { letter-spacing: .02em }
 
 /* ── Empty state ── */
 .blog-empty {

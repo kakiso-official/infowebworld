@@ -30,6 +30,8 @@ export default function Navbar() {
             <a href="#pricing" className="nav-link">Pricing</a>
             <a href="#how-it-works" className="nav-link">How It Works</a>
             <a href="#compare" className="nav-link">Compare</a>
+            <Link href="/categories" className="nav-link">Categories</Link>
+            <Link href="/blog" className="nav-link">Blog</Link>
           </div>
           <div className="nav-right">
             <Link href="/get-listed" className="nav-cta">Get Listed</Link>
@@ -56,6 +58,8 @@ export default function Navbar() {
           <a href="#pricing" className="nav-mobile-link" onClick={close}>Pricing</a>
           <a href="#how-it-works" className="nav-mobile-link" onClick={close}>How It Works</a>
           <a href="#compare" className="nav-mobile-link" onClick={close}>Compare</a>
+          <Link href="/categories" className="nav-mobile-link" onClick={close}>Categories</Link>
+          <Link href="/blog" className="nav-mobile-link" onClick={close}>Blog</Link>
         </div>
         <div className="nav-mobile-footer">
           <a href="#hero" className="nav-cta" onClick={close}>Join Waitlist</a>

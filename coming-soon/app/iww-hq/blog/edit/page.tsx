@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import BlogEditor from '../../components/BlogEditor'
-import { getPostById, savePost, generateSlug } from '../../data/blog-storage'
+import { fetchPostById, apiSavePost, generateSlug } from '../../data/blog-storage'
 import type { BlogPost } from '../../data/blog-types'
 
 export default function EditPost() {
@@ -12,19 +12,19 @@ export default function EditPost() {
   const [post, setPost] = useState<BlogPost | null>(null)
 
   useEffect(() => {
-    if (id) { const p = getPostById(id); if (p) setPost(p); else router.replace('/iww-hq/blog') }
+    if (id) { fetchPostById(id).then(p => { if (p) setPost(p); else router.replace('/iww-hq/blog') }) }
   }, [id, router])
 
   if (!post) return null
 
-  const handleSave = (status: 'draft' | 'published') => {
+  const handleSave = async (status: 'draft' | 'published') => {
     const now = new Date().toISOString()
     const slug = post.slug || generateSlug(post.title || 'untitled')
     const final: BlogPost = {
       ...post, slug, status, updatedAt: now,
       publishedAt: status === 'published' ? (post.publishedAt || now) : post.publishedAt,
     }
-    savePost(final)
+    await apiSavePost(final)
     router.push('/iww-hq/blog')
   }
 

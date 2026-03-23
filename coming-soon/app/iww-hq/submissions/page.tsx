@@ -1,6 +1,6 @@
 'use client'
-import { useState, useEffect } from 'react'
-import { getAllSubmissions, updateSubmissionStatus, deleteSubmission, getSubmissionStats, type RealSubmission } from '../data/submissions-storage'
+import { useState, useEffect, useMemo } from 'react'
+import { fetchAllSubmissions, updateSubmissionStatus, deleteSubmission, fetchSubmissionStats, type RealSubmission } from '../data/submissions-storage'
 
 const statusColors: Record<string, string> = { paid: '#2FAE6A', confirmed: '#3B82F6', pending: '#F59E0B', rejected: '#EF4444' }
 const Pill = ({ color, children }: { color: string; children: React.ReactNode }) => (
@@ -84,25 +84,28 @@ export default function Submissions() {
   const [detail, setDetail] = useState<RealSubmission | null>(null)
   const [stats, setStats] = useState({ total: 0, pending: 0, confirmed: 0, paid: 0 })
 
-  const reload = () => { setSubs(getAllSubmissions()); setStats(getSubmissionStats()) }
-  useEffect(reload, [])
+  const reload = async () => {
+    const [s, st] = await Promise.all([fetchAllSubmissions(), fetchSubmissionStats()])
+    setSubs(s); setStats(st)
+  }
+  useEffect(() => { reload() }, [])
 
-  const filtered = subs.filter(s => {
+  const filtered = useMemo(() => subs.filter(s => {
     const q = search.toLowerCase()
     const matchQ = !q || s.companyName.toLowerCase().includes(q) || s.email.toLowerCase().includes(q) || s.category.toLowerCase().includes(q) || s.contactName.toLowerCase().includes(q)
     const matchF = filter === 'all' || s.status === filter
     return matchQ && matchF
-  })
+  }), [subs, search, filter])
 
-  const handleStatusChange = (id: string, status: RealSubmission['status']) => {
-    updateSubmissionStatus(id, status)
-    reload()
+  const handleStatusChange = async (id: string, status: RealSubmission['status']) => {
+    await updateSubmissionStatus(id, status)
+    await reload()
     if (detail?.id === id) setDetail({ ...detail, status })
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (!confirm('Delete this submission permanently?')) return
-    deleteSubmission(id); reload(); if (detail?.id === id) setDetail(null)
+    await deleteSubmission(id); await reload(); if (detail?.id === id) setDetail(null)
   }
 
   const exportCSV = () => {

@@ -1,10 +1,10 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { getConfig } from '../config/site-config'
+import { fetchConfig } from '../config/site-config'
 
 export default function Stats() {
   const [cfg, setCfg] = useState({ statWaitlist: '10,000+', statListings: '500+', statIndustries: '80+', statCountries: '12', statLanguages: '8' })
-  useEffect(() => { const c = getConfig(); setCfg({ statWaitlist: c.statWaitlist, statListings: c.statListings, statIndustries: c.statIndustries, statCountries: c.statCountries, statLanguages: c.statLanguages }) }, [])
+  useEffect(() => { fetchConfig().then(c => setCfg({ statWaitlist: c.statWaitlist, statListings: c.statListings, statIndustries: c.statIndustries, statCountries: c.statCountries, statLanguages: c.statLanguages })) }, [])
 
   const stats = [
     { num: cfg.statWaitlist, label: 'Waitlist Target' },

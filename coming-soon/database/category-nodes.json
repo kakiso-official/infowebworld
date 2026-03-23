@@ -1,0 +1,6922 @@
+[
+  {
+    "level": 1,
+    "name": "Artificial Intelligence & ML",
+    "slug": "artificial-intelligence-ml",
+    "parent_slug": null,
+    "color": "#4361EE",
+    "sort": 100
+  },
+  {
+    "level": 2,
+    "name": "AI Assistants & Chatbots",
+    "slug": "ai-assistants-chatbots",
+    "parent_slug": "artificial-intelligence-ml",
+    "color": "#4361EE",
+    "sort": 101
+  },
+  {
+    "level": 3,
+    "name": "General AI Assistants",
+    "slug": "general-ai-assistants",
+    "parent_slug": "ai-assistants-chatbots",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Conversational AI",
+    "slug": "conversational-ai",
+    "parent_slug": "general-ai-assistants",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Multi-Modal Assistants",
+    "slug": "multi-modal-assistants",
+    "parent_slug": "conversational-ai",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Task-Specific AI Agents",
+    "slug": "task-specific-ai-agents",
+    "parent_slug": "general-ai-assistants",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Workflow Automation Agents",
+    "slug": "workflow-automation-agents",
+    "parent_slug": "task-specific-ai-agents",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Personal AI Assistants",
+    "slug": "personal-ai-assistants",
+    "parent_slug": "general-ai-assistants",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Productivity Copilots",
+    "slug": "productivity-copilots",
+    "parent_slug": "personal-ai-assistants",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Chatbot Builders",
+    "slug": "chatbot-builders",
+    "parent_slug": "ai-assistants-chatbots",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "No-Code Chatbot Platforms",
+    "slug": "no-code-chatbot-platforms",
+    "parent_slug": "chatbot-builders",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Customer Service Bots",
+    "slug": "customer-service-bots",
+    "parent_slug": "no-code-chatbot-platforms",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Knowledge Base Bots",
+    "slug": "ai-knowledge-base-bots",
+    "parent_slug": "chatbot-builders",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Document Q&A Bots",
+    "slug": "document-qa-bots",
+    "parent_slug": "ai-knowledge-base-bots",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Voice Assistants",
+    "slug": "voice-assistants",
+    "parent_slug": "ai-assistants-chatbots",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Voice AI Platforms",
+    "slug": "voice-ai-platforms",
+    "parent_slug": "voice-assistants",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Speech-to-Text",
+    "slug": "speech-to-text",
+    "parent_slug": "voice-ai-platforms",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Voice Cloning",
+    "slug": "voice-cloning",
+    "parent_slug": "voice-assistants",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Text-to-Speech",
+    "slug": "text-to-speech",
+    "parent_slug": "voice-cloning",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "AI Content Creation",
+    "slug": "ai-content-creation",
+    "parent_slug": "artificial-intelligence-ml",
+    "color": "#4361EE",
+    "sort": 102
+  },
+  {
+    "level": 3,
+    "name": "AI Writing Tools",
+    "slug": "ai-writing-tools",
+    "parent_slug": "ai-content-creation",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Long-Form Writing",
+    "slug": "long-form-writing",
+    "parent_slug": "ai-writing-tools",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Blog & Article Generators",
+    "slug": "blog-article-generators",
+    "parent_slug": "long-form-writing",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Copywriting",
+    "slug": "copywriting",
+    "parent_slug": "ai-writing-tools",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Ad Copy & Landing Pages",
+    "slug": "ad-copy-landing-pages",
+    "parent_slug": "copywriting",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Academic Writing",
+    "slug": "academic-writing",
+    "parent_slug": "ai-writing-tools",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Research & Essay Tools",
+    "slug": "research-essay-tools",
+    "parent_slug": "academic-writing",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Email Writing",
+    "slug": "email-writing",
+    "parent_slug": "ai-writing-tools",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "AI Email Composers",
+    "slug": "ai-email-composers",
+    "parent_slug": "email-writing",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Grammar & Editing",
+    "slug": "grammar-editing",
+    "parent_slug": "ai-writing-tools",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "AI Proofreaders",
+    "slug": "ai-proofreaders",
+    "parent_slug": "grammar-editing",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "SEO Writing",
+    "slug": "seo-writing",
+    "parent_slug": "ai-writing-tools",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "SEO Content Optimizers",
+    "slug": "seo-content-optimizers",
+    "parent_slug": "seo-writing",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Social Media Content",
+    "slug": "social-media-content",
+    "parent_slug": "ai-writing-tools",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Post & Caption Generators",
+    "slug": "post-caption-generators",
+    "parent_slug": "social-media-content",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Paraphrasing",
+    "slug": "ai-paraphrasing",
+    "parent_slug": "ai-writing-tools",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Rewriters & Spinners",
+    "slug": "rewriters-spinners",
+    "parent_slug": "ai-paraphrasing",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "AI Image Generation",
+    "slug": "ai-image-generation",
+    "parent_slug": "ai-content-creation",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Text-to-Image",
+    "slug": "text-to-image",
+    "parent_slug": "ai-image-generation",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Photorealistic Generation",
+    "slug": "photorealistic-generation",
+    "parent_slug": "text-to-image",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Art Generators",
+    "slug": "ai-art-generators",
+    "parent_slug": "ai-image-generation",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Artistic Style Transfer",
+    "slug": "artistic-style-transfer",
+    "parent_slug": "ai-art-generators",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Image Editing",
+    "slug": "ai-image-editing",
+    "parent_slug": "ai-image-generation",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Background Removal & Enhancement",
+    "slug": "background-removal-enhancement",
+    "parent_slug": "ai-image-editing",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Avatar & Portrait",
+    "slug": "ai-avatar-portrait",
+    "parent_slug": "ai-image-generation",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Profile Picture Generators",
+    "slug": "profile-picture-generators",
+    "parent_slug": "ai-avatar-portrait",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Logo & Brand Design",
+    "slug": "ai-logo-brand-design",
+    "parent_slug": "ai-image-generation",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Logo Generators",
+    "slug": "logo-generators",
+    "parent_slug": "ai-logo-brand-design",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "AI Video Generation",
+    "slug": "ai-video-generation",
+    "parent_slug": "ai-content-creation",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Text-to-Video",
+    "slug": "text-to-video",
+    "parent_slug": "ai-video-generation",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Full Video from Prompt",
+    "slug": "full-video-from-prompt",
+    "parent_slug": "text-to-video",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Video Editing",
+    "slug": "ai-video-editing",
+    "parent_slug": "ai-video-generation",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Auto-Edit & Enhance",
+    "slug": "auto-edit-enhance",
+    "parent_slug": "ai-video-editing",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Avatars & Presenters",
+    "slug": "ai-avatars-presenters",
+    "parent_slug": "ai-video-generation",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Virtual Spokesperson",
+    "slug": "virtual-spokesperson",
+    "parent_slug": "ai-avatars-presenters",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Shorts & Reels",
+    "slug": "ai-shorts-reels",
+    "parent_slug": "ai-video-generation",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Social Clip Generators",
+    "slug": "social-clip-generators",
+    "parent_slug": "ai-shorts-reels",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "AI Audio & Music",
+    "slug": "ai-audio-music",
+    "parent_slug": "ai-content-creation",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Music Generation",
+    "slug": "ai-music-generation",
+    "parent_slug": "ai-audio-music",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Song & Beat Creators",
+    "slug": "song-beat-creators",
+    "parent_slug": "ai-music-generation",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Podcast AI",
+    "slug": "podcast-ai",
+    "parent_slug": "ai-audio-music",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Transcription & Editing",
+    "slug": "transcription-editing",
+    "parent_slug": "podcast-ai",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Custom Voice Synthesis",
+    "slug": "custom-voice-synthesis",
+    "parent_slug": "voice-cloning",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "AI Presentation",
+    "slug": "ai-presentation",
+    "parent_slug": "ai-content-creation",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Slide Generators",
+    "slug": "slide-generators",
+    "parent_slug": "ai-presentation",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Auto Deck Creation",
+    "slug": "auto-deck-creation",
+    "parent_slug": "slide-generators",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "AI Summarization",
+    "slug": "ai-summarization",
+    "parent_slug": "ai-content-creation",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Document Summarizers",
+    "slug": "document-summarizers",
+    "parent_slug": "ai-summarization",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "PDF & Article Summarizers",
+    "slug": "pdf-article-summarizers",
+    "parent_slug": "document-summarizers",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Meeting Summarizers",
+    "slug": "meeting-summarizers",
+    "parent_slug": "ai-summarization",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Transcript & Notes",
+    "slug": "transcript-notes",
+    "parent_slug": "meeting-summarizers",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "AI Translation",
+    "slug": "ai-translation",
+    "parent_slug": "ai-content-creation",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Language Translation",
+    "slug": "language-translation",
+    "parent_slug": "ai-translation",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Multi-Language AI",
+    "slug": "multi-language-ai",
+    "parent_slug": "language-translation",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "AI Developer Tools",
+    "slug": "ai-developer-tools",
+    "parent_slug": "artificial-intelligence-ml",
+    "color": "#4361EE",
+    "sort": 103
+  },
+  {
+    "level": 3,
+    "name": "Code Assistants",
+    "slug": "code-assistants",
+    "parent_slug": "ai-developer-tools",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Code Generation",
+    "slug": "ai-code-generation",
+    "parent_slug": "code-assistants",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Code Completion & Suggestion",
+    "slug": "code-completion-suggestion",
+    "parent_slug": "ai-code-generation",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Debugging",
+    "slug": "ai-debugging",
+    "parent_slug": "code-assistants",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Bug Detection & Fix",
+    "slug": "bug-detection-fix",
+    "parent_slug": "ai-debugging",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Code Review",
+    "slug": "ai-code-review",
+    "parent_slug": "code-assistants",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Automated PR Reviews",
+    "slug": "automated-pr-reviews",
+    "parent_slug": "ai-code-review",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "AI APIs & Platforms",
+    "slug": "ai-apis-platforms",
+    "parent_slug": "ai-developer-tools",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "LLM APIs",
+    "slug": "llm-apis",
+    "parent_slug": "ai-apis-platforms",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Foundation Model Access",
+    "slug": "foundation-model-access",
+    "parent_slug": "llm-apis",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Infrastructure",
+    "slug": "ai-infrastructure",
+    "parent_slug": "ai-apis-platforms",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Model Training & Deployment",
+    "slug": "model-training-deployment",
+    "parent_slug": "ai-infrastructure",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Vector Databases",
+    "slug": "vector-databases",
+    "parent_slug": "ai-apis-platforms",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Embedding Storage & Search",
+    "slug": "embedding-storage-search",
+    "parent_slug": "vector-databases",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "MLOps",
+    "slug": "mlops",
+    "parent_slug": "ai-apis-platforms",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Model Monitoring & Lifecycle",
+    "slug": "model-monitoring-lifecycle",
+    "parent_slug": "mlops",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "No-Code AI",
+    "slug": "no-code-ai",
+    "parent_slug": "ai-developer-tools",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Visual AI Builders",
+    "slug": "visual-ai-builders",
+    "parent_slug": "no-code-ai",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Drag-and-Drop ML",
+    "slug": "drag-and-drop-ml",
+    "parent_slug": "visual-ai-builders",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Automation",
+    "slug": "ai-automation",
+    "parent_slug": "no-code-ai",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Workflow AI Integration",
+    "slug": "workflow-ai-integration",
+    "parent_slug": "ai-automation",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "AI Data & Analytics",
+    "slug": "ai-data-analytics",
+    "parent_slug": "artificial-intelligence-ml",
+    "color": "#4361EE",
+    "sort": 104
+  },
+  {
+    "level": 3,
+    "name": "AI Data Analysis",
+    "slug": "ai-data-analysis",
+    "parent_slug": "ai-data-analytics",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Data Visualization AI",
+    "slug": "data-visualization-ai",
+    "parent_slug": "ai-data-analysis",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Chart & Dashboard Generators",
+    "slug": "chart-dashboard-generators",
+    "parent_slug": "data-visualization-ai",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Spreadsheet AI",
+    "slug": "spreadsheet-ai",
+    "parent_slug": "ai-data-analysis",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Excel & Sheets AI",
+    "slug": "excel-sheets-ai",
+    "parent_slug": "spreadsheet-ai",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Predictive Analytics",
+    "slug": "predictive-analytics",
+    "parent_slug": "ai-data-analysis",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Forecasting AI",
+    "slug": "forecasting-ai",
+    "parent_slug": "predictive-analytics",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "AI Search",
+    "slug": "ai-search",
+    "parent_slug": "ai-data-analytics",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Semantic Search",
+    "slug": "semantic-search",
+    "parent_slug": "ai-search",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "AI-Powered Search Engines",
+    "slug": "ai-powered-search-engines",
+    "parent_slug": "semantic-search",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "AI Research",
+    "slug": "ai-research",
+    "parent_slug": "ai-data-analytics",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Research Assistants",
+    "slug": "research-assistants",
+    "parent_slug": "ai-research",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Literature & Data Mining",
+    "slug": "literature-data-mining",
+    "parent_slug": "research-assistants",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "AI for Business",
+    "slug": "ai-for-business",
+    "parent_slug": "artificial-intelligence-ml",
+    "color": "#4361EE",
+    "sort": 105
+  },
+  {
+    "level": 3,
+    "name": "AI Customer Support",
+    "slug": "ai-customer-support",
+    "parent_slug": "ai-for-business",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Help Desk AI",
+    "slug": "help-desk-ai",
+    "parent_slug": "ai-customer-support",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Ticket Resolution AI",
+    "slug": "ticket-resolution-ai",
+    "parent_slug": "help-desk-ai",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Live Chat",
+    "slug": "ai-live-chat",
+    "parent_slug": "ai-customer-support",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Real-Time Chat AI",
+    "slug": "real-time-chat-ai",
+    "parent_slug": "ai-live-chat",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "AI Sales Tools",
+    "slug": "ai-sales-tools",
+    "parent_slug": "ai-for-business",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Sales Intelligence",
+    "slug": "sales-intelligence",
+    "parent_slug": "ai-sales-tools",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Lead Scoring AI",
+    "slug": "lead-scoring-ai",
+    "parent_slug": "sales-intelligence",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI CRM Assistants",
+    "slug": "ai-crm-assistants",
+    "parent_slug": "ai-sales-tools",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "CRM AI Copilots",
+    "slug": "crm-ai-copilots",
+    "parent_slug": "ai-crm-assistants",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "AI Marketing",
+    "slug": "ai-marketing",
+    "parent_slug": "ai-for-business",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Ad Generators",
+    "slug": "ai-ad-generators",
+    "parent_slug": "ai-marketing",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Creative Ad AI",
+    "slug": "creative-ad-ai",
+    "parent_slug": "ai-ad-generators",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI SEO Tools",
+    "slug": "ai-seo-tools",
+    "parent_slug": "ai-marketing",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "AI-Powered SEO",
+    "slug": "ai-powered-seo",
+    "parent_slug": "ai-seo-tools",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Social Media",
+    "slug": "ai-social-media",
+    "parent_slug": "ai-marketing",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Social Management AI",
+    "slug": "social-management-ai",
+    "parent_slug": "ai-social-media",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "AI HR & Recruiting",
+    "slug": "ai-hr-recruiting",
+    "parent_slug": "ai-for-business",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Resume Screening AI",
+    "slug": "resume-screening-ai",
+    "parent_slug": "ai-hr-recruiting",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "ATS AI Integration",
+    "slug": "ats-ai-integration",
+    "parent_slug": "resume-screening-ai",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Interview Tools",
+    "slug": "ai-interview-tools",
+    "parent_slug": "ai-hr-recruiting",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Video Interview AI",
+    "slug": "video-interview-ai",
+    "parent_slug": "ai-interview-tools",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "AI Finance",
+    "slug": "ai-finance",
+    "parent_slug": "ai-for-business",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Accounting",
+    "slug": "ai-accounting",
+    "parent_slug": "ai-finance",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Bookkeeping AI",
+    "slug": "bookkeeping-ai",
+    "parent_slug": "ai-accounting",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Trading",
+    "slug": "ai-trading",
+    "parent_slug": "ai-finance",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Investment & Trading AI",
+    "slug": "investment-trading-ai",
+    "parent_slug": "ai-trading",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "AI Legal",
+    "slug": "ai-legal",
+    "parent_slug": "ai-for-business",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Contract AI",
+    "slug": "contract-ai",
+    "parent_slug": "ai-legal",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Contract Analysis & Review",
+    "slug": "contract-analysis-review",
+    "parent_slug": "contract-ai",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "AI for Industry",
+    "slug": "ai-for-industry",
+    "parent_slug": "artificial-intelligence-ml",
+    "color": "#4361EE",
+    "sort": 106
+  },
+  {
+    "level": 3,
+    "name": "AI Healthcare",
+    "slug": "ai-healthcare",
+    "parent_slug": "ai-for-industry",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Medical AI Assistants",
+    "slug": "medical-ai-assistants",
+    "parent_slug": "ai-healthcare",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Clinical Decision Support",
+    "slug": "clinical-decision-support",
+    "parent_slug": "medical-ai-assistants",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Diagnostics",
+    "slug": "ai-diagnostics",
+    "parent_slug": "ai-healthcare",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Medical Imaging AI",
+    "slug": "medical-imaging-ai",
+    "parent_slug": "ai-diagnostics",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "AI Education",
+    "slug": "ai-education",
+    "parent_slug": "ai-for-industry",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Tutoring",
+    "slug": "ai-tutoring",
+    "parent_slug": "ai-education",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Personalized Learning",
+    "slug": "personalized-learning",
+    "parent_slug": "ai-tutoring",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Study Assistants",
+    "slug": "study-assistants",
+    "parent_slug": "ai-education",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Flashcard & Quiz AI",
+    "slug": "flashcard-quiz-ai",
+    "parent_slug": "study-assistants",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "AI Real Estate",
+    "slug": "ai-real-estate",
+    "parent_slug": "ai-for-industry",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Property Valuation AI",
+    "slug": "property-valuation-ai",
+    "parent_slug": "ai-real-estate",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "AVM & Pricing",
+    "slug": "avm-pricing",
+    "parent_slug": "property-valuation-ai",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "AI eCommerce",
+    "slug": "ai-ecommerce",
+    "parent_slug": "ai-for-industry",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Product Description AI",
+    "slug": "product-description-ai",
+    "parent_slug": "ai-ecommerce",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Listing Copy Generators",
+    "slug": "listing-copy-generators",
+    "parent_slug": "product-description-ai",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Recommendation",
+    "slug": "ai-recommendation",
+    "parent_slug": "ai-ecommerce",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Product Recommendation Engines",
+    "slug": "product-recommendation-engines",
+    "parent_slug": "ai-recommendation",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "AI Safety & Ethics",
+    "slug": "ai-safety-ethics",
+    "parent_slug": "artificial-intelligence-ml",
+    "color": "#4361EE",
+    "sort": 107
+  },
+  {
+    "level": 3,
+    "name": "AI Content Detection",
+    "slug": "ai-content-detection",
+    "parent_slug": "ai-safety-ethics",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Text Detectors",
+    "slug": "ai-text-detectors",
+    "parent_slug": "ai-content-detection",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Plagiarism & AI Check",
+    "slug": "plagiarism-ai-check",
+    "parent_slug": "ai-text-detectors",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Deepfake Detection",
+    "slug": "deepfake-detection",
+    "parent_slug": "ai-content-detection",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Image/Video Authenticity",
+    "slug": "imagevideo-authenticity",
+    "parent_slug": "deepfake-detection",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "AI Privacy & Security",
+    "slug": "ai-privacy-security",
+    "parent_slug": "ai-safety-ethics",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Data Privacy",
+    "slug": "ai-data-privacy",
+    "parent_slug": "ai-privacy-security",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Privacy-First AI Tools",
+    "slug": "privacy-first-ai-tools",
+    "parent_slug": "ai-data-privacy",
+    "color": "#4361EE",
+    "sort": 0
+  },
+  {
+    "level": 1,
+    "name": "Software & SaaS",
+    "slug": "software-saas",
+    "parent_slug": null,
+    "color": "#3B82F6",
+    "sort": 200
+  },
+  {
+    "level": 2,
+    "name": "Project Management",
+    "slug": "project-management",
+    "parent_slug": "software-saas",
+    "color": "#3B82F6",
+    "sort": 201
+  },
+  {
+    "level": 3,
+    "name": "Task Management",
+    "slug": "task-management",
+    "parent_slug": "project-management",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Kanban & Board Tools",
+    "slug": "kanban-board-tools",
+    "parent_slug": "task-management",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Visual Project Boards",
+    "slug": "visual-project-boards",
+    "parent_slug": "kanban-board-tools",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "To-Do & Checklists",
+    "slug": "to-do-checklists",
+    "parent_slug": "task-management",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Simple Task Trackers",
+    "slug": "simple-task-trackers",
+    "parent_slug": "to-do-checklists",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Agile & Scrum",
+    "slug": "agile-scrum",
+    "parent_slug": "project-management",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Sprint Planning",
+    "slug": "sprint-planning",
+    "parent_slug": "agile-scrum",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Agile Boards & Sprints",
+    "slug": "agile-boards-sprints",
+    "parent_slug": "sprint-planning",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Roadmapping",
+    "slug": "roadmapping",
+    "parent_slug": "agile-scrum",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Product Roadmap Tools",
+    "slug": "product-roadmap-tools",
+    "parent_slug": "roadmapping",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Team Collaboration",
+    "slug": "team-collaboration",
+    "parent_slug": "project-management",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Workspaces",
+    "slug": "workspaces",
+    "parent_slug": "team-collaboration",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "All-in-One Collaboration",
+    "slug": "all-in-one-collaboration",
+    "parent_slug": "workspaces",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Wikis & Knowledge Bases",
+    "slug": "wikis-knowledge-bases",
+    "parent_slug": "team-collaboration",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Internal Documentation",
+    "slug": "internal-documentation",
+    "parent_slug": "wikis-knowledge-bases",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Time Tracking",
+    "slug": "time-tracking",
+    "parent_slug": "project-management",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Employee Time Tracking",
+    "slug": "employee-time-tracking",
+    "parent_slug": "time-tracking",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Timesheet & Attendance",
+    "slug": "timesheet-attendance",
+    "parent_slug": "employee-time-tracking",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Resource Management",
+    "slug": "resource-management",
+    "parent_slug": "project-management",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Team Scheduling",
+    "slug": "team-scheduling",
+    "parent_slug": "resource-management",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Capacity Planning",
+    "slug": "capacity-planning",
+    "parent_slug": "team-scheduling",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Communication & Collaboration",
+    "slug": "communication-collaboration",
+    "parent_slug": "software-saas",
+    "color": "#3B82F6",
+    "sort": 202
+  },
+  {
+    "level": 3,
+    "name": "Messaging & Chat",
+    "slug": "messaging-chat",
+    "parent_slug": "communication-collaboration",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Team Messaging",
+    "slug": "team-messaging",
+    "parent_slug": "messaging-chat",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Business Chat Platforms",
+    "slug": "business-chat-platforms",
+    "parent_slug": "team-messaging",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Video Conferencing",
+    "slug": "video-conferencing",
+    "parent_slug": "communication-collaboration",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Virtual Meetings",
+    "slug": "virtual-meetings",
+    "parent_slug": "video-conferencing",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Video Call Platforms",
+    "slug": "video-call-platforms",
+    "parent_slug": "virtual-meetings",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Webinar Platforms",
+    "slug": "webinar-platforms",
+    "parent_slug": "video-conferencing",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Online Event Hosting",
+    "slug": "online-event-hosting",
+    "parent_slug": "webinar-platforms",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Email & Calendar",
+    "slug": "email-calendar",
+    "parent_slug": "communication-collaboration",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Email Clients",
+    "slug": "email-clients",
+    "parent_slug": "email-calendar",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Business Email",
+    "slug": "business-email",
+    "parent_slug": "email-clients",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Scheduling",
+    "slug": "scheduling",
+    "parent_slug": "email-calendar",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Appointment Booking",
+    "slug": "appointment-booking",
+    "parent_slug": "scheduling",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "File Sharing & Storage",
+    "slug": "file-sharing-storage",
+    "parent_slug": "communication-collaboration",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Cloud Storage",
+    "slug": "cloud-storage",
+    "parent_slug": "file-sharing-storage",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "File Sync & Backup",
+    "slug": "file-sync-backup",
+    "parent_slug": "cloud-storage",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Document Collaboration",
+    "slug": "document-collaboration",
+    "parent_slug": "file-sharing-storage",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Real-Time Doc Editing",
+    "slug": "real-time-doc-editing",
+    "parent_slug": "document-collaboration",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "CRM & Sales",
+    "slug": "crm-sales",
+    "parent_slug": "software-saas",
+    "color": "#3B82F6",
+    "sort": 203
+  },
+  {
+    "level": 3,
+    "name": "CRM Platforms",
+    "slug": "crm-platforms",
+    "parent_slug": "crm-sales",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Full-Suite CRM",
+    "slug": "full-suite-crm",
+    "parent_slug": "crm-platforms",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Enterprise CRM",
+    "slug": "enterprise-crm",
+    "parent_slug": "full-suite-crm",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Small Business CRM",
+    "slug": "small-business-crm",
+    "parent_slug": "crm-platforms",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Lightweight CRM",
+    "slug": "lightweight-crm",
+    "parent_slug": "small-business-crm",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Sales Engagement",
+    "slug": "sales-engagement",
+    "parent_slug": "crm-sales",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Outreach & Sequences",
+    "slug": "outreach-sequences",
+    "parent_slug": "sales-engagement",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Sales Email Automation",
+    "slug": "sales-email-automation",
+    "parent_slug": "outreach-sequences",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Lead Generation",
+    "slug": "lead-generation",
+    "parent_slug": "sales-engagement",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Prospecting Tools",
+    "slug": "prospecting-tools",
+    "parent_slug": "lead-generation",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Proposal & CPQ",
+    "slug": "proposal-cpq",
+    "parent_slug": "sales-engagement",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Quote & Proposal Software",
+    "slug": "quote-proposal-software",
+    "parent_slug": "proposal-cpq",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Revenue Intelligence",
+    "slug": "revenue-intelligence",
+    "parent_slug": "sales-intelligence",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Call Recording & Analysis",
+    "slug": "call-recording-analysis",
+    "parent_slug": "revenue-intelligence",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Marketing",
+    "slug": "marketing",
+    "parent_slug": "software-saas",
+    "color": "#3B82F6",
+    "sort": 204
+  },
+  {
+    "level": 3,
+    "name": "Email Marketing",
+    "slug": "email-marketing",
+    "parent_slug": "marketing",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Campaign Management",
+    "slug": "campaign-management",
+    "parent_slug": "email-marketing",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Newsletter & Drip Campaigns",
+    "slug": "newsletter-drip-campaigns",
+    "parent_slug": "campaign-management",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Transactional Email",
+    "slug": "transactional-email",
+    "parent_slug": "email-marketing",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Developer Email API",
+    "slug": "developer-email-api",
+    "parent_slug": "transactional-email",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Marketing Automation",
+    "slug": "marketing-automation",
+    "parent_slug": "marketing",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "All-in-One Marketing",
+    "slug": "all-in-one-marketing",
+    "parent_slug": "marketing-automation",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Marketing Suites",
+    "slug": "marketing-suites",
+    "parent_slug": "all-in-one-marketing",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Landing Pages",
+    "slug": "landing-pages",
+    "parent_slug": "marketing-automation",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Page Builders & CRO",
+    "slug": "page-builders-cro",
+    "parent_slug": "landing-pages",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "SEO & Content Marketing",
+    "slug": "seo-content-marketing",
+    "parent_slug": "marketing",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "SEO Platforms",
+    "slug": "seo-platforms",
+    "parent_slug": "seo-content-marketing",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "All-in-One SEO",
+    "slug": "all-in-one-seo",
+    "parent_slug": "seo-platforms",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Keyword Research",
+    "slug": "keyword-research",
+    "parent_slug": "seo-content-marketing",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Keyword Discovery Tools",
+    "slug": "keyword-discovery-tools",
+    "parent_slug": "keyword-research",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Link Building",
+    "slug": "link-building",
+    "parent_slug": "seo-content-marketing",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Backlink Analysis & Outreach",
+    "slug": "backlink-analysis-outreach",
+    "parent_slug": "link-building",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Social Media",
+    "slug": "social-media",
+    "parent_slug": "marketing",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Social Management",
+    "slug": "social-management",
+    "parent_slug": "social-media",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Multi-Platform Management",
+    "slug": "multi-platform-management",
+    "parent_slug": "social-management",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Influencer Marketing",
+    "slug": "influencer-marketing",
+    "parent_slug": "social-media",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Creator Platforms",
+    "slug": "creator-platforms",
+    "parent_slug": "influencer-marketing",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Advertising",
+    "slug": "advertising",
+    "parent_slug": "marketing",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "PPC Management",
+    "slug": "ppc-management",
+    "parent_slug": "advertising",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Ad Campaign Platforms",
+    "slug": "ad-campaign-platforms",
+    "parent_slug": "ppc-management",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Programmatic Ads",
+    "slug": "programmatic-ads",
+    "parent_slug": "advertising",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Display & Native Advertising",
+    "slug": "display-native-advertising",
+    "parent_slug": "programmatic-ads",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Analytics",
+    "slug": "analytics",
+    "parent_slug": "marketing",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Web Analytics",
+    "slug": "web-analytics",
+    "parent_slug": "analytics",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Traffic & Behavior Analysis",
+    "slug": "traffic-behavior-analysis",
+    "parent_slug": "web-analytics",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Conversion Optimization",
+    "slug": "conversion-optimization",
+    "parent_slug": "analytics",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "A/B Testing & CRO",
+    "slug": "ab-testing-cro",
+    "parent_slug": "conversion-optimization",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Customer Support",
+    "slug": "customer-support",
+    "parent_slug": "software-saas",
+    "color": "#3B82F6",
+    "sort": 205
+  },
+  {
+    "level": 3,
+    "name": "Help Desk",
+    "slug": "help-desk",
+    "parent_slug": "customer-support",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Ticketing Systems",
+    "slug": "ticketing-systems",
+    "parent_slug": "help-desk",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Support Ticket Management",
+    "slug": "support-ticket-management",
+    "parent_slug": "ticketing-systems",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Knowledge Base",
+    "slug": "knowledge-base",
+    "parent_slug": "help-desk",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Self-Service Help Centers",
+    "slug": "self-service-help-centers",
+    "parent_slug": "knowledge-base",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Live Chat",
+    "slug": "live-chat",
+    "parent_slug": "customer-support",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Website Chat",
+    "slug": "website-chat",
+    "parent_slug": "live-chat",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Real-Time Website Chat",
+    "slug": "real-time-website-chat",
+    "parent_slug": "website-chat",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Call Center",
+    "slug": "call-center",
+    "parent_slug": "customer-support",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Contact Center",
+    "slug": "contact-center",
+    "parent_slug": "call-center",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Cloud Call Center",
+    "slug": "cloud-call-center",
+    "parent_slug": "contact-center",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Customer Success",
+    "slug": "customer-success",
+    "parent_slug": "customer-support",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Retention Platforms",
+    "slug": "retention-platforms",
+    "parent_slug": "customer-success",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Churn Prediction & CS Tools",
+    "slug": "churn-prediction-cs-tools",
+    "parent_slug": "retention-platforms",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Feedback & Survey",
+    "slug": "feedback-survey",
+    "parent_slug": "customer-support",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Survey Tools",
+    "slug": "survey-tools",
+    "parent_slug": "feedback-survey",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Customer Feedback Collection",
+    "slug": "customer-feedback-collection",
+    "parent_slug": "survey-tools",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Review Management",
+    "slug": "review-management",
+    "parent_slug": "customer-support",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Reputation Management",
+    "slug": "reputation-management",
+    "parent_slug": "review-management",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Review Monitoring & Response",
+    "slug": "review-monitoring-response",
+    "parent_slug": "reputation-management",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Finance & Accounting",
+    "slug": "finance-accounting",
+    "parent_slug": "software-saas",
+    "color": "#3B82F6",
+    "sort": 206
+  },
+  {
+    "level": 3,
+    "name": "Accounting",
+    "slug": "accounting",
+    "parent_slug": "finance-accounting",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Small Business Accounting",
+    "slug": "small-business-accounting",
+    "parent_slug": "accounting",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Bookkeeping & Ledger",
+    "slug": "bookkeeping-ledger",
+    "parent_slug": "small-business-accounting",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Enterprise Accounting",
+    "slug": "enterprise-accounting",
+    "parent_slug": "accounting",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "ERP Financial Modules",
+    "slug": "erp-financial-modules",
+    "parent_slug": "enterprise-accounting",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Invoicing & Billing",
+    "slug": "invoicing-billing",
+    "parent_slug": "finance-accounting",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Invoice Software",
+    "slug": "invoice-software",
+    "parent_slug": "invoicing-billing",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Invoicing Platforms",
+    "slug": "invoicing-platforms",
+    "parent_slug": "invoice-software",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Subscription Billing",
+    "slug": "subscription-billing",
+    "parent_slug": "invoicing-billing",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Recurring Payment Management",
+    "slug": "recurring-payment-management",
+    "parent_slug": "subscription-billing",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Payments",
+    "slug": "payments",
+    "parent_slug": "finance-accounting",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Payment Processing",
+    "slug": "payment-processing",
+    "parent_slug": "payments",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Online Payment Gateways",
+    "slug": "online-payment-gateways",
+    "parent_slug": "payment-processing",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "POS Systems",
+    "slug": "pos-systems",
+    "parent_slug": "payments",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Point-of-Sale Hardware & Software",
+    "slug": "point-of-sale-hardware-software",
+    "parent_slug": "pos-systems",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Expense Management",
+    "slug": "expense-management",
+    "parent_slug": "finance-accounting",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Expense Tracking",
+    "slug": "expense-tracking",
+    "parent_slug": "expense-management",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Receipt & Expense Reporting",
+    "slug": "receipt-expense-reporting",
+    "parent_slug": "expense-tracking",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Payroll",
+    "slug": "payroll",
+    "parent_slug": "finance-accounting",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Payroll Software",
+    "slug": "payroll-software",
+    "parent_slug": "payroll",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Salary & Tax Processing",
+    "slug": "salary-tax-processing",
+    "parent_slug": "payroll-software",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "HR & People",
+    "slug": "hr-people",
+    "parent_slug": "software-saas",
+    "color": "#3B82F6",
+    "sort": 207
+  },
+  {
+    "level": 3,
+    "name": "HR Management",
+    "slug": "hr-management",
+    "parent_slug": "hr-people",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "HRIS / HCM",
+    "slug": "hris-hcm",
+    "parent_slug": "hr-management",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Core HR Platforms",
+    "slug": "core-hr-platforms",
+    "parent_slug": "hris-hcm",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Recruiting",
+    "slug": "recruiting",
+    "parent_slug": "hr-people",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "ATS",
+    "slug": "ats",
+    "parent_slug": "recruiting",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Applicant Tracking Systems",
+    "slug": "applicant-tracking-systems",
+    "parent_slug": "ats",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Job Boards",
+    "slug": "job-boards",
+    "parent_slug": "recruiting",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Hiring Marketplaces",
+    "slug": "hiring-marketplaces",
+    "parent_slug": "job-boards",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Performance Management",
+    "slug": "performance-management",
+    "parent_slug": "hr-people",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Reviews & OKRs",
+    "slug": "reviews-okrs",
+    "parent_slug": "performance-management",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Employee Performance Tracking",
+    "slug": "employee-performance-tracking",
+    "parent_slug": "reviews-okrs",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Learning & Development",
+    "slug": "learning-development",
+    "parent_slug": "hr-people",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "LMS",
+    "slug": "lms",
+    "parent_slug": "learning-development",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Learning Management Systems",
+    "slug": "learning-management-systems",
+    "parent_slug": "lms",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Employee Engagement",
+    "slug": "employee-engagement",
+    "parent_slug": "hr-people",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Engagement Surveys",
+    "slug": "engagement-surveys",
+    "parent_slug": "employee-engagement",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Pulse Surveys & Recognition",
+    "slug": "pulse-surveys-recognition",
+    "parent_slug": "engagement-surveys",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Development & IT",
+    "slug": "development-it",
+    "parent_slug": "software-saas",
+    "color": "#3B82F6",
+    "sort": 208
+  },
+  {
+    "level": 3,
+    "name": "Development Tools",
+    "slug": "development-tools",
+    "parent_slug": "development-it",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "IDE & Code Editors",
+    "slug": "ide-code-editors",
+    "parent_slug": "development-tools",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Developer Environments",
+    "slug": "developer-environments",
+    "parent_slug": "ide-code-editors",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Version Control",
+    "slug": "version-control",
+    "parent_slug": "development-tools",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Source Code Management",
+    "slug": "source-code-management",
+    "parent_slug": "version-control",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "API Development",
+    "slug": "api-development",
+    "parent_slug": "development-tools",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "API Design & Testing",
+    "slug": "api-design-testing",
+    "parent_slug": "api-development",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Low-Code / No-Code",
+    "slug": "low-code-no-code",
+    "parent_slug": "development-tools",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "App Builders",
+    "slug": "app-builders",
+    "parent_slug": "low-code-no-code",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "DevOps & Cloud",
+    "slug": "devops-cloud",
+    "parent_slug": "development-it",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "CI/CD",
+    "slug": "cicd",
+    "parent_slug": "devops-cloud",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Continuous Integration",
+    "slug": "continuous-integration",
+    "parent_slug": "cicd",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Cloud Hosting",
+    "slug": "cloud-hosting",
+    "parent_slug": "devops-cloud",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "IaaS / PaaS",
+    "slug": "iaas-paas",
+    "parent_slug": "cloud-hosting",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Containerization",
+    "slug": "containerization",
+    "parent_slug": "devops-cloud",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Docker & Kubernetes",
+    "slug": "docker-kubernetes",
+    "parent_slug": "containerization",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Monitoring & Observability",
+    "slug": "monitoring-observability",
+    "parent_slug": "devops-cloud",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "APM & Logging",
+    "slug": "apm-logging",
+    "parent_slug": "monitoring-observability",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Cybersecurity",
+    "slug": "cybersecurity",
+    "parent_slug": "development-it",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Endpoint Security",
+    "slug": "endpoint-security",
+    "parent_slug": "cybersecurity",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Antivirus & EDR",
+    "slug": "antivirus-edr",
+    "parent_slug": "endpoint-security",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Identity & Access",
+    "slug": "identity-access",
+    "parent_slug": "cybersecurity",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "IAM & SSO",
+    "slug": "iam-sso",
+    "parent_slug": "identity-access",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Network Security",
+    "slug": "network-security",
+    "parent_slug": "cybersecurity",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Firewall & VPN",
+    "slug": "firewall-vpn",
+    "parent_slug": "network-security",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Vulnerability Management",
+    "slug": "vulnerability-management",
+    "parent_slug": "cybersecurity",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Pen Testing & Scanning",
+    "slug": "pen-testing-scanning",
+    "parent_slug": "vulnerability-management",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Data & Database",
+    "slug": "data-database",
+    "parent_slug": "development-it",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Databases",
+    "slug": "databases",
+    "parent_slug": "data-database",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "SQL & NoSQL",
+    "slug": "sql-nosql",
+    "parent_slug": "databases",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Data Warehousing",
+    "slug": "data-warehousing",
+    "parent_slug": "data-database",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Cloud Data Warehouses",
+    "slug": "cloud-data-warehouses",
+    "parent_slug": "data-warehousing",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "ETL & Integration",
+    "slug": "etl-integration",
+    "parent_slug": "data-database",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Data Pipeline Tools",
+    "slug": "data-pipeline-tools",
+    "parent_slug": "etl-integration",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "BI & Visualization",
+    "slug": "bi-visualization",
+    "parent_slug": "data-database",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Business Intelligence",
+    "slug": "business-intelligence",
+    "parent_slug": "bi-visualization",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Design & Creative",
+    "slug": "design-creative",
+    "parent_slug": "software-saas",
+    "color": "#3B82F6",
+    "sort": 209
+  },
+  {
+    "level": 3,
+    "name": "Graphic Design",
+    "slug": "graphic-design",
+    "parent_slug": "design-creative",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Design Platforms",
+    "slug": "design-platforms",
+    "parent_slug": "graphic-design",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "All-in-One Design",
+    "slug": "all-in-one-design",
+    "parent_slug": "design-platforms",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Prototyping",
+    "slug": "prototyping",
+    "parent_slug": "graphic-design",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "UI/UX Prototyping",
+    "slug": "uiux-prototyping",
+    "parent_slug": "prototyping",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Icon & Illustration",
+    "slug": "icon-illustration",
+    "parent_slug": "graphic-design",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Asset Libraries",
+    "slug": "asset-libraries",
+    "parent_slug": "icon-illustration",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Video & Animation",
+    "slug": "video-animation",
+    "parent_slug": "design-creative",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Video Editing",
+    "slug": "video-editing",
+    "parent_slug": "video-animation",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Professional Video Editing",
+    "slug": "professional-video-editing",
+    "parent_slug": "video-editing",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Animation",
+    "slug": "animation",
+    "parent_slug": "video-animation",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Motion Graphics & Animation",
+    "slug": "motion-graphics-animation",
+    "parent_slug": "animation",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Website Building",
+    "slug": "website-building",
+    "parent_slug": "design-creative",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Website Builders",
+    "slug": "website-builders",
+    "parent_slug": "website-building",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "No-Code Website Platforms",
+    "slug": "no-code-website-platforms",
+    "parent_slug": "website-builders",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "CMS",
+    "slug": "cms",
+    "parent_slug": "website-building",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Content Management Systems",
+    "slug": "content-management-systems",
+    "parent_slug": "cms",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "eCommerce",
+    "slug": "ecommerce",
+    "parent_slug": "software-saas",
+    "color": "#3B82F6",
+    "sort": 210
+  },
+  {
+    "level": 3,
+    "name": "eCommerce Platforms",
+    "slug": "ecommerce-platforms",
+    "parent_slug": "ecommerce",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Online Store Builders",
+    "slug": "online-store-builders",
+    "parent_slug": "ecommerce-platforms",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Full eCommerce Solutions",
+    "slug": "full-ecommerce-solutions",
+    "parent_slug": "online-store-builders",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Marketplaces",
+    "slug": "marketplaces",
+    "parent_slug": "ecommerce-platforms",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Multi-Vendor Platforms",
+    "slug": "multi-vendor-platforms",
+    "parent_slug": "marketplaces",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "eCommerce Tools",
+    "slug": "ecommerce-tools",
+    "parent_slug": "ecommerce",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Inventory Management",
+    "slug": "inventory-management",
+    "parent_slug": "ecommerce-tools",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Stock & Warehouse",
+    "slug": "stock-warehouse",
+    "parent_slug": "inventory-management",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Shipping & Fulfillment",
+    "slug": "shipping-fulfillment",
+    "parent_slug": "ecommerce-tools",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Order Fulfillment",
+    "slug": "order-fulfillment",
+    "parent_slug": "shipping-fulfillment",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Product Information",
+    "slug": "product-information",
+    "parent_slug": "ecommerce-tools",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "PIM & DAM",
+    "slug": "pim-dam",
+    "parent_slug": "product-information",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Legal & Compliance",
+    "slug": "legal-compliance",
+    "parent_slug": "software-saas",
+    "color": "#3B82F6",
+    "sort": 211
+  },
+  {
+    "level": 3,
+    "name": "Legal Tech",
+    "slug": "legal-tech",
+    "parent_slug": "legal-compliance",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Contract Management",
+    "slug": "contract-management",
+    "parent_slug": "legal-tech",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "CLM Platforms",
+    "slug": "clm-platforms",
+    "parent_slug": "contract-management",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "eSignature",
+    "slug": "esignature",
+    "parent_slug": "legal-tech",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Digital Signature",
+    "slug": "digital-signature",
+    "parent_slug": "esignature",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Compliance",
+    "slug": "compliance",
+    "parent_slug": "legal-compliance",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "GRC",
+    "slug": "grc",
+    "parent_slug": "compliance",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Governance Risk Compliance",
+    "slug": "governance-risk-compliance",
+    "parent_slug": "grc",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "GDPR & Privacy",
+    "slug": "gdpr-privacy",
+    "parent_slug": "compliance",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Data Privacy Management",
+    "slug": "data-privacy-management",
+    "parent_slug": "gdpr-privacy",
+    "color": "#3B82F6",
+    "sort": 0
+  },
+  {
+    "level": 1,
+    "name": "IT Services & Agencies",
+    "slug": "it-services-agencies",
+    "parent_slug": null,
+    "color": "#14B8A6",
+    "sort": 300
+  },
+  {
+    "level": 2,
+    "name": "Software Development",
+    "slug": "software-development",
+    "parent_slug": "it-services-agencies",
+    "color": "#14B8A6",
+    "sort": 301
+  },
+  {
+    "level": 3,
+    "name": "Web Development",
+    "slug": "web-development",
+    "parent_slug": "software-development",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Frontend Development",
+    "slug": "frontend-development",
+    "parent_slug": "web-development",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "React, Angular, Vue Development",
+    "slug": "react-angular-vue-development",
+    "parent_slug": "frontend-development",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Backend Development",
+    "slug": "backend-development",
+    "parent_slug": "web-development",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Node.js, Python, Java, .NET",
+    "slug": "nodejs-python-java-net",
+    "parent_slug": "backend-development",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Full-Stack Development",
+    "slug": "full-stack-development",
+    "parent_slug": "web-development",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "End-to-End Web Apps",
+    "slug": "end-to-end-web-apps",
+    "parent_slug": "full-stack-development",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Mobile App Development",
+    "slug": "mobile-app-development",
+    "parent_slug": "software-development",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "iOS Development",
+    "slug": "ios-development",
+    "parent_slug": "mobile-app-development",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Swift & Objective-C",
+    "slug": "swift-objective-c",
+    "parent_slug": "ios-development",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Android Development",
+    "slug": "android-development",
+    "parent_slug": "mobile-app-development",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Kotlin & Java",
+    "slug": "kotlin-java",
+    "parent_slug": "android-development",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Cross-Platform",
+    "slug": "cross-platform",
+    "parent_slug": "mobile-app-development",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "React Native, Flutter",
+    "slug": "react-native-flutter",
+    "parent_slug": "cross-platform",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Custom Software",
+    "slug": "custom-software",
+    "parent_slug": "software-development",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Enterprise Software",
+    "slug": "enterprise-software",
+    "parent_slug": "custom-software",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Custom ERP & CRM Development",
+    "slug": "custom-erp-crm-development",
+    "parent_slug": "enterprise-software",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "SaaS Development",
+    "slug": "saas-development",
+    "parent_slug": "custom-software",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "SaaS Product Development",
+    "slug": "saas-product-development",
+    "parent_slug": "saas-development",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Custom API & Integration",
+    "slug": "custom-api-integration",
+    "parent_slug": "api-development",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Emerging Tech",
+    "slug": "emerging-tech",
+    "parent_slug": "software-development",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Blockchain Development",
+    "slug": "blockchain-development",
+    "parent_slug": "emerging-tech",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Web3, DeFi, Smart Contracts",
+    "slug": "web3-defi-smart-contracts",
+    "parent_slug": "blockchain-development",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AR / VR Development",
+    "slug": "ar-vr-development",
+    "parent_slug": "emerging-tech",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Immersive Experience Dev",
+    "slug": "immersive-experience-dev",
+    "parent_slug": "ar-vr-development",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "IoT Development",
+    "slug": "iot-development",
+    "parent_slug": "emerging-tech",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Connected Device Software",
+    "slug": "connected-device-software",
+    "parent_slug": "iot-development",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI / ML Development",
+    "slug": "ai-ml-development",
+    "parent_slug": "emerging-tech",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Custom AI Solutions",
+    "slug": "custom-ai-solutions",
+    "parent_slug": "ai-ml-development",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Digital Marketing Agencies",
+    "slug": "digital-marketing-agencies",
+    "parent_slug": "it-services-agencies",
+    "color": "#14B8A6",
+    "sort": 302
+  },
+  {
+    "level": 3,
+    "name": "SEO Services",
+    "slug": "seo-services",
+    "parent_slug": "digital-marketing-agencies",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "On-Page SEO",
+    "slug": "on-page-seo",
+    "parent_slug": "seo-services",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Technical & Content SEO",
+    "slug": "technical-content-seo",
+    "parent_slug": "on-page-seo",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Local SEO",
+    "slug": "local-seo",
+    "parent_slug": "seo-services",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Google Business Profile & Maps",
+    "slug": "google-business-profile-maps",
+    "parent_slug": "local-seo",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Link Building Services",
+    "slug": "link-building-services",
+    "parent_slug": "seo-services",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Outreach & PR Link Building",
+    "slug": "outreach-pr-link-building",
+    "parent_slug": "link-building-services",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "PPC & Paid Media",
+    "slug": "ppc-paid-media",
+    "parent_slug": "digital-marketing-agencies",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Google Ads Management",
+    "slug": "google-ads-management",
+    "parent_slug": "ppc-paid-media",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Search & Shopping Campaigns",
+    "slug": "search-shopping-campaigns",
+    "parent_slug": "google-ads-management",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Social Media Advertising",
+    "slug": "social-media-advertising",
+    "parent_slug": "ppc-paid-media",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Facebook, Instagram, LinkedIn Ads",
+    "slug": "facebook-instagram-linkedin-ads",
+    "parent_slug": "social-media-advertising",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Content Marketing",
+    "slug": "content-marketing",
+    "parent_slug": "digital-marketing-agencies",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Blog & Article Writing",
+    "slug": "blog-article-writing",
+    "parent_slug": "content-marketing",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Content Creation Services",
+    "slug": "content-creation-services",
+    "parent_slug": "blog-article-writing",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Video Marketing",
+    "slug": "video-marketing",
+    "parent_slug": "content-marketing",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Video Production & Strategy",
+    "slug": "video-production-strategy",
+    "parent_slug": "video-marketing",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Social Media Marketing",
+    "slug": "social-media-marketing",
+    "parent_slug": "digital-marketing-agencies",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Social Media Management",
+    "slug": "social-media-management",
+    "parent_slug": "social-media-marketing",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Community & Page Management",
+    "slug": "community-page-management",
+    "parent_slug": "social-media-management",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Email Marketing Services",
+    "slug": "email-marketing-services",
+    "parent_slug": "digital-marketing-agencies",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Email Campaign Management",
+    "slug": "email-campaign-management",
+    "parent_slug": "email-marketing-services",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Newsletter & Automation",
+    "slug": "newsletter-automation",
+    "parent_slug": "email-campaign-management",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Branding & Creative",
+    "slug": "branding-creative",
+    "parent_slug": "digital-marketing-agencies",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Brand Strategy",
+    "slug": "brand-strategy",
+    "parent_slug": "branding-creative",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Brand Identity & Positioning",
+    "slug": "brand-identity-positioning",
+    "parent_slug": "brand-strategy",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Logo & Visual Identity",
+    "slug": "logo-visual-identity",
+    "parent_slug": "branding-creative",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Graphic Design Services",
+    "slug": "graphic-design-services",
+    "parent_slug": "logo-visual-identity",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Design Agencies",
+    "slug": "design-agencies",
+    "parent_slug": "it-services-agencies",
+    "color": "#14B8A6",
+    "sort": 303
+  },
+  {
+    "level": 3,
+    "name": "UI/UX Design",
+    "slug": "uiux-design",
+    "parent_slug": "design-agencies",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "User Research",
+    "slug": "user-research",
+    "parent_slug": "uiux-design",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "UX Research & Testing",
+    "slug": "ux-research-testing",
+    "parent_slug": "user-research",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Interface Design",
+    "slug": "interface-design",
+    "parent_slug": "uiux-design",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Web & App UI Design",
+    "slug": "web-app-ui-design",
+    "parent_slug": "interface-design",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Web Design",
+    "slug": "web-design",
+    "parent_slug": "design-agencies",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Responsive Web Design",
+    "slug": "responsive-web-design",
+    "parent_slug": "web-design",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Mobile-First Design",
+    "slug": "mobile-first-design",
+    "parent_slug": "responsive-web-design",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "eCommerce Design",
+    "slug": "ecommerce-design",
+    "parent_slug": "web-design",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Online Store Design",
+    "slug": "online-store-design",
+    "parent_slug": "ecommerce-design",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "IT Consulting",
+    "slug": "it-consulting",
+    "parent_slug": "it-services-agencies",
+    "color": "#14B8A6",
+    "sort": 304
+  },
+  {
+    "level": 3,
+    "name": "Cloud Consulting",
+    "slug": "cloud-consulting",
+    "parent_slug": "it-consulting",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AWS / Azure / GCP Consulting",
+    "slug": "aws-azure-gcp-consulting",
+    "parent_slug": "cloud-consulting",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Cloud Migration & Architecture",
+    "slug": "cloud-migration-architecture",
+    "parent_slug": "aws-azure-gcp-consulting",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "DevOps Consulting",
+    "slug": "devops-consulting",
+    "parent_slug": "cloud-consulting",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "CI/CD & Infrastructure Automation",
+    "slug": "cicd-infrastructure-automation",
+    "parent_slug": "devops-consulting",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Cybersecurity Consulting",
+    "slug": "cybersecurity-consulting",
+    "parent_slug": "it-consulting",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Penetration Testing",
+    "slug": "penetration-testing",
+    "parent_slug": "cybersecurity-consulting",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Security Audits & Pen Testing",
+    "slug": "security-audits-pen-testing",
+    "parent_slug": "penetration-testing",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Compliance Consulting",
+    "slug": "compliance-consulting",
+    "parent_slug": "cybersecurity-consulting",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "SOC 2, HIPAA, GDPR Consulting",
+    "slug": "soc-2-hipaa-gdpr-consulting",
+    "parent_slug": "compliance-consulting",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Data & AI Consulting",
+    "slug": "data-ai-consulting",
+    "parent_slug": "it-consulting",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Data Engineering",
+    "slug": "data-engineering",
+    "parent_slug": "data-ai-consulting",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Data Pipeline & Architecture",
+    "slug": "data-pipeline-architecture",
+    "parent_slug": "data-engineering",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AI Strategy & Implementation",
+    "slug": "ai-strategy-implementation",
+    "parent_slug": "data-ai-consulting",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Enterprise AI Deployment",
+    "slug": "enterprise-ai-deployment",
+    "parent_slug": "ai-strategy-implementation",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Managed Services",
+    "slug": "managed-services",
+    "parent_slug": "it-services-agencies",
+    "color": "#14B8A6",
+    "sort": 305
+  },
+  {
+    "level": 3,
+    "name": "IT Support",
+    "slug": "it-support",
+    "parent_slug": "managed-services",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Managed IT Services",
+    "slug": "managed-it-services",
+    "parent_slug": "it-support",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Outsourced IT Helpdesk",
+    "slug": "outsourced-it-helpdesk",
+    "parent_slug": "managed-it-services",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "IT Staffing",
+    "slug": "it-staffing",
+    "parent_slug": "it-support",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Tech Talent Augmentation",
+    "slug": "tech-talent-augmentation",
+    "parent_slug": "it-staffing",
+    "color": "#14B8A6",
+    "sort": 0
+  },
+  {
+    "level": 1,
+    "name": "Startups & Innovation",
+    "slug": "startups-innovation",
+    "parent_slug": null,
+    "color": "#8B5CF6",
+    "sort": 400
+  },
+  {
+    "level": 2,
+    "name": "Startup Stage",
+    "slug": "startup-stage",
+    "parent_slug": "startups-innovation",
+    "color": "#8B5CF6",
+    "sort": 401
+  },
+  {
+    "level": 3,
+    "name": "Pre-Seed / Idea Stage",
+    "slug": "pre-seed-idea-stage",
+    "parent_slug": "startup-stage",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Idea Validation",
+    "slug": "idea-validation",
+    "parent_slug": "pre-seed-idea-stage",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "MVP Tools & Validation",
+    "slug": "mvp-tools-validation",
+    "parent_slug": "idea-validation",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Seed Stage",
+    "slug": "seed-stage",
+    "parent_slug": "startup-stage",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Early Product",
+    "slug": "early-product",
+    "parent_slug": "seed-stage",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "MVP & Beta Products",
+    "slug": "mvp-beta-products",
+    "parent_slug": "early-product",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Series A+",
+    "slug": "series-a",
+    "parent_slug": "startup-stage",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Growth Stage",
+    "slug": "growth-stage",
+    "parent_slug": "series-a",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Scaling Products",
+    "slug": "scaling-products",
+    "parent_slug": "growth-stage",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Startup Sector",
+    "slug": "startup-sector",
+    "parent_slug": "startups-innovation",
+    "color": "#8B5CF6",
+    "sort": 402
+  },
+  {
+    "level": 3,
+    "name": "FinTech",
+    "slug": "fintech",
+    "parent_slug": "startup-sector",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Digital Banking",
+    "slug": "digital-banking",
+    "parent_slug": "fintech",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Neobanks & Banking-as-a-Service",
+    "slug": "neobanks-banking-as-a-service",
+    "parent_slug": "digital-banking",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "InsurTech",
+    "slug": "insurtech",
+    "parent_slug": "fintech",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Digital Insurance Platforms",
+    "slug": "digital-insurance-platforms",
+    "parent_slug": "insurtech",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Payments & Crypto",
+    "slug": "payments-crypto",
+    "parent_slug": "fintech",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Blockchain & Payments",
+    "slug": "blockchain-payments",
+    "parent_slug": "payments-crypto",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "HealthTech",
+    "slug": "healthtech",
+    "parent_slug": "startup-sector",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Telemedicine",
+    "slug": "telemedicine",
+    "parent_slug": "healthtech",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Virtual Healthcare Platforms",
+    "slug": "virtual-healthcare-platforms",
+    "parent_slug": "telemedicine",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Digital Therapeutics",
+    "slug": "digital-therapeutics",
+    "parent_slug": "healthtech",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "App-Based Treatment",
+    "slug": "app-based-treatment",
+    "parent_slug": "digital-therapeutics",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "BioTech",
+    "slug": "biotech",
+    "parent_slug": "healthtech",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Biotech & Life Sciences",
+    "slug": "biotech-life-sciences",
+    "parent_slug": "biotech",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "EdTech",
+    "slug": "edtech",
+    "parent_slug": "startup-sector",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Online Learning Platforms",
+    "slug": "online-learning-platforms",
+    "parent_slug": "edtech",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Course & MOOC Platforms",
+    "slug": "course-mooc-platforms",
+    "parent_slug": "online-learning-platforms",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "EdTech Tools",
+    "slug": "edtech-tools",
+    "parent_slug": "edtech",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Classroom & LMS Software",
+    "slug": "classroom-lms-software",
+    "parent_slug": "edtech-tools",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "PropTech",
+    "slug": "proptech",
+    "parent_slug": "startup-sector",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Real Estate Tech",
+    "slug": "real-estate-tech",
+    "parent_slug": "proptech",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Property Management & Sales",
+    "slug": "property-management-sales",
+    "parent_slug": "real-estate-tech",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "FoodTech",
+    "slug": "foodtech",
+    "parent_slug": "startup-sector",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Food Delivery",
+    "slug": "food-delivery",
+    "parent_slug": "foodtech",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Restaurant & Delivery Platforms",
+    "slug": "restaurant-delivery-platforms",
+    "parent_slug": "food-delivery",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "FoodTech Innovation",
+    "slug": "foodtech-innovation",
+    "parent_slug": "foodtech",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Ag-Tech & Alternative Protein",
+    "slug": "ag-tech-alternative-protein",
+    "parent_slug": "foodtech-innovation",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "CleanTech",
+    "slug": "cleantech",
+    "parent_slug": "startup-sector",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Renewable Energy",
+    "slug": "renewable-energy",
+    "parent_slug": "cleantech",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Clean Energy Technology",
+    "slug": "clean-energy-technology",
+    "parent_slug": "renewable-energy",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Sustainability",
+    "slug": "sustainability",
+    "parent_slug": "cleantech",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Carbon Tracking & ESG",
+    "slug": "carbon-tracking-esg",
+    "parent_slug": "sustainability",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Mobility",
+    "slug": "mobility",
+    "parent_slug": "startup-sector",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Ride-Sharing",
+    "slug": "ride-sharing",
+    "parent_slug": "mobility",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Transportation Platforms",
+    "slug": "transportation-platforms",
+    "parent_slug": "ride-sharing",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "EV & Autonomous",
+    "slug": "ev-autonomous",
+    "parent_slug": "mobility",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Electric & Self-Driving",
+    "slug": "electric-self-driving",
+    "parent_slug": "ev-autonomous",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "SpaceTech",
+    "slug": "spacetech",
+    "parent_slug": "startup-sector",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Satellite & Launch",
+    "slug": "satellite-launch",
+    "parent_slug": "spacetech",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Space Industry Startups",
+    "slug": "space-industry-startups",
+    "parent_slug": "satellite-launch",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Web3 & Crypto",
+    "slug": "web3-crypto",
+    "parent_slug": "startup-sector",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "DeFi",
+    "slug": "defi",
+    "parent_slug": "web3-crypto",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Decentralized Finance",
+    "slug": "decentralized-finance",
+    "parent_slug": "defi",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "NFT & Digital Assets",
+    "slug": "nft-digital-assets",
+    "parent_slug": "web3-crypto",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "NFT Marketplaces & Tools",
+    "slug": "nft-marketplaces-tools",
+    "parent_slug": "nft-digital-assets",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "DAO & Governance",
+    "slug": "dao-governance",
+    "parent_slug": "web3-crypto",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Decentralized Organizations",
+    "slug": "decentralized-organizations",
+    "parent_slug": "dao-governance",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Gaming",
+    "slug": "gaming",
+    "parent_slug": "startup-sector",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Game Development",
+    "slug": "game-development",
+    "parent_slug": "gaming",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Game Engines & Studios",
+    "slug": "game-engines-studios",
+    "parent_slug": "game-development",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Cloud Gaming",
+    "slug": "cloud-gaming",
+    "parent_slug": "gaming",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Game Streaming Services",
+    "slug": "game-streaming-services",
+    "parent_slug": "cloud-gaming",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Creator Economy",
+    "slug": "creator-economy",
+    "parent_slug": "startup-sector",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Creator Tools",
+    "slug": "creator-tools",
+    "parent_slug": "creator-economy",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Content Creator Platforms",
+    "slug": "content-creator-platforms",
+    "parent_slug": "creator-tools",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Newsletter & Publishing",
+    "slug": "newsletter-publishing",
+    "parent_slug": "creator-economy",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Writer Platforms",
+    "slug": "writer-platforms",
+    "parent_slug": "newsletter-publishing",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Developer Tools",
+    "slug": "developer-tools",
+    "parent_slug": "startup-sector",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Open Source",
+    "slug": "open-source",
+    "parent_slug": "developer-tools",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Open Source Projects",
+    "slug": "open-source-projects",
+    "parent_slug": "open-source",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "DevEx",
+    "slug": "devex",
+    "parent_slug": "developer-tools",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Developer Experience Tools",
+    "slug": "developer-experience-tools",
+    "parent_slug": "devex",
+    "color": "#8B5CF6",
+    "sort": 0
+  },
+  {
+    "level": 1,
+    "name": "Local & Professional Services",
+    "slug": "local-professional-services",
+    "parent_slug": null,
+    "color": "#F59E0B",
+    "sort": 500
+  },
+  {
+    "level": 2,
+    "name": "Home Services",
+    "slug": "home-services",
+    "parent_slug": "local-professional-services",
+    "color": "#F59E0B",
+    "sort": 501
+  },
+  {
+    "level": 3,
+    "name": "Plumbing",
+    "slug": "plumbing",
+    "parent_slug": "home-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Emergency Plumbing",
+    "slug": "emergency-plumbing",
+    "parent_slug": "plumbing",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "24/7 Plumbing Repair",
+    "slug": "247-plumbing-repair",
+    "parent_slug": "emergency-plumbing",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Drain Cleaning",
+    "slug": "drain-cleaning",
+    "parent_slug": "plumbing",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Drain & Sewer Services",
+    "slug": "drain-sewer-services",
+    "parent_slug": "drain-cleaning",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Electrical",
+    "slug": "electrical",
+    "parent_slug": "home-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Residential Electrical",
+    "slug": "residential-electrical",
+    "parent_slug": "electrical",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Home Wiring & Repair",
+    "slug": "home-wiring-repair",
+    "parent_slug": "residential-electrical",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Commercial Electrical",
+    "slug": "commercial-electrical",
+    "parent_slug": "electrical",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Office & Industrial Electrical",
+    "slug": "office-industrial-electrical",
+    "parent_slug": "commercial-electrical",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "HVAC",
+    "slug": "hvac",
+    "parent_slug": "home-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "AC Installation & Repair",
+    "slug": "ac-installation-repair",
+    "parent_slug": "hvac",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Air Conditioning Services",
+    "slug": "air-conditioning-services",
+    "parent_slug": "ac-installation-repair",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Heating Systems",
+    "slug": "heating-systems",
+    "parent_slug": "hvac",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Furnace & Heating Repair",
+    "slug": "furnace-heating-repair",
+    "parent_slug": "heating-systems",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Cleaning",
+    "slug": "cleaning",
+    "parent_slug": "home-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "House Cleaning",
+    "slug": "house-cleaning",
+    "parent_slug": "cleaning",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Residential Cleaning",
+    "slug": "residential-cleaning",
+    "parent_slug": "house-cleaning",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Commercial Cleaning",
+    "slug": "commercial-cleaning",
+    "parent_slug": "cleaning",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Office & Industrial Cleaning",
+    "slug": "office-industrial-cleaning",
+    "parent_slug": "commercial-cleaning",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Carpet & Upholstery",
+    "slug": "carpet-upholstery",
+    "parent_slug": "cleaning",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Deep Cleaning Services",
+    "slug": "deep-cleaning-services",
+    "parent_slug": "carpet-upholstery",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Landscaping",
+    "slug": "landscaping",
+    "parent_slug": "home-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Lawn Care",
+    "slug": "lawn-care",
+    "parent_slug": "landscaping",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Mowing, Fertilizing, Edging",
+    "slug": "mowing-fertilizing-edging",
+    "parent_slug": "lawn-care",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Garden Design",
+    "slug": "garden-design",
+    "parent_slug": "landscaping",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Landscape Architecture",
+    "slug": "landscape-architecture",
+    "parent_slug": "garden-design",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Painting",
+    "slug": "painting",
+    "parent_slug": "home-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Interior Painting",
+    "slug": "interior-painting",
+    "parent_slug": "painting",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Home & Office Interior",
+    "slug": "home-office-interior",
+    "parent_slug": "interior-painting",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Exterior Painting",
+    "slug": "exterior-painting",
+    "parent_slug": "painting",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "House & Building Exterior",
+    "slug": "house-building-exterior",
+    "parent_slug": "exterior-painting",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Roofing",
+    "slug": "roofing",
+    "parent_slug": "home-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Roof Repair",
+    "slug": "roof-repair",
+    "parent_slug": "roofing",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Leak Repair & Maintenance",
+    "slug": "leak-repair-maintenance",
+    "parent_slug": "roof-repair",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Roof Replacement",
+    "slug": "roof-replacement",
+    "parent_slug": "roofing",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "New Roof Installation",
+    "slug": "new-roof-installation",
+    "parent_slug": "roof-replacement",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Pest Control",
+    "slug": "pest-control",
+    "parent_slug": "home-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Residential Pest Control",
+    "slug": "residential-pest-control",
+    "parent_slug": "pest-control",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Home Bug & Rodent Control",
+    "slug": "home-bug-rodent-control",
+    "parent_slug": "residential-pest-control",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Moving",
+    "slug": "moving",
+    "parent_slug": "home-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Local Moving",
+    "slug": "local-moving",
+    "parent_slug": "moving",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "In-City Relocation",
+    "slug": "in-city-relocation",
+    "parent_slug": "local-moving",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Long Distance Moving",
+    "slug": "long-distance-moving",
+    "parent_slug": "moving",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Interstate & International",
+    "slug": "interstate-international",
+    "parent_slug": "long-distance-moving",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Handyman",
+    "slug": "handyman",
+    "parent_slug": "home-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "General Handyman",
+    "slug": "general-handyman",
+    "parent_slug": "handyman",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Multi-Trade Home Repair",
+    "slug": "multi-trade-home-repair",
+    "parent_slug": "general-handyman",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Home Remodeling",
+    "slug": "home-remodeling",
+    "parent_slug": "home-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Kitchen Remodeling",
+    "slug": "kitchen-remodeling",
+    "parent_slug": "home-remodeling",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Kitchen Renovation",
+    "slug": "kitchen-renovation",
+    "parent_slug": "kitchen-remodeling",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Bathroom Remodeling",
+    "slug": "bathroom-remodeling",
+    "parent_slug": "home-remodeling",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Bathroom Renovation",
+    "slug": "bathroom-renovation",
+    "parent_slug": "bathroom-remodeling",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "General Contracting",
+    "slug": "general-contracting",
+    "parent_slug": "home-remodeling",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Full Home Renovation",
+    "slug": "full-home-renovation",
+    "parent_slug": "general-contracting",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Auto Services",
+    "slug": "auto-services",
+    "parent_slug": "local-professional-services",
+    "color": "#F59E0B",
+    "sort": 502
+  },
+  {
+    "level": 3,
+    "name": "Auto Repair",
+    "slug": "auto-repair",
+    "parent_slug": "auto-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "General Auto Repair",
+    "slug": "general-auto-repair",
+    "parent_slug": "auto-repair",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Engine, Brakes, Transmission",
+    "slug": "engine-brakes-transmission",
+    "parent_slug": "general-auto-repair",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Body Shop",
+    "slug": "body-shop",
+    "parent_slug": "auto-repair",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Collision & Paint Repair",
+    "slug": "collision-paint-repair",
+    "parent_slug": "body-shop",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Auto Detailing",
+    "slug": "auto-detailing",
+    "parent_slug": "auto-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Car Wash & Detailing",
+    "slug": "car-wash-detailing",
+    "parent_slug": "auto-detailing",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Interior & Exterior Detailing",
+    "slug": "interior-exterior-detailing",
+    "parent_slug": "car-wash-detailing",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Towing",
+    "slug": "towing",
+    "parent_slug": "auto-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Roadside Assistance",
+    "slug": "roadside-assistance",
+    "parent_slug": "towing",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Emergency Towing",
+    "slug": "emergency-towing",
+    "parent_slug": "roadside-assistance",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Professional Services",
+    "slug": "professional-services",
+    "parent_slug": "local-professional-services",
+    "color": "#F59E0B",
+    "sort": 503
+  },
+  {
+    "level": 3,
+    "name": "Legal Services",
+    "slug": "legal-services",
+    "parent_slug": "professional-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Business Law",
+    "slug": "business-law",
+    "parent_slug": "legal-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Corporate & Contract Attorneys",
+    "slug": "corporate-contract-attorneys",
+    "parent_slug": "business-law",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Family Law",
+    "slug": "family-law",
+    "parent_slug": "legal-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Divorce, Custody, Estate",
+    "slug": "divorce-custody-estate",
+    "parent_slug": "family-law",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Immigration Law",
+    "slug": "immigration-law",
+    "parent_slug": "legal-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Visa & Immigration Attorneys",
+    "slug": "visa-immigration-attorneys",
+    "parent_slug": "immigration-law",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Intellectual Property",
+    "slug": "intellectual-property",
+    "parent_slug": "legal-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Patent & Trademark Law",
+    "slug": "patent-trademark-law",
+    "parent_slug": "intellectual-property",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Accounting & Tax",
+    "slug": "accounting-tax",
+    "parent_slug": "professional-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Tax Preparation",
+    "slug": "tax-preparation",
+    "parent_slug": "accounting-tax",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Personal & Business Tax Filing",
+    "slug": "personal-business-tax-filing",
+    "parent_slug": "tax-preparation",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Bookkeeping Services",
+    "slug": "bookkeeping-services",
+    "parent_slug": "accounting-tax",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Monthly Bookkeeping",
+    "slug": "monthly-bookkeeping",
+    "parent_slug": "bookkeeping-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Financial Advisory",
+    "slug": "financial-advisory",
+    "parent_slug": "professional-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Financial Planning",
+    "slug": "financial-planning",
+    "parent_slug": "financial-advisory",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Wealth Management & Planning",
+    "slug": "wealth-management-planning",
+    "parent_slug": "financial-planning",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Business Consulting",
+    "slug": "business-consulting",
+    "parent_slug": "financial-advisory",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Strategy & Management Consulting",
+    "slug": "strategy-management-consulting",
+    "parent_slug": "business-consulting",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Insurance",
+    "slug": "insurance",
+    "parent_slug": "professional-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Business Insurance",
+    "slug": "business-insurance",
+    "parent_slug": "insurance",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Commercial Coverage",
+    "slug": "commercial-coverage",
+    "parent_slug": "business-insurance",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Personal Insurance",
+    "slug": "personal-insurance",
+    "parent_slug": "insurance",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Home, Auto, Life Insurance",
+    "slug": "home-auto-life-insurance",
+    "parent_slug": "personal-insurance",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Real Estate",
+    "slug": "real-estate",
+    "parent_slug": "professional-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Real Estate Agents",
+    "slug": "real-estate-agents",
+    "parent_slug": "real-estate",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Buyer & Seller Agents",
+    "slug": "buyer-seller-agents",
+    "parent_slug": "real-estate-agents",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Property Management",
+    "slug": "property-management",
+    "parent_slug": "real-estate",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Rental Property Management",
+    "slug": "rental-property-management",
+    "parent_slug": "property-management",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Health & Wellness",
+    "slug": "health-wellness",
+    "parent_slug": "local-professional-services",
+    "color": "#F59E0B",
+    "sort": 504
+  },
+  {
+    "level": 3,
+    "name": "Medical",
+    "slug": "medical",
+    "parent_slug": "health-wellness",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Doctors & Physicians",
+    "slug": "doctors-physicians",
+    "parent_slug": "medical",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Primary Care & Specialists",
+    "slug": "primary-care-specialists",
+    "parent_slug": "doctors-physicians",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Dentists",
+    "slug": "dentists",
+    "parent_slug": "medical",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "General & Cosmetic Dentistry",
+    "slug": "general-cosmetic-dentistry",
+    "parent_slug": "dentists",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Optometrists",
+    "slug": "optometrists",
+    "parent_slug": "medical",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Eye Care & Vision",
+    "slug": "eye-care-vision",
+    "parent_slug": "optometrists",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Physical Therapy",
+    "slug": "physical-therapy",
+    "parent_slug": "medical",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Rehab & PT Clinics",
+    "slug": "rehab-pt-clinics",
+    "parent_slug": "physical-therapy",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Fitness & Wellness",
+    "slug": "fitness-wellness",
+    "parent_slug": "health-wellness",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Gyms & Fitness Centers",
+    "slug": "gyms-fitness-centers",
+    "parent_slug": "fitness-wellness",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Health Clubs & CrossFit",
+    "slug": "health-clubs-crossfit",
+    "parent_slug": "gyms-fitness-centers",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Yoga & Pilates",
+    "slug": "yoga-pilates",
+    "parent_slug": "fitness-wellness",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Yoga Studios",
+    "slug": "yoga-studios",
+    "parent_slug": "yoga-pilates",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Personal Training",
+    "slug": "personal-training",
+    "parent_slug": "fitness-wellness",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "1-on-1 Fitness Coaching",
+    "slug": "1-on-1-fitness-coaching",
+    "parent_slug": "personal-training",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Spa & Beauty",
+    "slug": "spa-beauty",
+    "parent_slug": "health-wellness",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Hair Salons",
+    "slug": "hair-salons",
+    "parent_slug": "spa-beauty",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Hairstyling & Barbers",
+    "slug": "hairstyling-barbers",
+    "parent_slug": "hair-salons",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Spas & Massage",
+    "slug": "spas-massage",
+    "parent_slug": "spa-beauty",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Day Spas & Massage Therapy",
+    "slug": "day-spas-massage-therapy",
+    "parent_slug": "spas-massage",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Nail Salons",
+    "slug": "nail-salons",
+    "parent_slug": "spa-beauty",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Manicure & Pedicure",
+    "slug": "manicure-pedicure",
+    "parent_slug": "nail-salons",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Mental Health",
+    "slug": "mental-health",
+    "parent_slug": "health-wellness",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Therapists",
+    "slug": "therapists",
+    "parent_slug": "mental-health",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Counseling & Psychotherapy",
+    "slug": "counseling-psychotherapy",
+    "parent_slug": "therapists",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Pet Services",
+    "slug": "pet-services",
+    "parent_slug": "health-wellness",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Veterinarians",
+    "slug": "veterinarians",
+    "parent_slug": "pet-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Animal Clinics",
+    "slug": "animal-clinics",
+    "parent_slug": "veterinarians",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Pet Grooming",
+    "slug": "pet-grooming",
+    "parent_slug": "pet-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Dog & Cat Grooming",
+    "slug": "dog-cat-grooming",
+    "parent_slug": "pet-grooming",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Pet Boarding",
+    "slug": "pet-boarding",
+    "parent_slug": "pet-services",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Dog & Cat Boarding",
+    "slug": "dog-cat-boarding",
+    "parent_slug": "pet-boarding",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Food & Dining",
+    "slug": "food-dining",
+    "parent_slug": "local-professional-services",
+    "color": "#F59E0B",
+    "sort": 505
+  },
+  {
+    "level": 3,
+    "name": "Restaurants",
+    "slug": "restaurants",
+    "parent_slug": "food-dining",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Fine Dining",
+    "slug": "fine-dining",
+    "parent_slug": "restaurants",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Upscale Restaurants",
+    "slug": "upscale-restaurants",
+    "parent_slug": "fine-dining",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Casual Dining",
+    "slug": "casual-dining",
+    "parent_slug": "restaurants",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Family & Casual Restaurants",
+    "slug": "family-casual-restaurants",
+    "parent_slug": "casual-dining",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Fast Food & Quick Service",
+    "slug": "fast-food-quick-service",
+    "parent_slug": "restaurants",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "QSR & Fast Casual",
+    "slug": "qsr-fast-casual",
+    "parent_slug": "fast-food-quick-service",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Cafes & Coffee",
+    "slug": "cafes-coffee",
+    "parent_slug": "food-dining",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Coffee Shops",
+    "slug": "coffee-shops",
+    "parent_slug": "cafes-coffee",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Cafes & Coffee Houses",
+    "slug": "cafes-coffee-houses",
+    "parent_slug": "coffee-shops",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Catering",
+    "slug": "catering",
+    "parent_slug": "food-dining",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Event Catering",
+    "slug": "event-catering",
+    "parent_slug": "catering",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Wedding & Corporate Catering",
+    "slug": "wedding-corporate-catering",
+    "parent_slug": "event-catering",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Bakeries",
+    "slug": "bakeries",
+    "parent_slug": "food-dining",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Bakeries & Patisseries",
+    "slug": "bakeries-patisseries",
+    "parent_slug": "bakeries",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Bread, Cakes, Pastries",
+    "slug": "bread-cakes-pastries",
+    "parent_slug": "bakeries-patisseries",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Education & Tutoring",
+    "slug": "education-tutoring",
+    "parent_slug": "local-professional-services",
+    "color": "#F59E0B",
+    "sort": 506
+  },
+  {
+    "level": 3,
+    "name": "Tutoring",
+    "slug": "tutoring",
+    "parent_slug": "education-tutoring",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Academic Tutoring",
+    "slug": "academic-tutoring",
+    "parent_slug": "tutoring",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Math, Science, Language Tutoring",
+    "slug": "math-science-language-tutoring",
+    "parent_slug": "academic-tutoring",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Test Prep",
+    "slug": "test-prep",
+    "parent_slug": "tutoring",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "SAT, GRE, GMAT Preparation",
+    "slug": "sat-gre-gmat-preparation",
+    "parent_slug": "test-prep",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Music & Arts",
+    "slug": "music-arts",
+    "parent_slug": "education-tutoring",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Music Lessons",
+    "slug": "music-lessons",
+    "parent_slug": "music-arts",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Instrument & Voice Lessons",
+    "slug": "instrument-voice-lessons",
+    "parent_slug": "music-lessons",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Driving",
+    "slug": "driving",
+    "parent_slug": "education-tutoring",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Driving Schools",
+    "slug": "driving-schools",
+    "parent_slug": "driving",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Learner & License Training",
+    "slug": "learner-license-training",
+    "parent_slug": "driving-schools",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Events & Entertainment",
+    "slug": "events-entertainment",
+    "parent_slug": "local-professional-services",
+    "color": "#F59E0B",
+    "sort": 507
+  },
+  {
+    "level": 3,
+    "name": "Photography",
+    "slug": "photography",
+    "parent_slug": "events-entertainment",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Portrait Photography",
+    "slug": "portrait-photography",
+    "parent_slug": "photography",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Family & Headshot Photography",
+    "slug": "family-headshot-photography",
+    "parent_slug": "portrait-photography",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Wedding Photography",
+    "slug": "wedding-photography",
+    "parent_slug": "photography",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Wedding & Engagement Photos",
+    "slug": "wedding-engagement-photos",
+    "parent_slug": "wedding-photography",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Commercial Photography",
+    "slug": "commercial-photography",
+    "parent_slug": "photography",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Product & Corporate Photography",
+    "slug": "product-corporate-photography",
+    "parent_slug": "commercial-photography",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Videography",
+    "slug": "videography",
+    "parent_slug": "events-entertainment",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Wedding Videography",
+    "slug": "wedding-videography",
+    "parent_slug": "videography",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Wedding & Event Video",
+    "slug": "wedding-event-video",
+    "parent_slug": "wedding-videography",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "DJs & Entertainment",
+    "slug": "djs-entertainment",
+    "parent_slug": "events-entertainment",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Event DJs",
+    "slug": "event-djs",
+    "parent_slug": "djs-entertainment",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Wedding & Party DJs",
+    "slug": "wedding-party-djs",
+    "parent_slug": "event-djs",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Event Planning",
+    "slug": "event-planning",
+    "parent_slug": "events-entertainment",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Wedding Planning",
+    "slug": "wedding-planning",
+    "parent_slug": "event-planning",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Full-Service Wedding Planners",
+    "slug": "full-service-wedding-planners",
+    "parent_slug": "wedding-planning",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Corporate Events",
+    "slug": "corporate-events",
+    "parent_slug": "event-planning",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Conference & Meeting Planning",
+    "slug": "conference-meeting-planning",
+    "parent_slug": "corporate-events",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Venues",
+    "slug": "venues",
+    "parent_slug": "events-entertainment",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Event Venues",
+    "slug": "event-venues",
+    "parent_slug": "venues",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Banquet Halls & Event Spaces",
+    "slug": "banquet-halls-event-spaces",
+    "parent_slug": "event-venues",
+    "color": "#F59E0B",
+    "sort": 0
+  },
+  {
+    "level": 1,
+    "name": "Industry-Specific Software",
+    "slug": "industry-specific-software",
+    "parent_slug": null,
+    "color": "#2FAE6A",
+    "sort": 600
+  },
+  {
+    "level": 2,
+    "name": "Healthcare Software",
+    "slug": "healthcare-software",
+    "parent_slug": "industry-specific-software",
+    "color": "#2FAE6A",
+    "sort": 601
+  },
+  {
+    "level": 3,
+    "name": "EHR / EMR",
+    "slug": "ehr-emr",
+    "parent_slug": "healthcare-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Electronic Health Records",
+    "slug": "electronic-health-records",
+    "parent_slug": "ehr-emr",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Patient Records Management",
+    "slug": "patient-records-management",
+    "parent_slug": "electronic-health-records",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Practice Management",
+    "slug": "practice-management",
+    "parent_slug": "healthcare-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Clinic Management",
+    "slug": "clinic-management",
+    "parent_slug": "practice-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Scheduling & Billing for Clinics",
+    "slug": "scheduling-billing-for-clinics",
+    "parent_slug": "clinic-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Telehealth",
+    "slug": "telehealth",
+    "parent_slug": "healthcare-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Virtual Care Platforms",
+    "slug": "virtual-care-platforms",
+    "parent_slug": "telehealth",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Video Visit Software",
+    "slug": "video-visit-software",
+    "parent_slug": "virtual-care-platforms",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Medical Billing",
+    "slug": "medical-billing",
+    "parent_slug": "healthcare-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Revenue Cycle Management",
+    "slug": "revenue-cycle-management",
+    "parent_slug": "medical-billing",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Claims & Coding Software",
+    "slug": "claims-coding-software",
+    "parent_slug": "revenue-cycle-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Pharmacy",
+    "slug": "pharmacy",
+    "parent_slug": "healthcare-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Pharmacy Management",
+    "slug": "pharmacy-management",
+    "parent_slug": "pharmacy",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Rx & Dispensing Software",
+    "slug": "rx-dispensing-software",
+    "parent_slug": "pharmacy-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Real Estate Software",
+    "slug": "real-estate-software",
+    "parent_slug": "industry-specific-software",
+    "color": "#2FAE6A",
+    "sort": 602
+  },
+  {
+    "level": 4,
+    "name": "Landlord Software",
+    "slug": "landlord-software",
+    "parent_slug": "property-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Rent Collection & Maintenance",
+    "slug": "rent-collection-maintenance",
+    "parent_slug": "landlord-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "HOA Management",
+    "slug": "hoa-management",
+    "parent_slug": "property-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Community Association Software",
+    "slug": "community-association-software",
+    "parent_slug": "hoa-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Real Estate CRM",
+    "slug": "real-estate-crm",
+    "parent_slug": "real-estate-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Agent CRM",
+    "slug": "agent-crm",
+    "parent_slug": "real-estate-crm",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Lead Management for Agents",
+    "slug": "lead-management-for-agents",
+    "parent_slug": "agent-crm",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "MLS & Listings",
+    "slug": "mls-listings",
+    "parent_slug": "real-estate-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Listing Management",
+    "slug": "listing-management",
+    "parent_slug": "mls-listings",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "MLS Integration & IDX",
+    "slug": "mls-integration-idx",
+    "parent_slug": "listing-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Construction Software",
+    "slug": "construction-software",
+    "parent_slug": "industry-specific-software",
+    "color": "#2FAE6A",
+    "sort": 603
+  },
+  {
+    "level": 3,
+    "name": "Construction Management",
+    "slug": "construction-management",
+    "parent_slug": "construction-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "General Contractor Software",
+    "slug": "general-contractor-software",
+    "parent_slug": "project-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Estimating",
+    "slug": "estimating",
+    "parent_slug": "construction-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Cost Estimating",
+    "slug": "cost-estimating",
+    "parent_slug": "estimating",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Takeoff & Bidding Software",
+    "slug": "takeoff-bidding-software",
+    "parent_slug": "cost-estimating",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Field Service",
+    "slug": "field-service",
+    "parent_slug": "construction-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Dispatch & Scheduling",
+    "slug": "dispatch-scheduling",
+    "parent_slug": "field-service",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Technician Management",
+    "slug": "technician-management",
+    "parent_slug": "dispatch-scheduling",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Architecture & BIM",
+    "slug": "architecture-bim",
+    "parent_slug": "construction-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "CAD & BIM",
+    "slug": "cad-bim",
+    "parent_slug": "architecture-bim",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Building Information Modeling",
+    "slug": "building-information-modeling",
+    "parent_slug": "cad-bim",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Hospitality Software",
+    "slug": "hospitality-software",
+    "parent_slug": "industry-specific-software",
+    "color": "#2FAE6A",
+    "sort": 604
+  },
+  {
+    "level": 3,
+    "name": "Hotel Management",
+    "slug": "hotel-management",
+    "parent_slug": "hospitality-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "PMS",
+    "slug": "pms",
+    "parent_slug": "hotel-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Property Management System",
+    "slug": "property-management-system",
+    "parent_slug": "pms",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Channel Manager",
+    "slug": "channel-manager",
+    "parent_slug": "hotel-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "OTA Distribution",
+    "slug": "ota-distribution",
+    "parent_slug": "channel-manager",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Restaurant Management",
+    "slug": "restaurant-management",
+    "parent_slug": "hospitality-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "POS & Orders",
+    "slug": "pos-orders",
+    "parent_slug": "restaurant-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Restaurant POS Systems",
+    "slug": "restaurant-pos-systems",
+    "parent_slug": "pos-orders",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Reservations",
+    "slug": "reservations",
+    "parent_slug": "restaurant-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Table Booking & Waitlist",
+    "slug": "table-booking-waitlist",
+    "parent_slug": "reservations",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Education Software",
+    "slug": "education-software",
+    "parent_slug": "industry-specific-software",
+    "color": "#2FAE6A",
+    "sort": 605
+  },
+  {
+    "level": 3,
+    "name": "School Management",
+    "slug": "school-management",
+    "parent_slug": "education-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "SIS",
+    "slug": "sis",
+    "parent_slug": "school-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Student Information Systems",
+    "slug": "student-information-systems",
+    "parent_slug": "sis",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "School Administration",
+    "slug": "school-administration",
+    "parent_slug": "school-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Enrollment & Scheduling",
+    "slug": "enrollment-scheduling",
+    "parent_slug": "school-administration",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "eLearning",
+    "slug": "elearning",
+    "parent_slug": "education-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Course Creation",
+    "slug": "course-creation",
+    "parent_slug": "elearning",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Online Course Builders",
+    "slug": "online-course-builders",
+    "parent_slug": "course-creation",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Virtual Classroom",
+    "slug": "virtual-classroom",
+    "parent_slug": "elearning",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Live Online Teaching",
+    "slug": "live-online-teaching",
+    "parent_slug": "virtual-classroom",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Manufacturing Software",
+    "slug": "manufacturing-software",
+    "parent_slug": "industry-specific-software",
+    "color": "#2FAE6A",
+    "sort": 606
+  },
+  {
+    "level": 3,
+    "name": "ERP",
+    "slug": "erp",
+    "parent_slug": "manufacturing-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Manufacturing ERP",
+    "slug": "manufacturing-erp",
+    "parent_slug": "erp",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Production Planning & MRP",
+    "slug": "production-planning-mrp",
+    "parent_slug": "manufacturing-erp",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Quality Management",
+    "slug": "quality-management",
+    "parent_slug": "manufacturing-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "QMS",
+    "slug": "qms",
+    "parent_slug": "quality-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "ISO & Quality Compliance",
+    "slug": "iso-quality-compliance",
+    "parent_slug": "qms",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Supply Chain",
+    "slug": "supply-chain",
+    "parent_slug": "manufacturing-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "SCM",
+    "slug": "scm",
+    "parent_slug": "supply-chain",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Supply Chain Management",
+    "slug": "supply-chain-management",
+    "parent_slug": "scm",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Logistics & Transportation",
+    "slug": "logistics-transportation",
+    "parent_slug": "industry-specific-software",
+    "color": "#2FAE6A",
+    "sort": 607
+  },
+  {
+    "level": 3,
+    "name": "Fleet Management",
+    "slug": "fleet-management",
+    "parent_slug": "logistics-transportation",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Vehicle Tracking",
+    "slug": "vehicle-tracking",
+    "parent_slug": "fleet-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "GPS & Telematics",
+    "slug": "gps-telematics",
+    "parent_slug": "vehicle-tracking",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Route Planning",
+    "slug": "route-planning",
+    "parent_slug": "logistics-transportation",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Delivery Optimization",
+    "slug": "delivery-optimization",
+    "parent_slug": "route-planning",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Last-Mile Route Planning",
+    "slug": "last-mile-route-planning",
+    "parent_slug": "delivery-optimization",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Warehouse Management",
+    "slug": "warehouse-management",
+    "parent_slug": "logistics-transportation",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "WMS",
+    "slug": "wms",
+    "parent_slug": "warehouse-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Warehouse Operations",
+    "slug": "warehouse-operations",
+    "parent_slug": "wms",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Nonprofit Software",
+    "slug": "nonprofit-software",
+    "parent_slug": "industry-specific-software",
+    "color": "#2FAE6A",
+    "sort": 608
+  },
+  {
+    "level": 3,
+    "name": "Donor Management",
+    "slug": "donor-management",
+    "parent_slug": "nonprofit-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Fundraising CRM",
+    "slug": "fundraising-crm",
+    "parent_slug": "donor-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Donation Tracking & Campaigns",
+    "slug": "donation-tracking-campaigns",
+    "parent_slug": "fundraising-crm",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Grant Management",
+    "slug": "grant-management",
+    "parent_slug": "nonprofit-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Grant Tracking",
+    "slug": "grant-tracking",
+    "parent_slug": "grant-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Grant Application & Reporting",
+    "slug": "grant-application-reporting",
+    "parent_slug": "grant-tracking",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Volunteer Management",
+    "slug": "volunteer-management",
+    "parent_slug": "nonprofit-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Volunteer Coordination",
+    "slug": "volunteer-coordination",
+    "parent_slug": "volunteer-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Scheduling & Communication",
+    "slug": "scheduling-communication",
+    "parent_slug": "volunteer-coordination",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Retail Software",
+    "slug": "retail-software",
+    "parent_slug": "industry-specific-software",
+    "color": "#2FAE6A",
+    "sort": 609
+  },
+  {
+    "level": 3,
+    "name": "Retail POS",
+    "slug": "retail-pos",
+    "parent_slug": "retail-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Point-of-Sale",
+    "slug": "point-of-sale",
+    "parent_slug": "retail-pos",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Retail Checkout Systems",
+    "slug": "retail-checkout-systems",
+    "parent_slug": "point-of-sale",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 3,
+    "name": "Retail Management",
+    "slug": "retail-management",
+    "parent_slug": "retail-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Inventory & Staff",
+    "slug": "inventory-staff",
+    "parent_slug": "retail-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Multi-Store Management",
+    "slug": "multi-store-management",
+    "parent_slug": "inventory-staff",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Agriculture Software",
+    "slug": "agriculture-software",
+    "parent_slug": "industry-specific-software",
+    "color": "#2FAE6A",
+    "sort": 610
+  },
+  {
+    "level": 3,
+    "name": "Farm Management",
+    "slug": "farm-management",
+    "parent_slug": "agriculture-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Precision Agriculture",
+    "slug": "precision-agriculture",
+    "parent_slug": "farm-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Crop Planning & Monitoring",
+    "slug": "crop-planning-monitoring",
+    "parent_slug": "precision-agriculture",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Livestock Management",
+    "slug": "livestock-management",
+    "parent_slug": "farm-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Animal Tracking & Health",
+    "slug": "animal-tracking-health",
+    "parent_slug": "livestock-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Fitness & Wellness Software",
+    "slug": "fitness-wellness-software",
+    "parent_slug": "industry-specific-software",
+    "color": "#2FAE6A",
+    "sort": 611
+  },
+  {
+    "level": 3,
+    "name": "Gym Management",
+    "slug": "gym-management",
+    "parent_slug": "fitness-wellness-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Member Management",
+    "slug": "member-management",
+    "parent_slug": "gym-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Gym & Studio Operations",
+    "slug": "gym-studio-operations",
+    "parent_slug": "member-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Class Scheduling",
+    "slug": "class-scheduling",
+    "parent_slug": "gym-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Booking & Scheduling",
+    "slug": "booking-scheduling",
+    "parent_slug": "class-scheduling",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 2,
+    "name": "Salon & Spa Software",
+    "slug": "salon-spa-software",
+    "parent_slug": "industry-specific-software",
+    "color": "#2FAE6A",
+    "sort": 612
+  },
+  {
+    "level": 3,
+    "name": "Salon Management",
+    "slug": "salon-management",
+    "parent_slug": "salon-spa-software",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 4,
+    "name": "Booking & POS",
+    "slug": "booking-pos",
+    "parent_slug": "salon-management",
+    "color": "#2FAE6A",
+    "sort": 0
+  },
+  {
+    "level": 5,
+    "name": "Salon Scheduling & Checkout",
+    "slug": "salon-scheduling-checkout",
+    "parent_slug": "booking-pos",
+    "color": "#2FAE6A",
+    "sort": 0
+  }
+]

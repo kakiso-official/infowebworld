@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { marked } from 'marked'
 import Link from 'next/link'
-import { getPostById, savePost } from '../../data/blog-storage'
+import { fetchPostById, apiSavePost } from '../../data/blog-storage'
 import type { BlogPost } from '../../data/blog-types'
 
 export default function PreviewPost() {
@@ -12,14 +12,14 @@ export default function PreviewPost() {
   const id = params.get('id')
   const [post, setPost] = useState<BlogPost | null>(null)
 
-  useEffect(() => { if (id) { const p = getPostById(id); if (p) setPost(p); else router.replace('/iww-hq/blog') } }, [id, router])
+  useEffect(() => { if (id) { fetchPostById(id).then(p => { if (p) setPost(p); else router.replace('/iww-hq/blog') }) } }, [id, router])
   if (!post) return null
 
   const html = marked.parse(post.body || '', { async: false }) as string
   const readTime = Math.max(1, Math.ceil((post.body?.split(/\s+/).length || 0) / 200))
 
-  const publish = () => {
-    savePost({ ...post, status: 'published', publishedAt: post.publishedAt || new Date().toISOString(), updatedAt: new Date().toISOString() })
+  const publish = async () => {
+    await apiSavePost({ ...post, status: 'published', publishedAt: post.publishedAt || new Date().toISOString(), updatedAt: new Date().toISOString() })
     router.push('/iww-hq/blog')
   }
 

@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import SafeMailLink from '../components/SafeMailLink'
 import { addSubmission } from '../iww-hq/data/submissions-storage'
 
 /* ── Category data ── */
@@ -408,7 +409,7 @@ export default function ListingForm() {
               </div>
               <div className="listing-portfolio-note">
                 <svg viewBox="0 0 24 24" width="18" height="18" stroke="#2FAE6A" fill="none" strokeWidth="1.5"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
-                <span><strong>Incubators &amp; Portfolio Companies:</strong> Companies with 5+ tools/apps/startups get free listings. <a href="mailto:hello@infowebworld.com" style={{ color: '#E8553D', fontWeight: 700 }}>Contact us</a></span>
+                <span><strong>Incubators &amp; Portfolio Companies:</strong> Companies with 5+ tools/apps/startups get free listings. <SafeMailLink user="hello" domain="infowebworld.com" style={{ color: '#E8553D', fontWeight: 700 }}>Contact us</SafeMailLink></span>
               </div>
             </div>
           )}

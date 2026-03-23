@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @source "../app";
+@import "./styles/not-found.css";
 
 /* ── Local Soria font ── */
 @font-face {
@@ -97,6 +98,7 @@ input, textarea { font-family: inherit }
 @import "./styles/footer.css";
 @import "./styles/listing.css";
 @import "./styles/blog.css";
+@import "./styles/categories.css";
 
 /* ============================================================
    UTILITIES

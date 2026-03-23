@@ -1,12 +1,12 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { getConfig } from '../config/site-config'
+import { fetchConfig } from '../config/site-config'
 import { addToWaitlist } from '../iww-hq/data/waitlist-storage'
 
 export default function FinalCTA() {
   const [cfg, setCfg] = useState({ pioneerJoined: 15, pioneerTotal: 200, foundingPrice: 240 })
-  useEffect(() => { const c = getConfig(); setCfg({ pioneerJoined: c.pioneerJoined, pioneerTotal: c.pioneerTotal, foundingPrice: c.foundingPrice }) }, [])
+  useEffect(() => { fetchConfig().then(c => setCfg({ pioneerJoined: c.pioneerJoined, pioneerTotal: c.pioneerTotal, foundingPrice: c.foundingPrice })) }, [])
   const JOINED = cfg.pioneerJoined, TOTAL = cfg.pioneerTotal, LEFT = TOTAL - JOINED
   const PCT = Math.round((JOINED / TOTAL) * 100)
 

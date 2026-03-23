@@ -1,9 +1,8 @@
 /**
- * Real submissions storage — localStorage
- * Form submissions go here, admin reads from here.
+ * Submissions storage — reads/writes from MySQL via api.php
  */
 
-const KEY = 'iww_submissions'
+const API = '/infowebworld/api.php'
 
 export type RealSubmission = {
   id: string
@@ -25,60 +24,79 @@ export type RealSubmission = {
   submittedAt: string
 }
 
-function read(): RealSubmission[] {
-  if (typeof window === 'undefined') return []
-  try { return JSON.parse(localStorage.getItem(KEY) || '[]') } catch { return [] }
+/** Map DB snake_case row to camelCase RealSubmission */
+function mapRow(r: Record<string, unknown>): RealSubmission {
+  return {
+    id: String(r.id ?? ''),
+    companyName: String(r.company_name ?? ''),
+    contactName: String(r.contact_name ?? ''),
+    email: String(r.email ?? ''),
+    phoneCode: String(r.phone_code ?? '+1'),
+    phone: String(r.phone ?? ''),
+    website: String(r.website ?? ''),
+    category: String(r.category_name ?? r.category ?? ''),
+    country: String(r.country_name ?? r.country ?? ''),
+    city: String(r.city ?? ''),
+    tagline: String(r.tagline ?? ''),
+    description: String(r.description ?? ''),
+    founded: String(r.founded_year ?? ''),
+    employees: String(r.team_size ?? ''),
+    plan: String(r.plan_slug ?? r.plan ?? ''),
+    status: (r.status as RealSubmission['status']) || 'pending',
+    submittedAt: String(r.created_at ?? ''),
+  }
 }
 
-function write(data: RealSubmission[]) {
-  localStorage.setItem(KEY, JSON.stringify(data))
+export async function fetchAllSubmissions(): Promise<RealSubmission[]> {
+  try {
+    const res = await fetch(`${API}?action=submission_list`)
+    if (!res.ok) throw new Error('API error')
+    const rows: Record<string, unknown>[] = await res.json()
+    return rows.map(mapRow)
+  } catch {
+    return []
+  }
 }
 
-export function getAllSubmissions(): RealSubmission[] {
-  return read().sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime())
+export async function fetchSubmissionStats(): Promise<{ total: number; pending: number; confirmed: number; paid: number }> {
+  const subs = await fetchAllSubmissions()
+  return {
+    total: subs.length,
+    pending: subs.filter(s => s.status === 'pending').length,
+    confirmed: subs.filter(s => s.status === 'confirmed').length,
+    paid: subs.filter(s => s.status === 'paid').length,
+  }
 }
 
-export function getSubmissionById(id: string): RealSubmission | null {
-  return read().find(s => s.id === id) || null
+export async function updateSubmissionStatus(id: string, status: RealSubmission['status']): Promise<void> {
+  await fetch(`${API}?action=submission_status`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: Number(id), status }),
+  }).catch(() => {})
+}
+
+export async function deleteSubmission(id: string): Promise<void> {
+  await fetch(`${API}?action=submission_delete`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: Number(id) }),
+  }).catch(() => {})
 }
 
 export function addSubmission(data: Omit<RealSubmission, 'id' | 'status' | 'submittedAt'>): RealSubmission {
   const sub: RealSubmission = {
     ...data,
-    id: 'S' + String(read().length + 1).padStart(4, '0'),
+    id: 'new',
     status: 'pending',
     submittedAt: new Date().toISOString(),
   }
-  const all = read()
-  all.push(sub)
-  write(all)
 
-  // Also save to MySQL database
-  fetch('/infowebworld/api.php?action=submission_create', {
+  fetch(`${API}?action=submission_create`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   }).catch(() => {})
 
   return sub
-}
-
-export function updateSubmissionStatus(id: string, status: RealSubmission['status']) {
-  const all = read()
-  const idx = all.findIndex(s => s.id === id)
-  if (idx >= 0) { all[idx].status = status; write(all) }
-}
-
-export function deleteSubmission(id: string) {
-  write(read().filter(s => s.id !== id))
-}
-
-export function getSubmissionStats() {
-  const all = read()
-  return {
-    total: all.length,
-    pending: all.filter(s => s.status === 'pending').length,
-    confirmed: all.filter(s => s.status === 'confirmed').length,
-    paid: all.filter(s => s.status === 'paid').length,
-  }
 }

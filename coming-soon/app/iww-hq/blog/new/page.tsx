@@ -2,14 +2,14 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import BlogEditor from '../../components/BlogEditor'
-import { createEmptyPost, savePost, generateSlug } from '../../data/blog-storage'
+import { createEmptyPost, apiSavePost, generateSlug } from '../../data/blog-storage'
 import type { BlogPost } from '../../data/blog-types'
 
 export default function NewPost() {
   const router = useRouter()
   const [post, setPost] = useState<BlogPost>(createEmptyPost())
 
-  const handleSave = (status: 'draft' | 'published') => {
+  const handleSave = async (status: 'draft' | 'published') => {
     const slug = generateSlug(post.title || 'untitled')
     const now = new Date().toISOString()
     const final: BlogPost = {
@@ -17,7 +17,7 @@ export default function NewPost() {
       publishedAt: status === 'published' ? now : null,
       seo: { ...post.seo, metaTitle: post.seo.metaTitle || post.title, metaDescription: post.seo.metaDescription || post.excerpt },
     }
-    savePost(final)
+    await apiSavePost(final)
     router.push('/iww-hq/blog')
   }
 

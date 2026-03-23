@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { getConfig } from '../config/site-config'
+import { fetchConfig } from '../config/site-config'
 
 const tiers = [
   { price: '$240', sub: 'lifetime', label: 'first 200', active: true },
@@ -11,7 +11,7 @@ const tiers = [
 
 export default function EarlyBirdTiers() {
   const [cfg, setCfg] = useState({ pioneerJoined: 15, pioneerTotal: 200 })
-  useEffect(() => { const c = getConfig(); setCfg({ pioneerJoined: c.pioneerJoined, pioneerTotal: c.pioneerTotal }) }, [])
+  useEffect(() => { fetchConfig().then(c => setCfg({ pioneerJoined: c.pioneerJoined, pioneerTotal: c.pioneerTotal })) }, [])
   const JOINED = cfg.pioneerJoined
   const PIONEER_TOTAL = cfg.pioneerTotal
   const spotsLeft = PIONEER_TOTAL - JOINED

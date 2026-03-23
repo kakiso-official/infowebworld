@@ -3,13 +3,14 @@ import { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { marked } from 'marked'
-import { getPostBySlug, getPublishedPosts } from '../../iww-hq/data/blog-storage'
-import { trackView, trackReadTime, trackShare } from '../../iww-hq/data/blog-analytics'
+import { fetchPostBySlug, fetchPublishedPosts } from '../../iww-hq/data/blog-storage'
+import { trackBlogView } from '../../iww-hq/data/visitor-tracking'
 import type { BlogPost } from '../../iww-hq/data/blog-types'
 
 export default function BlogReader() {
   const params = useSearchParams()
-  const slug = params.get('slug')
+  // Support both ?slug=x (query) and /blog/x (clean URL path)
+  const slug = params.get('slug') || (typeof window !== 'undefined' ? window.location.pathname.replace(/^\/infowebworld\/blog\//, '').replace(/\/$/, '') || null : null)
   const [post, setPost] = useState<BlogPost | null>(null)
   const [related, setRelated] = useState<BlogPost[]>([])
   const [notFound, setNotFound] = useState(false)
@@ -20,14 +21,17 @@ export default function BlogReader() {
 
   useEffect(() => {
     if (!slug) { setNotFound(true); return }
-    const p = getPostBySlug(slug)
-    if (p) {
-      setPost(p)
-      trackView(p.id)
-      /* Related posts: same category, exclude self */
-      const all = getPublishedPosts().filter(x => x.id !== p.id && x.category === p.category).slice(0, 3)
-      setRelated(all)
-    } else { setNotFound(true) }
+    // Fetch full post (with body) + related posts in parallel
+    Promise.all([
+      fetchPostBySlug(slug),
+      fetchPublishedPosts(),
+    ]).then(([p, posts]) => {
+      if (p) {
+        setPost(p)
+        trackBlogView(p.slug)
+        setRelated(posts.filter(x => x.id !== p.id && x.category === p.category).slice(0, 3))
+      } else { setNotFound(true) }
+    })
   }, [slug])
 
   /* Track read time on unmount */
@@ -35,7 +39,7 @@ export default function BlogReader() {
     return () => {
       if (post) {
         const secs = Math.round((Date.now() - startTime.current) / 1000)
-        if (secs > 5) trackReadTime(post.id, secs)
+        if (secs > 5) trackBlogView(post.slug, secs)
       }
     }
   }, [post])
@@ -72,13 +76,13 @@ export default function BlogReader() {
 
   const shareUrl = typeof window !== 'undefined' ? window.location.href : ''
   const handleCopy = () => {
-    if (post) { navigator.clipboard.writeText(shareUrl); trackShare(post.id); setCopied(true); setTimeout(() => setCopied(false), 2000) }
+    if (post) { navigator.clipboard.writeText(shareUrl); trackBlogView(post.slug, undefined, true); setCopied(true); setTimeout(() => setCopied(false), 2000) }
   }
   const handleTwitter = () => {
-    if (post) { trackShare(post.id); window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(shareUrl)}`, '_blank') }
+    if (post) { trackBlogView(post.slug, undefined, true); window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(shareUrl)}`, '_blank') }
   }
   const handleLinkedIn = () => {
-    if (post) { trackShare(post.id); window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank') }
+    if (post) { trackBlogView(post.slug, undefined, true); window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank') }
   }
 
   if (notFound) {
@@ -157,7 +161,7 @@ export default function BlogReader() {
               <h3 style={{ fontFamily: "var(--font-bricolage), 'Bricolage Grotesque', sans-serif", fontSize: '1.1rem', fontWeight: 800, color: 'var(--h-heading)', marginBottom: '1rem' }}>Related Articles</h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '.85rem' }}>
                 {related.map(r => (
-                  <Link key={r.id} href={`/blog/post?slug=${r.slug}`} className="blog-card" style={{ borderRadius: 16 }}>
+                  <Link key={r.id} href={`/blog/${r.slug}`} className="blog-card" style={{ borderRadius: 16 }}>
                     {r.coverImage && (
                       <div className="blog-card-img-wrap" style={{ aspectRatio: '16/10' }}>
                         <img src={r.coverImage} alt={r.title} className="blog-card-img" />

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import SafeMailLink from './SafeMailLink'
 
 import { BASE } from '../config/base-path'
 const bp = BASE
@@ -37,12 +38,13 @@ export default function Footer() {
               <a href="#pricing" className="ft-col-link">Pricing</a>
               <a href="#how-it-works" className="ft-col-link">How It Works</a>
               <a href="#compare" className="ft-col-link">Compare</a>
+              <Link href="/blog" className="ft-col-link">Blog</Link>
             </div>
             <div className="ft-col">
               <h4 className="ft-col-title">Get Started</h4>
               <Link href="/get-listed" className="ft-col-link">Get Listed</Link>
               <a href="#hero" className="ft-col-link">Join Waitlist</a>
-              <a href="mailto:hello@infowebworld.com" className="ft-col-link">Contact Us</a>
+              <SafeMailLink user="hello" domain="infowebworld.com" className="ft-col-link">Contact Us</SafeMailLink>
             </div>
             <div className="ft-col">
               <h4 className="ft-col-title">Legal</h4>

@@ -1,6 +1,6 @@
 'use client'
 import { useRef, useEffect, useState } from 'react'
-import { getConfig } from '../config/site-config'
+import { fetchConfig } from '../config/site-config'
 
 const Ck = () => (
   <svg viewBox="0 0 24 24" className="pr-ck"><path d="M20 6 9 17l-5-5" /></svg>
@@ -76,7 +76,7 @@ export default function Pricing() {
   const gridRef = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
   const [cfg, setCfg] = useState({ pioneerJoined: 15, pioneerTotal: 200 })
-  useEffect(() => { const c = getConfig(); setCfg({ pioneerJoined: c.pioneerJoined, pioneerTotal: c.pioneerTotal }) }, [])
+  useEffect(() => { fetchConfig().then(c => setCfg({ pioneerJoined: c.pioneerJoined, pioneerTotal: c.pioneerTotal })) }, [])
   const JOINED = cfg.pioneerJoined, TOTAL = cfg.pioneerTotal, LEFT = TOTAL - JOINED
 
   useEffect(() => {

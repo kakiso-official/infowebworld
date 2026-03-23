@@ -1,6 +1,6 @@
 'use client'
-import { useState, useEffect } from 'react'
-import { getAllWaitlist, deleteWaitlistEntry, getWaitlistStats, type WaitlistEntry } from '../data/waitlist-storage'
+import { useState, useEffect, useMemo } from 'react'
+import { fetchAllWaitlist, deleteWaitlistEntry, fetchWaitlistStats, type WaitlistEntry } from '../data/waitlist-storage'
 
 const srcColors: Record<string, string> = { hero: '#E8553D', footer: '#3B82F6', cta: '#2FAE6A' }
 
@@ -9,10 +9,13 @@ export default function Waitlist() {
   const [search, setSearch] = useState('')
   const [stats, setStats] = useState<Record<string, number>>({ total: 0 })
 
-  const reload = () => { setEntries(getAllWaitlist()); setStats(getWaitlistStats()) }
-  useEffect(reload, [])
+  const reload = async () => {
+    const [w, s] = await Promise.all([fetchAllWaitlist(), fetchWaitlistStats()])
+    setEntries(w); setStats(s)
+  }
+  useEffect(() => { reload() }, [])
 
-  const filtered = entries.filter(w => !search || w.email.toLowerCase().includes(search.toLowerCase()))
+  const filtered = useMemo(() => entries.filter(w => !search || w.email.toLowerCase().includes(search.toLowerCase())), [entries, search])
 
   const handleDelete = (id: string) => {
     if (!confirm('Remove this email from the waitlist?')) return

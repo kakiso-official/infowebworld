@@ -1,4 +1,5 @@
 const KEY = 'iww_waitlist'
+const API = '/infowebworld/api.php'
 
 export type WaitlistEntry = {
   id: string
@@ -14,6 +15,23 @@ function read(): WaitlistEntry[] {
 
 function write(data: WaitlistEntry[]) {
   localStorage.setItem(KEY, JSON.stringify(data))
+}
+
+/** Fetch waitlist from MySQL, fall back to localStorage */
+export async function fetchAllWaitlist(): Promise<WaitlistEntry[]> {
+  try {
+    const res = await fetch(`${API}?action=waitlist_entries`)
+    if (!res.ok) throw new Error('API error')
+    const rows: { id: number; email: string; source: string; created_at: string }[] = await res.json()
+    return rows.map(r => ({
+      id: String(r.id),
+      email: r.email,
+      source: (r.source || 'hero') as WaitlistEntry['source'],
+      subscribedAt: r.created_at,
+    }))
+  } catch {
+    return getAllWaitlist()
+  }
 }
 
 export function getAllWaitlist(): WaitlistEntry[] {
@@ -32,7 +50,7 @@ export function addToWaitlist(email: string, source: WaitlistEntry['source'] = '
   write(all)
 
   // Also save to MySQL database
-  fetch('/infowebworld/api.php?action=waitlist_join', {
+  fetch(`${API}?action=waitlist_join`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, source }),
@@ -43,6 +61,16 @@ export function addToWaitlist(email: string, source: WaitlistEntry['source'] = '
 
 export function deleteWaitlistEntry(id: string) {
   write(read().filter(w => w.id !== id))
+}
+
+export async function fetchWaitlistStats(): Promise<Record<string, number>> {
+  try {
+    const entries = await fetchAllWaitlist()
+    const bySrc = entries.reduce((a, w) => { a[w.source] = (a[w.source] || 0) + 1; return a }, {} as Record<string, number>)
+    return { total: entries.length, ...bySrc }
+  } catch {
+    return getWaitlistStats()
+  }
 }
 
 export function getWaitlistStats() {

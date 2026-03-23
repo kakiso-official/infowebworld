@@ -1,10 +1,8 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
-import { getAllPosts, deletePost, savePost } from '../data/blog-storage'
-import { getAllAnalytics, getTotalViews, getLast7DaysViews } from '../data/blog-analytics'
+import { fetchAllPosts, apiDeletePost, apiSavePost } from '../data/blog-storage'
 import type { BlogPost } from '../data/blog-types'
-import type { PostAnalytics } from '../data/blog-analytics'
 
 const Pill = ({ color, children }: { color: string; children: React.ReactNode }) => (
   <span style={{ fontSize: '.56rem', fontWeight: 700, padding: '.15rem .5rem', borderRadius: 999, background: `${color}15`, color, textTransform: 'capitalize' }}>{children}</span>
@@ -15,32 +13,27 @@ const Btn = ({ children, ...p }: React.ButtonHTMLAttributes<HTMLButtonElement> &
 
 export default function BlogList() {
   const [posts, setPosts] = useState<BlogPost[]>([])
-  const [analytics, setAnalytics] = useState<Record<string, PostAnalytics>>({})
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState('all')
 
-  const reload = () => { setPosts(getAllPosts()); setAnalytics(getAllAnalytics()) }
-  useEffect(reload, [])
+  const reload = async () => { setPosts(await fetchAllPosts()) }
+  useEffect(() => { reload() }, [])
 
-  const filtered = posts.filter(p => {
+  const filtered = useMemo(() => posts.filter(p => {
     const q = search.toLowerCase()
     const matchQ = !q || p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q)
     const matchF = filter === 'all' || p.status === filter
     return matchQ && matchF
-  })
+  }), [posts, search, filter])
 
-  const remove = (id: string) => { if (!confirm('Delete this post?')) return; deletePost(id); reload() }
-  const togglePublish = (post: BlogPost) => {
-    savePost({ ...post, status: post.status === 'published' ? 'draft' : 'published', updatedAt: new Date().toISOString(), publishedAt: post.status === 'draft' ? new Date().toISOString() : post.publishedAt })
-    reload()
+  const remove = async (id: string) => { if (!confirm('Delete this post?')) return; await apiDeletePost(id); await reload() }
+  const togglePublish = async (post: BlogPost) => {
+    await apiSavePost({ ...post, status: post.status === 'published' ? 'draft' : 'published', updatedAt: new Date().toISOString(), publishedAt: post.status === 'draft' ? new Date().toISOString() : post.publishedAt })
+    await reload()
   }
 
   const published = posts.filter(p => p.status === 'published').length
   const drafts = posts.filter(p => p.status === 'draft').length
-  const totalViews = getTotalViews()
-  const weeklyViews = getLast7DaysViews()
-  const maxWeekly = Math.max(...weeklyViews, 1)
-  const dayLabels = Array.from({ length: 7 }, (_, i) => { const d = new Date(Date.now() - (6 - i) * 864e5); return d.toLocaleDateString('en', { weekday: 'short' }) })
 
   return (
     <div style={{ maxWidth: 1100, margin: '0 auto' }}>
@@ -50,7 +43,7 @@ export default function BlogList() {
           { l: 'Total Posts', v: posts.length, c: '#E8553D' },
           { l: 'Published', v: published, c: '#2FAE6A' },
           { l: 'Drafts', v: drafts, c: '#F59E0B' },
-          { l: 'Total Views', v: totalViews, c: '#3B82F6' },
+          { l: 'Total Posts', v: posts.length, c: '#3B82F6' },
         ].map(s => (
           <div key={s.l} style={{ background: '#fff', borderRadius: 20, border: '1.5px solid var(--h-border)', padding: '1rem 1.15rem', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: s.c }} />
@@ -58,22 +51,6 @@ export default function BlogList() {
             <p style={{ fontSize: '1.4rem', fontWeight: 800, fontFamily: "var(--font-nunito)", color: 'var(--h-heading)', lineHeight: 1 }}>{s.v}</p>
           </div>
         ))}
-      </div>
-
-      {/* Weekly views mini chart */}
-      <div style={{ background: '#fff', borderRadius: 20, border: '1.5px solid var(--h-border)', padding: '1rem 1.25rem', marginBottom: '.85rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '.5rem' }}>
-          <span style={{ fontSize: '.68rem', fontWeight: 800, fontFamily: "var(--font-bricolage)", color: 'var(--h-heading)' }}>Blog Views — Last 7 Days</span>
-          <span style={{ fontSize: '.6rem', fontWeight: 700, color: 'var(--h-accent)' }}>{weeklyViews.reduce((a, b) => a + b, 0)} total</span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'flex-end', gap: '.35rem', height: 48 }}>
-          {weeklyViews.map((v, i) => (
-            <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-              <div style={{ width: '100%', borderRadius: '4px 4px 0 0', height: `${Math.max((v / maxWeekly) * 100, 4)}%`, background: i === 6 ? '#E8553D' : 'var(--h-border)', minHeight: 2 }} />
-              <span style={{ fontSize: '.45rem', fontWeight: 600, color: 'var(--h-muted)' }}>{dayLabels[i]}</span>
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* Toolbar */}
@@ -106,7 +83,6 @@ export default function BlogList() {
               </thead>
               <tbody>
                 {filtered.map(post => {
-                  const a = analytics[post.id]
                   return (
                     <tr key={post.id} style={{ borderBottom: '1px solid var(--h-border-light)' }}>
                       <td style={{ padding: '.65rem 1rem' }}>
@@ -119,8 +95,7 @@ export default function BlogList() {
                       <td style={{ padding: '.65rem 1rem' }}><Pill color="#4361EE">{post.category}</Pill></td>
                       <td style={{ padding: '.65rem 1rem' }}><Pill color={post.status === 'published' ? '#2FAE6A' : '#F59E0B'}>{post.status}</Pill></td>
                       <td style={{ padding: '.65rem 1rem' }}>
-                        <span style={{ fontSize: '.82rem', fontWeight: 800, color: 'var(--h-heading)', fontFamily: "var(--font-nunito)" }}>{a?.views || 0}</span>
-                        {a?.uniqueViews ? <span style={{ fontSize: '.52rem', color: 'var(--h-muted)', display: 'block' }}>{a.uniqueViews} unique</span> : null}
+                        <span style={{ fontSize: '.82rem', fontWeight: 800, color: 'var(--h-heading)', fontFamily: "var(--font-nunito)" }}>—</span>
                       </td>
                       <td style={{ padding: '.65rem 1rem', fontSize: '.68rem', color: 'var(--h-muted)' }}>{post.updatedAt.slice(0, 10)}</td>
                       <td style={{ padding: '.65rem 1rem' }}>

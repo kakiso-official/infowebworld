@@ -45,6 +45,9 @@
 @media (prefers-reduced-motion: reduce) {
   .pr-grid .pr-card { opacity: 1; transform: none; transition: none }
 }
+/* Fallback: show cards after 3s even if JS never hydrates */
+@keyframes pr-fallback { to { opacity: 1; transform: none } }
+.pr-grid .pr-card { animation: pr-fallback 0s 3s forwards }
 
 /* ============================================================
    CARD BASE — pastel gradient wash

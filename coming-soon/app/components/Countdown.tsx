@@ -1,14 +1,11 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { getConfig } from '../config/site-config'
+import { fetchConfig } from '../config/site-config'
 
-function getLaunchDate(): Date {
-  if (typeof window === 'undefined') return new Date('2026-04-25T00:00:00')
-  return new Date(getConfig().launchDate)
-}
+let _launchDate = new Date('2026-04-25T00:00:00')
 
 function getTimeLeft() {
-  const diff = getLaunchDate().getTime() - Date.now()
+  const diff = _launchDate.getTime() - Date.now()
   if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 }
   return {
     days: Math.floor(diff / (1000 * 60 * 60 * 24)),
@@ -31,7 +28,7 @@ export default function Countdown() {
 
   useEffect(() => {
     setHydrated(true)
-    setTime(getTimeLeft())
+    fetchConfig().then(c => { _launchDate = new Date(c.launchDate); setTime(getTimeLeft()) })
     const interval = setInterval(() => setTime(getTimeLeft()), 1000)
     return () => clearInterval(interval)
   }, [])
