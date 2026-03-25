@@ -4,7 +4,7 @@ import Link from 'next/link'
 import CurvedLoop from './CurvedLoop'
 import { addToWaitlist } from '../iww-hq/data/waitlist-storage'
 
-const words = ['Restaurants', 'Agencies', 'SaaS Tools', 'Clinics', 'Startups', 'Consultants', 'Studios', 'Law Firms']
+const words = ['Search', 'Compare', 'Discover', 'Connect', 'Review', ]
 
 export default function Hero() {
   const [current, setCurrent] = useState(0)
@@ -33,14 +33,14 @@ export default function Hero() {
       <div className="cs-content">
 
         <h1 className="cs-h1">
-          The Platform Where<br />
+          Global Growth Platform to Discover <br />
           <span className="cs-h1-line2">
             <span className={`cs-rotate-wrap${jsReady ? ' js-active' : ''}`}>
               {words.map((word, i) => (
                 <span key={word} className={`cs-rotate-word${i === current ? ' active' : ''}`}>{word}</span>
               ))}
             </span>{' '}
-            Get <em>Discovered</em>
+            right Business<em>for your needs...</em>
           </span>
         </h1>
 
