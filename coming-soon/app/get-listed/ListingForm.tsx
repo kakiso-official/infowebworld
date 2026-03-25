@@ -14,6 +14,16 @@ const allCountries = Country.getAllCountries().map(c => ({
   name: c.name, code: c.isoCode, phone: `+${c.phonecode.replace('+', '')}`, flag: c.flag,
 })).sort((a, b) => a.name.localeCompare(b.name))
 
+/* Phone number digit lengths by country code (most common) */
+const phoneDigits: Record<string, number> = {
+  US: 10, CA: 10, IN: 10, GB: 10, AU: 9, DE: 11, FR: 9, NL: 9,
+  SG: 8, AE: 9, JP: 10, KR: 10, BR: 11, MX: 10, IT: 10, ES: 9,
+  CN: 11, RU: 10, ZA: 9, NG: 10, PH: 10, ID: 12, TR: 10, PL: 9,
+  SE: 9, NO: 8, DK: 8, FI: 9, CH: 9, AT: 10, BE: 9, PT: 9,
+  IE: 9, NZ: 9, MY: 10, TH: 9, VN: 10, PK: 10, BD: 10, EG: 10,
+  SA: 9, QA: 8, KW: 8, BH: 8, OM: 8, JO: 9, LB: 8, IL: 9,
+}
+
 const teamSizes = ['Solo/Freelancer', '2-10', '11-50', '51-200', '201-500', '500+']
 const fundingOptions = ['Bootstrapped', 'Pre-Seed', 'Seed', 'Series A', 'Series B', 'Series C+', 'Publicly Traded', 'Profitable']
 const pricingModels = ['Subscription', 'One-time Purchase', 'Freemium', 'Usage-based', 'Contact for Pricing', 'Completely Free']
@@ -968,9 +978,10 @@ export default function ListingForm() {
                       <input
                         type="tel"
                         className="listing-input ld-phone-input"
-                        placeholder="(555) 000-0000"
+                        placeholder={(() => { const max = phoneDigits[form.countryCode] || 10; return '0'.repeat(max) })()}
                         value={form.phone}
-                        onChange={e => setString('phone', e.target.value)}
+                        maxLength={phoneDigits[form.countryCode] || 15}
+                        onChange={e => setString('phone', e.target.value.replace(/\D/g, ''))}
                       />
                     </div>
                   </div>
@@ -1049,19 +1060,32 @@ export default function ListingForm() {
                           )}
                         </div>
                       ))}
-                      {/* Show selected category path */}
-                      {form.categoryName && (
-                        <div style={{
-                          display: 'inline-flex', alignItems: 'center', gap: '.35rem',
-                          padding: '.35rem .75rem', borderRadius: '999px',
-                          background: `${form.categoryColor || '#E8553D'}12`,
-                          color: form.categoryColor || '#E8553D',
-                          fontFamily: 'var(--font-nunito)', fontSize: '.72rem', fontWeight: 700,
-                          width: 'fit-content',
-                        }}>
-                          <Ck /> Selected: {form.categoryName}
-                        </div>
-                      )}
+                      {/* Show selected category path with full hierarchy */}
+                      {form.categoryName && (() => {
+                        const path: string[] = []
+                        catSelections.forEach(selId => {
+                          const c = allCategories.find(cat => cat.id === selId)
+                          if (c) path.push(c.name)
+                        })
+                        return (
+                          <div style={{
+                            display: 'flex', alignItems: 'center', gap: '.25rem', flexWrap: 'wrap',
+                            padding: '.4rem .65rem', borderRadius: 14,
+                            background: `${form.categoryColor || '#E8553D'}08`,
+                            border: `1.5px solid ${form.categoryColor || '#E8553D'}20`,
+                            fontFamily: 'var(--font-nunito)', fontSize: '.68rem', fontWeight: 600,
+                            width: 'fit-content',
+                          }}>
+                            <Ck />
+                            {path.map((name, idx) => (
+                              <span key={idx} style={{ display: 'inline-flex', alignItems: 'center', gap: '.25rem' }}>
+                                {idx > 0 && <span style={{ color: 'var(--h-muted)', fontSize: '.6rem' }}>/</span>}
+                                <span style={{ color: idx === path.length - 1 ? (form.categoryColor || '#E8553D') : 'var(--h-heading)', fontWeight: idx === path.length - 1 ? 700 : 500 }}>{name}</span>
+                              </span>
+                            ))}
+                          </div>
+                        )
+                      })()}
                     </div>
                   )}
                 </div>
@@ -1530,52 +1554,53 @@ export default function ListingForm() {
                 </div>
 
                 {/* ── FAQs ── */}
-                <div className="listing-field" style={{ marginTop: '1rem' }}>
-                  <label className="listing-label" style={{ display: 'flex', alignItems: 'center', gap: '.35rem' }}>
-                    Frequently Asked Questions
-                    <span style={{ fontSize: '.62rem', fontWeight: 600, color: '#2FAE6A', background: '#2FAE6A12', padding: '.1rem .45rem', borderRadius: 999 }}>SEO Boost</span>
-                  </label>
-                  <p style={{ fontFamily: 'var(--font-nunito)', fontSize: '.72rem', color: 'var(--h-muted)', lineHeight: 1.5, margin: '0 0 .65rem' }}>
-                    Add 3-5 common questions about your business. These appear on your listing page and help you rank in Google&apos;s AI Overview and rich snippets.
+                <div className="listing-field" style={{ marginTop: '.5rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', marginBottom: '.35rem' }}>
+                    <label className="listing-label" style={{ margin: 0 }}>FAQs</label>
+                    <span style={{ fontSize: '.58rem', fontWeight: 700, color: '#2FAE6A', background: '#2FAE6A12', padding: '.15rem .5rem', borderRadius: 999, letterSpacing: '.02em' }}>SEO BOOST</span>
+                  </div>
+                  <p style={{ fontFamily: 'var(--font-nunito)', fontSize: '.7rem', color: 'var(--h-muted)', lineHeight: 1.45, margin: '0 0 .5rem' }}>
+                    Common questions help you rank in Google AI Overview and rich snippets.
                   </p>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
-                    {form.faqs.map((faq, i) => (
-                      <div key={i} style={{
-                        background: 'var(--h-bg)', borderRadius: 16, border: '1.5px solid var(--h-border-light)',
-                        padding: '.85rem', position: 'relative',
-                      }}>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '.5rem' }}>
-                          <span style={{ fontFamily: 'var(--font-nunito)', fontSize: '.62rem', fontWeight: 700, color: 'var(--h-accent)', textTransform: 'uppercase', letterSpacing: '.04em' }}>
-                            Q&amp;A {i + 1}
-                          </span>
-                          {form.faqs.length > 1 && (
-                            <button type="button" onClick={() => removeFaq(i)} style={{
-                              width: 22, height: 22, borderRadius: 999, border: '1px solid rgba(239,68,68,.2)',
-                              background: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                              color: '#EF4444', fontSize: '.65rem', fontWeight: 700, padding: 0,
-                            }}><IconX /></button>
-                          )}
-                        </div>
+                  {form.faqs.map((faq, i) => (
+                    <div key={i} style={{
+                      display: 'flex', gap: '.5rem', alignItems: 'flex-start',
+                      marginBottom: '.5rem',
+                    }}>
+                      <div style={{
+                        width: 26, height: 26, borderRadius: 999, background: 'var(--h-accent)',
+                        color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontFamily: 'var(--font-nunito)', fontSize: '.6rem', fontWeight: 800,
+                        flexShrink: 0, marginTop: 4,
+                      }}>{i + 1}</div>
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '.3rem' }}>
                         <input
                           type="text"
                           className="listing-input"
                           placeholder={['What does your company do?', 'Where is your company located?', 'What services do you offer?', 'How can I contact you?', 'What makes you different?'][i] || 'Enter a question'}
                           value={faq.question}
                           onChange={e => updateFaq(i, 'question', e.target.value)}
-                          style={{ marginBottom: '.45rem' }}
+                          style={{ height: 40, fontSize: '.8rem', fontWeight: 600 }}
                         />
                         <textarea
-                          className="listing-input"
-                          placeholder="Write a clear, concise answer (50-70 words works best for SEO)"
+                          className="listing-input listing-textarea"
+                          placeholder="Concise answer (50-70 words ideal)"
                           value={faq.answer}
                           onChange={e => updateFaq(i, 'answer', e.target.value)}
-                          rows={3}
-                          style={{ resize: 'vertical', minHeight: 70 }}
+                          rows={2}
+                          style={{ minHeight: 54, fontSize: '.78rem' }}
                         />
                       </div>
-                    ))}
-                  </div>
+                      {form.faqs.length > 1 && (
+                        <button type="button" onClick={() => removeFaq(i)} style={{
+                          width: 24, height: 24, borderRadius: 999, border: '1px solid rgba(239,68,68,.15)',
+                          background: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          flexShrink: 0, marginTop: 4, padding: 0,
+                        }}><IconX /></button>
+                      )}
+                    </div>
+                  ))}
 
                   {form.faqs.length < 5 && (
                     <button
@@ -1583,13 +1608,13 @@ export default function ListingForm() {
                       onClick={addFaq}
                       style={{
                         display: 'inline-flex', alignItems: 'center', gap: '.3rem',
-                        marginTop: '.5rem', padding: '.4rem .75rem', borderRadius: 999,
+                        marginTop: '.15rem', marginLeft: 34, padding: '.3rem .65rem', borderRadius: 999,
                         border: '1.5px dashed var(--h-border)', background: 'transparent',
-                        cursor: 'pointer', fontFamily: 'var(--font-nunito)', fontSize: '.72rem',
+                        cursor: 'pointer', fontFamily: 'var(--font-nunito)', fontSize: '.7rem',
                         fontWeight: 700, color: 'var(--h-accent)', transition: 'all .2s',
                       }}
                     >
-                      <IconPlus /> Add Question ({form.faqs.length}/5)
+                      <IconPlus /> Add Q&amp;A ({form.faqs.length}/5)
                     </button>
                   )}
                 </div>
@@ -1973,7 +1998,8 @@ export default function ListingForm() {
                               email: form.email, phoneCode: form.phoneCode, phone: form.phone,
                               website: form.website, category: form.categoryName,
                               categorySlug: form.categorySlug, categoryColor: form.categoryColor,
-                              categoryIcon: form.categoryIcon, country: form.country, city: form.city,
+                              categoryIcon: form.categoryIcon,
+                              country: form.country, state: form.state, city: form.city,
                               tagline: form.tagline, description: form.description,
                               logoUrl: form.logoUrl, screenshots: form.screenshots,
                               demoVideo: form.demoVideo,
@@ -1983,6 +2009,7 @@ export default function ListingForm() {
                               founded: form.founded, employees: form.employees,
                               funding: form.funding, hqLocation: form.hqLocation,
                               linkedin: form.linkedin, twitter: form.twitter, facebook: form.facebook,
+                              faqs: form.faqs.filter(f => f.question.trim() && f.answer.trim()),
                               plan: form.plan,
                               paypalOrderId: 'SANDBOX-TEST-' + Date.now(),
                               paymentStatus: 'completed',

@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
 
-    const required = ['companyName', 'contactName', 'email', 'category', 'country', 'tagline']
+    const required = ['companyName', 'contactName', 'email', 'country', 'tagline']
     for (const field of required) {
       if (!body[field] || (typeof body[field] === 'string' && !body[field].trim())) {
         return Response.json({ error: `${field} is required` }, { status: 400 })
@@ -57,10 +57,11 @@ export async function POST(request: NextRequest) {
 
     // Look up category_id
     let categoryId: number | null = null
-    if (body.category) {
+    if (body.category || body.categorySlug) {
+      const catKey = body.categorySlug || body.category
       const cat = await queryOne(
-        'SELECT id FROM categories WHERE slug = ? OR id = ? LIMIT 1',
-        [body.category, body.category]
+        'SELECT id FROM categories WHERE slug = ? OR name = ? OR id = ? LIMIT 1',
+        [catKey, catKey, catKey]
       )
       categoryId = cat ? Number(cat.id) : null
     }
@@ -101,27 +102,43 @@ export async function POST(request: NextRequest) {
 
     await execute(
       `INSERT INTO submissions (
-        uuid, slug, company_name, contact_name, email, phone, website,
-        tagline, description, logo_url, category_id, country_id, city, state, plan_id,
-        features, integrations, pricing_tiers, screenshots, faqs,
+        uuid, slug, company_name, contact_name, email, phone_code, phone, website,
+        category_id, country_id, city, state, tagline, description,
+        founded_year, team_size, plan_id,
+        logo_url, screenshots, demo_video,
+        features, integrations, pricing_model, pricing_tiers,
+        funding, hq_location, linkedin, twitter, facebook, faqs,
         paypal_order_id, payment_status, status, ip_address
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         uuid, slug,
         body.companyName.trim(),
         body.contactName.trim(),
         body.email.trim().toLowerCase(),
+        body.phoneCode || '+1',
         body.phone || null,
         body.website || null,
-        body.tagline.trim(),
-        body.description || null,
-        body.logoUrl || null,
         categoryId,
         countryId,
         body.city || null,
         body.state || null,
+        body.tagline.trim(),
+        body.description || null,
+        body.founded ? Number(body.founded) : null,
+        body.employees || null,
         planId,
-        features, integrations, pricingTiers, screenshots, faqs,
+        body.logoUrl || null,
+        screenshots,
+        body.demoVideo || null,
+        features, integrations,
+        body.pricingModel || null,
+        pricingTiers,
+        body.funding || null,
+        body.hqLocation || null,
+        body.linkedin || null,
+        body.twitter || null,
+        body.facebook || null,
+        faqs,
         body.paypalOrderId || null,
         paymentStatus,
         status,

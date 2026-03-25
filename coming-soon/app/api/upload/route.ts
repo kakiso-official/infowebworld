@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server'
+import { put } from '@vercel/blob'
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,17 +23,20 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: 'Invalid file type. Allowed: JPEG, PNG, WebP, SVG, GIF.' }, { status: 400 })
     }
 
-    // Placeholder: Vercel Blob storage integration needed
-    // For now, return a placeholder response
-    const placeholderUrl = `/uploads/${type || 'general'}/${Date.now()}-${file.name}`
+    // Upload to Vercel Blob storage
+    const folder = type === 'logo' ? 'logos' : type === 'screenshot' ? 'screenshots' : 'uploads'
+    const ext = file.name.split('.').pop() || 'jpg'
+    const pathname = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
 
-    return Response.json({
-      ok: true,
-      url: placeholderUrl,
-      message: 'Upload endpoint placeholder. Vercel Blob storage integration required.',
+    const blob = await put(pathname, file, {
+      access: 'public',
+      addRandomSuffix: false,
     })
+
+    return Response.json({ ok: true, url: blob.url })
   } catch (err) {
     console.error('POST /api/upload error:', err)
-    return Response.json({ error: 'Server error' }, { status: 500 })
+    const message = err instanceof Error ? err.message : 'Server error'
+    return Response.json({ error: `Upload failed: ${message}` }, { status: 500 })
   }
 }
