@@ -18,6 +18,62 @@ type DashData = {
   waitlistBySrc: Record<string, number>
 }
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+function transformApiResponse(raw: any): DashData {
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+
+  // dailyViews comes as [{date, views}] — extract to number[] + dayLabels
+  const dvArr: any[] = raw.dailyViews || []
+  const dailyViews = dvArr.map((d: any) => Number(d.views || 0))
+  const dayLabels = dvArr.map((d: any) => {
+    const dt = new Date(d.date)
+    return days[dt.getUTCDay()] || ''
+  })
+
+  // topPages: {page, views} → {page, cnt}
+  const topPages = (raw.topPages || []).map((p: any) => ({ page: p.page, cnt: Number(p.views || p.cnt || 0) }))
+
+  // topReferrers: {referrer, count} → {ref, cnt}
+  const topReferrers = (raw.topReferrers || []).map((r: any) => ({ ref: r.referrer || r.ref || '', cnt: Number(r.count || r.cnt || 0) }))
+
+  // byPlan: [{plan, count}] → Record<string, number>
+  const byPlan: Record<string, number> = {}
+  for (const p of (raw.byPlan || [])) byPlan[p.plan || p.slug || ''] = Number(p.count || 0)
+
+  // byCat: [{category, count}] → [{name, cnt}]
+  const byCat = (raw.byCat || []).map((c: any) => ({ name: c.category || c.name || '', cnt: Number(c.count || c.cnt || 0) }))
+
+  // recent: map category_name → category
+  const recent = (raw.recent || []).map((s: any) => ({ ...s, category: s.category_name || s.category || '' }))
+
+  // waitlistBySrc: [{source, count}] → Record<string, number>
+  const waitlistBySrc: Record<string, number> = {}
+  for (const w of (raw.waitlistBySrc || [])) waitlistBySrc[w.source || 'direct'] = Number(w.count || 0)
+
+  return {
+    stats: {
+      totalSubmissions: Number(raw.totalSubmissions ?? 0),
+      paidMembers: Number(raw.paidMembers ?? 0),
+      pendingSubmissions: Number(raw.pendingSubmissions ?? 0),
+      confirmedSubmissions: Number(raw.confirmedSubmissions ?? 0),
+      waitlistTotal: Number(raw.waitlistTotal ?? 0),
+      totalPageViews: Number(raw.totalPageViews ?? 0),
+      todayViews: Number(raw.todayViews ?? 0),
+      todayUnique: Number(raw.todayUnique ?? 0),
+      totalUnique: Number(raw.totalUnique ?? 0),
+    },
+    dailyViews,
+    dayLabels,
+    topPages,
+    topReferrers,
+    byPlan,
+    byCat,
+    recent,
+    waitlistBySrc,
+  }
+}
+/* eslint-enable @typescript-eslint/no-explicit-any */
+
 const statusColors: Record<string, string> = { paid: '#2FAE6A', confirmed: '#3B82F6', pending: '#F59E0B', active: '#2FAE6A', rejected: '#EF4444' }
 
 const Card = ({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) => (
@@ -40,7 +96,7 @@ export default function Dashboard() {
   const [err, setErr] = useState('')
 
   useEffect(() => {
-    fetch(API).then(r => r.json()).then(setD).catch(() => setErr('Could not load dashboard data. Check database connection.'))
+    fetch(API).then(r => r.json()).then(raw => setD(transformApiResponse(raw))).catch(() => setErr('Could not load dashboard data. Check database connection.'))
   }, [])
 
   if (err) return <div style={{ maxWidth: 600, margin: '2rem auto', padding: '2rem', background: '#FDDDD6', borderRadius: 20, textAlign: 'center', color: '#E8553D', fontWeight: 700, fontSize: '.85rem' }}>{err}</div>

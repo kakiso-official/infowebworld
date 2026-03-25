@@ -93,7 +93,8 @@ export async function fetchLaunchedCategories(): Promise<Category[]> {
   try {
     const res = await fetch(`${API}/categories`)
     if (!res.ok) throw new Error('API error')
-    const rows: Record<string, unknown>[] = await res.json()
+    const json = await res.json()
+    const rows: Record<string, unknown>[] = json.data ?? json.categories ?? json
     return rows.map(mapRow)
   } catch {
     return []
@@ -128,7 +129,8 @@ export async function fetchAllCategories(): Promise<Category[]> {
   try {
     const res = await fetch(`${API}/admin/categories`)
     if (!res.ok) throw new Error('API error')
-    const rows: Record<string, unknown>[] = await res.json()
+    const json = await res.json()
+    const rows: Record<string, unknown>[] = json.categories ?? json.data ?? json
     return rows.map(mapRow)
   } catch {
     return []

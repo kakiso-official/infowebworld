@@ -50,7 +50,8 @@ export async function fetchConfig(): Promise<SiteConfig> {
   try {
     const res = await fetch(`${API}/settings`, { cache: 'no-store' })
     if (!res.ok) throw new Error('fail')
-    const data = await res.json()
+    const json = await res.json()
+    const data = json.data ?? json
     const cfg: SiteConfig = {
       pioneerJoined: Number(data.pioneerJoined ?? defaults.pioneerJoined),
       pioneerTotal: Number(data.pioneerTotal ?? defaults.pioneerTotal),
@@ -106,7 +107,8 @@ export async function fetchLiveStats(): Promise<{ waitlistCount: number; submiss
   try {
     const res = await fetch(`${API}/stats/live`, { cache: 'no-store' })
     if (!res.ok) throw new Error('fail')
-    return await res.json()
+    const json = await res.json()
+    return json.data ?? json
   } catch {
     return { waitlistCount: 0, submissionCount: 0, paidCount: 0 }
   }

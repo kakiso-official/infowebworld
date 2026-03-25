@@ -110,11 +110,43 @@ const deviceColors: Record<string, string> = { desktop: '#3B82F6', mobile: '#E85
 const srcIconMap: Record<string, string> = { hero: 'target', footer: 'arrowDown', cta: 'megaphone', popup: 'msgCircle', referral: 'link' }
 const srcColors: Record<string, string> = { hero: '#E8553D', footer: '#3B82F6', cta: '#F59E0B', popup: '#8B5CF6', referral: '#2FAE6A' }
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+function transformApiResponse(raw: any): DashData {
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  const dvArr: any[] = raw.dailyViews || []
+  const dailyViews = dvArr.map((d: any) => Number(d.views || d.cnt || 0))
+  const dayLabels = dvArr.map((d: any) => { const dt = new Date(d.date); return days[dt.getUTCDay()] || '' })
+  const topPages = (raw.topPages || []).map((p: any) => ({ page: p.page, cnt: Number(p.views || p.cnt || 0) }))
+  const topReferrers = (raw.topReferrers || []).map((r: any) => ({ ref: r.referrer || r.ref || '', cnt: Number(r.count || r.cnt || 0) }))
+  const byPlan: Record<string, number> = {}
+  for (const p of (raw.byPlan || [])) byPlan[p.plan || p.slug || ''] = Number(p.count || 0)
+  const byCat = (raw.byCat || []).map((c: any) => ({ name: c.category || c.name || '', cnt: Number(c.count || c.cnt || 0) }))
+  const recent = (raw.recent || []).map((s: any) => ({ ...s, category: s.category_name || s.category || '' }))
+  const waitlistBySrc: Record<string, number> = {}
+  for (const w of (raw.waitlistBySrc || [])) waitlistBySrc[w.source || 'direct'] = Number(w.count || 0)
+  const devices: DeviceRow[] = (raw.devices || []).map((d: any) => ({ device_type: d.device || d.device_type || 'unknown', cnt: Number(d.count || d.cnt || 0), uniques: Number(d.uniques || 0) }))
+  const countries: CountryRow[] = (raw.countries || []).map((c: any) => ({ country_code: c.country || c.country_code || 'Unknown', cnt: Number(c.count || c.cnt || 0), uniques: Number(c.uniques || 0) }))
+  const utmSources: UtmRow[] = (raw.utmSources || []).map((u: any) => ({ utm_source: u.source || u.utm_source || '', utm_medium: u.medium || u.utm_medium || '', cnt: Number(u.count || u.cnt || 0), uniques: Number(u.uniques || 0) }))
+  return {
+    stats: {
+      totalPageViews: Number(raw.totalPageViews ?? 0), todayViews: Number(raw.todayViews ?? 0),
+      todayUnique: Number(raw.todayUnique ?? 0), totalUnique: Number(raw.totalUnique ?? 0),
+      totalSubmissions: Number(raw.totalSubmissions ?? 0), paidMembers: Number(raw.paidMembers ?? 0),
+      waitlistTotal: Number(raw.waitlistTotal ?? 0), pendingSubmissions: Number(raw.pendingSubmissions ?? 0),
+      confirmedSubmissions: Number(raw.confirmedSubmissions ?? 0),
+    },
+    dailyViews, dayLabels, topPages, topReferrers, byPlan, byCat, recent, waitlistBySrc,
+    blogStats: raw.blogStats || { totalViews: 0, totalShares: 0, avgReadTime: 0, totalPosts: 0, topPosts: [] },
+    devices, countries, utmSources,
+  }
+}
+/* eslint-enable @typescript-eslint/no-explicit-any */
+
 export default function Analytics() {
   const [d, setD] = useState<DashData | null>(null)
   const [tab, setTab] = useState<'overview' | 'traffic' | 'content'>('overview')
 
-  useEffect(() => { fetch(API).then(r => r.json()).then(setD).catch(() => {}) }, [])
+  useEffect(() => { fetch(API).then(r => r.json()).then(raw => setD(transformApiResponse(raw))).catch(() => {}) }, [])
 
   const computed = useMemo(() => {
     if (!d) return null

@@ -66,7 +66,8 @@ export async function fetchAllPosts(): Promise<BlogPost[]> {
   try {
     const res = await fetch(`${API}/admin/blog`)
     if (!res.ok) throw new Error('API error')
-    const rows: Record<string, unknown>[] = await res.json()
+    const json = await res.json()
+    const rows: Record<string, unknown>[] = json.posts ?? json.data ?? json
     return rows.map(mapRow)
   } catch {
     return []
@@ -77,7 +78,8 @@ export async function fetchPublishedPosts(): Promise<BlogPost[]> {
   try {
     const res = await fetch(`${API}/blog`)
     if (!res.ok) throw new Error('API error')
-    const rows: Record<string, unknown>[] = await res.json()
+    const json = await res.json()
+    const rows: Record<string, unknown>[] = json.data ?? json.posts ?? json
     return rows.map(mapRow)
   } catch {
     return []
@@ -94,8 +96,9 @@ export async function fetchPostBySlug(slug: string): Promise<BlogPost | null> {
   try {
     const res = await fetch(`${API}/blog/${encodeURIComponent(slug)}`)
     if (!res.ok) return null
-    const data = await res.json()
-    if (data.error) return null
+    const json = await res.json()
+    if (json.error) return null
+    const data = json.data ?? json.post ?? json
     return mapRow(data)
   } catch { return null }
 }
