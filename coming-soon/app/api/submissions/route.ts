@@ -157,6 +157,7 @@ export async function POST(request: NextRequest) {
     return Response.json({ ok: true, uuid, slug, message: 'Submission received' }, { status: 201 })
   } catch (err) {
     console.error('POST /api/submissions error:', err)
-    return Response.json({ error: 'Server error' }, { status: 500 })
+    const msg = err instanceof Error ? err.message : String(err)
+    return Response.json({ error: 'Server error', detail: msg }, { status: 500 })
   }
 }
