@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect, useMemo } from 'react'
-import { fetchAllSubmissions, updateSubmissionStatus, deleteSubmission, fetchSubmissionStats, type RealSubmission } from '../data/submissions-storage'
+import { fetchAllSubmissions, updateSubmissionStatus, deleteSubmission, fetchSubmissionStats, type RealSubmission, type FaqItem } from '../data/submissions-storage'
 
 const statusColors: Record<string, string> = { paid: '#2FAE6A', confirmed: '#3B82F6', pending: '#F59E0B', rejected: '#EF4444', active: '#14B8A6', suspended: '#9CA3AF' }
 const Pill = ({ color, children }: { color: string; children: React.ReactNode }) => (
@@ -8,7 +8,15 @@ const Pill = ({ color, children }: { color: string; children: React.ReactNode })
 )
 
 /* ── Detail Modal ── */
-function DetailModal({ sub, onClose, onStatusChange }: { sub: RealSubmission; onClose: () => void; onStatusChange: (id: string, s: RealSubmission['status']) => void }) {
+function DetailModal({ sub, onClose, onStatusChange, onFaqSave }: { sub: RealSubmission; onClose: () => void; onStatusChange: (id: string, s: RealSubmission['status']) => void; onFaqSave: (id: string, faqs: FaqItem[]) => void }) {
+  const [editingFaqs, setEditingFaqs] = useState(false)
+  const [faqs, setFaqs] = useState<FaqItem[]>(sub.faqs.length > 0 ? sub.faqs : [{ question: '', answer: '' }])
+  const updateFaqField = (idx: number, field: keyof FaqItem, val: string) => {
+    const next = [...faqs]; next[idx] = { ...next[idx], [field]: val }; setFaqs(next)
+  }
+  const addFaqRow = () => { if (faqs.length < 8) setFaqs([...faqs, { question: '', answer: '' }]) }
+  const removeFaqRow = (idx: number) => { if (faqs.length > 1) setFaqs(faqs.filter((_, i) => i !== idx)) }
+  const saveFaqs = () => { onFaqSave(sub.id, faqs.filter(f => f.question.trim() && f.answer.trim())); setEditingFaqs(false) }
   const lbl: React.CSSProperties = { fontSize: '.55rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.05em', color: 'var(--h-muted)', marginBottom: '.15rem' }
   const val: React.CSSProperties = { fontSize: '.82rem', fontWeight: 500, color: 'var(--h-heading)', wordBreak: 'break-word' }
   const Field = ({ label, value }: { label: string; value: string }) => value ? (
@@ -115,6 +123,41 @@ function DetailModal({ sub, onClose, onStatusChange }: { sub: RealSubmission; on
           <Field label="Twitter / X" value={sub.twitter} />
           <Field label="Facebook" value={sub.facebook} />
 
+          {/* FAQ Section */}
+          <div style={{ fontSize: '.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--h-accent)', marginBottom: '.25rem', marginTop: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span>FAQs ({sub.faqs.length})</span>
+            <button onClick={() => setEditingFaqs(!editingFaqs)} style={{ fontSize: '.55rem', fontWeight: 700, padding: '.15rem .5rem', borderRadius: 999, border: '1.5px solid var(--h-accent)', background: editingFaqs ? 'var(--h-accent)' : 'transparent', color: editingFaqs ? '#fff' : 'var(--h-accent)', cursor: 'pointer', fontFamily: 'var(--font-nunito)' }}>
+              {editingFaqs ? 'Cancel' : 'Edit FAQs'}
+            </button>
+          </div>
+          {!editingFaqs ? (
+            sub.faqs.length > 0 ? sub.faqs.map((faq, i) => (
+              <div key={i} style={{ padding: '.5rem 0', borderBottom: '1px solid var(--h-border-light)' }}>
+                <div style={{ fontSize: '.72rem', fontWeight: 700, color: 'var(--h-heading)', marginBottom: '.1rem' }}>Q: {faq.question}</div>
+                <div style={{ fontSize: '.7rem', color: 'var(--h-body)', lineHeight: 1.5 }}>A: {faq.answer}</div>
+              </div>
+            )) : <div style={{ padding: '.5rem 0', fontSize: '.72rem', color: 'var(--h-muted)' }}>No FAQs added yet. Click &ldquo;Edit FAQs&rdquo; to add.</div>
+          ) : (
+            <div style={{ padding: '.5rem 0' }}>
+              {faqs.map((faq, i) => (
+                <div key={i} style={{ background: 'var(--h-bg)', borderRadius: 12, padding: '.6rem', marginBottom: '.5rem', border: '1px solid var(--h-border-light)', position: 'relative' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '.35rem' }}>
+                    <span style={{ fontSize: '.55rem', fontWeight: 700, color: 'var(--h-accent)', textTransform: 'uppercase' }}>Q&A {i + 1}</span>
+                    {faqs.length > 1 && <button onClick={() => removeFaqRow(i)} style={{ fontSize: '.55rem', fontWeight: 700, color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>Remove</button>}
+                  </div>
+                  <input type="text" placeholder="Question..." value={faq.question} onChange={e => updateFaqField(i, 'question', e.target.value)}
+                    style={{ width: '100%', padding: '.4rem .6rem', borderRadius: 8, border: '1.5px solid var(--h-border)', fontSize: '.72rem', fontFamily: 'var(--font-nunito)', marginBottom: '.35rem', outline: 'none', boxSizing: 'border-box' }} />
+                  <textarea placeholder="Answer..." value={faq.answer} onChange={e => updateFaqField(i, 'answer', e.target.value)} rows={2}
+                    style={{ width: '100%', padding: '.4rem .6rem', borderRadius: 8, border: '1.5px solid var(--h-border)', fontSize: '.72rem', fontFamily: 'var(--font-nunito)', resize: 'vertical', outline: 'none', boxSizing: 'border-box' }} />
+                </div>
+              ))}
+              <div style={{ display: 'flex', gap: '.4rem' }}>
+                {faqs.length < 8 && <button onClick={addFaqRow} style={{ fontSize: '.6rem', fontWeight: 700, padding: '.25rem .6rem', borderRadius: 999, border: '1.5px dashed var(--h-border)', background: 'transparent', cursor: 'pointer', color: 'var(--h-accent)', fontFamily: 'var(--font-nunito)' }}>+ Add Q&A</button>}
+                <button onClick={saveFaqs} style={{ fontSize: '.6rem', fontWeight: 700, padding: '.25rem .6rem', borderRadius: 999, border: '1.5px solid #2FAE6A', background: '#2FAE6A', color: '#fff', cursor: 'pointer', fontFamily: 'var(--font-nunito)' }}>Save FAQs</button>
+              </div>
+            </div>
+          )}
+
           {/* Plan + Meta Section */}
           <div style={{ fontSize: '.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--h-accent)', marginBottom: '.25rem', marginTop: '1.25rem' }}>Plan & Status</div>
           <Field label="Selected Plan" value={sub.plan === 'founding' ? 'Founding Company — $240 Lifetime' : sub.plan === 'early-adopter' ? 'Early Adopter — $99/yr' : 'Standard — $240/yr'} />
@@ -182,7 +225,11 @@ export default function Submissions() {
   return (
     <div style={{ maxWidth: 1100, margin: '0 auto' }}>
       {/* Detail Modal */}
-      {detail && <DetailModal sub={detail} onClose={() => setDetail(null)} onStatusChange={handleStatusChange} />}
+      {detail && <DetailModal sub={detail} onClose={() => setDetail(null)} onStatusChange={handleStatusChange} onFaqSave={async (id, faqs) => {
+        await fetch(`/api/submissions/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ faqs }) }).catch(() => {})
+        await reload()
+        if (detail?.id === id) setDetail({ ...detail, faqs })
+      }} />}
 
       {/* Stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '.65rem', marginBottom: '.85rem' }}>

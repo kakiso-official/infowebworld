@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { fetchListingBySlug } from '../iww-hq/data/submissions-storage'
-import type { RealSubmission, PricingTier } from '../iww-hq/data/submissions-storage'
+import type { RealSubmission, PricingTier, FaqItem } from '../iww-hq/data/submissions-storage'
 
 const I = ({ d, size = 18, color = 'currentColor', sw = 1.5 }: { d: string; size?: number; color?: string; sw?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">{d.split('|').map((p, i) => <path key={i} d={p} />)}</svg>
@@ -36,6 +36,42 @@ const ic = {
   twitter: 'M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z',
   facebook: 'M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z',
   arrow: 'M5 12h14|M12 5l7 7-7 7',
+  helpCircle: 'M12 2a10 10 0 100 20 10 10 0 000-20z|M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3|M12 17h.01',
+  chevronDown: 'M6 9l6 6 6-6',
+}
+
+/* ── FAQ Accordion ── */
+function FaqSection({ faqs, color }: { faqs: FaqItem[]; color: string }) {
+  const [openIdx, setOpenIdx] = useState<number | null>(0)
+  if (!faqs || faqs.length === 0) return null
+
+  return (
+    <div className="ld-card ld-section">
+      <h2 className="ld-h3"><I d={ic.helpCircle} size={16} color={color} sw={2} /> Frequently Asked Questions</h2>
+      <div className="ld-faq-list">
+        {faqs.map((faq, i) => {
+          const isOpen = openIdx === i
+          return (
+            <div key={i} className={`ld-faq-item${isOpen ? ' ld-faq-item--open' : ''}`}>
+              <button
+                className="ld-faq-q"
+                onClick={() => setOpenIdx(isOpen ? null : i)}
+                aria-expanded={isOpen}
+              >
+                <span>{faq.question}</span>
+                <span className={`ld-faq-chevron${isOpen ? ' ld-faq-chevron--open' : ''}`}>
+                  <I d={ic.chevronDown} size={14} sw={2.5} />
+                </span>
+              </button>
+              <div className={`ld-faq-a${isOpen ? ' ld-faq-a--open' : ''}`}>
+                <p>{faq.answer}</p>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
 }
 
 export default function ListingDetailPage({ slug: slugProp }: { slug?: string }) {
@@ -57,83 +93,7 @@ export default function ListingDetailPage({ slug: slugProp }: { slug?: string })
     })
   }, [])
 
-  useEffect(() => {
-    if (!listing) return
-    document.title = `${listing.companyName} | InfoWebWorld`
-    const m = (n: string, c: string) => {
-      let el = document.querySelector(`meta[name="${n}"]`) || document.querySelector(`meta[property="${n}"]`)
-      if (!el) { el = document.createElement('meta'); el.setAttribute(n.startsWith('og:') ? 'property' : 'name', n); document.head.appendChild(el) }
-      el.setAttribute('content', c)
-    }
-    m('description', listing.tagline || `${listing.companyName} on InfoWebWorld`)
-    m('og:title', listing.companyName); m('og:description', listing.tagline || '')
-    if (listing.logoUrl) m('og:image', listing.logoUrl)
-  }, [listing])
-
-  /* ── JSON-LD Structured Data (LocalBusiness + BreadcrumbList) ── */
-  useEffect(() => {
-    if (!listing) return
-
-    const L = listing
-    const listingUrl = `https://infowebworld.com/listing/${L.slug}`
-
-    const businessSchema: Record<string, unknown> = {
-      '@context': 'https://schema.org',
-      '@type': 'LocalBusiness',
-      name: L.companyName,
-      description: L.description || L.tagline || `${L.companyName} on InfoWebWorld`,
-      url: L.website || listingUrl,
-      image: L.logoUrl || undefined,
-    }
-    if (L.hqLocation || L.city || L.country) {
-      businessSchema.address = {
-        '@type': 'PostalAddress',
-        addressLocality: L.city || undefined,
-        addressCountry: L.country || undefined,
-        streetAddress: L.hqLocation || undefined,
-      }
-    }
-    if (L.phone) businessSchema.telephone = `${L.phoneCode}${L.phone}`
-    if (L.email) businessSchema.email = L.email
-    if (L.founded) businessSchema.foundingDate = L.founded
-    if (L.employees) businessSchema.numberOfEmployees = { '@type': 'QuantitativeValue', value: L.employees }
-
-    const sameAs: string[] = []
-    if (L.website) sameAs.push(L.website)
-    if (L.linkedin) sameAs.push(L.linkedin)
-    if (L.twitter) sameAs.push(L.twitter)
-    if (L.facebook) sameAs.push(L.facebook)
-    if (sameAs.length) businessSchema.sameAs = sameAs
-
-    const breadcrumbItems: { '@type': string; position: number; name: string; item?: string }[] = [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://infowebworld.com' },
-      { '@type': 'ListItem', position: 2, name: L.category || 'Categories', item: L.categorySlug ? `https://infowebworld.com/category/${L.categorySlug}` : 'https://infowebworld.com/categories' },
-      { '@type': 'ListItem', position: 3, name: L.companyName },
-    ]
-
-    const breadcrumbSchema = {
-      '@context': 'https://schema.org',
-      '@type': 'BreadcrumbList',
-      itemListElement: breadcrumbItems,
-    }
-
-    const scriptBusiness = document.createElement('script')
-    scriptBusiness.type = 'application/ld+json'
-    scriptBusiness.id = 'schema-listing-business'
-    scriptBusiness.text = JSON.stringify(businessSchema)
-    document.head.appendChild(scriptBusiness)
-
-    const scriptBreadcrumb = document.createElement('script')
-    scriptBreadcrumb.type = 'application/ld+json'
-    scriptBreadcrumb.id = 'schema-listing-breadcrumb'
-    scriptBreadcrumb.text = JSON.stringify(breadcrumbSchema)
-    document.head.appendChild(scriptBreadcrumb)
-
-    return () => {
-      document.getElementById('schema-listing-business')?.remove()
-      document.getElementById('schema-listing-breadcrumb')?.remove()
-    }
-  }, [listing])
+  /* SEO meta + JSON-LD now handled server-side in app/company/[slug]/page.tsx */
 
   if (loading) return null
 
@@ -322,6 +282,9 @@ export default function ListingDetailPage({ slug: slugProp }: { slug?: string })
                 {L.pricingModel && <p className="ld-body-sm" style={{ marginTop: 10 }}><I d={ic.tag} size={11} color="#9A9590" sw={2} /> Model: {L.pricingModel}</p>}
               </div>
             )}
+
+            {/* FAQ Section */}
+            <FaqSection faqs={L.faqs} color={color} />
           </div>
 
           {/* ── RIGHT: Sidebar ── */}
@@ -559,6 +522,30 @@ export default function ListingDetailPage({ slug: slugProp }: { slug?: string })
 
         /* ── Back link ── */
         .ld-back { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-nunito); font-size: .72rem; font-weight: 700; color: var(--h-accent); margin-top: 1.25rem; text-decoration: none }
+
+        /* ── FAQ Accordion ── */
+        .ld-faq-list { display: flex; flex-direction: column; gap: 0 }
+        .ld-faq-item { border-bottom: 1px solid var(--h-border-light) }
+        .ld-faq-item:last-child { border-bottom: none }
+        .ld-faq-q {
+          width: 100%; display: flex; justify-content: space-between; align-items: center;
+          gap: 10px; padding: .75rem 0; background: none; border: none; cursor: pointer;
+          font-family: var(--font-nunito); font-size: clamp(.82rem, 1.8vw, .9rem);
+          font-weight: 700; color: var(--h-heading); text-align: left; line-height: 1.4;
+          transition: color .2s;
+        }
+        .ld-faq-q:hover { color: var(--h-accent) }
+        .ld-faq-chevron { display: flex; flex-shrink: 0; transition: transform .25s ease }
+        .ld-faq-chevron--open { transform: rotate(180deg) }
+        .ld-faq-a {
+          max-height: 0; overflow: hidden; transition: max-height .3s ease, padding .3s ease;
+          padding: 0 0 0 0;
+        }
+        .ld-faq-a--open { max-height: 300px; padding: 0 0 .75rem 0 }
+        .ld-faq-a p {
+          font-family: var(--font-nunito); font-size: clamp(.78rem, 1.6vw, .85rem);
+          color: var(--h-body); line-height: 1.65; margin: 0;
+        }
 
         /* ── Lightbox ── */
         .ld-lightbox { position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,.8); display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 1rem }

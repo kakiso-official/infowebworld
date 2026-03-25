@@ -1,19 +1,10 @@
-import { Suspense } from 'react'
-import Navbar from '../../components/Navbar'
-import Footer from '../../components/Footer'
-import ListingDetailPage from '../ListingDetailPage'
+import { redirect } from 'next/navigation'
 
-export default async function ListingRoute({
+export default async function ListingSlugRedirect({
   params,
 }: {
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  return (
-    <>
-      <Navbar />
-      <Suspense><ListingDetailPage slug={slug} /></Suspense>
-      <Footer />
-    </>
-  )
+  redirect(`/company/${slug}`)
 }

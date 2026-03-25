@@ -93,6 +93,7 @@ export async function POST(request: NextRequest) {
     const integrations = body.integrations ? JSON.stringify(body.integrations) : null
     const pricingTiers = body.pricingTiers ? JSON.stringify(body.pricingTiers) : null
     const screenshots = body.screenshots ? JSON.stringify(body.screenshots) : null
+    const faqs = body.faqs ? JSON.stringify(body.faqs) : null
 
     const isPaid = body.paypalOrderId ? true : false
     const paymentStatus = isPaid ? 'completed' : 'pending'
@@ -102,9 +103,9 @@ export async function POST(request: NextRequest) {
       `INSERT INTO submissions (
         uuid, slug, company_name, contact_name, email, phone, website,
         tagline, description, logo_url, category_id, country_id, plan_id,
-        features, integrations, pricing_tiers, screenshots,
+        features, integrations, pricing_tiers, screenshots, faqs,
         paypal_order_id, payment_status, status, ip_address
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         uuid, slug,
         body.companyName.trim(),
@@ -118,7 +119,7 @@ export async function POST(request: NextRequest) {
         categoryId,
         countryId,
         planId,
-        features, integrations, pricingTiers, screenshots,
+        features, integrations, pricingTiers, screenshots, faqs,
         body.paypalOrderId || null,
         paymentStatus,
         status,

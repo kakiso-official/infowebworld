@@ -223,6 +223,7 @@ const isUrl = (v: string) => !v || /^https?:\/\/.+\..+/.test(v)
    FORM TYPES
    ══════════════════════════════════════════════════════════════ */
 type PricingTier = { name: string; price: string; period: string }
+type FaqItem = { question: string; answer: string }
 
 type FormData = {
   /* step 1 */
@@ -258,6 +259,7 @@ type FormData = {
   linkedin: string
   twitter: string
   facebook: string
+  faqs: FaqItem[]
   /* step 5 */
   plan: string
 }
@@ -273,6 +275,7 @@ const initial: FormData = {
     { name: 'Enterprise', price: '', period: '/ month' },
   ],
   funding: '', hqLocation: '', linkedin: '', twitter: '', facebook: '',
+  faqs: [{ question: '', answer: '' }],
   plan: 'founding',
 }
 
@@ -526,6 +529,25 @@ export default function ListingForm() {
   const showPricingTiers = ['Subscription', 'One-time Purchase', 'Freemium'].includes(form.pricingModel)
 
   /* ══════════════════════════════════════════════════════════════
+     FAQ HANDLERS
+     ══════════════════════════════════════════════════════════════ */
+  const updateFaq = (idx: number, field: keyof FaqItem, val: string) => {
+    const next = [...form.faqs]
+    next[idx] = { ...next[idx], [field]: val }
+    set('faqs', next)
+  }
+
+  const addFaq = () => {
+    if (form.faqs.length >= 5) return
+    set('faqs', [...form.faqs, { question: '', answer: '' }])
+  }
+
+  const removeFaq = (idx: number) => {
+    if (form.faqs.length <= 1) return
+    set('faqs', form.faqs.filter((_, i) => i !== idx))
+  }
+
+  /* ══════════════════════════════════════════════════════════════
      PER-FIELD VALIDATION
      ══════════════════════════════════════════════════════════════ */
   const ok = (f: string): boolean => {
@@ -622,6 +644,7 @@ export default function ListingForm() {
             linkedin: form.linkedin,
             twitter: form.twitter,
             facebook: form.facebook,
+            faqs: form.faqs.filter(f => f.question.trim() && f.answer.trim()),
             plan: form.plan,
             paypalOrderId: details.id,
             paymentStatus: 'completed',
@@ -1371,6 +1394,71 @@ export default function ListingForm() {
                     {form.facebook && isUrl(form.facebook) && <FieldCheck />}
                   </div>
                 </div>
+
+                {/* ── FAQs ── */}
+                <div className="listing-field" style={{ marginTop: '1rem' }}>
+                  <label className="listing-label" style={{ display: 'flex', alignItems: 'center', gap: '.35rem' }}>
+                    Frequently Asked Questions
+                    <span style={{ fontSize: '.62rem', fontWeight: 600, color: '#2FAE6A', background: '#2FAE6A12', padding: '.1rem .45rem', borderRadius: 999 }}>SEO Boost</span>
+                  </label>
+                  <p style={{ fontFamily: 'var(--font-nunito)', fontSize: '.72rem', color: 'var(--h-muted)', lineHeight: 1.5, margin: '0 0 .65rem' }}>
+                    Add 3-5 common questions about your business. These appear on your listing page and help you rank in Google&apos;s AI Overview and rich snippets.
+                  </p>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
+                    {form.faqs.map((faq, i) => (
+                      <div key={i} style={{
+                        background: 'var(--h-bg)', borderRadius: 16, border: '1.5px solid var(--h-border-light)',
+                        padding: '.85rem', position: 'relative',
+                      }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '.5rem' }}>
+                          <span style={{ fontFamily: 'var(--font-nunito)', fontSize: '.62rem', fontWeight: 700, color: 'var(--h-accent)', textTransform: 'uppercase', letterSpacing: '.04em' }}>
+                            Q&amp;A {i + 1}
+                          </span>
+                          {form.faqs.length > 1 && (
+                            <button type="button" onClick={() => removeFaq(i)} style={{
+                              width: 22, height: 22, borderRadius: 999, border: '1px solid rgba(239,68,68,.2)',
+                              background: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              color: '#EF4444', fontSize: '.65rem', fontWeight: 700, padding: 0,
+                            }}><IconX /></button>
+                          )}
+                        </div>
+                        <input
+                          type="text"
+                          className="listing-input"
+                          placeholder={['What does your company do?', 'Where is your company located?', 'What services do you offer?', 'How can I contact you?', 'What makes you different?'][i] || 'Enter a question'}
+                          value={faq.question}
+                          onChange={e => updateFaq(i, 'question', e.target.value)}
+                          style={{ marginBottom: '.45rem' }}
+                        />
+                        <textarea
+                          className="listing-input"
+                          placeholder="Write a clear, concise answer (50-70 words works best for SEO)"
+                          value={faq.answer}
+                          onChange={e => updateFaq(i, 'answer', e.target.value)}
+                          rows={3}
+                          style={{ resize: 'vertical', minHeight: 70 }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  {form.faqs.length < 5 && (
+                    <button
+                      type="button"
+                      onClick={addFaq}
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '.3rem',
+                        marginTop: '.5rem', padding: '.4rem .75rem', borderRadius: 999,
+                        border: '1.5px dashed var(--h-border)', background: 'transparent',
+                        cursor: 'pointer', fontFamily: 'var(--font-nunito)', fontSize: '.72rem',
+                        fontWeight: 700, color: 'var(--h-accent)', transition: 'all .2s',
+                      }}
+                    >
+                      <IconPlus /> Add Question ({form.faqs.length}/5)
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           )}
@@ -1635,6 +1723,24 @@ export default function ListingForm() {
                             <IconFacebook />Facebook
                           </span>
                         )}
+                      </div>
+                    </>
+                  )}
+
+                  {/* FAQ Preview */}
+                  {form.faqs.some(f => f.question.trim() && f.answer.trim()) && (
+                    <>
+                      <div className="rv-divider" />
+                      <div style={{ marginBottom: '.5rem' }}>
+                        <div style={{ fontFamily: 'var(--font-nunito)', fontSize: '.65rem', fontWeight: 700, color: 'var(--h-muted)', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: '.4rem' }}>
+                          FAQs ({form.faqs.filter(f => f.question.trim() && f.answer.trim()).length})
+                        </div>
+                        {form.faqs.filter(f => f.question.trim() && f.answer.trim()).map((faq, i) => (
+                          <div key={i} style={{ padding: '.4rem 0', borderBottom: i < form.faqs.filter(f => f.question.trim() && f.answer.trim()).length - 1 ? '1px solid var(--h-border-light)' : 'none' }}>
+                            <p style={{ fontFamily: 'var(--font-nunito)', fontSize: '.75rem', fontWeight: 700, color: 'var(--h-heading)', margin: '0 0 .15rem' }}>Q: {faq.question}</p>
+                            <p style={{ fontFamily: 'var(--font-nunito)', fontSize: '.72rem', color: 'var(--h-body)', margin: 0, lineHeight: 1.5 }}>A: {faq.answer}</p>
+                          </div>
+                        ))}
                       </div>
                     </>
                   )}

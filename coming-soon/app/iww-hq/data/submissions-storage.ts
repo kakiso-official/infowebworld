@@ -5,6 +5,7 @@
 const API = '/api'
 
 export type PricingTier = { name: string; price: string; period: string }
+export type FaqItem = { question: string; answer: string }
 
 export type RealSubmission = {
   id: string
@@ -37,6 +38,7 @@ export type RealSubmission = {
   linkedin: string
   twitter: string
   facebook: string
+  faqs: FaqItem[]
   plan: string
   planName: string
   status: 'pending' | 'confirmed' | 'paid' | 'active' | 'rejected' | 'suspended'
@@ -83,6 +85,7 @@ function mapRow(r: Record<string, unknown>): RealSubmission {
     linkedin: String(r.linkedin ?? ''),
     twitter: String(r.twitter ?? ''),
     facebook: String(r.facebook ?? ''),
+    faqs: parseJson(r.faqs) as FaqItem[],
     plan: String(r.plan_slug ?? r.plan ?? ''),
     planName: String(r.plan_name ?? ''),
     status: (r.status as RealSubmission['status']) || 'pending',
