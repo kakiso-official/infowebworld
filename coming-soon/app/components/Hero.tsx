@@ -7,15 +7,42 @@ import { addToWaitlist } from '../iww-hq/data/waitlist-storage'
 const words = ['Search', 'Compare', 'Discover', 'Connect', 'Review', ]
 
 export default function Hero() {
-  const [current, setCurrent] = useState(0)
+  const [displayed, setDisplayed] = useState('')
   const [jsReady, setJsReady] = useState(false)
   const [heroEmail, setHeroEmail] = useState('')
   const [heroMsg, setHeroMsg] = useState('')
 
   useEffect(() => {
     setJsReady(true)
-    const interval = setInterval(() => setCurrent(prev => (prev + 1) % words.length), 2200)
-    return () => clearInterval(interval)
+    let wordIdx = 0
+    let charIdx = 0
+    let deleting = false
+    let timeout: ReturnType<typeof setTimeout>
+
+    function tick() {
+      const word = words[wordIdx]
+      if (!deleting) {
+        charIdx++
+        setDisplayed(word.slice(0, charIdx))
+        if (charIdx === word.length) {
+          timeout = setTimeout(() => { deleting = true; tick() }, 1200)
+          return
+        }
+        timeout = setTimeout(tick, 100)
+      } else {
+        charIdx--
+        setDisplayed(word.slice(0, charIdx))
+        if (charIdx === 0) {
+          deleting = false
+          wordIdx = (wordIdx + 1) % words.length
+          timeout = setTimeout(tick, 300)
+          return
+        }
+        timeout = setTimeout(tick, 60)
+      }
+    }
+    tick()
+    return () => clearTimeout(timeout)
   }, [])
 
   const handleHeroJoin = (e: React.FormEvent) => {
@@ -35,10 +62,9 @@ export default function Hero() {
         <h1 className="cs-h1">
           Global Growth Platform to <br />
           <span className="cs-h1-line2">
-            <span className={`cs-rotate-wrap${jsReady ? ' js-active' : ''}`}>
-              {words.map((word, i) => (
-                <span key={word} className={`cs-rotate-word${i === current ? ' active' : ''}`}>{word}</span>
-              ))}
+            <span className={`cs-type-wrap${jsReady ? ' js-active' : ''}`}>
+              <span className="cs-type-text">{displayed}</span>
+              <span className="cs-type-cursor" />
             </span>{' '}
             right Business <em>for your needs...</em>
           </span>
@@ -48,10 +74,17 @@ export default function Hero() {
           Be the first to know when we launch.
         </h4>
         <div className="cs-actions">
-          <form className="cs-form" onSubmit={handleHeroJoin}>
-            <input type="email" className="cs-input" placeholder="enter your email id" required value={heroEmail} onChange={e => setHeroEmail(e.target.value)} />
-            <button type="submit" className="cs-submit">{heroMsg || 'Join'}</button>
-          </form>
+          <div className="cs-form-arrow-wrap">
+            <form className="cs-form" onSubmit={handleHeroJoin}>
+              <input type="email" className="cs-input" placeholder="enter your email id" required value={heroEmail} onChange={e => setHeroEmail(e.target.value)} />
+              <button type="submit" className="cs-submit">{heroMsg || 'Join'}</button>
+            </form>
+            <svg className="cs-curvy-arrow" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+              <path className="cs-arrow-line" d="M90 8 C70 2, 58 74, 16 50" stroke="var(--h-accent)" strokeWidth="2.6" strokeLinecap="round" />
+              <path className="cs-arrow-head-1" d="M16 50 L30 42" stroke="var(--h-accent)" strokeWidth="3" strokeLinecap="round" />
+              <path className="cs-arrow-head-2" d="M16 50 L28 60" stroke="var(--h-accent)" strokeWidth="3" strokeLinecap="round" />
+            </svg>
+          </div>
         </div>
         <p className="cs-desc">
           InfoWebWorld is the Global Platform to explore / search best trusted businesses worldwide.

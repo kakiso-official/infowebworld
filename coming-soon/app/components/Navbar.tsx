@@ -48,7 +48,7 @@ export default function Navbar() {
   return (
     <>
       <header className={`hd${scrolled ? ' hd--scrolled' : ''}`}>
-        {/* ══ Row 1: Logo | Search | Login | IWW for Businesses ══ */}
+        {/* ══ Row 1: Logo | Search | Login | iWW for Business ══ */}
         <div className="hd-top">
           <div className="container hd-top-inner">
             <Link href="/" className="hd-logo">
@@ -72,7 +72,7 @@ export default function Navbar() {
                 </button>
               </CsWrap>
               <CsWrap>
-                <button type="button" className="hd-biz">IWW for Businesses</button>
+                <button type="button" className="hd-biz">iWW for Business</button>
               </CsWrap>
             </div>
 

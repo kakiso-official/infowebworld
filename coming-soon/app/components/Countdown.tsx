@@ -35,7 +35,6 @@ export default function Countdown() {
   }, [])
 
   const pad = (n: number) => String(n).padStart(2, '0')
-
   return (
     <section className="countdown-section">
       <div className="container">
@@ -52,6 +51,13 @@ export default function Countdown() {
               <div className="countdown-unit">{b.label}</div>
             </div>
           ))}
+        </div>
+        <div className="countdown-cta-wrap">
+          <p className="countdown-cta-text"><a href="https://infowebworld.com" className="countdown-cta-link">infoWebWorld.com</a> for Business</p>
+          <Link href="/get-listed" className="countdown-cta-btn">
+            Get Listed
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </Link>
         </div>
       </div>
     </section>
