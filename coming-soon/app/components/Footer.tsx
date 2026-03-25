@@ -13,7 +13,7 @@ export default function Footer() {
           <div className="ft-brand">
             <img src={`${bp}/logo/infowebworld-logo.png`} alt="InfoWebWorld" className="ft-logo" />
             <p className="ft-tagline">
-              The global business discovery platform. Search, compare, and review businesses across 80+ industries in 12 countries.
+InfoWebWorld is the Global Platform to explore / search best trusted businesses worldwide.
             </p>
             <div className="ft-social">
               <a href="#" aria-label="Twitter / X">
@@ -34,17 +34,14 @@ export default function Footer() {
           <div className="ft-columns">
             <div className="ft-col">
               <h4 className="ft-col-title">Company</h4>
-              <a href="#benefits" className="ft-col-link">Benefits</a>
-              <a href="#pricing" className="ft-col-link">Pricing</a>
-              <a href="#how-it-works" className="ft-col-link">How It Works</a>
-              <a href="#compare" className="ft-col-link">Compare</a>
+              <a href="#benefits" className="ft-col-link">About</a>
+                <SafeMailLink user="hello" domain="infowebworld.com" className="ft-col-link">Contact</SafeMailLink>
               <Link href="/blog" className="ft-col-link">Blog</Link>
             </div>
             <div className="ft-col">
-              <h4 className="ft-col-title">Get Started</h4>
+              <h4 className="ft-col-title">iWW for Business</h4>
               <Link href="/get-listed" className="ft-col-link">Get Listed</Link>
-              <a href="#hero" className="ft-col-link">Join Waitlist</a>
-              <SafeMailLink user="hello" domain="infowebworld.com" className="ft-col-link">Contact Us</SafeMailLink>
+               <a href="#pricing" className="ft-col-link">Pricing</a>
             </div>
             <div className="ft-col">
               <h4 className="ft-col-title">Legal</h4>
@@ -57,11 +54,11 @@ export default function Footer() {
 
         {/* ── Bottom bar ── */}
         <div className="ft-bottom">
-          <span className="ft-copy">&copy; {new Date().getFullYear()} InfoWebWorld. All rights reserved.</span>
+          <span className="ft-copy">© 2004 – 2026. Brain Stream Australia Pty Ltd -  <Link href="/" className="ft-col-link">InfoWebWorld.com</Link>. All rights reserved.</span>
           <div className="ft-badges">
-            <span className="ft-badge ft-badge--coral">80+ Industries</span>
-            <span className="ft-badge ft-badge--azure">12 Countries</span>
-            <span className="ft-badge ft-badge--emerald">DA 72+</span>
+            <span className="ft-badge ft-badge--coral">Thousands of Categories</span>
+            <span className="ft-badge ft-badge--azure">100+ Countries</span>
+            <span className="ft-badge ft-badge--emerald">DA/DR 70* </span>
           </div>
         </div>
       </div>

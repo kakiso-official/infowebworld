@@ -48,7 +48,9 @@ export default function Hero() {
           InfoWebWorld is the Global Platform to explore / search best trusted businesses worldwide.
           #find #compare #connect with great Local Businesses in AI & ML, SaaS & Software, Startups & Innovations, IT Servcies & Agencies, Professional Services in one place - InfoWebWorld.com
         </p>
-
+        <h4 className="countdown-label">
+          Be the first to know when we launch and get exclusive early access to features, insights, and more.
+        </h4>
         <div className="cs-actions">
           <form className="cs-form" onSubmit={handleHeroJoin}>
             <input type="email" className="cs-input" placeholder="enter your email id" required value={heroEmail} onChange={e => setHeroEmail(e.target.value)} />

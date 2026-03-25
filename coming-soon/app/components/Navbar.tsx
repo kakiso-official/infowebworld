@@ -126,7 +126,7 @@ export default function Navbar() {
           <div className="hd-drawer-link">News<span className="hd-cs-badge">Coming Soon</span></div>
           <div className="hd-drawer-sep" />
           <div className="hd-drawer-link">Log in<span className="hd-cs-badge">Coming Soon</span></div>
-          <div className="hd-drawer-link">IWW for Businesses<span className="hd-cs-badge">Coming Soon</span></div>
+          <div className="hd-drawer-link">iWW for Business<span className="hd-cs-badge">Coming Soon</span></div>
         </div>
 
         <div className="hd-drawer-foot">

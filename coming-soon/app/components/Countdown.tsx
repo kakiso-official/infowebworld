@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { fetchConfig } from '../config/site-config'
+import Link from 'next/link'
 
 let _launchDate = new Date('2026-04-25T00:00:00')
 
@@ -52,7 +53,13 @@ export default function Countdown() {
             </div>
           ))}
         </div>
-      
+      <p>infoWebWorld for Business  </p>
+        <div className="hd-drawer-foot">
+          <Link href="/get-listed" className="hd-sub-cta hd-sub-cta--full" onClick={close}>
+            Get Listed
+            <svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+          </Link>
+        </div>
       </div>
     </section>
   )
