@@ -1,0 +1,402 @@
+/* ============================================================
+   HERO — Clean, solid, Get Listed focused
+   ============================================================ */
+.gcs-hero {
+  background: var(--h-bg);
+  display: flex; align-items: flex-start;
+  padding-bottom: 1rem;
+  padding-left: 1.25rem; padding-right: 1.25rem;
+  overflow: hidden;
+  position: relative;
+}
+@media (min-width: 769px) {
+  .gcs-hero { height: calc(100vh - 100px); height: calc(100dvh - 100px); padding-top: clamp(3rem, 6vh, 5rem) }
+  .gcs-bg-text-br { display: none }
+}
+.gcs-bg-text {
+  position: absolute; bottom: 1rem; left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(4rem, 13vw, 15rem);
+  font-weight: 400;
+  white-space: nowrap;
+  letter-spacing: -.03em; line-height: 1;
+  pointer-events: none; user-select: none; z-index: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    #FF4D2A 0px, #FF4D2A 3px,
+    #FFD6CC 3px, #FFD6CC 6px
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* CurvedLoop — desktop only */
+.gcs-curved-desktop {
+  display: none;
+}
+.gcs-curved-loop {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%;
+}
+.gcs-curved-svg {
+  user-select: none; -webkit-user-select: none; -moz-user-select: none;
+  width: 100%; overflow: visible; display: block;
+}
+.gcs-curved-text {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: 5.5rem; font-weight: 400;
+  letter-spacing: -.02em;
+  fill: #EF6B4A;
+}
+/* Mobile marquee — straight scroll between cards and Launching Soon */
+.gcs-marquee-mobile {
+  position: absolute; bottom: 1rem; left: 0; right: 0;
+  overflow: hidden; z-index: 0;
+  white-space: nowrap;
+}
+.gcs-marquee-track {
+  display: inline-flex;
+  animation: glMarquee 20s linear infinite;
+}
+.gcs-marquee-track span {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: 1.8rem; font-weight: 400;
+  color: #FF4D2A;
+  letter-spacing: -.01em;
+  white-space: nowrap;
+}
+@keyframes glMarquee {
+  0% { transform: translateX(0) }
+  100% { transform: translateX(-50%) }
+}
+@media (min-width: 769px) {
+  .gcs-marquee-mobile { display: none }
+}
+@media (max-width: 768px) {
+  .gcs-curved-desktop { display: none }
+}
+
+.gcs-content {
+  position: relative; z-index: 1;
+  text-align: center;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center;
+  width: 100%; max-width: 620px;
+  margin: 0 auto;
+}
+@media (min-width: 769px) {
+  .gcs-content { max-width: 800px }
+  .gcs-h1-line2 { white-space: nowrap }
+}
+
+/* Tag */
+.gcs-tag {
+  display: inline-flex; align-items: center; gap: .45rem;
+  padding: .4rem .85rem; border-radius: 999px;
+  background: rgba(var(--h-accent-rgb), .08);
+  font-size: .72rem; font-weight: 700; color: var(--h-accent);
+  text-transform: uppercase; letter-spacing: .04em;
+  margin-bottom: 1.25rem;
+}
+.gcs-tag-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--h-accent);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes glFadeUp {
+  0% { opacity: 0; transform: translateY(16px) }
+  100% { opacity: 1; transform: translateY(0) }
+}
+
+/* Main heading */
+.gcs-h1 {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(2rem, 4.2vw, 3rem);
+  font-weight: 800; color: var(--h-heading);
+  line-height: 1.1; letter-spacing: -.03em;
+  margin-bottom: .75rem; max-width: none;
+}
+.gcs-h1 em { font-style: normal; color: var(--h-accent) }
+
+.gcs-rotate-wrap { display: inline-block; position: relative; min-width: clamp(100px, 30vw, 160px) }
+.gcs-rotate-word {
+  position: absolute; left: 0; top: 0; width: 100%;
+  opacity: 0; transition: opacity .4s ease, transform .4s ease;
+  transform: translateY(8px); color: var(--h-accent); white-space: nowrap;
+}
+.gcs-rotate-word.active { position: relative; opacity: 1; transform: translateY(0) }
+
+/* CSS-only fallback for word rotation when JS doesn't load */
+@keyframes glWCDesktop {
+  0%     { opacity: 0; transform: translateY(8px) }
+  3%     { opacity: 1; transform: translateY(0) }
+  10%    { opacity: 1; transform: translateY(0) }
+  12.5%, 100% { opacity: 0; transform: translateY(-8px) }
+}
+.gcs-rotate-wrap:not(.js-active) .gcs-rotate-word {
+  animation: glWCDesktop 17.6s infinite;
+}
+.gcs-rotate-wrap:not(.js-active) .gcs-rotate-word:nth-child(1) { animation-delay: 0s }
+.gcs-rotate-wrap:not(.js-active) .gcs-rotate-word:nth-child(2) { animation-delay: 2.2s }
+.gcs-rotate-wrap:not(.js-active) .gcs-rotate-word:nth-child(3) { animation-delay: 4.4s }
+.gcs-rotate-wrap:not(.js-active) .gcs-rotate-word:nth-child(4) { animation-delay: 6.6s }
+.gcs-rotate-wrap:not(.js-active) .gcs-rotate-word:nth-child(5) { animation-delay: 8.8s }
+.gcs-rotate-wrap:not(.js-active) .gcs-rotate-word:nth-child(6) { animation-delay: 11s }
+.gcs-rotate-wrap:not(.js-active) .gcs-rotate-word:nth-child(7) { animation-delay: 13.2s }
+.gcs-rotate-wrap:not(.js-active) .gcs-rotate-word:nth-child(8) { animation-delay: 15.4s }
+
+/* Subtitle prompt */
+.gcs-subtitle {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.95rem, 1.3vw, 1.1rem);
+  font-weight: 600;
+  color: var(--h-body);
+  line-height: 1.4;
+  margin-bottom: .85rem;
+}
+
+/* Description — below form */
+.gcs-desc {
+  font-size: clamp(.85rem, 1.15vw, .95rem);
+  color: var(--h-body); font-weight: 400;
+  max-width: 520px; line-height: 1.8;
+  margin-top: 1.5rem;
+  letter-spacing: .01em;
+  word-spacing: .05em;
+}
+.gcs-desc strong {
+  font-weight: 700; color: var(--h-heading);
+}
+.gcs-desc .gcs-brand {
+  font-weight: 700; color: var(--h-accent);
+  text-decoration: none;
+  transition: opacity .2s;
+}
+.gcs-desc .gcs-brand:hover { opacity: .75 }
+
+/* ── Actions — single line ── */
+.gcs-actions {
+  display: flex; align-items: center; justify-content: center;
+  gap: 1.5rem;
+}
+
+/* Primary — Get Listed */
+.gcs-primary-btn {
+  display: inline-flex; align-items: center; gap: .5rem;
+  height: 50px; padding: 0 2rem;
+  border-radius: 999px; background: var(--h-accent); color: #fff;
+  font-size: .9rem; font-weight: 700;
+  transition: background .25s, transform .25s;
+}
+.gcs-primary-btn:hover {
+  background: var(--h-accent-hover); transform: translateY(-2px);
+}
+.gcs-primary-btn svg {
+  width: 17px; height: 17px; stroke: #fff; fill: none; stroke-width: 2;
+}
+
+/* Email form — unified pill with inset button */
+.gcs-form {
+  display: flex; align-items: center;
+  height: 48px; padding-right: 5px;
+  border-radius: 999px; background: #fff;
+  border: 1.5px solid var(--h-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
+  transition: border-color .3s, box-shadow .3s;
+}
+.gcs-form:focus-within {
+  border-color: var(--h-accent);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .08);
+}
+.gcs-input {
+  flex: 1; min-width: 160px; height: 100%;
+  border: none; padding: 0 0 0 1.1rem;
+  font-size: .85rem; color: var(--h-heading); background: transparent;
+  outline: none;
+}
+.gcs-input::placeholder { color: var(--h-muted) }
+.gcs-submit {
+  flex-shrink: 0; height: 36px; padding: 0 1.5rem;
+  background: var(--h-accent); color: #fff;
+  font-size: .78rem; font-weight: 700;
+  border: none; border-radius: 999px;
+  cursor: pointer; white-space: nowrap;
+  letter-spacing: .01em;
+  transition: background .25s;
+}
+.gcs-submit:hover { background: var(--h-accent-hover) }
+
+/* Note */
+.gcs-note {
+  font-size: .7rem; color: var(--h-muted); font-weight: 500;
+  margin-bottom: 1.75rem;
+}
+
+/* Category pills */
+.gcs-cats {
+  display: flex; flex-wrap: wrap; gap: .4rem;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: .6rem;
+}
+.gcs-cat {
+  padding: .45rem 1.1rem; border-radius: 999px;
+  font-size: .72rem; font-weight: 700; color: #fff;
+  white-space: nowrap;
+}
+
+/* Stats row */
+.gcs-stats {
+  display: flex; align-items: center; gap: 0;
+  background: rgba(255,255,255,.45);
+  border: 1px solid var(--h-border);
+  border-radius: 14px; overflow: hidden;
+}
+.gcs-stat {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 1.25rem clamp(1.25rem, 3vw, 2.5rem);
+}
+.gcs-stat-num {
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem); font-weight: 800;
+  color: var(--h-heading); line-height: 1;
+}
+.gcs-stat-label {
+  font-size: .62rem; font-weight: 600; color: var(--h-muted);
+  text-transform: uppercase; letter-spacing: .05em; margin-top: .25rem;
+}
+.gcs-stat-divider {
+  width: 1px; height: 40px; background: var(--h-border-light); flex-shrink: 0;
+}
+
+/* ── Hero highlights — mobile only ── */
+.gcs-highlights { display: none !important }
+
+/* ============================================================
+   MOBILE — Single fluid responsive block (≤768px)
+   All values use clamp/vw/svh so they scale smoothly
+   across every phone size. No fixed breakpoints needed.
+   ============================================================ */
+@media (max-width: 768px) {
+  /* ── Hero container ── */
+  .gcs-hero {
+    min-height: calc(100vh - 50px);
+    min-height: calc(100svh - 50px);
+    padding-top: clamp(4rem, 14svh, 12rem);
+    padding-bottom: clamp(1.5rem, 3svh, 3rem);
+    align-items: flex-start;
+  }
+
+  /* ── Content wrapper ── */
+  .gcs-content { padding: 0 clamp(.25rem, 1vw, .75rem) }
+
+  /* ── Heading — fluid from ~1.6rem (320px) to ~2.5rem (768px) ── */
+  .gcs-h1 {
+    font-size: clamp(1.6rem, 6vw, 2.5rem);
+    line-height: 1.15;
+    margin-bottom: clamp(.25rem, 1vw, .5rem);
+  }
+
+  /* ── Rotating word — block on own line, all absolute ── */
+  .gcs-rotate-wrap {
+    display: block; min-width: unset;
+    height: 1.3em; margin: .1rem 0;
+  }
+  .gcs-rotate-word {
+    left: 50%; width: auto;
+    opacity: 0; transform: translateX(-50%) translateY(8px);
+    will-change: opacity, transform;
+  }
+  .gcs-rotate-word.active {
+    position: absolute; opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ── CSS-only fallback when JS doesn't load (network/mobile) ── */
+  @keyframes glWCMobile {
+    0%     { opacity: 0; transform: translateX(-50%) translateY(8px) }
+    3%     { opacity: 1; transform: translateX(-50%) translateY(0) }
+    10%    { opacity: 1; transform: translateX(-50%) translateY(0) }
+    12.5%, 100% { opacity: 0; transform: translateX(-50%) translateY(-8px) }
+  }
+  .gcs-rotate-wrap:not(.js-active) .gcs-rotate-word {
+    animation: glWCMobile 17.6s infinite;
+  }
+  .gcs-rotate-wrap:not(.js-active) .gcs-rotate-word:nth-child(1) { animation-delay: 0s }
+  .gcs-rotate-wrap:not(.js-active) .gcs-rotate-word:nth-child(2) { animation-delay: 2.2s }
+  .gcs-rotate-wrap:not(.js-active) .gcs-rotate-word:nth-child(3) { animation-delay: 4.4s }
+  .gcs-rotate-wrap:not(.js-active) .gcs-rotate-word:nth-child(4) { animation-delay: 6.6s }
+  .gcs-rotate-wrap:not(.js-active) .gcs-rotate-word:nth-child(5) { animation-delay: 8.8s }
+  .gcs-rotate-wrap:not(.js-active) .gcs-rotate-word:nth-child(6) { animation-delay: 11s }
+  .gcs-rotate-wrap:not(.js-active) .gcs-rotate-word:nth-child(7) { animation-delay: 13.2s }
+  .gcs-rotate-wrap:not(.js-active) .gcs-rotate-word:nth-child(8) { animation-delay: 15.4s }
+
+  /* ── Subtitle — prompt before form ── */
+  .gcs-subtitle {
+    font-size: clamp(.82rem, 2.5vw, 1rem);
+    margin-bottom: clamp(.5rem, 1.5vw, .75rem);
+  }
+
+  /* ── Description — below form ── */
+  .gcs-desc {
+    font-size: clamp(.75rem, 2.3vw, .9rem);
+    line-height: 1.7;
+    max-width: clamp(260px, 84vw, 460px);
+    margin-top: clamp(.75rem, 2vw, 1.25rem);
+    margin-bottom: 0;
+  }
+
+  /* ── Actions — stacked, full width ── */
+  .gcs-actions {
+    flex-direction: column; align-items: center;
+    gap: clamp(.35rem, 1.2vw, .6rem);
+    width: 100%;
+  }
+  .gcs-primary-btn {
+    width: 100%;
+    max-width: clamp(260px, 85vw, 400px);
+    justify-content: center;
+    height: clamp(40px, 6.5vw, 48px);
+    font-size: clamp(.78rem, 2.2vw, .9rem);
+  }
+  .gcs-form {
+    width: 100%;
+    max-width: clamp(260px, 85vw, 400px);
+    height: clamp(42px, 6.5vw, 48px);
+    padding-right: 4px;
+  }
+  .gcs-input {
+    flex: 1; width: auto; min-width: 0;
+    font-size: clamp(.72rem, 2vw, .82rem);
+    padding-left: clamp(.75rem, 2vw, 1rem);
+  }
+  .gcs-submit {
+    height: clamp(32px, 5vw, 36px);
+    font-size: clamp(.65rem, 1.8vw, .75rem);
+    padding: 0 clamp(.9rem, 2.5vw, 1.3rem);
+  }
+
+  /* ── "Launching Soon" bg-text — fluid size + position ── */
+  .gcs-bg-text {
+    font-size: clamp(3rem, 18vw, 10rem);
+    bottom: clamp(3.5rem, 7svh, 7rem);
+    white-space: normal; text-align: center;
+  }
+
+  /* ── Marquee — fluid font ── */
+  .gcs-marquee-track span {
+    font-size: clamp(1.1rem, 4vw, 2rem);
+  }
+
+  /* ── Stats row ── */
+  .gcs-stats { flex-wrap: wrap; border-radius: 12px }
+  .gcs-stat {
+    padding: clamp(.5rem, 1.5vw, 1rem) clamp(.4rem, 1.5vw, 1.5rem);
+  }
+  .gcs-stat-num { font-size: clamp(1rem, 3vw, 1.5rem) }
+  .gcs-stat-label { font-size: clamp(.45rem, 1.2vw, .62rem) }
+  .gcs-stat-divider { display: none }
+}

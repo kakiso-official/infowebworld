@@ -84,7 +84,9 @@ input, textarea { font-family: inherit }
 
 /* ── Section imports ── */
 @import "./styles/nav.css";
+@import "./styles/nav-gl.css";
 @import "./styles/hero.css";
+@import "./styles/hero-gl.css";
 @import "./styles/countdown.css";
 @import "./styles/stats.css";
 @import "./styles/tiers.css";

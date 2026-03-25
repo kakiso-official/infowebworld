@@ -28,65 +28,65 @@ export default function Hero() {
   }
 
   return (
-    <section className="cs-hero" id="hero">
-      <div className="cs-bg-text" aria-hidden="true">Launching<br className="cs-bg-text-br" /> Soon</div>
-      <div className="cs-content">
+    <section className="gcs-hero" id="hero">
+      <div className="gcs-bg-text" aria-hidden="true">Launching<br className="gcs-bg-text-br" /> Soon</div>
+      <div className="gcs-content">
 
-        <h1 className="cs-h1">
+        <h1 className="gcs-h1">
           Global Growth Platform to <br />
-          <span className="cs-h1-line2">
-            <span className={`cs-rotate-wrap${jsReady ? ' js-active' : ''}`}>
+          <span className="gcs-h1-line2">
+            <span className={`gcs-rotate-wrap${jsReady ? ' js-active' : ''}`}>
               {words.map((word, i) => (
-                <span key={word} className={`cs-rotate-word${i === current ? ' active' : ''}`}>{word}</span>
+                <span key={word} className={`gcs-rotate-word${i === current ? ' active' : ''}`}>{word}</span>
               ))}
             </span>{' '}
             right Business <em>for your needs...</em>
           </span>
         </h1>
 
-        <h4 className="cs-subtitle">
+        <h4 className="gcs-subtitle">
           Be the first to know when we launch.
         </h4>
-        <div className="cs-actions">
-          <form className="cs-form" onSubmit={handleHeroJoin}>
-            <input type="email" className="cs-input" placeholder="enter your email id" required value={heroEmail} onChange={e => setHeroEmail(e.target.value)} />
-            <button type="submit" className="cs-submit">{heroMsg || 'Join'}</button>
+        <div className="gcs-actions">
+          <form className="gcs-form" onSubmit={handleHeroJoin}>
+            <input type="email" className="gcs-input" placeholder="enter your email id" required value={heroEmail} onChange={e => setHeroEmail(e.target.value)} />
+            <button type="submit" className="gcs-submit">{heroMsg || 'Join'}</button>
           </form>
         </div>
-        <p className="cs-desc">
+        <p className="gcs-desc">
           InfoWebWorld is the Global Platform to explore / search best trusted businesses worldwide.
           #find #compare #connect with great Local Businesses in AI & ML, SaaS & Software, Startups & Innovations, IT Servcies & Agencies, Professional Services in one place - InfoWebWorld.com
         </p>
 
-        {/* <div className="cs-highlights">
-          <div className="cs-hl-card cs-hl--coral cs-hl--wide">
-            <span className="cs-hl-num">DA 72+</span>
-            <span className="cs-hl-label">Dofollow Backlinks</span>
+        {/* <div className="gcs-highlights">
+          <div className="gcs-hl-card gcs-hl--coral gcs-hl--wide">
+            <span className="gcs-hl-num">DA 72+</span>
+            <span className="gcs-hl-label">Dofollow Backlinks</span>
           </div>
-          <div className="cs-hl-card cs-hl--emerald">
-            <span className="cs-hl-num">98%</span>
-            <span className="cs-hl-label">Verified Reviews</span>
+          <div className="gcs-hl-card gcs-hl--emerald">
+            <span className="gcs-hl-num">98%</span>
+            <span className="gcs-hl-label">Verified Reviews</span>
           </div>
-          <div className="cs-hl-card cs-hl--azure">
-            <span className="cs-hl-num">40+</span>
-            <span className="cs-hl-label">Leads/mo</span>
+          <div className="gcs-hl-card gcs-hl--azure">
+            <span className="gcs-hl-num">40+</span>
+            <span className="gcs-hl-label">Leads/mo</span>
           </div>
-          <div className="cs-hl-card cs-hl--amber cs-hl--wide">
-            <span className="cs-hl-num">2,500+</span>
-            <span className="cs-hl-label">Businesses Listed</span>
+          <div className="gcs-hl-card gcs-hl--amber gcs-hl--wide">
+            <span className="gcs-hl-num">2,500+</span>
+            <span className="gcs-hl-label">Businesses Listed</span>
           </div>
-          <div className="cs-hl-card cs-hl--teal cs-hl--wide">
-            <span className="cs-hl-num">Daily</span>
-            <span className="cs-hl-label">Industry Insights</span>
+          <div className="gcs-hl-card gcs-hl--teal gcs-hl--wide">
+            <span className="gcs-hl-num">Daily</span>
+            <span className="gcs-hl-label">Industry Insights</span>
           </div>
-          <div className="cs-hl-card cs-hl--plum">
-            <span className="cs-hl-num">12</span>
-            <span className="cs-hl-label">Countries</span>
+          <div className="gcs-hl-card gcs-hl--plum">
+            <span className="gcs-hl-num">12</span>
+            <span className="gcs-hl-label">Countries</span>
           </div>
         </div> */}
       </div>
-      <div className="cs-marquee-mobile" aria-hidden="true">
-        <div className="cs-marquee-track">
+      <div className="gcs-marquee-mobile" aria-hidden="true">
+        <div className="gcs-marquee-track">
           <span>launching soon — infowebworld — discover & list the best businesses — verified reviews — dofollow backlinks — 80+ industries — 12 countries — real leads —&nbsp;</span>
           <span>launching soon — infowebworld — discover & list the best businesses — verified reviews — dofollow backlinks — 80+ industries — 12 countries — real leads —&nbsp;</span>
         </div>
