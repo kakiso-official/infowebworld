@@ -1,32 +1,18 @@
 'use client'
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import Link from 'next/link'
+import { Country, State, City } from 'country-state-city'
 import SafeMailLink from '../components/SafeMailLink'
 import { addSubmission, uploadFile } from '../iww-hq/data/submissions-storage'
 import { fetchLaunchedCategories } from '../iww-hq/data/category-storage'
 import type { Category } from '../iww-hq/data/category-storage'
 
 /* ══════════════════════════════════════════════════════════════
-   STATIC DATA
+   GEO DATA (country-state-city package)
    ══════════════════════════════════════════════════════════════ */
-
-const countries = [
-  'United States', 'India', 'United Kingdom', 'Canada', 'Australia',
-  'Germany', 'France', 'Netherlands', 'Singapore', 'UAE', 'Other',
-]
-
-const phoneCodes = [
-  { label: 'US', code: '+1' },
-  { label: 'IN', code: '+91' },
-  { label: 'UK', code: '+44' },
-  { label: 'CA', code: '+1' },
-  { label: 'AU', code: '+61' },
-  { label: 'DE', code: '+49' },
-  { label: 'FR', code: '+33' },
-  { label: 'NL', code: '+31' },
-  { label: 'SG', code: '+65' },
-  { label: 'AE', code: '+971' },
-]
+const allCountries = Country.getAllCountries().map(c => ({
+  name: c.name, code: c.isoCode, phone: `+${c.phonecode.replace('+', '')}`, flag: c.flag,
+})).sort((a, b) => a.name.localeCompare(b.name))
 
 const teamSizes = ['Solo/Freelancer', '2-10', '11-50', '51-200', '201-500', '500+']
 const fundingOptions = ['Bootstrapped', 'Pre-Seed', 'Seed', 'Series A', 'Series B', 'Series C+', 'Publicly Traded', 'Profitable']
@@ -241,7 +227,10 @@ type FormData = {
   categoryIcon: string
   tagline: string
   description: string
+  countryCode: string
   country: string
+  state: string
+  stateCode: string
   city: string
   founded: string
   employees: string
@@ -267,7 +256,7 @@ type FormData = {
 const initial: FormData = {
   companyName: '', contactName: '', email: '', phoneCode: '+1', phone: '', website: '',
   categoryId: '', categoryName: '', categorySlug: '', categoryColor: '', categoryIcon: '',
-  tagline: '', description: '', country: '', city: '', founded: '', employees: '',
+  tagline: '', description: '', countryCode: '', country: '', state: '', stateCode: '', city: '', founded: '', employees: '',
   logoUrl: '', screenshots: [], demoVideo: '', features: [''], integrations: [],
   pricingModel: '', pricingTiers: [
     { name: 'Free', price: '0', period: '/ month' },
@@ -322,6 +311,23 @@ export default function ListingForm() {
   /* ── Feature input ── */
   const featureRefs = useRef<(HTMLInputElement | null)[]>([])
 
+  /* ── Searchable dropdown state ── */
+  const [ddSearch, setDdSearch] = useState<Record<string, string>>({})
+  const ddSearchRef = useRef<HTMLInputElement | null>(null)
+
+  /* ── Geo: derived states/cities ── */
+  const geoStates = useMemo(() => {
+    if (!form.countryCode) return []
+    return State.getStatesOfCountry(form.countryCode).map(s => ({
+      name: s.name, code: s.isoCode,
+    }))
+  }, [form.countryCode])
+
+  const geoCities = useMemo(() => {
+    if (!form.countryCode || !form.stateCode) return []
+    return City.getCitiesOfState(form.countryCode, form.stateCode).map(c => c.name)
+  }, [form.countryCode, form.stateCode])
+
   /* ── Load categories ── */
   useEffect(() => {
     setCatLoading(true)
@@ -338,6 +344,24 @@ export default function ListingForm() {
 
   const setString = useCallback((f: keyof FormData, v: string) => {
     setForm(p => ({ ...p, [f]: v }))
+  }, [])
+
+  /* ── Country change: auto-set phone code, reset state/city ── */
+  const handleCountryChange = useCallback((countryCode: string) => {
+    const c = allCountries.find(x => x.code === countryCode)
+    if (!c) return
+    setForm(p => ({
+      ...p,
+      country: c.name,
+      countryCode: c.code,
+      phoneCode: c.phone,
+      state: '', stateCode: '', city: '',
+    }))
+  }, [])
+
+  /* ── State change: reset city ── */
+  const handleStateChange = useCallback((stateCode: string, stateName: string) => {
+    setForm(p => ({ ...p, state: stateName, stateCode, city: '' }))
   }, [])
 
   /* Scroll to top — uses panel container when inside slide-in panel, otherwise window */
@@ -561,7 +585,7 @@ export default function ListingForm() {
   }
 
   const canProceed = () => {
-    if (step === 1) return ok('companyName') && ok('contactName') && ok('email')
+    if (step === 1) return ok('companyName') && ok('contactName') && ok('email') && ok('website')
     if (step === 2) return ok('categoryName') && ok('country') && ok('tagline')
     if (step === 3) return ok('features')
     if (step === 4) return true
@@ -627,6 +651,7 @@ export default function ListingForm() {
             categoryColor: form.categoryColor,
             categoryIcon: form.categoryIcon,
             country: form.country,
+            state: form.state,
             city: form.city,
             tagline: form.tagline,
             description: form.description,
@@ -705,6 +730,65 @@ export default function ListingForm() {
       )}
     </div>
   )
+
+  /* ══════════════════════════════════════════════════════════════
+     SEARCHABLE DROPDOWN (countries, states, cities)
+     ══════════════════════════════════════════════════════════════ */
+  const renderSearchDd = (
+    name: string,
+    placeholder: string,
+    displayValue: string,
+    items: { label: string; value: string; extra?: string }[],
+    onSelect: (value: string, label: string) => void,
+  ) => {
+    const q = (ddSearch[name] || '').toLowerCase()
+    const filtered = q ? items.filter(i => i.label.toLowerCase().includes(q) || (i.extra || '').toLowerCase().includes(q)) : items
+    return (
+      <div className="ld-dd">
+        <button
+          type="button"
+          className={`listing-input ld-dd-trigger${openDd === name ? ' ld-dd-trigger--open' : ''}${displayValue ? ' ld-dd-trigger--filled' : ''}`}
+          onClick={() => { toggleDd(name); setDdSearch(p => ({ ...p, [name]: '' })); setTimeout(() => ddSearchRef.current?.focus(), 60) }}
+        >
+          <span>{displayValue || placeholder}</span>
+          <Arrow />
+        </button>
+        {openDd === name && (
+          <div className="ld-dd-menu ld-dd-menu--search">
+            <div className="ld-dd-search-wrap">
+              <input
+                ref={ddSearchRef}
+                type="text"
+                className="ld-dd-search"
+                placeholder="Search..."
+                value={ddSearch[name] || ''}
+                onChange={e => setDdSearch(p => ({ ...p, [name]: e.target.value }))}
+                onClick={e => e.stopPropagation()}
+              />
+            </div>
+            <div className="ld-dd-scroll">
+              {filtered.length === 0 ? (
+                <div className="ld-dd-empty">No results found</div>
+              ) : filtered.map(item => (
+                <button
+                  key={item.value}
+                  type="button"
+                  className={`ld-dd-item${displayValue === item.label ? ' ld-dd-item--active' : ''}`}
+                  onClick={() => { onSelect(item.value, item.label); setOpenDd(null); setDdSearch(p => ({ ...p, [name]: '' })) }}
+                >
+                  {item.extra && <span className="ld-dd-flag">{item.extra}</span>}
+                  {item.label}
+                  {displayValue === item.label && (
+                    <svg viewBox="0 0 20 20" className="ld-dd-check"><circle cx="10" cy="10" r="10" /><path d="M6 10.5l2.5 2.5L14 7.5" /></svg>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    )
+  }
 
   /* ══════════════════════════════════════════════════════════════
      SUCCESS STATE
@@ -790,7 +874,7 @@ export default function ListingForm() {
                 <p className="listing-step-desc">Basic information to get your listing started.</p>
               </div>
               <div className="listing-fields">
-                {/* Company Name */}
+                {/* Company Name — full width */}
                 <div className="listing-field">
                   <label className="listing-label">Company / Business Name <span>*</span></label>
                   <div className="ld-input-wrap">
@@ -805,86 +889,103 @@ export default function ListingForm() {
                   </div>
                 </div>
 
-                {/* Contact */}
-                <div className="listing-field">
-                  <label className="listing-label">Contact Person <span>*</span></label>
-                  <div className="ld-input-wrap">
-                    <input
-                      type="text"
-                      className="listing-input"
-                      placeholder="Your full name"
-                      value={form.contactName}
-                      onChange={e => setString('contactName', e.target.value)}
-                    />
-                    {ok('contactName') && <FieldCheck />}
-                  </div>
-                </div>
-
-                {/* Email */}
-                <div className="listing-field">
-                  <label className="listing-label">Business Email <span>*</span></label>
-                  <div className="ld-input-wrap">
-                    <input
-                      type="email"
-                      className="listing-input"
-                      placeholder="hello@company.com"
-                      value={form.email}
-                      onChange={e => setString('email', e.target.value)}
-                    />
-                    {ok('email') && <FieldCheck />}
-                  </div>
-                </div>
-
-                {/* Phone with country code */}
-                <div className="listing-field">
-                  <label className="listing-label">Phone Number</label>
-                  <div className="ld-phone-row">
-                    <div className="ld-dd ld-dd--code">
-                      <button
-                        type="button"
-                        className={`ld-dd-trigger ld-code-trigger${openDd === 'phoneCode' ? ' ld-dd-trigger--open' : ''}`}
-                        onClick={() => toggleDd('phoneCode')}
-                      >
-                        <span className="ld-code-val">{form.phoneCode}</span>
-                        <Arrow />
-                      </button>
-                      {openDd === 'phoneCode' && (
-                        <div className="ld-dd-menu ld-dd-menu--code">
-                          {phoneCodes.map(p => (
-                            <button
-                              key={p.label + p.code}
-                              type="button"
-                              className={`ld-dd-item${form.phoneCode === p.code ? ' ld-dd-item--active' : ''}`}
-                              onClick={() => { setString('phoneCode', p.code); setOpenDd(null) }}
-                            >
-                              <span className="ld-code-country">{p.label}</span>{p.code}
-                            </button>
-                          ))}
-                        </div>
-                      )}
+                {/* Contact + Email — 2 col */}
+                <div className="listing-row">
+                  <div className="listing-field">
+                    <label className="listing-label">Contact Person <span>*</span></label>
+                    <div className="ld-input-wrap">
+                      <input
+                        type="text"
+                        className="listing-input"
+                        placeholder="Your full name"
+                        value={form.contactName}
+                        onChange={e => setString('contactName', e.target.value)}
+                      />
+                      {ok('contactName') && <FieldCheck />}
                     </div>
-                    <input
-                      type="tel"
-                      className="listing-input ld-phone-input"
-                      placeholder="(555) 000-0000"
-                      value={form.phone}
-                      onChange={e => setString('phone', e.target.value)}
-                    />
+                  </div>
+                  <div className="listing-field">
+                    <label className="listing-label">Business Email <span>*</span></label>
+                    <div className="ld-input-wrap">
+                      <input
+                        type="email"
+                        className="listing-input"
+                        placeholder="hello@company.com"
+                        value={form.email}
+                        onChange={e => setString('email', e.target.value)}
+                      />
+                      {ok('email') && <FieldCheck />}
+                    </div>
                   </div>
                 </div>
 
-                {/* Website */}
-                <div className="listing-field">
-                  <label className="listing-label">Website URL</label>
-                  <div className="ld-input-wrap">
-                    <input
-                      type="url"
-                      className="listing-input"
-                      placeholder="https://www.company.com"
-                      value={form.website}
-                      onChange={e => setString('website', e.target.value)}
-                    />
-                    {form.website && ok('website') && <FieldCheck />}
+                {/* Phone + Website — 2 col */}
+                <div className="listing-row">
+                  <div className="listing-field">
+                    <label className="listing-label">Phone Number</label>
+                    <div className="ld-phone-row">
+                      <div className="ld-dd ld-dd--code">
+                        <button
+                          type="button"
+                          className={`ld-dd-trigger ld-code-trigger${openDd === 'phoneCode' ? ' ld-dd-trigger--open' : ''}`}
+                          onClick={() => toggleDd('phoneCode')}
+                        >
+                          <span className="ld-code-val">{form.phoneCode || '+1'}</span>
+                          <Arrow />
+                        </button>
+                        {openDd === 'phoneCode' && (
+                          <div className="ld-dd-menu ld-dd-menu--code ld-dd-menu--search">
+                            <div className="ld-dd-search-wrap">
+                              <input
+                                type="text"
+                                className="ld-dd-search"
+                                placeholder="Search..."
+                                value={ddSearch['phoneCode'] || ''}
+                                onChange={e => setDdSearch(p => ({ ...p, phoneCode: e.target.value }))}
+                                onClick={e => e.stopPropagation()}
+                                autoFocus
+                              />
+                            </div>
+                            <div className="ld-dd-scroll">
+                              {allCountries.filter(c => {
+                                const sq = (ddSearch['phoneCode'] || '').toLowerCase()
+                                return !sq || c.name.toLowerCase().includes(sq) || c.code.toLowerCase().includes(sq) || c.phone.includes(sq)
+                              }).map(c => (
+                                <button
+                                  key={c.code}
+                                  type="button"
+                                  className={`ld-dd-item${form.phoneCode === c.phone ? ' ld-dd-item--active' : ''}`}
+                                  onClick={() => { setString('phoneCode', c.phone); setOpenDd(null); setDdSearch(p => ({ ...p, phoneCode: '' })) }}
+                                >
+                                  <span className="ld-dd-flag">{c.flag}</span>
+                                  <span className="ld-code-country">{c.code}</span>{c.phone}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      <input
+                        type="tel"
+                        className="listing-input ld-phone-input"
+                        placeholder="(555) 000-0000"
+                        value={form.phone}
+                        onChange={e => setString('phone', e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div className="listing-field">
+                    <label className="listing-label">Website URL <span>*</span></label>
+                    <div className="ld-input-wrap">
+                      <input
+                        type="url"
+                        className="listing-input"
+                        placeholder="https://www.company.com"
+                        value={form.website}
+                        onChange={e => setString('website', e.target.value)}
+                      />
+                      {ok('website') && <FieldCheck />}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -996,26 +1097,57 @@ export default function ListingForm() {
                   <span className="listing-char-count">{form.description.length}/500</span>
                 </div>
 
-                {/* Country + City */}
+                {/* Country + State */}
                 <div className="listing-row">
                   <div className="listing-field">
                     <label className="listing-label">Country <span>*</span></label>
-                    {renderDropdown('country', 'Select country', form.country, countries, v => setString('country', v))}
+                    {renderSearchDd(
+                      'country', 'Select country', form.country,
+                      allCountries.map(c => ({ label: c.name, value: c.code, extra: c.flag })),
+                      (code) => handleCountryChange(code),
+                    )}
                   </div>
                   <div className="listing-field">
-                    <label className="listing-label">City</label>
-                    <input
-                      type="text"
-                      className="listing-input"
-                      placeholder="e.g. San Francisco"
-                      value={form.city}
-                      onChange={e => setString('city', e.target.value)}
-                    />
+                    <label className="listing-label">State / Province{geoStates.length > 0 ? '' : ''}</label>
+                    {geoStates.length > 0 ? (
+                      renderSearchDd(
+                        'state', 'Select state', form.state,
+                        geoStates.map(s => ({ label: s.name, value: s.code })),
+                        (code, label) => handleStateChange(code, label),
+                      )
+                    ) : (
+                      <input
+                        type="text"
+                        className="listing-input"
+                        placeholder={form.countryCode ? 'Enter state / province' : 'Select country first'}
+                        value={form.state}
+                        onChange={e => setString('state', e.target.value)}
+                        disabled={!form.countryCode}
+                      />
+                    )}
                   </div>
                 </div>
 
-                {/* Founded + Team Size */}
+                {/* City + Founded */}
                 <div className="listing-row">
+                  <div className="listing-field">
+                    <label className="listing-label">City</label>
+                    {geoCities.length > 0 ? (
+                      renderSearchDd(
+                        'city', 'Select city', form.city,
+                        geoCities.map(c => ({ label: c, value: c })),
+                        (_v, label) => setString('city', label),
+                      )
+                    ) : (
+                      <input
+                        type="text"
+                        className="listing-input"
+                        placeholder={form.state || form.countryCode ? 'Enter city' : 'Select country first'}
+                        value={form.city}
+                        onChange={e => setString('city', e.target.value)}
+                      />
+                    )}
+                  </div>
                   <div className="listing-field">
                     <label className="listing-label">Year Founded</label>
                     <input
@@ -1027,10 +1159,12 @@ export default function ListingForm() {
                       onChange={e => setString('founded', e.target.value.replace(/\D/g, ''))}
                     />
                   </div>
-                  <div className="listing-field">
-                    <label className="listing-label">Team Size</label>
-                    {renderDropdown('employees', 'Select size', form.employees, teamSizes, v => setString('employees', v))}
-                  </div>
+                </div>
+
+                {/* Team Size */}
+                <div className="listing-field" style={{ maxWidth: 'calc(50% - .5rem)' }}>
+                  <label className="listing-label">Team Size</label>
+                  {renderDropdown('employees', 'Select size', form.employees, teamSizes, v => setString('employees', v))}
                 </div>
               </div>
             </div>
@@ -1536,8 +1670,8 @@ export default function ListingForm() {
                   {form.tagline && <p className="rv-tagline">&ldquo;{form.tagline}&rdquo;</p>}
 
                   <div className="rv-meta">
-                    {(form.city || form.country) && (
-                      <span className="rv-meta-item"><IconMapPin />{form.city ? `${form.city}, ` : ''}{form.country}</span>
+                    {(form.city || form.state || form.country) && (
+                      <span className="rv-meta-item"><IconMapPin />{[form.city, form.state, form.country].filter(Boolean).join(', ')}</span>
                     )}
                     {form.founded && (
                       <span className="rv-meta-item"><IconCalendar />Est. {form.founded}</span>

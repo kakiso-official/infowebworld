@@ -15,7 +15,7 @@ interface ListingRow {
   pricing_tiers: string; screenshots: string; demo_video: string
   founded_year: string; team_size: string; funding: string; hq_location: string
   linkedin: string; twitter: string; facebook: string; faqs: string
-  city: string; status: string; created_at: string; updated_at: string
+  city: string; state: string; status: string; created_at: string; updated_at: string
   category_id: number; category_name: string; category_slug: string
   category_color: string; category_icon: string; country_name: string
   plan_name: string; plan_slug: string
@@ -214,6 +214,7 @@ function buildJsonLd(listing: ListingRow, breadcrumb: BreadcrumbItem[]) {
       '@type': 'PostalAddress',
       ...(L.hq_location && { streetAddress: L.hq_location }),
       ...(L.city && { addressLocality: L.city }),
+      ...(L.state && { addressRegion: L.state }),
       ...(L.country_name && { addressCountry: L.country_name }),
     }
   }

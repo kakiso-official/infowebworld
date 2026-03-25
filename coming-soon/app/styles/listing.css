@@ -63,7 +63,7 @@
    MAIN CARD
    ============================================================ */
 .listing-card {
-  max-width: 560px; margin: 0 auto;
+  max-width: 640px; margin: 0 auto;
   background: #fff;
   border: 1.5px solid var(--h-border);
   border-radius: 24px;
@@ -234,6 +234,29 @@
   fill: none; stroke: #fff; stroke-width: 2.5;
   stroke-linecap: round; stroke-linejoin: round;
 }
+
+/* ============================================================
+   SEARCHABLE DROPDOWN
+   ============================================================ */
+.ld-dd-menu--search { padding: 0; overflow: hidden }
+.ld-dd-search-wrap {
+  padding: .45rem .55rem; border-bottom: 1px solid var(--h-border-light);
+  position: sticky; top: 0; background: #fff; z-index: 1;
+}
+.ld-dd-search {
+  width: 100%; height: 34px; padding: 0 .65rem;
+  border: 1.5px solid var(--h-border); border-radius: 10px;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .78rem; color: var(--h-heading); outline: none;
+  background: var(--h-bg); box-sizing: border-box;
+}
+.ld-dd-search:focus { border-color: var(--h-accent); background: #fff }
+.ld-dd-scroll { max-height: 200px; overflow-y: auto; padding: .35rem }
+.ld-dd-empty {
+  padding: .75rem; text-align: center;
+  font-family: var(--font-nunito); font-size: .78rem; color: var(--h-muted);
+}
+.ld-dd-flag { margin-right: .35rem; font-size: 1rem; line-height: 1 }
 
 /* ============================================================
    PHONE CODE SELECTOR
@@ -627,7 +650,7 @@
 }
 
 /* ── Widen card for review step ── */
-.listing-card:has(.rv-card) { max-width: 600px }
+.listing-card:has(.rv-card) { max-width: 640px }
 
 /* ── Mobile review ── */
 @media (max-width: 480px) {

@@ -21,6 +21,7 @@ export type RealSubmission = {
   categoryIcon: string
   country: string
   city: string
+  state: string
   tagline: string
   description: string
   slug: string
@@ -68,6 +69,7 @@ function mapRow(r: Record<string, unknown>): RealSubmission {
     categoryIcon: String(r.category_icon ?? 'grid'),
     country: String(r.country_name ?? r.country ?? ''),
     city: String(r.city ?? ''),
+    state: String(r.state ?? ''),
     tagline: String(r.tagline ?? ''),
     description: String(r.description ?? ''),
     slug: String(r.slug ?? ''),

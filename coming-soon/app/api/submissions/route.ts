@@ -102,10 +102,10 @@ export async function POST(request: NextRequest) {
     await execute(
       `INSERT INTO submissions (
         uuid, slug, company_name, contact_name, email, phone, website,
-        tagline, description, logo_url, category_id, country_id, plan_id,
+        tagline, description, logo_url, category_id, country_id, city, state, plan_id,
         features, integrations, pricing_tiers, screenshots, faqs,
         paypal_order_id, payment_status, status, ip_address
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         uuid, slug,
         body.companyName.trim(),
@@ -118,6 +118,8 @@ export async function POST(request: NextRequest) {
         body.logoUrl || null,
         categoryId,
         countryId,
+        body.city || null,
+        body.state || null,
         planId,
         features, integrations, pricingTiers, screenshots, faqs,
         body.paypalOrderId || null,

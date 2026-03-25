@@ -56,6 +56,7 @@ function DetailModal({ sub, onClose, onStatusChange, onFaqSave }: { sub: RealSub
           <div style={{ fontSize: '.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--h-accent)', marginBottom: '.25rem', marginTop: '1.25rem' }}>Listing Details</div>
           <Field label="Category" value={sub.category} />
           <Field label="Country" value={sub.country} />
+          <Field label="State / Province" value={sub.state} />
           <Field label="City" value={sub.city} />
           <Field label="Tagline" value={sub.tagline} />
           <Field label="Description" value={sub.description} />
