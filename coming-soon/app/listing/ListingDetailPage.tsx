@@ -70,6 +70,71 @@ export default function ListingDetailPage({ slug: slugProp }: { slug?: string })
     if (listing.logoUrl) m('og:image', listing.logoUrl)
   }, [listing])
 
+  /* ── JSON-LD Structured Data (LocalBusiness + BreadcrumbList) ── */
+  useEffect(() => {
+    if (!listing) return
+
+    const L = listing
+    const listingUrl = `https://infowebworld.com/listing/${L.slug}`
+
+    const businessSchema: Record<string, unknown> = {
+      '@context': 'https://schema.org',
+      '@type': 'LocalBusiness',
+      name: L.companyName,
+      description: L.description || L.tagline || `${L.companyName} on InfoWebWorld`,
+      url: L.website || listingUrl,
+      image: L.logoUrl || undefined,
+    }
+    if (L.hqLocation || L.city || L.country) {
+      businessSchema.address = {
+        '@type': 'PostalAddress',
+        addressLocality: L.city || undefined,
+        addressCountry: L.country || undefined,
+        streetAddress: L.hqLocation || undefined,
+      }
+    }
+    if (L.phone) businessSchema.telephone = `${L.phoneCode}${L.phone}`
+    if (L.email) businessSchema.email = L.email
+    if (L.founded) businessSchema.foundingDate = L.founded
+    if (L.employees) businessSchema.numberOfEmployees = { '@type': 'QuantitativeValue', value: L.employees }
+
+    const sameAs: string[] = []
+    if (L.website) sameAs.push(L.website)
+    if (L.linkedin) sameAs.push(L.linkedin)
+    if (L.twitter) sameAs.push(L.twitter)
+    if (L.facebook) sameAs.push(L.facebook)
+    if (sameAs.length) businessSchema.sameAs = sameAs
+
+    const breadcrumbItems: { '@type': string; position: number; name: string; item?: string }[] = [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://infowebworld.com' },
+      { '@type': 'ListItem', position: 2, name: L.category || 'Categories', item: L.categorySlug ? `https://infowebworld.com/category/${L.categorySlug}` : 'https://infowebworld.com/categories' },
+      { '@type': 'ListItem', position: 3, name: L.companyName },
+    ]
+
+    const breadcrumbSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: breadcrumbItems,
+    }
+
+    const scriptBusiness = document.createElement('script')
+    scriptBusiness.type = 'application/ld+json'
+    scriptBusiness.id = 'schema-listing-business'
+    scriptBusiness.text = JSON.stringify(businessSchema)
+    document.head.appendChild(scriptBusiness)
+
+    const scriptBreadcrumb = document.createElement('script')
+    scriptBreadcrumb.type = 'application/ld+json'
+    scriptBreadcrumb.id = 'schema-listing-breadcrumb'
+    scriptBreadcrumb.text = JSON.stringify(breadcrumbSchema)
+    document.head.appendChild(scriptBreadcrumb)
+
+    return () => {
+      document.getElementById('schema-listing-business')?.remove()
+      document.getElementById('schema-listing-breadcrumb')?.remove()
+    }
+  }, [listing])
+
   if (loading) return null
 
   if (notFound) return (
@@ -322,7 +387,7 @@ export default function ListingDetailPage({ slug: slugProp }: { slug?: string })
               {related.map(r => {
                 const rc = r.categoryColor || '#E8553D'
                 return (
-                  <Link key={r.id} href={`/listing/${r.slug}`} className="ld-related-card">
+                  <Link key={r.id} href={`/company/${r.slug}`} className="ld-related-card">
                     <div className="ld-related-logo" style={{ background: r.logoUrl ? '#fff' : `linear-gradient(135deg, ${rc}22, ${rc}44)`, borderColor: r.logoUrl ? '#E8E3DE' : `${rc}20` }}>
                       {r.logoUrl ? <img src={r.logoUrl} alt={r.companyName} /> : <span style={{ color: rc, fontFamily: 'var(--font-bricolage)', fontWeight: 800, fontSize: '1rem' }}>{r.companyName.charAt(0)}</span>}
                     </div>

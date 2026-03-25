@@ -74,6 +74,58 @@ export default function BlogReader({ slug: slugProp }: { slug?: string }) {
     if (post.seo.ogImage || post.coverImage) setMeta('og:image', post.seo.ogImage || post.coverImage)
   }, [post])
 
+  /* ── JSON-LD Structured Data (Article + BreadcrumbList) ── */
+  useEffect(() => {
+    if (!post) return
+
+    const postUrl = `https://infowebworld.com/blog/${post.slug}`
+    const articleSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: post.seo.metaTitle || post.title,
+      description: post.seo.metaDescription || post.excerpt,
+      author: { '@type': 'Person', name: post.author },
+      datePublished: post.publishedAt || post.createdAt,
+      dateModified: post.updatedAt || post.publishedAt || post.createdAt,
+      image: post.seo.ogImage || post.coverImage || undefined,
+      url: postUrl,
+      publisher: {
+        '@type': 'Organization',
+        name: 'InfoWebWorld',
+        url: 'https://infowebworld.com',
+        logo: { '@type': 'ImageObject', url: 'https://infowebworld.com/logo/infowebworld-logo.png' },
+      },
+      mainEntityOfPage: { '@type': 'WebPage', '@id': postUrl },
+    }
+
+    const breadcrumbSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://infowebworld.com' },
+        { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://infowebworld.com/blog' },
+        { '@type': 'ListItem', position: 3, name: post.title },
+      ],
+    }
+
+    const scriptArticle = document.createElement('script')
+    scriptArticle.type = 'application/ld+json'
+    scriptArticle.id = 'schema-blog-article'
+    scriptArticle.text = JSON.stringify(articleSchema)
+    document.head.appendChild(scriptArticle)
+
+    const scriptBreadcrumb = document.createElement('script')
+    scriptBreadcrumb.type = 'application/ld+json'
+    scriptBreadcrumb.id = 'schema-blog-breadcrumb'
+    scriptBreadcrumb.text = JSON.stringify(breadcrumbSchema)
+    document.head.appendChild(scriptBreadcrumb)
+
+    return () => {
+      document.getElementById('schema-blog-article')?.remove()
+      document.getElementById('schema-blog-breadcrumb')?.remove()
+    }
+  }, [post])
+
   const shareUrl = typeof window !== 'undefined' ? window.location.href : ''
   const handleCopy = () => {
     if (post) { navigator.clipboard.writeText(shareUrl); trackBlogView(post.slug, undefined, true); setCopied(true); setTimeout(() => setCopied(false), 2000) }

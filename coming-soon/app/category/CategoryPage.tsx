@@ -179,6 +179,68 @@ export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
     if (category.seoOgImage || category.coverImage) setMeta('og:image', category.seoOgImage || category.coverImage)
   }, [category])
 
+  /* ── JSON-LD Structured Data (BreadcrumbList + FAQPage) ── */
+  useEffect(() => {
+    if (!category) return
+
+    const breadcrumbItems: { '@type': string; position: number; name: string; item?: string }[] = [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://infowebworld.com' },
+      { '@type': 'ListItem', position: 2, name: 'Categories', item: 'https://infowebworld.com/categories' },
+    ]
+    let pos = 3
+    if (category.parentName && category.parentSlug) {
+      breadcrumbItems.push({ '@type': 'ListItem', position: pos++, name: category.parentName, item: `https://infowebworld.com/category/${category.parentSlug}` })
+    }
+    breadcrumbItems.push({ '@type': 'ListItem', position: pos, name: category.name })
+
+    const breadcrumbSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: breadcrumbItems,
+    }
+
+    const catName = category.name
+    const catDesc = category.seoDescription || category.description || `Explore top ${catName} businesses on InfoWebWorld.`
+    const faqSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: `What is ${catName}?`,
+          acceptedAnswer: { '@type': 'Answer', text: catDesc },
+        },
+        {
+          '@type': 'Question',
+          name: `How to find the best ${catName} companies?`,
+          acceptedAnswer: { '@type': 'Answer', text: `Browse verified ${catName} companies on InfoWebWorld, compare services, read reviews, and connect directly.` },
+        },
+        {
+          '@type': 'Question',
+          name: `Is it free to list my ${catName} business?`,
+          acceptedAnswer: { '@type': 'Answer', text: 'Yes, InfoWebWorld offers free business listing with optional premium plans for enhanced visibility.' },
+        },
+      ],
+    }
+
+    const scriptBreadcrumb = document.createElement('script')
+    scriptBreadcrumb.type = 'application/ld+json'
+    scriptBreadcrumb.id = 'schema-category-breadcrumb'
+    scriptBreadcrumb.text = JSON.stringify(breadcrumbSchema)
+    document.head.appendChild(scriptBreadcrumb)
+
+    const scriptFaq = document.createElement('script')
+    scriptFaq.type = 'application/ld+json'
+    scriptFaq.id = 'schema-category-faq'
+    scriptFaq.text = JSON.stringify(faqSchema)
+    document.head.appendChild(scriptFaq)
+
+    return () => {
+      document.getElementById('schema-category-breadcrumb')?.remove()
+      document.getElementById('schema-category-faq')?.remove()
+    }
+  }, [category])
+
   /* ── Always fetch real listings (listingCount may be stale) ── */
   useEffect(() => {
     if (!category) return
@@ -713,7 +775,7 @@ export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
                           Website
                         </a>
                       )}
-                      <Link href={`/listing/${item.slug}`} className="cd-card-details-btn">
+                      <Link href={`/company/${item.slug}`} className="cd-card-details-btn">
                         View Details
                       </Link>
                     </div>

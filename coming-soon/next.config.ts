@@ -23,6 +23,12 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // Redirect old /listing/:slug to /company/:slug
+      {
+        source: '/listing/:slug',
+        destination: '/company/:slug',
+        permanent: true,
+      },
       // Redirect old /infowebworld/* URLs to /* (except uploads which are proxied)
       {
         source: '/infowebworld/:path((?!uploads/).*)',
