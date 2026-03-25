@@ -40,7 +40,7 @@ export default function Countdown() {
       <div className="container">
         <p className="countdown-tag">Limited Early Access</p>
         <h2 className="countdown-label">
-          We Launch In
+          Our beta will Go Live in
         </h2>
         <div className="countdown-grid" suppressHydrationWarning>
           {blocks.map(b => (
@@ -52,7 +52,7 @@ export default function Countdown() {
             </div>
           ))}
         </div>
-        <p className="countdown-note">Lock in founding member pricing before launch day</p>
+      
       </div>
     </section>
   )

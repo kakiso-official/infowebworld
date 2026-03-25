@@ -40,22 +40,18 @@ export default function Hero() {
                 <span key={word} className={`cs-rotate-word${i === current ? ' active' : ''}`}>{word}</span>
               ))}
             </span>{' '}
-            right Business<em>for your needs...</em>
+            right Business <em>for your needs...</em>
           </span>
         </h1>
 
         <p className="cs-desc">
-          Search, compare, and review businesses across 80+ industries in 12 countries.
-          Verified reviews. Dofollow backlinks. Real leads. Be the first on the platform.
+          InfoWebWorld is the Global Platform to explore / search best trusted businesses worldwide.
+          #find #compare #connect with great Local Businesses in AI & ML, SaaS & Software, Startups & Innovations, IT Servcies & Agencies, Professional Services in one place - InfoWebWorld.com
         </p>
 
         <div className="cs-actions">
-          <Link href="/get-listed" className="cs-primary-btn">
-            Get Listed Now
-            <svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
-          </Link>
           <form className="cs-form" onSubmit={handleHeroJoin}>
-            <input type="email" className="cs-input" placeholder="or join waitlist with email" required value={heroEmail} onChange={e => setHeroEmail(e.target.value)} />
+            <input type="email" className="cs-input" placeholder="enter your email id" required value={heroEmail} onChange={e => setHeroEmail(e.target.value)} />
             <button type="submit" className="cs-submit">{heroMsg || 'Join'}</button>
           </form>
         </div>
