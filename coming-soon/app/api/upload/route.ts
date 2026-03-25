@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server'
-import { put } from '@vercel/blob'
+
+const CPANEL_UPLOAD_URL = 'https://infowebworld.com/infowebworld/api.php?action=file_upload'
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,8 +13,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate file size (max 5MB)
-    const maxSize = 5 * 1024 * 1024
-    if (file.size > maxSize) {
+    if (file.size > 5 * 1024 * 1024) {
       return Response.json({ error: 'File too large. Maximum size is 5MB.' }, { status: 400 })
     }
 
@@ -23,20 +23,37 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: 'Invalid file type. Allowed: JPEG, PNG, WebP, SVG, GIF.' }, { status: 400 })
     }
 
-    // Upload to Vercel Blob storage
-    const folder = type === 'logo' ? 'logos' : type === 'screenshot' ? 'screenshots' : 'uploads'
-    const ext = file.name.split('.').pop() || 'jpg'
-    const pathname = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
+    // Forward file to cPanel PHP upload endpoint
+    const cpanelForm = new FormData()
+    cpanelForm.append('file', file)
+    cpanelForm.append('type', type || 'logo')
 
-    const blob = await put(pathname, file, {
-      access: 'public',
-      addRandomSuffix: false,
+    const res = await fetch(CPANEL_UPLOAD_URL, {
+      method: 'POST',
+      body: cpanelForm,
     })
 
-    return Response.json({ ok: true, url: blob.url })
+    if (!res.ok) {
+      const text = await res.text()
+      console.error('cPanel upload failed:', res.status, text)
+      return Response.json({ error: 'Upload to server failed' }, { status: 502 })
+    }
+
+    const data = await res.json()
+
+    if (data.error) {
+      return Response.json({ error: data.error }, { status: 400 })
+    }
+
+    // data.url is like "/infowebworld/uploads/logos/abc123.jpg"
+    // Return the full cPanel URL so images load directly from there
+    const url = data.url?.startsWith('http')
+      ? data.url
+      : `https://infowebworld.com${data.url}`
+
+    return Response.json({ ok: true, url })
   } catch (err) {
     console.error('POST /api/upload error:', err)
-    const message = err instanceof Error ? err.message : 'Server error'
-    return Response.json({ error: `Upload failed: ${message}` }, { status: 500 })
+    return Response.json({ error: 'Upload failed' }, { status: 500 })
   }
 }
