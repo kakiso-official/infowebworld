@@ -46,27 +46,22 @@
   width: auto;
 }
 
-/* Search bar */
-.hd-search-wrap {
-  flex: 1;
-  max-width: 440px;
-  margin: 0 1rem;
-}
-.hd-search {
+/* Search button (round icon) */
+.hd-search-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid var(--h-border);
+  background: transparent;
   display: flex;
   align-items: center;
-  gap: .55rem;
-  height: 38px;
-  border: 1.5px solid var(--h-border);
-  border-radius: 999px;
-  padding: 0 .9rem;
-  background: var(--h-bg);
+  justify-content: center;
   cursor: pointer;
-  transition: border-color .3s, box-shadow .3s;
+  transition: all .25s cubic-bezier(.16, 1, .3, 1);
 }
-.hd-cs-wrap:hover .hd-search {
+.hd-search-btn:hover {
   border-color: var(--h-accent);
-  box-shadow: 0 0 0 3px rgba(232, 85, 61, .06);
+  background: rgba(232, 85, 61, .04);
 }
 .hd-search-ic {
   width: 15px;
@@ -78,17 +73,6 @@
   stroke-linejoin: round;
   flex-shrink: 0;
 }
-.hd-search-input {
-  border: none;
-  background: transparent;
-  outline: none;
-  font-family: var(--font-nunito), 'Nunito', sans-serif;
-  font-size: .78rem;
-  color: var(--h-heading);
-  width: 100%;
-  cursor: pointer;
-}
-.hd-search-input::placeholder { color: var(--h-muted) }
 
 /* Actions group */
 .hd-actions {
@@ -96,6 +80,7 @@
   align-items: center;
   gap: .5rem;
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 /* Login button */
@@ -398,25 +383,6 @@
   stroke-linejoin: round;
 }
 
-/* Drawer search */
-.hd-drawer-search {
-  display: flex;
-  align-items: center;
-  gap: .5rem;
-  margin: 1rem 1.25rem;
-  padding: 0 .85rem;
-  height: 44px;
-  border-radius: 12px;
-  border: 1.5px solid var(--h-border);
-  background: var(--h-bg);
-  flex-shrink: 0;
-}
-.hd-drawer-search .hd-search-input {
-  flex: 1;
-  min-width: 0;
-  font-size: .8rem;
-}
-
 /* Drawer body */
 .hd-drawer-body {
   flex: 1;
@@ -459,7 +425,6 @@
 
 /* ── Tablet ── */
 @media (max-width: 1024px) {
-  .hd-search-wrap { max-width: 280px }
   .hd-biz { display: none }
   .hd-sub-inner { gap: .1rem }
   .hd-sub-link { padding: .35rem .55rem; font-size: .74rem }
@@ -468,7 +433,6 @@
 
 /* ── Mobile ── */
 @media (max-width: 768px) {
-  .hd-search-wrap,
   .hd-actions,
   .hd-sub {
     display: none;

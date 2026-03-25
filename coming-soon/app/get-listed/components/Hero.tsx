@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import CurvedLoop from './CurvedLoop'
-import { addToWaitlist } from '../iww-hq/data/waitlist-storage'
+import { addToWaitlist } from '../../iww-hq/data/waitlist-storage'
 
 const words = ['Search', 'Compare', 'Discover', 'Connect', 'Review', ]
 
@@ -55,7 +55,7 @@ export default function Hero() {
         </div>
         <p className="cs-desc">
           InfoWebWorld is the Global Platform to explore / search best trusted businesses worldwide.
-          <strong>#find</strong> <strong>#compare</strong> <strong>#connect</strong> with great Local Businesses in AI & ML, SaaS & Software, Startups & Innovations, IT Servcies & Agencies, Professional Services in one place - <a href="https://infowebworld.com/" className="cs-brand">infoWebWorld.com</a>
+          #find #compare #connect with great Local Businesses in AI & ML, SaaS & Software, Startups & Innovations, IT Servcies & Agencies, Professional Services in one place - InfoWebWorld.com
         </p>
 
         {/* <div className="cs-highlights">

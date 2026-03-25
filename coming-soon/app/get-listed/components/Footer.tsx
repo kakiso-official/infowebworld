@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import SafeMailLink from './SafeMailLink'
 
-import { BASE } from '../config/base-path'
+import { BASE } from '../../config/base-path'
 const bp = BASE
 
 export default function Footer() {
