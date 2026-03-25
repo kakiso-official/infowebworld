@@ -3,7 +3,7 @@
  */
 import type { BlogPost } from './blog-types'
 
-const API = '/infowebworld/api.php'
+const API = '/api'
 
 /** Map DB snake_case row to BlogPost */
 function mapRow(r: Record<string, unknown>): BlogPost {
@@ -64,7 +64,7 @@ function toPayload(p: BlogPost): Record<string, unknown> {
 
 export async function fetchAllPosts(): Promise<BlogPost[]> {
   try {
-    const res = await fetch(`${API}?action=blog_all`)
+    const res = await fetch(`${API}/admin/blog`)
     if (!res.ok) throw new Error('API error')
     const rows: Record<string, unknown>[] = await res.json()
     return rows.map(mapRow)
@@ -75,7 +75,7 @@ export async function fetchAllPosts(): Promise<BlogPost[]> {
 
 export async function fetchPublishedPosts(): Promise<BlogPost[]> {
   try {
-    const res = await fetch(`${API}?action=blog_list`)
+    const res = await fetch(`${API}/blog`)
     if (!res.ok) throw new Error('API error')
     const rows: Record<string, unknown>[] = await res.json()
     return rows.map(mapRow)
@@ -92,7 +92,7 @@ export async function fetchPostById(id: string): Promise<BlogPost | null> {
 /** Fetch a single published post by slug (includes body) */
 export async function fetchPostBySlug(slug: string): Promise<BlogPost | null> {
   try {
-    const res = await fetch(`${API}?action=blog_get&slug=${encodeURIComponent(slug)}`)
+    const res = await fetch(`${API}/blog/${encodeURIComponent(slug)}`)
     if (!res.ok) return null
     const data = await res.json()
     if (data.error) return null
@@ -101,7 +101,7 @@ export async function fetchPostBySlug(slug: string): Promise<BlogPost | null> {
 }
 
 export async function apiSavePost(post: BlogPost): Promise<string> {
-  const res = await fetch(`${API}?action=blog_save`, {
+  const res = await fetch(`${API}/admin/blog`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(toPayload(post)),
@@ -111,10 +111,8 @@ export async function apiSavePost(post: BlogPost): Promise<string> {
 }
 
 export async function apiDeletePost(id: string): Promise<void> {
-  await fetch(`${API}?action=blog_delete`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ id: Number(id) }),
+  await fetch(`${API}/admin/blog/${id}`, {
+    method: 'DELETE',
   })
 }
 

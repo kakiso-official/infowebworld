@@ -182,7 +182,7 @@ export default function SeoEditor() {
           </div>
           <div>
             <label style={labelStyle}>Canonical URL</label>
-            <input style={inputStyle} value={seo.canonicalUrl} onChange={e => setSeo('canonicalUrl', e.target.value)} placeholder={`https://infowebworld.com/infowebworld/blog/${post.slug}`} onFocus={focus} onBlur={blur} />
+            <input style={inputStyle} value={seo.canonicalUrl} onChange={e => setSeo('canonicalUrl', e.target.value)} placeholder={`https://infowebworld.com/blog/${post.slug}`} onFocus={focus} onBlur={blur} />
           </div>
           <label style={{ display: 'flex', alignItems: 'center', gap: '.5rem', cursor: 'pointer' }}>
             <input type="checkbox" checked={seo.noIndex} onChange={e => setSeo('noIndex', e.target.checked)} style={{ width: 16, height: 16, accentColor: '#E8553D' }} />

@@ -148,7 +148,7 @@ export default function Settings() {
 
       <Card title="Danger Zone" color="#E8553D">
         <p style={{ fontSize: '.72rem', color: 'var(--h-body)', marginBottom: '1rem', lineHeight: 1.5 }}>End your current session.</p>
-        <button onClick={() => { clearSession(); window.location.href = '/infowebworld/iww-hq' }}
+        <button onClick={() => { clearSession(); window.location.href = '/iww-hq' }}
           style={{ padding: '.55rem 1.5rem', borderRadius: 999, border: 'none', background: '#E8553D', color: '#fff', fontSize: '.78rem', fontWeight: 700, cursor: 'pointer', fontFamily: "var(--font-nunito)" }}>
           Logout
         </button>

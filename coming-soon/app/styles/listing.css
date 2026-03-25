@@ -837,3 +837,115 @@
   .listing-success-perks { padding: 1.25rem; border-radius: 16px }
   .listing-success-plan { padding: .85rem 1.5rem }
 }
+
+/* ============================================================
+   GET LISTED — Slide-in Form Panel
+   ============================================================ */
+
+/* ── Backdrop overlay ── */
+.gl-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 26, 26, 0);
+  z-index: 1050;
+  pointer-events: none;
+  transition: background .45s cubic-bezier(.16, 1, .3, 1);
+  -webkit-backdrop-filter: blur(0px);
+  backdrop-filter: blur(0px);
+}
+.gl-overlay--open {
+  background: rgba(26, 26, 26, .4);
+  pointer-events: auto;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+/* ── Panel ── */
+.gl-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 70%;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 1100;
+  background: var(--h-bg);
+  transform: translateX(100%);
+  transition: transform .5s cubic-bezier(.16, 1, .3, 1),
+              box-shadow .5s cubic-bezier(.16, 1, .3, 1);
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  box-shadow: none;
+  will-change: transform;
+}
+.gl-panel--open {
+  transform: translateX(0);
+  box-shadow: -12px 0 60px rgba(0, 0, 0, .15),
+              inset 3px 0 0 var(--h-accent);
+}
+
+/* Scrollbar */
+.gl-panel::-webkit-scrollbar { width: 6px }
+.gl-panel::-webkit-scrollbar-track { background: transparent }
+.gl-panel::-webkit-scrollbar-thumb { background: var(--h-border); border-radius: 3px }
+.gl-panel::-webkit-scrollbar-thumb:hover { background: var(--h-muted) }
+
+/* ── Close button ── */
+.gl-panel-close {
+  position: fixed;
+  top: 1.15rem;
+  right: 1.15rem;
+  z-index: 1200;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid var(--h-border);
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--h-heading);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, .1);
+  transition: background .3s, border-color .3s, color .3s, box-shadow .3s;
+  animation: glCloseFadeIn .3s cubic-bezier(.16, 1, .3, 1);
+}
+@keyframes glCloseFadeIn {
+  from { opacity: 0; transform: scale(.85) }
+}
+.gl-panel-close:hover {
+  background: var(--h-accent);
+  border-color: var(--h-accent);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(232, 85, 61, .3);
+}
+.gl-panel-close svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ── Inside panel: tighten top padding ── */
+.gl-panel .listing-section {
+  padding-top: 1rem;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .gl-panel {
+    width: 100%;
+  }
+  .gl-panel--open {
+    box-shadow: none;
+  }
+}
+@media (min-width: 769px) and (max-width: 1024px) {
+  .gl-panel {
+    width: 85%;
+  }
+}

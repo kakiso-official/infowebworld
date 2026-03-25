@@ -31,7 +31,7 @@ export function trackPageView(page: string) {
 
   const utm = getUtmParams()
 
-  fetch('/infowebworld/api.php?action=track_pageview', {
+  fetch('/api/track/pageview', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -48,7 +48,7 @@ export function trackBlogView(slug: string, readSeconds?: number, share?: boolea
 
   const utm = getUtmParams()
 
-  fetch('/infowebworld/api.php?action=track_blog_view', {
+  fetch('/api/track/blog-view', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

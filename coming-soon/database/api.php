@@ -177,6 +177,10 @@ try {
         'blog_delete'       => handleAdminBlogDelete(),
         'blog_all'          => handleAdminBlogList(),
 
+        // ── Listing endpoints ──
+        'listing_get'            => handleListingGet(),
+        'file_upload'            => handleFileUpload(),
+
         // ── Category endpoints ──
         'category_list'          => handleCategoryList(),
         'category_get'           => handleCategoryGet(),
@@ -300,12 +304,28 @@ function handleSubmissionCreate(): void {
         mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
     );
 
+    // Generate slug from company name
+    $slug = strtolower(trim(preg_replace('/[^a-z0-9]+/', '-', strtolower($d['companyName'])), '-'));
+    $slugCheck = $db->prepare("SELECT COUNT(*) FROM submissions WHERE slug = ?");
+    $slugCheck->execute([$slug]);
+    if ($slugCheck->fetchColumn() > 0) $slug .= '-' . substr($uuid, 0, 6);
+
+    // Encode JSON fields
+    $features     = !empty($d['features'])     ? json_encode($d['features'])     : null;
+    $integrations = !empty($d['integrations']) ? json_encode($d['integrations']) : null;
+    $pricingTiers = !empty($d['pricingTiers']) ? json_encode($d['pricingTiers']) : null;
+    $screenshots  = !empty($d['screenshots'])  ? json_encode($d['screenshots'])  : null;
+
     $stmt = $db->prepare(
         "INSERT INTO submissions
          (uuid, company_name, contact_name, email, phone_code, phone, website,
-          category_id, country_id, city, tagline, description, founded_year, team_size,
+          category_id, country_id, city, tagline, description, slug,
+          logo_url, screenshots, demo_video, features, integrations,
+          pricing_model, pricing_tiers,
+          founded_year, team_size, funding, hq_location,
+          linkedin, twitter, facebook,
           plan_id, ip_address, user_agent)
-         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
     );
     $stmt->execute([
         $uuid,
@@ -320,14 +340,39 @@ function handleSubmissionCreate(): void {
         $d['city'] ?? null,
         $d['tagline'],
         $d['description'] ?? null,
+        $slug,
+        $d['logoUrl'] ?? null,
+        $screenshots,
+        $d['demoVideo'] ?? null,
+        $features,
+        $integrations,
+        $d['pricingModel'] ?? 'contact',
+        $pricingTiers,
         !empty($d['founded']) ? (int)$d['founded'] : null,
         $d['employees'] ?? null,
+        $d['funding'] ?? null,
+        $d['hqLocation'] ?? null,
+        $d['linkedin'] ?? null,
+        $d['twitter'] ?? null,
+        $d['facebook'] ?? null,
         $planId,
         $_SERVER['REMOTE_ADDR'] ?? null,
         substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 500),
     ]);
 
-    jsonResponse(['ok' => true, 'id' => $uuid, 'message' => 'Submission received!']);
+    $subId = $db->lastInsertId();
+
+    // If PayPal order ID is present, mark as paid
+    $paypalOrderId = $d['paypalOrderId'] ?? null;
+    if ($paypalOrderId) {
+        $db->prepare("UPDATE submissions SET status = 'paid', payment_status = 'completed', paid_at = NOW(), notes = ? WHERE id = ?")
+           ->execute(['PayPal Order: ' . $paypalOrderId, $subId]);
+
+        // Update listing_count on the category
+        $db->prepare("UPDATE categories SET listing_count = listing_count + 1 WHERE id = ?")->execute([$catId]);
+    }
+
+    jsonResponse(['ok' => true, 'id' => $uuid, 'slug' => $slug, 'message' => $paypalOrderId ? 'Payment confirmed! Listing submitted.' : 'Submission received!']);
 }
 
 
@@ -779,7 +824,8 @@ function handleSubmissionList(): void {
     $db = getDB();
     $stmt = $db->query(
         "SELECT s.*, p.name as plan_name, p.slug as plan_slug,
-                c.name as category_name, co.name as country_name
+                c.name as category_name, c.slug as category_slug, c.color as category_color, c.icon as category_icon,
+                co.name as country_name
          FROM submissions s
          LEFT JOIN plans p ON p.id = s.plan_id
          LEFT JOIN categories c ON c.id = s.category_id
@@ -796,7 +842,41 @@ function handleSubmissionStatusUpdate(): void {
     if (!$id || !$status) jsonResponse(['error' => 'id and status required'], 400);
 
     $db = getDB();
+
+    // Get old status + category_id before update
+    $old = $db->prepare("SELECT status, category_id, company_name, slug, uuid FROM submissions WHERE id = ?");
+    $old->execute([$id]);
+    $old = $old->fetch();
+    if (!$old) jsonResponse(['error' => 'Submission not found'], 404);
+
+    $oldStatus = $old['status'];
+    $catId = (int)$old['category_id'];
+
     $db->prepare("UPDATE submissions SET status = ? WHERE id = ?")->execute([$status, $id]);
+
+    // Set approved_at + generate slug when status becomes active
+    if ($status === 'active') {
+        $db->prepare("UPDATE submissions SET approved_at = NOW() WHERE id = ? AND approved_at IS NULL")->execute([$id]);
+        if (empty($old['slug'])) {
+            $slug = strtolower(trim(preg_replace('/[^a-z0-9]+/', '-', strtolower($old['company_name'])), '-'));
+            $chk = $db->prepare("SELECT COUNT(*) FROM submissions WHERE slug = ? AND id != ?");
+            $chk->execute([$slug, $id]);
+            if ($chk->fetchColumn() > 0) $slug .= '-' . substr($old['uuid'], 0, 6);
+            $db->prepare("UPDATE submissions SET slug = ? WHERE id = ?")->execute([$slug, $id]);
+        }
+    }
+
+    // Update listing_count on the category
+    $wasActive = in_array($oldStatus, ['active', 'paid']);
+    $isActive  = in_array($status, ['active', 'paid']);
+    if (!$wasActive && $isActive) {
+        // Became active — increment
+        $db->prepare("UPDATE categories SET listing_count = listing_count + 1 WHERE id = ?")->execute([$catId]);
+    } elseif ($wasActive && !$isActive) {
+        // Was active, now not — decrement
+        $db->prepare("UPDATE categories SET listing_count = GREATEST(listing_count - 1, 0) WHERE id = ?")->execute([$catId]);
+    }
+
     jsonResponse(['ok' => true]);
 }
 
@@ -1123,27 +1203,50 @@ function handleCategoryListings(): void {
 
     $db = getDB();
 
-    // Total count
+    // Collect this category + ALL descendant category IDs (walk the tree)
+    $catIds = [$categoryId];
+    $queue = [$categoryId];
+    for ($depth = 0; $depth < 10 && !empty($queue); $depth++) {
+        $ph = implode(',', array_fill(0, count($queue), '?'));
+        $stmt = $db->prepare("SELECT id FROM categories WHERE parent_id IN ($ph)");
+        $stmt->execute(array_values($queue));
+        $rows = $stmt->fetchAll();
+        $queue = [];
+        foreach ($rows as $row) {
+            $childId = (int)$row['id'];
+            if (!in_array($childId, $catIds)) {
+                $catIds[] = $childId;
+                $queue[] = $childId;
+            }
+        }
+    }
+    $placeholders = implode(',', array_fill(0, count($catIds), '?'));
+
+    // Total count (include descendants)
     $total = $db->prepare(
-        "SELECT COUNT(*) FROM submissions WHERE category_id = ? AND status IN ('active','paid')"
+        "SELECT COUNT(*) FROM submissions WHERE category_id IN ($placeholders) AND status IN ('active','paid')"
     );
-    $total->execute([$categoryId]);
+    $total->execute($catIds);
     $totalCount = (int)$total->fetchColumn();
 
-    // Paginated results
+    // Paginated results with all new fields
     $stmt = $db->prepare(
-        "SELECT s.id, s.uuid, s.company_name, s.tagline, s.description, s.website, s.city,
+        "SELECT s.id, s.uuid, s.slug, s.company_name, s.tagline, s.description, s.website, s.city,
+                s.logo_url, s.screenshots, s.features, s.integrations, s.pricing_model, s.pricing_tiers,
+                s.demo_video, s.founded_year, s.team_size, s.funding, s.hq_location,
+                s.linkedin, s.twitter, s.facebook,
                 s.status, s.created_at,
-                c.name as category_name, co.name as country_name, p.name as plan_name
+                c.name as category_name, c.color as category_color, c.icon as category_icon,
+                co.name as country_name, p.name as plan_name, p.slug as plan_slug
          FROM submissions s
          LEFT JOIN categories c ON c.id = s.category_id
          LEFT JOIN countries co ON co.id = s.country_id
          LEFT JOIN plans p ON p.id = s.plan_id
-         WHERE s.category_id = ? AND s.status IN ('active','paid')
+         WHERE s.category_id IN ($placeholders) AND s.status IN ('active','paid')
          ORDER BY s.created_at DESC
          LIMIT $limit OFFSET $offset"
     );
-    $stmt->execute([$categoryId]);
+    $stmt->execute($catIds);
 
     jsonResponse([
         'data'  => $stmt->fetchAll(),
@@ -1282,4 +1385,104 @@ function handleCategoryBulkLaunch(): void {
 
     $affected = (int)$db->query("SELECT COUNT(*) FROM categories WHERE is_launched = $launched")->fetchColumn();
     jsonResponse(['ok' => true, 'affected' => $affected]);
+}
+
+
+// ============================================================
+// LISTING ENDPOINTS — Public listing detail + file upload
+// ============================================================
+
+/** Public — get listing detail by slug */
+function handleListingGet(): void {
+    $slug = $_GET['slug'] ?? '';
+    if (!$slug) jsonResponse(['error' => 'slug required'], 400);
+
+    header('Cache-Control: public, max-age=120');
+    $db = getDB();
+
+    $stmt = $db->prepare(
+        "SELECT s.*, c.name as category_name, c.slug as category_slug, c.color as category_color,
+                c.icon as category_icon, c.parent_id as category_parent_id,
+                co.name as country_name, p.name as plan_name, p.slug as plan_slug
+         FROM submissions s
+         LEFT JOIN categories c ON c.id = s.category_id
+         LEFT JOIN countries co ON co.id = s.country_id
+         LEFT JOIN plans p ON p.id = s.plan_id
+         WHERE s.slug = ? AND s.status IN ('active','paid')
+         LIMIT 1"
+    );
+    $stmt->execute([$slug]);
+    $listing = $stmt->fetch();
+    if (!$listing) jsonResponse(['error' => 'Listing not found'], 404);
+
+    // Get parent category chain for breadcrumb
+    $breadcrumb = [];
+    $parentId = $listing['category_parent_id'];
+    while ($parentId) {
+        $parent = $db->prepare("SELECT id, name, slug, parent_id FROM categories WHERE id = ?");
+        $parent->execute([$parentId]);
+        $parent = $parent->fetch();
+        if (!$parent) break;
+        array_unshift($breadcrumb, ['name' => $parent['name'], 'slug' => $parent['slug']]);
+        $parentId = $parent['parent_id'];
+    }
+
+    // Get related listings in same category
+    $related = $db->prepare(
+        "SELECT s.id, s.slug, s.company_name, s.tagline, s.logo_url, s.website,
+                c.name as category_name, c.color as category_color
+         FROM submissions s
+         LEFT JOIN categories c ON c.id = s.category_id
+         WHERE s.category_id = ? AND s.id != ? AND s.status IN ('active','paid')
+         ORDER BY s.created_at DESC LIMIT 4"
+    );
+    $related->execute([$listing['category_id'], $listing['id']]);
+
+    jsonResponse([
+        'listing' => $listing,
+        'breadcrumb' => $breadcrumb,
+        'related' => $related->fetchAll(),
+    ]);
+}
+
+/** File upload — handle logo/screenshot uploads */
+function handleFileUpload(): void {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') jsonResponse(['error' => 'POST required'], 405);
+    if (!checkRateLimit('file_upload', 20, 60)) jsonResponse(['error' => 'Too many uploads'], 429);
+
+    $type = $_POST['type'] ?? 'logo'; // logo or screenshot
+    $allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml', 'image/gif'];
+    $maxSize = 5 * 1024 * 1024; // 5MB
+
+    if (empty($_FILES['file'])) jsonResponse(['error' => 'No file uploaded'], 400);
+
+    $file = $_FILES['file'];
+    if ($file['error'] !== UPLOAD_ERR_OK) jsonResponse(['error' => 'Upload failed: ' . $file['error']], 400);
+    if ($file['size'] > $maxSize) jsonResponse(['error' => 'File too large (max 5MB)'], 400);
+
+    $mime = mime_content_type($file['tmp_name']);
+    if (!in_array($mime, $allowed)) jsonResponse(['error' => 'Invalid file type'], 400);
+
+    $ext = match($mime) {
+        'image/jpeg' => 'jpg',
+        'image/png' => 'png',
+        'image/webp' => 'webp',
+        'image/svg+xml' => 'svg',
+        'image/gif' => 'gif',
+        default => 'png',
+    };
+
+    $dir = $type === 'screenshot' ? 'uploads/screenshots' : 'uploads/logos';
+    $uploadDir = __DIR__ . '/' . $dir;
+    if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+
+    $filename = uniqid() . '_' . time() . '.' . $ext;
+    $destPath = $uploadDir . '/' . $filename;
+
+    if (!move_uploaded_file($file['tmp_name'], $destPath)) {
+        jsonResponse(['error' => 'Failed to save file'], 500);
+    }
+
+    $url = '/infowebworld/' . $dir . '/' . $filename;
+    jsonResponse(['ok' => true, 'url' => $url]);
 }

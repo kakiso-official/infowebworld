@@ -1,11 +1,21 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "export",
-  basePath: "/infowebworld",
   devIndicators: false,
   images: {
-    unoptimized: true,
+    remotePatterns: [
+      { protocol: 'https', hostname: 'infowebworld.com' },
+    ],
+  },
+  async redirects() {
+    return [
+      // Redirect old /infowebworld/* URLs to /*
+      {
+        source: '/infowebworld/:path*',
+        destination: '/:path*',
+        permanent: true,
+      },
+    ]
   },
 };
 

@@ -29,7 +29,7 @@ export type Category = {
   updatedAt: string
 }
 
-const API = '/infowebworld/api.php'
+const API = '/api'
 
 /** Map DB snake_case row to Category */
 function mapRow(r: Record<string, unknown>): Category {
@@ -91,7 +91,7 @@ function toPayload(c: Category): Record<string, unknown> {
 
 export async function fetchLaunchedCategories(): Promise<Category[]> {
   try {
-    const res = await fetch(`${API}?action=category_list`)
+    const res = await fetch(`${API}/categories`)
     if (!res.ok) throw new Error('API error')
     const rows: Record<string, unknown>[] = await res.json()
     return rows.map(mapRow)
@@ -102,7 +102,7 @@ export async function fetchLaunchedCategories(): Promise<Category[]> {
 
 export async function fetchCategoryBySlug(slug: string): Promise<Category | null> {
   try {
-    const res = await fetch(`${API}?action=category_get&slug=${encodeURIComponent(slug)}`)
+    const res = await fetch(`${API}/categories/${encodeURIComponent(slug)}`)
     if (!res.ok) return null
     const data = await res.json()
     if (data.error) return null
@@ -126,7 +126,7 @@ export async function fetchCategoryBySlug(slug: string): Promise<Category | null
 
 export async function fetchAllCategories(): Promise<Category[]> {
   try {
-    const res = await fetch(`${API}?action=category_all`)
+    const res = await fetch(`${API}/admin/categories`)
     if (!res.ok) throw new Error('API error')
     const rows: Record<string, unknown>[] = await res.json()
     return rows.map(mapRow)
@@ -145,7 +145,7 @@ export async function fetchCategoryById(id: string): Promise<Category | null> {
 }
 
 export async function apiSaveCategory(cat: Category): Promise<string> {
-  const res = await fetch(`${API}?action=category_save`, {
+  const res = await fetch(`${API}/admin/categories`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(toPayload(cat)),
@@ -155,18 +155,16 @@ export async function apiSaveCategory(cat: Category): Promise<string> {
 }
 
 export async function apiDeleteCategory(id: string): Promise<void> {
-  await fetch(`${API}?action=category_delete`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ id: Number(id) }),
+  await fetch(`${API}/admin/categories/${id}`, {
+    method: 'DELETE',
   })
 }
 
 export async function apiToggleLaunch(id: string, launched: boolean): Promise<void> {
-  await fetch(`${API}?action=category_toggle_launch`, {
-    method: 'POST',
+  await fetch(`${API}/admin/categories/${id}/toggle`, {
+    method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ id: Number(id), launched: launched ? 1 : 0 }),
+    body: JSON.stringify({ launched: launched ? 1 : 0 }),
   })
 }
 
@@ -174,7 +172,7 @@ export async function apiBulkLaunch(launched: boolean, level?: number, parentId?
   const body: Record<string, unknown> = { launched: launched ? 1 : 0 }
   if (level !== undefined) body.level = level
   if (parentId !== undefined) body.parent_id = Number(parentId)
-  await fetch(`${API}?action=category_bulk_launch`, {
+  await fetch(`${API}/admin/categories/bulk-launch`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),

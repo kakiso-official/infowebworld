@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 
-const API = '/infowebworld/api.php?action=dashboard_stats'
+const API = '/api/dashboard/stats'
 
 type Stats = {
   totalSubmissions: number; paidMembers: number; pendingSubmissions: number; confirmedSubmissions: number
@@ -40,7 +40,7 @@ export default function Dashboard() {
   const [err, setErr] = useState('')
 
   useEffect(() => {
-    fetch(API).then(r => r.json()).then(setD).catch(() => setErr('Could not load dashboard data. Make sure api.php is uploaded.'))
+    fetch(API).then(r => r.json()).then(setD).catch(() => setErr('Could not load dashboard data. Check database connection.'))
   }, [])
 
   if (err) return <div style={{ maxWidth: 600, margin: '2rem auto', padding: '2rem', background: '#FDDDD6', borderRadius: 20, textAlign: 'center', color: '#E8553D', fontWeight: 700, fontSize: '.85rem' }}>{err}</div>

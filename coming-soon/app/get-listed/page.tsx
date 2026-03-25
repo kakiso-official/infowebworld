@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import ListingForm from './ListingForm'
+import GetListedLanding from './GetListedLanding'
 
 export const metadata: Metadata = {
   title: 'Get Listed — Submit Your Business | InfoWebWorld',
@@ -18,7 +18,7 @@ export default function GetListedPage() {
   return (
     <>
       <Navbar />
-      <ListingForm />
+      <GetListedLanding />
       <Footer />
     </>
   )

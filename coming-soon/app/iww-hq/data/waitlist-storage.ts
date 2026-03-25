@@ -1,5 +1,5 @@
 const KEY = 'iww_waitlist'
-const API = '/infowebworld/api.php'
+const API = '/api'
 
 export type WaitlistEntry = {
   id: string
@@ -20,7 +20,7 @@ function write(data: WaitlistEntry[]) {
 /** Fetch waitlist from MySQL, fall back to localStorage */
 export async function fetchAllWaitlist(): Promise<WaitlistEntry[]> {
   try {
-    const res = await fetch(`${API}?action=waitlist_entries`)
+    const res = await fetch(`${API}/waitlist`)
     if (!res.ok) throw new Error('API error')
     const rows: { id: number; email: string; source: string; created_at: string }[] = await res.json()
     return rows.map(r => ({
@@ -50,7 +50,7 @@ export function addToWaitlist(email: string, source: WaitlistEntry['source'] = '
   write(all)
 
   // Also save to MySQL database
-  fetch(`${API}?action=waitlist_join`, {
+  fetch(`${API}/waitlist`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, source }),

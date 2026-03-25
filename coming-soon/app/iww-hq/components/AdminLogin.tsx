@@ -35,7 +35,7 @@ export default function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
       <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: 380 }}>
         <div style={{ background: '#fff', borderRadius: 24, border: '1.5px solid var(--h-border)', padding: '2rem', boxShadow: '0 4px 24px rgba(0,0,0,.04)' }}>
           <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-            <img src="/infowebworld/logo/infowebworld-logo.png" alt="IWW" style={{ height: 28, margin: '0 auto .85rem' }} />
+            <img src="/logo/infowebworld-logo.png" alt="IWW" style={{ height: 28, margin: '0 auto .85rem' }} />
             <h1 style={{ fontFamily: "var(--font-bricolage), 'Bricolage Grotesque', sans-serif", fontSize: '1.25rem', fontWeight: 800, color: 'var(--h-heading)', letterSpacing: '-.02em' }}>Admin Portal</h1>
             <p style={{ fontSize: '.72rem', color: 'var(--h-muted)', marginTop: '.25rem' }}>Authorized access only</p>
           </div>

@@ -4,7 +4,7 @@
  * All landing page components read from here.
  */
 
-const API = '/infowebworld/api.php'
+const API = '/api'
 
 export type SiteConfig = {
   pioneerJoined: number
@@ -48,7 +48,7 @@ export async function fetchConfig(): Promise<SiteConfig> {
   if (_cache && Date.now() - _cacheTime < CACHE_TTL) return _cache
 
   try {
-    const res = await fetch(`${API}?action=public_settings`, { cache: 'no-store' })
+    const res = await fetch(`${API}/settings`, { cache: 'no-store' })
     if (!res.ok) throw new Error('fail')
     const data = await res.json()
     const cfg: SiteConfig = {
@@ -77,7 +77,7 @@ export async function fetchConfig(): Promise<SiteConfig> {
 /** Save config to DB via API */
 export async function saveConfigToAPI(config: SiteConfig): Promise<boolean> {
   try {
-    const res = await fetch(`${API}?action=admin_settings`, {
+    const res = await fetch(`${API}/admin/settings`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -104,7 +104,7 @@ export async function saveConfigToAPI(config: SiteConfig): Promise<boolean> {
 /** Fetch live counts from DB (waitlist, submissions, paid) */
 export async function fetchLiveStats(): Promise<{ waitlistCount: number; submissionCount: number; paidCount: number }> {
   try {
-    const res = await fetch(`${API}?action=public_live_stats`, { cache: 'no-store' })
+    const res = await fetch(`${API}/stats/live`, { cache: 'no-store' })
     if (!res.ok) throw new Error('fail')
     return await res.json()
   } catch {

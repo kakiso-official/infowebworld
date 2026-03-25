@@ -1,13 +1,6 @@
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import Countdown from './components/Countdown'
-import Stats from './components/Stats'
-import Benefits from './components/Benefits'
-import EarlyBirdTiers from './components/EarlyBirdTiers'
-import Pricing from './components/Pricing'
-import HowItWorks from './components/HowItWorks'
-import Comparison from './components/Comparison'
-import FinalCTA from './components/FinalCTA'
 import Footer from './components/Footer'
 
 const jsonLd = {
@@ -58,28 +51,7 @@ export default function Home() {
       {/* 2. Countdown timer — urgency */}
       <Countdown />
 
-      {/* 3. Social proof stats */}
-      <Stats />
-
-      {/* 4. Benefits — what listed companies get */}
-      <Benefits />
-
-      {/* 5. Early bird tiers — FOMO mechanism */}
-      <EarlyBirdTiers />
-
-      {/* 6. Pricing plans */}
-      <Pricing />
-
-      {/* 7. How it works — simple steps */}
-      <HowItWorks />
-
-      {/* 8. Comparison table */}
-      <Comparison />
-
-      {/* 9. Final CTA — repeat email capture */}
-      <FinalCTA />
-
-      {/* 10. Footer */}
+      {/* 3. Footer */}
       <Footer />
     </>
   )

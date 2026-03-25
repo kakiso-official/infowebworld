@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, useMemo } from 'react'
 
-const API = '/infowebworld/api.php?action=dashboard_stats'
+const API = '/api/dashboard/stats'
 
 // ============================================================
 // SVG ICONS — Premium Lucide-style, 1.5px stroke

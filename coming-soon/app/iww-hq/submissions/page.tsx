@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { fetchAllSubmissions, updateSubmissionStatus, deleteSubmission, fetchSubmissionStats, type RealSubmission } from '../data/submissions-storage'
 
-const statusColors: Record<string, string> = { paid: '#2FAE6A', confirmed: '#3B82F6', pending: '#F59E0B', rejected: '#EF4444' }
+const statusColors: Record<string, string> = { paid: '#2FAE6A', confirmed: '#3B82F6', pending: '#F59E0B', rejected: '#EF4444', active: '#14B8A6', suspended: '#9CA3AF' }
 const Pill = ({ color, children }: { color: string; children: React.ReactNode }) => (
   <span style={{ fontSize: '.56rem', fontWeight: 700, padding: '.15rem .5rem', borderRadius: 999, background: `${color}15`, color, textTransform: 'capitalize' }}>{children}</span>
 )
@@ -51,20 +51,82 @@ function DetailModal({ sub, onClose, onStatusChange }: { sub: RealSubmission; on
           <Field label="City" value={sub.city} />
           <Field label="Tagline" value={sub.tagline} />
           <Field label="Description" value={sub.description} />
+          <Field label="Slug (URL)" value={sub.slug} />
           <Field label="Year Founded" value={sub.founded} />
           <Field label="Team Size" value={sub.employees} />
+          <Field label="Funding" value={sub.funding} />
+          <Field label="HQ Location" value={sub.hqLocation} />
+
+          {/* Media Section */}
+          <div style={{ fontSize: '.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--h-accent)', marginBottom: '.25rem', marginTop: '1.25rem' }}>Media</div>
+          {sub.logoUrl && (
+            <div style={{ padding: '.6rem 0', borderBottom: '1px solid var(--h-border-light)' }}>
+              <div style={lbl}>Logo</div>
+              <img src={sub.logoUrl} alt="Logo" style={{ width: 48, height: 48, borderRadius: 12, objectFit: 'cover', border: '1px solid var(--h-border)' }} />
+            </div>
+          )}
+          {sub.screenshots.length > 0 && (
+            <div style={{ padding: '.6rem 0', borderBottom: '1px solid var(--h-border-light)' }}>
+              <div style={lbl}>Screenshots ({sub.screenshots.length})</div>
+              <div style={{ display: 'flex', gap: '.35rem', flexWrap: 'wrap', marginTop: '.3rem' }}>
+                {sub.screenshots.map((s, i) => (
+                  <img key={i} src={s} alt={`Screenshot ${i + 1}`} style={{ width: 80, height: 50, borderRadius: 8, objectFit: 'cover', border: '1px solid var(--h-border)' }} />
+                ))}
+              </div>
+            </div>
+          )}
+          <Field label="Demo Video" value={sub.demoVideo} />
+
+          {/* Product Section */}
+          <div style={{ fontSize: '.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--h-accent)', marginBottom: '.25rem', marginTop: '1.25rem' }}>Product Details</div>
+          {sub.features.length > 0 && (
+            <div style={{ padding: '.6rem 0', borderBottom: '1px solid var(--h-border-light)' }}>
+              <div style={lbl}>Features ({sub.features.length})</div>
+              <ul style={{ paddingLeft: '1rem', margin: '.3rem 0 0' }}>
+                {sub.features.map((f, i) => <li key={i} style={{ fontSize: '.75rem', color: 'var(--h-heading)', marginBottom: '.15rem' }}>{f}</li>)}
+              </ul>
+            </div>
+          )}
+          {sub.integrations.length > 0 && (
+            <div style={{ padding: '.6rem 0', borderBottom: '1px solid var(--h-border-light)' }}>
+              <div style={lbl}>Integrations</div>
+              <div style={{ display: 'flex', gap: '.25rem', flexWrap: 'wrap', marginTop: '.3rem' }}>
+                {sub.integrations.map((t, i) => (
+                  <span key={i} style={{ fontSize: '.55rem', fontWeight: 700, padding: '.15rem .45rem', borderRadius: 999, background: 'var(--h-bg)', color: 'var(--h-body)', border: '1px solid var(--h-border-light)' }}>{t}</span>
+                ))}
+              </div>
+            </div>
+          )}
+          <Field label="Pricing Model" value={sub.pricingModel} />
+          {sub.pricingTiers.length > 0 && (
+            <div style={{ padding: '.6rem 0', borderBottom: '1px solid var(--h-border-light)' }}>
+              <div style={lbl}>Pricing Tiers</div>
+              {sub.pricingTiers.map((t, i) => (
+                <div key={i} style={{ fontSize: '.75rem', color: 'var(--h-heading)', marginTop: '.2rem' }}>
+                  <strong>{t.name}</strong>: ${t.price} {t.period}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Social Links */}
+          <div style={{ fontSize: '.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--h-accent)', marginBottom: '.25rem', marginTop: '1.25rem' }}>Social Links</div>
+          <Field label="LinkedIn" value={sub.linkedin} />
+          <Field label="Twitter / X" value={sub.twitter} />
+          <Field label="Facebook" value={sub.facebook} />
 
           {/* Plan + Meta Section */}
           <div style={{ fontSize: '.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--h-accent)', marginBottom: '.25rem', marginTop: '1.25rem' }}>Plan & Status</div>
           <Field label="Selected Plan" value={sub.plan === 'founding' ? 'Founding Company — $240 Lifetime' : sub.plan === 'early-adopter' ? 'Early Adopter — $99/yr' : 'Standard — $240/yr'} />
           <Field label="Current Status" value={sub.status} />
           <Field label="Submitted At" value={new Date(sub.submittedAt).toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' })} />
+          {sub.approvedAt && <Field label="Approved At" value={new Date(sub.approvedAt).toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' })} />}
         </div>
 
         {/* Actions */}
         <div style={{ padding: '1rem 1.5rem', borderTop: '1.5px solid var(--h-border)', display: 'flex', gap: '.4rem', flexWrap: 'wrap', position: 'sticky', bottom: 0, background: '#fff', borderRadius: '0 0 24px 24px' }}>
           <span style={{ fontSize: '.65rem', fontWeight: 700, color: 'var(--h-muted)', alignSelf: 'center', marginRight: '.25rem' }}>Set status:</span>
-          {(['pending', 'confirmed', 'paid', 'rejected'] as const).map(s => (
+          {(['pending', 'confirmed', 'paid', 'active', 'rejected'] as const).map(s => (
             <button key={s} onClick={() => onStatusChange(sub.id, s)}
               style={{ padding: '.3rem .65rem', borderRadius: 999, fontSize: '.58rem', fontWeight: 700, cursor: 'pointer', border: sub.status === s ? `2px solid ${statusColors[s]}` : '1.5px solid var(--h-border)', background: sub.status === s ? `${statusColors[s]}15` : '#fff', color: sub.status === s ? statusColors[s] : 'var(--h-body)', fontFamily: "var(--font-nunito)", transition: 'all .2s', textTransform: 'capitalize' }}>
               {s}

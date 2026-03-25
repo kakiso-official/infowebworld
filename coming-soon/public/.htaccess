@@ -69,6 +69,11 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^category/([^/]+)/?$ category-render.php?slug=$1 [L,QSA]
 
+# Listing clean URLs: /listing/company-slug → listing.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^listing/([^/]+)/?$ listing.html [L]
+
 # Non-existing paths: try adding .html
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
