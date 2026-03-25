@@ -54,7 +54,7 @@ export default function Hero() {
               <span className="gcs-type-text">{displayed}</span>
               <span className="gcs-type-cursor" />
             </span>{' '}
-            get Discovered
+            get's Discovered
           </span>
         </h1>
 
