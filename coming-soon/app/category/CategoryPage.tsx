@@ -140,9 +140,9 @@ const gridDots = [
 /* ══════════════════════════════════════════════════════════════
    MAIN COMPONENT
    ══════════════════════════════════════════════════════════════ */
-export default function CategoryPage() {
+export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
   const params = useSearchParams()
-  const slug = params.get('slug') || (typeof window !== 'undefined' ? window.location.pathname.replace(/^\/infowebworld\/category\//, '').replace(/\/$/, '') || null : null)
+  const slug = slugProp || params.get('slug') || (typeof window !== 'undefined' ? window.location.pathname.replace(/^\/(infowebworld\/)?category\//, '').replace(/\/$/, '') || null : null)
 
   const [category, setCategory] = useState<Category | null>(null)
   const [related, setRelated] = useState<Category[]>([])

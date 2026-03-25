@@ -38,7 +38,7 @@ const ic = {
   arrow: 'M5 12h14|M12 5l7 7-7 7',
 }
 
-export default function ListingDetailPage() {
+export default function ListingDetailPage({ slug: slugProp }: { slug?: string }) {
   const [listing, setListing] = useState<RealSubmission | null>(null)
   const [breadcrumb, setBreadcrumb] = useState<{ name: string; slug: string }[]>([])
   const [related, setRelated] = useState<RealSubmission[]>([])
@@ -48,9 +48,9 @@ export default function ListingDetailPage() {
   const galleryRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const match = window.location.pathname.match(/\/listing\/(.+?)(?:\/|$)/)
+    const match = slugProp || (typeof window !== 'undefined' ? window.location.pathname.match(/\/listing\/(.+?)(?:\/|$)/)?.[1] : null)
     if (!match) { setNotFound(true); setLoading(false); return }
-    fetchListingBySlug(match[1]).then(r => {
+    fetchListingBySlug(match).then(r => {
       if (r) { setListing(r.listing); setBreadcrumb(r.breadcrumb); setRelated(r.related) }
       else setNotFound(true)
       setLoading(false)

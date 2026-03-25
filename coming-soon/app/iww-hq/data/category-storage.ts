@@ -105,9 +105,10 @@ export async function fetchCategoryBySlug(slug: string): Promise<Category | null
   try {
     const res = await fetch(`${API}/categories/${encodeURIComponent(slug)}`)
     if (!res.ok) return null
-    const data = await res.json()
-    if (data.error) return null
-    // API returns { category: {...}, subcategories: [...], parent: {...}, activeListings: n }
+    const json = await res.json()
+    if (json.error) return null
+    // API returns { ok, data: { ...category, subcategories, parent, activeListings } }
+    const data = json.data ?? json
     const raw = data.category || data
     const cat = mapRow(raw)
     // Override listing count with real active count from API

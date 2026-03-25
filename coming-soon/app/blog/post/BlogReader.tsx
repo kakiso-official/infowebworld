@@ -7,10 +7,10 @@ import { fetchPostBySlug, fetchPublishedPosts } from '../../iww-hq/data/blog-sto
 import { trackBlogView } from '../../iww-hq/data/visitor-tracking'
 import type { BlogPost } from '../../iww-hq/data/blog-types'
 
-export default function BlogReader() {
+export default function BlogReader({ slug: slugProp }: { slug?: string }) {
   const params = useSearchParams()
-  // Support both ?slug=x (query) and /blog/x (clean URL path)
-  const slug = params.get('slug') || (typeof window !== 'undefined' ? window.location.pathname.replace(/^\/infowebworld\/blog\//, '').replace(/\/$/, '') || null : null)
+  // Support prop, ?slug=x (query), and /blog/x (clean URL path)
+  const slug = slugProp || params.get('slug') || (typeof window !== 'undefined' ? window.location.pathname.replace(/^\/(infowebworld\/)?blog\//, '').replace(/\/$/, '') || null : null)
   const [post, setPost] = useState<BlogPost | null>(null)
   const [related, setRelated] = useState<BlogPost[]>([])
   const [notFound, setNotFound] = useState(false)
