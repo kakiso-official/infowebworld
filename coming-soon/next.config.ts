@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
         // Proxy uploaded images to cPanel server (logos, screenshots)
         {
           source: '/infowebworld/uploads/:path*',
-          destination: 'https://infowebworld.com/infowebworld/uploads/:path*',
+          destination: 'http://server46.hostwhitelabel.com/~cdbrisgy/infowebworld/uploads/:path*',
         },
       ],
       afterFiles: [],
