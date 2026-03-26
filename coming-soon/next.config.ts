@@ -9,15 +9,14 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     return {
-      beforeFiles: [],
-      // afterFiles runs AFTER checking public/ — static files served first
-      afterFiles: [
-        // Fallback proxy for uploads not in public/ (legacy cPanel)
+      beforeFiles: [
+        // Rewrite /infowebworld/uploads/* to /uploads/* (served from public/)
         {
           source: '/infowebworld/uploads/:path*',
-          destination: 'https://infowebworld.com/infowebworld/uploads/:path*',
+          destination: '/uploads/:path*',
         },
       ],
+      afterFiles: [],
       fallback: [],
     }
   },
