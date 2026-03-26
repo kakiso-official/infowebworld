@@ -1,6 +1,7 @@
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import Countdown from './components/Countdown'
+import BusinessCTA from './components/BusinessCTA'
 import Footer from './components/Footer'
 
 const jsonLd = {
@@ -87,7 +88,10 @@ export default function Home() {
       {/* 2. Countdown timer — urgency */}
       <Countdown />
 
-      {/* 3. Footer */}
+      {/* 3. Business CTA */}
+      <BusinessCTA />
+
+      {/* 4. Footer */}
       <Footer />
     </>
   )

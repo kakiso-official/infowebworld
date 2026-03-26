@@ -88,6 +88,7 @@ input, textarea { font-family: inherit }
 @import "./styles/hero.css";
 @import "./styles/hero-gl.css";
 @import "./styles/countdown.css";
+@import "./styles/business-cta.css";
 @import "./styles/founding-cta.css";
 @import "./styles/stats.css";
 @import "./styles/tiers.css";

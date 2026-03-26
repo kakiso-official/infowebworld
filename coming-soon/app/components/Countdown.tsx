@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { fetchConfig } from '../config/site-config'
-import Link from 'next/link'
+
 
 let _launchDate = new Date('2026-04-25T00:00:00')
 
@@ -51,13 +51,6 @@ export default function Countdown() {
               <div className="countdown-unit">{b.label}</div>
             </div>
           ))}
-        </div>
-        <div className="countdown-cta-wrap">
-          <p className="countdown-cta-text"><a href="https://infowebworld.com" className="countdown-cta-link">infoWebWorld.com</a> for Business</p>
-          <Link href="/get-listed" className="countdown-cta-btn">
-            Get Listed
-            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </Link>
         </div>
       </div>
     </section>
