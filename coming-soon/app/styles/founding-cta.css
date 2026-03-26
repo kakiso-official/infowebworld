@@ -14,8 +14,7 @@
   max-width: 620px; margin: 0 auto;
   padding: clamp(1.75rem, 3vw, 2.25rem) clamp(1.5rem, 3vw, 2.5rem);
   background: #fff;
-  border: 1.5px solid var(--h-border);
-  border-top: 3.5px solid var(--h-accent);
+  border: 1.5px solid rgba(var(--h-accent-rgb), .25);
   border-radius: 18px;
   text-align: center;
   display: flex; flex-direction: column; align-items: center;
