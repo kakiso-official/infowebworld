@@ -6,16 +6,31 @@
   background: var(--h-heading);
 }
 .stats-grid {
-  display: flex; justify-content: center; gap: clamp(2rem, 5vw, 5rem);
-  flex-wrap: wrap;
+  display: flex; justify-content: center; gap: clamp(1rem, 3vw, 4rem);
+  flex-wrap: nowrap; width: 100%; max-width: 1100px; margin: 0 auto;
+  padding: 0 1rem;
 }
-.stat-item { text-align: center }
+.stat-item { text-align: center; flex: 1 1 0; min-width: 0; white-space: nowrap; }
 .stat-num {
-  font-family: var(--font-nunito), 'Nunito', sans-serif; font-weight: 800; font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  font-family: var(--font-nunito), 'Nunito', sans-serif; font-weight: 800; font-size: clamp(1.4rem, 2.8vw, 2.5rem);
   color: #fff; line-height: 1.1;
 }
 .stat-num em { font-style: normal; color: var(--h-accent) }
 .stat-label {
-  font-size: .7rem; font-weight: 600; color: rgba(255,255,255,.5);
+  font-size: clamp(.5rem, 1vw, .7rem); font-weight: 600; color: rgba(255,255,255,.5);
   text-transform: uppercase; letter-spacing: .06em; margin-top: .25rem;
+  white-space: nowrap;
+}
+
+/* Mobile: allow horizontal scroll if needed */
+@media (max-width: 768px) {
+  .stats-grid {
+    gap: 1rem; overflow-x: auto; justify-content: flex-start;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    padding: 0 1.25rem;
+  }
+  .stats-grid::-webkit-scrollbar { display: none; }
+  .stat-item { flex: 0 0 auto; }
+  .stat-num { font-size: clamp(1.1rem, 5vw, 1.5rem); }
+  .stat-label { font-size: .55rem; }
 }
