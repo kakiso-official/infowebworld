@@ -135,7 +135,7 @@ export default function ContactPage() {
               </div>
               <h3 className="ct-card-title">Headquarters</h3>
               <p className="ct-card-value">Brain Stream Australia Pty Ltd</p>
-              <p className="ct-card-note">Melbourne, Australia</p>
+              <p className="ct-card-note">Parramatta, NSW 2150, Australia</p>
             </div>
 
             <div className="ct-card">
