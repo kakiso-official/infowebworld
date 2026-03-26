@@ -155,7 +155,7 @@
   font-size: clamp(.85rem, 1.15vw, .95rem);
   color: var(--h-body); font-weight: 400;
   max-width: 520px; line-height: 1.8;
-  margin-top: 1.5rem;
+  margin-top: 0.5rem;
   letter-spacing: .01em;
   word-spacing: .05em;
 }
