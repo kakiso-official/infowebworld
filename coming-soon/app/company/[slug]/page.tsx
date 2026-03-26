@@ -65,66 +65,6 @@ function parseJson(val: unknown): unknown[] {
   return []
 }
 
-/* Map DB row → client RealSubmission shape (String() matches client-side mapRow) */
-function toClientListing(r: ListingRow) {
-  return {
-    id: String(r.id ?? ''),
-    companyName: String(r.company_name ?? ''),
-    contactName: String(r.contact_name ?? ''),
-    email: String(r.email ?? ''),
-    phoneCode: String(r.phone_code ?? '+1'),
-    phone: String(r.phone ?? ''),
-    website: String(r.website ?? ''),
-    category: String(r.category_name ?? ''),
-    categorySlug: String(r.category_slug ?? ''),
-    categoryColor: String(r.category_color ?? '#E8553D'),
-    categoryIcon: String(r.category_icon ?? 'grid'),
-    country: String(r.country_name ?? ''),
-    city: String(r.city ?? ''),
-    state: String(r.state ?? ''),
-    tagline: String(r.tagline ?? ''),
-    description: String(r.description ?? ''),
-    slug: String(r.slug ?? ''),
-    logoUrl: String(r.logo_url ?? ''),
-    screenshots: parseJson(r.screenshots) as string[],
-    demoVideo: String(r.demo_video ?? ''),
-    features: parseJson(r.features) as string[],
-    integrations: parseJson(r.integrations) as string[],
-    pricingModel: String(r.pricing_model ?? 'contact'),
-    pricingTiers: parseJson(r.pricing_tiers) as { name: string; price: string; period: string }[],
-    founded: String(r.founded_year ?? ''),
-    employees: String(r.team_size ?? ''),
-    funding: String(r.funding ?? ''),
-    hqLocation: String(r.hq_location ?? ''),
-    linkedin: String(r.linkedin ?? ''),
-    twitter: String(r.twitter ?? ''),
-    facebook: String(r.facebook ?? ''),
-    faqs: parseJson(r.faqs) as { question: string; answer: string }[],
-    plan: String(r.plan_slug ?? ''),
-    planName: String(r.plan_name ?? ''),
-    status: (String(r.status) as 'active' | 'paid' | 'pending') || 'pending',
-    submittedAt: String(r.created_at ?? ''),
-    approvedAt: '',
-  }
-}
-
-/* Fetch related listings in same category */
-async function getRelated(categoryId: number, excludeId: number) {
-  const rows = await query<ListingRow>(
-    `SELECT s.*, c.name as category_name, c.slug as category_slug,
-            c.color as category_color, c.icon as category_icon,
-            co.name as country_name, p.name as plan_name, p.slug as plan_slug
-     FROM submissions s
-     LEFT JOIN plans p ON p.id = s.plan_id
-     LEFT JOIN categories c ON c.id = s.category_id
-     LEFT JOIN countries co ON co.id = s.country_id
-     WHERE s.category_id = ? AND s.id != ? AND s.status IN ('active','paid')
-     LIMIT 4`,
-    [categoryId, excludeId]
-  )
-  return rows.map(toClientListing)
-}
-
 /* ══════════════════════════════════════════════════════════════
    generateMetadata — server-side SEO (CRITICAL for crawlers)
    ══════════════════════════════════════════════════════════════ */

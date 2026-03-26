@@ -9,7 +9,14 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     return {
-      beforeFiles: [],
+      // Rewrites checked before filesystem and redirects
+      beforeFiles: [
+        // Proxy uploaded images to cPanel server (logos, screenshots)
+        {
+          source: '/infowebworld/uploads/:path*',
+          destination: 'https://infowebworld.com/infowebworld/uploads/:path*',
+        },
+      ],
       afterFiles: [],
       fallback: [],
     }

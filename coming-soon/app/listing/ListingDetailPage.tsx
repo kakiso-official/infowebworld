@@ -95,15 +95,7 @@ export default function ListingDetailPage({ slug: slugProp }: { slug?: string })
 
   /* SEO meta + JSON-LD now handled server-side in app/company/[slug]/page.tsx */
 
-  if (loading) return (
-    <section className="ld" style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ width: 48, height: 48, border: '3px solid #E8E3DE', borderTopColor: '#E8553D', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 1rem' }} />
-        <p style={{ fontFamily: 'var(--font-nunito)', fontSize: '.85rem', color: '#9A9590', fontWeight: 600 }}>Loading listing...</p>
-        <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
-      </div>
-    </section>
-  )
+  if (loading) return null
 
   if (notFound) return (
     <section className="ld" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', padding: '3rem 1rem' }}>
