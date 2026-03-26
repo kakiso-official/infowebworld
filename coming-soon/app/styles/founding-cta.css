@@ -132,14 +132,14 @@
 
 /* ── Guarantee ── */
 .fc-guarantee {
-  display: flex; align-items: center; gap: .35rem;
+  display: flex; align-items: center; gap: .4rem;
   margin-top: clamp(.6rem, 1.2vw, .85rem);
-  font-size: clamp(.62rem, .85vw, .72rem);
+  font-size: clamp(.78rem, 1.1vw, .88rem);
   color: var(--h-muted);
 }
 .fc-guarantee strong { color: var(--h-heading); font-weight: 700; }
 .fc-guarantee-icon {
-  width: clamp(15px, 1.2vw, 18px); height: clamp(15px, 1.2vw, 18px);
+  width: clamp(18px, 1.5vw, 22px); height: clamp(18px, 1.5vw, 22px);
   fill: none; stroke: #16A34A; stroke-width: 2;
   stroke-linecap: round; stroke-linejoin: round;
   flex-shrink: 0;
