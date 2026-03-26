@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Footer from "./components/Footer";
 
 export default function NotFound() {
   return (
@@ -62,22 +63,9 @@ export default function NotFound() {
             </svg>
           </Link>
         </div>
-
-        {/* Quick links */}
-        <div className="nf-links">
-          <span className="nf-links-label">Or try:</span>
-          <Link href="/blog" className="nf-link">Blog</Link>
-          <span className="nf-dot" />
-          <Link href="/business" className="nf-link">Get Listed</Link>
-          <span className="nf-dot" />
-          <Link href="/#pricing" className="nf-link">Pricing</Link>
-        </div>
       </div>
 
-      {/* Bottom bar */}
-      <div className="nf-bottom">
-        <p>&copy; {new Date().getFullYear()} InfoWebWorld. All rights reserved.</p>
-      </div>
+      <Footer />
     </div>
   );
 }
