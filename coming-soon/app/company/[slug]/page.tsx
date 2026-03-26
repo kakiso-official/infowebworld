@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { query, queryOne } from '@/lib/db'
@@ -396,8 +397,6 @@ export default async function CompanyPage({
   if (!data) notFound()
 
   const jsonLd = buildJsonLd(data.listing, data.breadcrumb)
-  const clientListing = toClientListing(data.listing)
-  const relatedListings = await getRelated(data.listing.category_id, data.listing.id)
 
   return (
     <>
@@ -407,14 +406,7 @@ export default async function CompanyPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
       <Navbar />
-      <ListingDetailPage
-        slug={slug}
-        initialData={{
-          listing: clientListing,
-          breadcrumb: data.breadcrumb,
-          related: relatedListings,
-        }}
-      />
+      <Suspense><ListingDetailPage slug={slug} /></Suspense>
       <Footer />
     </>
   )

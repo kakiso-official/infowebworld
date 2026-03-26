@@ -74,23 +74,16 @@ function FaqSection({ faqs, color }: { faqs: FaqItem[]; color: string }) {
   )
 }
 
-interface InitialData {
-  listing: RealSubmission
-  breadcrumb: { name: string; slug: string }[]
-  related: RealSubmission[]
-}
-
-export default function ListingDetailPage({ slug: slugProp, initialData }: { slug?: string; initialData?: InitialData }) {
-  const [listing, setListing] = useState<RealSubmission | null>(initialData?.listing ?? null)
-  const [breadcrumb, setBreadcrumb] = useState<{ name: string; slug: string }[]>(initialData?.breadcrumb ?? [])
-  const [related, setRelated] = useState<RealSubmission[]>(initialData?.related ?? [])
+export default function ListingDetailPage({ slug: slugProp }: { slug?: string }) {
+  const [listing, setListing] = useState<RealSubmission | null>(null)
+  const [breadcrumb, setBreadcrumb] = useState<{ name: string; slug: string }[]>([])
+  const [related, setRelated] = useState<RealSubmission[]>([])
   const [notFound, setNotFound] = useState(false)
-  const [loading, setLoading] = useState(!initialData)
+  const [loading, setLoading] = useState(true)
   const [expandedImage, setExpandedImage] = useState<string | null>(null)
   const galleryRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (initialData) return // already have data from server
     const match = slugProp || (typeof window !== 'undefined' ? window.location.pathname.match(/\/listing\/(.+?)(?:\/|$)/)?.[1] : null)
     if (!match) { setNotFound(true); setLoading(false); return }
     fetchListingBySlug(match).then(r => {
@@ -102,7 +95,15 @@ export default function ListingDetailPage({ slug: slugProp, initialData }: { slu
 
   /* SEO meta + JSON-LD now handled server-side in app/company/[slug]/page.tsx */
 
-  if (loading) return null
+  if (loading) return (
+    <section className="ld" style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ width: 48, height: 48, border: '3px solid #E8E3DE', borderTopColor: '#E8553D', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 1rem' }} />
+        <p style={{ fontFamily: 'var(--font-nunito)', fontSize: '.85rem', color: '#9A9590', fontWeight: 600 }}>Loading listing...</p>
+        <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
+      </div>
+    </section>
+  )
 
   if (notFound) return (
     <section className="ld" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', padding: '3rem 1rem' }}>
