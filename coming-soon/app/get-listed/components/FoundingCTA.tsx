@@ -7,11 +7,6 @@ const features = ['Leads', 'Reviews', 'GEO', 'AEO', 'SEO Backlinks']
 export default function FoundingCTA() {
   return (
     <section className="fc-section">
-      {/* Decorative floating shapes */}
-      <div className="fc-shape fc-shape--1" />
-      <div className="fc-shape fc-shape--2" />
-      <div className="fc-shape fc-shape--3" />
-
       <div className="container">
         <div className="fc-card">
           {/* Scarcity ribbon */}
