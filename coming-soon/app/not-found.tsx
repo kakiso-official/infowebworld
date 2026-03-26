@@ -1,9 +1,12 @@
 import Link from "next/link";
+import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
 export default function NotFound() {
   return (
     <div className="nf-wrap">
+      <Navbar />
+
       {/* Floating shapes background */}
       <div className="nf-shapes" aria-hidden="true">
         <div className="nf-shape nf-shape-1" />
@@ -14,14 +17,6 @@ export default function NotFound() {
       </div>
 
       <div className="nf-content">
-        {/* Logo */}
-        <Link href="/" className="nf-logo-link">
-          <img
-            src="/logo/infowebworldlogo-logoforlightbackgrounds.png"
-            alt="InfoWebWorld"
-            className="nf-logo"
-          />
-        </Link>
 
         {/* Big 404 number */}
         <div className="nf-number-wrap">
