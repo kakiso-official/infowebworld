@@ -1,59 +1,201 @@
 /* ============================================================
-   FOUNDING CTA — compact value prop card
+   FOUNDING CTA — dual plan cards (Lifetime + Yearly)
    ============================================================ */
 
 /* ── Section ── */
 .fc-section {
-  padding: clamp(1.75rem, 3.5vw, 2.75rem) 0;
+  padding: clamp(2.5rem, 5vw, 4rem) 0;
   background: var(--h-bg);
 }
 
-/* ── Card ── */
+/* ── Section header ── */
+.fc-header {
+  text-align: center;
+  margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+}
+.fc-section-tag {
+  display: inline-flex; align-items: center; gap: .35rem;
+  padding: .3rem .75rem; border-radius: 999px;
+  background: rgba(var(--h-accent-rgb), .08);
+  border: 1px solid rgba(var(--h-accent-rgb), .12);
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .65rem; font-weight: 700; color: var(--h-accent);
+  text-transform: uppercase; letter-spacing: .06em;
+  margin-bottom: .75rem;
+}
+.fc-section-heading {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 800; color: var(--h-heading);
+  line-height: 1.1; letter-spacing: -.02em; margin-bottom: .5rem;
+}
+.fc-section-heading em { font-style: normal; color: var(--h-accent); }
+.fc-section-desc {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.875rem, 1.2vw, 1rem); color: var(--h-body);
+  max-width: 520px; margin: 0 auto;
+}
+.fc-section-desc strong { color: var(--h-accent); font-weight: 700; }
+
+/* ── Two-card grid ── */
+.fc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  max-width: 860px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+/* ── Card base ── */
 .fc-card {
   position: relative;
-  max-width: 620px; margin: 0 auto;
-  padding: clamp(1.75rem, 3vw, 2.25rem) clamp(1.5rem, 3vw, 2.5rem);
+  padding: clamp(1.75rem, 3vw, 2.25rem) clamp(1.25rem, 2.5vw, 2rem);
   background: #fff;
-  border: 1.5px solid rgba(var(--h-accent-rgb), .25);
+  border: 1.5px solid var(--h-border);
   border-radius: 18px;
   text-align: center;
   display: flex; flex-direction: column; align-items: center;
+  transition: transform .3s cubic-bezier(.16, 1, .3, 1),
+              box-shadow .3s cubic-bezier(.16, 1, .3, 1);
+}
+.fc-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, .06);
+}
+
+/* ── Lifetime card — featured ── */
+.fc-card--lifetime {
+  border-color: rgba(var(--h-accent-rgb), .3);
+  box-shadow: 0 4px 20px rgba(var(--h-accent-rgb), .08);
+}
+.fc-card--lifetime:hover {
+  box-shadow: 0 8px 32px rgba(var(--h-accent-rgb), .14);
+}
+
+/* ── Yearly card ── */
+.fc-card--yearly {
+  border-color: var(--h-border);
+}
+
+/* ── "Best Value" stamp — top-right corner ── */
+.fc-badge {
+  position: absolute;
+  top: 16px; right: 16px;
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(.6rem, 1vw, .7rem); font-weight: 900;
+  text-transform: uppercase; letter-spacing: .14em;
+  color: #B91C1C;
+  background: rgba(185, 28, 28, .04);
+  padding: .35rem .7rem;
+  border: 3px double #B91C1C;
+  border-radius: 3px;
+  transform: rotate(-14deg);
+  box-shadow: inset 0 0 0 1.5px #B91C1C;
+  mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.85'/%3E%3Crect width='100%25' height='100%25' fill='white' opacity='.6'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.85'/%3E%3Crect width='100%25' height='100%25' fill='white' opacity='.6'/%3E%3C/svg%3E");
+  animation: fcStamp 4s ease-out infinite;
+  z-index: 2;
+}
+@keyframes fcStamp {
+  0%        { opacity: 0; transform: rotate(-14deg) scale(2); }
+  8%        { opacity: 1; transform: rotate(-14deg) scale(.92); }
+  12%       { opacity: 1; transform: rotate(-14deg) scale(1); }
+  18%, 82%  { opacity: .9; transform: rotate(-14deg) scale(1); }
+  100%      { opacity: 0; transform: rotate(-14deg) scale(1); }
 }
 
 /* ── Scarcity ribbon ── */
 .fc-ribbon {
   position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
   font-family: var(--font-nunito), 'Nunito', sans-serif;
-  font-size: clamp(.55rem, .9vw, .65rem); font-weight: 800;
+  font-size: clamp(.5rem, .8vw, .6rem); font-weight: 800;
   text-transform: uppercase; letter-spacing: .1em;
   color: #fff; background: var(--h-accent);
-  padding: .25rem 1rem .28rem;
+  padding: .22rem .85rem .24rem;
   border-radius: 0 0 10px 10px;
+}
+.fc-ribbon--yearly {
+  background: var(--h-heading);
 }
 
 /* ── Heading ── */
 .fc-heading {
   font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
-  font-size: clamp(1.25rem, 2.8vw, 1.85rem);
+  font-size: clamp(1.05rem, 2.2vw, 1.45rem);
   font-weight: 800; color: var(--h-heading);
-  line-height: 1.15; letter-spacing: -.02em;
-  margin: clamp(.6rem, 1.2vw, .85rem) 0 clamp(.75rem, 1.5vw, 1rem);
+  line-height: 1.18; letter-spacing: -.02em;
+  margin: clamp(.6rem, 1.2vw, .85rem) 0 clamp(.65rem, 1.2vw, .85rem);
 }
 .fc-heading em {
   font-style: normal; color: var(--h-accent);
 }
 
+/* ── Price block ── */
+.fc-price-block {
+  display: flex; align-items: baseline; gap: .2rem;
+  margin-bottom: .25rem;
+}
+.fc-price {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(2.5rem, 5.5vw, 3.25rem);
+  font-weight: 900; color: var(--h-heading);
+  line-height: 1; letter-spacing: -.03em;
+}
+.fc-price-label {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.7rem, 1vw, .82rem); font-weight: 600;
+  color: var(--h-muted);
+}
+.fc-price-label--highlight {
+  font-weight: 800; color: #fff;
+  background: var(--h-accent);
+  padding: .15rem .6rem; border-radius: 999px;
+  text-transform: uppercase; letter-spacing: .06em;
+  font-size: clamp(.6rem, .9vw, .72rem);
+}
+.fc-price-after {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.62rem, .9vw, .72rem); font-weight: 600;
+  color: var(--h-muted);
+  margin-bottom: clamp(.75rem, 1.5vw, 1rem);
+}
+.fc-strikethrough {
+  position: relative;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 1.4em;
+  color: #C0392B;
+}
+.fc-strikethrough::after {
+  content: '';
+  position: absolute;
+  left: -2px; right: -2px;
+  top: 65%; height: 2.5px;
+  background: #C0392B;
+  transform: rotate(-12deg);
+  border-radius: 2px;
+  animation: fcSlash 2.5s ease-in-out infinite;
+  transform-origin: left center;
+}
+@keyframes fcSlash {
+  0%, 100% { transform: rotate(-12deg) scaleX(0); }
+  20%, 80%  { transform: rotate(-12deg) scaleX(1); }
+}
+
+.fc-card--yearly .fc-strikethrough::after { top: 70%; }
+
 /* ── Value pills ── */
 .fc-pills {
-  display: flex; align-items: center; gap: clamp(.4rem, 1vw, .65rem);
-  margin-bottom: clamp(.75rem, 1.5vw, 1rem);
+  display: flex; align-items: center; gap: clamp(.3rem, .8vw, .5rem);
+  margin-bottom: clamp(.65rem, 1.2vw, .85rem);
   flex-wrap: wrap; justify-content: center;
 }
 .fc-pill {
-  display: inline-flex; align-items: center; gap: .35rem;
+  display: inline-flex; align-items: center; gap: .3rem;
   font-family: var(--font-nunito), 'Nunito', sans-serif;
-  font-size: clamp(.62rem, .9vw, .75rem); font-weight: 700;
-  padding: .3rem .75rem; border-radius: 999px;
+  font-size: clamp(.55rem, .8vw, .65rem); font-weight: 700;
+  padding: .25rem .6rem; border-radius: 999px;
   white-space: nowrap;
 }
 .fc-pill--slots {
@@ -66,8 +208,13 @@
   background: #ECFDF5;
   border: 1px solid rgba(22, 101, 52, .12);
 }
+.fc-pill--renew {
+  color: #1D4ED8;
+  background: #EFF6FF;
+  border: 1px solid rgba(29, 78, 216, .12);
+}
 .fc-pill-icon {
-  width: 13px; height: 13px; fill: none; stroke: currentColor;
+  width: 12px; height: 12px; fill: none; stroke: currentColor;
   stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
 }
 .fc-pill-divider {
@@ -77,32 +224,32 @@
 
 /* ── Feature tags ── */
 .fc-features {
-  display: flex; align-items: center; gap: clamp(.25rem, .6vw, .35rem);
+  display: flex; align-items: center; gap: clamp(.2rem, .5vw, .3rem);
   flex-wrap: wrap; justify-content: center;
-  margin-bottom: clamp(.85rem, 1.8vw, 1.15rem);
+  margin-bottom: clamp(.75rem, 1.5vw, 1rem);
 }
 .fc-features-label {
   font-family: var(--font-nunito), 'Nunito', sans-serif;
-  font-size: clamp(.6rem, .85vw, .72rem); font-weight: 700;
+  font-size: clamp(.55rem, .75vw, .65rem); font-weight: 700;
   color: var(--h-muted);
 }
 .fc-tag {
   font-family: var(--font-nunito), 'Nunito', sans-serif;
-  font-size: clamp(.55rem, .8vw, .65rem); font-weight: 700;
+  font-size: clamp(.5rem, .7vw, .58rem); font-weight: 700;
   text-transform: uppercase; letter-spacing: .04em;
   color: var(--h-heading);
   background: var(--h-bg);
   border: 1px solid var(--h-border);
-  padding: .2rem .55rem; border-radius: 999px;
+  padding: .18rem .45rem; border-radius: 999px;
 }
 
 /* ── CTA button ── */
 .fc-btn {
   display: inline-flex; align-items: center; gap: .4rem;
   font-family: var(--font-nunito), 'Nunito', sans-serif;
-  font-size: clamp(.82rem, 1.2vw, .95rem); font-weight: 800;
+  font-size: clamp(.78rem, 1.1vw, .88rem); font-weight: 800;
   color: #fff; background: var(--h-accent);
-  padding: .65rem 2rem; border-radius: 999px;
+  padding: .6rem 1.75rem; border-radius: 999px;
   text-decoration: none;
   position: relative; overflow: hidden;
   transition: transform .3s cubic-bezier(.16, 1, .3, 1),
@@ -123,31 +270,69 @@
 }
 .fc-btn:active { transform: translateY(0); }
 .fc-btn-arrow {
-  width: 16px; height: 16px; fill: none; stroke: #fff;
+  width: 15px; height: 15px; fill: none; stroke: #fff;
   stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
   transition: transform .25s cubic-bezier(.16, 1, .3, 1);
 }
 .fc-btn:hover .fc-btn-arrow { transform: translateX(3px); }
 
-/* ── Guarantee ── */
-.fc-guarantee {
-  display: flex; align-items: center; gap: .4rem;
-  margin-top: clamp(.6rem, 1.2vw, .85rem);
-  font-size: clamp(.78rem, 1.1vw, .88rem);
-  color: var(--h-muted);
+/* Yearly CTA — outlined style */
+.fc-btn--yearly {
+  color: var(--h-heading);
+  background: #fff;
+  border: 1.5px solid var(--h-heading);
 }
-.fc-guarantee strong { color: var(--h-heading); font-weight: 700; }
+.fc-btn--yearly::after {
+  background: linear-gradient(90deg, transparent, rgba(0,0,0,.04), transparent);
+}
+.fc-btn--yearly .fc-btn-arrow { stroke: var(--h-heading); }
+.fc-btn--yearly:hover {
+  color: #fff;
+  background: var(--h-heading);
+  box-shadow: 0 4px 16px rgba(26, 26, 26, .18);
+}
+.fc-btn--yearly:hover .fc-btn-arrow { stroke: #fff; }
+
+/* ── Guarantee seal ── */
+.fc-guarantee {
+  display: flex; align-items: center; gap: .45rem;
+  margin-top: clamp(.65rem, 1.2vw, .9rem);
+  padding: .4rem .85rem;
+  border: 2px dashed #16A34A;
+  border-radius: 999px;
+  background: rgba(22, 163, 74, .04);
+  animation: fcSealPulse 3s ease-in-out infinite;
+}
+.fc-guarantee span {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.6rem, .85vw, .7rem);
+  font-weight: 700;
+  color: #15803D;
+}
+.fc-guarantee strong {
+  font-weight: 900;
+  color: #166534;
+}
 .fc-guarantee-icon {
-  width: clamp(18px, 1.5vw, 22px); height: clamp(18px, 1.5vw, 22px);
-  fill: none; stroke: #16A34A; stroke-width: 2;
+  width: clamp(16px, 1.3vw, 20px); height: clamp(16px, 1.3vw, 20px);
+  fill: none; stroke: #16A34A; stroke-width: 2.5;
   stroke-linecap: round; stroke-linejoin: round;
   flex-shrink: 0;
+  animation: fcShieldBounce 2.5s ease-in-out infinite;
+}
+@keyframes fcSealPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, .12); }
+  50%      { box-shadow: 0 0 0 6px rgba(22, 163, 74, .06); }
+}
+@keyframes fcShieldBounce {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.15); }
 }
 
-/* ── Brand link ── */
+/* ── Brand link (below cards) ── */
 .fc-brand {
-  display: inline-flex; align-items: center; gap: .25rem;
-  margin-top: clamp(.4rem, .8vw, .6rem);
+  display: flex; align-items: center; justify-content: center; gap: .25rem;
+  margin-top: clamp(1rem, 2vw, 1.5rem);
   font-family: var(--font-nunito), 'Nunito', sans-serif;
   font-size: clamp(.62rem, .85vw, .72rem); font-weight: 700;
   color: var(--h-accent); text-decoration: none;
@@ -160,22 +345,197 @@
 }
 
 /* ============================================================
+   SHARED PRICING TIMELINE BOX (fct- prefix)
+   ============================================================ */
+.fct-box {
+  max-width: 860px; margin: clamp(1rem, 2vw, 1.5rem) auto 0;
+  background: #fff;
+  border: 1.5px solid var(--h-border);
+  border-radius: 18px;
+  padding: clamp(1.25rem, 2.5vw, 1.75rem) clamp(1.25rem, 2.5vw, 2rem);
+  text-align: center;
+}
+.fct-box-desc {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.78rem, 1.1vw, .9rem);
+  color: var(--h-body); margin: 0 0 clamp(1rem, 2vw, 1.5rem);
+}
+.fct-box-desc strong { color: var(--h-accent); font-weight: 700; }
+.fct-box-note {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.68rem, .95vw, .78rem);
+  color: var(--h-body);
+  margin: clamp(1rem, 2vw, 1.5rem) 0 0;
+}
+.fct-box-note strong { color: var(--h-accent); font-weight: 700; }
+
+/* ── Two-column grid inside box ── */
+.fct-box-grid {
+  display: flex; align-items: flex-start;
+  gap: 0;
+}
+.fct-col { flex: 1; }
+.fct-col-label {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.55rem, .8vw, .65rem); font-weight: 800;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--h-accent); text-align: center;
+  margin-bottom: clamp(.4rem, .8vw, .6rem);
+}
+.fct-divider {
+  width: 1px; align-self: stretch;
+  background: var(--h-border);
+  margin: 0 clamp(.5rem, 1.5vw, 1rem);
+  flex-shrink: 0;
+}
+
+/* ── Timeline track ── */
+.fct-track {
+  display: flex; align-items: stretch;
+  position: relative;
+  padding: 0 .5rem;
+}
+
+/* ── Connecting line ── */
+.fct-line {
+  position: absolute;
+  left: .5rem; right: .5rem;
+  top: calc(clamp(1.8rem, 3.5vw, 2.2rem) + .35rem + 5px);
+  height: 3px; background: var(--h-border);
+  border-radius: 999px;
+  z-index: 0;
+  transform: translateY(-50%);
+}
+.fct-line-fill {
+  height: 100%; border-radius: 999px;
+  background: var(--h-accent);
+  transition: width .8s cubic-bezier(.16, 1, .3, 1);
+}
+
+/* ── Bouncing marker ── */
+.fct-marker {
+  position: absolute; top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex; flex-direction: column; align-items: center;
+  z-index: 2;
+}
+.fct-marker-pin {
+  width: 22px; height: 22px;
+  margin-bottom: .1rem;
+  animation: fctBounce 2s ease-in-out infinite;
+  filter: drop-shadow(0 2px 4px rgba(232, 85, 61, .2));
+}
+.fct-marker-pin svg {
+  width: 100%; height: 100%;
+  fill: var(--h-accent); stroke: none;
+}
+.fct-marker-pin svg circle { fill: #fff; }
+.fct-marker-label {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .5rem; font-weight: 800;
+  color: #fff; white-space: nowrap;
+  background: var(--h-accent);
+  padding: .1rem .4rem; border-radius: 999px;
+  box-shadow: 0 1px 5px rgba(232, 85, 61, .2);
+}
+@keyframes fctBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+/* ── Step ── */
+.fct-step {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center;
+  position: relative; z-index: 1;
+}
+
+/* ── Price above dot ── */
+.fct-price {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-weight: 800;
+  font-size: clamp(.65rem, 1.1vw, .8rem);
+  color: var(--h-muted); opacity: .6;
+  margin-bottom: .35rem;
+  min-height: clamp(1.8rem, 3.5vw, 2.2rem);
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.fct-step--active .fct-price {
+  font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+  color: var(--h-heading); opacity: 1;
+}
+.fct-sub {
+  font-size: .55em; font-weight: 600;
+  color: var(--h-muted); margin-left: .1em;
+}
+.fct-step--active .fct-sub {
+  font-size: .45em; font-weight: 800;
+  color: var(--h-accent);
+  text-transform: uppercase; letter-spacing: .06em;
+  margin-left: .2em;
+  background: rgba(var(--h-accent-rgb), .1);
+  padding: .1em .45em; border-radius: 999px;
+}
+
+/* ── Dot ── */
+.fct-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--h-border);
+  border: 2.5px solid #fff;
+  box-shadow: 0 0 0 1px var(--h-border);
+}
+.fct-step--active .fct-dot {
+  width: 12px; height: 12px;
+  background: var(--h-accent);
+  border-color: #fff;
+  box-shadow: 0 0 0 2px var(--h-accent), 0 0 0 5px rgba(var(--h-accent-rgb), .12);
+}
+
+/* ── Label below dot ── */
+.fct-label {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.5rem, .8vw, .6rem);
+  font-weight: 600; color: var(--h-muted);
+  margin-top: .35rem; white-space: nowrap;
+}
+.fct-step--active .fct-label {
+  color: var(--h-accent); font-weight: 800;
+}
+
+/* ============================================================
    RESPONSIVE
    ============================================================ */
+
+/* Tablet — keep side by side but tighter */
 @media (max-width: 768px) {
-  .fc-section { padding: clamp(1.5rem, 4vw, 2rem) 0; }
+  .fc-section { padding: clamp(2rem, 4vw, 3rem) 0; }
+  .fc-grid { gap: .85rem; }
   .fc-card {
-    padding: clamp(1.5rem, 4vw, 1.75rem) clamp(1.15rem, 3.5vw, 1.5rem);
+    padding: clamp(1.5rem, 4vw, 1.75rem) clamp(1rem, 3vw, 1.25rem);
     border-radius: 16px;
   }
-  .fc-heading { font-size: clamp(1.1rem, 5vw, 1.4rem); }
-  .fc-btn { padding: .55rem 1.6rem; }
+  .fc-heading { font-size: clamp(.95rem, 3.2vw, 1.15rem); }
+  .fc-price { font-size: clamp(1.6rem, 5.5vw, 2.2rem); }
+  .fc-btn { padding: .55rem 1.35rem; font-size: clamp(.72rem, 2.2vw, .82rem); }
+  .fc-badge { font-size: .5rem; padding: .18rem .45rem; top: 10px; right: 10px; }
+}
+
+/* Mobile — stack vertically */
+@media (max-width: 560px) {
+  .fc-grid {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+  }
+  .fct-box-grid { flex-direction: column; gap: clamp(1rem, 3vw, 1.5rem); }
+  .fct-divider { width: 100%; height: 1px; margin: 0; }
 }
 
 @media (max-width: 380px) {
   .fc-card { padding: 1.25rem .9rem; }
-  .fc-heading { font-size: 1.05rem; }
-  .fc-pills { gap: .3rem; }
-  .fc-pill { padding: .22rem .55rem; font-size: .58rem; }
-  .fc-tag { font-size: .52rem; padding: .18rem .4rem; }
+  .fc-heading { font-size: .95rem; }
+  .fc-price { font-size: 1.8rem; }
+  .fc-pills { gap: .25rem; }
+  .fc-pill { padding: .2rem .45rem; font-size: .52rem; }
+  .fc-tag { font-size: .48rem; padding: .15rem .35rem; }
 }

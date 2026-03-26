@@ -86,13 +86,13 @@ export default function GetListedLanding() {
     <>
       {/* Full landing page content — identical to home page */}
       <Hero />
-      <Benefits />
       <Countdown />
+      <Benefits />
       <FoundingCTA />
       <Stats />
-      <EarlyBirdTiers />
+      {/* <EarlyBirdTiers /> */}
       <Pricing />
-      <HowItWorks />
+      {/* <HowItWorks /> */}
       <Comparison />
       <FinalCTA />
 

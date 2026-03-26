@@ -103,6 +103,7 @@ input, textarea { font-family: inherit }
 @import "./styles/listing.css";
 @import "./styles/blog.css";
 @import "./styles/categories.css";
+@import "./styles/plans.css";
 
 /* ============================================================
    UTILITIES
