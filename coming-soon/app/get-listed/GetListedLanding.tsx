@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import Hero from './components/Hero'
 import Countdown from './components/Countdown'
+import FoundingCTA from './components/FoundingCTA'
 import Stats from './components/Stats'
 import Benefits from './components/Benefits'
 import EarlyBirdTiers from './components/EarlyBirdTiers'
@@ -86,6 +87,7 @@ export default function GetListedLanding() {
       {/* Full landing page content — identical to home page */}
       <Hero />
       <Countdown />
+      <FoundingCTA />
       <Stats />
       <Benefits />
       <EarlyBirdTiers />

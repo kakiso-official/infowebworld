@@ -1,0 +1,228 @@
+/* ============================================================
+   FOUNDING CTA — Premium value proposition section
+   ============================================================ */
+
+/* ── Section ── */
+.fc-section {
+  position: relative;
+  padding: clamp(3rem, 7vw, 5.5rem) 0;
+  background: linear-gradient(165deg, #FFF7F2 0%, #FDE8DC 40%, #FCEEE6 70%, #FFF5EE 100%);
+  overflow: hidden;
+}
+
+/* ── Decorative floating shapes ── */
+.fc-shape {
+  position: absolute; border-radius: 50%; pointer-events: none;
+  opacity: .25;
+}
+.fc-shape--1 {
+  width: clamp(120px, 20vw, 280px); height: clamp(120px, 20vw, 280px);
+  top: -5%; right: -3%;
+  background: radial-gradient(circle, #E8553D 0%, transparent 70%);
+  animation: fcFloat 8s ease-in-out infinite;
+}
+.fc-shape--2 {
+  width: clamp(80px, 14vw, 200px); height: clamp(80px, 14vw, 200px);
+  bottom: -4%; left: -2%;
+  background: radial-gradient(circle, #F4A261 0%, transparent 70%);
+  animation: fcFloat 10s ease-in-out 2s infinite reverse;
+}
+.fc-shape--3 {
+  width: clamp(60px, 10vw, 140px); height: clamp(60px, 10vw, 140px);
+  top: 20%; left: 8%;
+  background: radial-gradient(circle, #E76F51 0%, transparent 70%);
+  animation: fcFloat 7s ease-in-out 4s infinite;
+}
+@keyframes fcFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(12px, -18px) scale(1.08); }
+}
+
+/* ── Card ── */
+.fc-card {
+  position: relative;
+  max-width: 680px; margin: 0 auto;
+  padding: clamp(2.5rem, 5vw, 3.5rem) clamp(2rem, 4vw, 3.5rem);
+  background: rgba(255, 255, 255, .72);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-radius: clamp(20px, 3vw, 28px);
+  border: 1.5px solid rgba(232, 85, 61, .12);
+  box-shadow: 0 4px 32px rgba(232, 85, 61, .06),
+              0 1px 4px rgba(0, 0, 0, .03);
+  text-align: center;
+  display: flex; flex-direction: column; align-items: center;
+}
+
+/* ── Scarcity ribbon ── */
+.fc-ribbon {
+  position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.6rem, 1vw, .72rem); font-weight: 800;
+  text-transform: uppercase; letter-spacing: .12em;
+  color: #fff; background: var(--h-accent);
+  padding: .35rem 1.25rem .4rem;
+  border-radius: 0 0 12px 12px;
+}
+
+/* ── Heading ── */
+.fc-heading {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(1.6rem, 4vw, 2.6rem);
+  font-weight: 800; color: var(--h-heading);
+  line-height: 1.12; letter-spacing: -.025em;
+  margin: clamp(1rem, 2vw, 1.5rem) 0 clamp(1.25rem, 2.5vw, 1.75rem);
+}
+.fc-heading em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--h-accent), #F4A261);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ── Value pills ── */
+.fc-pills {
+  display: flex; align-items: center; gap: clamp(.5rem, 1.5vw, 1rem);
+  margin-bottom: clamp(1.25rem, 2.5vw, 1.75rem);
+  flex-wrap: wrap; justify-content: center;
+}
+.fc-pill {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.72rem, 1.1vw, .85rem); font-weight: 700;
+  padding: .45rem 1rem; border-radius: 999px;
+  white-space: nowrap;
+}
+.fc-pill--slots {
+  color: #9A3412; background: #FFF0E6;
+  border: 1.5px solid rgba(232, 85, 61, .2);
+}
+.fc-pill--lifetime {
+  color: #166534; background: #ECFDF5;
+  border: 1.5px solid rgba(22, 101, 52, .15);
+}
+.fc-pill-icon {
+  width: 15px; height: 15px; fill: none; stroke: currentColor;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.fc-pill-divider {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: rgba(0, 0, 0, .2);
+  flex-shrink: 0;
+}
+
+/* ── Feature tags ── */
+.fc-features {
+  display: flex; align-items: center; gap: clamp(.3rem, .8vw, .5rem);
+  flex-wrap: wrap; justify-content: center;
+  margin-bottom: clamp(1.5rem, 3vw, 2rem);
+}
+.fc-features-label {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.7rem, 1vw, .82rem); font-weight: 700;
+  color: var(--h-body);
+}
+.fc-tag {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.62rem, .9vw, .75rem); font-weight: 700;
+  text-transform: uppercase; letter-spacing: .04em;
+  color: var(--h-heading); background: rgba(0, 0, 0, .04);
+  border: 1px solid rgba(0, 0, 0, .06);
+  padding: .3rem .7rem; border-radius: 999px;
+  transition: background .2s, border-color .2s;
+}
+.fc-tag:hover {
+  background: rgba(232, 85, 61, .08);
+  border-color: rgba(232, 85, 61, .15);
+}
+
+/* ── CTA button ── */
+.fc-btn {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.95rem, 1.4vw, 1.1rem); font-weight: 800;
+  color: #fff; background: var(--h-accent);
+  padding: .85rem 2.5rem; border-radius: 999px;
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(232, 85, 61, .3),
+              0 1px 3px rgba(232, 85, 61, .2);
+  transition: transform .3s cubic-bezier(.16, 1, .3, 1),
+              box-shadow .3s cubic-bezier(.16, 1, .3, 1),
+              background .2s;
+  position: relative; overflow: hidden;
+}
+.fc-btn::before {
+  content: '';
+  position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.2), transparent);
+  animation: fcShimmer 3s ease-in-out infinite;
+}
+@keyframes fcShimmer {
+  0% { left: -100%; }
+  50%, 100% { left: 100%; }
+}
+.fc-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(232, 85, 61, .35),
+              0 2px 6px rgba(232, 85, 61, .2);
+  background: var(--h-accent-hover);
+}
+.fc-btn-arrow {
+  width: 18px; height: 18px; fill: none; stroke: #fff;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  transition: transform .25s cubic-bezier(.16, 1, .3, 1);
+}
+.fc-btn:hover .fc-btn-arrow { transform: translateX(3px); }
+
+/* ── Guarantee ── */
+.fc-guarantee {
+  display: flex; align-items: center; gap: .45rem;
+  margin-top: clamp(1rem, 2vw, 1.25rem);
+  font-size: clamp(.72rem, 1vw, .82rem);
+  color: var(--h-body);
+}
+.fc-guarantee strong { color: var(--h-heading); font-weight: 700; }
+.fc-guarantee-icon {
+  width: clamp(18px, 1.5vw, 22px); height: clamp(18px, 1.5vw, 22px);
+  fill: none; stroke: #16A34A; stroke-width: 1.8;
+  stroke-linecap: round; stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+/* ── Brand link ── */
+.fc-brand {
+  display: inline-flex; align-items: center; gap: .3rem;
+  margin-top: clamp(.75rem, 1.5vw, 1rem);
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.72rem, 1vw, .82rem); font-weight: 700;
+  color: var(--h-accent); text-decoration: none;
+  transition: opacity .2s;
+}
+.fc-brand:hover { opacity: .7; }
+.fc-brand-arrow {
+  width: 13px; height: 13px; fill: none; stroke: var(--h-accent);
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .fc-section { padding: clamp(2rem, 6vw, 3rem) 0; }
+  .fc-card {
+    padding: clamp(2rem, 5vw, 2.5rem) clamp(1.25rem, 4vw, 1.75rem);
+    border-radius: 20px;
+  }
+  .fc-heading { font-size: clamp(1.3rem, 6vw, 1.8rem); }
+  .fc-pill { font-size: clamp(.65rem, 2vw, .75rem); padding: .35rem .75rem; }
+  .fc-btn { padding: .75rem 2rem; font-size: clamp(.88rem, 3vw, 1rem); }
+  .fc-shape--3 { display: none; }
+}
+
+@media (max-width: 380px) {
+  .fc-card { padding: 1.75rem 1rem; }
+  .fc-heading { font-size: 1.2rem; }
+  .fc-pills { gap: .4rem; }
+  .fc-pill { padding: .3rem .6rem; font-size: .62rem; }
+  .fc-features { gap: .25rem; }
+  .fc-tag { font-size: .58rem; padding: .25rem .5rem; }
+}
