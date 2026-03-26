@@ -8,10 +8,8 @@ const tiers1 = [
 ]
 
 const tiers2 = [
-  { price: '$240', sub: 'lifetime', label: 'first 200', active: true },
-  { price: '$99', sub: '/yr', label: 'first 1k', active: false },
-  { price: '$140', sub: '/yr', label: 'first 2k', active: false },
-  { price: '$240', sub: '/yr', label: 'first 5k', active: false },
+  { price: '$99', sub: '/yr', label: 'first 200', active: true },
+  { price: '$240', sub: '/yr', label: 'after 200', active: false },
 ]
 
 export default function EarlyBirdTiers() {
@@ -20,10 +18,8 @@ export default function EarlyBirdTiers() {
   const JOINED = cfg.pioneerJoined
   const PIONEER_TOTAL = cfg.pioneerTotal
   const spotsLeft = PIONEER_TOTAL - JOINED
-  /* Timeline 1 has 2 steps: marker fills proportionally across full track */
-  const marker1Pct = (JOINED / PIONEER_TOTAL) * 100
-  /* Timeline 2 has 4 steps: marker fills within first 25% segment */
-  const marker2Pct = (JOINED / PIONEER_TOTAL) * 25
+  /* Both timelines have 2 steps: marker fills proportionally across full track */
+  const markerPct = (JOINED / PIONEER_TOTAL) * 100
 
   return (
     <section className="tiers-section" id="tiers">
@@ -40,8 +36,8 @@ export default function EarlyBirdTiers() {
         <div className="tier-track-label">Life Time Plan</div>
         <div className="tier-track">
           <div className="tier-line">
-            <div className="tier-line-fill" style={{ width: `${marker1Pct}%` }} />
-            <div className="tier-marker" style={{ left: `${marker1Pct}%` }}>
+            <div className="tier-line-fill" style={{ width: `${markerPct}%` }} />
+            <div className="tier-marker" style={{ left: `${markerPct}%` }}>
               <div className="tier-marker-pin">
                 <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" /><circle cx="12" cy="9" r="2.5" /></svg>
               </div>
@@ -58,11 +54,11 @@ export default function EarlyBirdTiers() {
         </div>
 
         {/* ── Timeline 2 ── */}
-        <div className="tier-track-label tier-track-label--2">Promotion Plans</div>
+        <div className="tier-track-label tier-track-label--2">Yearly Plans</div>
         <div className="tier-track tier-track--2">
           <div className="tier-line">
-            <div className="tier-line-fill" style={{ width: `${marker2Pct}%` }} />
-            <div className="tier-marker" style={{ left: `${marker2Pct}%` }}>
+            <div className="tier-line-fill" style={{ width: `${markerPct}%` }} />
+            <div className="tier-marker" style={{ left: `${markerPct}%` }}>
               <div className="tier-marker-pin">
                 <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" /><circle cx="12" cy="9" r="2.5" /></svg>
               </div>
