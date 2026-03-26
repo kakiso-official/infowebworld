@@ -35,7 +35,7 @@ InfoWebWorld is the Global Platform to explore / search best trusted businesses 
             <div className="ft-col">
               <h4 className="ft-col-title">Company</h4>
               <a href="#benefits" className="ft-col-link">About</a>
-                <SafeMailLink user="hello" domain="infowebworld.com" className="ft-col-link">Contact</SafeMailLink>
+                <SafeMailLink user="iww" domain="brainstream.com.au" className="ft-col-link">Contact</SafeMailLink>
               <Link href="#" className="ft-col-link">Blog</Link>
             </div>
             <div className="ft-col">

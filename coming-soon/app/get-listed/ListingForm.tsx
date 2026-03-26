@@ -1653,7 +1653,7 @@ export default function ListingForm() {
               </div>
               <div className="listing-portfolio-note">
                 <IconInfo />
-                <span><strong>Incubators &amp; Portfolio Companies:</strong> Companies with 5+ tools/apps/startups get free listings. <SafeMailLink user="hello" domain="infowebworld.com" style={{ color: '#E8553D', fontWeight: 700 }}>Contact us</SafeMailLink></span>
+                <span><strong>Incubators &amp; Portfolio Companies:</strong> Companies with 5+ tools/apps/startups get free listings. <SafeMailLink user="iww" domain="brainstream.com.au" style={{ color: '#E8553D', fontWeight: 700 }}>Contact us</SafeMailLink></span>
               </div>
             </div>
           )}
