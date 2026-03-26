@@ -11,6 +11,7 @@ export default function Hero() {
   const [jsReady, setJsReady] = useState(false)
   const [heroEmail, setHeroEmail] = useState('')
   const [heroMsg, setHeroMsg] = useState('')
+  const [heroMsgType, setHeroMsgType] = useState<'ok' | 'dup' | ''>('')
 
   useEffect(() => {
     setJsReady(true)
@@ -50,8 +51,9 @@ export default function Hero() {
     if (!heroEmail) return
     const ok = addToWaitlist(heroEmail, 'hero')
     setHeroMsg(ok ? 'You\'re on the list!' : 'Already on the waitlist!')
+    setHeroMsgType(ok ? 'ok' : 'dup')
     if (ok) setHeroEmail('')
-    setTimeout(() => setHeroMsg(''), 3000)
+    setTimeout(() => { setHeroMsg(''); setHeroMsgType('') }, 5000)
   }
 
   return (
@@ -77,7 +79,7 @@ export default function Hero() {
           <div className="cs-form-arrow-wrap">
             <form className="cs-form" onSubmit={handleHeroJoin}>
               <input type="email" className="cs-input" placeholder="enter your email id" required value={heroEmail} onChange={e => setHeroEmail(e.target.value)} />
-              <button type="submit" className="cs-submit">{heroMsg || 'Join'}</button>
+              <button type="submit" className={`cs-submit${heroMsgType === 'ok' ? ' cs-submit--ok' : heroMsgType === 'dup' ? ' cs-submit--dup' : ''}`}>{heroMsg || 'Join'}</button>
             </form>
             <svg className="cs-curvy-arrow" viewBox="0 0 100 100" fill="none" aria-hidden="true">
               <path className="cs-arrow-line" d="M90 8 C70 2, 58 74, 16 50" stroke="var(--h-accent)" strokeWidth="2.6" strokeLinecap="round" />

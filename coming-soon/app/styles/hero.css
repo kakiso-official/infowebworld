@@ -247,6 +247,10 @@
   transition: background .25s;
 }
 .cs-submit:hover { background: var(--h-accent-hover) }
+.cs-submit--ok { background: #16A34A; padding: 0 1.2rem; font-size: .72rem; }
+.cs-submit--ok:hover { background: #15803D; }
+.cs-submit--dup { background: var(--h-muted); padding: 0 1rem; font-size: .68rem; }
+.cs-submit--dup:hover { background: #807A75; }
 
 /* Note */
 .cs-note {
