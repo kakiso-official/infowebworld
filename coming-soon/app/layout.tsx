@@ -17,9 +17,9 @@ const bricolage = Bricolage_Grotesque({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://infowebworld.com"),
-  title: "InfoWebWorld — Discover & List the Best Businesses Worldwide | Early Access",
+  title: "InfoWebWorld.com - Global Growth Platform - AI, SaaS, Startups, Business - Get Leads, Reviews, GEO & SEO Backlinks",
   description:
-    "Join 10,000+ professionals discovering the best businesses across 80+ industries in 12 countries. Get dofollow backlinks, verified reviews, and daily updates. Early bird pricing available — founding member spots filling fast.",
+    "Best Global Growth Platform - Discovery & Leads, Reviews, SEO backlinks, GEO, AEO - Business and Tools listing for AI & ML, SaaS & Software, Startups & Innovations, IT Servcies & Agencies, Local Businesses, Professional Services - InfoWebWorld.com",
   keywords: [
     "business directory",
     "business listing",
