@@ -71,9 +71,7 @@ export default function Navbar() {
                   Log in
                 </button>
               </CsWrap>
-              <CsWrap>
-                <button type="button" className="hd-biz">iWW for Business</button>
-              </CsWrap>
+              <Link href="/business" className="hd-biz">iWW for Business</Link>
             </div>
 
             <button className="hd-burger" aria-label="Menu" onClick={open}>
@@ -117,7 +115,7 @@ export default function Navbar() {
           <div className="hd-drawer-link">News<span className="hd-cs-badge">Coming Soon</span></div>
           <div className="hd-drawer-sep" />
           <div className="hd-drawer-link">Log in<span className="hd-cs-badge">Coming Soon</span></div>
-          <div className="hd-drawer-link">iWW for Business<span className="hd-cs-badge">Coming Soon</span></div>
+          
         </div>
 
         <div className="hd-drawer-foot">
