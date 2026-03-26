@@ -9,15 +9,15 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     return {
-      // Rewrites checked before filesystem and redirects
-      beforeFiles: [
-        // Proxy uploaded images to cPanel server (logos, screenshots)
+      beforeFiles: [],
+      // afterFiles runs AFTER checking public/ — static files served first
+      afterFiles: [
+        // Fallback proxy for uploads not in public/ (legacy cPanel)
         {
           source: '/infowebworld/uploads/:path*',
           destination: 'https://infowebworld.com/infowebworld/uploads/:path*',
         },
       ],
-      afterFiles: [],
       fallback: [],
     }
   },
