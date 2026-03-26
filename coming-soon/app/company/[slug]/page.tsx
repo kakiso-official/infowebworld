@@ -1,4 +1,3 @@
-import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { query, queryOne } from '@/lib/db'
@@ -63,6 +62,66 @@ function parseJson(val: unknown): unknown[] {
   if (typeof val === 'string') { try { return JSON.parse(val) } catch { return [] } }
   if (Array.isArray(val)) return val
   return []
+}
+
+/* Map DB row → client RealSubmission shape */
+function toClientListing(r: ListingRow) {
+  return {
+    id: String(r.id ?? ''),
+    companyName: r.company_name ?? '',
+    contactName: r.contact_name ?? '',
+    email: r.email ?? '',
+    phoneCode: r.phone_code ?? '+1',
+    phone: r.phone ?? '',
+    website: r.website ?? '',
+    category: r.category_name ?? '',
+    categorySlug: r.category_slug ?? '',
+    categoryColor: r.category_color ?? '#E8553D',
+    categoryIcon: r.category_icon ?? 'grid',
+    country: r.country_name ?? '',
+    city: r.city ?? '',
+    state: r.state ?? '',
+    tagline: r.tagline ?? '',
+    description: r.description ?? '',
+    slug: r.slug ?? '',
+    logoUrl: r.logo_url ?? '',
+    screenshots: parseJson(r.screenshots) as string[],
+    demoVideo: r.demo_video ?? '',
+    features: parseJson(r.features) as string[],
+    integrations: parseJson(r.integrations) as string[],
+    pricingModel: r.pricing_model ?? 'contact',
+    pricingTiers: parseJson(r.pricing_tiers) as { name: string; price: string; period: string }[],
+    founded: r.founded_year ?? '',
+    employees: r.team_size ?? '',
+    funding: r.funding ?? '',
+    hqLocation: r.hq_location ?? '',
+    linkedin: r.linkedin ?? '',
+    twitter: r.twitter ?? '',
+    facebook: r.facebook ?? '',
+    faqs: parseJson(r.faqs) as { question: string; answer: string }[],
+    plan: r.plan_slug ?? '',
+    planName: r.plan_name ?? '',
+    status: (r.status as 'active' | 'paid' | 'pending') || 'pending',
+    submittedAt: r.created_at ?? '',
+    approvedAt: '',
+  }
+}
+
+/* Fetch related listings in same category */
+async function getRelated(categoryId: number, excludeId: number) {
+  const rows = await query<ListingRow>(
+    `SELECT s.*, c.name as category_name, c.slug as category_slug,
+            c.color as category_color, c.icon as category_icon,
+            co.name as country_name, p.name as plan_name, p.slug as plan_slug
+     FROM submissions s
+     LEFT JOIN plans p ON p.id = s.plan_id
+     LEFT JOIN categories c ON c.id = s.category_id
+     LEFT JOIN countries co ON co.id = s.country_id
+     WHERE s.category_id = ? AND s.id != ? AND s.status IN ('active','paid')
+     LIMIT 4`,
+    [categoryId, excludeId]
+  )
+  return rows.map(toClientListing)
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -337,6 +396,8 @@ export default async function CompanyPage({
   if (!data) notFound()
 
   const jsonLd = buildJsonLd(data.listing, data.breadcrumb)
+  const clientListing = toClientListing(data.listing)
+  const relatedListings = await getRelated(data.listing.category_id, data.listing.id)
 
   return (
     <>
@@ -346,7 +407,14 @@ export default async function CompanyPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
       <Navbar />
-      <Suspense><ListingDetailPage slug={slug} /></Suspense>
+      <ListingDetailPage
+        slug={slug}
+        initialData={{
+          listing: clientListing,
+          breadcrumb: data.breadcrumb,
+          related: relatedListings,
+        }}
+      />
       <Footer />
     </>
   )

@@ -74,16 +74,23 @@ function FaqSection({ faqs, color }: { faqs: FaqItem[]; color: string }) {
   )
 }
 
-export default function ListingDetailPage({ slug: slugProp }: { slug?: string }) {
-  const [listing, setListing] = useState<RealSubmission | null>(null)
-  const [breadcrumb, setBreadcrumb] = useState<{ name: string; slug: string }[]>([])
-  const [related, setRelated] = useState<RealSubmission[]>([])
+interface InitialData {
+  listing: RealSubmission
+  breadcrumb: { name: string; slug: string }[]
+  related: RealSubmission[]
+}
+
+export default function ListingDetailPage({ slug: slugProp, initialData }: { slug?: string; initialData?: InitialData }) {
+  const [listing, setListing] = useState<RealSubmission | null>(initialData?.listing ?? null)
+  const [breadcrumb, setBreadcrumb] = useState<{ name: string; slug: string }[]>(initialData?.breadcrumb ?? [])
+  const [related, setRelated] = useState<RealSubmission[]>(initialData?.related ?? [])
   const [notFound, setNotFound] = useState(false)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(!initialData)
   const [expandedImage, setExpandedImage] = useState<string | null>(null)
   const galleryRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    if (initialData) return // already have data from server
     const match = slugProp || (typeof window !== 'undefined' ? window.location.pathname.match(/\/listing\/(.+?)(?:\/|$)/)?.[1] : null)
     if (!match) { setNotFound(true); setLoading(false); return }
     fetchListingBySlug(match).then(r => {
