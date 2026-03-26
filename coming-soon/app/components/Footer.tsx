@@ -13,7 +13,7 @@ export default function Footer() {
           <div className="ft-brand">
             <img src={`${bp}/logo/infowebworld-logo.png`} alt="InfoWebWorld" className="ft-logo" />
             <p className="ft-tagline">
-InfoWebWorld is the Global Platform to explore / search best trusted businesses worldwide.
+InfoWebWorld is the Growth Global Platform to explore / search best trusted businesses worldwide.
             </p>
             <div className="ft-social">
               <a href="#" aria-label="X">
@@ -42,7 +42,7 @@ InfoWebWorld is the Global Platform to explore / search best trusted businesses 
               <h4 className="ft-col-title">iWW for Business</h4>
                              <a href="#pricing" className="ft-col-link">for Business</a>
 
-              <Link href="/get-listed" className="ft-col-link">Get Listed</Link>
+              <Link href="/business" className="ft-col-link">Get Listed</Link>
                <a href="#pricing" className="ft-col-link">Pricing</a>
             </div>
             <div className="ft-col">

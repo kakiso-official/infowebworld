@@ -42,7 +42,7 @@ InfoWebWorld is the Global Platform to explore / search best trusted businesses 
               <h4 className="ft-col-title">iWW for Business</h4>
                              <a href="#pricing" className="ft-col-link">for Business</a>
 
-              <Link href="/get-listed" className="ft-col-link">Get Listed</Link>
+              <Link href="/business" className="ft-col-link">Get Listed</Link>
                <a href="#pricing" className="ft-col-link">Pricing</a>
             </div>
             <div className="ft-col">

@@ -52,8 +52,8 @@ export default function GetListedLanding() {
 
       const href = link.getAttribute('href') || ''
 
-      /* Links to /get-listed → open panel */
-      if (href.includes('/get-listed')) {
+      /* Links to /business → open panel */
+      if (href.includes('/business')) {
         e.preventDefault()
         e.stopPropagation()
         openForm()

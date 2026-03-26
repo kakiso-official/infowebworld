@@ -47,7 +47,7 @@ export default function FinalCTA() {
             </form>
 
             <div className="fcta-alt">
-              <Link href="/get-listed" className="fcta-alt-link">
+              <Link href="/business" className="fcta-alt-link">
                 or <strong>Get Listed Now</strong>
               </Link>
             </div>

@@ -40,7 +40,7 @@ export default function FoundingCTA() {
           </div>
 
           {/* CTA button */}
-          <Link href="/get-listed" className="fc-btn">
+          <Link href="/business" className="fc-btn">
             Get Listed
             <svg viewBox="0 0 24 24" className="fc-btn-arrow"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
           </Link>

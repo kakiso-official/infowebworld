@@ -570,7 +570,7 @@ export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
                   <div className="cd-side-cta" style={{ background: `linear-gradient(135deg, ${color}, ${color}CC)` }}>
                     <div className="cd-side-cta-title">List Your Business</div>
                     <div className="cd-side-cta-desc">Join the founding members of InfoWebWorld. Get premium placement, verified badge, and lifetime visibility.</div>
-                    <Link href={`/get-listed?category=${encodeURIComponent(c.name)}`} className="cd-side-cta-btn">
+                    <Link href={`/business?category=${encodeURIComponent(c.name)}`} className="cd-side-cta-btn">
                       Get Listed
                       <I d={ic.arrow} size={14} color={color} sw={2.5} />
                     </Link>
@@ -582,7 +582,7 @@ export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
               <div className="cd-preview-fade">
                 <div className="cd-preview-fade-inner">
                   <p className="cd-preview-fade-text">This is a preview of what <strong>{c.name}</strong> will look like on InfoWebWorld</p>
-                  <Link href={`/get-listed?category=${encodeURIComponent(c.name)}`} className="cd-preview-fade-btn" style={{ background: color, borderColor: color, boxShadow: `0 6px 24px ${color}30` }}>
+                  <Link href={`/business?category=${encodeURIComponent(c.name)}`} className="cd-preview-fade-btn" style={{ background: color, borderColor: color, boxShadow: `0 6px 24px ${color}30` }}>
                     <I d={ic.plus} size={15} color="#fff" sw={2.5} />
                     Be the First to List Here
                   </Link>
@@ -602,7 +602,7 @@ export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
                 <h2 className="cd-cta-title">Be the First in {c.name}</h2>
                 <p className="cd-cta-desc">No businesses have claimed a listing in {c.name} yet. Be the founding member — get priority placement, a verified badge, and lifetime visibility.</p>
                 <div className="cd-cta-buttons">
-                  <Link href={`/get-listed?category=${encodeURIComponent(c.name)}`} className="cd-btn-primary" style={{ background: color, borderColor: color, boxShadow: `0 6px 24px ${color}30` }}>
+                  <Link href={`/business?category=${encodeURIComponent(c.name)}`} className="cd-btn-primary" style={{ background: color, borderColor: color, boxShadow: `0 6px 24px ${color}30` }}>
                     <I d={ic.plus} size={16} color="#fff" sw={2.5} />
                     Get Listed — $240 Lifetime
                   </Link>
@@ -698,7 +698,7 @@ export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
                 <h3 className="cd-final-cta-title">Ready to claim your spot?</h3>
                 <p className="cd-final-cta-desc">Founding members get lifetime listing — pay once, stay forever.</p>
               </div>
-              <Link href={`/get-listed?category=${encodeURIComponent(c.name)}`} className="cd-final-cta-btn">
+              <Link href={`/business?category=${encodeURIComponent(c.name)}`} className="cd-final-cta-btn">
                 Get Listed Now
                 <I d={ic.arrow} size={15} color={color} sw={2.5} />
               </Link>
@@ -790,7 +790,7 @@ export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
                 <h3 className="cd-final-cta-title">Join {c.listingCount} {c.listingCount === 1 ? 'business' : 'businesses'} in {c.name}</h3>
                 <p className="cd-final-cta-desc">{totalSpots - c.listingCount} founding spots remaining. Get lifetime listing today.</p>
               </div>
-              <Link href={`/get-listed?category=${encodeURIComponent(c.name)}`} className="cd-final-cta-btn">
+              <Link href={`/business?category=${encodeURIComponent(c.name)}`} className="cd-final-cta-btn">
                 Get Listed Now
                 <I d={ic.arrow} size={15} color={color} sw={2.5} />
               </Link>

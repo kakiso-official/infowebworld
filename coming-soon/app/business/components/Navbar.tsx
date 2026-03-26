@@ -89,7 +89,7 @@ export default function Navbar() {
             <NavItem label="Write a Review" />
             <NavItem label="Compare" />
             <NavItem label="News" />
-            <Link href="/get-listed" className="ghd-sub-cta">
+            <Link href="/business" className="ghd-sub-cta">
               Get Listed
               <svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
             </Link>
@@ -121,7 +121,7 @@ export default function Navbar() {
         </div>
 
         <div className="ghd-drawer-foot">
-          <Link href="/get-listed" className="ghd-sub-cta ghd-sub-cta--full" onClick={close}>
+          <Link href="/business" className="ghd-sub-cta ghd-sub-cta--full" onClick={close}>
             Get Listed
             <svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
           </Link>
