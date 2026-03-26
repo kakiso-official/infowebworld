@@ -7,6 +7,7 @@ const STATIC_PAGES = [
   { path: '/blog', changefreq: 'daily', priority: '0.8' },
   { path: '/categories', changefreq: 'weekly', priority: '0.8' },
   { path: '/business', changefreq: 'weekly', priority: '0.9' },
+  { path: '/contact', changefreq: 'monthly', priority: '0.6' },
 ]
 
 export async function GET() {
