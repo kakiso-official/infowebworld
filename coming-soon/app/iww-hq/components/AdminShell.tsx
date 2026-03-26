@@ -35,7 +35,7 @@ export default function AdminShell({ children, onLogout }: { children: React.Rea
         transform: open ? 'translateX(0)' : 'translateX(-100%)', transition: 'transform .3s cubic-bezier(.16,1,.3,1)',
       }}>
         <div style={{ padding: '1.25rem 1.25rem .75rem' }}>
-          <img src="/logo/infowebworld-logo.png" alt="IWW" style={{ height: 28 }} />
+          <img src="/logo/infowebworldlogo-logoforlightbackgrounds.png" alt="IWW" style={{ height: 28 }} />
         </div>
 
         <nav style={{ flex: 1, padding: '.5rem .65rem', display: 'flex', flexDirection: 'column', gap: 3 }}>

@@ -93,7 +93,7 @@ export default function BlogReader({ slug: slugProp }: { slug?: string }) {
         '@type': 'Organization',
         name: 'InfoWebWorld',
         url: 'https://infowebworld.com',
-        logo: { '@type': 'ImageObject', url: 'https://infowebworld.com/logo/infowebworld-logo.png' },
+        logo: { '@type': 'ImageObject', url: 'https://infowebworld.com/logo/infowebworldlogo-logoforlightbackgrounds.png' },
       },
       mainEntityOfPage: { '@type': 'WebPage', '@id': postUrl },
     }

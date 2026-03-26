@@ -52,7 +52,7 @@ export default function Navbar() {
         <div className="ghd-top">
           <div className="container ghd-top-inner">
             <Link href="/" className="ghd-logo">
-              <img src={`${bp}/logo/infowebworld-logo.png`} alt="InfoWebWorld" />
+              <img src={`${bp}/logo/infowebworldlogo-logoforlightbackgrounds.png`} alt="InfoWebWorld" />
             </Link>
 
             <div className="ghd-actions">
@@ -102,7 +102,7 @@ export default function Navbar() {
       <div className={`ghd-drawer${drawerOpen ? ' ghd-drawer--open' : ''}`}>
         <div className="ghd-drawer-head">
           <Link href="/" className="ghd-logo" onClick={close}>
-            <img src={`${bp}/logo/infowebworld-logo.png`} alt="InfoWebWorld" />
+            <img src={`${bp}/logo/infowebworldlogo-logoforlightbackgrounds.png`} alt="InfoWebWorld" />
           </Link>
           <button className="ghd-drawer-close" aria-label="Close" onClick={close}>
             <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>

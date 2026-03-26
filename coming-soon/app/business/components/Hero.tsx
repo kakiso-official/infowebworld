@@ -75,9 +75,8 @@ export default function Hero() {
           </div>
         </div>
         <p className="gcs-desc">
-          <strong>InfoWebWorld</strong> connects your business with best in-market buyers to <strong>Get Leads</strong>. Dofollow backlinks. Real leads. Verified reviews.
+          Get more than just traffic—get high-intent Leads. By leveraging AI visibility, SEO, and Reviews, we put your business in front of the right buyers and build the trust needed to close the deal.
         </p>
-
         {/* <div className="gcs-highlights">
           <div className="gcs-hl-card gcs-hl--coral gcs-hl--wide">
             <span className="gcs-hl-num">DA 72+</span>

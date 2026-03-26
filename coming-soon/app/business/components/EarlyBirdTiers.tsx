@@ -26,7 +26,7 @@ export default function EarlyBirdTiers() {
       <div className="container">
         <div className="section-header">
           <div className="section-tag">Limited Spots</div>
-          <h2 className="tiers-heading">Early Bird <em>Pricing</em></h2>
+          <h2 className="tiers-heading">LifeTime Founding <em>Business Pricing </em></h2>
           <p className="section-desc">
             The earlier you join, the less you pay — forever. Only <strong>{spotsLeft} Pioneer spots</strong> left.
           </p>

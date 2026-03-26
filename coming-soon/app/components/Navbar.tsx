@@ -52,7 +52,7 @@ export default function Navbar() {
         <div className="hd-top">
           <div className="container hd-top-inner">
             <Link href="/" className="hd-logo">
-              <img src={`${bp}/logo/infowebworld-logo.png`} alt="InfoWebWorld" />
+              <img src={`${bp}/logo/infowebworldlogo-logoforlightbackgrounds.png`} alt="InfoWebWorld" />
             </Link>
 
             <div className="hd-actions">
@@ -100,7 +100,7 @@ export default function Navbar() {
       <div className={`hd-drawer${drawerOpen ? ' hd-drawer--open' : ''}`}>
         <div className="hd-drawer-head">
           <Link href="/" className="hd-logo" onClick={close}>
-            <img src={`${bp}/logo/infowebworld-logo.png`} alt="InfoWebWorld" />
+            <img src={`${bp}/logo/infowebworldlogo-logoforlightbackgrounds.png`} alt="InfoWebWorld" />
           </Link>
           <button className="hd-drawer-close" aria-label="Close" onClick={close}>
             <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>

@@ -22,7 +22,7 @@ const orgJsonLd = {
   '@type': 'Organization',
   name: 'InfoWebWorld',
   url: 'https://infowebworld.com',
-  logo: 'https://infowebworld.com/logo/infowebworld-logo.png',
+  logo: 'https://infowebworld.com/logo/infowebworldlogo-logoforlightbackgrounds.png',
   description: 'Global business discovery platform with verified reviews, dofollow backlinks, and lead generation across 80+ industries.',
   sameAs: [
     'https://twitter.com/infowebworld',

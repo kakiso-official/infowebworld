@@ -17,7 +17,7 @@ export default function NotFound() {
         {/* Logo */}
         <Link href="/" className="nf-logo-link">
           <img
-            src="/logo/infowebworld-logo.png"
+            src="/logo/infowebworldlogo-logoforlightbackgrounds.png"
             alt="InfoWebWorld"
             className="nf-logo"
           />

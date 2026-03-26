@@ -11,7 +11,7 @@ export default function Footer() {
         {/* ── Top: Brand + Nav columns ── */}
         <div className="ft-top">
           <div className="ft-brand">
-            <img src={`${bp}/logo/infowebworld-logo.png`} alt="InfoWebWorld" className="ft-logo" />
+            <img src={`${bp}/logo/infowebworld-logofordarkbackgrounds.png`} alt="InfoWebWorld" className="ft-logo" />
             <p className="ft-tagline">
 InfoWebWorld is the Growth Global Platform to explore / search best trusted businesses worldwide.
             </p>

@@ -97,7 +97,7 @@ export async function generateMetadata({
   const description = descParts.filter(Boolean).join(' ').slice(0, 160)
 
   const url = `https://infowebworld.com/company/${slug}`
-  const ogImage = L.logo_url || 'https://infowebworld.com/logo/infowebworld-logo.png'
+  const ogImage = L.logo_url || 'https://infowebworld.com/logo/infowebworldlogo-logoforlightbackgrounds.png'
 
   return {
     title,
@@ -298,7 +298,7 @@ function buildJsonLd(listing: ListingRow, breadcrumb: BreadcrumbItem[]) {
     url: 'https://infowebworld.com',
     logo: {
       '@type': 'ImageObject',
-      url: 'https://infowebworld.com/logo/infowebworld-logo.png',
+      url: 'https://infowebworld.com/logo/infowebworldlogo-logoforlightbackgrounds.png',
     },
     sameAs: [
       'https://twitter.com/infowebworld',
