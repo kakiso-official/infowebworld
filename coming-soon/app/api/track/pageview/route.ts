@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       `INSERT INTO page_views
        (page, session_id, ip_address, user_agent, referrer,
         utm_source, utm_medium, utm_campaign, utm_content,
-        device_type, country_code, visitor_hash, is_unique)
+        device_type, country, visitor_hash, is_unique)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         page,

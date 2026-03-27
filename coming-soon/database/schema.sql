@@ -297,14 +297,23 @@ CREATE TABLE `page_views` (
   `ip_address` VARCHAR(45) DEFAULT NULL,
   `user_agent` VARCHAR(500) DEFAULT NULL,
   `referrer` VARCHAR(500) DEFAULT NULL,
+  `utm_source` VARCHAR(100) DEFAULT NULL,
+  `utm_medium` VARCHAR(100) DEFAULT NULL,
+  `utm_campaign` VARCHAR(100) DEFAULT NULL,
+  `utm_content` VARCHAR(200) DEFAULT NULL,
   `device_type` ENUM('desktop','mobile','tablet') DEFAULT NULL,
-  `country_code` CHAR(2) DEFAULT NULL,
+  `country` VARCHAR(2) DEFAULT NULL,
+  `visitor_hash` VARCHAR(64) DEFAULT NULL,
+  `is_unique` TINYINT(1) NOT NULL DEFAULT 1,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_pageviews_page` (`page`(50)),
   KEY `idx_pageviews_session` (`session_id`),
   KEY `idx_pageviews_created` (`created_at`),
-  KEY `idx_pageviews_page_created` (`page`(50), `created_at`)
+  KEY `idx_pageviews_page_created` (`page`(50), `created_at`),
+  KEY `idx_pageviews_visitor` (`visitor_hash`),
+  KEY `idx_pageviews_utm` (`utm_source`),
+  KEY `idx_pageviews_unique` (`is_unique`, `created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
