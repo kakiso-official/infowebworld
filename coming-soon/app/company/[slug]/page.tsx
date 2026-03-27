@@ -55,7 +55,28 @@ async function getListingBySlug(slug: string) {
     currentId = cat.parent_id
   }
 
-  return { listing, breadcrumb: crumbs }
+  // Related listings from same category
+  const related = await query(
+    `SELECT s.id, s.slug, s.company_name, s.tagline, s.logo_url, s.website,
+            c.name as category_name, c.color as category_color
+     FROM submissions s
+     LEFT JOIN categories c ON c.id = s.category_id
+     WHERE s.category_id = ? AND s.id != ? AND s.status IN ('active','paid')
+     ORDER BY s.created_at DESC LIMIT 4`,
+    [listing.category_id, listing.id]
+  )
+
+  return { listing, breadcrumb: crumbs, related: related as Record<string, unknown>[] }
+}
+
+/* ── Safely serialize mysql2 row to plain JSON (strips Buffers etc.) ── */
+function serialize<T>(obj: T): T {
+  return JSON.parse(JSON.stringify(obj, (_key, value) => {
+    if (value && typeof value === 'object' && value.type === 'Buffer' && Array.isArray(value.data)) {
+      return Buffer.from(value.data).toString('utf8')
+    }
+    return value
+  }))
 }
 
 function parseJson(val: unknown): unknown[] {
@@ -338,6 +359,13 @@ export default async function CompanyPage({
 
   const jsonLd = buildJsonLd(data.listing, data.breadcrumb)
 
+  // Serialize to plain JSON to avoid mysql2 Buffer objects breaking client hydration
+  const initialData = serialize({
+    listing: data.listing as unknown as Record<string, unknown>,
+    breadcrumb: data.breadcrumb,
+    related: data.related,
+  })
+
   return (
     <>
       {/* Server-rendered JSON-LD — visible to ALL crawlers, Google AI Overview, social bots */}
@@ -346,7 +374,7 @@ export default async function CompanyPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
       <Navbar />
-      <Suspense><ListingDetailPage slug={slug} /></Suspense>
+      <Suspense><ListingDetailPage slug={slug} initialData={initialData} /></Suspense>
       <Footer />
     </>
   )

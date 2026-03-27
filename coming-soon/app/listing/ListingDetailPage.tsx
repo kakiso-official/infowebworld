@@ -74,16 +74,81 @@ function FaqSection({ faqs, color }: { faqs: FaqItem[]; color: string }) {
   )
 }
 
-export default function ListingDetailPage({ slug: slugProp }: { slug?: string }) {
-  const [listing, setListing] = useState<RealSubmission | null>(null)
-  const [breadcrumb, setBreadcrumb] = useState<{ name: string; slug: string }[]>([])
-  const [related, setRelated] = useState<RealSubmission[]>([])
+/* ── Map a raw DB row (from server) to RealSubmission (same logic as submissions-storage mapRow) ── */
+function mapServerRow(r: Record<string, unknown>): RealSubmission {
+  const parseJson = (val: unknown): unknown[] => {
+    if (!val) return []
+    if (typeof val === 'string') { try { return JSON.parse(val) } catch { return [] } }
+    if (Array.isArray(val)) return val
+    return []
+  }
+  return {
+    id: String(r.id ?? ''),
+    companyName: String(r.company_name ?? ''),
+    contactName: String(r.contact_name ?? ''),
+    email: String(r.email ?? ''),
+    phoneCode: String(r.phone_code ?? '+1'),
+    phone: String(r.phone ?? ''),
+    website: String(r.website ?? ''),
+    category: String(r.category_name ?? r.category ?? ''),
+    categorySlug: String(r.category_slug ?? ''),
+    categoryColor: String(r.category_color ?? '#E8553D'),
+    categoryIcon: String(r.category_icon ?? 'grid'),
+    country: String(r.country_name ?? r.country ?? ''),
+    city: String(r.city ?? ''),
+    state: String(r.state ?? ''),
+    tagline: String(r.tagline ?? ''),
+    description: String(r.description ?? ''),
+    slug: String(r.slug ?? ''),
+    logoUrl: String(r.logo_url ?? ''),
+    screenshots: parseJson(r.screenshots) as string[],
+    demoVideo: String(r.demo_video ?? ''),
+    features: parseJson(r.features) as string[],
+    integrations: parseJson(r.integrations) as string[],
+    pricingModel: String(r.pricing_model ?? 'contact'),
+    pricingTiers: parseJson(r.pricing_tiers) as PricingTier[],
+    founded: String(r.founded_year ?? ''),
+    employees: String(r.team_size ?? ''),
+    funding: String(r.funding ?? ''),
+    hqLocation: String(r.hq_location ?? ''),
+    linkedin: String(r.linkedin ?? ''),
+    twitter: String(r.twitter ?? ''),
+    facebook: String(r.facebook ?? ''),
+    faqs: parseJson(r.faqs) as FaqItem[],
+    plan: String(r.plan_slug ?? r.plan ?? ''),
+    planName: String(r.plan_name ?? ''),
+    status: (r.status as RealSubmission['status']) || 'pending',
+    submittedAt: String(r.created_at ?? ''),
+    approvedAt: String(r.approved_at ?? ''),
+  }
+}
+
+interface InitialData {
+  listing: Record<string, unknown>
+  breadcrumb: { name: string; slug: string }[]
+  related: Record<string, unknown>[]
+}
+
+export default function ListingDetailPage({ slug: slugProp, initialData }: { slug?: string; initialData?: InitialData }) {
+  /* If server passed data, use it immediately — no loading flash */
+  const hasInitial = !!initialData
+  const [listing, setListing] = useState<RealSubmission | null>(
+    hasInitial ? mapServerRow(initialData.listing) : null
+  )
+  const [breadcrumb, setBreadcrumb] = useState<{ name: string; slug: string }[]>(
+    hasInitial ? initialData.breadcrumb : []
+  )
+  const [related, setRelated] = useState<RealSubmission[]>(
+    hasInitial ? initialData.related.map(r => mapServerRow(r)) : []
+  )
   const [notFound, setNotFound] = useState(false)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(!hasInitial)
   const [expandedImage, setExpandedImage] = useState<string | null>(null)
   const galleryRef = useRef<HTMLDivElement>(null)
 
+  /* Client-side fetch only when no initialData (e.g. direct /listing/ route) */
   useEffect(() => {
+    if (hasInitial) return
     const match = slugProp || (typeof window !== 'undefined' ? window.location.pathname.match(/\/listing\/(.+?)(?:\/|$)/)?.[1] : null)
     if (!match) { setNotFound(true); setLoading(false); return }
     fetchListingBySlug(match).then(r => {
@@ -91,7 +156,7 @@ export default function ListingDetailPage({ slug: slugProp }: { slug?: string })
       else setNotFound(true)
       setLoading(false)
     })
-  }, [])
+  }, [hasInitial, slugProp])
 
   /* SEO meta + JSON-LD now handled server-side in app/company/[slug]/page.tsx */
 
