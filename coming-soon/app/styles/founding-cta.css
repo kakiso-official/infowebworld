@@ -276,6 +276,14 @@
 }
 .fc-btn:hover .fc-btn-arrow { transform: translateX(3px); }
 
+/* Button reset (fc-btn is now <button> not <a>) */
+button.fc-btn {
+  border: none;
+  cursor: pointer;
+  outline: none;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+}
+
 /* Yearly CTA — outlined style */
 .fc-btn--yearly {
   color: var(--h-heading);
@@ -292,6 +300,85 @@
   box-shadow: 0 4px 16px rgba(26, 26, 26, .18);
 }
 .fc-btn--yearly:hover .fc-btn-arrow { stroke: #fff; }
+
+/* ── PayPal section inside card ── */
+.fc-paypal {
+  width: 100%;
+  margin-top: clamp(.6rem, 1vw, .85rem);
+  max-width: 380px;
+}
+.fc-paypal-loading {
+  text-align: center;
+  padding: 1rem;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .8rem;
+  color: var(--h-muted);
+}
+
+/* ── Error below cards ── */
+.fc-error {
+  text-align: center;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .78rem;
+  font-weight: 600;
+  color: #C0392B;
+  margin: clamp(.5rem, 1vw, .75rem) auto 0;
+  max-width: 860px;
+}
+
+/* ── Paid badge (replaces CTA after payment) ── */
+.fc-paid-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.78rem, 1.1vw, .88rem);
+  font-weight: 800;
+  color: #16A34A;
+  background: #ECFDF5;
+  padding: .6rem 1.75rem;
+  border-radius: 999px;
+  border: 2px solid #16A34A;
+}
+.fc-paid-badge svg {
+  width: 18px; height: 18px;
+  fill: none; stroke: #16A34A;
+  stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* ── Success banner ── */
+.fc-success {
+  max-width: 860px;
+  margin: clamp(1rem, 2vw, 1.5rem) auto 0;
+  padding: clamp(1.25rem, 2.5vw, 1.75rem);
+  background: #ECFDF5;
+  border: 1.5px solid rgba(22, 163, 74, .3);
+  border-radius: 18px;
+  text-align: center;
+}
+.fc-success-icon {
+  width: 48px; height: 48px;
+  margin: 0 auto .75rem;
+  background: #16A34A;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.fc-success-title {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  font-weight: 800; color: #166534;
+  margin-bottom: .35rem;
+}
+.fc-success-desc {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.82rem, 1.1vw, .92rem);
+  color: #15803D; margin-bottom: .25rem;
+}
+.fc-success-desc strong { font-weight: 800; color: #166534; }
+.fc-success-order {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .72rem; color: #15803D; opacity: .7;
+}
 
 /* ── Guarantee seal ── */
 .fc-guarantee {
