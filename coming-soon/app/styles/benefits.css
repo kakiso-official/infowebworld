@@ -32,6 +32,7 @@
 .bn-card--4 { grid-column: span 1; }
 .bn-card--5 { grid-column: span 1; }
 .bn-card--6 { grid-column: span 2; }
+.bn-card--7 { grid-column: 1 / -1; }
 
 /* ── Card base ── */
 .bn-card {
@@ -119,7 +120,8 @@
 /* Wide cards: checklist goes horizontal */
 .bn-card--2 .bn-card-list,
 .bn-card--3 .bn-card-list,
-.bn-card--6 .bn-card-list {
+.bn-card--6 .bn-card-list,
+.bn-card--7 .bn-card-list {
   flex-direction: row; flex-wrap: wrap; gap: .4rem .75rem;
 }
 
@@ -136,6 +138,7 @@
   .bn-card--4 { grid-column: span 1; }
   .bn-card--5 { grid-column: span 1; }
   .bn-card--6 { grid-column: span 2; }
+  .bn-card--7 { grid-column: 1 / -1; }
 
   .bn-card--2 .bn-card-list { flex-direction: column; }
 }
@@ -157,6 +160,7 @@
   .bn-card--4 { grid-column: span 1; }
   .bn-card--5 { grid-column: span 1; }
   .bn-card--6 { grid-column: 1 / -1; }
+  .bn-card--7 { grid-column: 1 / -1; }
 
   .bn-card {
     padding: clamp(.85rem, 2.5vw, 1.15rem);
@@ -180,11 +184,13 @@
   /* All lists vertical on mobile */
   .bn-card--2 .bn-card-list,
   .bn-card--3 .bn-card-list,
-  .bn-card--6 .bn-card-list { flex-direction: column; }
+  .bn-card--6 .bn-card-list,
+  .bn-card--7 .bn-card-list { flex-direction: column; }
 
   /* Full-width cards keep horizontal highlights */
   .bn-card--1 .bn-card-list,
-  .bn-card--6 .bn-card-list { flex-direction: row; flex-wrap: wrap; gap: .3rem .6rem; }
+  .bn-card--6 .bn-card-list,
+  .bn-card--7 .bn-card-list { flex-direction: row; flex-wrap: wrap; gap: .3rem .6rem; }
 }
 
 /* ── Extra-small phones ── */
