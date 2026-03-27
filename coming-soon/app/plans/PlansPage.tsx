@@ -2,6 +2,7 @@
 import { useState, Fragment } from 'react'
 import Link from 'next/link'
 import PaymentModal from '../business/components/PaymentModal'
+import FoundingCTA from '../business/components/FoundingCTA'
 
 type PlanKey = 'lifetime' | 'yearly'
 
@@ -216,6 +217,11 @@ export default function PlansPage() {
           </div>
         </div>
       </section>
+
+      {/* ════════════════════════════════════════════
+          FOUNDING CTA — plan cards
+         ════════════════════════════════════════════ */}
+      <FoundingCTA />
 
       {/* ════════════════════════════════════════════
           FEATURE COMPARISON — grid layout
