@@ -171,7 +171,7 @@
   content: '';
   position: absolute;
   left: -2px; right: -2px;
-  top: 65%; height: 2.5px;
+  top: 70%; height: 2.5px;
   background: #C0392B;
   transform: rotate(-12deg);
   border-radius: 2px;

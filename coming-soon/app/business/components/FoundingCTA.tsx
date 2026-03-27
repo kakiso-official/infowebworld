@@ -23,10 +23,10 @@ export default function FoundingCTA() {
       <div className="container">
         {/* Section header */}
         <div className="fc-header">
-          <div className="fc-section-tag">Limited Spots</div>
+          <div className="fc-section-tag">Limited Pioneer Pre-Launch Spots</div>
           <h2 className="fc-section-heading">
             Choose Your <em>Founding</em> Plan
-          </h2>
+          </h2><p>The earlier you join, the less you pay — forever. Only for Pioneer spots. Not Satisfied, we got you covered with Refund or Free Renewal, just ping us.</p>
           
         </div>
 
@@ -34,7 +34,7 @@ export default function FoundingCTA() {
           {/* ════════════ LIFETIME CARD ════════════ */}
           <div className="fc-card fc-card--lifetime">
             <div className="fc-badge">Best Value</div>
-            <div className="fc-ribbon">Only {spotsLeft} Left</div>
+            <div className="fc-ribbon">Only 199 Left</div>
 
             <h3 className="fc-heading">
               <em>Elite</em> Lifetime<br />
@@ -42,7 +42,7 @@ export default function FoundingCTA() {
             </h3>
 
             <div className="fc-price-block">
-              <span className="fc-price">$240</span>
+              <span className="fc-price">$239</span>
               <span className="fc-price-label fc-price-label--highlight">lifetime</span>
             </div>
             <div className="fc-price-after">
@@ -52,7 +52,7 @@ export default function FoundingCTA() {
             <div className="fc-pills">
               <span className="fc-pill fc-pill--slots">
                 <svg viewBox="0 0 24 24" className="fc-pill-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
-                Only {cfg.pioneerTotal} Slots
+                Only {cfg.pioneerTotal} Spots
               </span>
               <span className="fc-pill-divider" />
               <span className="fc-pill fc-pill--lifetime">
@@ -93,13 +93,13 @@ export default function FoundingCTA() {
               <span className="fc-price-label">/year</span>
             </div>
             <div className="fc-price-after">
-              <span className="fc-strikethrough">$240/yr</span> after Pioneer pre-launch window
+              <span className="fc-strikethrough">$239/yr</span> after Pioneer pre-launch window
             </div>
 
             <div className="fc-pills">
               <span className="fc-pill fc-pill--slots">
                 <svg viewBox="0 0 24 24" className="fc-pill-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
-                Pioneer Pre-Launch Slots
+                Pioneer Pre-Launch Spots
               </span>
               <span className="fc-pill-divider" />
               <span className="fc-pill fc-pill--renew">
@@ -122,7 +122,7 @@ export default function FoundingCTA() {
 
             <div className="fc-guarantee">
               <svg viewBox="0 0 24 24" className="fc-guarantee-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="M9 12l2 2 4-4" /></svg>
-              <span>Lead , CTA's — <strong>Less , Renewal is Free !!</strong></span>
+              <span>Lead , CTA's — <strong>Less , Renewal is Free</strong></span>
             </div>
           </div>
         </div>
