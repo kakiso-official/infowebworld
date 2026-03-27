@@ -35,10 +35,11 @@ export default function FinalCTA() {
           <div className="fcta-content">
             <div className="section-tag">Don&apos;t Miss Out</div>
             <h2 className="fcta-heading">
-              Only <em>{LEFT} Pioneer Spots</em> Remain
+              Only <em>{LEFT} Pioneer Spots</em> Remain - Elite Lifetime
+Founding Business Plan
             </h2>
             <p className="fcta-desc">
-              Lock in $239 lifetime access before the price jumps to $99/yr. Join now and never pay again.
+              Lock in $239 lifetime access before the price jumps to $999 Lifetime. Join now and never pay again.
             </p>
 
             <form className="fcta-form" onSubmit={handleFctaJoin}>

@@ -14,10 +14,11 @@ const Cell = ({ value }: { value: V }) => {
 }
 
 const features: { name: string; iww: V; g2: V; ph: V; ai: V }[] = [
+   { name: 'Lead Generation', iww: true, g2: true, ph: false, ai: false },
   { name: 'Dofollow Backlinks', iww: true, g2: false, ph: false, ai: 'Some' },
   { name: 'Verified Reviews', iww: true, g2: true, ph: false, ai: false },
-  { name: '80+ Industries', iww: true, g2: 'Tech only', ph: 'Tech only', ai: 'AI only' },
-  { name: 'Lead Generation', iww: true, g2: true, ph: false, ai: false },
+  { name: 'thousands of categories ', iww: true, g2: 'Tech only', ph: 'Tech only', ai: 'AI only' },
+ 
   { name: 'Multi-Country (12+)', iww: true, g2: 'Limited', ph: true, ai: false },
   { name: 'Daily News Feed', iww: true, g2: false, ph: false, ai: false },
   { name: 'Analytics Dashboard', iww: true, g2: true, ph: false, ai: 'Basic' },
@@ -45,7 +46,7 @@ export default function Comparison() {
             <div className="cmp-cell cmp-cell--feature">Feature</div>
             <div className="cmp-cell cmp-cell--hero" data-label="IWW">InfoWebWorld</div>
             <div className="cmp-cell" data-label="G2">G2</div>
-            <div className="cmp-cell" data-label="PH">Product Hunt</div>
+             <div className="cmp-cell" data-label="PH">Capterra</div> 
             <div className="cmp-cell" data-label="AI">AI Dirs</div>
           </div>
 
@@ -55,7 +56,7 @@ export default function Comparison() {
               <div className="cmp-cell cmp-cell--feature">{f.name}</div>
               <div className="cmp-cell cmp-cell--hero" data-label="InfoWebWorld"><Cell value={f.iww} /></div>
               <div className="cmp-cell" data-label="G2"><Cell value={f.g2} /></div>
-              <div className="cmp-cell" data-label="Product Hunt"><Cell value={f.ph} /></div>
+              <div className="cmp-cell" data-label="Product Hunt"><Cell value={f.ph} /></div> 
               <div className="cmp-cell" data-label="AI Directories"><Cell value={f.ai} /></div>
             </div>
           ))}
