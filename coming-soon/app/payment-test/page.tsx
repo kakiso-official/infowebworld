@@ -6,54 +6,72 @@ const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || 'AcVEK9s17r
 
 export default function PaymentTestPage() {
   const [paypalReady, setPaypalReady] = useState(false)
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error' | 'cancelled'>('idle')
-  const [orderId, setOrderId] = useState('')
+  const [planId, setPlanId] = useState<string | null>(null)
+  const [status, setStatus] = useState<'idle' | 'loading-plan' | 'ready' | 'processing' | 'success' | 'error' | 'cancelled'>('idle')
+  const [subscriptionId, setSubscriptionId] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
   const paypalRef = useRef<HTMLDivElement>(null)
   const rendered = useRef(false)
 
+  /* ── Step 1: Fetch or create the subscription plan from server ── */
   useEffect(() => {
-    if (document.getElementById('paypal-sdk')) { setPaypalReady(true); return }
+    setStatus('loading-plan')
+    fetch('/api/paypal/subscription-plan')
+      .then(r => r.json())
+      .then(data => {
+        if (data.planId) {
+          setPlanId(data.planId)
+        } else {
+          setStatus('error')
+          setErrorMsg(data.error || 'Failed to create subscription plan')
+        }
+      })
+      .catch(() => {
+        setStatus('error')
+        setErrorMsg('Failed to reach server')
+      })
+  }, [])
+
+  /* ── Step 2: Load PayPal SDK with vault+subscription intent ── */
+  useEffect(() => {
+    if (!planId) return
+
+    // Remove any existing PayPal SDK (it might be loaded with regular intent)
+    const existing = document.getElementById('paypal-sdk')
+    if (existing) existing.remove()
+    const existingSub = document.getElementById('paypal-sdk-sub')
+    if (existingSub) { setPaypalReady(true); return }
+
     const s = document.createElement('script')
-    s.id = 'paypal-sdk'
-    s.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=USD`
+    s.id = 'paypal-sdk-sub'
+    s.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&vault=true&intent=subscription&currency=USD`
     s.onload = () => setPaypalReady(true)
     s.onerror = () => { setStatus('error'); setErrorMsg('Failed to load PayPal SDK') }
     document.head.appendChild(s)
-  }, [])
+  }, [planId])
 
+  /* ── Step 3: Render PayPal subscription buttons ── */
   useEffect(() => {
-    if (!paypalReady || !paypalRef.current || rendered.current) return
+    if (!paypalReady || !planId || !paypalRef.current || rendered.current) return
     rendered.current = true
+    setStatus('ready')
 
     // @ts-expect-error PayPal SDK loaded globally
     const paypal = window.paypal
     if (!paypal) return
 
     paypal.Buttons({
-      style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay', height: 48 },
-      createOrder: (_d: unknown, actions: { order: { create: (o: unknown) => Promise<string> } }) =>
-        actions.order.create({
-          purchase_units: [{
-            description: 'InfoWebWorld — Payment Test ($0.10)',
-            amount: { currency_code: 'USD', value: '0.10' },
-          }],
-        }),
-      onApprove: async (_d: { orderID: string }, actions: { order: { capture: () => Promise<{ id: string; status: string }> } }) => {
-        setStatus('loading')
-        try {
-          const details = await actions.order.capture()
-          setOrderId(details.id)
-          setStatus('success')
-        } catch {
-          setStatus('error')
-          setErrorMsg('Payment capture failed.')
-        }
+      style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'subscribe', height: 48 },
+      createSubscription: (_d: unknown, actions: { subscription: { create: (o: unknown) => Promise<string> } }) =>
+        actions.subscription.create({ plan_id: planId }),
+      onApprove: (data: { subscriptionID: string }) => {
+        setSubscriptionId(data.subscriptionID)
+        setStatus('success')
       },
       onError: () => { setStatus('error'); setErrorMsg('Payment failed. Please try again.') },
       onCancel: () => setStatus('cancelled'),
     }).render(paypalRef.current)
-  }, [paypalReady])
+  }, [paypalReady, planId])
 
   return (
     <main style={{
@@ -71,14 +89,17 @@ export default function PaymentTestPage() {
           fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '.06em',
           marginBottom: '1rem',
         }}>
-          Live Payment
+          Live Subscription
         </div>
 
         <h1 style={{ fontSize: 'clamp(1.2rem, 4vw, 1.6rem)', fontWeight: 800, color: '#1A1A1A', marginBottom: '.5rem' }}>
-          Payment Test
+          Daily Subscription Test
         </h1>
-        <p style={{ fontSize: '.9rem', color: '#5C5C5C', marginBottom: '1.5rem' }}>
-          Pay <strong style={{ color: '#E8553D', fontSize: '1.1em' }}>$0.10</strong> via PayPal
+        <p style={{ fontSize: '.9rem', color: '#5C5C5C', marginBottom: '.25rem' }}>
+          <strong style={{ color: '#E8553D', fontSize: '1.3em' }}>$0.10</strong> <span style={{ color: '#9A9590' }}>/day</span>
+        </p>
+        <p style={{ fontSize: '.75rem', color: '#9A9590', marginBottom: '1.5rem' }}>
+          Recurring daily — cancel anytime from PayPal
         </p>
 
         {status === 'success' ? (
@@ -93,28 +114,25 @@ export default function PaymentTestPage() {
               </svg>
             </div>
             <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#166534', marginBottom: '.4rem' }}>
-              Payment Successful!
+              Subscription Active!
             </h2>
             <p style={{ fontSize: '.85rem', color: '#15803D', marginBottom: '.25rem' }}>
-              <strong>$0.10</strong> captured successfully.
+              <strong>$0.10/day</strong> will be charged daily.
             </p>
             <p style={{ fontSize: '.7rem', color: '#15803D', opacity: .6 }}>
-              Order ID: {orderId}
+              Subscription ID: {subscriptionId}
             </p>
-            <button
-              onClick={() => { setStatus('idle'); rendered.current = false }}
-              style={{
-                marginTop: '1rem', padding: '.5rem 1.5rem', borderRadius: 999,
-                border: '1.5px solid #1A1A1A', background: '#fff', color: '#1A1A1A',
-                fontSize: '.8rem', fontWeight: 700, cursor: 'pointer',
-              }}
-            >
-              Test Again
-            </button>
+            <p style={{ fontSize: '.72rem', color: '#9A9590', marginTop: '.75rem' }}>
+              Cancel anytime from your PayPal account → Settings → Payments → Manage automatic payments
+            </p>
           </div>
-        ) : status === 'loading' ? (
+        ) : status === 'loading-plan' ? (
           <div style={{ padding: '2rem', color: '#5C5C5C', fontSize: '.85rem' }}>
-            Processing payment...
+            Setting up subscription plan...
+          </div>
+        ) : status === 'processing' ? (
+          <div style={{ padding: '2rem', color: '#5C5C5C', fontSize: '.85rem' }}>
+            Processing subscription...
           </div>
         ) : (
           <>
@@ -125,11 +143,11 @@ export default function PaymentTestPage() {
             )}
             {status === 'cancelled' && (
               <p style={{ color: '#92400E', fontSize: '.8rem', fontWeight: 600, marginBottom: '.75rem' }}>
-                Payment cancelled. Try again below.
+                Subscription cancelled. Try again below.
               </p>
             )}
             <div ref={paypalRef} style={{ maxWidth: 380, margin: '0 auto' }}>
-              {!paypalReady && (
+              {!paypalReady && status !== 'error' && (
                 <p style={{ padding: '1rem', color: '#9A9590', fontSize: '.8rem' }}>Loading PayPal...</p>
               )}
             </div>
@@ -137,7 +155,7 @@ export default function PaymentTestPage() {
         )}
 
         <p style={{ marginTop: '1.25rem', fontSize: '.65rem', color: '#9A9590' }}>
-          Secure payment powered by PayPal.
+          Secure recurring payment powered by PayPal.
         </p>
       </div>
     </main>
