@@ -27,9 +27,7 @@ export default function FoundingCTA() {
           <h2 className="fc-section-heading">
             Choose Your <em>Founding</em> Plan
           </h2>
-          <p className="fc-section-desc">
-            Only <strong>{spotsLeft} Pioneer spots</strong> left. Lock in the lowest price — before it&apos;s gone.
-          </p>
+          
         </div>
 
         <div className="fc-grid">
@@ -48,7 +46,7 @@ export default function FoundingCTA() {
               <span className="fc-price-label fc-price-label--highlight">lifetime</span>
             </div>
             <div className="fc-price-after">
-              <span className="fc-strikethrough">$999</span> after Pioneer window
+              <span className="fc-strikethrough">$999 / lifetime</span> after Pioneer pre-launch window
             </div>
 
             <div className="fc-pills">
@@ -83,11 +81,11 @@ export default function FoundingCTA() {
 
           {/* ════════════ YEARLY CARD ════════════ */}
           <div className="fc-card fc-card--yearly">
-            <div className="fc-ribbon fc-ribbon--yearly">Flexible Plan</div>
+            <div className="fc-ribbon fc-ribbon--yearly">Only 997 Left</div>
 
             <h3 className="fc-heading">
-              Yearly Business<br />
-              Membership
+              Early Adopter<br />
+              Plan
             </h3>
 
             <div className="fc-price-block">
@@ -95,13 +93,13 @@ export default function FoundingCTA() {
               <span className="fc-price-label">/year</span>
             </div>
             <div className="fc-price-after">
-              <span className="fc-strikethrough">$240/yr</span> after Pioneer window
+              <span className="fc-strikethrough">$240/yr</span> after Pioneer pre-launch window
             </div>
 
             <div className="fc-pills">
               <span className="fc-pill fc-pill--slots">
                 <svg viewBox="0 0 24 24" className="fc-pill-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
-                Limited Spots
+                Pioneer Pre-Launch Slots
               </span>
               <span className="fc-pill-divider" />
               <span className="fc-pill fc-pill--renew">

@@ -68,7 +68,7 @@ export default function Hero() {
               <path className="gcs-arrow-head-1" d="M84 50 L70 42" stroke="var(--h-accent)" strokeWidth="3" strokeLinecap="round" />
               <path className="gcs-arrow-head-2" d="M84 50 L72 60" stroke="var(--h-accent)" strokeWidth="3" strokeLinecap="round" />
             </svg>
-            <Link href="/business" className="gcs-listing-btn">
+            <Link href="/plans" className="gcs-listing-btn">
               Submit Your First Listing
               <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
             </Link>

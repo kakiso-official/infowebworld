@@ -164,7 +164,7 @@
   position: relative;
   text-decoration: none;
   font-weight: 800;
-  font-size: 1.4em;
+  font-size: 1.8em;
   color: #C0392B;
 }
 .fc-strikethrough::after {
@@ -287,7 +287,7 @@ button.fc-btn {
 /* Yearly CTA — outlined style */
 .fc-btn--yearly {
   color: var(--h-heading);
-  background: #fff;
+  background: #C0392B;
   border: 1.5px solid var(--h-heading);
 }
 .fc-btn--yearly::after {
