@@ -99,7 +99,7 @@ export default function Pricing() {
 
           <div className="pr-col-head pr-col-head--lt">
             <div className="pr-col-badge">Most Popular</div>
-            <div className="pr-col-name">Lifetime Plan</div>
+            <div className="pr-col-name">Business Plan</div>
             <div className="pr-col-desc">Elite Founding Business</div>
             <div className="pr-col-price"><span>$</span>239</div>
             <div className="pr-col-period">one-time, forever</div>
@@ -108,7 +108,7 @@ export default function Pricing() {
           </div>
 
           <div className="pr-col-head pr-col-head--yr">
-            <div className="pr-col-name">Yearly Plan</div>
+            <div className="pr-col-name">Pro Plan</div>
             <div className="pr-col-desc">Flexible Membership</div>
             <div className="pr-col-price"><span>$</span>99</div>
             <div className="pr-col-period">per year</div>

@@ -157,11 +157,11 @@ const sections = [
 const faqs = [
   {
     q: 'What is the difference between the Lifetime and Yearly plans?',
-    a: 'The Lifetime plan is a one-time payment of $239 that gives you permanent access to all features forever — no renewals, no price increases. The Yearly plan costs $99 per year with the same feature set, renewed annually. Both plans include every feature in our comparison table.',
+    a: 'The Business plan is a one-time payment of $239 that gives you permanent access to all features forever — no renewals, no price increases. The Pro plan costs $99 per year with the same feature set, renewed annually. Both plans include every feature in our comparison table.',
   },
   {
-    q: 'Can I upgrade from Yearly to Lifetime later?',
-    a: 'Absolutely. You can upgrade from the Yearly plan to the Lifetime plan at any time. Your existing listing, reviews, and analytics data will carry over seamlessly. Contact our support team and we will handle the transition for you.',
+    q: 'Can I upgrade from Pro to Business later?',
+    a: 'Absolutely. You can upgrade from the Pro plan to the Business plan at any time. Your existing listing, reviews, and analytics data will carry over seamlessly. Contact our support team and we will handle the transition for you.',
   },
   {
     q: 'Is there a free plan or trial available?',
@@ -212,14 +212,14 @@ export default function PlansPage() {
               className={`pln-toggle-btn${billingTab === 'lifetime' ? ' pln-toggle-btn--active' : ''}`}
               onClick={() => setBillingTab('lifetime')}
             >
-              Lifetime
+              Business
             </button>
             <button
               type="button"
               className={`pln-toggle-btn${billingTab === 'yearly' ? ' pln-toggle-btn--active' : ''}`}
               onClick={() => setBillingTab('yearly')}
             >
-              Yearly
+              Pro
             </button>
           </div>
         </div>
@@ -237,7 +237,7 @@ export default function PlansPage() {
             <div className="pr-col-spacer" />
             <div className={`pr-col-head pr-col-head--lt${billingTab === 'lifetime' ? ' pr-col-head--active' : ''}`}>
               <div className="pr-col-badge">Most Popular</div>
-              <div className="pr-col-name">Lifetime Plan</div>
+              <div className="pr-col-name">Business Plan</div>
               <div className="pr-col-desc">Elite Founding Business</div>
               <div className="pr-col-price"><span>$</span>239</div>
               <div className="pr-col-period">one-time, forever</div>
@@ -245,7 +245,7 @@ export default function PlansPage() {
               <button type="button" className="pr-col-btn pr-col-btn--primary" onClick={() => setModalPlan('lifetime')}>Claim Lifetime Spot</button>
             </div>
             <div className={`pr-col-head pr-col-head--yr${billingTab === 'yearly' ? ' pr-col-head--active' : ''}`}>
-              <div className="pr-col-name">Yearly Plan</div>
+              <div className="pr-col-name">Pro Plan</div>
               <div className="pr-col-desc">Flexible Membership</div>
               <div className="pr-col-price"><span>$</span>99</div>
               <div className="pr-col-period">per year</div>
