@@ -23,14 +23,14 @@ export async function GET(request: NextRequest) {
       'SELECT COUNT(*) as waitlistTotal FROM waitlist'
     )
 
-    // --- Page view stats ---
+    // --- Page view stats (DISTINCT visitor_hash = true unique visitors) ---
     const viewStats = await queryOne<{
       totalPageViews: number
       totalUnique: number
     }>(
       `SELECT
          COUNT(*) as totalPageViews,
-         SUM(CASE WHEN is_unique = 1 THEN 1 ELSE 0 END) as totalUnique
+         COUNT(DISTINCT visitor_hash) as totalUnique
        FROM page_views`
     )
 
@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
     }>(
       `SELECT
          COUNT(*) as todayViews,
-         SUM(CASE WHEN is_unique = 1 THEN 1 ELSE 0 END) as todayUnique
+         COUNT(DISTINCT visitor_hash) as todayUnique
        FROM page_views
        WHERE DATE(created_at) = CURDATE()`
     )
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
       `SELECT
          DATE(created_at) as date,
          COUNT(*) as views,
-         SUM(CASE WHEN is_unique = 1 THEN 1 ELSE 0 END) as unique_views
+         COUNT(DISTINCT visitor_hash) as unique_views
        FROM page_views
        WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
        GROUP BY DATE(created_at)

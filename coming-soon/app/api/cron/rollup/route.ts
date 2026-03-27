@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     // 1. Aggregate page_views -> page_analytics_daily for yesterday
     await execute(
       `INSERT INTO page_analytics_daily (page, date, views, unique_views)
-       SELECT page, DATE(created_at), COUNT(*), SUM(CASE WHEN is_unique = 1 THEN 1 ELSE 0 END)
+       SELECT page, DATE(created_at), COUNT(*), COUNT(DISTINCT visitor_hash)
        FROM page_views
        WHERE DATE(created_at) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)
        GROUP BY page, DATE(created_at)
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     // 2. Aggregate blog_views -> blog_analytics_daily for yesterday
     await execute(
       `INSERT INTO blog_analytics_daily (post_id, date, views, unique_views, shares)
-       SELECT post_id, DATE(created_at), COUNT(*), SUM(CASE WHEN is_unique = 1 THEN 1 ELSE 0 END), 0
+       SELECT post_id, DATE(created_at), COUNT(*), COUNT(DISTINCT visitor_hash), 0
        FROM blog_views
        WHERE DATE(created_at) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)
        GROUP BY post_id, DATE(created_at)

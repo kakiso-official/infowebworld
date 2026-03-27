@@ -1,7 +1,12 @@
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { randomUUID } from 'crypto'
 import { queryOne, execute } from '@/lib/db'
 import { checkRateLimit } from '@/lib/rate-limit'
-import { isBot, detectDevice, getCountryCode, getClientIp, getUserAgent, getVisitorHash } from '@/lib/tracking'
+import { isBot, detectDevice, getCountryCode, getClientIp, getUserAgent, getVisitorHash, getFingerprintHash } from '@/lib/tracking'
+
+const COOKIE_NAME = 'iww_vid'
+const COOKIE_MAX_AGE = 365 * 24 * 60 * 60 // 1 year
+const DEDUP_MINUTES = 30
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,39 +27,74 @@ export async function POST(request: NextRequest) {
 
     const readSeconds = Number(body.readSeconds || body.readTime || 0)
     const userAgent = await getUserAgent()
-    const hash = getVisitorHash(ip, userAgent)
     const device = await detectDevice()
     const country = await getCountryCode()
 
-    const existing = await queryOne(
-      'SELECT 1 FROM blog_views WHERE visitor_hash = ? AND post_id = ? AND DATE(created_at) = CURDATE() LIMIT 1',
+    // --- Persistent visitor ID via HttpOnly cookie ---
+    const existingCookie = request.cookies.get(COOKIE_NAME)?.value
+    let visitorId = existingCookie
+    let needsCookie = false
+    let hash: string
+
+    if (visitorId) {
+      hash = getVisitorHash(visitorId)
+    } else {
+      hash = getFingerprintHash(ip, userAgent)
+      visitorId = randomUUID()
+      needsCookie = true
+    }
+
+    // --- 30-min dedup: check for recent view of same post ---
+    const recentView = await queryOne<{ id: number }>(
+      `SELECT id FROM blog_views
+       WHERE visitor_hash = ? AND post_id = ?
+       AND created_at > DATE_SUB(NOW(), INTERVAL ${DEDUP_MINUTES} MINUTE)
+       ORDER BY created_at DESC LIMIT 1`,
       [hash, postId]
     )
 
-    await execute(
-      `INSERT INTO blog_views
-       (post_id, session_id, ip_address, user_agent, referrer,
-        utm_source, utm_medium, utm_campaign,
-        device_type, country_code, visitor_hash, is_unique, read_seconds)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        postId,
-        body.sessionId || null,
-        ip,
-        userAgent,
-        String(body.referrer || '').slice(0, 500) || null,
-        String(body.utm_source || '').slice(0, 100) || null,
-        String(body.utm_medium || '').slice(0, 100) || null,
-        String(body.utm_campaign || '').slice(0, 100) || null,
-        device,
-        country,
-        hash,
-        existing ? 0 : 1,
-        readSeconds,
-      ]
-    )
+    if (recentView) {
+      // Duplicate view — but if we have read_seconds, UPDATE the existing row
+      // (BlogReader sends read time on unmount, which arrives after the initial view)
+      if (readSeconds > 0) {
+        await execute(
+          'UPDATE blog_views SET read_seconds = ? WHERE id = ?',
+          [readSeconds, recentView.id]
+        )
+      }
+      // Otherwise skip entirely (refresh/duplicate)
+    } else {
+      // New view — INSERT
+      const seenToday = await queryOne(
+        'SELECT 1 FROM blog_views WHERE visitor_hash = ? AND post_id = ? AND DATE(created_at) = CURDATE() LIMIT 1',
+        [hash, postId]
+      )
 
-    // Track share if flagged
+      await execute(
+        `INSERT INTO blog_views
+         (post_id, session_id, ip_address, user_agent, referrer,
+          utm_source, utm_medium, utm_campaign,
+          device_type, country_code, visitor_hash, is_unique, read_seconds)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          postId,
+          body.sessionId || null,
+          ip,
+          userAgent,
+          String(body.referrer || '').slice(0, 500) || null,
+          String(body.utm_source || '').slice(0, 100) || null,
+          String(body.utm_medium || '').slice(0, 100) || null,
+          String(body.utm_campaign || '').slice(0, 100) || null,
+          device,
+          country,
+          hash,
+          seenToday ? 0 : 1,
+          readSeconds,
+        ]
+      )
+    }
+
+    // Track share if flagged (shares are actions, not views — never deduped)
     if (body.share) {
       const today = new Date().toISOString().slice(0, 10)
       await execute(
@@ -65,7 +105,19 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    return Response.json({ ok: true })
+    // Set cookie for new visitors
+    const response = NextResponse.json({ ok: true })
+    if (needsCookie) {
+      response.cookies.set(COOKIE_NAME, visitorId, {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: COOKIE_MAX_AGE,
+        path: '/',
+      })
+    }
+
+    return response
   } catch (err) {
     console.error('POST /api/track/blog-view error:', err)
     return Response.json({ error: 'Server error' }, { status: 500 })

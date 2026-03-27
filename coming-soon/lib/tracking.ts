@@ -53,7 +53,19 @@ export async function getUserAgent(): Promise<string> {
   return (h.get('user-agent') || '').slice(0, 500)
 }
 
-export function getVisitorHash(ip: string, ua: string): string {
-  const day = new Date().toISOString().slice(0, 10)
-  return createHash('sha256').update(`${ip}|${ua}|${day}`).digest('hex')
+/**
+ * Hash a persistent visitor ID (from cookie) — stable forever.
+ * No date component = same person = same hash across days/weeks/months.
+ */
+export function getVisitorHash(visitorId: string): string {
+  return createHash('sha256').update(visitorId).digest('hex')
+}
+
+/**
+ * Fingerprint fallback when cookies are blocked/missing.
+ * Uses IP + UA only (no date!) — stable within the same day at minimum,
+ * often stable for weeks/months unless browser updates.
+ */
+export function getFingerprintHash(ip: string, ua: string): string {
+  return createHash('sha256').update(`${ip}|${ua}`).digest('hex')
 }
