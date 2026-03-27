@@ -5,60 +5,55 @@ import { useState, useEffect, useRef } from 'react'
 const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || 'AcVEK9s17rxgOj1JTpZ0Cp94PIA_ghK8nGnPcWXdL7wpH-cfdw5-5jETY84-Tib3QKCZbzPU1xYLH7Fx'
 
 export default function PaymentTestPage() {
-  const [paypalReady, setPaypalReady] = useState(false)
   const [planId, setPlanId] = useState<string | null>(null)
-  const [status, setStatus] = useState<'idle' | 'loading-plan' | 'ready' | 'processing' | 'success' | 'error' | 'cancelled'>('idle')
+  const [sdkReady, setSdkReady] = useState(false)
+  const [status, setStatus] = useState<'loading' | 'ready' | 'processing' | 'success' | 'error' | 'cancelled'>('loading')
   const [subscriptionId, setSubscriptionId] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
   const paypalRef = useRef<HTMLDivElement>(null)
   const rendered = useRef(false)
 
-  /* ── Step 1: Fetch or create the subscription plan from server ── */
+  /* ── Step 1: Fetch plan ID + load SDK in parallel ── */
   useEffect(() => {
-    setStatus('loading-plan')
+    let cancelled = false
+
+    // Fetch plan
     fetch('/api/paypal/subscription-plan')
       .then(r => r.json())
       .then(data => {
-        if (data.planId) {
-          setPlanId(data.planId)
-        } else {
-          setStatus('error')
-          setErrorMsg(data.error || 'Failed to create subscription plan')
-        }
+        if (!cancelled && data.planId) setPlanId(data.planId)
+        else if (!cancelled) { setStatus('error'); setErrorMsg(data.error || 'Failed to get plan') }
       })
-      .catch(() => {
-        setStatus('error')
-        setErrorMsg('Failed to reach server')
-      })
-  }, [])
+      .catch(() => { if (!cancelled) { setStatus('error'); setErrorMsg('Server unreachable') } })
 
-  /* ── Step 2: Load PayPal SDK with vault+subscription intent ── */
-  useEffect(() => {
-    if (!planId) return
+    // Load PayPal SDK for subscriptions
+    const scriptId = 'paypal-sdk-sub'
+    const existing = document.getElementById(scriptId) as HTMLScriptElement | null
+    if (existing) { setSdkReady(true); return }
 
-    // Remove any existing PayPal SDK (it might be loaded with regular intent)
-    const existing = document.getElementById('paypal-sdk')
-    if (existing) existing.remove()
-    const existingSub = document.getElementById('paypal-sdk-sub')
-    if (existingSub) { setPaypalReady(true); return }
+    // Remove regular SDK if loaded (different intent)
+    document.getElementById('paypal-sdk')?.remove()
 
     const s = document.createElement('script')
-    s.id = 'paypal-sdk-sub'
+    s.id = scriptId
     s.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&vault=true&intent=subscription&currency=USD`
-    s.onload = () => setPaypalReady(true)
-    s.onerror = () => { setStatus('error'); setErrorMsg('Failed to load PayPal SDK') }
+    s.onload = () => { if (!cancelled) setSdkReady(true) }
+    s.onerror = () => { if (!cancelled) { setStatus('error'); setErrorMsg('Failed to load PayPal') } }
     document.head.appendChild(s)
-  }, [planId])
 
-  /* ── Step 3: Render PayPal subscription buttons ── */
+    return () => { cancelled = true }
+  }, [])
+
+  /* ── Step 2: Render buttons when both plan + SDK are ready ── */
   useEffect(() => {
-    if (!paypalReady || !planId || !paypalRef.current || rendered.current) return
-    rendered.current = true
-    setStatus('ready')
+    if (!planId || !sdkReady || !paypalRef.current || rendered.current) return
 
     // @ts-expect-error PayPal SDK loaded globally
     const paypal = window.paypal
-    if (!paypal) return
+    if (!paypal) { setStatus('error'); setErrorMsg('PayPal SDK not available'); return }
+
+    rendered.current = true
+    setStatus('ready')
 
     paypal.Buttons({
       style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'subscribe', height: 48 },
@@ -71,7 +66,9 @@ export default function PaymentTestPage() {
       onError: () => { setStatus('error'); setErrorMsg('Payment failed. Please try again.') },
       onCancel: () => setStatus('cancelled'),
     }).render(paypalRef.current)
-  }, [paypalReady, planId])
+  }, [planId, sdkReady])
+
+  const isLoading = status === 'loading' && (!planId || !sdkReady)
 
   return (
     <main style={{
@@ -123,16 +120,8 @@ export default function PaymentTestPage() {
               Subscription ID: {subscriptionId}
             </p>
             <p style={{ fontSize: '.72rem', color: '#9A9590', marginTop: '.75rem' }}>
-              Cancel anytime from your PayPal account → Settings → Payments → Manage automatic payments
+              Cancel anytime: PayPal → Settings → Payments → Manage automatic payments
             </p>
-          </div>
-        ) : status === 'loading-plan' ? (
-          <div style={{ padding: '2rem', color: '#5C5C5C', fontSize: '.85rem' }}>
-            Setting up subscription plan...
-          </div>
-        ) : status === 'processing' ? (
-          <div style={{ padding: '2rem', color: '#5C5C5C', fontSize: '.85rem' }}>
-            Processing subscription...
           </div>
         ) : (
           <>
@@ -146,9 +135,13 @@ export default function PaymentTestPage() {
                 Subscription cancelled. Try again below.
               </p>
             )}
-            <div ref={paypalRef} style={{ maxWidth: 380, margin: '0 auto' }}>
-              {!paypalReady && status !== 'error' && (
-                <p style={{ padding: '1rem', color: '#9A9590', fontSize: '.8rem' }}>Loading PayPal...</p>
+
+            {/* PayPal buttons container — always visible so ref attaches */}
+            <div ref={paypalRef} style={{ maxWidth: 380, margin: '0 auto', minHeight: 50 }}>
+              {isLoading && (
+                <p style={{ padding: '1rem', color: '#9A9590', fontSize: '.8rem' }}>
+                  {!planId ? 'Loading plan...' : 'Loading PayPal...'}
+                </p>
               )}
             </div>
           </>
