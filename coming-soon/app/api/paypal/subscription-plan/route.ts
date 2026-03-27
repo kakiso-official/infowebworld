@@ -83,7 +83,7 @@ export async function GET() {
 
     // Check cached plan ID in settings table
     const cached = await queryOne<{ value: string }>(
-      "SELECT `value` FROM settings WHERE `key` = 'paypal_daily_plan_id'"
+      "SELECT `value` FROM settings WHERE `key_name` = 'paypal_daily_plan_id'"
     )
     if (cached?.value) {
       return Response.json({ planId: cached.value })
@@ -96,7 +96,7 @@ export async function GET() {
 
     // Cache for future requests
     await execute(
-      "INSERT INTO settings (`key`, `value`) VALUES ('paypal_daily_plan_id', ?) ON DUPLICATE KEY UPDATE `value` = ?",
+      "INSERT INTO settings (`key_name`, `value`) VALUES ('paypal_daily_plan_id', ?) ON DUPLICATE KEY UPDATE `value` = ?",
       [planId, planId]
     )
 
