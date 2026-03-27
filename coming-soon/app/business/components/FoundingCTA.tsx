@@ -90,7 +90,7 @@ export default function FoundingCTA() {
 
             <div className="fc-price-block">
               <span className="fc-price">$99</span>
-              <span className="fc-price-label">/year</span>
+              <span className="fc-price-label">/year Locked Forever</span>
             </div>
             <div className="fc-price-after">
               <span className="fc-strikethrough">$239/yr</span> after Pioneer pre-launch window

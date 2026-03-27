@@ -248,7 +248,7 @@ export default function PlansPage() {
               <div className="pr-col-name">Pro Plan</div>
               <div className="pr-col-desc">Flexible Membership</div>
               <div className="pr-col-price"><span>$</span>99</div>
-              <div className="pr-col-period">per year</div>
+              <div className="pr-col-period">per year Locked forever</div>
               <div className="pr-col-slash"><span className="fc-strikethrough">$239/yr</span> after</div>
               <button type="button" className="pr-col-btn pr-col-btn--secondary" onClick={() => setModalPlan('yearly')}>Get Started</button>
             </div>
