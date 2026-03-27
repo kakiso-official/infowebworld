@@ -1,6 +1,9 @@
 'use client'
 import { useState, Fragment } from 'react'
 import Link from 'next/link'
+import PaymentModal from '../business/components/PaymentModal'
+
+type PlanKey = 'lifetime' | 'yearly'
 
 /* ── Icons ── */
 const Ck = () => (
@@ -176,6 +179,7 @@ const faqs = [
 export default function PlansPage() {
   const [billingTab, setBillingTab] = useState<'lifetime' | 'yearly'>('lifetime')
   const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const [modalPlan, setModalPlan] = useState<PlanKey | null>(null)
 
   return (
     <main className="pln-page">
@@ -230,7 +234,7 @@ export default function PlansPage() {
               <div className="pr-col-price"><span>$</span>240</div>
               <div className="pr-col-period">one-time, forever</div>
               <div className="pr-col-slash"><span className="fc-strikethrough">$999</span> after</div>
-              <Link href="/business" className="pr-col-btn pr-col-btn--primary">Claim Lifetime Spot</Link>
+              <button type="button" className="pr-col-btn pr-col-btn--primary" onClick={() => setModalPlan('lifetime')}>Claim Lifetime Spot</button>
             </div>
             <div className={`pr-col-head pr-col-head--yr${billingTab === 'yearly' ? ' pr-col-head--active' : ''}`}>
               <div className="pr-col-name">Yearly Plan</div>
@@ -238,7 +242,7 @@ export default function PlansPage() {
               <div className="pr-col-price"><span>$</span>99</div>
               <div className="pr-col-period">per year</div>
               <div className="pr-col-slash"><span className="fc-strikethrough">$240/yr</span> after</div>
-              <Link href="/business" className="pr-col-btn pr-col-btn--secondary">Get Started</Link>
+              <button type="button" className="pr-col-btn pr-col-btn--secondary" onClick={() => setModalPlan('yearly')}>Get Started</button>
             </div>
 
             {/* Feature rows */}
@@ -305,11 +309,19 @@ export default function PlansPage() {
             member spot before prices increase.
           </p>
           <div className="pln-cta-btns">
-            <Link href="/business" className="pr-plan-btn pr-plan-btn--primary">Claim Lifetime Spot</Link>
+            <button type="button" className="pr-plan-btn pr-plan-btn--primary" onClick={() => setModalPlan('lifetime')}>Claim Lifetime Spot</button>
             <Link href="/contact" className="pr-plan-btn pr-plan-btn--secondary">Talk to Us</Link>
           </div>
         </div>
       </section>
+      {/* Payment Modal */}
+      {modalPlan && (
+        <PaymentModal
+          isOpen={!!modalPlan}
+          onClose={() => setModalPlan(null)}
+          plan={modalPlan}
+        />
+      )}
     </main>
   )
 }

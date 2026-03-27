@@ -111,8 +111,8 @@
 .pr-col-btn--secondary { color: #fff; background: var(--h-heading); }
 .pr-col-btn--secondary:hover { box-shadow: 0 4px 12px rgba(26, 26, 26, .15); }
 
-/* Button reset (pr-col-btn is now <button>) */
-button.pr-col-btn {
+/* Button reset (pr-col-btn and pr-plan-btn are now <button>) */
+button.pr-col-btn, button.pr-plan-btn {
   border: none; cursor: pointer; outline: none;
   font-family: var(--font-nunito), 'Nunito', sans-serif;
 }
