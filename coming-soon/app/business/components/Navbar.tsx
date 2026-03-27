@@ -25,11 +25,9 @@ const CsWrap = ({ children, className }: { children: React.ReactNode; className?
   </div>
 )
 
-/* ── Sub-nav item with Coming Soon tooltip ── */
-const NavItem = ({ label }: { label: string }) => (
-  <CsWrap>
-    <button type="button" className="ghd-sub-link">{label}</button>
-  </CsWrap>
+/* ── Sub-nav item as anchor link ── */
+const NavItem = ({ label, href }: { label: string; href: string }) => (
+  <a href={href} className="ghd-sub-link">{label}</a>
 )
 
 export default function Navbar() {
@@ -71,9 +69,6 @@ export default function Navbar() {
                   Log in
                 </button>
               </CsWrap>
-              <CsWrap>
-                <button type="button" className="ghd-biz">IWW for Businesses</button>
-              </CsWrap>
             </div>
 
             <button className="ghd-burger" aria-label="Menu" onClick={open}>
@@ -85,10 +80,10 @@ export default function Navbar() {
         {/* ══ Row 2: Categories | Write a Review | Compare | Deals | News | Get Listed ══ */}
         <div className="ghd-sub">
           <div className="container ghd-sub-inner">
-            <NavItem label="Categories" />
-            <NavItem label="Write a Review" />
-            <NavItem label="Compare" />
-            <NavItem label="News" />
+            <NavItem label="Why List with Us!" href="#benefits" />
+            <NavItem label="Pre Launch Plan" href="#founding" />
+            <NavItem label="Features & Benefits" href="#pricing" />
+            <NavItem label="Compare" href="#compare" />
             <Link href="/business" className="ghd-sub-cta">
               Get Listed
               <svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
@@ -110,14 +105,13 @@ export default function Navbar() {
         </div>
 
         <div className="ghd-drawer-body">
-          <div className="ghd-drawer-link">Search<span className="ghd-cs-badge">Coming Soon</span></div>
-          <div className="ghd-drawer-link">Categories<span className="ghd-cs-badge">Coming Soon</span></div>
-          <div className="ghd-drawer-link">Write a Review<span className="ghd-cs-badge">Coming Soon</span></div>
-          <div className="ghd-drawer-link">Compare<span className="ghd-cs-badge">Coming Soon</span></div>
-          <div className="ghd-drawer-link">News<span className="ghd-cs-badge">Coming Soon</span></div>
+          <a href="#benefits" className="ghd-drawer-link" onClick={close}>Why List with Us!</a>
+          <a href="#founding" className="ghd-drawer-link" onClick={close}>Pre Launch Plan</a>
+          <a href="#pricing" className="ghd-drawer-link" onClick={close}>Features & Benefits</a>
+          <a href="#compare" className="ghd-drawer-link" onClick={close}>Compare</a>
           <div className="ghd-drawer-sep" />
+          <div className="ghd-drawer-link">Search<span className="ghd-cs-badge">Coming Soon</span></div>
           <div className="ghd-drawer-link">Log in<span className="ghd-cs-badge">Coming Soon</span></div>
-          <div className="ghd-drawer-link">iWW for Business<span className="ghd-cs-badge">Coming Soon</span></div>
         </div>
 
         <div className="ghd-drawer-foot">

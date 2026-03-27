@@ -15,7 +15,7 @@ export default function FoundingCTA() {
   const markerPct = (cfg.pioneerJoined / cfg.pioneerTotal) * 100
 
   return (
-    <section className="fc-section">
+    <section className="fc-section" id="founding">
       <div className="container">
         {/* Section header */}
         <div className="fc-header">
