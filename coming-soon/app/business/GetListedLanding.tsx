@@ -11,6 +11,7 @@ import HowItWorks from './components/HowItWorks'
 import Comparison from './components/Comparison'
 import FinalCTA from './components/FinalCTA'
 import ListingForm from './ListingForm'
+import ScrollToTop from './components/ScrollToTop'
 
 export default function GetListedLanding() {
   const [formOpen, setFormOpen] = useState(false)
@@ -95,6 +96,7 @@ export default function GetListedLanding() {
       {/* <HowItWorks /> */}
       <Comparison />
       <FinalCTA />
+      <ScrollToTop />
 
       {/* ── Backdrop overlay ── */}
       <div

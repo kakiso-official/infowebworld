@@ -92,6 +92,7 @@ input, textarea { font-family: inherit }
 @import "./styles/business-cta.css";
 @import "./styles/founding-cta.css";
 @import "./styles/payment-modal.css";
+@import "./styles/scroll-to-top.css";
 @import "./styles/stats.css";
 @import "./styles/tiers.css";
 @import "./styles/pricing.css";
