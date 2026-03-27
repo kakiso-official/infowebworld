@@ -122,7 +122,7 @@ export default function FoundingCTA() {
 
             <div className="fc-guarantee">
               <svg viewBox="0 0 24 24" className="fc-guarantee-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="M9 12l2 2 4-4" /></svg>
-              <span>6 Months — <strong>Money Back Guarantee</strong></span>
+              <span>Lead , CTA's — <strong>Less , Renewal is Free !!</strong></span>
             </div>
           </div>
         </div>
