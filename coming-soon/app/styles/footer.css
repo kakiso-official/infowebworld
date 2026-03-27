@@ -58,6 +58,19 @@
 }
 .ft-social a:hover svg { stroke: var(--h-accent) }
 
+/* ── Product Hunt badge ── */
+.ft-ph {
+  display: inline-block;
+  margin-top: 1.25rem;
+  transition: opacity .2s, transform .2s;
+}
+.ft-ph:hover { opacity: .85; transform: translateY(-2px); }
+.ft-ph-img {
+  width: clamp(180px, 40vw, 250px);
+  height: auto;
+  border-radius: 10px;
+}
+
 /* ── Nav columns ── */
 .ft-columns {
   display: grid;
