@@ -1,6 +1,9 @@
 'use client'
-import { Fragment } from 'react'
-import Link from 'next/link'
+import { useState, useEffect, useRef, Fragment } from 'react'
+
+const PAYPAL_CLIENT_ID = 'ARGXO-MMxMj9R4KyB4dxQNN2X5Nkb4d1ziv-9srFlUN5g-SnoJ18Dp5ER_nj9V0aFZihZf533bfGIPTd'
+
+type PlanKey = 'lifetime' | 'yearly'
 
 const Ck = () => (
   <svg viewBox="0 0 24 24" className="pr-ck"><path d="M20 6 9 17l-5-5" /></svg>
@@ -80,6 +83,77 @@ const previewRows = sections[0].rows.slice(0, 10)
 const hiddenCount = totalFeatures - 10
 
 export default function Pricing() {
+  const [activePlan, setActivePlan] = useState<PlanKey | null>(null)
+  const [paypalReady, setPaypalReady] = useState(false)
+  const [paying, setPaying] = useState(false)
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState<{ plan: PlanKey; orderId: string } | null>(null)
+
+  const lifetimeRef = useRef<HTMLDivElement>(null)
+  const yearlyRef = useRef<HTMLDivElement>(null)
+  const renderedRef = useRef<string>('')
+
+  /* ── Load PayPal SDK ── */
+  useEffect(() => {
+    if (document.getElementById('paypal-sdk')) { setPaypalReady(true); return }
+    const s = document.createElement('script')
+    s.id = 'paypal-sdk'
+    s.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=USD`
+    s.onload = () => setPaypalReady(true)
+    s.onerror = () => setError('Failed to load payment system.')
+    document.head.appendChild(s)
+  }, [])
+
+  /* ── Render PayPal buttons ── */
+  useEffect(() => {
+    if (!activePlan || !paypalReady) return
+    const container = activePlan === 'lifetime' ? lifetimeRef.current : yearlyRef.current
+    if (!container) return
+    if (renderedRef.current === activePlan) return
+
+    // @ts-expect-error PayPal SDK loaded globally
+    const paypal = window.paypal
+    if (!paypal) return
+
+    container.innerHTML = ''
+    renderedRef.current = activePlan
+
+    const isLifetime = activePlan === 'lifetime'
+    const amount = isLifetime ? '240.00' : '99.00'
+    const desc = isLifetime
+      ? 'InfoWebWorld — Elite Lifetime Founding Plan'
+      : 'InfoWebWorld — Yearly Business Plan'
+
+    paypal.Buttons({
+      style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay', height: 40 },
+      createOrder: (_d: unknown, actions: { order: { create: (o: unknown) => Promise<string> } }) =>
+        actions.order.create({
+          purchase_units: [{ description: desc, amount: { currency_code: 'USD', value: amount } }],
+        }),
+      onApprove: async (_d: { orderID: string }, actions: { order: { capture: () => Promise<{ id: string }> } }) => {
+        setPaying(true)
+        setError('')
+        try {
+          const details = await actions.order.capture()
+          setSuccess({ plan: activePlan, orderId: details.id })
+          setActivePlan(null)
+          renderedRef.current = ''
+        } catch {
+          setError('Payment capture failed. Please try again.')
+        }
+        setPaying(false)
+      },
+      onError: () => setError('Payment failed. Please try again.'),
+      onCancel: () => setError('Payment was cancelled.'),
+    }).render(container)
+  }, [activePlan, paypalReady])
+
+  const togglePlan = (plan: PlanKey) => {
+    setError('')
+    setActivePlan(prev => prev === plan ? null : plan)
+    renderedRef.current = ''
+  }
+
   return (
     <section className="pr-section" id="pricing">
       <div className="container">
@@ -99,7 +173,29 @@ export default function Pricing() {
             <div className="pr-col-price"><span>$</span>240</div>
             <div className="pr-col-period">one-time, forever</div>
             <div className="pr-col-slash"><span className="fc-strikethrough">$999</span> after</div>
-            <Link href="/business" className="pr-col-btn pr-col-btn--primary">Claim Lifetime Spot</Link>
+
+            {success?.plan === 'lifetime' ? (
+              <div className="pr-paid-badge">
+                <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>
+                Paid
+              </div>
+            ) : (
+              <button type="button" className="pr-col-btn pr-col-btn--primary" onClick={() => togglePlan('lifetime')}>
+                Claim Lifetime Spot
+              </button>
+            )}
+
+            {activePlan === 'lifetime' && (
+              <div className="pr-paypal">
+                {paying ? (
+                  <div className="pr-paypal-msg">Processing...</div>
+                ) : (
+                  <div ref={lifetimeRef}>
+                    {!paypalReady && <div className="pr-paypal-msg">Loading...</div>}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="pr-col-head pr-col-head--yr">
@@ -108,7 +204,29 @@ export default function Pricing() {
             <div className="pr-col-price"><span>$</span>99</div>
             <div className="pr-col-period">per year</div>
             <div className="pr-col-slash"><span className="fc-strikethrough">$240/yr</span> after</div>
-            <Link href="/business" className="pr-col-btn pr-col-btn--secondary">Get Started</Link>
+
+            {success?.plan === 'yearly' ? (
+              <div className="pr-paid-badge pr-paid-badge--yr">
+                <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>
+                Paid
+              </div>
+            ) : (
+              <button type="button" className="pr-col-btn pr-col-btn--secondary" onClick={() => togglePlan('yearly')}>
+                Get Started
+              </button>
+            )}
+
+            {activePlan === 'yearly' && (
+              <div className="pr-paypal">
+                {paying ? (
+                  <div className="pr-paypal-msg">Processing...</div>
+                ) : (
+                  <div ref={yearlyRef}>
+                    {!paypalReady && <div className="pr-paypal-msg">Loading...</div>}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* ── Feature rows — first 10 only ── */}
@@ -125,16 +243,28 @@ export default function Pricing() {
           ))}
         </div>
 
+        {/* Error message */}
+        {error && <p className="pr-pay-error">{error}</p>}
+
+        {/* Success banner */}
+        {success && (
+          <div className="pr-pay-success">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#16A34A" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+            <span>Payment confirmed — <strong>{success.plan === 'lifetime' ? 'Lifetime ($240)' : 'Yearly ($99/yr)'}</strong></span>
+            <span className="pr-pay-order">Order: {success.orderId}</span>
+          </div>
+        )}
+
         {/* ── Fade + CTA ── */}
         <div className="pr-preview-fade">
           <div className="pr-preview-fade-inner">
             <span className="pr-preview-count">
               +{hiddenCount} more features across {sections.length} categories
             </span>
-            <Link href="/plans" className="pr-view-all-link">
+            <a href="/plans" className="pr-view-all-link">
               View All {totalFeatures}+ Features
               <svg viewBox="0 0 24 24" className="pr-view-all-arrow"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
-            </Link>
+            </a>
           </div>
         </div>
       </div>

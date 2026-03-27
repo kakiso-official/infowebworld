@@ -111,6 +111,55 @@
 .pr-col-btn--secondary { color: #fff; background: var(--h-heading); }
 .pr-col-btn--secondary:hover { box-shadow: 0 4px 12px rgba(26, 26, 26, .15); }
 
+/* Button reset (pr-col-btn is now <button>) */
+button.pr-col-btn {
+  border: none; cursor: pointer; outline: none;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+}
+
+/* ── PayPal inline in card header ── */
+.pr-paypal {
+  width: 100%;
+  margin-top: clamp(.3rem, .6vw, .5rem);
+}
+.pr-paypal-msg {
+  text-align: center; padding: .5rem;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .65rem; color: var(--h-muted);
+}
+
+/* ── Paid badge (replaces CTA) ── */
+.pr-paid-badge {
+  display: inline-flex; align-items: center; gap: .3rem;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.55rem, .85vw, .68rem); font-weight: 800;
+  color: #16A34A; background: #ECFDF5;
+  padding: .35rem 1rem; border-radius: 999px;
+  border: 1.5px solid #16A34A;
+}
+.pr-paid-badge svg {
+  width: 14px; height: 14px; fill: none; stroke: #16A34A;
+  stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* ── Error / success below grid ── */
+.pr-pay-error {
+  text-align: center; max-width: 860px; margin: .75rem auto 0;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .75rem; font-weight: 600; color: #C0392B;
+}
+.pr-pay-success {
+  display: flex; align-items: center; justify-content: center;
+  gap: .45rem; flex-wrap: wrap;
+  max-width: 860px; margin: .75rem auto 0;
+  padding: .6rem 1.25rem; border-radius: 999px;
+  background: #ECFDF5; border: 1.5px solid rgba(22, 163, 74, .3);
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.72rem, 1vw, .82rem); color: #15803D;
+}
+.pr-pay-success strong { font-weight: 800; color: #166534; }
+.pr-pay-order { font-size: .65rem; opacity: .6; }
+
 /* ── Category header row ── */
 .pr-col-cat {
   font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
