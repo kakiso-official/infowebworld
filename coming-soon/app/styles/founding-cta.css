@@ -171,7 +171,7 @@
   content: '';
   position: absolute;
   left: -2px; right: -2px;
-  top: 70%; height: 2.5px;
+  top: 78%; height: 2.5px;
   background: #C0392B;
   transform: rotate(-12deg);
   border-radius: 2px;
@@ -183,7 +183,7 @@
   20%, 80%  { transform: rotate(-12deg) scaleX(1); }
 }
 
-.fc-card--yearly .fc-strikethrough::after { top: 70%; }
+.fc-card--yearly .fc-strikethrough::after { top: 78%; }
 
 /* ── Value pills ── */
 .fc-pills {
@@ -286,14 +286,14 @@ button.fc-btn {
 
 /* Yearly CTA — outlined style */
 .fc-btn--yearly {
-  color: var(--h-heading);
+  color: #fff;
   background: #C0392B;
-  border: 1.5px solid var(--h-heading);
+  border: 1.5px solid #C0392B;
 }
 .fc-btn--yearly::after {
-  background: linear-gradient(90deg, transparent, rgba(0,0,0,.04), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
 }
-.fc-btn--yearly .fc-btn-arrow { stroke: var(--h-heading); }
+.fc-btn--yearly .fc-btn-arrow { stroke: #fff; }
 .fc-btn--yearly:hover {
   color: #fff;
   background: var(--h-heading);
