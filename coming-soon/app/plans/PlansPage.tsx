@@ -185,6 +185,13 @@ export default function PlansPage() {
   return (
     <main className="pln-page">
       {/* ════════════════════════════════════════════
+          FOUNDING CTA — plan cards (first section)
+         ════════════════════════════════════════════ */}
+      <div className="pln-founding-wrap">
+        <FoundingCTA />
+      </div>
+
+      {/* ════════════════════════════════════════════
           HERO
          ════════════════════════════════════════════ */}
       <section className="pln-hero">
@@ -217,11 +224,6 @@ export default function PlansPage() {
           </div>
         </div>
       </section>
-
-      {/* ════════════════════════════════════════════
-          FOUNDING CTA — plan cards
-         ════════════════════════════════════════════ */}
-      <FoundingCTA />
 
       {/* ════════════════════════════════════════════
           FEATURE COMPARISON — grid layout

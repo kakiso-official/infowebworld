@@ -8,6 +8,11 @@
   background: #fff;
 }
 
+/* ── FoundingCTA wrapper — distinct bg only on /plans ── */
+.pln-founding-wrap .fc-section {
+  background: #fff;
+}
+
 /* ============================================================
    HERO
    ============================================================ */
