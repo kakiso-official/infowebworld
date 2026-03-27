@@ -101,7 +101,7 @@ export default function Pricing() {
             <div className="pr-col-badge">Most Popular</div>
             <div className="pr-col-name">Lifetime Plan</div>
             <div className="pr-col-desc">Elite Founding Business</div>
-            <div className="pr-col-price"><span>$</span>240</div>
+            <div className="pr-col-price"><span>$</span>239</div>
             <div className="pr-col-period">one-time, forever</div>
             <div className="pr-col-slash"><span className="fc-strikethrough">$999</span> after</div>
             <button type="button" className="pr-col-btn pr-col-btn--primary" onClick={() => setModalPlan('lifetime')}>Claim Lifetime Spot</button>
@@ -112,7 +112,7 @@ export default function Pricing() {
             <div className="pr-col-desc">Flexible Membership</div>
             <div className="pr-col-price"><span>$</span>99</div>
             <div className="pr-col-period">per year</div>
-            <div className="pr-col-slash"><span className="fc-strikethrough">$240/yr</span> after</div>
+            <div className="pr-col-slash"><span className="fc-strikethrough">$239/yr</span> after</div>
             <button type="button" className="pr-col-btn pr-col-btn--secondary" onClick={() => setModalPlan('yearly')}>Get Started</button>
           </div>
 

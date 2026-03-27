@@ -604,7 +604,7 @@ export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
                 <div className="cd-cta-buttons">
                   <Link href={`/business?category=${encodeURIComponent(c.name)}`} className="cd-btn-primary" style={{ background: color, borderColor: color, boxShadow: `0 6px 24px ${color}30` }}>
                     <I d={ic.plus} size={16} color="#fff" sw={2.5} />
-                    Get Listed — $240 Lifetime
+                    Get Listed — $239 Lifetime
                   </Link>
                   <Link href="/categories" className="cd-btn-secondary">
                     <I d={ic.grid} size={16} color="var(--h-muted)" sw={2} />

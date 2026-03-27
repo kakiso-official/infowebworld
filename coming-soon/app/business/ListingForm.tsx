@@ -32,7 +32,7 @@ const tierPeriods = ['/ month', '/ year', 'one-time', 'lifetime']
 const plans = [
   {
     id: 'founding', name: 'Founding Company', tag: 'First 200 Only', tagColor: '#E8553D',
-    price: 240, period: 'one-time', periodLabel: 'Lifetime -- pay once, listed forever',
+    price: 239, period: 'one-time', periodLabel: 'Lifetime -- pay once, listed forever',
     locked: false, lockNote: '',
     features: ['Permanent lifetime listing', 'Founding Member badge', 'Dofollow backlink (DA 72+)', 'Priority placement in search', 'Verified business profile', 'Analytics dashboard', 'Unlimited photos & media', 'Lead generation tools'],
   },
@@ -44,7 +44,7 @@ const plans = [
   },
   {
     id: 'standard', name: 'Standard', tag: 'Post-Launch', tagColor: '#2FAE6A',
-    price: 240, period: '/year', periodLabel: 'Regular launch pricing',
+    price: 239, period: '/year', periodLabel: 'Regular launch pricing',
     locked: true, lockNote: 'Unlocks after Early Adopter tier fills',
     features: ['Full business listing', 'Dofollow backlink (DA 72+)', 'Verified profile badge', 'Review management', 'Analytics dashboard', 'Lead generation tools'],
   },

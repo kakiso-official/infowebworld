@@ -161,7 +161,7 @@ function DetailModal({ sub, onClose, onStatusChange, onFaqSave }: { sub: RealSub
 
           {/* Plan + Meta Section */}
           <div style={{ fontSize: '.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--h-accent)', marginBottom: '.25rem', marginTop: '1.25rem' }}>Plan & Status</div>
-          <Field label="Selected Plan" value={sub.plan === 'founding' ? 'Founding Company — $240 Lifetime' : sub.plan === 'early-adopter' ? 'Early Adopter — $99/yr' : 'Standard — $240/yr'} />
+          <Field label="Selected Plan" value={sub.plan === 'founding' ? 'Founding Company — $239 Lifetime' : sub.plan === 'early-adopter' ? 'Early Adopter — $99/yr' : 'Standard — $239/yr'} />
           <Field label="Current Status" value={sub.status} />
           <Field label="Submitted At" value={new Date(sub.submittedAt).toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' })} />
           {sub.approvedAt && <Field label="Approved At" value={new Date(sub.approvedAt).toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' })} />}

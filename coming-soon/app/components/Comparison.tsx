@@ -21,7 +21,7 @@ const features: { name: string; iww: V; g2: V; ph: V; ai: V }[] = [
   { name: 'Multi-Country (12+)', iww: true, g2: 'Limited', ph: true, ai: false },
   { name: 'Daily News Feed', iww: true, g2: false, ph: false, ai: false },
   { name: 'Analytics Dashboard', iww: true, g2: true, ph: false, ai: 'Basic' },
-  { name: 'Lifetime Plan ($240)', iww: true, g2: false, ph: false, ai: 'Varies' },
+  { name: 'Lifetime Plan ($239)', iww: true, g2: false, ph: false, ai: 'Varies' },
   { name: 'Founding Member Perks', iww: true, g2: false, ph: false, ai: false },
 ]
 

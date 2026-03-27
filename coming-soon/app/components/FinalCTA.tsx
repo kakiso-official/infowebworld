@@ -5,7 +5,7 @@ import { fetchConfig } from '../config/site-config'
 import { addToWaitlist } from '../iww-hq/data/waitlist-storage'
 
 export default function FinalCTA() {
-  const [cfg, setCfg] = useState({ pioneerJoined: 15, pioneerTotal: 200, foundingPrice: 240 })
+  const [cfg, setCfg] = useState({ pioneerJoined: 15, pioneerTotal: 200, foundingPrice: 239 })
   useEffect(() => { fetchConfig().then(c => setCfg({ pioneerJoined: c.pioneerJoined, pioneerTotal: c.pioneerTotal, foundingPrice: c.foundingPrice })) }, [])
   const JOINED = cfg.pioneerJoined, TOTAL = cfg.pioneerTotal, LEFT = TOTAL - JOINED
   const PCT = Math.round((JOINED / TOTAL) * 100)
@@ -38,7 +38,7 @@ export default function FinalCTA() {
               Only <em>{LEFT} Pioneer Spots</em> Remain
             </h2>
             <p className="fcta-desc">
-              Lock in $240 lifetime access before the price jumps to $99/yr. Join now and never pay again.
+              Lock in $239 lifetime access before the price jumps to $99/yr. Join now and never pay again.
             </p>
 
             <form className="fcta-form" onSubmit={handleFctaJoin}>

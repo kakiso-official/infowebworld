@@ -3,10 +3,10 @@ import { useState, useEffect } from 'react'
 import { fetchConfig } from '../config/site-config'
 
 const tiers = [
-  { price: '$240', sub: 'lifetime', label: 'first 200', active: true },
+  { price: '$239', sub: 'lifetime', label: 'first 200', active: true },
   { price: '$99', sub: '/yr', label: 'first 1k', active: false },
   { price: '$140', sub: '/yr', label: 'first 2k', active: false },
-  { price: '$240', sub: '/yr', label: 'first 5k', active: false },
+  { price: '$239', sub: '/yr', label: 'first 5k', active: false },
 ]
 
 export default function EarlyBirdTiers() {
@@ -52,7 +52,7 @@ export default function EarlyBirdTiers() {
         </div>
 
         <p className="tier-note">
-          You&apos;re in the <strong>Pioneer</strong> window — lock in $240 lifetime before the price jumps to $99/yr.
+          You&apos;re in the <strong>Pioneer</strong> window — lock in $239 lifetime before the price jumps to $99/yr.
         </p>
       </div>
     </section>

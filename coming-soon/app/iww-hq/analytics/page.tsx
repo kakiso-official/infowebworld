@@ -543,9 +543,9 @@ export default function Analytics() {
           <Heading sub="Which pricing tier are businesses choosing" icon="diamond">Submissions by Plan</Heading>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
             {[
-              { label: 'Founding', slug: 'founding', color: '#E8553D', icon: 'award', desc: 'Lifetime  ·  $240' },
+              { label: 'Founding', slug: 'founding', color: '#E8553D', icon: 'award', desc: 'Lifetime  ·  $239' },
               { label: 'Early Adopter', slug: 'early-adopter', color: '#4361EE', icon: 'rocket', desc: 'Yearly  ·  $99' },
-              { label: 'Standard', slug: 'standard', color: '#2FAE6A', icon: 'fileText', desc: 'Yearly  ·  $240' },
+              { label: 'Standard', slug: 'standard', color: '#2FAE6A', icon: 'fileText', desc: 'Yearly  ·  $239' },
             ].map(p => {
               const count = d.byPlan[p.slug] || 0
               const pct = s.totalSubmissions > 0 ? ((count / s.totalSubmissions) * 100).toFixed(0) : '0'

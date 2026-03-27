@@ -10,7 +10,7 @@ const plans = [
   {
     name: 'Founding Company',
     badge: 'First 200 Only',
-    price: 240,
+    price: 239,
     period: 'one-time',
     note: 'Lifetime listing — pay once, listed forever',
     save: 'Save $720+ over 4 years',
@@ -53,7 +53,7 @@ const plans = [
   {
     name: 'Standard',
     badge: 'Post-Launch',
-    price: 240,
+    price: 239,
     period: '/year',
     note: 'Regular launch pricing',
     save: '',

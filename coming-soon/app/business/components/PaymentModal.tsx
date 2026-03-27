@@ -68,10 +68,10 @@ export default function PaymentModal({ isOpen, onClose, plan }: Props) {
     paypalRef.current.innerHTML = ''
     renderedRef.current = plan
 
-    const amount = isLifetime ? '240.00' : '99.00'
+    const amount = isLifetime ? '239.00' : '99.00'
     const desc = isLifetime
       ? 'InfoWebWorld — Elite Lifetime Founding Plan'
-      : 'InfoWebWorld — Yearly Business Plan'
+      : 'InfoWebWorld — Early Adopter Plan'
 
     paypal.Buttons({
       style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay', height: 48 },
@@ -126,7 +126,7 @@ export default function PaymentModal({ isOpen, onClose, plan }: Props) {
             </div>
             <h3 className="pm-success-title">Payment Successful!</h3>
             <p className="pm-success-desc">
-              Your <strong>{isLifetime ? 'Lifetime ($240)' : 'Yearly ($99/yr)'}</strong> plan has been confirmed.
+              Your <strong>{isLifetime ? 'Lifetime ($239)' : 'Yearly ($99/yr)'}</strong> plan has been confirmed.
             </p>
             <p className="pm-success-order">Order ID: {success}</p>
             <button type="button" className="pm-submit-btn" onClick={handleSubmitListing}>
@@ -149,11 +149,11 @@ export default function PaymentModal({ isOpen, onClose, plan }: Props) {
 
             {/* Price */}
             <div className="pm-price-row">
-              <span className="pm-price">${isLifetime ? '240' : '99'}</span>
+              <span className="pm-price">${isLifetime ? '239' : '99'}</span>
               <span className="pm-period">{isLifetime ? 'one-time' : '/year'}</span>
             </div>
             <div className="pm-strike">
-              <span className="pm-strike-price">{isLifetime ? '$999' : '$240/yr'}</span> after Pioneer window
+              <span className="pm-strike-price">{isLifetime ? '$999' : '$239/yr'}</span> after Pioneer window
             </div>
 
             <div className="pm-divider" />

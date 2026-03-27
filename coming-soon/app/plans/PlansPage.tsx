@@ -156,7 +156,7 @@ const sections = [
 const faqs = [
   {
     q: 'What is the difference between the Lifetime and Yearly plans?',
-    a: 'The Lifetime plan is a one-time payment of $240 that gives you permanent access to all features forever — no renewals, no price increases. The Yearly plan costs $99 per year with the same feature set, renewed annually. Both plans include every feature in our comparison table.',
+    a: 'The Lifetime plan is a one-time payment of $239 that gives you permanent access to all features forever — no renewals, no price increases. The Yearly plan costs $99 per year with the same feature set, renewed annually. Both plans include every feature in our comparison table.',
   },
   {
     q: 'Can I upgrade from Yearly to Lifetime later?',
@@ -231,7 +231,7 @@ export default function PlansPage() {
               <div className="pr-col-badge">Most Popular</div>
               <div className="pr-col-name">Lifetime Plan</div>
               <div className="pr-col-desc">Elite Founding Business</div>
-              <div className="pr-col-price"><span>$</span>240</div>
+              <div className="pr-col-price"><span>$</span>239</div>
               <div className="pr-col-period">one-time, forever</div>
               <div className="pr-col-slash"><span className="fc-strikethrough">$999</span> after</div>
               <button type="button" className="pr-col-btn pr-col-btn--primary" onClick={() => setModalPlan('lifetime')}>Claim Lifetime Spot</button>
@@ -241,7 +241,7 @@ export default function PlansPage() {
               <div className="pr-col-desc">Flexible Membership</div>
               <div className="pr-col-price"><span>$</span>99</div>
               <div className="pr-col-period">per year</div>
-              <div className="pr-col-slash"><span className="fc-strikethrough">$240/yr</span> after</div>
+              <div className="pr-col-slash"><span className="fc-strikethrough">$239/yr</span> after</div>
               <button type="button" className="pr-col-btn pr-col-btn--secondary" onClick={() => setModalPlan('yearly')}>Get Started</button>
             </div>
 
