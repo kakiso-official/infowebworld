@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 
-const PAYPAL_CLIENT_ID = 'ARGXO-MMxMj9R4KyB4dxQNN2X5Nkb4d1ziv-9srFlUN5g-SnoJ18Dp5ER_nj9V0aFZihZf533bfGIPTd'
+const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || 'AcVEK9s17rxgOj1JTpZ0Cp94PIA_ghK8nGnPcWXdL7wpH-cfdw5-5jETY84-Tib3QKCZbzPU1xYLH7Fx'
 
 export default function PaymentTestPage() {
   const [paypalReady, setPaypalReady] = useState(false)
@@ -67,18 +67,18 @@ export default function PaymentTestPage() {
       }}>
         <div style={{
           display: 'inline-flex', padding: '.3rem .85rem', borderRadius: 999,
-          background: '#FEF3C7', border: '1px solid #F59E0B', color: '#92400E',
+          background: '#ECFDF5', border: '1px solid #16A34A', color: '#166534',
           fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '.06em',
           marginBottom: '1rem',
         }}>
-          Sandbox Test
+          Live Payment
         </div>
 
         <h1 style={{ fontSize: 'clamp(1.2rem, 4vw, 1.6rem)', fontWeight: 800, color: '#1A1A1A', marginBottom: '.5rem' }}>
           Payment Test
         </h1>
         <p style={{ fontSize: '.9rem', color: '#5C5C5C', marginBottom: '1.5rem' }}>
-          Pay <strong style={{ color: '#E8553D', fontSize: '1.1em' }}>$0.10</strong> via PayPal Sandbox
+          Pay <strong style={{ color: '#E8553D', fontSize: '1.1em' }}>$0.10</strong> via PayPal
         </p>
 
         {status === 'success' ? (
@@ -137,7 +137,7 @@ export default function PaymentTestPage() {
         )}
 
         <p style={{ marginTop: '1.25rem', fontSize: '.65rem', color: '#9A9590' }}>
-          This is a sandbox test. No real money is charged.
+          Secure payment powered by PayPal.
         </p>
       </div>
     </main>

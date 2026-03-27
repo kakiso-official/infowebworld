@@ -607,7 +607,7 @@ export default function ListingForm() {
      PAYPAL INTEGRATION (Sandbox)
      ══════════════════════════════════════════════════════════════ */
   // PayPal Sandbox Client ID
-  const PAYPAL_CLIENT_ID = 'ARGXO-MMxMj9R4KyB4dxQNN2X5Nkb4d1ziv-9srFlUN5g-SnoJ18Dp5ER_nj9V0aFZihZf533bfGIPTd'
+  const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || 'AcVEK9s17rxgOj1JTpZ0Cp94PIA_ghK8nGnPcWXdL7wpH-cfdw5-5jETY84-Tib3QKCZbzPU1xYLH7Fx'
 
   // Load PayPal SDK once
   useEffect(() => {
