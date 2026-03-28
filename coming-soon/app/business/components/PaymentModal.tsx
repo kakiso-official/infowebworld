@@ -169,7 +169,7 @@ export default function PaymentModal({ isOpen, onClose, plan }: Props) {
 
             {/* Plan heading */}
             <h3 className="pm-title">
-              {isLifetime ? 'Elite Lifetime Founding Plan' : 'Yearly Business Membership'}
+              {isLifetime ? 'Elite Lifetime Founding Business Plan' : 'Early Adopter Plan'}
             </h3>
 
             {/* Price */}
@@ -216,7 +216,7 @@ export default function PaymentModal({ isOpen, onClose, plan }: Props) {
             {/* Guarantee */}
             <div className="pm-guarantee">
               <svg viewBox="0 0 24 24" className="pm-shield"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="M9 12l2 2 4-4" /></svg>
-              <span>6 Months — <strong>Money Back Guarantee</strong></span>
+              <span>{isLifetime ? '6 Months — ' : 'Lead , CTA\'s — '}<strong>{isLifetime ? 'Money Back Guarantee' : 'Less , Renewal is Free'}</strong></span>
             </div>
 
             <p className="pm-secure">
