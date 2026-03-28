@@ -40,7 +40,7 @@ InfoWebWorld is the Global Growth Platform to explore / search best trusted busi
             </div>
             <div className="ft-col">
               <h4 className="ft-col-title">iWW for Business</h4>
-                             <a href="#pricing" className="ft-col-link">for Business</a>
+                             <a href="#" className="ft-col-link">for Business</a>
 
               <Link href="/business" className="ft-col-link">Get Listed</Link>
                <a href="#pricing" className="ft-col-link">Pricing</a>
