@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import nodemailer from 'nodemailer'
+import { Resend } from 'resend'
 import { execute } from '@/lib/db'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { getClientIp } from '@/lib/tracking'
@@ -18,13 +18,12 @@ export async function POST(request: NextRequest) {
 
     // Honeypot check — bots fill this hidden field, humans don't
     if (body.company) {
-      // Silently accept so bots think it worked
       return Response.json({ ok: true })
     }
 
     // Timestamp check — reject if submitted within 2 seconds of page load
     if (body._ts && Date.now() - Number(body._ts) < 2000) {
-      return Response.json({ ok: true }) // silent reject
+      return Response.json({ ok: true })
     }
 
     // Turnstile captcha verification (if configured)
@@ -66,25 +65,15 @@ export async function POST(request: NextRequest) {
       [name.trim(), email.trim().toLowerCase(), subject.trim(), message.trim(), ip]
     )
 
-    // Send email via cPanel SMTP
-    if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+    // Send email via Resend API
+    if (process.env.RESEND_API_KEY) {
       try {
-        const transporter = nodemailer.createTransport({
-          host: process.env.SMTP_HOST,
-          port: Number(process.env.SMTP_PORT || 465),
-          secure: process.env.SMTP_PORT !== '587',
-          auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
-          },
-        })
-
-        await transporter.sendMail({
-          from: `"InfoWebWorld Contact" <${process.env.SMTP_USER}>`,
+        const resend = new Resend(process.env.RESEND_API_KEY)
+        await resend.emails.send({
+          from: 'InfoWebWorld Contact <onboarding@resend.dev>',
           to: 'infowebworld.com@gmail.com',
           replyTo: email.trim().toLowerCase(),
           subject: `[iWW Contact] ${subject.trim()} — from ${name.trim()}`,
-          text: `Name: ${name.trim()}\nEmail: ${email.trim()}\nSubject: ${subject.trim()}\n\nMessage:\n${message.trim()}`,
           html: `
             <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
               <h2 style="color:#E8553D;margin-bottom:4px">New Contact Message</h2>
