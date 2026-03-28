@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { Resend } from 'resend'
+import nodemailer from 'nodemailer'
 import { execute } from '@/lib/db'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { getClientIp } from '@/lib/tracking'
@@ -65,33 +65,46 @@ export async function POST(request: NextRequest) {
       [name.trim(), email.trim().toLowerCase(), subject.trim(), message.trim(), ip]
     )
 
-    // Send email via Resend API
-    if (process.env.RESEND_API_KEY) {
-      try {
-        const resend = new Resend(process.env.RESEND_API_KEY)
-        await resend.emails.send({
-          from: 'InfoWebWorld Contact <onboarding@resend.dev>',
-          to: 'infowebworld.com@gmail.com',
-          replyTo: email.trim().toLowerCase(),
-          subject: `[iWW Contact] ${subject.trim()} — from ${name.trim()}`,
-          html: `
-            <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
-              <h2 style="color:#E8553D;margin-bottom:4px">New Contact Message</h2>
-              <hr style="border:none;border-top:2px solid #f0f0f0;margin:12px 0">
-              <p><strong>Name:</strong> ${name.trim()}</p>
-              <p><strong>Email:</strong> <a href="mailto:${email.trim()}">${email.trim()}</a></p>
-              <p><strong>Subject:</strong> ${subject.trim()}</p>
-              <hr style="border:none;border-top:1px solid #f0f0f0;margin:12px 0">
-              <p><strong>Message:</strong></p>
-              <p style="white-space:pre-wrap;color:#333">${message.trim()}</p>
-              <hr style="border:none;border-top:2px solid #f0f0f0;margin:16px 0">
-              <p style="font-size:12px;color:#999">Sent from infowebworld.com/contact • IP: ${ip}</p>
-            </div>
-          `,
-        })
-      } catch (emailErr) {
-        console.error('Email send failed (message still saved to DB):', emailErr)
-      }
+    // Send email via Gmail SMTP
+    const smtpUser = process.env.SMTP_USER
+    const smtpPass = process.env.SMTP_PASS
+    if (!smtpUser || !smtpPass) {
+      console.error('SMTP credentials not configured — email not sent')
+      return Response.json({ ok: true, message: 'Message saved. Email delivery is not configured.', emailError: true }, { status: 201 })
+    }
+
+    try {
+      const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST || 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: { user: smtpUser, pass: smtpPass },
+      })
+
+      await transporter.sendMail({
+        from: `"InfoWebWorld Contact" <${smtpUser}>`,
+        to: smtpUser,
+        replyTo: email.trim().toLowerCase(),
+        subject: `[iWW Contact] ${subject.trim()} — from ${name.trim()}`,
+        html: `
+          <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
+            <h2 style="color:#E8553D;margin-bottom:4px">New Contact Message</h2>
+            <hr style="border:none;border-top:2px solid #f0f0f0;margin:12px 0">
+            <p><strong>Name:</strong> ${name.trim()}</p>
+            <p><strong>Email:</strong> <a href="mailto:${email.trim()}">${email.trim()}</a></p>
+            <p><strong>Subject:</strong> ${subject.trim()}</p>
+            <hr style="border:none;border-top:1px solid #f0f0f0;margin:12px 0">
+            <p><strong>Message:</strong></p>
+            <p style="white-space:pre-wrap;color:#333">${message.trim()}</p>
+            <hr style="border:none;border-top:2px solid #f0f0f0;margin:16px 0">
+            <p style="font-size:12px;color:#999">Sent from infowebworld.com/contact &bull; IP: ${ip}</p>
+          </div>
+        `,
+      })
+    } catch (emailErr: unknown) {
+      const errMsg = emailErr instanceof Error ? emailErr.message : String(emailErr)
+      console.error('Gmail SMTP send failed:', errMsg)
+      return Response.json({ ok: true, message: 'Message saved but email delivery failed. We\'ll review it from our dashboard.', emailError: true }, { status: 201 })
     }
 
     return Response.json({ ok: true, message: 'Message sent successfully.' }, { status: 201 })
