@@ -5,9 +5,9 @@ import { fetchConfig } from '../../config/site-config'
 import { addToWaitlist } from '../../iww-hq/data/waitlist-storage'
 
 export default function FinalCTA() {
-  const [cfg, setCfg] = useState({ pioneerJoined: 15, pioneerTotal: 200, foundingPrice: 239 })
-  useEffect(() => { fetchConfig().then(c => setCfg({ pioneerJoined: c.pioneerJoined, pioneerTotal: c.pioneerTotal, foundingPrice: c.foundingPrice })) }, [])
-  const JOINED = cfg.pioneerJoined, TOTAL = cfg.pioneerTotal, LEFT = TOTAL - JOINED
+  const [cfg, setCfg] = useState({ lifetimeSlotsTotal: 199, lifetimeSlotsClaimed: 0, foundingPrice: 239 })
+  useEffect(() => { fetchConfig().then(c => setCfg({ lifetimeSlotsTotal: c.lifetimeSlotsTotal, lifetimeSlotsClaimed: c.lifetimeSlotsClaimed, foundingPrice: c.foundingPrice })) }, [])
+  const JOINED = cfg.lifetimeSlotsClaimed, TOTAL = cfg.lifetimeSlotsTotal, LEFT = TOTAL - JOINED
   const PCT = Math.round((JOINED / TOTAL) * 100)
 
   const trustPoints = [

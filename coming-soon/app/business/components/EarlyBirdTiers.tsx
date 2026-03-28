@@ -2,24 +2,24 @@
 import { useState, useEffect } from 'react'
 import { fetchConfig } from '../../config/site-config'
 
-const tiers1 = [
-  { price: '$239', sub: 'lifetime', label: 'first 200', active: true },
-  { price: '$999', sub: 'lifetime', label: 'after 200', active: false },
-]
-
-const tiers2 = [
-  { price: '$99', sub: '/yr', label: 'first 200', active: true },
-  { price: '$239', sub: '/yr', label: 'after 200', active: false },
-]
-
 export default function EarlyBirdTiers() {
-  const [cfg, setCfg] = useState({ pioneerJoined: 15, pioneerTotal: 200 })
-  useEffect(() => { fetchConfig().then(c => setCfg({ pioneerJoined: c.pioneerJoined, pioneerTotal: c.pioneerTotal })) }, [])
-  const JOINED = cfg.pioneerJoined
-  const PIONEER_TOTAL = cfg.pioneerTotal
-  const spotsLeft = PIONEER_TOTAL - JOINED
-  /* Both timelines have 2 steps: marker fills proportionally across full track */
-  const markerPct = (JOINED / PIONEER_TOTAL) * 100
+  const [cfg, setCfg] = useState({ lifetimeSlotsTotal: 199, lifetimeSlotsClaimed: 0, yearlySlotsTotal: 999, yearlySlotsClaimed: 0 })
+  useEffect(() => { fetchConfig().then(c => setCfg({ lifetimeSlotsTotal: c.lifetimeSlotsTotal, lifetimeSlotsClaimed: c.lifetimeSlotsClaimed, yearlySlotsTotal: c.yearlySlotsTotal, yearlySlotsClaimed: c.yearlySlotsClaimed })) }, [])
+
+  const lifetimeRemaining = cfg.lifetimeSlotsTotal - cfg.lifetimeSlotsClaimed
+  const lifetimeExhausted = cfg.lifetimeSlotsClaimed >= cfg.lifetimeSlotsTotal
+  const yearlyExhausted = cfg.yearlySlotsClaimed >= cfg.yearlySlotsTotal
+  const ltMarkerPct = (cfg.lifetimeSlotsClaimed / cfg.lifetimeSlotsTotal) * 100
+  const yrMarkerPct = (cfg.yearlySlotsClaimed / cfg.yearlySlotsTotal) * 100
+
+  const tiers1 = [
+    { price: '$239', sub: 'lifetime', label: `first ${cfg.lifetimeSlotsTotal}`, active: !lifetimeExhausted },
+    { price: '$999', sub: 'lifetime', label: `after ${cfg.lifetimeSlotsTotal}`, active: lifetimeExhausted },
+  ]
+  const tiers2 = [
+    { price: '$99', sub: '/yr', label: `first ${cfg.yearlySlotsTotal}`, active: !yearlyExhausted },
+    { price: '$239', sub: '/yr', label: `after ${cfg.yearlySlotsTotal}`, active: yearlyExhausted },
+  ]
 
   return (
     <section className="tiers-section" id="tiers">
@@ -28,7 +28,7 @@ export default function EarlyBirdTiers() {
           <div className="section-tag">Limited Spots</div>
           <h2 className="tiers-heading">LifeTime Founding <em>Business Pricing </em></h2>
           <p className="section-desc">
-            The earlier you join, the less you pay — forever. Only <strong>{spotsLeft} Pioneer spots</strong> left.
+            The earlier you join, the less you pay — forever. Only <strong>{lifetimeRemaining} Pioneer spots</strong> left.
           </p>
         </div>
 
@@ -36,12 +36,12 @@ export default function EarlyBirdTiers() {
         <div className="tier-track-label">Life Time Plan</div>
         <div className="tier-track">
           <div className="tier-line">
-            <div className="tier-line-fill" style={{ width: `${markerPct}%` }} />
-            <div className="tier-marker" style={{ left: `${markerPct}%` }}>
+            <div className="tier-line-fill" style={{ width: `${ltMarkerPct}%` }} />
+            <div className="tier-marker" style={{ left: `${ltMarkerPct}%` }}>
               <div className="tier-marker-pin">
                 <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" /><circle cx="12" cy="9" r="2.5" /></svg>
               </div>
-              <div className="tier-marker-label">{JOINED} joined</div>
+              <div className="tier-marker-label">{cfg.lifetimeSlotsClaimed} joined</div>
             </div>
           </div>
           {tiers1.map((t, i) => (
@@ -57,12 +57,12 @@ export default function EarlyBirdTiers() {
         <div className="tier-track-label tier-track-label--2">Yearly Plans</div>
         <div className="tier-track tier-track--2">
           <div className="tier-line">
-            <div className="tier-line-fill" style={{ width: `${markerPct}%` }} />
-            <div className="tier-marker" style={{ left: `${markerPct}%` }}>
+            <div className="tier-line-fill" style={{ width: `${yrMarkerPct}%` }} />
+            <div className="tier-marker" style={{ left: `${yrMarkerPct}%` }}>
               <div className="tier-marker-pin">
                 <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" /><circle cx="12" cy="9" r="2.5" /></svg>
               </div>
-              <div className="tier-marker-label">{JOINED} joined</div>
+              <div className="tier-marker-label">{cfg.yearlySlotsClaimed} joined</div>
             </div>
           </div>
           {tiers2.map((t, i) => (

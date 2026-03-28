@@ -9,14 +9,17 @@ const features = ['Leads', 'Reviews', 'GEO', 'AEO', 'SEO Backlinks']
 type PlanKey = 'lifetime' | 'yearly'
 
 export default function FoundingCTA() {
-  const [cfg, setCfg] = useState({ pioneerJoined: 15, pioneerTotal: 200 })
+  const [cfg, setCfg] = useState({ lifetimeSlotsTotal: 199, lifetimeSlotsClaimed: 0, yearlySlotsTotal: 999, yearlySlotsClaimed: 0 })
   const [modalPlan, setModalPlan] = useState<PlanKey | null>(null)
 
   useEffect(() => {
-    fetchConfig().then(c => setCfg({ pioneerJoined: c.pioneerJoined, pioneerTotal: c.pioneerTotal }))
+    fetchConfig().then(c => setCfg({ lifetimeSlotsTotal: c.lifetimeSlotsTotal, lifetimeSlotsClaimed: c.lifetimeSlotsClaimed, yearlySlotsTotal: c.yearlySlotsTotal, yearlySlotsClaimed: c.yearlySlotsClaimed }))
   }, [])
 
-  const spotsLeft = cfg.pioneerTotal - cfg.pioneerJoined
+  const lifetimeRemaining = cfg.lifetimeSlotsTotal - cfg.lifetimeSlotsClaimed
+  const yearlyRemaining = cfg.yearlySlotsTotal - cfg.yearlySlotsClaimed
+  const lifetimeExhausted = cfg.lifetimeSlotsClaimed >= cfg.lifetimeSlotsTotal
+  const yearlyExhausted = cfg.yearlySlotsClaimed >= cfg.yearlySlotsTotal
 
   return (
     <section className="fc-section" id="founding">
@@ -34,7 +37,7 @@ export default function FoundingCTA() {
           {/* ════════════ LIFETIME CARD ════════════ */}
           <div className="fc-card fc-card--lifetime">
             <div className="fc-badge">Best Value</div>
-            <div className="fc-ribbon">Only 199 Left</div>
+            <div className="fc-ribbon">Only {lifetimeRemaining} Left</div>
 
             <h3 className="fc-heading">
               <em>Elite</em> Lifetime<br />
@@ -42,17 +45,19 @@ export default function FoundingCTA() {
             </h3>
 
             <div className="fc-price-block">
-              <span className="fc-price">$239</span>
+              <span className="fc-price">${lifetimeExhausted ? '999' : '239'}</span>
               <span className="fc-price-label fc-price-label--highlight">lifetime</span>
             </div>
-            <div className="fc-price-after">
-              <span className="fc-strikethrough">$999 / lifetime</span> after Pioneer pre-launch window
-            </div>
+            {!lifetimeExhausted && (
+              <div className="fc-price-after">
+                <span className="fc-strikethrough">$999 / lifetime</span> after Pioneer pre-launch window
+              </div>
+            )}
 
             <div className="fc-pills">
               <span className="fc-pill fc-pill--slots">
                 <svg viewBox="0 0 24 24" className="fc-pill-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
-                Only {cfg.pioneerTotal} Spots
+                Only {cfg.lifetimeSlotsTotal} Spots
               </span>
               <span className="fc-pill-divider" />
               <span className="fc-pill fc-pill--lifetime">
@@ -81,7 +86,7 @@ export default function FoundingCTA() {
 
           {/* ════════════ YEARLY CARD ════════════ */}
           <div className="fc-card fc-card--yearly">
-            <div className="fc-ribbon fc-ribbon--yearly">Only 997 Left</div>
+            <div className="fc-ribbon fc-ribbon--yearly">Only {yearlyRemaining} Left</div>
 
             <h3 className="fc-heading">
               Early Adopter<br />
@@ -89,12 +94,14 @@ export default function FoundingCTA() {
             </h3>
 
             <div className="fc-price-block">
-              <span className="fc-price">$99</span>
+              <span className="fc-price">${yearlyExhausted ? '239' : '99'}</span>
               <span className="fc-price-label">/year Locked Forever</span>
             </div>
-            <div className="fc-price-after">
-              <span className="fc-strikethrough">$239/yr</span> after Pioneer pre-launch window
-            </div>
+            {!yearlyExhausted && (
+              <div className="fc-price-after">
+                <span className="fc-strikethrough">$239/yr</span> after Pioneer pre-launch window
+              </div>
+            )}
 
             <div className="fc-pills">
               <span className="fc-pill fc-pill--slots">

@@ -19,6 +19,10 @@ export type SiteConfig = {
   foundingPrice: number
   earlyAdopterPrice: number
   standardPrice: number
+  lifetimeSlotsTotal: number
+  lifetimeSlotsClaimed: number
+  yearlySlotsTotal: number
+  yearlySlotsClaimed: number
   useRealData: boolean
 }
 
@@ -35,6 +39,10 @@ export const defaults: SiteConfig = {
   foundingPrice: 240,
   earlyAdopterPrice: 99,
   standardPrice: 240,
+  lifetimeSlotsTotal: 199,
+  lifetimeSlotsClaimed: 0,
+  yearlySlotsTotal: 999,
+  yearlySlotsClaimed: 0,
   useRealData: false,
 }
 
@@ -65,6 +73,10 @@ export async function fetchConfig(): Promise<SiteConfig> {
       foundingPrice: Number(data.foundingPrice ?? defaults.foundingPrice),
       earlyAdopterPrice: Number(data.earlyAdopterPrice ?? defaults.earlyAdopterPrice),
       standardPrice: Number(data.standardPrice ?? defaults.standardPrice),
+      lifetimeSlotsTotal: Number(data.lifetimeSlotsTotal ?? defaults.lifetimeSlotsTotal),
+      lifetimeSlotsClaimed: Number(data.lifetimeSlotsClaimed ?? defaults.lifetimeSlotsClaimed),
+      yearlySlotsTotal: Number(data.yearlySlotsTotal ?? defaults.yearlySlotsTotal),
+      yearlySlotsClaimed: Number(data.yearlySlotsClaimed ?? defaults.yearlySlotsClaimed),
       useRealData: data.useRealData === 'true' || data.useRealData === true,
     }
     _cache = cfg
@@ -94,6 +106,10 @@ export async function saveConfigToAPI(config: SiteConfig): Promise<boolean> {
         foundingPrice: String(config.foundingPrice),
         earlyAdopterPrice: String(config.earlyAdopterPrice),
         standardPrice: String(config.standardPrice),
+        lifetimeSlotsTotal: String(config.lifetimeSlotsTotal),
+        lifetimeSlotsClaimed: String(config.lifetimeSlotsClaimed),
+        yearlySlotsTotal: String(config.yearlySlotsTotal),
+        yearlySlotsClaimed: String(config.yearlySlotsClaimed),
         useRealData: String(config.useRealData),
       }),
     })

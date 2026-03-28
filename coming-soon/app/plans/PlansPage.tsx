@@ -1,6 +1,7 @@
 'use client'
-import { useState, Fragment } from 'react'
+import { useState, useEffect, Fragment } from 'react'
 import Link from 'next/link'
+import { fetchConfig } from '../config/site-config'
 import PaymentModal from '../business/components/PaymentModal'
 import FoundingCTA from '../business/components/FoundingCTA'
 
@@ -181,6 +182,13 @@ export default function PlansPage() {
   const [billingTab, setBillingTab] = useState<'lifetime' | 'yearly'>('lifetime')
   const [openFaq, setOpenFaq] = useState<number | null>(null)
   const [modalPlan, setModalPlan] = useState<PlanKey | null>(null)
+  const [slots, setSlots] = useState({ ltEx: false, yrEx: false })
+  useEffect(() => {
+    fetchConfig().then(c => setSlots({
+      ltEx: c.lifetimeSlotsClaimed >= c.lifetimeSlotsTotal,
+      yrEx: c.yearlySlotsClaimed >= c.yearlySlotsTotal,
+    }))
+  }, [])
 
   return (
     <main className="pln-page">
@@ -239,17 +247,17 @@ export default function PlansPage() {
               <div className="pr-col-badge">Most Popular</div>
               <div className="pr-col-name">Business Plan</div>
               <div className="pr-col-desc">Elite Founding Business</div>
-              <div className="pr-col-price"><span>$</span>239</div>
+              <div className="pr-col-price"><span>$</span>{slots.ltEx ? '999' : '239'}</div>
               <div className="pr-col-period">one-time, forever</div>
-              <div className="pr-col-slash"><span className="fc-strikethrough">$999</span> after</div>
+              {!slots.ltEx && <div className="pr-col-slash"><span className="fc-strikethrough">$999</span> after</div>}
               <button type="button" className="pr-col-btn pr-col-btn--primary" onClick={() => setModalPlan('lifetime')}>Claim Lifetime Spot</button>
             </div>
             <div className={`pr-col-head pr-col-head--yr${billingTab === 'yearly' ? ' pr-col-head--active' : ''}`}>
               <div className="pr-col-name">Pro Plan</div>
               <div className="pr-col-desc">Flexible Membership</div>
-              <div className="pr-col-price"><span>$</span>99</div>
+              <div className="pr-col-price"><span>$</span>{slots.yrEx ? '239' : '99'}</div>
               <div className="pr-col-period">per year Locked forever</div>
-              <div className="pr-col-slash"><span className="fc-strikethrough">$239/yr</span> after</div>
+              {!slots.yrEx && <div className="pr-col-slash"><span className="fc-strikethrough">$239/yr</span> after</div>}
               <button type="button" className="pr-col-btn pr-col-btn--secondary" onClick={() => setModalPlan('yearly')}>Get Started</button>
             </div>
 

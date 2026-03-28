@@ -50,24 +50,35 @@ export default function Settings() {
 
   return (
     <div style={{ maxWidth: 560, margin: '0 auto' }}>
-      {/* ── Pioneer Tier Numbers ── */}
-      <Card title="Pioneer Tier">
+      {/* ── Plan Slot Tracking ── */}
+      <Card title="Plan Slot Tracking" color="#2563EB">
+        <p style={{ fontSize: '.6rem', color: 'var(--h-muted)', marginBottom: '.75rem', lineHeight: 1.5 }}>
+          Slots auto-decrement on purchase. Pricing changes when threshold is reached.
+        </p>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '.65rem' }}>
           <div>
-            <label style={lbl}>Members Joined</label>
-            <input type="number" style={inp} value={cfg.pioneerJoined} onChange={e => set('pioneerJoined', Number(e.target.value))} onFocus={fo} onBlur={bl} />
+            <label style={lbl}>Lifetime Claimed</label>
+            <input type="number" style={inp} value={cfg.lifetimeSlotsClaimed} onChange={e => set('lifetimeSlotsClaimed', Number(e.target.value))} onFocus={fo} onBlur={bl} />
           </div>
           <div>
-            <label style={lbl}>Total Spots</label>
-            <input type="number" style={inp} value={cfg.pioneerTotal} onChange={e => set('pioneerTotal', Number(e.target.value))} onFocus={fo} onBlur={bl} />
+            <label style={lbl}>Lifetime Total (first N at $239)</label>
+            <input type="number" style={inp} value={cfg.lifetimeSlotsTotal} onChange={e => set('lifetimeSlotsTotal', Number(e.target.value))} onFocus={fo} onBlur={bl} />
           </div>
           <div>
-            <label style={lbl}>Total Spots (All Tiers)</label>
-            <input type="number" style={inp} value={cfg.totalSpots} onChange={e => set('totalSpots', Number(e.target.value))} onFocus={fo} onBlur={bl} />
+            <label style={lbl}>Yearly Claimed</label>
+            <input type="number" style={inp} value={cfg.yearlySlotsClaimed} onChange={e => set('yearlySlotsClaimed', Number(e.target.value))} onFocus={fo} onBlur={bl} />
+          </div>
+          <div>
+            <label style={lbl}>Yearly Total (first N at $99/yr)</label>
+            <input type="number" style={inp} value={cfg.yearlySlotsTotal} onChange={e => set('yearlySlotsTotal', Number(e.target.value))} onFocus={fo} onBlur={bl} />
           </div>
         </div>
         <p style={{ fontSize: '.6rem', color: 'var(--h-muted)', marginTop: '.5rem' }}>
-          Remaining: <strong style={{ color: 'var(--h-accent)' }}>{cfg.pioneerTotal - cfg.pioneerJoined}</strong> spots &middot; {Math.round((cfg.pioneerJoined / cfg.pioneerTotal) * 100)}% filled
+          Lifetime: <strong style={{ color: 'var(--h-accent)' }}>{cfg.lifetimeSlotsTotal - cfg.lifetimeSlotsClaimed}</strong> remaining
+          {cfg.lifetimeSlotsClaimed >= cfg.lifetimeSlotsTotal && <span style={{ color: '#E8553D', fontWeight: 700 }}> &mdash; EXHAUSTED (price is now $999)</span>}
+          &nbsp;&middot;&nbsp;
+          Yearly: <strong style={{ color: 'var(--h-accent)' }}>{cfg.yearlySlotsTotal - cfg.yearlySlotsClaimed}</strong> remaining
+          {cfg.yearlySlotsClaimed >= cfg.yearlySlotsTotal && <span style={{ color: '#E8553D', fontWeight: 700 }}> &mdash; EXHAUSTED (price is now $239/yr)</span>}
         </p>
       </Card>
 

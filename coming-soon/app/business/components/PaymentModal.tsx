@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { fetchConfig } from '../../config/site-config'
 
 const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || 'AcVEK9s17rxgOj1JTpZ0Cp94PIA_ghK8nGnPcWXdL7wpH-cfdw5-5jETY84-Tib3QKCZbzPU1xYLH7Fx'
 const features = ['Leads', 'Reviews', 'GEO', 'AEO', 'SEO Backlinks']
@@ -20,6 +21,23 @@ export default function PaymentModal({ isOpen, onClose, plan }: Props) {
   const renderedRef = useRef<string>('')
 
   const isLifetime = plan === 'lifetime'
+
+  /* ── Slot-aware pricing ── */
+  const [slotsLoaded, setSlotsLoaded] = useState(false)
+  const [ltExhausted, setLtExhausted] = useState(false)
+  const [yrExhausted, setYrExhausted] = useState(false)
+
+  useEffect(() => {
+    fetchConfig().then(c => {
+      setLtExhausted(c.lifetimeSlotsClaimed >= c.lifetimeSlotsTotal)
+      setYrExhausted(c.yearlySlotsClaimed >= c.yearlySlotsTotal)
+      setSlotsLoaded(true)
+    })
+  }, [])
+
+  const amount = isLifetime ? (ltExhausted ? '999.00' : '239.00') : (yrExhausted ? '239.00' : '99.00')
+  const displayPrice = isLifetime ? (ltExhausted ? '999' : '239') : (yrExhausted ? '239' : '99')
+  const afterPrice = isLifetime ? (ltExhausted ? null : '$999') : (yrExhausted ? null : '$239/yr')
 
   /* ── Reset when modal opens ── */
   useEffect(() => {
@@ -58,7 +76,7 @@ export default function PaymentModal({ isOpen, onClose, plan }: Props) {
 
   /* ── Render PayPal buttons ── */
   useEffect(() => {
-    if (!isOpen || !paypalReady || !paypalRef.current || success) return
+    if (!isOpen || !paypalReady || !paypalRef.current || success || !slotsLoaded) return
     if (renderedRef.current === plan) return
 
     // @ts-expect-error PayPal SDK loaded globally
@@ -68,7 +86,6 @@ export default function PaymentModal({ isOpen, onClose, plan }: Props) {
     paypalRef.current.innerHTML = ''
     renderedRef.current = plan
 
-    const amount = isLifetime ? '239.00' : '99.00'
     const desc = isLifetime
       ? 'InfoWebWorld — Elite Lifetime Founding Plan'
       : 'InfoWebWorld — Early Adopter Plan'
@@ -84,6 +101,14 @@ export default function PaymentModal({ isOpen, onClose, plan }: Props) {
         setError('')
         try {
           const details = await actions.order.capture()
+          // Claim the founding slot
+          try {
+            await fetch('/api/slots/claim', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ plan: isLifetime ? 'lifetime' : 'yearly' }),
+            })
+          } catch {}
           setSuccess(details.id)
         } catch {
           setError('Payment capture failed. Please try again.')
@@ -93,7 +118,7 @@ export default function PaymentModal({ isOpen, onClose, plan }: Props) {
       onError: () => setError('Payment failed. Please try again.'),
       onCancel: () => setError('Payment was cancelled.'),
     }).render(paypalRef.current)
-  }, [isOpen, paypalReady, plan, success, isLifetime])
+  }, [isOpen, paypalReady, plan, success, isLifetime, slotsLoaded, amount])
 
   /* ── After payment, open the listing form panel ── */
   const handleSubmitListing = useCallback(() => {
@@ -126,7 +151,7 @@ export default function PaymentModal({ isOpen, onClose, plan }: Props) {
             </div>
             <h3 className="pm-success-title">Payment Successful!</h3>
             <p className="pm-success-desc">
-              Your <strong>{isLifetime ? 'Lifetime ($239)' : 'Yearly ($99/yr)'}</strong> plan has been confirmed.
+              Your <strong>{isLifetime ? `Lifetime ($${displayPrice})` : `Yearly ($${displayPrice}/yr)`}</strong> plan has been confirmed.
             </p>
             <p className="pm-success-order">Order ID: {success}</p>
             <button type="button" className="pm-submit-btn" onClick={handleSubmitListing}>
@@ -149,12 +174,14 @@ export default function PaymentModal({ isOpen, onClose, plan }: Props) {
 
             {/* Price */}
             <div className="pm-price-row">
-              <span className="pm-price">${isLifetime ? '239' : '99'}</span>
+              <span className="pm-price">${displayPrice}</span>
               <span className="pm-period">{isLifetime ? 'one-time' : '/year'}</span>
             </div>
-            <div className="pm-strike">
-              <span className="pm-strike-price">{isLifetime ? '$999' : '$239/yr'}</span> after Pioneer window
-            </div>
+            {afterPrice && (
+              <div className="pm-strike">
+                <span className="pm-strike-price">{afterPrice}</span> after Pioneer window
+              </div>
+            )}
 
             <div className="pm-divider" />
 
