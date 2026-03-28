@@ -49,7 +49,7 @@ export default function ContactPage() {
             We&apos;d Love to <em>Hear</em> From You
           </h1>
           <p className="ct-subtitle">
-            Questions, partnerships, feedback — whatever it is, we&apos;re here to help.
+            Questions, Collobrations, partnerships, feedback — whatever it is, we&apos;re here to help/attend.
           </p>
         </div>
 
@@ -144,9 +144,9 @@ export default function ContactPage() {
               </div>
               <h3 className="ct-card-title">Follow Us</h3>
               <div className="ct-social-row">
-                <a href="#" className="ct-social-link">Twitter / X</a>
-                <a href="#" className="ct-social-link">LinkedIn</a>
-                <a href="#" className="ct-social-link">Instagram</a>
+                <a href="https://x.com/infowebworld_x" target="_blank" className="ct-social-link">Twitter / X</a>
+                <a href="https://www.linkedin.com/company/infowebworld/" target="_blank" className="ct-social-link">LinkedIn</a>
+                <a href="https://www.instagram.com/infowebworld" target="_blank" className="ct-social-link">Instagram</a>
               </div>
             </div>
 
