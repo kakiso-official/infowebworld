@@ -7,8 +7,8 @@ export default function Stats() {
   useEffect(() => { fetchConfig().then(c => setCfg({ statWaitlist: c.statWaitlist, statListings: c.statListings, statIndustries: c.statIndustries, statCountries: c.statCountries, statLanguages: c.statLanguages })) }, [])
 
   const stats = [
-    { num: cfg.statWaitlist, label: 'Elite Founding Businesses' },
-    { num: cfg.statListings, label: 'Early Business Listings' },
+    { num: cfg.statWaitlist, label: 'Elite LifeTime Founding Businesses' },
+    { num: cfg.statListings, label: 'Early Adopter Business Listings' },
     { num: cfg.statIndustries, label: 'Thousands of Categories' },
     { num: cfg.statCountries, label: 'Countries - Millions of Visitors' },
     { num: cfg.statLanguages, label: 'Languages - Coming Soon' },
