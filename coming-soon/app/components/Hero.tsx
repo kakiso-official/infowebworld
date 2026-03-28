@@ -122,8 +122,8 @@ export default function Hero() {
       </div>
       <div className="cs-marquee-mobile" aria-hidden="true">
         <div className="cs-marquee-track">
-          <span>launching soon — infowebworld — discover & list the best businesses — verified reviews — dofollow backlinks — 80+ industries — 12 countries — real leads —&nbsp;</span>
-          <span>launching soon — infowebworld — discover & list the best businesses — verified reviews — dofollow backlinks — 80+ industries — 12 countries — real leads —&nbsp;</span>
+          <span>Launching Soon - Global Growth Platfirm - InfoWebWorld.com - Discover & Connect - Leads - Reviews - Compare - News - Thousands of Categories - 100+ Countries Traffic -&nsbp;</span>
+          <span>Launching Soon - Global Growth Platfirm - InfoWebWorld.com - Discover & Connect - Leads - Reviews - Compare - News - Thousands of Categories - 100+ Countries Traffic -&nsbp;</span>
         </div>
       </div>
     </section>

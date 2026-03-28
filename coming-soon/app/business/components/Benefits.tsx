@@ -7,42 +7,41 @@ const Ck = () => (
 const benefits = [
   {
     title: 'Leads Generation',
-    desc: 'Turn your listing into a lead machine. RFQ forms, demo scheduling, and a messaging inbox connect you directly with high-intent buyers — with real-time alerts and CRM export to HubSpot or Salesforce.',
-    num: '40+/mo',
+    desc: <>Turn Your Listing into a Lead Generation Engine. Capture and convert high-intent buyers effortlessly with powerful lead tools built into your listing. From <strong>RFQ forms and demo requests to direct call / messaging</strong>, connect with prospects at the exact moment they&apos;re ready to engage &mdash; backed by <strong>real-time alerts and actionable insights</strong>.</>,
+    num: '#0+/mo',
     pastel: 'bn--coral',
-    highlights: ['RFQ forms & Book a Demo widget', 'Real-time lead alerts (email & in-app)', 'CRM integration (HubSpot, Salesforce)'],
+    highlights: ['Unified Lead Dashboard', 'Direct Messaging Inbox', 'Buyer Intent Visibility'],
     icon: <><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></>,
   },
   {
     title: 'Search & AI Visibility',
-    desc: 'SEO-optimized profiles with schema markup, a permanent dofollow backlink from a DA 72+ domain, and GEO & AEO citations. Your listing is AI-search ready — surfaced in ChatGPT, Perplexity, and Gemini. Indexed within 48 hours.',
-    num: 'DA 72+',
+     desc: <>Powerful SEO-optimized asset that ranks across <strong> search engines and AI platforms.</strong>With <strong>schema-optimized profiles, permanent high-authority backlinks from a DA / DR, and AI-ready citations, </strong> your business gets maximum visibility where modern buyers are searching — from Google to ChatGPT, Perplexity, and beyond.</>,
+    num: 'High DA/DR',
     pastel: 'bn--emerald',
-    highlights: ['Permanent dofollow backlink', 'AI search ready (ChatGPT, Perplexity, Gemini)', 'Indexed within 48 hours'],
+    highlights: ['Fast Indexing', 'Priority Placement & Rankings across platform', 'Local + Global Visibility'],
     icon: <><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></>,
   },
   {
-    title: 'Verified Reviews',
-    desc: 'Collect verified photo & video reviews, flag fakes with AI-powered anti-fraud detection, and aggregate reviews from Google & Trustpilot. Invite reviews via email or link — AI drafts your replies.',
+    title: 'Verified Reviews - Build Trust That Converts',
+    desc: <>Turn customer feedback into your strongest growth asset.<strong> Collect verified text, photo, and video reviews, </strong> eliminate fake reviews with AI Anti-Fake detection, and showcase real social proof that drives conversions.</>,
     num: '98% Trust',
     pastel: 'bn--azure',
-    highlights: ['AI sentiment analysis & reply drafts', 'Review invitation tool (email & link)', 'Aggregate from Google & Trustpilot'],
+    highlights: ['AI Reply Drafts', 'Review Invitation Tool', 'Embeddable Review Widgets'],
     icon: <><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></>,
   },
   {
-    title: 'Money Back Guarantee',
+    title: 'Money Back Guarantee - Elite Founding Buisness',
     desc: 'Zero risk, all reward. Your listing is a one-time investment with compounding returns — leads, backlinks, and reviews that grow over time. Not satisfied within 6 months? Full refund, no questions asked.',
     num: '6 Months',
     pastel: 'bn--plum',
-    highlights: ['Full refund within 6 months', 'Zero risk — compounding returns', 'Free renewal if leads are low'],
+    highlights: ['Full refund within 6 months', 'Zero risk — compounding returns','Only 199 spots — Pay Once, Yours Forever'],
     icon: <><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="M9 12l2 2 4-4" /></>,
   },
   {
-    title: 'Daily Business News',
-    desc: 'Get featured in quarterly news spotlight articles, newsletter mentions, and shared across iWW social channels. Promote webinars, events, and product launches to a high-intent audience.',
-    num: 'Daily',
+    title: 'Community Power to Influence',
+    desc: <>Your listing doesn’t just get seen — it gets discussed, saved, recommended, and trusted. Build lasting credibility through real user engagement,<strong> social proof signals, and community-driven discovery that influence buying decisions. </strong></>,
     pastel: 'bn--teal',
-    highlights: ['News spotlight article each quarter', 'Newsletter mentions & features', 'Webinar & event listing section'],
+    highlights: ['Follower System & Community Bookmark Collections', 'Upvotes, Likes & Popularity Signals', 'Question & Answer Section'],
     icon: <><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></>,
   },
   {
@@ -52,6 +51,14 @@ const benefits = [
     pastel: 'bn--amber',
     highlights: ['Unlimited multi-location listings', 'Multilingual listing support', 'Local NAP (Name, Address, Phone)'],
     icon: <><circle cx="12" cy="12" r="10" /><path d="M2 12h20" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></>,
+  },
+  {
+    title: 'Free Renewal Guarantee-Early Adopter',
+    desc: <>Not getting the results you expected? We&apos;ve got you covered. If your listing doesn&apos;t generate enough <strong>leads, CTAs, or engagement</strong> during your yearly plan, your <strong>next year&apos;s renewal is completely free</strong>. We don&apos;t win unless you do &mdash; that&apos;s our promise.</>,
+    num: '100% Free',
+    pastel: 'bn--rose',
+    highlights: ['Free renewal if leads & CTAs are low', 'No fine print — we measure, you grow', 'Only 999 spots — Price per Year, Locked Forever'],
+    icon: <><path d="M23 4v6h-6" /><path d="M1 20v-6h6" /><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" /></>,
   },
   {
     title: 'Business Analytics',
@@ -88,7 +95,7 @@ export default function Benefits() {
                 <span className="bn-card-num">{b.num}</span>
               </div>
               <h3 className="bn-card-title">{b.title}</h3>
-              <p className="bn-card-desc">{b.desc}</p>
+              <p className="bn-card-desc">{b.desc as React.ReactNode}</p>
               <ul className="bn-card-list">
                 {b.highlights.map(h => (
                   <li key={h}><Ck /><span>{h}</span></li>

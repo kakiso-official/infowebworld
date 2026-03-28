@@ -26,14 +26,16 @@
   margin-top: clamp(1.5rem, 3vw, 2.5rem);
 }
 
-/* Zigzag: 1-wide 2-wide, 2-wide 1-wide, 1-wide 2-wide */
+/* Zigzag: 1-2, 2-1, 1-2, 1-2, full */
 .bn-card--1 { grid-column: span 1; }
 .bn-card--2 { grid-column: span 2; }
 .bn-card--3 { grid-column: span 2; }
 .bn-card--4 { grid-column: span 1; }
 .bn-card--5 { grid-column: span 1; }
 .bn-card--6 { grid-column: span 2; }
-.bn-card--7 { grid-column: 1 / -1; }
+.bn-card--7 { grid-column: span 1; }
+.bn-card--8 { grid-column: span 2; }
+.bn-card--9 { grid-column: 1 / -1; }
 
 /* ── Card base ── */
 .bn-card {
@@ -60,6 +62,7 @@
 .bn--teal    { background: #5CD9C5; --bn-accent: #0A6B5C }
 .bn--amber   { background: #FFD24D; --bn-accent: #A16207 }
 .bn--sunset  { background: #FFB35C; --bn-accent: #B8430B }
+.bn--rose    { background: #FF8FAB; --bn-accent: #BE185D }
 
 /* ── Card top — icon + stat badge ── */
 .bn-card-top {
@@ -130,7 +133,8 @@
 .bn-card--2 .bn-card-list,
 .bn-card--3 .bn-card-list,
 .bn-card--6 .bn-card-list,
-.bn-card--7 .bn-card-list {
+.bn-card--8 .bn-card-list,
+.bn-card--9 .bn-card-list {
   flex-direction: row; flex-wrap: wrap; gap: .4rem .75rem;
 }
 
@@ -147,7 +151,9 @@
   .bn-card--4 { grid-column: span 1; }
   .bn-card--5 { grid-column: span 1; }
   .bn-card--6 { grid-column: span 2; }
-  .bn-card--7 { grid-column: 1 / -1; }
+  .bn-card--7 { grid-column: span 1; }
+  .bn-card--8 { grid-column: span 1; }
+  .bn-card--9 { grid-column: 1 / -1; }
 
   .bn-card--2 .bn-card-list { flex-direction: column; }
 }
@@ -169,7 +175,9 @@
   .bn-card--4 { grid-column: span 1; }
   .bn-card--5 { grid-column: span 1; }
   .bn-card--6 { grid-column: 1 / -1; }
-  .bn-card--7 { grid-column: 1 / -1; }
+  .bn-card--7 { grid-column: span 1; }
+  .bn-card--8 { grid-column: span 1; }
+  .bn-card--9 { grid-column: 1 / -1; }
 
   .bn-card {
     padding: clamp(.85rem, 2.5vw, 1.15rem);
@@ -194,12 +202,13 @@
   .bn-card--2 .bn-card-list,
   .bn-card--3 .bn-card-list,
   .bn-card--6 .bn-card-list,
-  .bn-card--7 .bn-card-list { flex-direction: column; }
+  .bn-card--8 .bn-card-list,
+  .bn-card--9 .bn-card-list { flex-direction: column; }
 
   /* Full-width cards keep horizontal highlights */
   .bn-card--1 .bn-card-list,
   .bn-card--6 .bn-card-list,
-  .bn-card--7 .bn-card-list { flex-direction: row; flex-wrap: wrap; gap: .3rem .6rem; }
+  .bn-card--9 .bn-card-list { flex-direction: row; flex-wrap: wrap; gap: .3rem .6rem; }
 }
 
 /* ── Extra-small phones ── */

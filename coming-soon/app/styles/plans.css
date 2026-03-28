@@ -8,6 +8,53 @@
   background: #fff;
 }
 
+/* ============================================================
+   PAGE TITLE — bold hero title at top
+   ============================================================ */
+.pln-title {
+  padding: clamp(2.5rem, 5vw, 4rem) 0 clamp(1.5rem, 3vw, 2rem);
+  text-align: center;
+  background: var(--h-bg);
+}
+.pln-title-tag {
+  display: inline-block;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.6rem, .85vw, .7rem); font-weight: 800;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--h-accent);
+  background: rgba(var(--h-accent-rgb), .08);
+  border: 1px solid rgba(var(--h-accent-rgb), .12);
+  padding: .3rem .75rem; border-radius: 999px;
+  margin-bottom: clamp(.75rem, 1.5vw, 1rem);
+}
+.pln-title-heading {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(2rem, 5.5vw, 3.75rem);
+  font-weight: 900;
+  color: var(--h-heading);
+  line-height: 1.05;
+  letter-spacing: -.035em;
+  margin-bottom: clamp(.6rem, 1.2vw, 1rem);
+}
+.pln-title-heading em {
+  font-style: normal;
+  color: var(--h-accent);
+}
+.pln-title-desc {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.88rem, 1.3vw, 1.1rem);
+  font-weight: 600;
+  color: var(--h-body);
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+@media (max-width: 480px) {
+  .pln-title { padding: clamp(1.75rem, 4vw, 2.5rem) 0 clamp(1rem, 2vw, 1.25rem); }
+  .pln-title-heading { font-size: clamp(1.6rem, 7vw, 2.2rem); }
+}
+
 /* ── FoundingCTA wrapper — distinct bg only on /plans ── */
 .pln-founding-wrap .fc-section {
   background: #fff;
