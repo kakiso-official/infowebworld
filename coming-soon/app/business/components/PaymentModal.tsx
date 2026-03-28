@@ -175,7 +175,7 @@ export default function PaymentModal({ isOpen, onClose, plan }: Props) {
             {/* Price */}
             <div className="pm-price-row">
               <span className="pm-price">${displayPrice}</span>
-              <span className="pm-period">{isLifetime ? 'one-time' : '/year'}</span>
+              <span className="pm-period">{isLifetime ? 'one-time' : '/year Locked Forever'}</span>
             </div>
             {afterPrice && (
               <div className="pm-strike">

@@ -31,11 +31,8 @@ export default function FinalCTA() {
         <div className="f2-header">
           <div className="f2-tag">Don&apos;t Miss Out</div>
           <h2 className="f2-heading">
-            Only <em>{lifetimeRemaining} Pioneer Spots</em> Remain
+           Pioneer Pre-Launch Spots
           </h2>
-          <p className="f2-desc">
-            Lock in $239 lifetime access before the price jumps to $999 Lifetime. Join now and never pay again.
-          </p>
         </div>
 
         <div className="f2-grid">
