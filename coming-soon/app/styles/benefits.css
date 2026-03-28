@@ -1,6 +1,6 @@
 /* ============================================================
-   BENEFITS — Premium bento grid (get-listed)
-   Logo colors: #f25022 #feb801 #01a4ef #7fba00
+   BENEFITS — Bold Pastel Bento · flex-swap on hover
+   /business page · bn-* namespace
    ============================================================ */
 
 /* ── Section ── */
@@ -16,207 +16,310 @@
   font-weight: 800; color: var(--h-heading);
   line-height: 1.1; letter-spacing: -.02em; margin-bottom: .4rem;
 }
-.bn-heading em { font-style: normal; color: var(--h-accent) }
+.bn-heading em { font-style: normal; color: var(--h-accent); }
 
-/* ── Bento grid — 3 columns, zigzag spans ── */
+/* ============================================================
+   FLEX GRID — column of rows, tight gaps
+   ============================================================ */
 .bn-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(.6rem, 1.2vw, 1rem);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   margin-top: clamp(1.5rem, 3vw, 2.5rem);
 }
+.bn-row {
+  display: flex;
+  gap: 8px;
+}
 
-/* Zigzag: 1-2, 2-1, 1-2, 1-2, full */
-.bn-card--1 { grid-column: span 1; }
-.bn-card--2 { grid-column: span 2; }
-.bn-card--3 { grid-column: span 2; }
-.bn-card--4 { grid-column: span 1; }
-.bn-card--5 { grid-column: span 1; }
-.bn-card--6 { grid-column: span 2; }
-.bn-card--7 { grid-column: span 1; }
-.bn-card--8 { grid-column: span 2; }
-.bn-card--9 { grid-column: 1 / -1; }
+/* ── Default proportions: small = 1fr, large = 2fr ── */
+.bn-sm { flex: 1; min-width: 0; }
+.bn-lg { flex: 2; min-width: 0; }
 
-/* ── Card base ── */
+/* ============================================================
+   HOVER SWAP — JS-managed .bn-swap class (debounced, no oscillation)
+   ============================================================ */
 .bn-card {
-  padding: clamp(1.25rem, 2.5vw, 2rem);
-  border-radius: clamp(16px, 2vw, 22px);
-  border: 1.5px solid rgba(255,255,255,.5);
-  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+  transition: flex .6s cubic-bezier(.16, 1, .3, 1);
+}
+.bn-card-title,
+.bn-card-desc,
+.bn-card-num,
+.bn-card-list li {
+  transition: font-size .6s cubic-bezier(.16, 1, .3, 1);
+}
+.bn-grid.bn-swap .bn-sm { flex: 2; }
+.bn-grid.bn-swap .bn-lg { flex: 1; }
+
+/* Expanded small cards get bigger text */
+.bn-grid.bn-swap .bn-sm .bn-card-title {
+  font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+}
+.bn-grid.bn-swap .bn-sm .bn-card-desc {
+  font-size: clamp(.9rem, 1.25vw, 1.05rem);
+}
+.bn-grid.bn-swap .bn-sm .bn-card-num {
+  font-size: clamp(.72rem, 1.1vw, .88rem);
+}
+.bn-grid.bn-swap .bn-sm .bn-card-list li {
+  font-size: clamp(.72rem, 1vw, .85rem);
+}
+
+/* ============================================================
+   COLOR THEMES — bold, vivid, bright fills
+   ============================================================ */
+.bn--coral {
+  background: #FF6B6B;
+  --bn-fg: #1A1A1A; --bn-fg2: rgba(0,0,0,.65);
+  --bn-pill: #FF8F8F; --bn-pill-fg: #7A0000;
+  --bn-art: rgba(0,0,0,.08); --bn-solid: #FFEB3B;
+}
+.bn--emerald {
+  background: #2ECC71;
+  --bn-fg: #1A1A1A; --bn-fg2: rgba(0,0,0,.65);
+  --bn-pill: #5EE098; --bn-pill-fg: #0A4D22;
+  --bn-art: rgba(0,0,0,.08); --bn-solid: #FF6BFF;
+}
+.bn--azure {
+  background: #3498DB;
+  --bn-fg: #1A1A1A; --bn-fg2: rgba(0,0,0,.65);
+  --bn-pill: #6BB5E8; --bn-pill-fg: #0A3260;
+  --bn-art: rgba(0,0,0,.08); --bn-solid: #FF9100;
+}
+.bn--plum {
+  background: #9B59B6;
+  --bn-fg: #1A1A1A; --bn-fg2: rgba(0,0,0,.6);
+  --bn-pill: #B580D0; --bn-pill-fg: #2E0E4A;
+  --bn-art: rgba(0,0,0,.08); --bn-solid: #00E5FF;
+}
+.bn--teal {
+  background: #1ABC9C;
+  --bn-fg: #1A1A1A; --bn-fg2: rgba(0,0,0,.65);
+  --bn-pill: #4FD9BD; --bn-pill-fg: #063D32;
+  --bn-art: rgba(0,0,0,.08); --bn-solid: #FFEB3B;
+}
+.bn--amber {
+  background: #F1C40F;
+  --bn-fg: #1A1A1A; --bn-fg2: rgba(0,0,0,.65);
+  --bn-pill: #F5D54A; --bn-pill-fg: #5C4800;
+  --bn-art: rgba(0,0,0,.08); --bn-solid: #E91E63;
+}
+.bn--rose {
+  background: #E91E63;
+  --bn-fg: #1A1A1A; --bn-fg2: rgba(0,0,0,.6);
+  --bn-pill: #F05A8D; --bn-pill-fg: #5A0024;
+  --bn-art: rgba(0,0,0,.08); --bn-solid: #76FF03;
+}
+.bn--sunset {
+  background: #E67E22;
+  --bn-fg: #1A1A1A; --bn-fg2: rgba(0,0,0,.65);
+  --bn-pill: #F0A05A; --bn-pill-fg: #5C2D00;
+  --bn-art: rgba(0,0,0,.08); --bn-solid: #00E5FF;
+}
+
+/* ============================================================
+   CARD BASE
+   ============================================================ */
+.bn-card {
+  position: relative; overflow: hidden;
+  border-radius: 10px;
+  padding: clamp(1.35rem, 2.8vw, 2.15rem);
   display: flex; flex-direction: column;
-  transition: transform .35s cubic-bezier(.16, 1, .3, 1),
-              box-shadow .35s cubic-bezier(.16, 1, .3, 1),
-              border-color .35s ease;
-}
-.bn-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 16px 48px rgba(0,0,0,.12);
-  border-color: rgba(255,255,255,.8);
+
+  /* Scroll entrance — hidden until IO fires */
+  opacity: 0;
+  transform: translateY(32px) scale(.96);
 }
 
-/* ── BRIGHT backgrounds + accent colors (derived from logo) ── */
-.bn--coral   { background: #FF9A85; --bn-accent: #C4391E }
-.bn--emerald { background: #85E89D; --bn-accent: #527A00 }
-.bn--azure   { background: #6FBFFF; --bn-accent: #0070B8 }
-.bn--plum    { background: #B49AFF; --bn-accent: #5B21B6 }
-.bn--teal    { background: #5CD9C5; --bn-accent: #0A6B5C }
-.bn--amber   { background: #FFD24D; --bn-accent: #A16207 }
-.bn--sunset  { background: #FFB35C; --bn-accent: #B8430B }
-.bn--rose    { background: #FF8FAB; --bn-accent: #BE185D }
-
-/* ── Card top — icon + stat badge ── */
-.bn-card-top {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: clamp(.6rem, 1.2vw, 1rem);
+/* Entrance animation — backwards fill prevents delay flash */
+.bn-card.bn-in {
+  opacity: 1; transform: none;
+  animation: bnReveal .7s cubic-bezier(.16,1,.3,1) backwards;
+  animation-delay: var(--bn-i, 0ms);
+}
+@keyframes bnReveal {
+  from { opacity: 0; transform: translateY(32px) scale(.96); }
+  to   { opacity: 1; transform: none; }
 }
 
-/* ── Icon — white frosted circle with bold accent stroke ── */
-.bn-card-icon {
-  width: clamp(42px, 3.5vw, 54px); height: clamp(42px, 3.5vw, 54px);
-  border-radius: clamp(10px, 1.2vw, 14px);
-  display: flex; align-items: center; justify-content: center;
-  background: rgba(255,255,255,.55);
-  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+
+/* ============================================================
+   CLOCKWISE DRAWING BORDER — SVG rect, stroke-dashoffset
+   Follows rounded corners perfectly.
+   ============================================================ */
+.bn-border {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 3;
 }
-.bn-card-icon svg {
-  width: clamp(20px, 1.8vw, 26px); height: clamp(20px, 1.8vw, 26px);
-  stroke: var(--bn-accent, #1A1A1A); fill: none; stroke-width: 2;
-  stroke-linecap: round; stroke-linejoin: round;
+.bn-border rect {
+  x: 0; y: 0;
+  width: 100%; height: 100%;
+  rx: 10px;
+  fill: none;
+  stroke: var(--bn-solid);
+  stroke-width: 10; /* half clipped by card overflow:hidden → visible 5px */
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset .25s ease;
+}
+.bn-card:hover .bn-border rect {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset .7s cubic-bezier(.16, 1, .3, 1);
 }
 
-/* ── Stat badge — white pill with bold accent text ── */
+/* ============================================================
+   STAT BADGE
+   ============================================================ */
+.bn-card-head {
+  position: absolute; top: -1px; right: -1px;
+  z-index: 4;
+}
 .bn-card-num {
-  font-family: var(--font-nunito), 'Nunito', sans-serif;
-  font-weight: 800; font-size: clamp(.65rem, 1vw, .85rem);
-  color: var(--bn-accent, #1A1A1A);
-  background: rgba(255,255,255,.6);
-  padding: .25rem .7rem; border-radius: 999px; white-space: nowrap;
-  box-shadow: 0 1px 3px rgba(0,0,0,.05);
+  display: block;
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-weight: 800;
+  font-size: clamp(.68rem, 1vw, .84rem);
+  color: #1A1A1A;
+  background: var(--bn-solid);
+  padding: .35rem .85rem;
+  border-radius: 0 10px 0 10px;
+  white-space: nowrap;
+  letter-spacing: .02em;
 }
 
-/* ── Title ── */
+/* ============================================================
+   TITLE
+   ============================================================ */
 .bn-card-title {
   font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
-  font-size: clamp(1.05rem, 1.8vw, 1.4rem);
-  font-weight: 800; color: var(--h-heading);
-  letter-spacing: -.015em; line-height: 1.15;
-  margin-bottom: clamp(.3rem, .6vw, .5rem);
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  font-weight: 800;
+  color: var(--bn-fg);
+  letter-spacing: -.02em; line-height: 1.15;
+  margin-bottom: clamp(.35rem, .7vw, .55rem);
+  position: relative; z-index: 2;
 }
 
-/* ── Description — stronger contrast on bright bg ── */
+/* ============================================================
+   DESCRIPTION
+   ============================================================ */
 .bn-card-desc {
-  font-size: clamp(.8rem, 1.1vw, .95rem);
-  color: rgba(0, 0, 0, .65); line-height: 1.55;
-  margin-bottom: clamp(.5rem, 1vw, .75rem);
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.82rem, 1.1vw, .96rem);
+  color: var(--bn-fg2);
+  line-height: 1.6;
+  margin-bottom: clamp(.6rem, 1.1vw, .85rem);
+  position: relative; z-index: 2;
+}
+.bn-card-desc strong {
+  color: var(--bn-fg);
+  font-weight: 800;
 }
 
-/* ── Highlight checklist ── */
+/* ============================================================
+   HIGHLIGHT PILLS
+   ============================================================ */
 .bn-card-list {
   list-style: none; padding: 0; margin: 0;
-  display: flex; flex-direction: column;
-  gap: clamp(.25rem, .5vw, .4rem);
+  display: flex; flex-wrap: wrap;
+  gap: clamp(.3rem, .5vw, .4rem);
   margin-top: auto;
+  position: relative; z-index: 2;
 }
 .bn-card-list li {
-  display: flex; align-items: center; gap: .4rem;
-  font-size: clamp(.7rem, 1vw, .82rem);
-  font-weight: 700; color: rgba(0, 0, 0, .6);
+  display: inline-flex; align-items: center; gap: .3rem;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.66rem, .92vw, .78rem);
+  font-weight: 700;
+  color: #1A1A1A;
+  background: #fff;
+  padding: .24rem .56rem .24rem .4rem;
+  border-radius: 999px;
 }
+
 .bn-ck {
-  width: clamp(13px, 1.1vw, 16px); height: clamp(13px, 1.1vw, 16px);
+  width: clamp(12px, 1vw, 15px);
+  height: clamp(12px, 1vw, 15px);
   flex-shrink: 0;
-  stroke: var(--bn-accent, rgba(0,0,0,.5)); fill: none; stroke-width: 2.5;
+  stroke: #1A1A1A; fill: none;
+  stroke-width: 2.8;
   stroke-linecap: round; stroke-linejoin: round;
 }
 
-/* Wide cards: checklist goes horizontal */
-.bn-card--2 .bn-card-list,
-.bn-card--3 .bn-card-list,
-.bn-card--6 .bn-card-list,
-.bn-card--8 .bn-card-list,
-.bn-card--9 .bn-card-list {
-  flex-direction: row; flex-wrap: wrap; gap: .4rem .75rem;
+/* ============================================================
+   prefers-reduced-motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .bn-card { opacity: 1; transform: none; animation: none !important; transition: none !important; }
 }
 
 /* ============================================================
-   TABLET — 2 columns
+   TABLET — keep flex rows, tighter
    ============================================================ */
 @media (max-width: 1024px) {
-  .bn-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .bn-card--1 { grid-column: span 1; }
-  .bn-card--2 { grid-column: span 1; }
-  .bn-card--3 { grid-column: span 2; }
-  .bn-card--4 { grid-column: span 1; }
-  .bn-card--5 { grid-column: span 1; }
-  .bn-card--6 { grid-column: span 2; }
-  .bn-card--7 { grid-column: span 1; }
-  .bn-card--8 { grid-column: span 1; }
-  .bn-card--9 { grid-column: 1 / -1; }
+  .bn-grid { gap: 7px; }
+  .bn-row { gap: 7px; }
 
-  .bn-card--2 .bn-card-list { flex-direction: column; }
 }
 
 /* ============================================================
-   MOBILE — 2 columns, first & last span full
+   MOBILE — dissolve rows into 2-col grid
    ============================================================ */
 @media (max-width: 768px) {
   .bn-section { padding: clamp(2rem, 5vw, 3rem) 0; }
   .bn-heading { font-size: clamp(1.25rem, 5.5vw, 1.65rem); }
 
   .bn-grid {
+    display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: clamp(.4rem, 1.5vw, .6rem);
+    gap: 6px;
   }
+  .bn-row {
+    display: contents; /* dissolve wrapper — cards flow into grid */
+  }
+  .bn-card {
+    transition: none; /* no swap on mobile */
+  }
+
   .bn-card--1 { grid-column: 1 / -1; }
-  .bn-card--2 { grid-column: span 1; }
-  .bn-card--3 { grid-column: span 1; }
-  .bn-card--4 { grid-column: span 1; }
-  .bn-card--5 { grid-column: span 1; }
   .bn-card--6 { grid-column: 1 / -1; }
-  .bn-card--7 { grid-column: span 1; }
-  .bn-card--8 { grid-column: span 1; }
-  .bn-card--9 { grid-column: 1 / -1; }
 
   .bn-card {
-    padding: clamp(.85rem, 2.5vw, 1.15rem);
-    border-radius: clamp(14px, 3vw, 18px);
+    padding: clamp(.95rem, 2.8vw, 1.25rem);
+    border-radius: 8px;
   }
-  .bn-card:active { transform: scale(.98); }
 
-  .bn-card-icon {
-    width: clamp(36px, 9vw, 44px); height: clamp(36px, 9vw, 44px);
-    border-radius: 10px;
+
+  .bn-card-title { font-size: clamp(.88rem, 3.2vw, 1.08rem); }
+  .bn-card-desc { font-size: clamp(.7rem, 2vw, .82rem); line-height: 1.5; }
+  .bn-card-num { font-size: clamp(.6rem, 1.8vw, .72rem); padding: .2rem .48rem; }
+
+  .bn-card-list li {
+    font-size: clamp(.58rem, 1.65vw, .68rem);
+    padding: .18rem .42rem .18rem .32rem;
   }
-  .bn-card-icon svg {
-    width: clamp(17px, 4.5vw, 21px); height: clamp(17px, 4.5vw, 21px);
-  }
-  .bn-card-num { font-size: clamp(.58rem, 1.8vw, .7rem); padding: .15rem .4rem; }
-  .bn-card-title { font-size: clamp(.82rem, 2.8vw, 1rem); }
-  .bn-card-desc { font-size: clamp(.65rem, 1.9vw, .78rem); line-height: 1.45; }
-  .bn-card-list li { font-size: clamp(.6rem, 1.6vw, .72rem); }
-  .bn-ck { width: 12px; height: 12px; }
-
-  /* All lists vertical on mobile */
-  .bn-card--2 .bn-card-list,
-  .bn-card--3 .bn-card-list,
-  .bn-card--6 .bn-card-list,
-  .bn-card--8 .bn-card-list,
-  .bn-card--9 .bn-card-list { flex-direction: column; }
-
-  /* Full-width cards keep horizontal highlights */
-  .bn-card--1 .bn-card-list,
-  .bn-card--6 .bn-card-list,
-  .bn-card--9 .bn-card-list { flex-direction: row; flex-wrap: wrap; gap: .3rem .6rem; }
+  .bn-ck { width: 11px; height: 11px; }
 }
 
-/* ── Extra-small phones ── */
+/* ============================================================
+   SMALL PHONES
+   ============================================================ */
+@media (max-width: 480px) {
+  .bn-grid { gap: 5px; }
+  .bn-card { padding: clamp(.8rem, 2.2vw, 1rem); }
+}
+
+/* ============================================================
+   EXTRA-SMALL PHONES
+   ============================================================ */
 @media (max-width: 380px) {
-  .bn-grid { gap: clamp(.3rem, 1vw, .45rem); }
-  .bn-card { padding: clamp(.7rem, 2vw, .9rem); }
-  .bn-card-desc {
-    display: -webkit-box; -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical; overflow: hidden;
+  .bn-grid { gap: 4px; }
+  .bn-card {
+    padding: clamp(.7rem, 2vw, .9rem);
+    border-radius: 6px;
   }
+  .bn-card-desc { font-size: .66rem; line-height: 1.45; }
 }
