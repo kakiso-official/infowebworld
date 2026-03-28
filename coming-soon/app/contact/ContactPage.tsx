@@ -125,7 +125,7 @@ export default function ContactPage() {
                 <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>
               </div>
               <h3 className="ct-card-title">Email Us</h3>
-              <a href="mailto:iww@brainstream.com.au" className="ct-card-value">iww@brainstream.com.au</a>
+              <a href="mailto:team@infowebworld.com" className="ct-card-value">Team@infoWebWorld.com</a>
               <p className="ct-card-note">We reply within 24 hours</p>
             </div>
 
