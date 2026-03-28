@@ -106,21 +106,22 @@ export default function Pricing() {
           <div className="pr-col-spacer" />
 
           <div className="pr-col-head pr-col-head--lt">
-            <div className="pr-col-badge">Most Popular</div>
-            <div className="pr-col-name">Business Plan</div>
-            <div className="pr-col-desc">Elite Founding Business</div>
+            <div className="pr-col-badge">
+Recommend</div>
+            <div className="pr-col-name">Elite Founding Business Plan</div>
+            <div className="pr-col-desc">Recommended For Businesses</div>
             <div className="pr-col-price"><span>$</span>{slots.ltEx ? '999' : '239'}</div>
             <div className="pr-col-period">one-time, forever</div>
-            {!slots.ltEx && <div className="pr-col-slash"><span className="fc-strikethrough">$999</span> after</div>}
+            {!slots.ltEx && <div className="pr-col-slash"><span className="fc-strikethrough">$999</span> after Pioneer pre-launch window</div>}
             <button type="button" className="pr-col-btn pr-col-btn--primary" onClick={() => setModalPlan('lifetime')}>Claim Lifetime Spot</button>
           </div>
 
           <div className="pr-col-head pr-col-head--yr">
-            <div className="pr-col-name">Pro Plan</div>
+            <div className="pr-col-name">Early Adopter Plan</div>
             <div className="pr-col-desc">Flexible Membership</div>
             <div className="pr-col-price"><span>$</span>{slots.yrEx ? '239' : '99'}</div>
             <div className="pr-col-period">per year Locked Forever</div>
-            {!slots.yrEx && <div className="pr-col-slash"><span className="fc-strikethrough">$239/yr</span> after</div>}
+            {!slots.yrEx && <div className="pr-col-slash"><span className="fc-strikethrough">$239/yr</span> after Pioneer pre-launch window</div>}
             <button type="button" className="pr-col-btn pr-col-btn--secondary" onClick={() => setModalPlan('yearly')}>Get Started</button>
           </div>
 

@@ -220,14 +220,14 @@ export default function PlansPage() {
               className={`pln-toggle-btn${billingTab === 'lifetime' ? ' pln-toggle-btn--active' : ''}`}
               onClick={() => setBillingTab('lifetime')}
             >
-              Business
+              Lifetime
             </button>
             <button
               type="button"
               className={`pln-toggle-btn${billingTab === 'yearly' ? ' pln-toggle-btn--active' : ''}`}
               onClick={() => setBillingTab('yearly')}
             >
-              Pro
+              Yearly
             </button>
           </div>
         </div>
@@ -244,20 +244,20 @@ export default function PlansPage() {
             {/* Card headers */}
             <div className="pr-col-spacer" />
             <div className={`pr-col-head pr-col-head--lt${billingTab === 'lifetime' ? ' pr-col-head--active' : ''}`}>
-              <div className="pr-col-badge">Most Popular</div>
-              <div className="pr-col-name">Business Plan</div>
-              <div className="pr-col-desc">Elite Founding Business</div>
+              <div className="pr-col-badge">Recommend</div>
+              <div className="pr-col-name">Elite Lifetime Founding Business Plan</div>
+              <div className="pr-col-desc">Recommended For Businesses</div>
               <div className="pr-col-price"><span>$</span>{slots.ltEx ? '999' : '239'}</div>
               <div className="pr-col-period">one-time, forever</div>
-              {!slots.ltEx && <div className="pr-col-slash"><span className="fc-strikethrough">$999</span> after</div>}
+              {!slots.ltEx && <div className="pr-col-slash"><span className="fc-strikethrough">$999</span> after Pioneer pre-launch window</div>}
               <button type="button" className="pr-col-btn pr-col-btn--primary" onClick={() => setModalPlan('lifetime')}>Claim Lifetime Spot</button>
             </div>
             <div className={`pr-col-head pr-col-head--yr${billingTab === 'yearly' ? ' pr-col-head--active' : ''}`}>
-              <div className="pr-col-name">Pro Plan</div>
+              <div className="pr-col-name">Early Adopter Plan</div>
               <div className="pr-col-desc">Flexible Membership</div>
               <div className="pr-col-price"><span>$</span>{slots.yrEx ? '239' : '99'}</div>
               <div className="pr-col-period">per year Locked forever</div>
-              {!slots.yrEx && <div className="pr-col-slash"><span className="fc-strikethrough">$239/yr</span> after</div>}
+              {!slots.yrEx && <div className="pr-col-slash"><span className="fc-strikethrough">$239/yr</span> after Pioneer pre-launch window</div>}
               <button type="button" className="pr-col-btn pr-col-btn--secondary" onClick={() => setModalPlan('yearly')}>Get Started</button>
             </div>
 

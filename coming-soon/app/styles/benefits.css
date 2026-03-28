@@ -1,5 +1,6 @@
 /* ============================================================
    BENEFITS — Premium bento grid (get-listed)
+   Logo colors: #f25022 #feb801 #01a4ef #7fba00
    ============================================================ */
 
 /* ── Section ── */
@@ -38,22 +39,27 @@
 .bn-card {
   padding: clamp(1.25rem, 2.5vw, 2rem);
   border-radius: clamp(16px, 2vw, 22px);
+  border: 1.5px solid rgba(255,255,255,.5);
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
   display: flex; flex-direction: column;
   transition: transform .35s cubic-bezier(.16, 1, .3, 1),
-              box-shadow .35s cubic-bezier(.16, 1, .3, 1);
+              box-shadow .35s cubic-bezier(.16, 1, .3, 1),
+              border-color .35s ease;
 }
 .bn-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0,0,0,.08);
+  transform: translateY(-5px);
+  box-shadow: 0 16px 48px rgba(0,0,0,.12);
+  border-color: rgba(255,255,255,.8);
 }
 
-/* ── Pastel backgrounds ── */
-.bn--coral   { background: #FDDDD6 }
-.bn--emerald { background: #D4F5E2 }
-.bn--azure   { background: #DBEAFE }
-.bn--plum    { background: #EDE9FE }
-.bn--teal    { background: #CCFBF1 }
-.bn--amber   { background: #FEF3C7 }
+/* ── BRIGHT backgrounds + accent colors (derived from logo) ── */
+.bn--coral   { background: #FF9A85; --bn-accent: #C4391E }
+.bn--emerald { background: #85E89D; --bn-accent: #527A00 }
+.bn--azure   { background: #6FBFFF; --bn-accent: #0070B8 }
+.bn--plum    { background: #B49AFF; --bn-accent: #5B21B6 }
+.bn--teal    { background: #5CD9C5; --bn-accent: #0A6B5C }
+.bn--amber   { background: #FFD24D; --bn-accent: #A16207 }
+.bn--sunset  { background: #FFB35C; --bn-accent: #B8430B }
 
 /* ── Card top — icon + stat badge ── */
 .bn-card-top {
@@ -61,25 +67,28 @@
   margin-bottom: clamp(.6rem, 1.2vw, 1rem);
 }
 
-/* ── Icon ── */
+/* ── Icon — white frosted circle with bold accent stroke ── */
 .bn-card-icon {
   width: clamp(42px, 3.5vw, 54px); height: clamp(42px, 3.5vw, 54px);
   border-radius: clamp(10px, 1.2vw, 14px);
   display: flex; align-items: center; justify-content: center;
-  background: rgba(0, 0, 0, .07);
+  background: rgba(255,255,255,.55);
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
 }
 .bn-card-icon svg {
   width: clamp(20px, 1.8vw, 26px); height: clamp(20px, 1.8vw, 26px);
-  stroke: rgba(0, 0, 0, .6); fill: none; stroke-width: 1.5;
+  stroke: var(--bn-accent, #1A1A1A); fill: none; stroke-width: 2;
   stroke-linecap: round; stroke-linejoin: round;
 }
 
-/* ── Stat badge ── */
+/* ── Stat badge — white pill with bold accent text ── */
 .bn-card-num {
   font-family: var(--font-nunito), 'Nunito', sans-serif;
   font-weight: 800; font-size: clamp(.65rem, 1vw, .85rem);
-  color: rgba(0, 0, 0, .5); background: rgba(0, 0, 0, .07);
+  color: var(--bn-accent, #1A1A1A);
+  background: rgba(255,255,255,.6);
   padding: .25rem .7rem; border-radius: 999px; white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0,0,0,.05);
 }
 
 /* ── Title ── */
@@ -91,10 +100,10 @@
   margin-bottom: clamp(.3rem, .6vw, .5rem);
 }
 
-/* ── Description ── */
+/* ── Description — stronger contrast on bright bg ── */
 .bn-card-desc {
   font-size: clamp(.8rem, 1.1vw, .95rem);
-  color: rgba(0, 0, 0, .5); line-height: 1.55;
+  color: rgba(0, 0, 0, .65); line-height: 1.55;
   margin-bottom: clamp(.5rem, 1vw, .75rem);
 }
 
@@ -108,12 +117,12 @@
 .bn-card-list li {
   display: flex; align-items: center; gap: .4rem;
   font-size: clamp(.7rem, 1vw, .82rem);
-  font-weight: 600; color: rgba(0, 0, 0, .5);
+  font-weight: 700; color: rgba(0, 0, 0, .6);
 }
 .bn-ck {
   width: clamp(13px, 1.1vw, 16px); height: clamp(13px, 1.1vw, 16px);
   flex-shrink: 0;
-  stroke: rgba(0, 0, 0, .35); fill: none; stroke-width: 2.5;
+  stroke: var(--bn-accent, rgba(0,0,0,.5)); fill: none; stroke-width: 2.5;
   stroke-linecap: round; stroke-linejoin: round;
 }
 

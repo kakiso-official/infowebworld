@@ -14,16 +14,17 @@ const Cell = ({ value }: { value: V }) => {
 }
 
 const features: { name: string; iww: V; g2: V; ph: V; ai: V }[] = [
-   { name: 'Lead Generation', iww: true, g2: true, ph: false, ai: false },
-  { name: 'Dofollow Backlinks', iww: true, g2: false, ph: false, ai: 'Some' },
-  { name: 'Verified Reviews', iww: true, g2: true, ph: false, ai: false },
-  { name: 'Thousands of categories ', iww: true, g2: 'Tech only', ph: 'Tech only', ai: 'AI only' },
+  { name: 'Lead Generation', iww: true, g2: 'Expensive PPC-style leads', ph: 'Pay-per-lead model', ai: false },
+  { name: 'Dofollow Backlinks', iww: true, g2: false, ph: false, ai: 'Limited / inconsistent' },
+  { name: 'AEO Citations (AI Engine Optimization)', iww: true, g2: false, ph: false, ai: 'Some visibility but unstructured' },
+  { name: 'Verified Reviews ', iww: true, g2: true, ph: true, ai: 'Weak / spam-prone' },
  
-  { name: 'Multi-Country Directory (12+*)', iww: true, g2: 'Limited', ph: true, ai: false },
+  { name: 'Community Engagement', iww: true, g2: 'Limited (review-focused only)', ph: 'Limited', ai: 'Passive browsing only' },
+  { name: 'Thousands of Categories', iww: true, g2: true, ph: true, ai: 'Mostly AI-only narrow categories' },
+  { name: 'Multi-Country Directory (12+)', iww: true, g2: 'US-heavy', ph: 'US/Europe focused', ai: 'Mostly global but unstructured' },
   { name: 'Daily News Feed', iww: true, g2: false, ph: false, ai: false },
-  { name: 'Analytics Dashboard', iww: true, g2: true, ph: false, ai: 'Basic' },
-  { name: 'Lifetime Plan ($239)*', iww: true, g2: false, ph: false, ai: 'Varies' },
-  { name: 'Founding Member Perks', iww: true, g2: false, ph: false, ai: false },
+  { name: 'Analytics Dashboard', iww: true, g2: true, ph: 'Limited', ai: false },
+  { name: 'Support', iww: true, g2: 'Enterprise-tier support', ph: 'Ticket-based', ai: false },
 ]
 
 export default function Comparison() {
@@ -63,7 +64,7 @@ export default function Comparison() {
         </div>
 
         <div className="cmp-footer">
-          <span className="cmp-footer-score">9/9</span>
+          <span className="cmp-footer-score">10/10</span>
           <span className="cmp-footer-text">
             InfoWebWorld checks every box. The closest competitor scores 3*.
           </span>

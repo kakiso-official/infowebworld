@@ -1,298 +1,407 @@
 /* ============================================================
-   FINAL CTA — Premium two-panel card with ring + form
+   FINAL CTA — Split-zone cards with integrated progress rings
+   Unique: colored header zone → curved transition → white body
    ============================================================ */
-.fcta-section {
+
+/* ── Section ── */
+.f2-section {
   padding: clamp(3rem, 6vw, 5rem) 0;
   background: #fff;
 }
 
-/* ── The card — two-panel layout ── */
-.fcta-card {
-  max-width: 920px;
-  margin: 0 auto;
+/* ── Header ── */
+.f2-header {
+  text-align: center;
+  margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+}
+.f2-tag {
+  display: inline-flex; align-items: center; gap: .35rem;
+  padding: .3rem .75rem; border-radius: 999px;
+  background: rgba(var(--h-accent-rgb), .08);
+  border: 1px solid rgba(var(--h-accent-rgb), .12);
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .65rem; font-weight: 700; color: var(--h-accent);
+  text-transform: uppercase; letter-spacing: .06em;
+  margin-bottom: .75rem;
+}
+.f2-heading {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 800; color: var(--h-heading);
+  line-height: 1.1; letter-spacing: -.02em; margin-bottom: .5rem;
+}
+.f2-heading em { font-style: normal; color: var(--h-accent); }
+.f2-desc {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.875rem, 1.2vw, 1rem); color: var(--h-body);
+  max-width: 520px; margin: 0 auto;
+}
+
+/* ── Two-card grid ── */
+.f2-grid {
   display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  border-radius: 24px;
-  overflow: hidden;
-  border: 1.5px solid var(--h-border);
-  background: linear-gradient(135deg, #FDDDD6 0%, #FFF5F2 50%, #fff 100%);
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  max-width: 860px;
+  margin: 0 auto; align-items: start;
 }
 
 /* ============================================================
-   LEFT PANEL — Content + Form
+   CARD — split zone (colored top + white body)
    ============================================================ */
-.fcta-content {
-  padding: clamp(2rem, 4vw, 3rem);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.fcta-heading {
-  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  font-weight: 800;
-  color: var(--h-heading);
-  line-height: 1.1;
-  letter-spacing: -.02em;
-  margin-bottom: .6rem;
-}
-.fcta-heading em { font-style: normal; color: var(--h-accent) }
-
-.fcta-desc {
-  font-family: var(--font-nunito), 'Nunito', sans-serif;
-  font-size: clamp(.82rem, 1.2vw, .95rem);
-  color: var(--h-body);
-  line-height: 1.55;
-  margin-bottom: 1.5rem;
-  max-width: 420px;
-}
-
-/* ── Email form ── */
-.fcta-form {
-  display: flex;
-  gap: 0;
-  max-width: 400px;
-}
-.fcta-input {
-  flex: 1;
-  min-width: 0;
-  height: 50px;
-  border: 1.5px solid var(--h-border);
-  border-right: none;
-  border-radius: 999px 0 0 999px;
-  padding: 0 1rem;
-  font-size: .85rem;
-  font-family: var(--font-nunito), 'Nunito', sans-serif;
-  color: var(--h-heading);
-  background: #fff;
-  outline: none;
-  transition: border-color .3s;
-}
-.fcta-input::placeholder { color: var(--h-muted) }
-.fcta-input:focus { border-color: var(--h-accent) }
-
-.fcta-btn {
-  height: 50px;
-  padding: 0 1.5rem;
-  border: none;
-  background: var(--h-accent);
-  color: #fff;
-  font-family: var(--font-nunito), 'Nunito', sans-serif;
-  font-size: .8125rem;
-  font-weight: 700;
-  border-radius: 0 999px 999px 0;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: all .3s cubic-bezier(.16, 1, .3, 1);
-  position: relative;
+.f2-card {
+  border-radius: 22px;
   overflow: hidden;
+  box-shadow: 0 4px 32px rgba(0,0,0,.07), 0 1px 3px rgba(0,0,0,.04);
+  transition: transform .35s cubic-bezier(.16,1,.3,1),
+              box-shadow .35s cubic-bezier(.16,1,.3,1);
 }
-.fcta-btn:hover {
-  background: var(--h-accent-hover);
-  box-shadow: 0 6px 20px rgba(232, 85, 61, .25);
+.f2-card:hover {
+  transform: translateY(-5px);
 }
-/* Shimmer animation */
-.fcta-btn::after {
+.f2-card--lifetime:hover {
+  box-shadow: 0 20px 56px rgba(232,85,61,.14), 0 2px 6px rgba(0,0,0,.04);
+}
+.f2-card--yearly:hover {
+  box-shadow: 0 20px 56px rgba(37,99,235,.12), 0 2px 6px rgba(0,0,0,.04);
+}
+
+/* ── Colored top zone ── */
+.f2-card-top {
+  position: relative;
+  padding: clamp(2rem, 3.5vw, 2.5rem) clamp(1.25rem, 2.5vw, 2rem);
+  padding-bottom: clamp(1.75rem, 3vw, 2.25rem);
+  text-align: center;
+  display: flex; flex-direction: column; align-items: center;
+}
+/* Curved white shelf transition into body */
+.f2-card-top::after {
   content: '';
   position: absolute;
-  top: 0; left: -100%;
-  width: 50%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .2), transparent);
-  animation: fctaShimmer 3s ease-in-out infinite 2s;
-}
-@keyframes fctaShimmer {
-  0% { left: -100% }
-  30% { left: 150% }
-  100% { left: 150% }
+  bottom: 0; left: 0; right: 0;
+  height: 18px;
+  background: #fff;
+  border-radius: 18px 18px 0 0;
 }
 
-/* ── Alternative link ── */
-.fcta-alt { margin-top: .85rem }
-.fcta-alt-link {
-  font-family: var(--font-nunito), 'Nunito', sans-serif;
-  font-size: .78rem;
-  color: var(--h-muted);
-  transition: color .2s;
+/* Lifetime — warm coral gradient */
+.f2-card-top--lt {
+  background: linear-gradient(145deg, #FFE8E0 0%, #FFD4C8 40%, #FFBFAD 100%);
 }
-.fcta-alt-link:hover { color: var(--h-accent) }
-.fcta-alt-link strong { color: var(--h-accent) }
-
-/* ============================================================
-   RIGHT PANEL — Progress ring + trust stats
-   ============================================================ */
-.fcta-sidebar {
-  padding: clamp(1.5rem, 3vw, 2.5rem);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.5rem;
-  border-left: 1.5px solid var(--h-border-light);
+/* Yearly — cool blue gradient */
+.f2-card-top--yr {
+  background: linear-gradient(145deg, #E8F0FE 0%, #D4E4FC 40%, #BDD4F9 100%);
 }
 
 /* ── Progress ring ── */
-.fcta-progress {
+.f2-ring-wrap {
   position: relative;
-  width: clamp(100px, 14vw, 130px);
-  height: clamp(100px, 14vw, 130px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: clamp(88px, 12vw, 110px);
+  height: clamp(88px, 12vw, 110px);
+  margin-bottom: clamp(.35rem, .7vw, .5rem);
 }
-.fcta-ring {
-  width: 100%;
-  height: 100%;
+.f2-ring {
+  width: 100%; height: 100%;
   transform: rotate(-90deg);
 }
-.fcta-ring-bg {
-  fill: none;
-  stroke: var(--h-border);
-  stroke-width: 8;
+.f2-ring-bg {
+  fill: none; stroke: rgba(255,255,255,.7); stroke-width: 7;
 }
-.fcta-ring-fill {
-  fill: none;
-  stroke: var(--h-accent);
-  stroke-width: 8;
+.f2-ring-fill {
+  fill: none; stroke-width: 7;
   stroke-linecap: round;
-  transition: stroke-dashoffset 1.5s cubic-bezier(.16, 1, .3, 1);
+  transition: stroke-dashoffset 1.5s cubic-bezier(.16,1,.3,1);
 }
-.fcta-ring-text {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+.f2-ring-fill--lt { stroke: var(--h-accent); }
+.f2-ring-fill--yr { stroke: #2563EB; }
+
+.f2-ring-text {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
 }
-.fcta-ring-pct {
+.f2-ring-pct {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(1.3rem, 2.5vw, 1.7rem);
+  font-weight: 900; color: var(--h-heading); line-height: 1;
+}
+.f2-ring-label {
   font-family: var(--font-nunito), 'Nunito', sans-serif;
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  font-weight: 800;
-  color: var(--h-accent);
-  line-height: 1;
-}
-.fcta-ring-label {
-  font-family: var(--font-nunito), 'Nunito', sans-serif;
-  font-size: .62rem;
-  font-weight: 600;
-  color: var(--h-muted);
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  margin-top: .15rem;
+  font-size: .55rem; font-weight: 700; color: var(--h-body);
+  text-transform: uppercase; letter-spacing: .06em; margin-top: .1rem;
 }
 
-/* ── Trust stats row ── */
-.fcta-trust-row {
-  display: flex;
-  gap: 1rem;
-  width: 100%;
-  justify-content: center;
+/* ── Claimed counter ── */
+.f2-claimed {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.55rem, .85vw, .65rem); font-weight: 800;
+  color: var(--h-body);
+  background: rgba(255,255,255,.6);
+  padding: .15rem .55rem; border-radius: 999px;
+  margin-bottom: clamp(.5rem, 1vw, .75rem);
 }
-.fcta-trust {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+
+/* ── Ribbon ── */
+.f2-ribbon {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.5rem, .8vw, .6rem); font-weight: 800;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: #fff; background: var(--h-accent);
+  padding: .22rem .85rem .24rem;
+  border-radius: 0 0 10px 10px;
+  z-index: 2;
+}
+.f2-ribbon--blue { background: #2563EB; }
+
+/* ── Plan name (inside colored zone) ── */
+.f2-plan-name {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(1.05rem, 2.2vw, 1.45rem);
+  font-weight: 800; color: var(--h-heading);
+  line-height: 1.18; letter-spacing: -.02em;
+  position: relative; z-index: 1;
+}
+.f2-plan-name em { font-style: normal; color: var(--h-accent); }
+
+/* ============================================================
+   WHITE BODY ZONE — pricing, pills, features, CTA
+   ============================================================ */
+.f2-card-body {
+  padding: clamp(.5rem, 1vw, .75rem) clamp(1.25rem, 2.5vw, 2rem) clamp(1.5rem, 3vw, 2rem);
+  background: #fff;
   text-align: center;
-  flex: 1;
+  display: flex; flex-direction: column; align-items: center;
 }
-.fcta-trust-num {
-  font-family: var(--font-nunito), 'Nunito', sans-serif;
-  font-size: clamp(.85rem, 1.5vw, 1.05rem);
-  font-weight: 800;
-  color: var(--h-heading);
-  line-height: 1;
-  margin-bottom: .15rem;
+
+/* ── Price ── */
+.f2-price-block {
+  display: flex; align-items: baseline; gap: .2rem;
+  margin-bottom: .25rem;
 }
-.fcta-trust-label {
+.f2-price {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(2.5rem, 5.5vw, 3.25rem);
+  font-weight: 900; color: var(--h-heading);
+  line-height: 1; letter-spacing: -.03em;
+}
+.f2-price-label {
   font-family: var(--font-nunito), 'Nunito', sans-serif;
-  font-size: clamp(.5rem, .9vw, .6rem);
-  font-weight: 600;
+  font-size: clamp(.7rem, 1vw, .82rem); font-weight: 600;
   color: var(--h-muted);
-  text-transform: uppercase;
-  letter-spacing: .04em;
+}
+.f2-price-label--coral {
+  font-weight: 800; color: #fff;
+  background: var(--h-accent);
+  padding: .15rem .6rem; border-radius: 999px;
+  text-transform: uppercase; letter-spacing: .06em;
+  font-size: clamp(.6rem, .9vw, .72rem);
+}
+
+/* ── Strikethrough ── */
+.f2-price-after {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.62rem, .9vw, .72rem); font-weight: 600;
+  color: var(--h-muted);
+  margin-bottom: clamp(.75rem, 1.5vw, 1rem);
+}
+.f2-strike {
+  position: relative; text-decoration: none;
+  font-weight: 800; font-size: 1.8em; color: #C0392B;
+}
+.f2-strike::after {
+  content: '';
+  position: absolute;
+  left: -2px; right: -2px; top: 78%; height: 2.5px;
+  background: #C0392B; border-radius: 2px;
+  transform: rotate(-12deg);
+  animation: f2Slash 2.5s ease-in-out infinite;
+  transform-origin: left center;
+}
+.f2-strike--blue { color: #2563EB; }
+.f2-strike--blue::after { background: #2563EB; }
+@keyframes f2Slash {
+  0%, 100% { transform: rotate(-12deg) scaleX(0); }
+  20%, 80%  { transform: rotate(-12deg) scaleX(1); }
+}
+
+/* ── Pills ── */
+.f2-pills {
+  display: flex; align-items: center; gap: clamp(.3rem, .8vw, .5rem);
+  margin-bottom: clamp(.65rem, 1.2vw, .85rem);
+  flex-wrap: wrap; justify-content: center;
+}
+.f2-pill {
+  display: inline-flex; align-items: center; gap: .3rem;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.55rem, .8vw, .65rem); font-weight: 700;
+  padding: .25rem .6rem; border-radius: 999px; white-space: nowrap;
+}
+.f2-pill--coral {
+  color: var(--h-accent);
+  background: rgba(var(--h-accent-rgb), .08);
+  border: 1px solid rgba(var(--h-accent-rgb), .12);
+}
+.f2-pill--green {
+  color: #166534; background: #ECFDF5;
+  border: 1px solid rgba(22,101,52,.12);
+}
+.f2-pill--blue {
+  color: #1D4ED8; background: #EFF6FF;
+  border: 1px solid rgba(29,78,216,.12);
+}
+.f2-pill--cyan {
+  color: #0E7490; background: #ECFEFF;
+  border: 1px solid rgba(14,116,144,.12);
+}
+.f2-pill-icon {
+  width: 12px; height: 12px; fill: none; stroke: currentColor;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.f2-pill-dot {
+  width: 3px; height: 3px; border-radius: 50%;
+  background: var(--h-border); flex-shrink: 0;
+}
+
+/* ── Feature tags ── */
+.f2-features {
+  display: flex; align-items: center; gap: clamp(.2rem, .5vw, .3rem);
+  flex-wrap: wrap; justify-content: center;
+  margin-bottom: clamp(.75rem, 1.5vw, 1rem);
+}
+.f2-features-label {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.55rem, .75vw, .65rem); font-weight: 700;
+  color: var(--h-muted);
+}
+.f2-feat {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.5rem, .7vw, .58rem); font-weight: 700;
+  text-transform: uppercase; letter-spacing: .04em;
+  color: var(--h-heading);
+  background: var(--h-bg); border: 1px solid var(--h-border);
+  padding: .18rem .45rem; border-radius: 999px;
+}
+
+/* ── CTA buttons ── */
+.f2-btn {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.78rem, 1.1vw, .88rem); font-weight: 800;
+  padding: .6rem 1.75rem; border-radius: 999px;
+  border: none; cursor: pointer; outline: none;
+  position: relative; overflow: hidden;
+  transition: transform .3s cubic-bezier(.16,1,.3,1),
+              box-shadow .3s cubic-bezier(.16,1,.3,1);
+}
+.f2-btn::after {
+  content: '';
+  position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
+  animation: f2Shimmer 3.5s ease-in-out infinite 1s;
+}
+@keyframes f2Shimmer { 0% { left: -100%; } 50%, 100% { left: 150%; } }
+
+.f2-btn--coral { color: #fff; background: var(--h-accent); }
+.f2-btn--coral:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(232,85,61,.3);
+}
+.f2-btn--dark {
+  color: #fff; background: var(--h-heading);
+}
+.f2-btn--dark:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(26,26,26,.18);
+}
+.f2-btn:active { transform: translateY(0); }
+.f2-btn-arrow {
+  width: 15px; height: 15px; fill: none; stroke: currentColor;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  transition: transform .25s cubic-bezier(.16,1,.3,1);
+}
+.f2-btn:hover .f2-btn-arrow { transform: translateX(3px); }
+
+/* ── Guarantee seal ── */
+.f2-guarantee {
+  display: flex; align-items: center; gap: .45rem;
+  margin-top: clamp(.65rem, 1.2vw, .9rem);
+  padding: .4rem .85rem;
+  border: 2px dashed #16A34A; border-radius: 999px;
+  background: rgba(22,163,74,.04);
+  animation: f2SealPulse 3s ease-in-out infinite;
+}
+.f2-guarantee span {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.6rem, .85vw, .7rem); font-weight: 700;
+  color: #15803D;
+}
+.f2-guarantee strong { font-weight: 900; color: #166534; }
+.f2-guarantee-icon {
+  width: clamp(16px, 1.3vw, 20px); height: clamp(16px, 1.3vw, 20px);
+  fill: none; stroke: #16A34A; stroke-width: 2.5;
+  stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0;
+  animation: f2ShieldBounce 2.5s ease-in-out infinite;
+}
+@keyframes f2SealPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(22,163,74,.12); }
+  50%      { box-shadow: 0 0 0 6px rgba(22,163,74,.06); }
+}
+@keyframes f2ShieldBounce {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.15); }
+}
+
+/* ── Brand link ── */
+.f2-brand {
+  display: flex; align-items: center; justify-content: center; gap: .25rem;
+  margin-top: clamp(1rem, 2vw, 1.5rem);
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.62rem, .85vw, .72rem); font-weight: 700;
+  color: var(--h-accent); text-decoration: none; transition: opacity .2s;
+}
+.f2-brand:hover { opacity: .7; }
+.f2-brand-arrow {
+  width: 11px; height: 11px; fill: none; stroke: var(--h-accent);
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
 }
 
 /* ============================================================
-   RESPONSIVE — Tablet
+   RESPONSIVE
    ============================================================ */
 @media (max-width: 768px) {
-  .fcta-card {
+  .f2-section { padding: clamp(2rem, 4vw, 3rem) 0; }
+  .f2-grid { gap: .85rem; }
+  .f2-card { border-radius: 18px; }
+  .f2-card-top {
+    padding: clamp(1.75rem, 4vw, 2rem) clamp(1rem, 3vw, 1.25rem);
+    padding-bottom: clamp(1.5rem, 3vw, 1.75rem);
+  }
+  .f2-card-body {
+    padding: clamp(.4rem, .8vw, .5rem) clamp(1rem, 3vw, 1.25rem) clamp(1.25rem, 3vw, 1.5rem);
+  }
+  .f2-ring-wrap { width: 80px; height: 80px; }
+  .f2-ring-pct { font-size: 1.15rem; }
+  .f2-plan-name { font-size: clamp(.95rem, 3.2vw, 1.15rem); }
+  .f2-price { font-size: clamp(1.6rem, 5.5vw, 2.2rem); }
+  .f2-btn { padding: .55rem 1.35rem; font-size: clamp(.72rem, 2.2vw, .82rem); }
+}
+
+@media (max-width: 560px) {
+  .f2-grid {
     grid-template-columns: 1fr;
-    max-width: 520px;
-  }
-  .fcta-sidebar {
-    border-left: none;
-    border-top: 1.5px solid var(--h-border-light);
-    flex-direction: row;
-    padding: 1.25rem 1.5rem;
-    gap: 1.25rem;
-  }
-  .fcta-progress {
-    width: 80px;
-    height: 80px;
-    flex-shrink: 0;
-  }
-  .fcta-ring-pct { font-size: 1.25rem }
-  .fcta-trust-row {
-    flex-direction: column;
-    gap: .5rem;
-    align-items: flex-start;
-  }
-  .fcta-trust {
-    flex-direction: row;
-    gap: .4rem;
-    align-items: baseline;
+    max-width: 400px;
   }
 }
 
-/* ============================================================
-   RESPONSIVE — Phone
-   ============================================================ */
-@media (max-width: 480px) {
-  .fcta-content { padding: clamp(1.5rem, 5vw, 2rem) }
-
-  .fcta-form {
-    flex-direction: column;
-    gap: .5rem;
-    max-width: none;
-  }
-  .fcta-input {
-    border-radius: 999px;
-    border-right: 1.5px solid var(--h-border);
-    height: 46px;
-    font-size: .8rem;
-  }
-  .fcta-btn {
-    border-radius: 999px;
-    height: 46px;
-  }
-
-  .fcta-sidebar {
-    flex-direction: column;
-    align-items: center;
-    padding: 1.15rem 1.25rem;
-    gap: 1rem;
-  }
-  .fcta-progress { width: 72px; height: 72px }
-  .fcta-ring-pct { font-size: 1.1rem }
-  .fcta-trust-row {
-    flex-direction: row;
-    gap: .6rem;
-    width: 100%;
-  }
-  .fcta-trust {
-    flex-direction: column;
-    gap: .1rem;
-    align-items: center;
-    flex: 1;
-  }
-}
-
-/* ── Extra-small phones ── */
 @media (max-width: 380px) {
-  .fcta-heading { font-size: clamp(1.25rem, 5vw, 1.5rem) }
-  .fcta-desc { font-size: .78rem }
-  .fcta-trust-num { font-size: .8rem }
-  .fcta-trust-label { font-size: .45rem }
+  .f2-card-top { padding: 1.5rem .9rem 1.25rem; }
+  .f2-card-body { padding: .3rem .9rem 1.15rem; }
+  .f2-ring-wrap { width: 72px; height: 72px; }
+  .f2-ring-pct { font-size: 1rem; }
+  .f2-plan-name { font-size: .95rem; }
+  .f2-price { font-size: 1.8rem; }
+  .f2-pills { gap: .25rem; }
+  .f2-pill { padding: .2rem .45rem; font-size: .52rem; }
+  .f2-feat { font-size: .48rem; padding: .15rem .35rem; }
 }
