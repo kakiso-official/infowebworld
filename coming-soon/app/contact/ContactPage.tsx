@@ -7,21 +7,39 @@ import Link from 'next/link'
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''
 
 const subjects = [
-  'General Inquiry',
-  'Business Listing',
-  'Partnership',
-  'Bug Report',
-  'Feedback',
-  'Other',
+  { value: 'General Inquiry', label: 'General Inquiry', desc: 'Ask us anything about InfoWebWorld', color: '#6FBFFF' },
+  { value: 'List My Business', label: 'List My Business', desc: 'Get your business discovered globally', color: '#85E89D' },
+  { value: 'Upgrade / Pricing', label: 'Upgrade / Pricing', desc: 'Plans, pricing, or upgrade questions', color: '#FFD24D' },
+  { value: 'Partnership', label: 'Partnership', desc: 'Collaborate or integrate with us', color: '#B49AFF' },
+  { value: 'Advertising', label: 'Advertising & Sponsorship', desc: 'Promote your brand on our platform', color: '#FFB35C' },
+  { value: 'Feature Request', label: 'Feature Request', desc: 'Suggest a new feature or improvement', color: '#5CD9C5' },
+  { value: 'Bug Report', label: 'Bug Report', desc: 'Report a technical issue', color: '#FF8FAB' },
+  { value: 'Billing', label: 'Billing & Payments', desc: 'Invoices, refunds, or payment questions', color: '#FF9A85' },
+  { value: 'Press & Media', label: 'Press & Media', desc: 'Press inquiries and media coverage', color: '#A0D8EF' },
+  { value: 'Feedback', label: 'Feedback', desc: 'Share your experience with us', color: '#85E89D' },
+  { value: 'Careers', label: 'Careers', desc: 'Join our team and grow with us', color: '#B49AFF' },
+  { value: 'Other', label: 'Other', desc: 'Anything else on your mind', color: '#D4C5B9' },
 ]
 
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
   const [captchaToken, setCaptchaToken] = useState('')
+  const [dropOpen, setDropOpen] = useState(false)
+  const dropRef = useRef<HTMLDivElement>(null)
   const tsRef = useRef(Date.now())
   const turnstileRef = useRef<HTMLDivElement>(null)
   const widgetIdRef = useRef<string | null>(null)
+
+  // Close dropdown on outside click or Escape
+  useEffect(() => {
+    if (!dropOpen) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setDropOpen(false) }
+    const onClick = (e: MouseEvent) => { if (dropRef.current && !dropRef.current.contains(e.target as Node)) setDropOpen(false) }
+    document.addEventListener('keydown', onKey)
+    document.addEventListener('mousedown', onClick)
+    return () => { document.removeEventListener('keydown', onKey); document.removeEventListener('mousedown', onClick) }
+  }, [dropOpen])
 
   const set = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }))
 
@@ -99,10 +117,37 @@ export default function ContactPage() {
 
             <div className="ct-field">
               <label className="ct-label">Subject</label>
-              <select className="ct-input ct-select" required value={form.subject} onChange={e => set('subject', e.target.value)}>
-                <option value="" disabled>Select a topic</option>
-                {subjects.map(s => <option key={s} value={s}>{s}</option>)}
-              </select>
+              <div className="ct-drop" ref={dropRef}>
+                <button type="button" className={`ct-input ct-drop-trigger${form.subject ? ' ct-drop-trigger--has' : ''}`} onClick={() => setDropOpen(o => !o)}>
+                  {form.subject
+                    ? <><span className="ct-drop-dot" style={{ background: subjects.find(s => s.value === form.subject)?.color }} />{subjects.find(s => s.value === form.subject)?.label}</>
+                    : <span className="ct-drop-placeholder">Select a topic</span>}
+                  <svg className={`ct-drop-chevron${dropOpen ? ' ct-drop-chevron--open' : ''}`} viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" /></svg>
+                </button>
+                {dropOpen && (
+                  <div className="ct-drop-menu">
+                    {subjects.map(s => (
+                      <button
+                        type="button"
+                        key={s.value}
+                        className={`ct-drop-option${form.subject === s.value ? ' ct-drop-option--active' : ''}`}
+                        onClick={() => { set('subject', s.value); setDropOpen(false) }}
+                      >
+                        <span className="ct-drop-dot" style={{ background: s.color }} />
+                        <span className="ct-drop-option-text">
+                          <span className="ct-drop-option-label">{s.label}</span>
+                          <span className="ct-drop-option-desc">{s.desc}</span>
+                        </span>
+                        {form.subject === s.value && (
+                          <svg className="ct-drop-check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" /></svg>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {/* Hidden input for native form validation */}
+              <input type="text" required value={form.subject} tabIndex={-1} aria-hidden="true" onChange={() => {}} style={{ position: 'absolute', opacity: 0, height: 0, width: 0, pointerEvents: 'none' }} />
             </div>
 
             <div className="ct-field">
