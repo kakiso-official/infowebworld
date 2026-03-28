@@ -17,12 +17,12 @@ const features: { name: string; iww: V; g2: V; ph: V; ai: V }[] = [
    { name: 'Lead Generation', iww: true, g2: true, ph: false, ai: false },
   { name: 'Dofollow Backlinks', iww: true, g2: false, ph: false, ai: 'Some' },
   { name: 'Verified Reviews', iww: true, g2: true, ph: false, ai: false },
-  { name: 'thousands of categories ', iww: true, g2: 'Tech only', ph: 'Tech only', ai: 'AI only' },
+  { name: 'Thousands of categories ', iww: true, g2: 'Tech only', ph: 'Tech only', ai: 'AI only' },
  
-  { name: 'Multi-Country (12+)', iww: true, g2: 'Limited', ph: true, ai: false },
+  { name: 'Multi-Country Directory (12+*)', iww: true, g2: 'Limited', ph: true, ai: false },
   { name: 'Daily News Feed', iww: true, g2: false, ph: false, ai: false },
   { name: 'Analytics Dashboard', iww: true, g2: true, ph: false, ai: 'Basic' },
-  { name: 'Lifetime Plan ($239)', iww: true, g2: false, ph: false, ai: 'Varies' },
+  { name: 'Lifetime Plan ($239)*', iww: true, g2: false, ph: false, ai: 'Varies' },
   { name: 'Founding Member Perks', iww: true, g2: false, ph: false, ai: false },
 ]
 
@@ -43,7 +43,7 @@ export default function Comparison() {
         <div className="cmp-wrap">
           {/* Header */}
           <div className="cmp-row cmp-row--header">
-            <div className="cmp-cell cmp-cell--feature">Feature</div>
+            <div className="cmp-cell cmp-cell--feature">Features & Benefits</div>
             <div className="cmp-cell cmp-cell--hero" data-label="IWW">InfoWebWorld</div>
             <div className="cmp-cell" data-label="G2">G2</div>
              <div className="cmp-cell" data-label="PH">Capterra</div> 
@@ -65,7 +65,7 @@ export default function Comparison() {
         <div className="cmp-footer">
           <span className="cmp-footer-score">9/9</span>
           <span className="cmp-footer-text">
-            InfoWebWorld checks every box. The closest competitor scores 3.
+            InfoWebWorld checks every box. The closest competitor scores 3*.
           </span>
         </div>
       </div>
