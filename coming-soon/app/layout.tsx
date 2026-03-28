@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Nunito, Bricolage_Grotesque } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import PageTracker from "./components/PageTracker";
 
@@ -87,7 +88,16 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <meta name="theme-color" content="#FAF5F0" />
       </head>
-      <body className={`${nunito.variable} ${bricolage.variable}`}><PageTracker />{children}</body>
+      <body className={`${nunito.variable} ${bricolage.variable}`}>
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-C6LY2016NW" strategy="afterInteractive" />
+        <Script id="gtag-init" strategy="afterInteractive">{`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-C6LY2016NW');
+        `}</Script>
+        <PageTracker />{children}
+      </body>
     </html>
   );
 }
