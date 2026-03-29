@@ -96,7 +96,7 @@ export default function CategoryList() {
         <Btn onClick={async () => { if (!confirm('Unlaunch ALL categories?')) return; await apiBulkLaunch(false); await reload() }} style={{ background: '#F59E0B15', color: '#D97706', borderColor: 'transparent' }}>Unlaunch All</Btn>
         <span style={{ width: 1, height: 16, background: 'var(--h-border)' }} />
         <span style={{ fontSize: '.58rem', fontWeight: 600, color: 'var(--h-muted)', fontFamily: "var(--font-nunito)" }}>By Level:</span>
-        {[{l:1,n:'Sectors'},{l:2,n:'Categories'},{l:3,n:'Subcategories'},{l:4,n:'Types'},{l:5,n:'Niches'}].map(lv => (
+        {[{l:1,n:'Sectors'},{l:2,n:'Categories'},{l:3,n:'Subcategories'}].map(lv => (
           <Btn key={lv.l} onClick={async () => { await apiBulkLaunch(true, lv.l); await reload() }} style={{ background: '#3B82F615', color: '#3B82F6', borderColor: 'transparent', fontSize: '.5rem' }}>Launch L{lv.l} {lv.n}</Btn>
         ))}
         {sectors.length > 0 && (

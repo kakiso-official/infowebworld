@@ -6,6 +6,8 @@ import { fetchCategoryBySlug, fetchLaunchedCategories } from '../iww-hq/data/cat
 import type { Category } from '../iww-hq/data/category-storage'
 import { fetchCategoryListings } from '../iww-hq/data/submissions-storage'
 import type { RealSubmission } from '../iww-hq/data/submissions-storage'
+import { fetchAllTagGroups } from '../iww-hq/data/tag-storage'
+import type { TagGroup } from '../iww-hq/data/tag-storage'
 
 /* ── SVG Icon helper ── */
 const I = ({ d, size = 18, color = 'currentColor', sw = 1.5 }: { d: string; size?: number; color?: string; sw?: number }) => (
@@ -148,6 +150,9 @@ export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
   const [related, setRelated] = useState<Category[]>([])
   const [notFound, setNotFound] = useState(false)
   const [listings, setListings] = useState<RealSubmission[]>([])
+  const [tagGroups, setTagGroups] = useState<TagGroup[]>([])
+  const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set())
+  const [selectedListingType, setSelectedListingType] = useState<string>('')
 
   useEffect(() => {
     if (!slug) { setNotFound(true); return }
@@ -241,6 +246,12 @@ export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
     }
   }, [category])
 
+  /* ── Fetch tag groups for L3 filter sidebar ── */
+  useEffect(() => {
+    if (!category || category.level !== 3) return
+    fetchAllTagGroups().then(setTagGroups)
+  }, [category])
+
   /* ── Always fetch real listings (listingCount may be stale) ── */
   useEffect(() => {
     if (!category) return
@@ -248,6 +259,16 @@ export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
       setListings(res.data)
     })
   }, [category])
+
+  const toggleTag = (slug: string) => {
+    setSelectedTags(prev => {
+      const next = new Set(prev)
+      if (next.has(slug)) next.delete(slug); else next.add(slug)
+      return next
+    })
+  }
+
+  const clearFilters = () => { setSelectedTags(new Set()); setSelectedListingType('') }
 
   /* ── Not Found ── */
   if (notFound) {
@@ -383,6 +404,84 @@ export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
                   {sc.name}
                   {sc.listingCount > 0 && <span style={{ opacity: .5, marginLeft: '.3rem' }}>({sc.listingCount})</span>}
                 </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ═══════════════════════════════════════════════
+            2B. LISTING TYPE CHIPS (L3 only)
+            ═══════════════════════════════════════════════ */}
+        {c.level === 3 && c.listingTypes && c.listingTypes.length > 0 && (
+          <div className="cd-subcats-section">
+            <h3 className="cd-section-label">Listing Types</h3>
+            <div className="category-subcats">
+              <button
+                onClick={() => setSelectedListingType('')}
+                className={`category-subcat-chip${!selectedListingType ? ' category-subcat-chip--active' : ''}`}
+                style={!selectedListingType ? { background: `${color}12`, borderColor: color, color } : {}}
+              >All</button>
+              {c.listingTypes.map(lt => (
+                <button
+                  key={lt.id}
+                  onClick={() => setSelectedListingType(selectedListingType === lt.slug ? '' : lt.slug)}
+                  className={`category-subcat-chip${selectedListingType === lt.slug ? ' category-subcat-chip--active' : ''}`}
+                  style={selectedListingType === lt.slug ? { background: `${color}12`, borderColor: color, color } : {}}
+                >{lt.name}</button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ═══════════════════════════════════════════════
+            2C. TAG FILTERS (L3 only)
+            ═══════════════════════════════════════════════ */}
+        {c.level === 3 && tagGroups.length > 0 && (
+          <div className="cd-tag-filters">
+            <div className="cd-tag-filters-header">
+              <h3 className="cd-section-label" style={{ marginBottom: 0 }}>
+                <I d={ic.filter} size={14} color={color} sw={2} /> Filters
+              </h3>
+              {(selectedTags.size > 0 || selectedListingType) && (
+                <button onClick={clearFilters} className="cd-tag-clear" style={{ color }}>Clear all</button>
+              )}
+            </div>
+            {selectedTags.size > 0 && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.3rem', marginBottom: '.75rem' }}>
+                {Array.from(selectedTags).map(slug => {
+                  const tag = tagGroups.flatMap(g => g.tags).find(t => t.slug === slug)
+                  return tag ? (
+                    <span key={slug} className="cd-active-tag" style={{ background: `${color}10`, color, borderColor: `${color}30` }}>
+                      {tag.name}
+                      <button onClick={() => toggleTag(slug)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, marginLeft: '.25rem', color, fontSize: '.7rem', fontWeight: 800 }}>x</button>
+                    </span>
+                  ) : null
+                })}
+              </div>
+            )}
+            <div className="cd-tag-groups">
+              {tagGroups.map(group => (
+                <details key={group.id} className="cd-tag-group">
+                  <summary className="cd-tag-group-title">
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '.35rem' }}>
+                      <span style={{ width: 6, height: 6, borderRadius: 999, background: group.color, flexShrink: 0 }} />
+                      {group.name}
+                    </span>
+                    <span style={{ fontSize: '.6rem', color: 'var(--h-muted)', fontWeight: 600 }}>{group.tags.length}</span>
+                  </summary>
+                  <div className="cd-tag-values">
+                    {group.tags.map(tag => (
+                      <label key={tag.id} className="cd-tag-check">
+                        <input
+                          type="checkbox"
+                          checked={selectedTags.has(tag.slug)}
+                          onChange={() => toggleTag(tag.slug)}
+                        />
+                        <span>{tag.name}</span>
+                      </label>
+                    ))}
+                  </div>
+                </details>
               ))}
             </div>
           </div>

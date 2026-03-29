@@ -44,6 +44,7 @@ export async function POST(request: NextRequest) {
       is_active,
       is_launched,
       is_featured,
+      is_navigation,
       seo_title,
       seo_description,
       seo_keywords,
@@ -56,6 +57,7 @@ export async function POST(request: NextRequest) {
     const isActive = is_active ? 1 : 0
     const isLaunched = is_launched ? 1 : 0
     const isFeatured = is_featured ? 1 : 0
+    const isNavigation = is_navigation !== undefined ? (is_navigation ? 1 : 0) : 1
     const isNoIndex = seo_no_index ? 1 : 0
 
     if (id) {
@@ -64,7 +66,7 @@ export async function POST(request: NextRequest) {
         `UPDATE categories SET
            name = ?, slug = ?, icon = ?, color = ?, description = ?,
            cover_image = ?, parent_id = ?, level = ?, sort_order = ?,
-           is_active = ?, is_launched = ?, is_featured = ?,
+           is_active = ?, is_launched = ?, is_featured = ?, is_navigation = ?,
            seo_title = ?, seo_description = ?, seo_keywords = ?,
            seo_og_image = ?, seo_canonical = ?, seo_no_index = ?,
            updated_at = NOW()
@@ -72,7 +74,7 @@ export async function POST(request: NextRequest) {
         [
           name, slug, icon, color, description,
           cover_image, parent_id || null, level, sort_order,
-          isActive, isLaunched, isFeatured,
+          isActive, isLaunched, isFeatured, isNavigation,
           seo_title, seo_description, seoKeywordsJson,
           seo_og_image, seo_canonical, isNoIndex,
           id,
@@ -86,15 +88,15 @@ export async function POST(request: NextRequest) {
         `INSERT INTO categories (
            name, slug, icon, color, description,
            cover_image, parent_id, level, sort_order,
-           is_active, is_launched, is_featured,
+           is_active, is_launched, is_featured, is_navigation,
            seo_title, seo_description, seo_keywords,
            seo_og_image, seo_canonical, seo_no_index,
            created_at, updated_at
-         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
+         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
         [
           name, slug, icon, color, description,
           cover_image, parent_id || null, level, sort_order,
-          isActive, isLaunched, isFeatured,
+          isActive, isLaunched, isFeatured, isNavigation,
           seo_title, seo_description, seoKeywordsJson,
           seo_og_image, seo_canonical, isNoIndex,
         ]

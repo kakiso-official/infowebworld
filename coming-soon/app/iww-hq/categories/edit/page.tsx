@@ -25,7 +25,7 @@ function createEmptyCategory(): Category {
   return {
     id: '', slug: '', name: '', description: '', icon: '', color: '#E8553D',
     coverImage: '', parentId: null, level: 2, sortOrder: 0, listingCount: 0,
-    isLaunched: false, isFeatured: false,
+    isLaunched: false, isFeatured: false, isNavigation: true,
     seoTitle: '', seoDescription: '', seoKeywords: [], seoOgImage: '', seoCanonical: '', seoNoIndex: false,
     createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
   }

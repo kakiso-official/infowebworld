@@ -8,7 +8,7 @@ async function getDescendantCategoryIds(categoryId: number): Promise<number[]> {
   while (queue.length > 0) {
     const parentId = queue.shift()!
     const children = await query(
-      'SELECT id FROM categories WHERE parent_id = ? AND is_active = 1',
+      'SELECT id FROM categories WHERE parent_id = ? AND is_active = 1 AND is_navigation = 1',
       [parentId]
     ) as Array<{ id: number }>
 
@@ -37,27 +37,59 @@ export async function GET(
     const perPage = 20
     const offset = (page - 1) * perPage
 
+    // Optional filters
+    const tagSlugs = request.nextUrl.searchParams.get('tags')?.split(',').filter(Boolean) || []
+    const listingTypeSlug = request.nextUrl.searchParams.get('listing_type') || ''
+
     // Walk the category tree to include descendants
     const categoryIds = await getDescendantCategoryIds(categoryId)
-    const placeholders = categoryIds.map(() => '?').join(',')
+    const catPlaceholders = categoryIds.map(() => '?').join(',')
+
+    // Build dynamic WHERE + JOINs
+    let joins = ''
+    let where = `s.category_id IN (${catPlaceholders}) AND s.status IN ('active','paid')`
+    const queryParams: (string | number)[] = [...categoryIds]
+
+    // Filter by listing type
+    if (listingTypeSlug) {
+      where += ' AND lt.slug = ?'
+      joins += ' LEFT JOIN listing_types lt ON lt.id = s.listing_type_id'
+      queryParams.push(listingTypeSlug)
+    }
+
+    // Filter by tags (must match ALL provided tags)
+    if (tagSlugs.length > 0) {
+      joins += ' INNER JOIN submission_tags st ON st.submission_id = s.id INNER JOIN tags t ON t.id = st.tag_id'
+      const tagPlaceholders = tagSlugs.map(() => '?').join(',')
+      where += ` AND t.slug IN (${tagPlaceholders})`
+      queryParams.push(...tagSlugs)
+    }
 
     // Get total count
-    const countRow = await queryOne(
-      `SELECT COUNT(*) as count FROM submissions WHERE category_id IN (${placeholders}) AND status IN ('active','paid')`,
-      categoryIds
-    )
+    let countSql = `SELECT COUNT(DISTINCT s.id) as count FROM submissions s${joins} WHERE ${where}`
+    const countRow = await queryOne(countSql, queryParams)
     const total = Number(countRow?.count ?? 0)
 
     // Get paginated listings
-    const listings = await query(
-      `SELECT s.*, c.name as category_name, c.slug as category_slug, c.color as category_color, c.icon as category_icon
-       FROM submissions s
-       LEFT JOIN categories c ON c.id = s.category_id
-       WHERE s.category_id IN (${placeholders}) AND s.status IN ('active','paid')
-       ORDER BY s.is_featured DESC, s.approved_at DESC
-       LIMIT ? OFFSET ?`,
-      [...categoryIds, perPage, offset]
-    )
+    const listingSql = `
+      SELECT DISTINCT s.*, c.name as category_name, c.slug as category_slug, c.color as category_color, c.icon as category_icon,
+             ltype.name as listing_type_name, ltype.slug as listing_type_slug
+      FROM submissions s
+      LEFT JOIN categories c ON c.id = s.category_id
+      LEFT JOIN listing_types ltype ON ltype.id = s.listing_type_id
+      ${joins.includes('submission_tags') ? 'INNER JOIN submission_tags st2 ON st2.submission_id = s.id INNER JOIN tags t2 ON t2.id = st2.tag_id' : ''}
+      WHERE s.category_id IN (${catPlaceholders}) AND s.status IN ('active','paid')
+      ${listingTypeSlug ? 'AND ltype.slug = ?' : ''}
+      ${tagSlugs.length > 0 ? `AND t2.slug IN (${tagSlugs.map(() => '?').join(',')})` : ''}
+      ORDER BY s.is_featured DESC, s.approved_at DESC
+      LIMIT ? OFFSET ?`
+
+    const listingParams: (string | number)[] = [...categoryIds]
+    if (listingTypeSlug) listingParams.push(listingTypeSlug)
+    if (tagSlugs.length > 0) listingParams.push(...tagSlugs)
+    listingParams.push(perPage, offset)
+
+    const listings = await query(listingSql, listingParams)
 
     return Response.json({
       ok: true,

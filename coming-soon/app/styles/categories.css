@@ -1249,4 +1249,101 @@
   .cd-card-logo { width: 36px; height: 36px }
   .cd-hero-icon { width: 60px; height: 60px; border-radius: 16px; margin-bottom: -30px }
   .cd-hero-content { padding-top: calc(30px + 1rem) }
+  .cd-tag-groups { grid-template-columns: 1fr }
+}
+
+/* ═══ Tag Filter Styles ═══ */
+.cd-tag-filters {
+  background: #fff;
+  border: 1.5px solid var(--h-border);
+  border-radius: 16px;
+  padding: 1.15rem;
+  margin-bottom: 1.5rem;
+}
+.cd-tag-filters-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: .75rem;
+}
+.cd-tag-clear {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-nunito);
+  font-size: .72rem;
+  font-weight: 700;
+  padding: .25rem .6rem;
+  border-radius: 999px;
+  transition: background .2s;
+}
+.cd-tag-clear:hover { background: var(--h-bg) }
+.cd-active-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: .2rem;
+  font-family: var(--font-nunito);
+  font-size: .66rem;
+  font-weight: 700;
+  padding: .2rem .5rem;
+  border-radius: 999px;
+  border: 1px solid;
+}
+.cd-tag-groups {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .5rem;
+}
+.cd-tag-group {
+  border: 1px solid var(--h-border-light);
+  border-radius: 10px;
+  padding: .05rem;
+}
+.cd-tag-group[open] { padding-bottom: .5rem }
+.cd-tag-group-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .55rem .65rem;
+  cursor: pointer;
+  font-family: var(--font-nunito);
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--h-heading);
+  list-style: none;
+}
+.cd-tag-group-title::-webkit-details-marker { display: none }
+.cd-tag-values {
+  padding: 0 .65rem;
+  display: flex;
+  flex-direction: column;
+  gap: .1rem;
+  max-height: 180px;
+  overflow-y: auto;
+}
+.cd-tag-check {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  font-family: var(--font-nunito);
+  font-size: .68rem;
+  color: var(--h-body);
+  cursor: pointer;
+  padding: .2rem 0;
+}
+.cd-tag-check input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--h-accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.category-subcat-chip--active {
+  font-weight: 700 !important;
+}
+@media (max-width: 768px) {
+  .cd-tag-groups { grid-template-columns: repeat(2, 1fr) }
+}
+@media (max-width: 480px) {
+  .cd-tag-groups { grid-template-columns: 1fr }
 }

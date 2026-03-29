@@ -115,6 +115,8 @@ function mapServerRow(r: Record<string, unknown>): RealSubmission {
     twitter: String(r.twitter ?? ''),
     facebook: String(r.facebook ?? ''),
     faqs: parseJson(r.faqs) as FaqItem[],
+    listingType: String(r.listing_type_name ?? ''),
+    listingTypeSlug: String(r.listing_type_slug ?? ''),
     plan: String(r.plan_slug ?? r.plan ?? ''),
     planName: String(r.plan_name ?? ''),
     status: (r.status as RealSubmission['status']) || 'pending',

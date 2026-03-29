@@ -6,6 +6,10 @@ import SafeMailLink from '../components/SafeMailLink'
 import { addSubmission, uploadFile } from '../iww-hq/data/submissions-storage'
 import { fetchLaunchedCategories } from '../iww-hq/data/category-storage'
 import type { Category } from '../iww-hq/data/category-storage'
+import { fetchAllTagGroups } from '../iww-hq/data/tag-storage'
+import type { TagGroup } from '../iww-hq/data/tag-storage'
+import { fetchListingTypes } from '../iww-hq/data/listing-type-storage'
+import type { ListingType } from '../iww-hq/data/listing-type-storage'
 
 /* ══════════════════════════════════════════════════════════════
    GEO DATA (country-state-city package)
@@ -235,6 +239,8 @@ type FormData = {
   categorySlug: string
   categoryColor: string
   categoryIcon: string
+  listingTypeId: string
+  tagIds: string[]
   tagline: string
   description: string
   countryCode: string
@@ -266,6 +272,7 @@ type FormData = {
 const initial: FormData = {
   companyName: '', contactName: '', email: '', phoneCode: '+1', phone: '', website: '',
   categoryId: '', categoryName: '', categorySlug: '', categoryColor: '', categoryIcon: '',
+  listingTypeId: '', tagIds: [],
   tagline: '', description: '', countryCode: '', country: '', state: '', stateCode: '', city: '', founded: '', employees: '',
   logoUrl: '', screenshots: [], demoVideo: '', features: [''], integrations: [],
   pricingModel: '', pricingTiers: [
@@ -309,6 +316,12 @@ export default function ListingForm() {
   const [allCategories, setAllCategories] = useState<Category[]>([])
   const [catSelections, setCatSelections] = useState<string[]>([])
   const [catLoading, setCatLoading] = useState(false)
+
+  /* ── Listing type & tag state ── */
+  const [listingTypes, setListingTypes] = useState<ListingType[]>([])
+  const [listingTypesLoading, setListingTypesLoading] = useState(false)
+  const [tagGroups, setTagGroups] = useState<TagGroup[]>([])
+  const [tagsLoading, setTagsLoading] = useState(false)
 
   /* ── Upload state ── */
   const [logoUploading, setLogoUploading] = useState(false)
@@ -418,6 +431,7 @@ export default function ListingForm() {
     setCatSelections(newSelections)
 
     /* Set the deepest selected category as the submission category */
+    /* Reset listing type & tags whenever category changes */
     setForm(p => ({
       ...p,
       categoryId: cat.id,
@@ -425,10 +439,34 @@ export default function ListingForm() {
       categorySlug: cat.slug,
       categoryColor: cat.color || '#E8553D',
       categoryIcon: cat.icon || 'grid',
+      listingTypeId: '',
+      tagIds: [],
     }))
+    setListingTypes([])
+    setTagGroups([])
   }
 
-  /* Build cascading levels: level 0 = roots, level 1 = children of selections[0], etc. */
+  /* ── Fetch listing types when L3 (index 2) is selected ── */
+  const l3CatId = catSelections[2] || ''
+  useEffect(() => {
+    if (!l3CatId) { setListingTypes([]); return }
+    setListingTypesLoading(true)
+    fetchListingTypes(l3CatId).then(lt => {
+      setListingTypes(lt.filter(t => t.isActive))
+      setListingTypesLoading(false)
+    }).catch(() => { setListingTypes([]); setListingTypesLoading(false) })
+  }, [l3CatId])
+
+  /* ── Fetch tag groups once (they are global, not per-category) ── */
+  useEffect(() => {
+    setTagsLoading(true)
+    fetchAllTagGroups().then(groups => {
+      setTagGroups(groups.filter(g => g.isActive))
+      setTagsLoading(false)
+    }).catch(() => { setTagGroups([]); setTagsLoading(false) })
+  }, [])
+
+  /* Build cascading levels: level 0 = roots, level 1 = children of selections[0], level 2 = children of selections[1] (max 3 levels: L1 > L2 > L3) */
   const categoryLevels: { label: string; options: Category[]; selectedId: string }[] = []
   const roots = getCategoriesByParent(null)
   if (roots.length > 0) {
@@ -436,12 +474,13 @@ export default function ListingForm() {
 
     let currentParent = catSelections[0] || ''
     let levelIndex = 1
-    while (currentParent) {
+    const maxLevels = 3
+    while (currentParent && levelIndex < maxLevels) {
       const children = getCategoriesByParent(currentParent)
       if (children.length === 0) break
-      const levelLabels = ['Select Category', 'Select Subcategory', 'Select Sub-subcategory', 'Select Option']
+      const levelLabels = ['Select Category', 'Select Subcategory']
       categoryLevels.push({
-        label: levelLabels[Math.min(levelIndex, levelLabels.length - 1)],
+        label: levelLabels[Math.min(levelIndex - 1, levelLabels.length - 1)],
         options: children,
         selectedId: catSelections[levelIndex] || '',
       })
@@ -660,6 +699,8 @@ export default function ListingForm() {
             categorySlug: form.categorySlug,
             categoryColor: form.categoryColor,
             categoryIcon: form.categoryIcon,
+            listingTypeId: form.listingTypeId || undefined,
+            tagIds: form.tagIds.length > 0 ? form.tagIds : undefined,
             country: form.country,
             state: form.state,
             city: form.city,
@@ -841,7 +882,7 @@ export default function ListingForm() {
             </div>
             <div className="listing-success-actions">
               <Link href="/" className="listing-btn listing-btn--secondary">Back to Home</Link>
-              <button type="button" className="listing-btn listing-btn--primary" onClick={() => { setSubmitted(false); setStep(1); setForm(initial); setCatSelections([]) }}>List Another Business</button>
+              <button type="button" className="listing-btn listing-btn--primary" onClick={() => { setSubmitted(false); setStep(1); setForm(initial); setCatSelections([]); setListingTypes([]); setTagGroups([]) }}>List Another Business</button>
             </div>
           </div>
         </div>
@@ -1089,6 +1130,130 @@ export default function ListingForm() {
                     </div>
                   )}
                 </div>
+
+                {/* Listing Type — shown only when L3 category is selected */}
+                {l3CatId && (
+                  <div className="listing-field">
+                    <label className="listing-label">Listing Type</label>
+                    {listingTypesLoading ? (
+                      <div style={{ padding: '.75rem 0', fontFamily: 'var(--font-nunito)', fontSize: '.8rem', color: 'var(--h-muted)' }}>
+                        Loading listing types...
+                      </div>
+                    ) : listingTypes.length === 0 ? (
+                      <div style={{ padding: '.5rem 0', fontFamily: 'var(--font-nunito)', fontSize: '.72rem', color: 'var(--h-muted)' }}>
+                        No listing types available for this category.
+                      </div>
+                    ) : (
+                      <div className="ld-dd">
+                        <button
+                          type="button"
+                          className={`listing-input ld-dd-trigger${openDd === 'listingType' ? ' ld-dd-trigger--open' : ''}${form.listingTypeId ? ' ld-dd-trigger--filled' : ''}`}
+                          onClick={() => toggleDd('listingType')}
+                        >
+                          <span>
+                            {form.listingTypeId
+                              ? listingTypes.find(lt => lt.id === form.listingTypeId)?.name || 'Select listing type'
+                              : 'Select listing type'
+                            }
+                          </span>
+                          <Arrow />
+                        </button>
+                        {openDd === 'listingType' && (
+                          <div className="ld-dd-menu">
+                            {listingTypes.map(lt => (
+                              <button
+                                key={lt.id}
+                                type="button"
+                                className={`ld-dd-item${form.listingTypeId === lt.id ? ' ld-dd-item--active' : ''}`}
+                                onClick={() => { setString('listingTypeId', lt.id); setOpenDd(null) }}
+                              >
+                                {lt.name}
+                                {form.listingTypeId === lt.id && (
+                                  <svg viewBox="0 0 20 20" className="ld-dd-check"><circle cx="10" cy="10" r="10" /><path d="M6 10.5l2.5 2.5L14 7.5" /></svg>
+                                )}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Tags — shown only when L3 category is selected */}
+                {l3CatId && !tagsLoading && tagGroups.length > 0 && (
+                  <div className="listing-field">
+                    <label className="listing-label">Tags</label>
+                    <p style={{ fontFamily: 'var(--font-nunito)', fontSize: '.7rem', color: 'var(--h-muted)', lineHeight: 1.45, margin: '0 0 .5rem' }}>
+                      Select tags that describe your business. These help customers find you.
+                    </p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '.85rem' }}>
+                      {tagGroups.map(group => {
+                        const activeTags = group.tags.filter(t => t.isActive)
+                        if (activeTags.length === 0) return null
+                        return (
+                          <div key={group.id}>
+                            <div style={{
+                              display: 'flex', alignItems: 'center', gap: '.35rem',
+                              marginBottom: '.4rem',
+                            }}>
+                              <div style={{
+                                width: 6, height: 6, borderRadius: '50%',
+                                background: group.color || '#E8553D', flexShrink: 0,
+                              }} />
+                              <span style={{
+                                fontFamily: 'var(--font-nunito)', fontSize: '.7rem',
+                                fontWeight: 700, color: 'var(--h-heading)',
+                                letterSpacing: '.01em',
+                              }}>
+                                {group.name}
+                              </span>
+                            </div>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.35rem' }}>
+                              {activeTags.map(tag => {
+                                const isSelected = form.tagIds.includes(tag.id)
+                                return (
+                                  <button
+                                    key={tag.id}
+                                    type="button"
+                                    onClick={() => {
+                                      set('tagIds', isSelected
+                                        ? form.tagIds.filter(id => id !== tag.id)
+                                        : [...form.tagIds, tag.id]
+                                      )
+                                    }}
+                                    style={{
+                                      display: 'inline-flex', alignItems: 'center', gap: '.3rem',
+                                      padding: '.3rem .65rem', borderRadius: 999,
+                                      border: `1.5px solid ${isSelected ? (group.color || 'var(--h-accent)') : 'var(--h-border)'}`,
+                                      background: isSelected ? `${group.color || 'var(--h-accent)'}10` : 'transparent',
+                                      cursor: 'pointer', fontFamily: 'var(--font-nunito)',
+                                      fontSize: '.7rem', fontWeight: isSelected ? 700 : 600,
+                                      color: isSelected ? (group.color || 'var(--h-accent)') : 'var(--h-body)',
+                                      transition: 'all .2s cubic-bezier(.16,1,.3,1)',
+                                    }}
+                                  >
+                                    {isSelected && <Ck />}
+                                    {tag.name}
+                                  </button>
+                                )
+                              })}
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                    {/* Show selected count */}
+                    {form.tagIds.length > 0 && (
+                      <div style={{
+                        marginTop: '.5rem', fontFamily: 'var(--font-nunito)',
+                        fontSize: '.68rem', fontWeight: 600, color: 'var(--h-muted)',
+                      }}>
+                        {form.tagIds.length} tag{form.tagIds.length !== 1 ? 's' : ''} selected
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Tagline */}
                 <div className="listing-field">
@@ -1999,6 +2164,8 @@ export default function ListingForm() {
                               website: form.website, category: form.categoryName,
                               categorySlug: form.categorySlug, categoryColor: form.categoryColor,
                               categoryIcon: form.categoryIcon,
+                              listingTypeId: form.listingTypeId || undefined,
+                              tagIds: form.tagIds.length > 0 ? form.tagIds : undefined,
                               country: form.country, state: form.state, city: form.city,
                               tagline: form.tagline, description: form.description,
                               logoUrl: form.logoUrl, screenshots: form.screenshots,

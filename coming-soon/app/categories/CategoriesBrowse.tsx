@@ -47,7 +47,7 @@ function buildTree(categories: Category[]): CatNode[] {
 }
 
 /* Level labels */
-const levelTag: Record<number, string> = { 1: 'Sector', 2: 'Category', 3: 'Subcategory', 4: 'Type', 5: 'Niche' }
+const levelTag: Record<number, string> = { 1: 'Sector', 2: 'Category', 3: 'Subcategory' }
 
 /* Sector section component */
 function SectorSection({ sector, searchQuery }: { sector: CatNode; searchQuery: string }) {
@@ -277,7 +277,6 @@ export default function CategoriesBrowse() {
             { n: tree.length, l: 'Sectors', c: '#E8553D' },
             { n: categories.filter(c => c.level === 2).length, l: 'Categories', c: '#3B82F6' },
             { n: categories.filter(c => c.level === 3).length, l: 'Subcategories', c: '#8B5CF6' },
-            { n: categories.filter(c => c.level >= 4).length, l: 'Specific Types', c: '#2FAE6A' },
           ].map(s => (
             <div key={s.l} style={{ display: 'flex', alignItems: 'center', gap: '.35rem' }}>
               <span style={{ width: 8, height: 8, borderRadius: 999, background: s.c }} />

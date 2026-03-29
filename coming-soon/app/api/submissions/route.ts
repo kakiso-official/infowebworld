@@ -66,6 +66,12 @@ export async function POST(request: NextRequest) {
       categoryId = cat ? Number(cat.id) : null
     }
 
+    // Look up listing_type_id
+    let listingTypeId: number | null = null
+    if (body.listingTypeId) {
+      listingTypeId = Number(body.listingTypeId)
+    }
+
     // Look up country_id
     let countryId: number | null = null
     if (body.country) {
@@ -103,13 +109,13 @@ export async function POST(request: NextRequest) {
     await execute(
       `INSERT INTO submissions (
         uuid, slug, company_name, contact_name, email, phone_code, phone, website,
-        category_id, country_id, city, state, tagline, description,
+        category_id, listing_type_id, country_id, city, state, tagline, description,
         founded_year, team_size, plan_id,
         logo_url, screenshots, demo_video,
         features, integrations, pricing_model, pricing_tiers,
         funding, hq_location, linkedin, twitter, facebook, faqs,
         paypal_order_id, payment_status, status, ip_address
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         uuid, slug,
         body.companyName.trim(),
@@ -119,6 +125,7 @@ export async function POST(request: NextRequest) {
         body.phone || null,
         body.website || null,
         categoryId,
+        listingTypeId,
         countryId,
         body.city || null,
         body.state || null,
@@ -145,6 +152,17 @@ export async function POST(request: NextRequest) {
         ip
       ]
     )
+
+    // Insert submission tags if provided
+    if (Array.isArray(body.tagIds) && body.tagIds.length > 0) {
+      const subRow = await queryOne('SELECT id FROM submissions WHERE uuid = ? LIMIT 1', [uuid])
+      if (subRow) {
+        const subId = Number(subRow.id)
+        for (const tagId of body.tagIds) {
+          await execute('INSERT IGNORE INTO submission_tags (submission_id, tag_id) VALUES (?, ?)', [subId, Number(tagId)])
+        }
+      }
+    }
 
     // If paid, increment listing_count on the category
     if (isPaid && categoryId) {

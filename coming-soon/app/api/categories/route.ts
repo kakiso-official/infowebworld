@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
              (SELECT COUNT(*) FROM submissions s WHERE s.category_id = c.id AND s.status IN ('active','paid')) as listing_count
       FROM categories c
       LEFT JOIN categories p ON p.id = c.parent_id
-      WHERE c.is_launched = 1 AND c.is_active = 1
+      WHERE c.is_launched = 1 AND c.is_active = 1 AND c.is_navigation = 1
       ORDER BY c.sort_order
     `)
 

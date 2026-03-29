@@ -15,6 +15,7 @@ export type Category = {
   listingCount: number
   isLaunched: boolean
   isFeatured: boolean
+  isNavigation: boolean
   sortOrder: number
   seoTitle: string
   seoDescription: string
@@ -25,6 +26,7 @@ export type Category = {
   parentName?: string
   parentSlug?: string
   subcategories?: Category[]
+  listingTypes?: { id: string; name: string; slug: string }[]
   createdAt: string
   updatedAt: string
 }
@@ -48,6 +50,7 @@ function mapRow(r: Record<string, unknown>): Category {
     listingCount: Number(r.listing_count ?? 0),
     isLaunched: !!(r.is_launched ?? false),
     isFeatured: !!(r.is_featured ?? false),
+    isNavigation: !!(r.is_navigation ?? true),
     sortOrder: Number(r.sort_order ?? 0),
     seoTitle: String(r.seo_title ?? ''),
     seoDescription: String(r.seo_description ?? ''),
@@ -79,6 +82,7 @@ function toPayload(c: Category): Record<string, unknown> {
     is_active: 1,
     is_launched: c.isLaunched ? 1 : 0,
     is_featured: c.isFeatured ? 1 : 0,
+    is_navigation: c.isNavigation ? 1 : 0,
     sort_order: c.sortOrder,
     seo_title: c.seoTitle,
     seo_description: c.seoDescription,
@@ -121,6 +125,14 @@ export async function fetchCategoryBySlug(slug: string): Promise<Category | null
     // Map subcategories
     if (Array.isArray(data.subcategories)) {
       cat.subcategories = data.subcategories.map((s: Record<string, unknown>) => mapRow(s))
+    }
+    // Map listing types (L3 categories)
+    if (Array.isArray(data.listingTypes)) {
+      cat.listingTypes = data.listingTypes.map((lt: Record<string, unknown>) => ({
+        id: String(lt.id ?? ''),
+        name: String(lt.name ?? ''),
+        slug: String(lt.slug ?? ''),
+      }))
     }
     return cat
   } catch { return null }
