@@ -81,7 +81,7 @@ export async function GET(
       WHERE s.category_id IN (${catPlaceholders}) AND s.status IN ('active','paid')
       ${listingTypeSlug ? 'AND ltype.slug = ?' : ''}
       ${tagSlugs.length > 0 ? `AND t2.slug IN (${tagSlugs.map(() => '?').join(',')})` : ''}
-      ORDER BY s.is_featured DESC, s.approved_at DESC
+      ORDER BY s.approved_at DESC, s.created_at DESC
       LIMIT ? OFFSET ?`
 
     const listingParams: (string | number)[] = [...categoryIds]
