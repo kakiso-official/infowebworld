@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { fetchCategoryBySlug, fetchLaunchedCategories } from '../iww-hq/data/category-storage'
@@ -17,6 +17,7 @@ const I = ({ d, size = 18, color = 'currentColor', sw = 1.5 }: { d: string; size
 const ic = {
   home: 'M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z|M9 22V12h6v10',
   chevron: 'M9 18l6-6-6-6',
+  chevronDown: 'M6 9l6 6 6-6',
   grid: 'M3 3h7v7H3z|M14 3h7v7h-7z|M3 14h7v7H3z|M14 14h7v7h-7z',
   building: 'M4 2h16a1 1 0 011 1v18a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z|M9 22v-4h6v4|M8 6h.01M16 6h.01M12 6h.01M8 10h.01M16 10h.01M12 10h.01M8 14h.01M16 14h.01M12 14h.01',
   plus: 'M12 5v14|M5 12h14',
@@ -50,6 +51,10 @@ const ic = {
   settings: 'M12 15a3 3 0 100-6 3 3 0 000 6z|M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z',
   trendingUp: 'M23 6l-9.5 9.5-5-5L1 18',
   monitor: 'M2 3h20v14H2z|M8 21h8|M12 17v4',
+  x: 'M18 6L6 18|M6 6l12 12',
+  heart: 'M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z',
+  messageCircle: 'M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z',
+  briefcase: 'M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z|M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16',
 }
 
 /* ── Star renderer ── */
@@ -72,8 +77,21 @@ const SatRing = ({ pct, color, size = 48 }: { pct: number; color: string; size?:
   </div>
 )
 
-/* ── Sample listings for platform preview ── */
-const sampleListings = [
+/* ── Sample listings for platform preview (expanded to 8) ── */
+type DemoListing = {
+  name: string; tagline: string;
+  logoIcon: string; logoColor: string; sat: number; satColor: string;
+  award: string; awardType: string;
+  score: string; stars: number; reviews: string; rec: string;
+  bars: { l: string; w: number; c: string }[];
+  quote: string;
+  cat: string; listingType: string; verified: boolean; price: string; votes: number;
+  features: string[];
+  website: string;
+  tags: string[];
+}
+
+const sampleListings: DemoListing[] = [
   {
     name: 'CloudSync Pro', tagline: 'Enterprise cloud storage and real-time sync for distributed teams',
     logoIcon: 'cloud', logoColor: '#3B82F6', sat: 92, satColor: '#2FAE6A',
@@ -81,7 +99,10 @@ const sampleListings = [
     score: '4.6', stars: 4, reviews: '234', rec: '92',
     bars: [{ l: 'Ease of Use', w: 88, c: '#2FAE6A' }, { l: 'Setup', w: 82, c: '#3B82F6' }, { l: 'Support', w: 90, c: '#E8553D' }],
     quote: '"Seamless sync across all devices. Team collaboration is a game-changer for remote work."',
-    cat: 'Cloud Storage', verified: true, price: 'From $29/mo', votes: 247,
+    cat: 'Cloud Storage', listingType: 'SaaS Platform', verified: true, price: 'From $29/mo', votes: 247,
+    features: ['Real-time file sync', 'Team collaboration', 'End-to-end encryption'],
+    website: '#',
+    tags: ['enterprise', 'subscription-saas', 'medium-51-200'],
   },
   {
     name: 'NovaByte Analytics', tagline: 'AI-powered business intelligence and data visualization',
@@ -90,7 +111,10 @@ const sampleListings = [
     score: '4.8', stars: 5, reviews: '189', rec: '95',
     bars: [{ l: 'Ease of Use', w: 91, c: '#2FAE6A' }, { l: 'Setup', w: 85, c: '#3B82F6' }, { l: 'Support', w: 93, c: '#E8553D' }],
     quote: '"AI insights saved our team 20+ hours a week. Dashboards are beautiful and intuitive."',
-    cat: 'Data Analytics', verified: true, price: 'From $79/mo', votes: 312,
+    cat: 'Data Analytics', listingType: 'SaaS Platform', verified: true, price: 'From $79/mo', votes: 312,
+    features: ['AI-powered insights', 'Custom dashboards', 'Data connectors'],
+    website: '#',
+    tags: ['enterprise', 'subscription-saas', 'large-201-1000'],
   },
   {
     name: 'CodeForge IDE', tagline: 'Cloud-based IDE with AI code completion and collaboration',
@@ -99,7 +123,10 @@ const sampleListings = [
     score: '4.9', stars: 5, reviews: '421', rec: '96',
     bars: [{ l: 'Ease of Use', w: 94, c: '#2FAE6A' }, { l: 'Setup', w: 92, c: '#3B82F6' }, { l: 'Support', w: 95, c: '#E8553D' }],
     quote: '"Best IDE I\'ve ever used. AI copilot feels like pair-programming with a senior dev."',
-    cat: 'DevOps', verified: true, price: 'Free tier', votes: 421,
+    cat: 'DevOps', listingType: 'Developer Tool', verified: true, price: 'Free tier', votes: 421,
+    features: ['AI code completion', 'Real-time collaboration', 'Git integration'],
+    website: '#',
+    tags: ['startup', 'freemium', 'small-2-10'],
   },
   {
     name: 'ShieldVault Security', tagline: 'Enterprise-grade cybersecurity with zero-trust architecture',
@@ -108,7 +135,58 @@ const sampleListings = [
     score: '4.5', stars: 4, reviews: '312', rec: '89',
     bars: [{ l: 'Ease of Use', w: 78, c: '#2FAE6A' }, { l: 'Setup', w: 72, c: '#3B82F6' }, { l: 'Support', w: 91, c: '#E8553D' }],
     quote: '"Best-in-class security posture. Zero-trust was seamless to deploy across our org."',
-    cat: 'Cybersecurity', verified: true, price: 'Custom', votes: 189,
+    cat: 'Cybersecurity', listingType: 'Enterprise Solution', verified: true, price: 'Custom', votes: 189,
+    features: ['Zero-trust architecture', 'Threat detection', 'Compliance dashboard'],
+    website: '#',
+    tags: ['enterprise', 'custom-pricing', 'large-201-1000'],
+  },
+  {
+    name: 'FlowStack CRM', tagline: 'Modern CRM with workflow automation and AI lead scoring',
+    logoIcon: 'trendingUp', logoColor: '#EC4899', sat: 91, satColor: '#2FAE6A',
+    award: 'Momentum Leader', awardType: 'momentum',
+    score: '4.7', stars: 5, reviews: '156', rec: '91',
+    bars: [{ l: 'Ease of Use', w: 90, c: '#2FAE6A' }, { l: 'Setup', w: 87, c: '#3B82F6' }, { l: 'Support', w: 88, c: '#E8553D' }],
+    quote: '"Transformed our sales pipeline. The AI lead scoring is incredibly accurate and saves hours."',
+    cat: 'CRM', listingType: 'SaaS Platform', verified: true, price: 'From $49/mo', votes: 278,
+    features: ['AI lead scoring', 'Pipeline automation', 'Email campaigns'],
+    website: '#',
+    tags: ['healthcare', 'subscription-saas', 'medium-51-200'],
+  },
+  {
+    name: 'PixelBoard Design', tagline: 'Collaborative design platform for product teams and agencies',
+    logoIcon: 'monitor', logoColor: '#F59E0B', sat: 93, satColor: '#2FAE6A',
+    award: 'Leader 2026', awardType: 'leader',
+    score: '4.7', stars: 5, reviews: '287', rec: '93',
+    bars: [{ l: 'Ease of Use', w: 92, c: '#2FAE6A' }, { l: 'Setup', w: 90, c: '#3B82F6' }, { l: 'Support', w: 86, c: '#E8553D' }],
+    quote: '"Our entire design team switched from Figma. The real-time collab is buttery smooth."',
+    cat: 'Design Tools', listingType: 'SaaS Platform', verified: true, price: 'From $15/mo', votes: 356,
+    features: ['Real-time collaboration', 'Design systems', 'Prototyping'],
+    website: '#',
+    tags: ['startup', 'freemium', 'small-2-10'],
+  },
+  {
+    name: 'MetrikHQ', tagline: 'Product analytics with session replay and feature flag management',
+    logoIcon: 'barChart', logoColor: '#6366F1', sat: 88, satColor: '#2FAE6A',
+    award: 'High Performer', awardType: 'highperf',
+    score: '4.4', stars: 4, reviews: '198', rec: '88',
+    bars: [{ l: 'Ease of Use', w: 84, c: '#2FAE6A' }, { l: 'Setup', w: 80, c: '#3B82F6' }, { l: 'Support', w: 85, c: '#E8553D' }],
+    quote: '"Session replays helped us fix UX issues we never knew existed. Great product analytics."',
+    cat: 'Analytics', listingType: 'Developer Tool', verified: true, price: 'Free tier', votes: 198,
+    features: ['Session replay', 'Feature flags', 'Funnel analysis'],
+    website: '#',
+    tags: ['healthcare', 'freemium', 'medium-51-200'],
+  },
+  {
+    name: 'BridgeComm', tagline: 'Unified team messaging, video calls, and project boards',
+    logoIcon: 'messageCircle', logoColor: '#0EA5E9', sat: 90, satColor: '#2FAE6A',
+    award: 'Momentum Leader', awardType: 'momentum',
+    score: '4.5', stars: 4, reviews: '342', rec: '90',
+    bars: [{ l: 'Ease of Use', w: 89, c: '#2FAE6A' }, { l: 'Setup', w: 91, c: '#3B82F6' }, { l: 'Support', w: 87, c: '#E8553D' }],
+    quote: '"Replaced Slack, Zoom, and Trello in one tool. The unified experience is unmatched."',
+    cat: 'Team Communication', listingType: 'Enterprise Solution', verified: true, price: 'From $8/user/mo', votes: 445,
+    features: ['Team messaging', 'HD video calls', 'Project boards'],
+    website: '#',
+    tags: ['enterprise', 'subscription-saas', 'large-201-1000'],
   },
 ]
 
@@ -153,6 +231,9 @@ export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
   const [tagGroups, setTagGroups] = useState<TagGroup[]>([])
   const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set())
   const [selectedListingType, setSelectedListingType] = useState<string>('')
+  const [sortBy, setSortBy] = useState<'newest' | 'name-az' | 'name-za'>('newest')
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [openAccordions, setOpenAccordions] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     if (!slug) { setNotFound(true); return }
@@ -270,6 +351,113 @@ export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
 
   const clearFilters = () => { setSelectedTags(new Set()); setSelectedListingType('') }
 
+  const toggleAccordion = (groupId: string) => {
+    setOpenAccordions(prev => {
+      const next = new Set(prev)
+      if (next.has(groupId)) next.delete(groupId); else next.add(groupId)
+      return next
+    })
+  }
+
+  /* ── Filter + sort logic for demo listings ── */
+  const filteredDemoListings = useMemo(() => {
+    let result = [...sampleListings]
+
+    // Filter by listing type
+    if (selectedListingType) {
+      result = result.filter(item => {
+        // Match listing type name slug-ified against selected
+        const itemTypeSlug = item.listingType.toLowerCase().replace(/\s+/g, '-')
+        return itemTypeSlug === selectedListingType
+      })
+    }
+
+    // Filter by tags: ANY within a group, ALL across groups
+    if (selectedTags.size > 0) {
+      // Group selected tags by their tag group
+      const tagsByGroup = new Map<string, Set<string>>()
+      for (const tagSlug of selectedTags) {
+        for (const group of tagGroups) {
+          const tag = group.tags.find(t => t.slug === tagSlug)
+          if (tag) {
+            if (!tagsByGroup.has(group.id)) tagsByGroup.set(group.id, new Set())
+            tagsByGroup.get(group.id)!.add(tagSlug)
+            break
+          }
+        }
+      }
+
+      // For each group that has selections, the listing must match ANY tag from that group
+      // Across groups, ALL must match (AND logic)
+      result = result.filter(item => {
+        for (const [, groupTags] of tagsByGroup) {
+          const matchesAnyInGroup = Array.from(groupTags).some(tSlug => item.tags.includes(tSlug))
+          if (!matchesAnyInGroup) return false
+        }
+        return true
+      })
+    }
+
+    // Sort
+    if (sortBy === 'name-az') result.sort((a, b) => a.name.localeCompare(b.name))
+    else if (sortBy === 'name-za') result.sort((a, b) => b.name.localeCompare(a.name))
+    // 'newest' = default order
+
+    return result
+  }, [selectedListingType, selectedTags, sortBy, tagGroups])
+
+  /* ── Filter + sort logic for real listings ── */
+  const filteredRealListings = useMemo(() => {
+    let result = [...listings]
+
+    // Filter by listing type
+    if (selectedListingType) {
+      result = result.filter(item => item.listingTypeSlug === selectedListingType)
+    }
+
+    // Real listings don't have tags yet, so don't filter by tags
+
+    // Sort
+    if (sortBy === 'name-az') result.sort((a, b) => a.companyName.localeCompare(b.companyName))
+    else if (sortBy === 'name-za') result.sort((a, b) => b.companyName.localeCompare(a.companyName))
+    // 'newest' = default order (by submittedAt, already sorted from API)
+
+    return result
+  }, [listings, selectedListingType, sortBy])
+
+  /* ── Compute listing type counts for demo listings ── */
+  const demoListingTypeCounts = useMemo(() => {
+    const counts = new Map<string, number>()
+    for (const item of sampleListings) {
+      const slug = item.listingType.toLowerCase().replace(/\s+/g, '-')
+      counts.set(slug, (counts.get(slug) || 0) + 1)
+    }
+    return counts
+  }, [])
+
+  /* ── Unique listing types from demo data ── */
+  const demoListingTypes = useMemo(() => {
+    const seen = new Map<string, string>()
+    for (const item of sampleListings) {
+      const slug = item.listingType.toLowerCase().replace(/\s+/g, '-')
+      if (!seen.has(slug)) seen.set(slug, item.listingType)
+    }
+    return Array.from(seen.entries()).map(([slug, name]) => ({ slug, name }))
+  }, [])
+
+  /* ── Tag counts from demo listings (how many demo listings match each tag) ── */
+  const demoTagCounts = useMemo(() => {
+    const counts = new Map<string, number>()
+    for (const item of sampleListings) {
+      for (const t of item.tags) {
+        counts.set(t, (counts.get(t) || 0) + 1)
+      }
+    }
+    return counts
+  }, [])
+
+  const hasAnyFilter = selectedTags.size > 0 || !!selectedListingType
+
   /* ── Not Found ── */
   if (notFound) {
     return (
@@ -293,6 +481,24 @@ export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
   const subcats = c.subcategories || []
   const totalSpots = 200
   const hasListings = c.listingCount > 0 || listings.length > 0
+  const isL3 = c.level === 3
+  const listingTypesFromCat = c.listingTypes || []
+
+  /* ── Which set of listing type options to use for sidebar ── */
+  const sidebarListingTypes = hasListings
+    ? listingTypesFromCat
+    : demoListingTypes.map(lt => ({ id: lt.slug, name: lt.name, slug: lt.slug }))
+
+  /* ── Count per listing type ── */
+  const getListingTypeCount = (ltSlug: string) => {
+    if (hasListings) {
+      return listings.filter(l => l.listingTypeSlug === ltSlug).length
+    }
+    return demoListingTypeCounts.get(ltSlug) || 0
+  }
+
+  const totalListingCount = hasListings ? filteredRealListings.length : filteredDemoListings.length
+  const currentDisplayListings = hasListings ? filteredRealListings : filteredDemoListings
 
   const benefits = [
     { icon: 'eye', title: 'Priority Visibility', desc: `Early listings in ${c.name} get premium placement and maximum exposure to buyers.` },
@@ -311,6 +517,259 @@ export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
     { icon: 'trendingUp', title: 'Grid Reports', desc: 'Quadrant analysis showing leaders, high performers, and contenders based on satisfaction and market presence.' },
     { icon: 'monitor', title: 'Analytics Dashboard', desc: 'Every listed business gets a real-time dashboard tracking views, clicks, leads, and conversion metrics.' },
   ]
+
+  /* ── Sidebar content (shared between desktop sidebar and mobile drawer) ── */
+  const SidebarContent = () => (
+    <>
+      {/* Active filters pills */}
+      {hasAnyFilter && (
+        <div className="cd-sb-active">
+          <div className="cd-sb-active-header">
+            <span className="cd-sb-active-label">Active Filters</span>
+            <button onClick={clearFilters} className="cd-sb-clear-btn" style={{ color }}>Clear All</button>
+          </div>
+          <div className="cd-sb-active-pills">
+            {selectedListingType && (
+              <span className="cd-sb-pill" style={{ background: `${color}10`, color, borderColor: `${color}30` }}>
+                {sidebarListingTypes.find(lt => lt.slug === selectedListingType)?.name || selectedListingType}
+                <button onClick={() => setSelectedListingType('')} className="cd-sb-pill-x" style={{ color }}>
+                  <I d={ic.x} size={10} color={color} sw={2.5} />
+                </button>
+              </span>
+            )}
+            {Array.from(selectedTags).map(tagSlug => {
+              const tag = tagGroups.flatMap(g => g.tags).find(t => t.slug === tagSlug)
+              return tag ? (
+                <span key={tagSlug} className="cd-sb-pill" style={{ background: `${color}10`, color, borderColor: `${color}30` }}>
+                  {tag.name}
+                  <button onClick={() => toggleTag(tagSlug)} className="cd-sb-pill-x" style={{ color }}>
+                    <I d={ic.x} size={10} color={color} sw={2.5} />
+                  </button>
+                </span>
+              ) : null
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Listing Types radio section */}
+      {sidebarListingTypes.length > 0 && (
+        <div className="cd-sb-section">
+          <h4 className="cd-sb-section-title">Listing Types</h4>
+          <div className="cd-sb-radio-list">
+            <label className={`cd-sb-radio${!selectedListingType ? ' cd-sb-radio--active' : ''}`}>
+              <input
+                type="radio"
+                name="listingType"
+                checked={!selectedListingType}
+                onChange={() => setSelectedListingType('')}
+              />
+              <span className="cd-sb-radio-dot" style={!selectedListingType ? { borderColor: color, background: color } : {}} />
+              <span className="cd-sb-radio-label">All</span>
+              <span className="cd-sb-count">{hasListings ? listings.length : sampleListings.length}</span>
+            </label>
+            {sidebarListingTypes.map(lt => {
+              const count = getListingTypeCount(lt.slug)
+              const isActive = selectedListingType === lt.slug
+              return (
+                <label key={lt.slug} className={`cd-sb-radio${isActive ? ' cd-sb-radio--active' : ''}`}>
+                  <input
+                    type="radio"
+                    name="listingType"
+                    checked={isActive}
+                    onChange={() => setSelectedListingType(isActive ? '' : lt.slug)}
+                  />
+                  <span className="cd-sb-radio-dot" style={isActive ? { borderColor: color, background: color } : {}} />
+                  <span className="cd-sb-radio-label">{lt.name}</span>
+                  <span className="cd-sb-count">{count}</span>
+                </label>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Tag filter accordion groups */}
+      {tagGroups.length > 0 && tagGroups.map(group => {
+        const isOpen = openAccordions.has(group.id)
+        const selectedInGroup = group.tags.filter(t => selectedTags.has(t.slug)).length
+        return (
+          <div key={group.id} className="cd-sb-section">
+            <button
+              className="cd-sb-accordion-btn"
+              onClick={() => toggleAccordion(group.id)}
+            >
+              <span className="cd-sb-accordion-left">
+                <span className="cd-sb-color-dot" style={{ background: group.color }} />
+                <span className="cd-sb-accordion-name">{group.name}</span>
+                {selectedInGroup > 0 && (
+                  <span className="cd-sb-selected-badge" style={{ background: `${color}15`, color }}>{selectedInGroup}</span>
+                )}
+              </span>
+              <span className="cd-sb-accordion-right">
+                <span className="cd-sb-count">{group.tags.length}</span>
+                <span className={`cd-sb-chevron${isOpen ? ' cd-sb-chevron--open' : ''}`}>
+                  <I d={ic.chevronDown} size={12} color="var(--h-muted)" sw={2} />
+                </span>
+              </span>
+            </button>
+            {isOpen && (
+              <div className="cd-sb-checkbox-list">
+                {group.tags.map(tag => {
+                  const count = hasListings ? 0 : (demoTagCounts.get(tag.slug) || 0)
+                  return (
+                    <label key={tag.id} className="cd-sb-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={selectedTags.has(tag.slug)}
+                        onChange={() => toggleTag(tag.slug)}
+                      />
+                      <span className="cd-sb-checkbox-box" style={selectedTags.has(tag.slug) ? { background: color, borderColor: color } : {}}>
+                        {selectedTags.has(tag.slug) && <I d={ic.check} size={10} color="#fff" sw={2.5} />}
+                      </span>
+                      <span className="cd-sb-checkbox-label">{tag.name}</span>
+                      {!hasListings && count > 0 && <span className="cd-sb-count">{count}</span>}
+                    </label>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        )
+      })}
+    </>
+  )
+
+  /* ── Render a single listing card (shared for demo + real) ── */
+  const renderDemoCard = (item: DemoListing, idx: number) => (
+    <div key={idx} className="cd-lst-card">
+      {/* Platform Preview watermark */}
+      {!hasListings && (
+        <div className="cd-lst-preview-badge">
+          <I d={ic.eye} size={9} color="var(--h-muted)" sw={2} />
+          Platform Preview
+        </div>
+      )}
+      {/* Top: Logo + Name + Sat ring */}
+      <div className="cd-lst-card-top">
+        <div className="cd-lst-card-logo" style={{ background: `${item.logoColor}10` }}>
+          <I d={ic[item.logoIcon as keyof typeof ic]} size={22} color={item.logoColor} />
+        </div>
+        <div className="cd-lst-card-info">
+          <div className="cd-lst-card-name">{item.name}</div>
+          <div className="cd-lst-card-tagline">{item.tagline}</div>
+        </div>
+        <SatRing pct={item.sat} color={item.satColor} size={42} />
+      </div>
+
+      {/* Badges row */}
+      <div className="cd-lst-card-badges">
+        <span className="cd-lst-badge cd-lst-badge--cat">{item.cat}</span>
+        <span className="cd-lst-badge cd-lst-badge--type">{item.listingType}</span>
+        {item.verified && (
+          <span className="cd-lst-badge cd-lst-badge--verified">
+            <I d={ic.check} size={9} color="#2FAE6A" sw={2.5} />
+            Verified
+          </span>
+        )}
+      </div>
+
+      {/* Rating */}
+      <div className="cd-lst-card-rating">
+        <Stars filled={item.stars} />
+        <span className="cd-lst-card-score">{item.score}</span>
+        <span className="cd-lst-card-reviews">({item.reviews} reviews)</span>
+      </div>
+
+      {/* Features */}
+      {item.features.length > 0 && (
+        <div className="cd-lst-card-features">
+          {item.features.slice(0, 3).map((feat, fi) => (
+            <div key={fi} className="cd-lst-card-feat">
+              <I d={ic.check} size={11} color="#2FAE6A" sw={2.5} />
+              <span>{feat}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Actions */}
+      <div className="cd-lst-card-actions">
+        <a href={item.website} className="cd-lst-btn-website" target="_blank" rel="noopener noreferrer">
+          <I d={ic.globe} size={12} color="currentColor" sw={1.5} />
+          Website
+        </a>
+        <span className="cd-lst-btn-details" style={{ color, borderColor: color }}>
+          View Details
+        </span>
+      </div>
+    </div>
+  )
+
+  const renderRealCard = (item: RealSubmission) => {
+    const initial = item.companyName.charAt(0).toUpperCase()
+    const itemColor = item.categoryColor || color
+    return (
+      <div key={item.id} className="cd-lst-card">
+        {/* Top: Logo + Name */}
+        <div className="cd-lst-card-top">
+          {item.logoUrl ? (
+            <div className="cd-lst-card-logo" style={{ padding: 0, overflow: 'hidden' }}>
+              <img src={item.logoUrl} alt={item.companyName} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'inherit' }} />
+            </div>
+          ) : (
+            <div className="cd-lst-card-logo" style={{ background: `${itemColor}14` }}>
+              <span style={{ fontFamily: 'var(--font-bricolage)', fontWeight: 800, fontSize: '1.2rem', color: itemColor }}>{initial}</span>
+            </div>
+          )}
+          <div className="cd-lst-card-info">
+            <div className="cd-lst-card-name">{item.companyName}</div>
+            <div className="cd-lst-card-tagline">{item.tagline}</div>
+          </div>
+        </div>
+
+        {/* Badges */}
+        <div className="cd-lst-card-badges">
+          <span className="cd-lst-badge cd-lst-badge--cat">{item.category}</span>
+          {item.listingType && <span className="cd-lst-badge cd-lst-badge--type">{item.listingType}</span>}
+          {item.status === 'active' && (
+            <span className="cd-lst-badge cd-lst-badge--verified">
+              <I d={ic.check} size={9} color="#2FAE6A" sw={2.5} />
+              Verified
+            </span>
+          )}
+        </div>
+
+        {/* Features list */}
+        {item.features.length > 0 && (
+          <div className="cd-lst-card-features">
+            {item.features.slice(0, 3).map((feat, fi) => (
+              <div key={fi} className="cd-lst-card-feat">
+                <I d={ic.check} size={11} color="#2FAE6A" sw={2.5} />
+                <span>{feat}</span>
+              </div>
+            ))}
+            {item.features.length > 3 && (
+              <span className="cd-lst-card-feat-more">+{item.features.length - 3} more</span>
+            )}
+          </div>
+        )}
+
+        {/* Actions */}
+        <div className="cd-lst-card-actions">
+          {item.website && (
+            <a href={item.website} target="_blank" rel="noopener noreferrer" className="cd-lst-btn-website">
+              <I d={ic.globe} size={12} color="currentColor" sw={1.5} />
+              Website
+            </a>
+          )}
+          <Link href={`/company/${item.slug}`} className="cd-lst-btn-details" style={{ color, borderColor: color }}>
+            View Details
+          </Link>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <section className="category-detail">
@@ -393,7 +852,7 @@ export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
         </div>
 
         {/* ═══════════════════════════════════════════════
-            2. SUBCATEGORY CHIPS
+            2. SUBCATEGORY CHIPS (L1/L2 only)
             ═══════════════════════════════════════════════ */}
         {subcats.length > 0 && (
           <div className="cd-subcats-section">
@@ -410,492 +869,234 @@ export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
         )}
 
         {/* ═══════════════════════════════════════════════
-            2B. LISTING TYPE CHIPS (L3 only)
+            3. MAIN CONTENT: SIDEBAR + LISTINGS AREA
             ═══════════════════════════════════════════════ */}
-        {c.level === 3 && c.listingTypes && c.listingTypes.length > 0 && (
-          <div className="cd-subcats-section">
-            <h3 className="cd-section-label">Listing Types</h3>
-            <div className="category-subcats">
-              <button
-                onClick={() => setSelectedListingType('')}
-                className={`category-subcat-chip${!selectedListingType ? ' category-subcat-chip--active' : ''}`}
-                style={!selectedListingType ? { background: `${color}12`, borderColor: color, color } : {}}
-              >All</button>
-              {c.listingTypes.map(lt => (
-                <button
-                  key={lt.id}
-                  onClick={() => setSelectedListingType(selectedListingType === lt.slug ? '' : lt.slug)}
-                  className={`category-subcat-chip${selectedListingType === lt.slug ? ' category-subcat-chip--active' : ''}`}
-                  style={selectedListingType === lt.slug ? { background: `${color}12`, borderColor: color, color } : {}}
-                >{lt.name}</button>
-              ))}
+
+        {/* Mobile filter button (L3 only) */}
+        {isL3 && (
+          <button className="cd-lyt-filter-btn" onClick={() => setSidebarOpen(true)}>
+            <I d={ic.filter} size={14} color={color} sw={2} />
+            Filters
+            {hasAnyFilter && <span className="cd-lyt-filter-badge" style={{ background: color }}>{selectedTags.size + (selectedListingType ? 1 : 0)}</span>}
+          </button>
+        )}
+
+        {/* Mobile sidebar drawer overlay */}
+        {isL3 && sidebarOpen && (
+          <div className="cd-lyt-drawer-overlay" onClick={() => setSidebarOpen(false)}>
+            <div className="cd-lyt-drawer" onClick={(e) => e.stopPropagation()}>
+              <div className="cd-lyt-drawer-header">
+                <h3 className="cd-lyt-drawer-title">
+                  <I d={ic.filter} size={16} color={color} sw={2} />
+                  Filters
+                </h3>
+                <button className="cd-lyt-drawer-close" onClick={() => setSidebarOpen(false)}>
+                  <I d={ic.x} size={18} color="var(--h-heading)" sw={2} />
+                </button>
+              </div>
+              <div className="cd-lyt-drawer-body">
+                <SidebarContent />
+              </div>
+              <div className="cd-lyt-drawer-footer">
+                <button className="cd-lyt-drawer-apply" style={{ background: color }} onClick={() => setSidebarOpen(false)}>
+                  Show {totalListingCount} results
+                </button>
+              </div>
             </div>
           </div>
         )}
 
-        {/* ═══════════════════════════════════════════════
-            2C. TAG FILTERS (L3 only)
-            ═══════════════════════════════════════════════ */}
-        {c.level === 3 && tagGroups.length > 0 && (
-          <div className="cd-tag-filters">
-            <div className="cd-tag-filters-header">
-              <h3 className="cd-section-label" style={{ marginBottom: 0 }}>
-                <I d={ic.filter} size={14} color={color} sw={2} /> Filters
-              </h3>
-              {(selectedTags.size > 0 || selectedListingType) && (
-                <button onClick={clearFilters} className="cd-tag-clear" style={{ color }}>Clear all</button>
-              )}
-            </div>
-            {selectedTags.size > 0 && (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.3rem', marginBottom: '.75rem' }}>
-                {Array.from(selectedTags).map(slug => {
-                  const tag = tagGroups.flatMap(g => g.tags).find(t => t.slug === slug)
-                  return tag ? (
-                    <span key={slug} className="cd-active-tag" style={{ background: `${color}10`, color, borderColor: `${color}30` }}>
-                      {tag.name}
-                      <button onClick={() => toggleTag(slug)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, marginLeft: '.25rem', color, fontSize: '.7rem', fontWeight: 800 }}>x</button>
-                    </span>
-                  ) : null
-                })}
-              </div>
-            )}
-            <div className="cd-tag-groups">
-              {tagGroups.map(group => (
-                <details key={group.id} className="cd-tag-group">
-                  <summary className="cd-tag-group-title">
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '.35rem' }}>
-                      <span style={{ width: 6, height: 6, borderRadius: 999, background: group.color, flexShrink: 0 }} />
-                      {group.name}
-                    </span>
-                    <span style={{ fontSize: '.6rem', color: 'var(--h-muted)', fontWeight: 600 }}>{group.tags.length}</span>
-                  </summary>
-                  <div className="cd-tag-values">
-                    {group.tags.map(tag => (
-                      <label key={tag.id} className="cd-tag-check">
-                        <input
-                          type="checkbox"
-                          checked={selectedTags.has(tag.slug)}
-                          onChange={() => toggleTag(tag.slug)}
-                        />
-                        <span>{tag.name}</span>
-                      </label>
-                    ))}
-                  </div>
-                </details>
-              ))}
-            </div>
-          </div>
-        )}
+        <div className={isL3 ? 'cd-lyt-grid' : ''}>
+          {/* Desktop sidebar (L3 only) */}
+          {isL3 && (
+            <aside className="cd-lyt-sidebar">
+              <SidebarContent />
+            </aside>
+          )}
 
-        {/* ═══════════════════════════════════════════════
-            3. PLATFORM PREVIEW
-            ═══════════════════════════════════════════════ */}
-        {!hasListings && (
-          <>
-            <div className="cd-preview">
-              {/* Header */}
-              <div className="cd-preview-header">
-                <div className="cd-preview-badge">
-                  <I d={ic.eye} size={12} color={color} sw={2} />
-                  Platform Preview
-                </div>
-                <h2 className="cd-preview-title">What listings in <em style={{ fontStyle: 'normal', color }}>{c.name}</em> will look like</h2>
-                <p className="cd-preview-subtitle">This is a preview of the full InfoWebWorld experience. Real listings with verified reviews, satisfaction scores, and comparison tools.</p>
-              </div>
-
-              {/* Toolbar preview */}
-              <div className="cd-toolbar">
-                <div className="cd-toolbar-left">
-                  <span className="cd-toolbar-icon"><I d={ic.filter} size={13} color="var(--h-muted)" sw={2} /></span>
-                  <span className="cd-toolbar-count">Showing <strong>1–12</strong> of <strong>284</strong> results</span>
-                </div>
-                <div className="cd-toolbar-right">
-                  <div className="cd-toolbar-sort">
-                    <span>Relevance</span>
-                    <I d="M6 9l6 6 6-6" size={12} color="var(--h-muted)" sw={2} />
-                  </div>
-                  <div className="cd-toolbar-views">
-                    <button className="cd-view-btn cd-view-btn--active"><I d={ic.grid} size={13} /></button>
-                    <button className="cd-view-btn"><I d="M8 6h13|M8 12h13|M8 18h13|M3 6h.01|M3 12h.01|M3 18h.01" size={13} /></button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Main layout: Listings + Sidebar */}
-              <div className="cd-preview-layout">
-                {/* Listing cards */}
-                <div className="cd-preview-listings">
-                  {sampleListings.map((item, idx) => (
-                    <div key={idx} className="cd-card">
-                      {/* Top: Logo + Name + Sat ring */}
-                      <div className="cd-card-top">
-                        <div className="cd-card-logo" style={{ background: `${item.logoColor}10` }}>
-                          <I d={ic[item.logoIcon as keyof typeof ic]} size={22} color={item.logoColor} />
-                        </div>
-                        <div className="cd-card-info">
-                          <div className="cd-card-name">{item.name}</div>
-                          <div className="cd-card-tagline">{item.tagline}</div>
-                        </div>
-                        <SatRing pct={item.sat} color={item.satColor} size={46} />
-                      </div>
-
-                      {/* Award badge */}
-                      {item.award && (
-                        <div className={`cd-card-award cd-card-award--${item.awardType}`}>
-                          {item.awardType === 'leader' ? (
-                            <svg width={11} height={11} viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
-                          ) : (
-                            <I d={ic.zap} size={11} color="currentColor" sw={2} />
-                          )}
-                          {item.award}
-                        </div>
-                      )}
-
-                      {/* Rating */}
-                      <div className="cd-card-rating">
-                        <Stars filled={item.stars} />
-                        <span className="cd-card-score">{item.score}</span>
-                        <span className="cd-card-reviews">({item.reviews})</span>
-                        <span className="cd-card-rec">{item.rec}% recommend</span>
-                      </div>
-
-                      {/* Bars */}
-                      <div className="cd-card-bars">
-                        {item.bars.map(b => (
-                          <div key={b.l} className="cd-bar">
-                            <span className="cd-bar-label">{b.l}</span>
-                            <div className="cd-bar-track">
-                              <div className="cd-bar-fill" style={{ width: `${b.w}%`, background: b.c }} />
-                            </div>
-                            <span className="cd-bar-val">{(b.w / 10).toFixed(1)}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Quote */}
-                      <div className="cd-card-quote">{item.quote}</div>
-
-                      {/* Meta badges */}
-                      <div className="cd-card-meta">
-                        <span className="cd-meta-badge cd-meta-badge--cat">{item.cat}</span>
-                        {item.verified && (
-                          <span className="cd-meta-badge cd-meta-badge--verified">
-                            <I d={ic.check} size={10} color="#2FAE6A" sw={2.5} />
-                            Verified
-                          </span>
-                        )}
-                        <span className="cd-meta-badge cd-meta-badge--price">{item.price}</span>
-                      </div>
-
-                      {/* Actions */}
-                      <div className="cd-card-actions">
-                        <span className="cd-card-vote">
-                          <I d="M12 19V5|M5 12l7-7 7 7" size={13} color="currentColor" sw={2} />
-                          <span>{item.votes}</span>
-                        </span>
-                        <span className="cd-card-cmp">
-                          <I d={ic.compare} size={12} color="currentColor" sw={1.5} />
-                          Compare
-                        </span>
-                        <span className="cd-card-details-btn">View Details</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Sidebar */}
-                <div className="cd-preview-sidebar">
-                  {/* Grid Report */}
-                  <div className="cd-side-card">
-                    <div className="cd-side-title">
-                      <I d={ic.grid} size={14} color={color} sw={2} />
-                      Grid Report — {c.name}
-                    </div>
-                    <div className="cd-grid-report">
-                      <div className="cd-grid-axis-y"><span>Satisfaction</span></div>
-                      <div className="cd-grid-chart">
-                        <div className="cd-grid-q cd-grid-q--tl"><span>High Performers</span></div>
-                        <div className="cd-grid-q cd-grid-q--tr"><span>Leaders</span></div>
-                        <div className="cd-grid-q cd-grid-q--bl"><span>Niche</span></div>
-                        <div className="cd-grid-q cd-grid-q--br"><span>Contenders</span></div>
-                        {gridDots.map(d => (
-                          <div key={d.letter} className="cd-grid-dot" style={{ left: `${d.x}%`, bottom: `${d.y}%` }} title={d.title}>{d.letter}</div>
-                        ))}
-                      </div>
-                      <div className="cd-grid-axis-x"><span>Market Presence</span></div>
-                    </div>
-                  </div>
-
-                  {/* Satisfaction Overview */}
-                  <div className="cd-side-card">
-                    <div className="cd-side-title">
-                      <I d={ic.thumbsUp} size={14} color={color} sw={2} />
-                      Satisfaction Overview
-                    </div>
-                    <div className="cd-sat-overview">
-                      {satOverview.map(s => (
-                        <div key={s.label} className="cd-sat-row">
-                          <span className="cd-sat-label">{s.label}</span>
-                          <div className="cd-sat-track">
-                            <div className="cd-sat-fill" style={{ width: `${s.w}%`, background: s.color }} />
-                          </div>
-                          <span className="cd-sat-val">{(s.w / 10).toFixed(1)}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Top Rated */}
-                  <div className="cd-side-card">
-                    <div className="cd-side-title">
-                      <I d={ic.trophy} size={14} color={color} sw={2} />
-                      Top Rated
-                    </div>
-                    <div className="cd-top-list">
-                      {topRated.map(t => (
-                        <div key={t.rank} className="cd-top-item">
-                          <span className={`cd-top-rank cd-top-rank--${t.rank <= 3 ? t.rank : 'n'}`}>{t.rank}</span>
-                          <span className="cd-top-name">{t.name}</span>
-                          <span className="cd-top-score">
-                            <svg width={11} height={11} viewBox="0 0 24 24" fill="#E5A100" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
-                            {t.score}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* CTA sidebar */}
-                  <div className="cd-side-cta" style={{ background: `linear-gradient(135deg, ${color}, ${color}CC)` }}>
-                    <div className="cd-side-cta-title">List Your Business</div>
-                    <div className="cd-side-cta-desc">Join the founding members of InfoWebWorld. Get premium placement, verified badge, and lifetime visibility.</div>
-                    <Link href={`/business?category=${encodeURIComponent(c.name)}`} className="cd-side-cta-btn">
-                      Get Listed
-                      <I d={ic.arrow} size={14} color={color} sw={2.5} />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
-              {/* Fade overlay with CTA */}
-              <div className="cd-preview-fade">
-                <div className="cd-preview-fade-inner">
-                  <p className="cd-preview-fade-text">This is a preview of what <strong>{c.name}</strong> will look like on InfoWebWorld</p>
-                  <Link href={`/business?category=${encodeURIComponent(c.name)}`} className="cd-preview-fade-btn" style={{ background: color, borderColor: color, boxShadow: `0 6px 24px ${color}30` }}>
-                    <I d={ic.plus} size={15} color="#fff" sw={2.5} />
-                    Be the First to List Here
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            {/* ═══════════════════════════════════════════════
-                4. FOUNDING MEMBER CTA
-                ═══════════════════════════════════════════════ */}
-            <div className="cd-cta-card">
-              <div className="cd-cta-bg" style={{ background: `radial-gradient(circle at 20% 30%, ${color}12, transparent 50%), radial-gradient(circle at 80% 70%, ${color}08, transparent 50%)` }} />
-              <div className="cd-cta-inner">
-                <div className="cd-cta-icon" style={{ background: `${color}08`, borderColor: `${color}12` }}>
-                  <I d={ic.rocket} size={36} color={color} />
-                </div>
-                <h2 className="cd-cta-title">Be the First in {c.name}</h2>
-                <p className="cd-cta-desc">No businesses have claimed a listing in {c.name} yet. Be the founding member — get priority placement, a verified badge, and lifetime visibility.</p>
-                <div className="cd-cta-buttons">
-                  <Link href={`/business?category=${encodeURIComponent(c.name)}`} className="cd-btn-primary" style={{ background: color, borderColor: color, boxShadow: `0 6px 24px ${color}30` }}>
-                    <I d={ic.plus} size={16} color="#fff" sw={2.5} />
-                    Get Listed — $239 Lifetime
-                  </Link>
-                  <Link href="/categories" className="cd-btn-secondary">
-                    <I d={ic.grid} size={16} color="var(--h-muted)" sw={2} />
-                    Browse Categories
-                  </Link>
-                </div>
-                <div className="cd-cta-progress">
-                  <div className="cd-cta-progress-row">
-                    <span>{c.listingCount} of {totalSpots} founding spots claimed</span>
-                    <span style={{ color, fontWeight: 800 }}>{totalSpots - c.listingCount} left</span>
-                  </div>
-                  <div className="cd-cta-progress-track">
-                    <div className="cd-cta-progress-fill" style={{ width: `${Math.max((c.listingCount / totalSpots) * 100, 1)}%`, background: `linear-gradient(90deg, ${color}, ${color}AA)` }} />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* ═══════════════════════════════════════════════
-                5. FEATURES SHOWCASE
-                ═══════════════════════════════════════════════ */}
-            <div className="cd-features-section">
-              <div className="cd-section-center">
-                <span className="cd-section-tag" style={{ color, background: `${color}08` }}>What Makes Us Different</span>
-                <h3 className="cd-section-heading">Powerful tools for every listed business</h3>
-              </div>
-              <div className="cd-features-grid">
-                {features.map((f, i) => (
-                  <div key={i} className="cd-feature-card">
-                    <div className="cd-feature-icon" style={{ background: `${color}08` }}>
-                      <I d={ic[f.icon as keyof typeof ic]} size={20} color={color} />
-                    </div>
-                    <h4 className="cd-feature-title">{f.title}</h4>
-                    <p className="cd-feature-desc">{f.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* ═══════════════════════════════════════════════
-                6. BENEFITS GRID
-                ═══════════════════════════════════════════════ */}
-            <div className="cd-benefits-section">
-              <div className="cd-section-center">
-                <span className="cd-section-tag" style={{ color, background: `${color}08` }}>Why List in {c.name}</span>
-                <h3 className="cd-section-heading">Everything you get as a founding member</h3>
-              </div>
-              <div className="cd-benefits-grid">
-                {benefits.map((b, i) => (
-                  <div key={i} className="cd-benefit-card">
-                    <div className="cd-benefit-icon" style={{ background: `${color}08` }}>
-                      <I d={ic[b.icon as keyof typeof ic]} size={20} color={color} />
-                    </div>
-                    <h4 className="cd-benefit-title">{b.title}</h4>
-                    <p className="cd-benefit-desc">{b.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* ═══════════════════════════════════════════════
-                7. HOW IT WORKS
-                ═══════════════════════════════════════════════ */}
-            <div className="cd-steps-card">
-              <div className="cd-section-center">
-                <h3 className="cd-section-heading">Get listed in 3 simple steps</h3>
-              </div>
-              <div className="cd-steps-grid">
-                {[
-                  { step: 1, title: 'Submit Your Business', desc: 'Fill out a quick form with your company details, tagline, and category.', icon: 'tag' },
-                  { step: 2, title: 'Get Verified', desc: 'Our team reviews and verifies your listing within 24 hours.', icon: 'shield' },
-                  { step: 3, title: 'Go Live', desc: 'Your verified listing goes live with a dofollow backlink and analytics dashboard.', icon: 'zap' },
-                ].map(s => (
-                  <div key={s.step} className="cd-step">
-                    <div className="cd-step-icon" style={{ background: `${color}08`, borderColor: `${color}15` }}>
-                      <I d={ic[s.icon as keyof typeof ic]} size={22} color={color} />
-                      <span className="cd-step-num" style={{ background: color }}>{s.step}</span>
-                    </div>
-                    <h4 className="cd-step-title">{s.title}</h4>
-                    <p className="cd-step-desc">{s.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* ═══════════════════════════════════════════════
-                8. FINAL CTA STRIP
-                ═══════════════════════════════════════════════ */}
-            <div className="cd-final-cta" style={{ background: `linear-gradient(135deg, ${color}, ${color}CC)` }}>
-              <div>
-                <h3 className="cd-final-cta-title">Ready to claim your spot?</h3>
-                <p className="cd-final-cta-desc">Founding members get lifetime listing — pay once, stay forever.</p>
-              </div>
-              <Link href={`/business?category=${encodeURIComponent(c.name)}`} className="cd-final-cta-btn">
-                Get Listed Now
-                <I d={ic.arrow} size={15} color={color} sw={2.5} />
-              </Link>
-            </div>
-          </>
-        )}
-
-        {/* ═══ Listings (when they exist) ═══ */}
-        {hasListings && (
-          <>
+          {/* Right content area */}
+          <div className="cd-lyt-content">
             {/* Toolbar */}
-            <div className="cd-toolbar" style={{ marginTop: '1.5rem' }}>
-              <div className="cd-toolbar-left">
-                <span className="cd-toolbar-icon"><I d={ic.building} size={13} color={color} sw={2} /></span>
-                <span className="cd-toolbar-count">Showing <strong>{listings.length}</strong> of <strong>{c.listingCount}</strong> {c.listingCount === 1 ? 'business' : 'businesses'}</span>
+            <div className="cd-lyt-toolbar">
+              <div className="cd-lyt-toolbar-left">
+                <span className="cd-lyt-toolbar-count">
+                  Showing <strong>{totalListingCount}</strong> {totalListingCount === 1 ? 'result' : 'results'}
+                  {!hasListings && <span className="cd-lyt-toolbar-demo">(Preview)</span>}
+                </span>
+              </div>
+              <div className="cd-lyt-toolbar-right">
+                <select
+                  className="cd-lyt-sort"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as 'newest' | 'name-az' | 'name-za')}
+                >
+                  <option value="newest">Newest</option>
+                  <option value="name-az">Name A-Z</option>
+                  <option value="name-za">Name Z-A</option>
+                </select>
               </div>
             </div>
 
             {/* Listing cards grid */}
-            <div className="cd-preview-listings" style={{ marginBottom: '1.5rem' }}>
-              {listings.map(item => {
-                const initial = item.companyName.charAt(0).toUpperCase()
-                const itemColor = item.categoryColor || color
-                return (
-                  <div key={item.id} className="cd-card">
-                    {/* Top: Logo + Name */}
-                    <div className="cd-card-top">
-                      {item.logoUrl ? (
-                        <div className="cd-card-logo" style={{ padding: 0, overflow: 'hidden' }}>
-                          <img src={item.logoUrl} alt={item.companyName} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'inherit' }} />
-                        </div>
-                      ) : (
-                        <div className="cd-card-logo" style={{ background: `${itemColor}14` }}>
-                          <span style={{ fontFamily: 'var(--font-bricolage)', fontWeight: 800, fontSize: '1.2rem', color: itemColor }}>{initial}</span>
-                        </div>
-                      )}
-                      <div className="cd-card-info">
-                        <div className="cd-card-name">{item.companyName}</div>
-                        <div className="cd-card-tagline">{item.tagline}</div>
-                      </div>
-                    </div>
-
-                    {/* Meta badges */}
-                    <div className="cd-card-meta">
-                      <span className="cd-meta-badge cd-meta-badge--cat">{item.category}</span>
-                      {item.status === 'active' && (
-                        <span className="cd-meta-badge cd-meta-badge--verified">
-                          <I d={ic.check} size={10} color="#2FAE6A" sw={2.5} />
-                          Verified
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Features list */}
-                    {item.features.length > 0 && (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '.35rem', marginBottom: '.75rem' }}>
-                        {item.features.slice(0, 3).map((feat, fi) => (
-                          <div key={fi} style={{ display: 'flex', alignItems: 'center', gap: '.45rem', fontFamily: 'var(--font-nunito)', fontSize: '.78rem', color: 'var(--h-body)' }}>
-                            <I d={ic.check} size={11} color="#2FAE6A" sw={2.5} />
-                            {feat}
-                          </div>
-                        ))}
-                        {item.features.length > 3 && (
-                          <span style={{ fontFamily: 'var(--font-nunito)', fontSize: '.72rem', color: 'var(--h-muted)', marginLeft: '1.3rem' }}>+{item.features.length - 3} more</span>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Actions */}
-                    <div className="cd-card-actions">
-                      {item.website && (
-                        <a href={item.website} target="_blank" rel="noopener noreferrer" className="cd-card-cmp" style={{ textDecoration: 'none' }}>
-                          <I d={ic.globe} size={12} color="currentColor" sw={1.5} />
-                          Website
-                        </a>
-                      )}
-                      <Link href={`/company/${item.slug}`} className="cd-card-details-btn">
-                        View Details
-                      </Link>
-                    </div>
+            <div className="cd-lst-grid">
+              {!hasListings ? (
+                filteredDemoListings.length > 0 ? (
+                  filteredDemoListings.map((item, idx) => renderDemoCard(item, idx))
+                ) : (
+                  <div className="cd-lst-empty">
+                    <I d={ic.search} size={32} color="var(--h-muted)" sw={1.5} />
+                    <p>No listings match your filters.</p>
+                    <button onClick={clearFilters} className="cd-lst-empty-btn" style={{ color }}>Clear all filters</button>
                   </div>
                 )
-              })}
+              ) : (
+                filteredRealListings.length > 0 ? (
+                  filteredRealListings.map(item => renderRealCard(item))
+                ) : (
+                  <div className="cd-lst-empty">
+                    <I d={ic.search} size={32} color="var(--h-muted)" sw={1.5} />
+                    <p>No listings match your filters.</p>
+                    <button onClick={clearFilters} className="cd-lst-empty-btn" style={{ color }}>Clear all filters</button>
+                  </div>
+                )
+              )}
             </div>
 
-            {/* CTA to get listed */}
-            <div className="cd-final-cta" style={{ background: `linear-gradient(135deg, ${color}, ${color}CC)` }}>
-              <div>
-                <h3 className="cd-final-cta-title">Join {c.listingCount} {c.listingCount === 1 ? 'business' : 'businesses'} in {c.name}</h3>
-                <p className="cd-final-cta-desc">{totalSpots - c.listingCount} founding spots remaining. Get lifetime listing today.</p>
+            {/* Preview fade overlay (when no real listings) */}
+            {!hasListings && filteredDemoListings.length > 0 && (
+              <div className="cd-lyt-preview-fade">
+                <p className="cd-lyt-preview-text">This is a preview of what <strong>{c.name}</strong> will look like on InfoWebWorld</p>
+                <Link href={`/business?category=${encodeURIComponent(c.name)}`} className="cd-lyt-preview-btn" style={{ background: color, borderColor: color, boxShadow: `0 6px 24px ${color}30` }}>
+                  <I d={ic.plus} size={15} color="#fff" sw={2.5} />
+                  Be the First to List Here
+                </Link>
               </div>
-              <Link href={`/business?category=${encodeURIComponent(c.name)}`} className="cd-final-cta-btn">
-                Get Listed Now
-                <I d={ic.arrow} size={15} color={color} sw={2.5} />
+            )}
+          </div>
+        </div>
+
+        {/* ═══════════════════════════════════════════════
+            4. FOUNDING MEMBER CTA
+            ═══════════════════════════════════════════════ */}
+        <div className="cd-cta-card">
+          <div className="cd-cta-bg" style={{ background: `radial-gradient(circle at 20% 30%, ${color}12, transparent 50%), radial-gradient(circle at 80% 70%, ${color}08, transparent 50%)` }} />
+          <div className="cd-cta-inner">
+            <div className="cd-cta-icon" style={{ background: `${color}08`, borderColor: `${color}12` }}>
+              <I d={ic.rocket} size={36} color={color} />
+            </div>
+            {hasListings ? (
+              <>
+                <h2 className="cd-cta-title">Join {c.listingCount} {c.listingCount === 1 ? 'business' : 'businesses'} in {c.name}</h2>
+                <p className="cd-cta-desc">{totalSpots - c.listingCount} founding spots remaining. Get lifetime listing with priority placement, verified badge, and analytics dashboard.</p>
+              </>
+            ) : (
+              <>
+                <h2 className="cd-cta-title">Be the First in {c.name}</h2>
+                <p className="cd-cta-desc">No businesses have claimed a listing in {c.name} yet. Be the founding member — get priority placement, a verified badge, and lifetime visibility.</p>
+              </>
+            )}
+            <div className="cd-cta-buttons">
+              <Link href={`/business?category=${encodeURIComponent(c.name)}`} className="cd-btn-primary" style={{ background: color, borderColor: color, boxShadow: `0 6px 24px ${color}30` }}>
+                <I d={ic.plus} size={16} color="#fff" sw={2.5} />
+                Get Listed — $239 Lifetime
+              </Link>
+              <Link href="/categories" className="cd-btn-secondary">
+                <I d={ic.grid} size={16} color="var(--h-muted)" sw={2} />
+                Browse Categories
               </Link>
             </div>
-          </>
-        )}
+            <div className="cd-cta-progress">
+              <div className="cd-cta-progress-row">
+                <span>{c.listingCount} of {totalSpots} founding spots claimed</span>
+                <span style={{ color, fontWeight: 800 }}>{totalSpots - c.listingCount} left</span>
+              </div>
+              <div className="cd-cta-progress-track">
+                <div className="cd-cta-progress-fill" style={{ width: `${Math.max((c.listingCount / totalSpots) * 100, 1)}%`, background: `linear-gradient(90deg, ${color}, ${color}AA)` }} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ═══════════════════════════════════════════════
+            5. FEATURES SHOWCASE
+            ═══════════════════════════════════════════════ */}
+        <div className="cd-features-section">
+          <div className="cd-section-center">
+            <span className="cd-section-tag" style={{ color, background: `${color}08` }}>What Makes Us Different</span>
+            <h3 className="cd-section-heading">Powerful tools for every listed business</h3>
+          </div>
+          <div className="cd-features-grid">
+            {features.map((f, i) => (
+              <div key={i} className="cd-feature-card">
+                <div className="cd-feature-icon" style={{ background: `${color}08` }}>
+                  <I d={ic[f.icon as keyof typeof ic]} size={20} color={color} />
+                </div>
+                <h4 className="cd-feature-title">{f.title}</h4>
+                <p className="cd-feature-desc">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ═══════════════════════════════════════════════
+            6. BENEFITS GRID
+            ═══════════════════════════════════════════════ */}
+        <div className="cd-benefits-section">
+          <div className="cd-section-center">
+            <span className="cd-section-tag" style={{ color, background: `${color}08` }}>Why List in {c.name}</span>
+            <h3 className="cd-section-heading">Everything you get as a founding member</h3>
+          </div>
+          <div className="cd-benefits-grid">
+            {benefits.map((b, i) => (
+              <div key={i} className="cd-benefit-card">
+                <div className="cd-benefit-icon" style={{ background: `${color}08` }}>
+                  <I d={ic[b.icon as keyof typeof ic]} size={20} color={color} />
+                </div>
+                <h4 className="cd-benefit-title">{b.title}</h4>
+                <p className="cd-benefit-desc">{b.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ═══════════════════════════════════════════════
+            7. HOW IT WORKS
+            ═══════════════════════════════════════════════ */}
+        <div className="cd-steps-card">
+          <div className="cd-section-center">
+            <h3 className="cd-section-heading">Get listed in 3 simple steps</h3>
+          </div>
+          <div className="cd-steps-grid">
+            {[
+              { step: 1, title: 'Submit Your Business', desc: 'Fill out a quick form with your company details, tagline, and category.', icon: 'tag' },
+              { step: 2, title: 'Get Verified', desc: 'Our team reviews and verifies your listing within 24 hours.', icon: 'shield' },
+              { step: 3, title: 'Go Live', desc: 'Your verified listing goes live with a dofollow backlink and analytics dashboard.', icon: 'zap' },
+            ].map(s => (
+              <div key={s.step} className="cd-step">
+                <div className="cd-step-icon" style={{ background: `${color}08`, borderColor: `${color}15` }}>
+                  <I d={ic[s.icon as keyof typeof ic]} size={22} color={color} />
+                  <span className="cd-step-num" style={{ background: color }}>{s.step}</span>
+                </div>
+                <h4 className="cd-step-title">{s.title}</h4>
+                <p className="cd-step-desc">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ═══════════════════════════════════════════════
+            8. FINAL CTA STRIP
+            ═══════════════════════════════════════════════ */}
+        <div className="cd-final-cta" style={{ background: `linear-gradient(135deg, ${color}, ${color}CC)` }}>
+          <div>
+            <h3 className="cd-final-cta-title">Ready to claim your spot?</h3>
+            <p className="cd-final-cta-desc">Founding members get lifetime listing — pay once, stay forever.</p>
+          </div>
+          <Link href={`/business?category=${encodeURIComponent(c.name)}`} className="cd-final-cta-btn">
+            Get Listed Now
+            <I d={ic.arrow} size={15} color={color} sw={2.5} />
+          </Link>
+        </div>
 
         {/* ═══════════════════════════════════════════════
             9. RELATED CATEGORIES
