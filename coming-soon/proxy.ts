@@ -4,6 +4,7 @@ import { VALID_COUNTRIES, DEFAULT_COUNTRY, COOKIE_NAME, COOKIE_MAX_AGE, geoToCou
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
+  const isVercelApp = request.headers.get('host')?.includes('vercel.app') ?? false
 
   // Skip static assets, api, admin, sitemaps
   if (
@@ -30,6 +31,7 @@ export function proxy(request: NextRequest) {
     if (!request.cookies.get(COOKIE_NAME)) {
       response.cookies.set(COOKIE_NAME, firstSeg, { path: '/', maxAge: COOKIE_MAX_AGE, sameSite: 'lax' })
     }
+    if (isVercelApp) response.headers.set('X-Robots-Tag', 'noindex, nofollow')
     return response
   }
 
@@ -48,6 +50,7 @@ export function proxy(request: NextRequest) {
   url.pathname = `/${country}${pathname}`
   const response = NextResponse.redirect(url, 307)
   response.cookies.set(COOKIE_NAME, country, { path: '/', maxAge: COOKIE_MAX_AGE, sameSite: 'lax' })
+  if (isVercelApp) response.headers.set('X-Robots-Tag', 'noindex, nofollow')
   return response
 }
 
