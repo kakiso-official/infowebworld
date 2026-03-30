@@ -5,7 +5,8 @@
       "WebFetch(domain:www.reactbits.dev)",
       "WebFetch(domain:infowebworld.com)",
       "Bash(npm run:*)",
-      "Bash(find \"F:/infoWebWorld/coming-soon/app\" -name \"*.css\" -exec wc -l {} +)"
+      "Bash(find \"F:/infoWebWorld/coming-soon/app\" -name \"*.css\" -exec wc -l {} +)",
+      "Bash(curl -v http://localhost:3098/in)"
     ]
   }
 }

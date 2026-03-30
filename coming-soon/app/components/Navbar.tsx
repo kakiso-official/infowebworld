@@ -1,7 +1,8 @@
 'use client'
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
+import Link from './CountryLink'
 import { BASE } from '../config/base-path'
+import CountrySwitcher from './CountrySwitcher'
 
 const bp = BASE
 
@@ -56,6 +57,7 @@ export default function Navbar() {
             </Link>
 
             <div className="hd-actions">
+              <CountrySwitcher />
               <CsWrap>
                 <button type="button" className="hd-search-btn" aria-label="Search">
                   <svg viewBox="0 0 24 24" className="hd-search-ic">

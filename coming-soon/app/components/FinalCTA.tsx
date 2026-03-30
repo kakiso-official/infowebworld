@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
+import Link from './CountryLink'
 import { fetchConfig } from '../config/site-config'
 import { addToWaitlist } from '../iww-hq/data/waitlist-storage'
 

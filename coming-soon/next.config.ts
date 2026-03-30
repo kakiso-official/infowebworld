@@ -22,10 +22,16 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
-      // Redirect old /listing/:slug to /company/:slug
+      // Redirect old /listing/:slug to /company/:slug (proxy will add country prefix)
       {
         source: '/listing/:slug',
         destination: '/company/:slug',
+        permanent: true,
+      },
+      // Country-prefixed listing → company redirect
+      {
+        source: '/:country(in|uk|ca|au|eu)/listing/:slug',
+        destination: '/:country/company/:slug',
         permanent: true,
       },
       // Redirect old /infowebworld/* URLs to /* (except uploads which are proxied)

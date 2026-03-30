@@ -1,7 +1,7 @@
-import Link from './CountryLink'
+import Link from '../../../components/CountryLink'
 import SafeMailLink from './SafeMailLink'
 
-import { BASE } from '../config/base-path'
+import { BASE } from '../../../config/base-path'
 const bp = BASE
 
 export default function Footer() {
@@ -43,7 +43,7 @@ InfoWebWorld is the Global Growth Platform to explore / search best trusted busi
                              <a href="#" className="ft-col-link">for Business</a>
 
               <Link href="/business" className="ft-col-link">Get Listed</Link>
-               <a href="#" className="ft-col-link">Pricing</a>
+               <a href="#pricing" className="ft-col-link">Pricing</a>
             </div>
             <div className="ft-col">
               <h4 className="ft-col-title">Legal</h4>
@@ -59,7 +59,7 @@ InfoWebWorld is the Global Growth Platform to explore / search best trusted busi
           <span className="ft-copy">© 2004 – 2026. Brain Stream Australia Pty Ltd -  <Link href="/" className="ft-col-link">InfoWebWorld.com</Link>. All rights reserved.</span>
           <div className="ft-badges">
             <span className="ft-badge ft-badge--coral">Thousands of Categories</span>
-            <span className="ft-badge ft-badge--azure">100+ Countries Visitors</span>
+            <span className="ft-badge ft-badge--azure">100+ Countries Vistors </span>
             <span className="ft-badge ft-badge--emerald">DA/DR 70* </span>
           </div>
         </div>
