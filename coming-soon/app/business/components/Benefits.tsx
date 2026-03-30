@@ -38,6 +38,7 @@ const benefits = [
   {
     title: 'Community Power to Influence',
     desc: <>Your listing doesn't just get seen — it gets discussed, saved, recommended, and trusted. Build lasting credibility through real user engagement,<strong> social proof signals, and community-driven discovery that influence buying decisions. </strong></>,
+    num: '#CommunityDrivenGrowth',
     pastel: 'bn--teal',
     highlights: ['Follower System & Community Bookmark Collections', 'Upvotes, Likes & Popularity Signals', 'Question & Answer Section'],
   },
@@ -70,6 +71,7 @@ const smalls = new Set([0, 3, 4, 7])
 export default function Benefits() {
   const gridRef = useRef<HTMLDivElement>(null)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
 
   /* ── Pure DOM: no React state, no re-renders, zero lag ── */
   const swapOn = useCallback(() => {
@@ -143,6 +145,7 @@ export default function Benefits() {
                         <li key={h}><Ck /><span>{h}</span></li>
                       ))}
                     </ul>
+
                   </div>
                 )
               })}

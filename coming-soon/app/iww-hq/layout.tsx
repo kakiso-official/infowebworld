@@ -13,5 +13,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (!authed) return <AdminLogin onSuccess={() => setAuthed(true)} />
 
-  return <AdminShell onLogout={() => setAuthed(false)}>{children}</AdminShell>
+  return <>
+    <meta name="robots" content="noindex, nofollow" />
+    <AdminShell onLogout={() => setAuthed(false)}>{children}</AdminShell>
+  </>
 }

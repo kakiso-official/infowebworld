@@ -93,16 +93,16 @@
   --bn-art: rgba(0,0,0,.08); --bn-solid: #AC7D88;
 }
 .bn--teal {
-  background: #1ABC9C;
+  background: #D4C4A0;
   --bn-fg: #1A1A1A; --bn-fg2: rgba(0,0,0,.65);
-  --bn-pill: #4FD9BD; --bn-pill-fg: #063D32;
-  --bn-art: rgba(0,0,0,.08); --bn-solid: #096B68;
+  --bn-pill: #E8D48A; --bn-pill-fg: #4A3D10;
+  --bn-art: rgba(0,0,0,.08); --bn-solid: #A89868;
 }
 .bn--amber {
-  background: #FFD0D0;
+  background: #94B5D4;
   --bn-fg: #1A1A1A; --bn-fg2: rgba(0,0,0,.65);
-  --bn-pill: #F5D54A; --bn-pill-fg: #5C4800;
-  --bn-art: rgba(0,0,0,.08); --bn-solid: #3AA6B9;
+  --bn-pill: #F0C760; --bn-pill-fg: #5C4600;
+  --bn-art: rgba(0,0,0,.08); --bn-solid: #6B94B0;
 }
 .bn--rose {
   background: #FF8FB7;
@@ -111,10 +111,10 @@
   --bn-art: rgba(0,0,0,.08); --bn-solid: #E83C91;
 }
 .bn--sunset {
-  background: #FFC55A;
+  background: #C4A8D4;
   --bn-fg: #1A1A1A; --bn-fg2: rgba(0,0,0,.65);
-  --bn-pill: #F0A05A; --bn-pill-fg: #5C2D00;
-  --bn-art: rgba(0,0,0,.08); --bn-solid: #FC4100;
+  --bn-pill: #D490E8; --bn-pill-fg: #3A1050;
+  --bn-art: rgba(0,0,0,.08); --bn-solid: #9B7AB0;
 }
 
 /* ============================================================
@@ -159,7 +159,7 @@
   rx: 10px;
   fill: none;
   stroke: var(--bn-solid);
-  stroke-width: 10; /* half clipped by card overflow:hidden → visible 5px */
+  stroke-width: 4; /* half clipped by card overflow:hidden → visible 2px */
   stroke-linecap: round;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
@@ -218,6 +218,10 @@
   color: var(--bn-fg);
   font-weight: 800;
 }
+
+/* ============================================================
+   LOTTIE ANIMATION — Lead Generation card (card 1)
+   ============================================================ */
 
 /* ============================================================
    HIGHLIGHT PILLS
