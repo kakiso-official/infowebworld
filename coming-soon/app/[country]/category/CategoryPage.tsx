@@ -266,7 +266,7 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
   const isL3 = c.level === 3
   const showFilters = c.level >= 2
   const ltFromCat = c.listingTypes || []
-  const sidebarLTs = hasListings ? ltFromCat : demoLTs.map(lt => ({ id: lt.slug, name: lt.name, slug: lt.slug }))
+  const sidebarLTs = ltFromCat.length > 0 ? ltFromCat : demoLTs.map(lt => ({ id: lt.slug, name: lt.name, slug: lt.slug }))
   const getLTCount = (s: string) => hasListings ? listings.filter(l => l.listingTypeSlug === s).length : demoLTCounts.get(s) || 0
   const totalCount = hasListings ? filteredReal.length : filteredDemo.length
   const totalPages = hasListings ? Math.max(1, Math.ceil(listingTotal / ITEMS_PER_PAGE)) : Math.max(1, Math.ceil(filteredDemo.length / ITEMS_PER_PAGE))
