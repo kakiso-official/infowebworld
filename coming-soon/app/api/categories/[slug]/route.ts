@@ -32,7 +32,7 @@ export async function GET(
       [category.id]
     )
 
-    // Get listing types — for L3: direct match, for L2: across all child L3 subcategories
+    // Get listing types — L3: direct, L2: child L3s, L1: all descendant L3s
     let listingTypes: unknown[] = []
     const level = Number(category.level)
     if (level === 3) {
@@ -49,6 +49,17 @@ export async function GET(
          ORDER BY lt.sort_order`,
         [category.id]
       )
+    } else if (level === 1) {
+      listingTypes = await query(
+        `SELECT lt.id, lt.name, lt.slug, lt.sort_order
+         FROM listing_types lt
+         JOIN categories c3 ON c3.id = lt.category_id
+         JOIN categories c2 ON c2.id = c3.parent_id
+         WHERE c2.parent_id = ? AND c3.is_active = 1 AND lt.is_active = 1
+         ORDER BY lt.sort_order
+         LIMIT 200`,
+        [category.id]
+      )
     }
 
     // Get parent if exists
@@ -60,10 +71,17 @@ export async function GET(
       )
     }
 
-    // Count active listings
+    // Count active listings across this category + all descendants (single query)
+    const cid = Number(category.id)
     const countRow = await queryOne(
-      "SELECT COUNT(*) as count FROM submissions WHERE category_id = ? AND status IN ('active','paid')",
-      [category.id]
+      `SELECT COUNT(*) as count FROM submissions s
+       WHERE s.status IN ('active','paid')
+       AND s.category_id IN (
+         SELECT id FROM categories WHERE id = ? AND is_active = 1
+         UNION SELECT id FROM categories WHERE parent_id = ? AND is_active = 1
+         UNION SELECT c3.id FROM categories c3 JOIN categories c2 ON c2.id = c3.parent_id WHERE c2.parent_id = ? AND c3.is_active = 1
+       )`,
+      [cid, cid, cid]
     )
 
     return Response.json(

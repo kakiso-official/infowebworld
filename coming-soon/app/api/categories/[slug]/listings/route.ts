@@ -2,23 +2,18 @@ import { NextRequest } from 'next/server'
 import { query, queryOne } from '@/lib/db'
 
 async function getDescendantCategoryIds(categoryId: number): Promise<number[]> {
-  const ids: number[] = [categoryId]
-  const queue: number[] = [categoryId]
-
-  while (queue.length > 0) {
-    const parentId = queue.shift()!
-    const children = await query(
-      'SELECT id FROM categories WHERE parent_id = ? AND is_active = 1 AND is_navigation = 1',
-      [parentId]
-    ) as Array<{ id: number }>
-
-    for (const child of children) {
-      ids.push(child.id)
-      queue.push(child.id)
-    }
-  }
-
-  return ids
+  // Single query: get self + all children up to 3 levels deep (L1→L2→L3)
+  const rows = await query(
+    `SELECT id FROM categories WHERE id = ? AND is_active = 1
+     UNION
+     SELECT id FROM categories WHERE parent_id = ? AND is_active = 1
+     UNION
+     SELECT c3.id FROM categories c3
+       JOIN categories c2 ON c2.id = c3.parent_id
+       WHERE c2.parent_id = ? AND c3.is_active = 1`,
+    [categoryId, categoryId, categoryId]
+  ) as Array<{ id: number }>
+  return rows.map(r => r.id)
 }
 
 export async function GET(

@@ -49,10 +49,76 @@ function CardActions({ website, name, color }: { website: string; name: string; 
   )
 }
 
+/* ── Mini related card (inside "Users also considered") ── */
+function MiniCard({ item }: { item: DemoListing }) {
+  return (
+    <div className="cd-lc-mini">
+      <div className="cd-lc-mini-logo" style={{ background: `${item.logoColor}12` }}>
+        <I d={ic[item.logoIcon as IconKey] || ic.grid} size={22} color={item.logoColor} />
+      </div>
+      <h4 className="cd-lc-mini-name">{item.name}</h4>
+      <div className="cd-lc-mini-rating">
+        <span className="cd-lc-mini-score">{item.score}</span>
+        <Stars rating={item.stars} size={13} />
+        <span className="cd-lc-mini-reviews">({item.reviews})</span>
+      </div>
+      <p className="cd-lc-mini-desc">{item.tagline}</p>
+      <a href="#" className="cd-lc-mini-link">LEARN MORE</a>
+    </div>
+  )
+}
+
+/* ── "Users also considered" expandable footer ── */
+function AlsoConsidered({ current, allItems }: { current: string; allItems: DemoListing[] }) {
+  const [open, setOpen] = useState(false)
+  const [voted, setVoted] = useState<'up' | 'down' | null>(null)
+  const related = allItems.filter(i => i.name !== current).slice(0, 3)
+  if (related.length === 0) return null
+
+  return (
+    <div className="cd-lc-also">
+      <button className="cd-lc-also-toggle" onClick={() => setOpen(!open)} type="button">
+        <span className="cd-lc-also-left">
+          <I d={ic.users} size={16} color="var(--h-accent)" sw={2} />
+          <span className="cd-lc-also-label">Users also considered</span>
+        </span>
+        <span className={`cd-lc-also-chevron${open ? ' cd-lc-also-chevron--open' : ''}`}>
+          <I d={ic.chevronDown} size={14} color="var(--h-muted)" sw={2} />
+        </span>
+      </button>
+      {open && (
+        <div className="cd-lc-also-panel">
+          <div className="cd-lc-also-grid">
+            {related.map((item, i) => <MiniCard key={i} item={item} />)}
+          </div>
+          <div className="cd-lc-also-feedback">
+            <span className="cd-lc-also-feedback-label">Good recommendations?</span>
+            <button
+              type="button"
+              className={`cd-lc-also-vote${voted === 'up' ? ' cd-lc-also-vote--active' : ''}`}
+              onClick={() => setVoted(voted === 'up' ? null : 'up')}
+              aria-label="Thumbs up"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill={voted === 'up' ? '#2FAE6A' : 'none'} stroke={voted === 'up' ? '#2FAE6A' : '#9A9590'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14zM7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3" /></svg>
+            </button>
+            <button
+              type="button"
+              className={`cd-lc-also-vote${voted === 'down' ? ' cd-lc-also-vote--active' : ''}`}
+              onClick={() => setVoted(voted === 'down' ? null : 'down')}
+              aria-label="Thumbs down"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill={voted === 'down' ? '#E8553D' : 'none'} stroke={voted === 'down' ? '#E8553D' : '#9A9590'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 15v4a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10zM17 2h2.67A2.31 2.31 0 0122 4v7a2.31 2.31 0 01-2.33 2H17" /></svg>
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 /* ── Demo card ── */
-export function DemoListingCard({ item, isPreview }: { item: DemoListing; isPreview: boolean }) {
+export function DemoListingCard({ item, isPreview, allItems }: { item: DemoListing; isPreview: boolean; allItems?: DemoListing[] }) {
   const desc = item.description || item.tagline
-  const displayUrl = item.website === '#' ? `${item.name.toLowerCase().replace(/\s+/g, '')}.com` : item.website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')
 
   return (
     <div className="cd-lc">
@@ -93,15 +159,8 @@ export function DemoListingCard({ item, isPreview }: { item: DemoListing; isPrev
         <a href="#" className="cd-lc-readmore">Read more about {item.name}</a>
       </div>
 
-      {/* ── Tags / features ── */}
-      <div className="cd-lc-tags-row">
-        <span className="cd-lc-tag">{item.cat}</span>
-        <span className="cd-lc-tag">{item.listingType}</span>
-        {item.verified && <span className="cd-lc-tag cd-lc-tag--verified">Verified</span>}
-        {item.features.slice(0, 2).map((f, i) => (
-          <span key={i} className="cd-lc-tag cd-lc-tag--feat">{f}</span>
-        ))}
-      </div>
+      {/* ── Users also considered ── */}
+      {allItems && <AlsoConsidered current={item.name} allItems={allItems} />}
     </div>
   )
 }
@@ -111,7 +170,6 @@ export function RealListingCard({ item, color }: { item: RealSubmission; color: 
   const initial = item.companyName.charAt(0).toUpperCase()
   const itemColor = item.categoryColor || color
   const desc = item.description || item.tagline || ''
-  const displayUrl = item.website ? item.website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '') : ''
 
   return (
     <div className="cd-lc">
@@ -160,16 +218,6 @@ export function RealListingCard({ item, color }: { item: RealSubmission; color: 
           <Link href={`/company/${item.slug}`} className="cd-lc-readmore">Read more about {item.companyName}</Link>
         </div>
       )}
-
-      {/* ── Tags ── */}
-      <div className="cd-lc-tags-row">
-        <span className="cd-lc-tag">{item.category}</span>
-        {item.listingType && <span className="cd-lc-tag">{item.listingType}</span>}
-        {item.status === 'active' && <span className="cd-lc-tag cd-lc-tag--verified">Verified</span>}
-        {item.features.slice(0, 3).map((f, i) => (
-          <span key={i} className="cd-lc-tag cd-lc-tag--feat">{f}</span>
-        ))}
-      </div>
     </div>
   )
 }

@@ -11,7 +11,9 @@ import { fetchAllTagGroups } from '../../iww-hq/data/tag-storage'
 import type { TagGroup } from '../../iww-hq/data/tag-storage'
 import { parseSegments, type ParsedCategoryFilters } from './lib/parse-segments'
 import { buildCategoryUrl } from './lib/build-url'
-import type { GeoCountry, GeoState, GeoCity } from '../../lib/geo-slugs'
+import { lookupLocationCountry, type GeoCountry, type GeoState, type GeoCity } from '../../lib/geo-slugs'
+import { COUNTRY_LABELS } from '../../config/countries'
+import type { CountryCode } from '../../config/countries'
 
 import { I, ic } from './components/icons'
 import CategoryHero from './components/CategoryHero'
@@ -97,18 +99,35 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
     router.push(`/${siteCountry}${url}`, { scroll: false })
   }, [slug, locationCountry, locationState, locationCity, selectedListingType, selectedTags, siteCountry, router])
 
-  /* ── Data fetching ── */
+  /* ── Data fetching — ALL in parallel ── */
   useEffect(() => {
     if (!slug) { setNotFound(true); return }
-    Promise.all([fetchCategoryBySlug(slug), fetchLaunchedCategories()])
-      .then(([cat, allCats]) => {
-        if (cat) {
-          setCategory(cat)
-          setRelated(allCats.filter(c => c.id !== cat.id && ((cat.parentId && c.parentId === cat.parentId) || (!cat.parentId && c.level === cat.level))).slice(0, 9))
-        } else setNotFound(true)
+    // Fire all 3 API calls simultaneously
+    const catP = fetchCategoryBySlug(slug)
+    const relP = fetchLaunchedCategories()
+    const tagP = fetchAllTagGroups()
+
+    catP.then(cat => {
+      if (!cat) { setNotFound(true); return }
+      setCategory(cat)
+      // Fetch listings as soon as we have the category ID
+      fetchCategoryListings(cat.id, 1).then(res => { setListings(res.data); setListingTotal(res.total) })
+    })
+    relP.then(allCats => {
+      catP.then(cat => {
+        if (cat) setRelated(allCats.filter(c => c.id !== cat.id && ((cat.parentId && c.parentId === cat.parentId) || (!cat.parentId && c.level === cat.level))).slice(0, 9))
       })
+    })
+    tagP.then(setTagGroups)
   }, [slug])
 
+  /* Re-fetch listings on page change */
+  useEffect(() => {
+    if (!category || page === 1) return
+    fetchCategoryListings(category.id, page).then(res => { setListings(res.data); setListingTotal(res.total) })
+  }, [category, page])
+
+  /* ── SEO meta tags ── */
   useEffect(() => {
     if (!category) return
     document.title = `${category.seoTitle || category.name} | InfoWebWorld`
@@ -155,13 +174,6 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
     return () => { document.getElementById('schema-category-breadcrumb')?.remove(); document.getElementById('schema-category-faq')?.remove() }
   }, [category])
 
-  useEffect(() => { if (category && category.level >= 2) fetchAllTagGroups().then(setTagGroups) }, [category])
-
-  useEffect(() => {
-    if (!category) return
-    fetchCategoryListings(category.id, page).then(res => { setListings(res.data); setListingTotal(res.total) })
-  }, [category, page])
-
   /* ── Handlers ── */
   const toggleTag = (s: string) => {
     const next = new Set(selectedTags); next.has(s) ? next.delete(s) : next.add(s)
@@ -179,13 +191,30 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
     setLocationCountry(c); setLocationState(null); setLocationCity(null); setPage(1)
     pushFilters({ locationCountry: c, state: null, city: null })
   }
+  // Resolve auto-detected country from URL prefix (used when locationCountry is null)
+  const getAutoCountry = (): GeoCountry | null => {
+    const label = COUNTRY_LABELS[siteCountry as CountryCode] || 'India'
+    return lookupLocationCountry(label.toLowerCase().replace(/\s+/g, '-'))
+  }
+
   const handleStateChange = (s: GeoState | null) => {
+    // Auto-set country if not explicitly selected
+    let country = locationCountry
+    if (!country) {
+      country = getAutoCountry()
+      if (country) setLocationCountry(country)
+    }
     setLocationState(s); setLocationCity(null); setPage(1)
-    pushFilters({ state: s, city: null })
+    pushFilters({ locationCountry: country, state: s, city: null })
   }
   const handleCityChange = (c: GeoCity | null) => {
+    let country = locationCountry
+    if (!country) {
+      country = getAutoCountry()
+      if (country) setLocationCountry(country)
+    }
     setLocationCity(c); setPage(1)
-    pushFilters({ city: c })
+    pushFilters({ locationCountry: country, city: c })
   }
 
   /* ── Filtering ── */
@@ -257,14 +286,34 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
       </section>
     )
   }
-  if (!category) return null
+  if (!category) return (
+    <section className="cd-page">
+      <div className="cd-wrap cd-skeleton-wrap">
+        {/* Hero skeleton */}
+        <div className="cd-sk-hero">
+          <div className="cd-sk-line cd-sk-line--sm" />
+          <div className="cd-sk-line cd-sk-line--lg" />
+          <div className="cd-sk-line cd-sk-line--md" />
+        </div>
+        {/* Layout skeleton */}
+        <div className="cd-sk-layout">
+          <div className="cd-sk-sidebar">
+            <div className="cd-sk-block" /><div className="cd-sk-block cd-sk-block--short" /><div className="cd-sk-block" />
+          </div>
+          <div className="cd-sk-content">
+            <div className="cd-sk-card" /><div className="cd-sk-card" /><div className="cd-sk-card" />
+          </div>
+        </div>
+      </div>
+    </section>
+  )
 
   const c = category
   const color = c.color || '#E8553D'
   const subcats = c.subcategories || []
   const hasListings = c.listingCount > 0 || listings.length > 0
   const isL3 = c.level === 3
-  const showFilters = c.level >= 2
+  const showFilters = true
   const ltFromCat = c.listingTypes || []
   const sidebarLTs = ltFromCat.length > 0 ? ltFromCat : demoLTs.map(lt => ({ id: lt.slug, name: lt.name, slug: lt.slug }))
   const getLTCount = (s: string) => hasListings ? listings.filter(l => l.listingTypeSlug === s).length : demoLTCounts.get(s) || 0
@@ -276,7 +325,15 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
     <section className="cd-page">
       <div className="cd-wrap">
 
-        <CategoryHero category={c} />
+        <CategoryHero
+          category={c}
+          locationCountry={locationCountry}
+          locationState={locationState}
+          locationCity={locationCity}
+          onLocationCountryChange={handleLocationCountryChange}
+          onStateChange={handleStateChange}
+          onCityChange={handleCityChange}
+        />
         <SubcategoryChips subcategories={subcats} />
 
         {/* Filter pills row (mobile) */}
@@ -355,7 +412,7 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
             <div>
               {!hasListings ? (
                 demoPaginated.length > 0 ? (
-                  demoPaginated.map((item, i) => <DemoListingCard key={i} item={item} isPreview />)
+                  demoPaginated.map((item, i) => <DemoListingCard key={i} item={item} isPreview allItems={sampleListings} />)
                 ) : (
                   <div className="cd-empty">
                     <I d={ic.search} size={32} color="var(--h-muted)" sw={1.5} />
