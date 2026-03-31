@@ -32,11 +32,21 @@ export async function GET(
       [category.id]
     )
 
-    // Get listing types if this is an L3 category
+    // Get listing types — for L3: direct match, for L2: across all child L3 subcategories
     let listingTypes: unknown[] = []
-    if (Number(category.level) === 3) {
+    const level = Number(category.level)
+    if (level === 3) {
       listingTypes = await query(
         `SELECT id, name, slug, sort_order FROM listing_types WHERE category_id = ? AND is_active = 1 ORDER BY sort_order`,
+        [category.id]
+      )
+    } else if (level === 2) {
+      listingTypes = await query(
+        `SELECT lt.id, lt.name, lt.slug, lt.sort_order
+         FROM listing_types lt
+         JOIN categories c ON c.id = lt.category_id
+         WHERE c.parent_id = ? AND c.is_active = 1 AND lt.is_active = 1
+         ORDER BY lt.sort_order`,
         [category.id]
       )
     }

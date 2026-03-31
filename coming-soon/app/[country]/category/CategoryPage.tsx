@@ -155,7 +155,7 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
     return () => { document.getElementById('schema-category-breadcrumb')?.remove(); document.getElementById('schema-category-faq')?.remove() }
   }, [category])
 
-  useEffect(() => { if (category?.level === 3) fetchAllTagGroups().then(setTagGroups) }, [category])
+  useEffect(() => { if (category && category.level >= 2) fetchAllTagGroups().then(setTagGroups) }, [category])
 
   useEffect(() => {
     if (!category) return
@@ -264,6 +264,7 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
   const subcats = c.subcategories || []
   const hasListings = c.listingCount > 0 || listings.length > 0
   const isL3 = c.level === 3
+  const showFilters = c.level >= 2
   const ltFromCat = c.listingTypes || []
   const sidebarLTs = hasListings ? ltFromCat : demoLTs.map(lt => ({ id: lt.slug, name: lt.name, slug: lt.slug }))
   const getLTCount = (s: string) => hasListings ? listings.filter(l => l.listingTypeSlug === s).length : demoLTCounts.get(s) || 0
@@ -279,7 +280,7 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
         <SubcategoryChips subcategories={subcats} />
 
         {/* Filter pills row (mobile) */}
-        {isL3 && (
+        {showFilters && (
           <button
             className="cd-filter-btn"
             onClick={() => setSidebarOpen(true)}
@@ -295,13 +296,13 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
         )}
 
         {/* Main layout: sidebar + listings */}
-        <div className={isL3 ? 'cd-layout cd-layout--with-filters' : 'cd-layout'}>
+        <div className={showFilters ? 'cd-layout cd-layout--with-filters' : 'cd-layout'}>
 
-          {/* Left filter sidebar (L3, desktop only) */}
-          {isL3 && (
+          {/* Left filter sidebar (L2+L3, desktop only) */}
+          {showFilters && (
             <FilterSidebar
               color={color}
-              isL3={isL3}
+              isL3={showFilters}
               isOpen={sidebarOpen}
               onClose={() => setSidebarOpen(false)}
               listingTypes={sidebarLTs}
