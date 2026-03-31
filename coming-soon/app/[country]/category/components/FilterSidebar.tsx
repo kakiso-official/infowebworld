@@ -1,6 +1,15 @@
 'use client'
+import { useMemo } from 'react'
 import { I, ic } from './icons'
 import type { TagGroup } from '../../../iww-hq/data/tag-storage'
+import {
+  getLocationCountries,
+  getStates,
+  getCities,
+  type GeoCountry,
+  type GeoState,
+  type GeoCity,
+} from '../../../lib/geo-slugs'
 
 type Props = {
   color: string
@@ -22,6 +31,107 @@ type Props = {
   totalFilteredCount: number
   hasListings: boolean
   demoTagCounts: Map<string, number>
+  /* Location */
+  locationCountry: GeoCountry | null
+  locationState: GeoState | null
+  locationCity: GeoCity | null
+  onLocationCountryChange: (val: GeoCountry | null) => void
+  onStateChange: (val: GeoState | null) => void
+  onCityChange: (val: GeoCity | null) => void
+}
+
+/* ── Location dropdown section ── */
+function LocationSection(p: Props) {
+  const countries = useMemo(() => {
+    const arr: GeoCountry[] = []
+    getLocationCountries().forEach(c => arr.push(c))
+    arr.sort((a, b) => a.name.localeCompare(b.name))
+    return arr
+  }, [])
+
+  const states = useMemo(() => {
+    if (!p.locationCountry) return []
+    const arr: GeoState[] = []
+    getStates(p.locationCountry.isoCode).forEach(s => arr.push(s))
+    arr.sort((a, b) => a.name.localeCompare(b.name))
+    return arr
+  }, [p.locationCountry])
+
+  const cities = useMemo(() => {
+    if (!p.locationCountry || !p.locationState) return []
+    const arr: GeoCity[] = []
+    getCities(p.locationCountry.isoCode, p.locationState.stateCode).forEach(c => arr.push(c))
+    arr.sort((a, b) => a.name.localeCompare(b.name))
+    return arr
+  }, [p.locationCountry, p.locationState])
+
+  return (
+    <div className="cd-sb-section">
+      <h4 className="cd-sb-section-title">
+        <I d={ic.mapPin} size={13} color={p.color} sw={2} />
+        Location
+      </h4>
+
+      {/* Country */}
+      <div className="cd-sb-select-wrap">
+        <label className="cd-sb-select-label">Country</label>
+        <select
+          className="cd-sb-select"
+          value={p.locationCountry?.slug || ''}
+          onChange={e => {
+            if (!e.target.value) { p.onLocationCountryChange(null); return }
+            const c = countries.find(c => c.slug === e.target.value)
+            if (c) p.onLocationCountryChange(c)
+          }}
+        >
+          <option value="">All Countries</option>
+          {countries.map(c => (
+            <option key={c.isoCode} value={c.slug}>{c.name}</option>
+          ))}
+        </select>
+      </div>
+
+      {/* State */}
+      <div className="cd-sb-select-wrap">
+        <label className="cd-sb-select-label">State / Region</label>
+        <select
+          className="cd-sb-select"
+          value={p.locationState?.slug || ''}
+          disabled={!p.locationCountry}
+          onChange={e => {
+            if (!e.target.value) { p.onStateChange(null); return }
+            const s = states.find(s => s.slug === e.target.value)
+            if (s) p.onStateChange(s)
+          }}
+        >
+          <option value="">{p.locationCountry ? 'All States' : 'Select country first'}</option>
+          {states.map(s => (
+            <option key={s.stateCode} value={s.slug}>{s.name}</option>
+          ))}
+        </select>
+      </div>
+
+      {/* City */}
+      <div className="cd-sb-select-wrap">
+        <label className="cd-sb-select-label">City</label>
+        <select
+          className="cd-sb-select"
+          value={p.locationCity?.slug || ''}
+          disabled={!p.locationState}
+          onChange={e => {
+            if (!e.target.value) { p.onCityChange(null); return }
+            const c = cities.find(c => c.slug === e.target.value)
+            if (c) p.onCityChange(c)
+          }}
+        >
+          <option value="">{p.locationState ? 'All Cities' : 'Select state first'}</option>
+          {cities.map(c => (
+            <option key={c.slug} value={c.slug}>{c.name}</option>
+          ))}
+        </select>
+      </div>
+    </div>
+  )
 }
 
 /* ── Shared filter content ── */
@@ -36,6 +146,18 @@ function FilterContent(p: Props) {
             <button onClick={p.onClearFilters} className="cd-sb-clear-btn" style={{ color: p.color }}>Clear All</button>
           </div>
           <div className="cd-sb-active-pills">
+            {/* Location pills */}
+            {p.locationCountry && (
+              <span className="cd-sb-pill cd-sb-pill--location" style={{ background: `${p.color}10`, color: p.color, borderColor: `${p.color}30` }}>
+                <I d={ic.mapPin} size={10} color={p.color} sw={2} />
+                {p.locationCountry.name}
+                {p.locationState && <> &rsaquo; {p.locationState.name}</>}
+                {p.locationCity && <> &rsaquo; {p.locationCity.name}</>}
+                <button onClick={() => p.onLocationCountryChange(null)} className="cd-sb-pill-x" style={{ color: p.color }}>
+                  <I d={ic.x} size={10} color={p.color} sw={2.5} />
+                </button>
+              </span>
+            )}
             {p.selectedListingType && (
               <span className="cd-sb-pill" style={{ background: `${p.color}10`, color: p.color, borderColor: `${p.color}30` }}>
                 {p.listingTypes.find(lt => lt.slug === p.selectedListingType)?.name || p.selectedListingType}
@@ -58,6 +180,9 @@ function FilterContent(p: Props) {
           </div>
         </div>
       )}
+
+      {/* Location dropdowns */}
+      <LocationSection {...p} />
 
       {/* Listing type radios */}
       {p.listingTypes.length > 0 && (

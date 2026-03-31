@@ -1,13 +1,17 @@
 'use client'
-import { useState, useEffect, useMemo } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from '../../components/CountryLink'
+import { useCountry } from '../../config/country-context'
 import { fetchCategoryBySlug, fetchLaunchedCategories } from '../../iww-hq/data/category-storage'
 import type { Category } from '../../iww-hq/data/category-storage'
 import { fetchCategoryListings } from '../../iww-hq/data/submissions-storage'
 import type { RealSubmission } from '../../iww-hq/data/submissions-storage'
 import { fetchAllTagGroups } from '../../iww-hq/data/tag-storage'
 import type { TagGroup } from '../../iww-hq/data/tag-storage'
+import { parseSegments, type ParsedCategoryFilters } from './lib/parse-segments'
+import { buildCategoryUrl } from './lib/build-url'
+import type { GeoCountry, GeoState, GeoCity } from '../../lib/geo-slugs'
 
 import { I, ic } from './components/icons'
 import CategoryHero from './components/CategoryHero'
@@ -15,7 +19,6 @@ import SubcategoryChips from './components/SubcategoryChips'
 import FilterSidebar from './components/FilterSidebar'
 import { DemoListingCard, RealListingCard, type DemoListing } from './components/ListingCard'
 import Pagination from './components/Pagination'
-// RelatedSidebar removed — listings take full width
 import CompactCta from './components/CompactCta'
 import TrustSection from './components/TrustSection'
 import FaqAccordion from './components/FaqAccordion'
@@ -35,9 +38,10 @@ const sampleListings: DemoListing[] = [
 
 const ITEMS_PER_PAGE = 10
 
-export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
-  const params = useSearchParams()
-  const slug = slugProp || params.get('slug') || (typeof window !== 'undefined' ? window.location.pathname.replace(/^\/(infowebworld\/)?category\//, '').replace(/\/$/, '') || null : null)
+export default function CategoryPage({ segments }: { segments?: string[] }) {
+  const router = useRouter()
+  const siteCountry = useCountry()
+  const slug = segments?.[0] || null
 
   /* ── State ── */
   const [category, setCategory] = useState<Category | null>(null)
@@ -52,6 +56,46 @@ export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [openAccordions, setOpenAccordions] = useState<Set<string>>(new Set())
   const [page, setPage] = useState(1)
+
+  /* ── Location state ── */
+  const [locationCountry, setLocationCountry] = useState<GeoCountry | null>(null)
+  const [locationState, setLocationState] = useState<GeoState | null>(null)
+  const [locationCity, setLocationCity] = useState<GeoCity | null>(null)
+
+  /* ── Parse URL segments into filter state ── */
+  const [segmentsParsed, setSegmentsParsed] = useState(false)
+  useEffect(() => {
+    if (!segments?.length || !category) return
+    const ltSlugs = new Set((category.listingTypes || []).map(lt => lt.slug))
+    const tagSlugs = new Set(tagGroups.flatMap(g => g.tags).map(t => t.slug))
+    const parsed = parseSegments(segments, ltSlugs, tagSlugs)
+    setLocationCountry(parsed.locationCountry)
+    setLocationState(parsed.state)
+    setLocationCity(parsed.city)
+    if (parsed.listingType) setSelectedListingType(parsed.listingType)
+    if (parsed.tags.length) setSelectedTags(new Set(parsed.tags))
+    setSegmentsParsed(true)
+  }, [segments, category, tagGroups])
+
+  /* ── Push URL on filter change ── */
+  const pushFilters = useCallback((overrides: Partial<ParsedCategoryFilters>) => {
+    if (!slug) return
+    const current: ParsedCategoryFilters = {
+      categorySlug: slug,
+      locationCountry,
+      state: locationState,
+      city: locationCity,
+      listingType: selectedListingType || null,
+      tags: Array.from(selectedTags),
+    }
+    const merged = { ...current, ...overrides }
+    // If country removed, clear state + city
+    if (!merged.locationCountry) { merged.state = null; merged.city = null }
+    // If state removed, clear city
+    if (!merged.state) { merged.city = null }
+    const url = buildCategoryUrl(merged)
+    router.push(`/${siteCountry}${url}`, { scroll: false })
+  }, [slug, locationCountry, locationState, locationCity, selectedListingType, selectedTags, siteCountry, router])
 
   /* ── Data fetching ── */
   useEffect(() => {
@@ -119,9 +163,30 @@ export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
   }, [category, page])
 
   /* ── Handlers ── */
-  const toggleTag = (s: string) => { setSelectedTags(p => { const n = new Set(p); n.has(s) ? n.delete(s) : n.add(s); return n }); setPage(1) }
-  const clearFilters = () => { setSelectedTags(new Set()); setSelectedListingType(''); setPage(1) }
+  const toggleTag = (s: string) => {
+    const next = new Set(selectedTags); next.has(s) ? next.delete(s) : next.add(s)
+    setSelectedTags(next); setPage(1)
+    pushFilters({ tags: Array.from(next) })
+  }
+  const clearFilters = () => {
+    setSelectedTags(new Set()); setSelectedListingType(''); setPage(1)
+    setLocationCountry(null); setLocationState(null); setLocationCity(null)
+    pushFilters({ locationCountry: null, state: null, city: null, listingType: null, tags: [] })
+  }
   const toggleAccordion = (id: string) => { setOpenAccordions(p => { const n = new Set(p); n.has(id) ? n.delete(id) : n.add(id); return n }) }
+  const handleListingTypeChange = (s: string) => { setSelectedListingType(s); setPage(1); pushFilters({ listingType: s || null }) }
+  const handleLocationCountryChange = (c: GeoCountry | null) => {
+    setLocationCountry(c); setLocationState(null); setLocationCity(null); setPage(1)
+    pushFilters({ locationCountry: c, state: null, city: null })
+  }
+  const handleStateChange = (s: GeoState | null) => {
+    setLocationState(s); setLocationCity(null); setPage(1)
+    pushFilters({ state: s, city: null })
+  }
+  const handleCityChange = (c: GeoCity | null) => {
+    setLocationCity(c); setPage(1)
+    pushFilters({ city: c })
+  }
 
   /* ── Filtering ── */
   const filteredDemo = useMemo(() => {
@@ -204,7 +269,7 @@ export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
   const getLTCount = (s: string) => hasListings ? listings.filter(l => l.listingTypeSlug === s).length : demoLTCounts.get(s) || 0
   const totalCount = hasListings ? filteredReal.length : filteredDemo.length
   const totalPages = hasListings ? Math.max(1, Math.ceil(listingTotal / ITEMS_PER_PAGE)) : Math.max(1, Math.ceil(filteredDemo.length / ITEMS_PER_PAGE))
-  const hasAnyFilter = selectedTags.size > 0 || !!selectedListingType
+  const hasAnyFilter = selectedTags.size > 0 || !!selectedListingType || !!locationCountry
 
   return (
     <section className="cd-page">
@@ -223,7 +288,7 @@ export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
             All filters
             {hasAnyFilter && (
               <span className="cd-filter-badge" style={{ background: color }}>
-                {selectedTags.size + (selectedListingType ? 1 : 0)}
+                {selectedTags.size + (selectedListingType ? 1 : 0) + (locationCountry ? 1 : 0) + (locationState ? 1 : 0) + (locationCity ? 1 : 0)}
               </span>
             )}
           </button>
@@ -241,7 +306,7 @@ export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
               onClose={() => setSidebarOpen(false)}
               listingTypes={sidebarLTs}
               selectedListingType={selectedListingType}
-              onListingTypeChange={s => { setSelectedListingType(s); setPage(1) }}
+              onListingTypeChange={handleListingTypeChange}
               tagGroups={tagGroups}
               selectedTags={selectedTags}
               onToggleTag={toggleTag}
@@ -254,6 +319,12 @@ export default function CategoryPage({ slug: slugProp }: { slug?: string }) {
               totalFilteredCount={totalCount}
               hasListings={hasListings}
               demoTagCounts={demoTagCounts}
+              locationCountry={locationCountry}
+              locationState={locationState}
+              locationCity={locationCity}
+              onLocationCountryChange={handleLocationCountryChange}
+              onStateChange={handleStateChange}
+              onCityChange={handleCityChange}
             />
           )}
 

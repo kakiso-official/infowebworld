@@ -6,13 +6,13 @@ import CategoryPage from '../CategoryPage'
 export default async function CategoryDetailRoute({
   params,
 }: {
-  params: Promise<{ slug: string }>
+  params: Promise<{ segments: string[] }>
 }) {
-  const { slug } = await params
+  const { segments } = await params
   return (
     <>
       <Navbar />
-      <Suspense><CategoryPage slug={slug} /></Suspense>
+      <Suspense><CategoryPage segments={segments} /></Suspense>
       <Footer />
     </>
   )
