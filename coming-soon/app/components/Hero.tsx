@@ -62,7 +62,7 @@ export default function Hero() {
       <div className="cs-content">
 
         <h1 className="cs-h1">
-          Global Growth Platform TEST to <br />
+          Global Growth Platform to <br />
           <span className="cs-h1-line2">
             <span className={`cs-type-wrap${jsReady ? ' js-active' : ''}`}>
               <span className="cs-type-text">{displayed}</span>
