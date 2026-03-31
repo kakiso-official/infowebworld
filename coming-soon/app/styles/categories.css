@@ -478,28 +478,52 @@
 .cd-toolbar-select:focus { border-color: var(--h-accent) }
 
 /* Listing card — Trustpilot horizontal style */
-.cd-listing { padding: 1.25rem 0; border-bottom: 1px solid var(--h-border-light) }
-.cd-listing:last-child { border-bottom: none }
-.cd-listing-inner { display: flex; gap: 1rem }
-.cd-listing-logo { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0 }
-.cd-listing-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit }
-.cd-listing-body { flex: 1; min-width: 0 }
-.cd-listing-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: .15rem }
-.cd-listing-name { font-family: var(--font-bricolage), sans-serif; font-size: .95rem; font-weight: 800; color: var(--h-heading); line-height: 1.2 }
-.cd-listing-name:hover { color: var(--h-accent) }
-.cd-listing-url { font-family: var(--font-nunito), sans-serif; font-size: .72rem; color: var(--h-accent); display: block; margin-bottom: .15rem }
-.cd-listing-url:hover { text-decoration: underline }
-.cd-listing-preview { display: inline-flex; align-items: center; gap: .2rem; font-family: var(--font-nunito), sans-serif; font-size: .56rem; font-weight: 700; color: var(--h-muted); background: var(--h-bg); padding: .15rem .45rem; border-radius: 999px; border: 1px solid var(--h-border-light); text-transform: uppercase; letter-spacing: .04em; flex-shrink: 0 }
-.cd-listing-location { font-family: var(--font-nunito), sans-serif; font-size: .72rem; color: var(--h-muted); text-align: right; flex-shrink: 0; max-width: 200px }
-.cd-listing-rating { display: flex; align-items: center; gap: .35rem; margin: .25rem 0 .15rem }
-.cd-listing-score { font-family: var(--font-bricolage), sans-serif; font-size: .85rem; font-weight: 800; color: var(--h-heading) }
-.cd-listing-reviews { font-family: var(--font-nunito), sans-serif; font-size: .72rem; color: var(--h-accent); font-weight: 600 }
-.cd-listing-reviews-sep { color: var(--h-muted); font-size: .72rem }
-.cd-listing-tagline { font-family: var(--font-nunito), sans-serif; font-size: .72rem; color: var(--h-muted); margin-bottom: .4rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
-.cd-listing-tags { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .5rem }
-.cd-listing-tag { font-family: var(--font-nunito), sans-serif; font-size: .68rem; font-weight: 600; padding: .25rem .6rem; border-radius: 999px; border: 1px solid var(--h-border); color: var(--h-body); background: #fff }
-.cd-listing-tag--verified { border-color: #2FAE6A30; color: #2FAE6A; background: #2FAE6A08 }
-.cd-listing-tag--feat { color: var(--h-muted); border-color: var(--h-border-light) }
+/* ── Listing card — G2-style ── */
+.cd-lc { background: #fff; border: 1.5px solid var(--h-border); border-radius: 12px; margin-bottom: 1rem; overflow: hidden; transition: box-shadow .2s, border-color .2s }
+.cd-lc:hover { border-color: #d0ccc8; box-shadow: 0 4px 20px rgba(0,0,0,.06) }
+
+/* Header: logo + info + actions */
+.cd-lc-header { display: flex; gap: 1rem; padding: 1.25rem 1.5rem; align-items: flex-start }
+.cd-lc-logo { width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1.5px solid var(--h-border-light) }
+.cd-lc-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit }
+.cd-lc-logo-initial { font-family: var(--font-bricolage), sans-serif; font-weight: 800; font-size: 1.4rem }
+.cd-lc-info { flex: 1; min-width: 0 }
+.cd-lc-name-row { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: .15rem }
+.cd-lc-name { font-family: var(--font-bricolage), sans-serif; font-size: 1.05rem; font-weight: 800; color: var(--h-heading); line-height: 1.25; display: inline-flex; align-items: center; gap: .35rem }
+.cd-lc-name a { color: inherit; text-decoration: none }
+.cd-lc-name a:hover, .cd-lc-name:hover { color: var(--h-accent) }
+.cd-lc-ext-icon { color: var(--h-muted); flex-shrink: 0; opacity: .5 }
+.cd-lc-badge-preview { display: inline-flex; align-items: center; gap: .2rem; font-family: var(--font-nunito), sans-serif; font-size: .56rem; font-weight: 700; color: var(--h-muted); background: var(--h-bg); padding: .15rem .45rem; border-radius: 999px; border: 1px solid var(--h-border-light); text-transform: uppercase; letter-spacing: .04em; flex-shrink: 0 }
+.cd-lc-location { display: inline-flex; align-items: center; gap: .2rem; font-family: var(--font-nunito), sans-serif; font-size: .68rem; color: var(--h-muted); flex-shrink: 0; white-space: nowrap }
+
+/* Rating row */
+.cd-lc-rating-row { display: flex; align-items: center; gap: .3rem; margin: .2rem 0 .3rem }
+.cd-lc-score { font-family: var(--font-bricolage), sans-serif; font-size: .85rem; font-weight: 800; color: var(--h-heading) }
+.cd-lc-reviews { font-family: var(--font-nunito), sans-serif; font-size: .72rem; color: var(--h-muted); font-weight: 600 }
+
+/* Subtitle */
+.cd-lc-subtitle { font-family: var(--font-nunito), sans-serif; font-size: .78rem; color: var(--h-body); margin: 0; line-height: 1.4 }
+
+/* Actions */
+.cd-lc-actions { display: flex; flex-direction: column; gap: .5rem; flex-shrink: 0; align-items: flex-end }
+.cd-lc-visit { display: inline-flex; align-items: center; gap: .4rem; font-family: var(--font-nunito), sans-serif; font-size: .72rem; font-weight: 800; color: #fff; padding: .55rem 1.2rem; border-radius: 8px; text-decoration: none; letter-spacing: .03em; text-transform: uppercase; transition: filter .2s, transform .15s; white-space: nowrap }
+.cd-lc-visit:hover { filter: brightness(1.08); transform: translateY(-1px) }
+.cd-lc-secondary { display: flex; gap: .4rem }
+.cd-lc-btn-outline { display: inline-flex; align-items: center; gap: .3rem; font-family: var(--font-nunito), sans-serif; font-size: .68rem; font-weight: 700; color: var(--h-heading); background: #fff; border: 1.5px solid var(--h-border); padding: .35rem .7rem; border-radius: 8px; cursor: pointer; transition: border-color .15s, background .15s; white-space: nowrap }
+.cd-lc-btn-outline:hover { border-color: var(--h-heading); background: var(--h-bg) }
+.cd-lc-btn-save--active { border-color: #E8553D30; background: #E8553D08 }
+
+/* Description section */
+.cd-lc-desc-section { padding: .75rem 1.5rem 1rem; border-top: 1px solid var(--h-border-light) }
+.cd-lc-desc { font-family: var(--font-nunito), sans-serif; font-size: .78rem; color: var(--h-body); line-height: 1.65; margin: 0 0 .5rem }
+.cd-lc-readmore { font-family: var(--font-nunito), sans-serif; font-size: .75rem; font-weight: 700; color: var(--h-accent); text-decoration: none }
+.cd-lc-readmore:hover { text-decoration: underline }
+
+/* Tags row */
+.cd-lc-tags-row { display: flex; flex-wrap: wrap; gap: .35rem; padding: .65rem 1.5rem; border-top: 1px solid var(--h-border-light); background: var(--h-bg) }
+.cd-lc-tag { font-family: var(--font-nunito), sans-serif; font-size: .65rem; font-weight: 600; padding: .2rem .55rem; border-radius: 999px; border: 1px solid var(--h-border); color: var(--h-body); background: #fff }
+.cd-lc-tag--verified { border-color: #2FAE6A30; color: #2FAE6A; background: #2FAE6A08 }
+.cd-lc-tag--feat { color: var(--h-muted); border-color: var(--h-border-light) }
 
 /* Empty state */
 .cd-empty { text-align: center; padding: 3rem 1rem }
@@ -653,11 +677,20 @@
   .cd-sidebar { display: none }
   .cd-filter-btn { display: inline-flex }
   .cd-drawer-overlay { display: flex }
-  .cd-listing-location { display: none }
+  /* Listing card mobile */
+  .cd-lc-header { flex-wrap: wrap; padding: 1rem; gap: .75rem }
+  .cd-lc-actions { flex-direction: row; width: 100%; flex-wrap: wrap }
+  .cd-lc-visit { flex: 1; justify-content: center; text-align: center }
+  .cd-lc-secondary { flex: 1; justify-content: center }
+  .cd-lc-location { display: none }
+  .cd-lc-desc-section { padding: .75rem 1rem }
+  .cd-lc-tags-row { padding: .5rem 1rem }
   .cd-trust-grid { grid-template-columns: 1fr }
 }
 @media (max-width: 480px) {
-  .cd-listing-logo { width: 40px; height: 40px }
+  .cd-lc-logo { width: 44px; height: 44px }
+  .cd-lc-name { font-size: .92rem }
+  .cd-lc-visit { font-size: .65rem; padding: .5rem .8rem }
   .cd-cta-inline { flex-wrap: wrap; gap: .75rem }
   .cd-cta-inline-btn { width: 100%; justify-content: center }
   .cd-pagination-btn { padding: .4rem .75rem; font-size: .72rem }
