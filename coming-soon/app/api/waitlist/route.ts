@@ -245,17 +245,12 @@ export async function POST(request: NextRequest) {
     const countRow = await queryOne('SELECT COUNT(*) as cnt FROM waitlist')
     const position = Number(countRow?.cnt ?? 1)
 
-    // Send welcome email — await so we know if it worked
-    let emailSent = false
-    let emailError = ''
-    try {
-      await sendWelcomeEmail(cleanEmail, position)
-      emailSent = true
-    } catch (err) {
-      emailError = err instanceof Error ? err.message : String(err)
-    }
+    // Send welcome email (don't block the user response)
+    sendWelcomeEmail(cleanEmail, position).catch(err => {
+      console.error('Welcome email failed:', err instanceof Error ? err.message : err)
+    })
 
-    return Response.json({ ok: true, message: 'Successfully joined the waitlist', emailSent, emailError: emailError || undefined })
+    return Response.json({ ok: true, message: 'Successfully joined the waitlist' })
   } catch (err) {
     console.error('POST /api/waitlist error:', err)
     return Response.json({ error: 'Server error' }, { status: 500 })
