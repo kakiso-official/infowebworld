@@ -18,13 +18,18 @@ export default function FinalCTA() {
   const [fctaEmail, setFctaEmail] = useState('')
   const [fctaMsg, setFctaMsg] = useState('')
 
-  const handleFctaJoin = (e: React.FormEvent) => {
+  const handleFctaJoin = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!fctaEmail) return
-    const ok = addToWaitlist(fctaEmail, 'cta')
-    setFctaMsg(ok ? "You're on the list!" : 'Already on the waitlist!')
-    if (ok) setFctaEmail('')
-    setTimeout(() => setFctaMsg(''), 3000)
+    const result = await addToWaitlist(fctaEmail, 'cta')
+    if (result === 'ok') {
+      setFctaMsg("You're on the list!"); setFctaEmail('')
+    } else if (result === 'duplicate') {
+      setFctaMsg('Already on the waitlist!')
+    } else {
+      setFctaMsg('Something went wrong. Try again.')
+    }
+    setTimeout(() => setFctaMsg(''), 5000)
   }
 
   return (

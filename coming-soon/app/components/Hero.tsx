@@ -46,13 +46,18 @@ export default function Hero() {
     return () => clearTimeout(timeout)
   }, [])
 
-  const handleHeroJoin = (e: React.FormEvent) => {
+  const handleHeroJoin = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!heroEmail) return
-    const ok = addToWaitlist(heroEmail, 'hero')
-    setHeroMsg(ok ? 'You\'re on the list!' : 'Already on the waitlist!')
-    setHeroMsgType(ok ? 'ok' : 'dup')
-    if (ok) setHeroEmail('')
+    setHeroMsg(''); setHeroMsgType('')
+    const result = await addToWaitlist(heroEmail, 'hero')
+    if (result === 'ok') {
+      setHeroMsg("You're on the list!"); setHeroMsgType('ok'); setHeroEmail('')
+    } else if (result === 'duplicate') {
+      setHeroMsg('Already on the waitlist!'); setHeroMsgType('dup')
+    } else {
+      setHeroMsg('Something went wrong. Try again.'); setHeroMsgType('dup')
+    }
     setTimeout(() => { setHeroMsg(''); setHeroMsgType('') }, 5000)
   }
 

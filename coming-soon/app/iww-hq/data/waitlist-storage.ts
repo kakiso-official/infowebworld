@@ -38,25 +38,34 @@ export function getAllWaitlist(): WaitlistEntry[] {
   return read().sort((a, b) => new Date(b.subscribedAt).getTime() - new Date(a.subscribedAt).getTime())
 }
 
-export function addToWaitlist(email: string, source: WaitlistEntry['source'] = 'hero'): boolean {
+export async function addToWaitlist(email: string, source: WaitlistEntry['source'] = 'hero'): Promise<'ok' | 'duplicate' | 'error'> {
+  // Always call the API first — it handles dedup + sends the welcome email
+  try {
+    const res = await fetch(`${API}/waitlist`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, source }),
+    })
+    const data = await res.json()
+    if (data.duplicate) return 'duplicate'
+    if (!res.ok) return 'error'
+  } catch {
+    return 'error'
+  }
+
+  // Save to localStorage for client-side duplicate check on future submits
   const all = read()
-  if (all.some(w => w.email.toLowerCase() === email.toLowerCase())) return false
-  all.push({
-    id: 'W' + String(all.length + 1).padStart(4, '0'),
-    email,
-    source,
-    subscribedAt: new Date().toISOString(),
-  })
-  write(all)
+  if (!all.some(w => w.email.toLowerCase() === email.toLowerCase())) {
+    all.push({
+      id: 'W' + String(all.length + 1).padStart(4, '0'),
+      email,
+      source,
+      subscribedAt: new Date().toISOString(),
+    })
+    write(all)
+  }
 
-  // Also save to MySQL database
-  fetch(`${API}/waitlist`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, source }),
-  }).catch(() => {})
-
-  return true
+  return 'ok'
 }
 
 export async function deleteWaitlistEntry(id: string) {
