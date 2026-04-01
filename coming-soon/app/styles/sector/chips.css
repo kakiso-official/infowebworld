@@ -1,0 +1,27 @@
+/* ── Sector Landing — Subcategory chips ── */
+
+.sl-chips {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.sl-chip {
+  display: inline-flex;
+  padding: .4rem .9rem;
+  border-radius: 999px;
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--h-body);
+  background: #fff;
+  border: 1.5px solid var(--h-border);
+  text-decoration: none;
+  transition: border-color .2s, background .2s, color .2s;
+}
+
+.sl-chip:hover {
+  border-color: var(--sl-color);
+  color: var(--sl-color);
+  background: var(--sl-pastel-light);
+}

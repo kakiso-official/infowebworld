@@ -1,0 +1,31 @@
+/* ── Sector Landing — Page wrapper + Back link ── */
+
+.sl-page {
+  --sl-color: #8B5CF6;
+  --sl-pastel: #DDD6FE;
+  --sl-pastel-light: #F3F0FF;
+  width: 100%;
+  min-height: 60vh;
+}
+
+.sl-back {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 1.5rem clamp(1.25rem, 3vw, 2rem) 3rem;
+}
+
+.sl-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--sl-color);
+  text-decoration: none;
+  transition: gap .2s;
+}
+
+.sl-back-link:hover {
+  gap: .6rem;
+}

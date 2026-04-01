@@ -1,5 +1,40 @@
-@import "tailwindcss";
+/* ═══════════════════════════════════════════════════════
+   ALL @import MUST come first — CSS specification rule
+   ═══════════════════════════════════════════════════════ */
 @import "./styles/not-found.css";
+@import "./styles/sector/page.css";
+@import "./styles/sector/hero.css";
+@import "./styles/sector/search.css";
+@import "./styles/sector/section.css";
+@import "./styles/sector/card.css";
+@import "./styles/sector/categories.css";
+@import "./styles/sector/chips.css";
+@import "./styles/sector/cta.css";
+@import "./styles/sector/animations.css";
+@import "./styles/sector/responsive.css";
+@import "./styles/nav.css";
+@import "./styles/nav-gl.css";
+@import "./styles/hero.css";
+@import "./styles/hero-gl.css";
+@import "./styles/countdown.css";
+@import "./styles/contact.css";
+@import "./styles/business-cta.css";
+@import "./styles/founding-cta.css";
+@import "./styles/payment-modal.css";
+@import "./styles/scroll-to-top.css";
+@import "./styles/stats.css";
+@import "./styles/tiers.css";
+@import "./styles/pricing.css";
+@import "./styles/benefits.css";
+@import "./styles/comparison.css";
+@import "./styles/final-cta.css";
+@import "./styles/how-it-works.css";
+@import "./styles/interests.css";
+@import "./styles/footer.css";
+@import "./styles/listing.css";
+@import "./styles/blog.css";
+@import "./styles/categories.css";
+@import "./styles/plans.css";
 
 /* ── Local Soria font ── */
 @font-face {
@@ -10,9 +45,9 @@
   font-display: swap;
 }
 
-/* ============================================================
+/* ═══════════════════════════════════════════════════════
    DESIGN TOKENS — Same warm premium palette as React app
-   ============================================================ */
+   ═══════════════════════════════════════════════════════ */
 :root {
   --bg: #FAFBFC;
   --bg-alt: #F4F5F7;
@@ -82,34 +117,7 @@ input, textarea { font-family: inherit }
   padding: 0 clamp(1rem, 3vw, 2rem);
 }
 
-/* ── Section imports ── */
-@import "./styles/nav.css";
-@import "./styles/nav-gl.css";
-@import "./styles/hero.css";
-@import "./styles/hero-gl.css";
-@import "./styles/countdown.css";
-@import "./styles/contact.css";
-@import "./styles/business-cta.css";
-@import "./styles/founding-cta.css";
-@import "./styles/payment-modal.css";
-@import "./styles/scroll-to-top.css";
-@import "./styles/stats.css";
-@import "./styles/tiers.css";
-@import "./styles/pricing.css";
-@import "./styles/benefits.css";
-@import "./styles/comparison.css";
-@import "./styles/final-cta.css";
-@import "./styles/how-it-works.css";
-@import "./styles/interests.css";
-@import "./styles/footer.css";
-@import "./styles/listing.css";
-@import "./styles/blog.css";
-@import "./styles/categories.css";
-@import "./styles/plans.css";
-
-/* ============================================================
-   UTILITIES
-   ============================================================ */
+/* ── Utilities ── */
 .sr-only {
   position: absolute; width: 1px; height: 1px;
   padding: 0; margin: -1px; overflow: hidden;

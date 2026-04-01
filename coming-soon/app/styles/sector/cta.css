@@ -1,0 +1,85 @@
+/* ── Sector Landing — CTA section ── */
+
+.sl-cta {
+  width: 100%;
+  background: var(--sl-pastel-light);
+  border-top: 1px solid var(--h-border-light);
+  border-bottom: 1px solid var(--h-border-light);
+  padding: clamp(2.5rem, 5vw, 4rem) 0;
+}
+
+.sl-cta-inner {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 3vw, 2rem);
+  text-align: center;
+}
+
+.sl-cta-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1.5px solid var(--h-border);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.25rem;
+}
+
+.sl-cta-title {
+  font-family: var(--font-bricolage), sans-serif;
+  font-size: clamp(1.2rem, 3vw, 1.75rem);
+  font-weight: 800;
+  color: var(--h-heading);
+  margin: 0 0 .75rem;
+  line-height: 1.25;
+}
+
+.sl-cta-desc {
+  font-family: var(--font-nunito), sans-serif;
+  font-size: clamp(.85rem, 1.3vw, .95rem);
+  color: var(--h-body);
+  margin: 0 0 1.5rem;
+  line-height: 1.65;
+}
+
+.sl-cta-row { display: flex; flex-direction: column; align-items: center; gap: .85rem; }
+
+.sl-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .75rem 2rem;
+  border-radius: 999px;
+  background: var(--sl-color);
+  color: #fff;
+  font-family: var(--font-nunito), sans-serif;
+  font-size: .95rem;
+  font-weight: 700;
+  text-decoration: none;
+  border: 0;
+  cursor: pointer;
+  transition: background .2s, box-shadow .2s, transform .15s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
+}
+
+.sl-cta-btn:hover {
+  background: var(--h-heading);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .12);
+  transform: translateY(-1px);
+}
+
+.sl-cta-btn svg { transition: transform .2s; }
+.sl-cta-btn:hover svg { transform: translateX(3px); }
+
+.sl-cta-note {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  font-size: .78rem;
+  color: var(--h-muted);
+  font-weight: 600;
+}

@@ -15,6 +15,7 @@ import { lookupLocationCountry, type GeoCountry, type GeoState, type GeoCity } f
 import { COUNTRY_LABELS } from '../../config/countries'
 import type { CountryCode } from '../../config/countries'
 
+import SectorLanding from './sector/SectorLanding'
 import { I, ic } from './components/icons'
 import CategoryHero from './components/CategoryHero'
 import SubcategoryChips from './components/SubcategoryChips'
@@ -47,6 +48,7 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
 
   /* ── State ── */
   const [category, setCategory] = useState<Category | null>(null)
+  const [allCats, setAllCats] = useState<Category[]>([])
   const [related, setRelated] = useState<Category[]>([])
   const [notFound, setNotFound] = useState(false)
   const [listings, setListings] = useState<RealSubmission[]>([])
@@ -113,9 +115,10 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
       // Fetch listings as soon as we have the category ID
       fetchCategoryListings(cat.id, 1).then(res => { setListings(res.data); setListingTotal(res.total) })
     })
-    relP.then(allCats => {
+    relP.then(all => {
+      setAllCats(all)
       catP.then(cat => {
-        if (cat) setRelated(allCats.filter(c => c.id !== cat.id && ((cat.parentId && c.parentId === cat.parentId) || (!cat.parentId && c.level === cat.level))).slice(0, 9))
+        if (cat) setRelated(all.filter(c => c.id !== cat.id && ((cat.parentId && c.parentId === cat.parentId) || (!cat.parentId && c.level === cat.level))).slice(0, 9))
       })
     })
     tagP.then(setTagGroups)
@@ -307,6 +310,11 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
       </div>
     </section>
   )
+
+  /* ── L1 Sector → dedicated landing page ── */
+  if (category.level === 1) {
+    return <SectorLanding category={category} allCategories={allCats} />
+  }
 
   const c = category
   const color = c.color || '#E8553D'

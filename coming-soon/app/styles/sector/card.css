@@ -1,0 +1,128 @@
+/* ── Sector Landing — Listing card ── */
+
+.sl-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1.5px solid var(--h-border);
+  border-radius: var(--r);
+  padding: clamp(1rem, 2vw, 1.5rem);
+  transition: border-color .25s, box-shadow .25s, transform .25s;
+}
+
+.sl-card:hover {
+  border-color: var(--sl-color);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, .06);
+  transform: translateY(-2px);
+}
+
+.sl-section--alt .sl-card { border-color: var(--h-border-light); }
+.sl-section--alt .sl-card:hover { border-color: var(--sl-color); }
+
+/* Rank badge */
+.sl-card-rank {
+  position: absolute;
+  top: -.5rem;
+  left: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 22px;
+  padding: 0 .5rem;
+  border-radius: 999px;
+  background: var(--sl-color);
+  color: #fff;
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .02em;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
+}
+
+/* Logo */
+.sl-card-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--r);
+  margin-bottom: .85rem;
+}
+
+/* Rating */
+.sl-card-rating { display: flex; align-items: center; gap: .3rem; margin-bottom: .6rem; }
+.sl-card-score { font-family: var(--font-bricolage), sans-serif; font-size: .9rem; font-weight: 800; color: var(--h-heading); }
+.sl-card-reviews { font-size: .72rem; color: var(--h-muted); font-weight: 500; }
+
+/* Name */
+.sl-card-name {
+  font-family: var(--font-bricolage), sans-serif;
+  font-size: clamp(.92rem, 1.3vw, 1.05rem);
+  font-weight: 800;
+  color: var(--h-heading);
+  margin: 0 0 .35rem;
+  line-height: 1.3;
+}
+
+/* Tagline */
+.sl-card-tagline {
+  font-family: var(--font-nunito), sans-serif;
+  font-size: clamp(.78rem, 1.1vw, .85rem);
+  color: var(--h-body);
+  line-height: 1.55;
+  margin: 0 0 .85rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+
+/* Pills */
+.sl-card-pills { display: flex; flex-wrap: wrap; gap: .35rem; margin-bottom: .75rem; }
+
+.sl-card-pill {
+  display: inline-flex;
+  padding: .2rem .6rem;
+  border-radius: 999px;
+  font-size: .68rem;
+  font-weight: 600;
+  border: 1.5px solid var(--h-border);
+  background: #fff;
+}
+
+.sl-card-pill--muted { color: var(--h-muted); border-color: var(--h-border-light); }
+
+/* Badges */
+.sl-card-badges { display: flex; flex-wrap: wrap; gap: .35rem; margin-bottom: .75rem; }
+
+.sl-card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .2rem;
+  font-size: .65rem;
+  font-weight: 700;
+  padding: .15rem .5rem;
+  border-radius: 999px;
+}
+
+.sl-card-badge--verified { color: #2FAE6A; background: #F0FDF4; }
+.sl-card-badge--new { color: #3B82F6; background: #EFF6FF; }
+.sl-card-badge--featured { color: #F59E0B; background: #FFFBEB; }
+.sl-card-badge--trending { color: #E8553D; background: #FFF5F5; }
+
+/* CTA link */
+.sl-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  font-size: .82rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: gap .2s;
+  margin-top: auto;
+}
+
+.sl-card-cta:hover { gap: .55rem; }

@@ -1,0 +1,30 @@
+/* ── Sector Landing — Entrance animations ── */
+
+@keyframes slFadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.sl-hero-inner { animation: slFadeUp .6s cubic-bezier(.16, 1, .3, 1); }
+
+.sl-card { animation: slFadeUp .5s cubic-bezier(.16, 1, .3, 1) backwards; }
+.sl-card:nth-child(1) { animation-delay: 0s; }
+.sl-card:nth-child(2) { animation-delay: .06s; }
+.sl-card:nth-child(3) { animation-delay: .12s; }
+.sl-card:nth-child(4) { animation-delay: .18s; }
+.sl-card:nth-child(5) { animation-delay: .24s; }
+.sl-card:nth-child(6) { animation-delay: .30s; }
+
+.sl-cat { animation: slFadeUp .4s cubic-bezier(.16, 1, .3, 1) backwards; }
+.sl-cat:nth-child(1) { animation-delay: 0s; }
+.sl-cat:nth-child(2) { animation-delay: .04s; }
+.sl-cat:nth-child(3) { animation-delay: .08s; }
+.sl-cat:nth-child(4) { animation-delay: .12s; }
+.sl-cat:nth-child(5) { animation-delay: .16s; }
+.sl-cat:nth-child(6) { animation-delay: .20s; }
+.sl-cat:nth-child(7) { animation-delay: .24s; }
+.sl-cat:nth-child(8) { animation-delay: .28s; }
+.sl-cat:nth-child(9) { animation-delay: .32s; }
+
+.sl-chip { animation: slFadeUp .35s cubic-bezier(.16, 1, .3, 1) backwards; }
+.sl-chip:nth-child(n+1) { animation-delay: calc(.02s * var(--i, 0)); }

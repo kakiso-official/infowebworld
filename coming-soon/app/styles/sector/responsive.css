@@ -1,0 +1,49 @@
+/* ── Sector Landing — Responsive breakpoints ── */
+
+/* Tablet (≤1024px) */
+@media (max-width: 1024px) {
+  .sl-grid { grid-template-columns: repeat(2, 1fr); }
+  .sl-cats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Mobile (≤768px) */
+@media (max-width: 768px) {
+  /* Hero */
+  .sl-hero-top { flex-direction: column; gap: 10px; }
+  .sl-hero-icon { width: 44px; height: 44px; }
+  .sl-hero-stats { gap: 10px; }
+  .sl-hero-stat-div { display: none; }
+  .sl-hero-chips { gap: 5px; }
+  .sl-hero-chip { font-size: 11px; padding: 4px 10px; }
+  .sl-hero-header .sl-search { max-width: 100%; }
+
+  /* Sections */
+  .sl-section { padding: clamp(1.75rem, 4vw, 2.5rem) 0; }
+  .sl-section-header { flex-direction: column; gap: .6rem; margin-bottom: 1.25rem; }
+  .sl-section-viewall { align-self: flex-start; margin-top: 0; }
+
+  /* Grids */
+  .sl-grid { grid-template-columns: repeat(2, 1fr); gap: .75rem; }
+  .sl-card { padding: clamp(.85rem, 2vw, 1.15rem); }
+  .sl-card-logo { width: 44px; height: 44px; }
+  .sl-cats-grid { grid-template-columns: 1fr; }
+
+  /* CTA */
+  .sl-cta { padding: clamp(2rem, 4vw, 3rem) 0; }
+}
+
+/* Small phone (≤480px) */
+@media (max-width: 480px) {
+  .sl-grid { grid-template-columns: 1fr; }
+  .sl-hero-title-row h1 { font-size: 18px; }
+  .sl-hero-stats { gap: 8px; }
+  .sl-hero-stat { font-size: 11px; }
+  .sl-card-rank { top: -.4rem; left: .85rem; min-width: 24px; height: 20px; font-size: .62rem; }
+  .sl-section-icon { width: 34px; height: 34px; border-radius: 8px; }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .sl-hero-inner, .sl-card, .sl-cat, .sl-chip { animation: none; }
+  .sl-card:hover, .sl-cat:hover { transform: none; }
+}
