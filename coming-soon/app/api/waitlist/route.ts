@@ -172,27 +172,22 @@ async function sendWelcomeEmail(toEmail: string, position: number) {
   const smtpUser = process.env.SMTP_USER
   const smtpPass = process.env.SMTP_PASS
   if (!smtpUser || !smtpPass) {
-    console.error('SMTP credentials not set — welcome email not sent')
-    return
+    throw new Error('SMTP_USER or SMTP_PASS not configured')
   }
 
-  try {
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.gmail.com',
-      port: 465,
-      secure: true,
-      auth: { user: smtpUser, pass: smtpPass },
-    })
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: { user: smtpUser, pass: smtpPass },
+  })
 
-    await transporter.sendMail({
-      from: `"InfoWebWorld" <${smtpUser}>`,
-      to: toEmail,
-      subject: `You're In! Welcome to InfoWebWorld — Position #${position}`,
-      html: buildWelcomeEmail(toEmail, position),
-    })
-  } catch (err) {
-    console.error('Welcome email send failed:', err instanceof Error ? err.message : err)
-  }
+  await transporter.sendMail({
+    from: `"InfoWebWorld" <${smtpUser}>`,
+    to: toEmail,
+    subject: `You're In! Welcome to InfoWebWorld — Position #${position}`,
+    html: buildWelcomeEmail(toEmail, position),
+  })
 }
 
 export async function DELETE(request: NextRequest) {
@@ -250,10 +245,17 @@ export async function POST(request: NextRequest) {
     const countRow = await queryOne('SELECT COUNT(*) as cnt FROM waitlist')
     const position = Number(countRow?.cnt ?? 1)
 
-    // Send welcome email (don't block the response)
-    sendWelcomeEmail(cleanEmail, position).catch(() => {})
+    // Send welcome email — await so we know if it worked
+    let emailSent = false
+    let emailError = ''
+    try {
+      await sendWelcomeEmail(cleanEmail, position)
+      emailSent = true
+    } catch (err) {
+      emailError = err instanceof Error ? err.message : String(err)
+    }
 
-    return Response.json({ ok: true, message: 'Successfully joined the waitlist' })
+    return Response.json({ ok: true, message: 'Successfully joined the waitlist', emailSent, emailError: emailError || undefined })
   } catch (err) {
     console.error('POST /api/waitlist error:', err)
     return Response.json({ error: 'Server error' }, { status: 500 })
