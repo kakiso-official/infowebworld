@@ -245,12 +245,16 @@ export async function POST(request: NextRequest) {
       [cleanEmail, source || 'website', ip, userAgent]
     )
 
-    // Send welcome email (don't block the user response)
-    sendWelcomeEmail(cleanEmail).catch(err => {
+    // Send welcome email — must await so Vercel keeps the function alive
+    let emailSent = false
+    try {
+      await sendWelcomeEmail(cleanEmail)
+      emailSent = true
+    } catch (err) {
       console.error('Welcome email failed:', err instanceof Error ? err.message : err)
-    })
+    }
 
-    return Response.json({ ok: true, message: 'Successfully joined the waitlist' })
+    return Response.json({ ok: true, message: 'Successfully joined the waitlist', emailSent })
   } catch (err) {
     console.error('POST /api/waitlist error:', err)
     return Response.json({ error: 'Server error' }, { status: 500 })
