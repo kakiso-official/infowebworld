@@ -30,7 +30,7 @@ const nextConfig: NextConfig = {
       },
       // Country-prefixed listing → company redirect
       {
-        source: '/:country(in|uk|ca|au|eu)/listing/:slug',
+        source: '/:country(in|us|uk|ca|au|eu)/listing/:slug',
         destination: '/:country/company/:slug',
         permanent: true,
       },

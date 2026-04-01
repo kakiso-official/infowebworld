@@ -12,7 +12,7 @@ import type { TagGroup } from '../../iww-hq/data/tag-storage'
 import { parseSegments, type ParsedCategoryFilters } from './lib/parse-segments'
 import { buildCategoryUrl } from './lib/build-url'
 import { lookupLocationCountry, type GeoCountry, type GeoState, type GeoCity } from '../../lib/geo-slugs'
-import { COUNTRY_LABELS } from '../../config/countries'
+import { COUNTRY_LABELS, ROUTE_TO_GEO_SLUG, ROUTE_TO_ISO, ROOT_COUNTRY } from '../../config/countries'
 import type { CountryCode } from '../../config/countries'
 
 import SectorLanding from './sector/SectorLanding'
@@ -72,14 +72,16 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
     if (!segments?.length || !category) return
     const ltSlugs = new Set((category.listingTypes || []).map(lt => lt.slug))
     const tagSlugs = new Set(tagGroups.flatMap(g => g.tags).map(t => t.slug))
-    const parsed = parseSegments(segments, ltSlugs, tagSlugs)
+    const routeIso = ROUTE_TO_ISO[siteCountry]
+    const routeGeo = ROUTE_TO_GEO_SLUG[siteCountry]
+    const parsed = parseSegments(segments, ltSlugs, tagSlugs, routeIso, routeGeo)
     setLocationCountry(parsed.locationCountry)
     setLocationState(parsed.state)
     setLocationCity(parsed.city)
     if (parsed.listingType) setSelectedListingType(parsed.listingType)
     if (parsed.tags.length) setSelectedTags(new Set(parsed.tags))
     setSegmentsParsed(true)
-  }, [segments, category, tagGroups])
+  }, [segments, category, tagGroups, siteCountry])
 
   /* ── Push URL on filter change ── */
   const pushFilters = useCallback((overrides: Partial<ParsedCategoryFilters>) => {
@@ -97,8 +99,10 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
     if (!merged.locationCountry) { merged.state = null; merged.city = null }
     // If state removed, clear city
     if (!merged.state) { merged.city = null }
-    const url = buildCategoryUrl(merged)
-    router.push(`/${siteCountry}${url}`, { scroll: false })
+    const routeGeo = ROUTE_TO_GEO_SLUG[siteCountry]
+    const url = buildCategoryUrl(merged, routeGeo)
+    const prefix = siteCountry === ROOT_COUNTRY ? '' : `/${siteCountry}`
+    router.push(`${prefix}${url}`, { scroll: false })
   }, [slug, locationCountry, locationState, locationCity, selectedListingType, selectedTags, siteCountry, router])
 
   /* ── Data fetching — ALL in parallel ── */
@@ -194,17 +198,18 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
     setLocationCountry(c); setLocationState(null); setLocationCity(null); setPage(1)
     pushFilters({ locationCountry: c, state: null, city: null })
   }
-  // Resolve auto-detected country from URL prefix (used when locationCountry is null)
-  const getAutoCountry = (): GeoCountry | null => {
-    const label = COUNTRY_LABELS[siteCountry as CountryCode] || 'India'
-    return lookupLocationCountry(label.toLowerCase().replace(/\s+/g, '-'))
+  // Resolve route country to GeoCountry using proper mapping
+  const getRouteGeoCountry = (): GeoCountry | null => {
+    const geoSlug = ROUTE_TO_GEO_SLUG[siteCountry as CountryCode]
+    if (!geoSlug) return null
+    return lookupLocationCountry(geoSlug)
   }
 
   const handleStateChange = (s: GeoState | null) => {
-    // Auto-set country if not explicitly selected
+    // Auto-set country from route if not explicitly selected
     let country = locationCountry
     if (!country) {
-      country = getAutoCountry()
+      country = getRouteGeoCountry()
       if (country) setLocationCountry(country)
     }
     setLocationState(s); setLocationCity(null); setPage(1)
@@ -213,7 +218,7 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
   const handleCityChange = (c: GeoCity | null) => {
     let country = locationCountry
     if (!country) {
-      country = getAutoCountry()
+      country = getRouteGeoCountry()
       if (country) setLocationCountry(country)
     }
     setLocationCity(c); setPage(1)
@@ -391,6 +396,7 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
               onLocationCountryChange={handleLocationCountryChange}
               onStateChange={handleStateChange}
               onCityChange={handleCityChange}
+              effectiveIso={locationCountry?.isoCode || ROUTE_TO_ISO[siteCountry as CountryCode] || ''}
             />
           )}
 

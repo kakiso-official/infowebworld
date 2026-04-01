@@ -1,7 +1,7 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
-import { VALID_COUNTRIES, COUNTRY_LABELS, COUNTRY_FLAGS, COOKIE_NAME, COOKIE_MAX_AGE } from '../config/countries'
+import { VALID_COUNTRIES, COUNTRY_LABELS, COUNTRY_FLAGS, COOKIE_NAME, COOKIE_MAX_AGE, ROOT_COUNTRY } from '../config/countries'
 import type { CountryCode } from '../config/countries'
 import { useCountry } from '../config/country-context'
 
@@ -23,11 +23,17 @@ export default function CountrySwitcher() {
 
   const switchCountry = (newCountry: CountryCode) => {
     if (newCountry === country) { setOpen(false); return }
-    // Set cookie
     document.cookie = `${COOKIE_NAME}=${newCountry};path=/;max-age=${COOKIE_MAX_AGE};SameSite=Lax`
-    // Strip current country prefix and prepend new one
-    const pathWithoutCountry = pathname.replace(new RegExp(`^/${country}(/|$)`), '/')
-    router.push(`/${newCountry}${pathWithoutCountry === '/' ? '' : pathWithoutCountry}`)
+    // Strip current country prefix (if any) to get the bare path
+    const pathWithoutCountry = country === ROOT_COUNTRY
+      ? pathname
+      : pathname.replace(new RegExp(`^/${country}(/|$)`), '/')
+    // US (root country) → navigate to root path, others get prefix
+    if (newCountry === ROOT_COUNTRY) {
+      router.push(pathWithoutCountry || '/')
+    } else {
+      router.push(`/${newCountry}${pathWithoutCountry === '/' ? '' : pathWithoutCountry}`)
+    }
     setOpen(false)
   }
 

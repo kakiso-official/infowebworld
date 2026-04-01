@@ -59,7 +59,16 @@ export function addToWaitlist(email: string, source: WaitlistEntry['source'] = '
   return true
 }
 
-export function deleteWaitlistEntry(id: string) {
+export async function deleteWaitlistEntry(id: string) {
+  // Delete from DB
+  try {
+    await fetch(`${API}/waitlist`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    })
+  } catch { /* ignore */ }
+  // Also remove from localStorage
   write(read().filter(w => w.id !== id))
 }
 

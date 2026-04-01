@@ -40,10 +40,12 @@ type Props = {
   onLocationCountryChange: (val: GeoCountry | null) => void
   onStateChange: (val: GeoState | null) => void
   onCityChange: (val: GeoCity | null) => void
+  /** ISO code of the effective country (route fallback when locationCountry is null) */
+  effectiveIso: string
 }
 
 /* ── Location dropdowns ── */
-function LocationSection(p: Props) {
+function LocationSection(p: Props & { effectiveIso: string }) {
   const countries = useMemo(() => {
     const arr: GeoCountry[] = []
     getLocationCountries().forEach(c => arr.push(c))
@@ -51,19 +53,19 @@ function LocationSection(p: Props) {
     return arr
   }, [])
   const states = useMemo(() => {
-    if (!p.locationCountry) return []
+    if (!p.effectiveIso) return []
     const arr: GeoState[] = []
-    getStates(p.locationCountry.isoCode).forEach(s => arr.push(s))
+    getStates(p.effectiveIso).forEach(s => arr.push(s))
     arr.sort((a, b) => a.name.localeCompare(b.name))
     return arr
-  }, [p.locationCountry])
+  }, [p.effectiveIso])
   const cities = useMemo(() => {
-    if (!p.locationCountry || !p.locationState) return []
+    if (!p.effectiveIso || !p.locationState) return []
     const arr: GeoCity[] = []
-    getCities(p.locationCountry.isoCode, p.locationState.stateCode).forEach(c => arr.push(c))
+    getCities(p.effectiveIso, p.locationState.stateCode).forEach(c => arr.push(c))
     arr.sort((a, b) => a.name.localeCompare(b.name))
     return arr
-  }, [p.locationCountry, p.locationState])
+  }, [p.effectiveIso, p.locationState])
 
   return (
     <div className="cd-fs-section">
@@ -81,11 +83,11 @@ function LocationSection(p: Props) {
         </select>
       </div>
       <div className="cd-fs-select-wrap">
-        <select className="cd-fs-select" value={p.locationState?.slug || ''} disabled={!p.locationCountry} onChange={e => {
+        <select className="cd-fs-select" value={p.locationState?.slug || ''} disabled={!p.effectiveIso} onChange={e => {
           if (!e.target.value) { p.onStateChange(null); return }
           const s = states.find(s => s.slug === e.target.value); if (s) p.onStateChange(s)
         }}>
-          <option value="">{p.locationCountry ? 'All States' : 'Select country first'}</option>
+          <option value="">{p.effectiveIso ? 'All States' : 'Select country first'}</option>
           {states.map(s => <option key={s.stateCode} value={s.slug}>{s.name}</option>)}
         </select>
       </div>
@@ -170,6 +172,9 @@ function FilterContent(p: Props) {
           </div>
         </div>
       )}
+
+      {/* Location filters */}
+      <LocationSection {...p} effectiveIso={p.effectiveIso} />
 
       {/* Listing types — open, show first 5, "SEE FULL LIST" */}
       {p.listingTypes.length > 0 && (

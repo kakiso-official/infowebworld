@@ -1,8 +1,8 @@
 'use client'
-import { useState, useRef, useEffect, useMemo } from 'react'
+import { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import Link from '../../../components/CountryLink'
 import { useCountry } from '../../../config/country-context'
-import { COUNTRY_LABELS } from '../../../config/countries'
+import { COUNTRY_LABELS, ROUTE_TO_GEO_SLUG, ROUTE_TO_ISO } from '../../../config/countries'
 import type { CountryCode } from '../../../config/countries'
 import type { Category } from '../../../iww-hq/data/category-storage'
 import {
@@ -27,26 +27,31 @@ type Props = {
 }
 
 /* ── Inline dropdown that looks like part of the heading ── */
-function InlineSelect({ value, placeholder, items, onSelect, color }: {
+function InlineSelect({ id, value, placeholder, items, onSelect, color, openId, onOpen }: {
+  id: string
   value: string
   placeholder: string
   items: { slug: string; name: string }[]
   onSelect: (slug: string) => void
   color: string
+  openId: string | null
+  onOpen: (id: string | null) => void
 }) {
-  const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
   const ref = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const isOpen = openId === id
 
   useEffect(() => {
-    if (!open) return
-    const onClick = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false) }
+    if (!isOpen) return
+    const onClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) onOpen(null)
+    }
     document.addEventListener('mousedown', onClick)
     return () => document.removeEventListener('mousedown', onClick)
-  }, [open])
+  }, [isOpen, onOpen])
 
-  useEffect(() => { if (open && inputRef.current) inputRef.current.focus() }, [open])
+  useEffect(() => { if (isOpen && inputRef.current) inputRef.current.focus() }, [isOpen])
 
   const filtered = search ? items.filter(i => i.name.toLowerCase().includes(search.toLowerCase())) : items
 
@@ -55,14 +60,14 @@ function InlineSelect({ value, placeholder, items, onSelect, color }: {
       <button
         type="button"
         className="cd-hero-inline-btn"
-        style={{ borderColor: open ? color : undefined }}
-        onClick={() => { setOpen(!open); setSearch('') }}
+        style={{ borderColor: isOpen ? color : undefined }}
+        onClick={() => { onOpen(isOpen ? null : id); setSearch('') }}
       >
         <span className="cd-hero-inline-value">{value || placeholder}</span>
         <I d={ic.chevronDown} size={16} color={color} sw={2.5} />
       </button>
-      {open && (
-        <div className="cd-hero-inline-dropdown">
+      {isOpen && (
+        <div className="cd-hero-inline-dropdown" style={{ zIndex: 9999 }}>
           <div className="cd-hero-inline-search-wrap">
             <I d={ic.search} size={13} color="var(--h-muted)" sw={2} />
             <input
@@ -80,7 +85,7 @@ function InlineSelect({ value, placeholder, items, onSelect, color }: {
                 type="button"
                 className={`cd-hero-inline-option${item.name === value ? ' cd-hero-inline-option--active' : ''}`}
                 style={item.name === value ? { background: `${color}10`, color } : undefined}
-                onClick={() => { onSelect(item.slug); setOpen(false); setSearch('') }}
+                onClick={() => { onSelect(item.slug); onOpen(null); setSearch('') }}
               >
                 {item.name}
               </button>
@@ -96,9 +101,24 @@ function InlineSelect({ value, placeholder, items, onSelect, color }: {
 export default function CategoryHero({ category: c, locationCountry, locationState, locationCity, onLocationCountryChange, onStateChange, onCityChange }: Props) {
   const siteCountry = useCountry()
 
-  // Auto-set country from site prefix if none selected
-  const siteCountryLabel = COUNTRY_LABELS[siteCountry as CountryCode] || 'India'
-  const effectiveCountry = locationCountry || lookupLocationCountry(siteCountryLabel.toLowerCase().replace(/\s+/g, '-'))
+  /* Only one dropdown open at a time */
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  const handleOpen = useCallback((id: string | null) => setOpenDropdown(id), [])
+
+  /* Resolve route country to a GeoCountry */
+  const routeGeoCountry = useMemo(() => {
+    const geoSlug = ROUTE_TO_GEO_SLUG[siteCountry as CountryCode]
+    if (!geoSlug) return null
+    return lookupLocationCountry(geoSlug)
+  }, [siteCountry])
+
+  /* effectiveCountry: explicit selection > route country fallback */
+  const effectiveCountry = useMemo(() => {
+    return locationCountry || routeGeoCountry
+  }, [locationCountry, routeGeoCountry])
+
+  /* Stable ISO code for state/city lookups */
+  const effectiveIso = effectiveCountry?.isoCode || ROUTE_TO_ISO[siteCountry as CountryCode] || ''
 
   const countries = useMemo(() => {
     const arr: { slug: string; name: string }[] = []
@@ -108,35 +128,37 @@ export default function CategoryHero({ category: c, locationCountry, locationSta
   }, [])
 
   const states = useMemo(() => {
-    if (!effectiveCountry) return []
+    if (!effectiveIso) return []
     const arr: { slug: string; name: string; stateCode: string }[] = []
-    getStates(effectiveCountry.isoCode).forEach(s => arr.push({ slug: s.slug, name: s.name, stateCode: s.stateCode }))
+    getStates(effectiveIso).forEach(s => arr.push({ slug: s.slug, name: s.name, stateCode: s.stateCode }))
     arr.sort((a, b) => a.name.localeCompare(b.name))
     return arr
-  }, [effectiveCountry])
+  }, [effectiveIso])
 
   const cities = useMemo(() => {
-    if (!effectiveCountry || !locationState) return []
+    if (!effectiveIso || !locationState) return []
     const arr: { slug: string; name: string }[] = []
-    getCities(effectiveCountry.isoCode, locationState.stateCode).forEach(c => arr.push({ slug: c.slug, name: c.name }))
+    getCities(effectiveIso, locationState.stateCode).forEach(c => arr.push({ slug: c.slug, name: c.name }))
     arr.sort((a, b) => a.name.localeCompare(b.name))
     return arr
-  }, [effectiveCountry, locationState])
+  }, [effectiveIso, locationState])
 
   const handleCountrySelect = (slug: string) => {
-    const c = Array.from(getLocationCountries().values()).find(c => c.slug === slug)
-    if (c) onLocationCountryChange(c)
+    const found = lookupLocationCountry(slug)
+    if (found) onLocationCountryChange(found)
   }
   const handleStateSelect = (slug: string) => {
-    if (!effectiveCountry) return
-    const s = Array.from(getStates(effectiveCountry.isoCode).values()).find(s => s.slug === slug)
+    if (!effectiveIso) return
+    const s = getStates(effectiveIso).get(slug)
     if (s) onStateChange(s)
   }
   const handleCitySelect = (slug: string) => {
-    if (!effectiveCountry || !locationState) return
-    const ct = Array.from(getCities(effectiveCountry.isoCode, locationState.stateCode).values()).find(c => c.slug === slug)
+    if (!effectiveIso || !locationState) return
+    const ct = getCities(effectiveIso, locationState.stateCode).get(slug)
     if (ct) onCityChange(ct)
   }
+
+  const countryDisplayName = effectiveCountry?.name || COUNTRY_LABELS[siteCountry as CountryCode] || ''
 
   return (
     <div className="cd-hero">
@@ -159,27 +181,36 @@ export default function CategoryHero({ category: c, locationCountry, locationSta
       <h1 className="cd-hero-title">
         Best in {c.name}{' '}
         <InlineSelect
-          value={effectiveCountry?.name || siteCountryLabel}
+          id="country"
+          value={countryDisplayName}
           placeholder="Country"
           items={countries}
           onSelect={handleCountrySelect}
           color="var(--h-accent)"
+          openId={openDropdown}
+          onOpen={handleOpen}
         />
         {', '}
         <InlineSelect
+          id="state"
           value={locationState?.name || ''}
           placeholder="State"
-          items={states.length > 0 ? states : []}
+          items={states}
           onSelect={handleStateSelect}
           color="#8B5CF6"
+          openId={openDropdown}
+          onOpen={handleOpen}
         />
         {', '}
         <InlineSelect
+          id="city"
           value={locationCity?.name || ''}
           placeholder="City"
-          items={cities.length > 0 ? cities : []}
+          items={cities}
           onSelect={handleCitySelect}
           color="#14B8A6"
+          openId={openDropdown}
+          onOpen={handleOpen}
         />
       </h1>
 

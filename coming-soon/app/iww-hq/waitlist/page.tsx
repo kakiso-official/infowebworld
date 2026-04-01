@@ -17,9 +17,10 @@ export default function Waitlist() {
 
   const filtered = useMemo(() => entries.filter(w => !search || w.email.toLowerCase().includes(search.toLowerCase())), [entries, search])
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (!confirm('Remove this email from the waitlist?')) return
-    deleteWaitlistEntry(id); reload()
+    await deleteWaitlistEntry(id)
+    reload()
   }
 
   const exportCSV = () => {

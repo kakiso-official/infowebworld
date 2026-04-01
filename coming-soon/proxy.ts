@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { VALID_COUNTRIES, DEFAULT_COUNTRY, COOKIE_NAME, COOKIE_MAX_AGE, geoToCountry, isValidCountry } from './app/config/countries'
+import { VALID_COUNTRIES, DEFAULT_COUNTRY, COOKIE_NAME, COOKIE_MAX_AGE, ROOT_COUNTRY, geoToCountry, isValidCountry } from './app/config/countries'
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -23,10 +23,21 @@ export function proxy(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // Check if first segment is already a valid country
   const firstSeg = pathname.split('/')[1]
+
+  // If someone visits /us/... → strip prefix and redirect to root
+  if (firstSeg === ROOT_COUNTRY) {
+    const rest = pathname.replace(new RegExp(`^/${ROOT_COUNTRY}(/|$)`), '/')
+    const url = request.nextUrl.clone()
+    url.pathname = rest
+    const response = NextResponse.redirect(url, 308)
+    response.cookies.set(COOKIE_NAME, ROOT_COUNTRY, { path: '/', maxAge: COOKIE_MAX_AGE, sameSite: 'lax' })
+    if (isVercelApp) response.headers.set('X-Robots-Tag', 'noindex, nofollow')
+    return response
+  }
+
+  // Check if first segment is already a valid country prefix (non-root)
   if (isValidCountry(firstSeg)) {
-    // Already has country prefix — set cookie if not set and continue
     const response = NextResponse.next()
     if (!request.cookies.get(COOKIE_NAME)) {
       response.cookies.set(COOKIE_NAME, firstSeg, { path: '/', maxAge: COOKIE_MAX_AGE, sameSite: 'lax' })
@@ -35,7 +46,7 @@ export function proxy(request: NextRequest) {
     return response
   }
 
-  // Determine country: cookie > geo header > default
+  // No country prefix — determine country: cookie > geo header > default
   let country = DEFAULT_COUNTRY
   const cookieVal = request.cookies.get(COOKIE_NAME)?.value
   if (cookieVal && isValidCountry(cookieVal)) {
@@ -45,7 +56,15 @@ export function proxy(request: NextRequest) {
     country = geoToCountry(geo)
   }
 
-  // Redirect to /{country}{pathname}{search}
+  // US (root country) → serve at root path via rewrite (no redirect, no prefix)
+  if (country === ROOT_COUNTRY) {
+    const response = NextResponse.rewrite(new URL(`/${ROOT_COUNTRY}${pathname}`, request.url))
+    response.cookies.set(COOKIE_NAME, ROOT_COUNTRY, { path: '/', maxAge: COOKIE_MAX_AGE, sameSite: 'lax' })
+    if (isVercelApp) response.headers.set('X-Robots-Tag', 'noindex, nofollow')
+    return response
+  }
+
+  // Other countries → redirect to /{country}{pathname}{search}
   const url = request.nextUrl.clone()
   url.pathname = `/${country}${pathname}`
   const response = NextResponse.redirect(url, 307)
