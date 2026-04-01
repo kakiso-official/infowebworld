@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { Resend } from 'resend'
+import nodemailer from 'nodemailer'
 import { query, execute, queryOne } from '@/lib/db'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { getClientIp, getUserAgent } from '@/lib/tracking'
@@ -167,25 +167,29 @@ function buildWelcomeEmail(email: string, waitlistPosition: number): string {
 `
 }
 
-/* ── Send welcome email via Resend API (works on Vercel — no SMTP ports needed) ── */
+/* ── Send welcome email via Gmail SMTP (same setup as contact form) ── */
 async function sendWelcomeEmail(toEmail: string, position: number) {
-  const apiKey = process.env.RESEND_API_KEY
-  if (!apiKey) {
-    console.error('RESEND_API_KEY not set — welcome email not sent')
+  const smtpUser = process.env.SMTP_USER
+  const smtpPass = process.env.SMTP_PASS
+  if (!smtpUser || !smtpPass) {
+    console.error('SMTP credentials not set — welcome email not sent')
     return
   }
 
   try {
-    const resend = new Resend(apiKey)
-    const { error } = await resend.emails.send({
-      from: 'InfoWebWorld <onboarding@resend.dev>',
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      auth: { user: smtpUser, pass: smtpPass },
+    })
+
+    await transporter.sendMail({
+      from: `"InfoWebWorld" <${smtpUser}>`,
       to: toEmail,
       subject: `You're In! Welcome to InfoWebWorld — Position #${position}`,
       html: buildWelcomeEmail(toEmail, position),
     })
-    if (error) {
-      console.error('Resend send error:', error.message)
-    }
   } catch (err) {
     console.error('Welcome email send failed:', err instanceof Error ? err.message : err)
   }
