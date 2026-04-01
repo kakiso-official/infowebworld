@@ -1,6 +1,9 @@
 'use client'
 import { useState, useEffect, useMemo } from 'react'
 import Link from '../../../components/CountryLink'
+import { useCountry } from '../../../config/country-context'
+import { COUNTRY_LABELS } from '../../../config/countries'
+import type { CountryCode } from '../../../config/countries'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { LayerIcon, ArrowLeft01Icon } from '@hugeicons/core-free-icons'
 import type { Category } from '../../../iww-hq/data/category-storage'
@@ -18,7 +21,11 @@ import SectorSection, { CardGrid } from './components/SectorSection'
 import CategoryCard from './components/CategoryCard'
 import SectorCta from './components/SectorCta'
 
+const BASE = 'https://infowebworld.com'
+
 export default function SectorLanding({ category, allCategories }: { category: Category; allCategories: Category[] }) {
+  const country = useCountry()
+  const countryName = COUNTRY_LABELS[country as CountryCode] || 'India'
   const meta = getSectorMeta(category.slug)
   const demos = useMemo(() => getSectorDemos(category.slug), [category.slug])
 
@@ -49,9 +56,51 @@ export default function SectorLanding({ category, allCategories }: { category: C
 
   const sectorName = category.name
   const shortName = sectorName.split('&')[0].trim()
+  const pageUrl = `${BASE}/${country}/category/${category.slug}`
+
+  /* ── JSON-LD Structured Data ── */
+  const faqs = [
+    { q: `What is ${sectorName}?`, a: meta.description },
+    { q: `How to find the best ${sectorName} companies in ${countryName}?`, a: `Browse verified ${sectorName} companies on InfoWebWorld. Compare services, read reviews and connect directly with providers in ${countryName}.` },
+    { q: `Is it free to list my ${shortName} business?`, a: 'Yes, InfoWebWorld offers free business listing with optional premium plans for enhanced visibility, verified badges and SEO backlinks.' },
+    { q: `How are ${sectorName} companies ranked?`, a: 'Rankings are based on verified reviews, user satisfaction scores, market presence and listing completeness. Our team verifies every listing.' },
+    { q: `Can I compare ${shortName} solutions?`, a: `Yes! Use our comparison tools to evaluate ${shortName} solutions side by side across features, pricing, reviews and satisfaction scores.` },
+  ]
+
+  const breadcrumbLd = {
+    '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: BASE },
+      { '@type': 'ListItem', position: 2, name: 'Categories', item: `${BASE}/${country}/categories` },
+      { '@type': 'ListItem', position: 3, name: sectorName },
+    ],
+  }
+
+  const collectionLd = {
+    '@context': 'https://schema.org', '@type': 'CollectionPage',
+    name: sectorName,
+    description: meta.seoDescription,
+    url: pageUrl,
+    isPartOf: { '@type': 'WebSite', name: 'InfoWebWorld', url: BASE },
+    about: { '@type': 'Thing', name: sectorName, description: meta.description },
+    numberOfItems: l2Cats.length + l3Cats.length,
+  }
+
+  const faqLd = {
+    '@context': 'https://schema.org', '@type': 'FAQPage',
+    mainEntity: faqs.map(f => ({
+      '@type': 'Question', name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  }
 
   return (
     <section className="sl-page" style={{ '--sl-color': meta.color, '--sl-pastel': meta.pastel, '--sl-pastel-light': meta.pastelLight } as React.CSSProperties}>
+
+      {/* JSON-LD */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
 
       <SectorHero category={category} meta={meta} sectorName={sectorName} shortName={shortName} l2Cats={l2Cats} l3Cats={l3Cats} demos={demos} listings={listings} />
 

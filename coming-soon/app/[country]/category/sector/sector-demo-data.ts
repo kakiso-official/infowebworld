@@ -32,6 +32,9 @@ export type SectorMeta = {
   description: string
   icon: string
   heroImage: string
+  seoTitle: string
+  seoDescription: string
+  seoKeywords: string[]
 }
 
 const META: Record<string, SectorMeta> = {
@@ -41,6 +44,9 @@ const META: Record<string, SectorMeta> = {
     heroImage: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1600&q=80&auto=format',
     tagline: 'Discover the best AI & Machine Learning tools, platforms and services',
     description: 'Explore cutting-edge artificial intelligence and machine learning solutions — from deep learning frameworks and NLP APIs to computer vision platforms and MLOps tools.',
+    seoTitle: 'Best AI & ML Tools, Platforms & Services',
+    seoDescription: 'Compare top-rated artificial intelligence and machine learning tools. Deep learning frameworks, NLP APIs, computer vision, MLOps and more. Verified reviews and real results.',
+    seoKeywords: ['AI tools', 'machine learning platforms', 'deep learning', 'NLP', 'computer vision', 'MLOps', 'AI software', 'ML frameworks', 'artificial intelligence services'],
   },
   'software-saas': {
     color: '#3B82F6', pastel: '#BFDBFE', pastelLight: '#EFF6FF',
@@ -48,6 +54,9 @@ const META: Record<string, SectorMeta> = {
     heroImage: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1600&q=80&auto=format',
     tagline: 'Find the right software and SaaS tools to power your business',
     description: 'Browse top-rated CRM, project management, marketing, analytics and developer tools. Compare features, read reviews and find the perfect software stack.',
+    seoTitle: 'Best Software & SaaS Tools for Business',
+    seoDescription: 'Find and compare the best SaaS tools, CRM, project management, marketing automation, analytics and developer platforms. Verified reviews from real users.',
+    seoKeywords: ['SaaS tools', 'business software', 'CRM', 'project management', 'marketing software', 'analytics tools', 'developer tools', 'cloud software'],
   },
   'it-services-agencies': {
     color: '#14B8A6', pastel: '#99F6E4', pastelLight: '#F0FDFA',
@@ -55,6 +64,9 @@ const META: Record<string, SectorMeta> = {
     heroImage: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1600&q=80&auto=format',
     tagline: 'Connect with top IT service providers and digital agencies',
     description: 'Find trusted IT consulting firms, managed service providers, cybersecurity agencies and cloud experts. Verified reviews from real clients.',
+    seoTitle: 'Best IT Services, Consulting & Digital Agencies',
+    seoDescription: 'Find trusted IT consulting firms, managed service providers, cybersecurity agencies and cloud experts. Compare services, read verified reviews from real clients.',
+    seoKeywords: ['IT services', 'IT consulting', 'managed services', 'cybersecurity agencies', 'cloud consulting', 'digital agencies', 'IT outsourcing', 'tech support'],
   },
   'startups-innovation': {
     color: '#E8553D', pastel: '#FECACA', pastelLight: '#FFF5F5',
@@ -62,6 +74,9 @@ const META: Record<string, SectorMeta> = {
     heroImage: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=1600&q=80&auto=format',
     tagline: 'Discover emerging startups and innovation platforms',
     description: 'Explore the most promising startups, accelerators, innovation labs and venture tools. From MVP builders to growth platforms — find what fuels your next breakthrough.',
+    seoTitle: 'Best Startups, Accelerators & Innovation Platforms',
+    seoDescription: 'Discover emerging startups, accelerators, innovation labs and venture tools. MVP builders, growth platforms, funding tools and startup communities. Verified listings.',
+    seoKeywords: ['startups', 'accelerators', 'innovation platforms', 'startup tools', 'venture capital', 'MVP builders', 'growth hacking', 'startup community'],
   },
   'local-business': {
     color: '#F59E0B', pastel: '#FDE68A', pastelLight: '#FFFBEB',
@@ -69,6 +84,9 @@ const META: Record<string, SectorMeta> = {
     heroImage: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1600&q=80&auto=format',
     tagline: 'Support and discover local businesses near you',
     description: 'Find the best local services, shops, restaurants and professionals in your area. Real reviews from your community to help you choose with confidence.',
+    seoTitle: 'Best Local Businesses, Services & Shops Near You',
+    seoDescription: 'Discover top-rated local businesses, services, restaurants and shops in your area. Community reviews, verified listings and local business directory.',
+    seoKeywords: ['local business', 'local services', 'shops near me', 'local directory', 'business listing', 'local restaurants', 'service providers', 'community business'],
   },
   'professional-services': {
     color: '#2FAE6A', pastel: '#BBF7D0', pastelLight: '#F0FDF4',
@@ -76,6 +94,9 @@ const META: Record<string, SectorMeta> = {
     heroImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600&q=80&auto=format',
     tagline: 'Find trusted professional service providers for your business',
     description: 'Connect with top-rated legal firms, accounting practices, consultants and HR specialists. Verified credentials and honest reviews to guide your decision.',
+    seoTitle: 'Best Professional Services — Legal, Accounting, HR & Consulting',
+    seoDescription: 'Find top-rated legal firms, accounting practices, HR consultants and business advisors. Verified credentials, honest reviews and trusted professional service providers.',
+    seoKeywords: ['professional services', 'legal services', 'accounting firms', 'HR consulting', 'business consulting', 'tax services', 'audit firms', 'recruitment agencies'],
   },
 }
 

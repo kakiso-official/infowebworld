@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from '../../../../components/CountryLink'
 import { useCountry } from '../../../../config/country-context'
+import { COUNTRY_LABELS } from '../../../../config/countries'
+import type { CountryCode } from '../../../../config/countries'
 import type { Category } from '../../../../iww-hq/data/category-storage'
 import type { RealSubmission } from '../../../../iww-hq/data/submissions-storage'
 import type { SectorMeta, SectorDemo } from '../sector-demo-data'
@@ -301,16 +303,23 @@ export default function SectorHero({ category, meta, sectorName, shortName, l2Ca
   }
 
   return (
-    <section className="hero">
+    <section className="hero" aria-label={`${sectorName} directory`}>
       <div className="container hero-split">
         {/* ── LEFT ── */}
         <div className="hero-left">
+          <nav className="sl-hero-breadcrumb" aria-label="Breadcrumb">
+            <Link href="/">Home</Link>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+            <Link href="/categories">Categories</Link>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+            <span aria-current="page">{sectorName}</span>
+          </nav>
           <h1 className="hero-h1">Find the Best{' '}
             <span className={`hero-type-wrap${jsReady ? ' hero-type-js' : ''}`}>
               <span className="hero-type-text">{displayed}</span>
               <span className="hero-type-cursor" />
             </span>
-            <br />in <em>{shortName}</em></h1>
+            {' '}in <em>{shortName}</em> in {COUNTRY_LABELS[country as CountryCode] || 'India'}</h1>
           <p className="hero-sub">{meta.description}</p>
 
           {/* Search */}

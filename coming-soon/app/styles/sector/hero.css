@@ -1,4 +1,10 @@
-/* ── Sector Landing Hero — exact match of react-app homepage hero ── */
+/* ── Sector Landing Hero ── */
+
+/* Breadcrumb */
+.sl-hero-breadcrumb{font-size:12px;font-weight:300;color:var(--gray-400);display:flex;align-items:center;gap:6px;margin-bottom:.75rem}
+.sl-hero-breadcrumb a{color:var(--gray-500);transition:color .2s}
+.sl-hero-breadcrumb a:hover{color:var(--accent)}
+.sl-hero-breadcrumb svg{width:12px;height:12px;stroke:var(--gray-300);fill:none;stroke-width:2;flex-shrink:0}
 
 .sl-page .hero{
   --h-accent:#E8553D;--h-accent-rgb:232,85,61;--h-accent-hover:#D44A33;
