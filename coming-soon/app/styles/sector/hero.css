@@ -174,8 +174,8 @@
   .sl-page .hero-split{display:flex;flex-direction:column;height:100%;width:100%;gap:0}
   .sl-page .hero-left{text-align:center;overflow:hidden;flex-shrink:0}
   .sl-page .hero-h1{font-size:clamp(1.3rem,5.5vw,1.75rem);margin-bottom:.35rem;line-height:1.15}
-  .sl-page .hero-h1-label{display:block;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--h-muted);margin-bottom:.15rem}
-  .sl-page .hero-h1-ctx{display:block;font-size:.82rem;font-weight:500;color:var(--h-body);margin-top:.15rem;letter-spacing:0}
+  .sl-page .hero-h1-label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--h-accent);margin-bottom:.15rem}
+  .sl-page .hero-h1-ctx{display:block;font-size:.85rem;font-weight:600;color:var(--h-heading);margin-top:.15rem;letter-spacing:0}
   .sl-page .hero-sub{margin:0 auto .5rem;max-width:92%;font-size:.85rem;line-height:1.5}
 
   /* Search */
