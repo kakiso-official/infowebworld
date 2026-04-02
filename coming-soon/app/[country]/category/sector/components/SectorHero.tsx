@@ -314,12 +314,12 @@ export default function SectorHero({ category, meta, sectorName, shortName, l2Ca
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
             <span aria-current="page">{sectorName}</span>
           </nav>
-          <h1 className="hero-h1">Find the Best{' '}
+          <h1 className="hero-h1"><span className="hero-h1-prefix">Find the </span>Best{' '}
             <span className={`hero-type-wrap${jsReady ? ' hero-type-js' : ''}`}>
               <span className="hero-type-text">{displayed}</span>
               <span className="hero-type-cursor" />
             </span>
-            {' '}in <em>{shortName}</em> in {COUNTRY_LABELS[country as CountryCode] || 'India'}</h1>
+            {' '}in <em>{shortName}</em><span className="hero-h1-country"> in {COUNTRY_LABELS[country as CountryCode] || 'India'}</span></h1>
           <p className="hero-sub">{meta.description}</p>
 
           {/* Search */}
