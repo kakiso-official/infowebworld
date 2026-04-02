@@ -482,7 +482,6 @@ export default function SectorHero({ category, meta, sectorName, shortName, l2Ca
               )
             })}
           </div>
-          <div className="hr-hint"><svg viewBox="0 0 24 24"><path d="M14 8l-4 4 4 4" /></svg> Swipe to explore <svg viewBox="0 0 24 24"><path d="M10 8l4 4-4 4" /></svg></div>
         </div>
       </div>
     </section>
