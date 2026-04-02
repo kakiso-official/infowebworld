@@ -1,4 +1,4 @@
-/* ── Sector Landing — Responsive breakpoints ── */
+/* ── Sector Landing — Responsive breakpoints (sections, cards, grids) ── */
 
 /* Tablet (≤1024px) */
 @media (max-width: 1024px) {
@@ -8,21 +8,12 @@
 
 /* Mobile (≤768px) */
 @media (max-width: 768px) {
-  /* Hero */
-  .sl-hero-top { flex-direction: column; gap: 10px; }
-  .sl-hero-icon { width: 44px; height: 44px; }
-  .sl-hero-stats { gap: 10px; }
-  .sl-hero-stat-div { display: none; }
-  .sl-hero-chips { gap: 5px; }
-  .sl-hero-chip { font-size: 11px; padding: 4px 10px; }
-  .sl-hero-header .sl-search { max-width: 100%; }
-
   /* Sections */
   .sl-section { padding: clamp(1.75rem, 4vw, 2.5rem) 0; }
   .sl-section-header { flex-direction: column; gap: .6rem; margin-bottom: 1.25rem; }
   .sl-section-viewall { align-self: flex-start; margin-top: 0; }
 
-  /* Grids */
+  /* Grids — 2 columns on tablet-ish mobile */
   .sl-grid { grid-template-columns: repeat(2, 1fr); gap: .75rem; }
   .sl-card { padding: clamp(.85rem, 2vw, 1.15rem); }
   .sl-card-logo { width: 44px; height: 44px; }
@@ -30,16 +21,33 @@
 
   /* CTA */
   .sl-cta { padding: clamp(2rem, 4vw, 3rem) 0; }
+
+  /* Chips — horizontal scroll */
+  .sl-chips { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; justify-content: flex-start; gap: .4rem; }
+  .sl-chips::-webkit-scrollbar { display: none; }
+  .sl-chip { flex-shrink: 0; }
+
+  /* Back link */
+  .sl-page .sl-back { font-size: .8rem; }
 }
 
 /* Small phone (≤480px) */
 @media (max-width: 480px) {
+  /* Cards — single column */
   .sl-grid { grid-template-columns: 1fr; }
-  .sl-hero-title-row h1 { font-size: 18px; }
-  .sl-hero-stats { gap: 8px; }
-  .sl-hero-stat { font-size: 11px; }
   .sl-card-rank { top: -.4rem; left: .85rem; min-width: 24px; height: 20px; font-size: .62rem; }
   .sl-section-icon { width: 34px; height: 34px; border-radius: 8px; }
+  .sl-section-title { font-size: clamp(.9rem, 3.5vw, 1.1rem); }
+}
+
+/* Extra-small phone (≤380px) */
+@media (max-width: 380px) {
+  .sl-section { padding: 1.5rem 0; }
+  .sl-card { padding: .75rem; }
+  .sl-card-name { font-size: .82rem; }
+  .sl-card-tagline { font-size: .7rem; }
+  .sl-cta-title { font-size: clamp(1rem, 4vw, 1.25rem); }
+  .sl-cta-desc { font-size: .8rem; }
 }
 
 /* Reduced motion */
