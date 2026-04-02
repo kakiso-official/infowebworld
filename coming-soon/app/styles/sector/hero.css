@@ -24,7 +24,7 @@
 
 .sl-page .hero-h1{font-family:var(--font-bricolage),'Bricolage Grotesque',sans-serif;font-size:clamp(1.6rem,3.2vw,2.5rem);font-weight:800;color:var(--h-heading);line-height:1.18;margin-bottom:.5rem;letter-spacing:-.02em}
 .sl-page .hero-h1 em{font-style:normal;color:var(--h-accent)}
-.sl-page .hero-h1-prefix,.sl-page .hero-h1-country{/* desktop: inline, no special styling */}
+.sl-page .hero-h1-label,.sl-page .hero-h1-ctx{/* desktop: inline, invisible wrappers */}
 
 /* Typewriter */
 .sl-page .hero-type-wrap{display:inline-block;position:relative;min-width:clamp(80px,22vw,140px);vertical-align:baseline}
@@ -173,9 +173,9 @@
   /* Switch grid → flex column so card stack fills remaining space */
   .sl-page .hero-split{display:flex;flex-direction:column;height:100%;width:100%;gap:0}
   .sl-page .hero-left{text-align:center;overflow:hidden;flex-shrink:0}
-  .sl-page .hero-h1{font-size:clamp(1.25rem,5vw,1.7rem);margin-bottom:.35rem}
-  .sl-page .hero-h1-prefix{display:none}
-  .sl-page .hero-h1-country{display:block;font-size:.78rem;font-weight:500;color:var(--h-body);margin-top:.15rem;letter-spacing:0}
+  .sl-page .hero-h1{font-size:clamp(1.3rem,5.5vw,1.75rem);margin-bottom:.35rem;line-height:1.15}
+  .sl-page .hero-h1-label{display:block;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--h-muted);margin-bottom:.15rem}
+  .sl-page .hero-h1-ctx{display:block;font-size:.82rem;font-weight:500;color:var(--h-body);margin-top:.15rem;letter-spacing:0}
   .sl-page .hero-sub{margin:0 auto .5rem;max-width:92%;font-size:.85rem;line-height:1.5}
 
   /* Search */
