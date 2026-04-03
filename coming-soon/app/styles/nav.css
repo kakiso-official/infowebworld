@@ -765,6 +765,14 @@
   .pn-search { height: 42px }
   .pn-search-btn { height: 32px; padding: 0 1rem; font-size: .7rem }
   .pn-spacer { height: 116px }
+  .hd-country-btn {
+    height: 42px;
+    padding: 0 14px;
+    font-size: .78rem;
+    gap: .35rem;
+  }
+  .hd-country-globe svg { width: 17px; height: 17px }
+  .hd-country-chev svg { width: 14px; height: 14px }
   /* Country dropdown goes full width on mobile */
   .hd-country-dropdown {
     position: fixed;
@@ -807,6 +815,12 @@
   .pn-search-btn { height: 28px; padding: 0 .85rem; font-size: .65rem }
   .pn-burger-line { width: 14px }
   .pn-spacer { height: 104px }
+  .hd-country-btn {
+    height: 38px;
+    padding: 0 10px;
+    font-size: .72rem;
+    gap: .25rem;
+  }
 }
 
 /* Extra small */
@@ -817,4 +831,12 @@
   }
   .pn-logo img { height: 26px }
   .pn-spacer { height: 96px }
+  .hd-country-btn {
+    height: 34px;
+    padding: 0 8px;
+    font-size: .68rem;
+    gap: .2rem;
+  }
+  .hd-country-globe svg { width: 15px; height: 15px }
+  .hd-country-chev svg { width: 12px; height: 12px }
 }
