@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { VALID_COUNTRIES, DEFAULT_COUNTRY, COOKIE_NAME, COOKIE_MAX_AGE, ROOT_COUNTRY, geoToCountry, isValidCountry } from './app/config/countries'
 
-export function proxy(request: NextRequest) {
+export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   const isVercelApp = request.headers.get('host')?.includes('vercel.app') ?? false
 
