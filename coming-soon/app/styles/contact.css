@@ -6,7 +6,7 @@
 .ct-section {
   display: flex;
   align-items: center;
-  min-height: calc(100dvh - 100px);
+  min-height: calc(100dvh - 152px);
   padding: clamp(1rem, 2vw, 1.5rem) 0;
   background: var(--h-bg);
 }

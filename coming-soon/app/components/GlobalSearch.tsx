@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import Link from './CountryLink'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { Search01Icon, Cancel01Icon, ArrowRight01Icon } from '@hugeicons/core-free-icons'
+import { SearchVisualIcon, Cancel01Icon, ArrowRight01Icon } from '@hugeicons/core-free-icons'
 
 type CategoryResult = {
   id: number; name: string; slug: string; level: number;
@@ -43,6 +43,11 @@ export default function GlobalSearch({ placeholder = 'Search businesses, tools, 
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
     document.addEventListener('keydown', handler)
     return () => document.removeEventListener('keydown', handler)
+  }, [])
+
+  /* Clear debounce timer on unmount */
+  useEffect(() => {
+    return () => clearTimeout(debounce.current)
   }, [])
 
   const search = useCallback(async (q: string) => {
@@ -86,7 +91,7 @@ export default function GlobalSearch({ placeholder = 'Search businesses, tools, 
         <span className="pn-search-icon">
           {loading
             ? <span className="gs-spinner" />
-            : <HugeiconsIcon icon={Search01Icon} size={20} color="currentColor" strokeWidth={1.5} />
+            : <HugeiconsIcon icon={SearchVisualIcon} size={22} color="#1A1A1A" strokeWidth={2} />
           }
         </span>
         <input

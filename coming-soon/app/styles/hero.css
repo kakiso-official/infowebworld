@@ -10,7 +10,7 @@
   position: relative;
 }
 @media (min-width: 769px) {
-  .cs-hero { height: calc(100vh - 100px); height: calc(100dvh - 100px); padding-top: clamp(3rem, 6vh, 5rem) }
+  .cs-hero { height: calc(100vh - 152px); height: calc(100dvh - 152px); padding-top: clamp(2rem, 4vh, 3.5rem) }
   .cs-bg-text-br { display: none }
 }
 .cs-bg-text {
@@ -305,10 +305,10 @@
 @media (max-width: 768px) {
   /* ── Hero container ── */
   .cs-hero {
-    min-height: calc(100vh - 50px);
-    min-height: calc(100svh - 50px);
-    padding-top: clamp(4rem, 14svh, 12rem);
-    padding-bottom: clamp(1.5rem, 3svh, 3rem);
+    min-height: calc(100vh - 112px);
+    min-height: calc(100svh - 112px);
+    padding-top: clamp(2rem, 8svh, 6rem);
+    padding-bottom: clamp(1rem, 2svh, 2rem);
     align-items: flex-start;
   }
 

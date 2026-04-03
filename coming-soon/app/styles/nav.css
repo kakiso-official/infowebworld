@@ -19,7 +19,7 @@
 }
 /* Spacer to push content below fixed header */
 .pn-spacer {
-  height: 130px;
+  height: 152px;
 }
 
 /* ── Search row ── */
@@ -28,7 +28,7 @@
   align-items: center;
   width: 100%;
   max-width: 600px;
-  height: 46px;
+  height: 54px;
   border-radius: 999px;
   background: #fff;
   border: 2px solid #E8E3DE;
@@ -44,7 +44,7 @@
 .pn-search-icon {
   display: flex;
   align-items: center;
-  padding-left: 1.15rem;
+  padding-left: 1.25rem;
   color: #1A1A1A;
   flex-shrink: 0;
 }
@@ -56,28 +56,28 @@
   outline: none;
   padding: 0 1rem;
   font-family: var(--font-nunito), sans-serif;
-  font-size: .88rem;
-  font-weight: 700;
-  color: #1A1A1A;
+  font-size: .95rem;
+  font-weight: 800;
+  color: #000;
 }
 .pn-search input::placeholder {
-  color: #1A1A1A;
-  font-weight: 600;
-  opacity: .5;
+  color: #000;
+  font-weight: 800;
+  opacity: .45;
 }
 .pn-search-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 36px;
-  padding: 0 1.25rem;
-  margin: 0 5px 0 0;
+  height: 42px;
+  padding: 0 1.5rem;
+  margin: 0 6px 0 0;
   border-radius: 999px;
   border: none;
   background: #1A1A1A;
   color: #fff;
   font-family: var(--font-nunito), sans-serif;
-  font-size: .75rem;
+  font-size: .8rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: .03em;
@@ -90,12 +90,59 @@
   transform: scale(1.03);
 }
 
+/* ── Search row with sector pills ── */
+.pn-search-row {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  width: 100%;
+  pointer-events: auto;
+}
+.pn-sectors {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.pn-sec {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1.5px solid #E8E3DE;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+/* Sector circle uses per-pill color */
+.pn-sec .pn-circle {
+  background: var(--sec-c, #1A1A1A);
+}
+/* Smaller labels for sector pills */
+.pn-sec .pn-label,
+.pn-sec .pn-label-hover {
+  font-size: .85rem;
+  font-weight: 800;
+  letter-spacing: .02em;
+  text-transform: none;
+}
+.pn-sec .pn-label-hover {
+  color: #fff;
+}
+
 /* ── Global search wrapper + dropdown ── */
 .gs-wrap {
   position: relative;
   width: 100%;
   max-width: 600px;
   pointer-events: auto;
+  flex: 1;
+  min-width: 240px;
 }
 .gs-wrap .pn-search { width: 100% }
 .pn-search--active {
@@ -746,25 +793,28 @@
     padding: 0 .65rem;
   }
   .pn-search { max-width: 100% }
+  .pn-sectors { display: none }
+  .pn-search-row { justify-content: center }
 }
 
 /* Mobile */
 @media (max-width: 768px) {
   .pn-header {
-    padding: .65rem 1rem;
-    gap: .4rem;
+    padding: .5rem .75rem;
+    gap: .3rem;
   }
   .pn-bar {
-    height: 56px;
+    height: 52px;
     padding: 0 .5rem;
   }
   .pn-logo img {
-    height: 36px;
+    height: 34px;
   }
   .pn-actions { display: none }
   .pn-search { height: 42px }
+  .pn-search input { font-size: .85rem }
   .pn-search-btn { height: 32px; padding: 0 1rem; font-size: .7rem }
-  .pn-spacer { height: 116px }
+  .pn-spacer { height: 112px }
   .hd-country-btn {
     height: 42px;
     padding: 0 14px;
@@ -800,21 +850,21 @@
 /* Small phones */
 @media (max-width: 480px) {
   .pn-header {
-    padding: .5rem .65rem;
-    gap: .35rem;
+    padding: .4rem .5rem;
+    gap: .25rem;
   }
   .pn-bar {
-    height: 50px;
-    padding: 0 .4rem;
+    height: 46px;
+    padding: 0 .35rem;
   }
   .pn-logo img {
-    height: 30px;
+    height: 28px;
   }
   .pn-search { height: 38px }
-  .pn-search input { font-size: .78rem }
+  .pn-search input { font-size: .8rem }
   .pn-search-btn { height: 28px; padding: 0 .85rem; font-size: .65rem }
   .pn-burger-line { width: 14px }
-  .pn-spacer { height: 104px }
+  .pn-spacer { height: 98px }
   .hd-country-btn {
     height: 38px;
     padding: 0 10px;
@@ -826,17 +876,19 @@
 /* Extra small */
 @media (max-width: 380px) {
   .pn-bar {
-    height: 46px;
-    gap: .35rem;
+    height: 42px;
+    gap: .25rem;
   }
-  .pn-logo img { height: 26px }
-  .pn-spacer { height: 96px }
+  .pn-logo img { height: 24px }
+  .pn-search { height: 36px }
+  .pn-search-btn { height: 26px; padding: 0 .75rem; font-size: .62rem }
+  .pn-spacer { height: 92px }
   .hd-country-btn {
-    height: 34px;
+    height: 32px;
     padding: 0 8px;
-    font-size: .68rem;
+    font-size: .65rem;
     gap: .2rem;
   }
-  .hd-country-globe svg { width: 15px; height: 15px }
-  .hd-country-chev svg { width: 12px; height: 12px }
+  .hd-country-globe svg { width: 14px; height: 14px }
+  .hd-country-chev svg { width: 11px; height: 11px }
 }

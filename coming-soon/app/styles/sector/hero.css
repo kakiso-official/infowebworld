@@ -12,7 +12,7 @@
   --h-border:#E8E3DE;--h-border-light:#F0EBE6;
   font-family:var(--font-nunito),'Nunito',sans-serif;
   background:var(--h-bg);
-  min-height:calc(100dvh - 100px);
+  min-height:calc(100dvh - 152px);
   display:flex;align-items:center;
   padding:1rem 0;
   overflow-x:clip;overflow-y:visible;position:relative;z-index:10;width:100%

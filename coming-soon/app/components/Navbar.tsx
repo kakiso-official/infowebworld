@@ -15,11 +15,23 @@ const bp = BASE
 type NavItem = { label: string; href: string; cta?: boolean; comingSoon?: boolean }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: 'Categories', href: '#', comingSoon: true },
+  { label: 'Categories', href: '/categories' },
   { label: 'Reviews', href: '#', comingSoon: true },
   { label: 'Compare', href: '#', comingSoon: true },
   { label: 'News', href: '#', comingSoon: true },
   { label: 'Get Listed', href: '/business', cta: true },
+]
+
+type Sector = { label: string; slug: string; color: string }
+const SECTORS_LEFT: Sector[] = [
+  { label: 'Artificial Intelligence & ML', slug: 'artificial-intelligence-ml', color: '#8B5CF6' },
+  { label: 'Software & SaaS', slug: 'software-saas', color: '#3B82F6' },
+  { label: 'Startups & Innovation', slug: 'startups-innovation', color: '#E8553D' },
+]
+const SECTORS_RIGHT: Sector[] = [
+  { label: 'IT Services & Agencies', slug: 'it-services-agencies', color: '#14B8A6' },
+  { label: 'Local Business', slug: 'local-business', color: '#F59E0B' },
+  { label: 'Professional Services', slug: 'professional-services', color: '#2FAE6A' },
 ]
 
 export default function Navbar() {
@@ -27,42 +39,49 @@ export default function Navbar() {
   const circleRefs = useRef<(HTMLSpanElement | null)[]>([])
   const tlRefs = useRef<gsap.core.Timeline[]>([])
   const tweenRefs = useRef<gsap.core.Tween[]>([])
+  const secCircleRefs = useRef<(HTMLSpanElement | null)[]>([])
+  const secTlRefs = useRef<gsap.core.Timeline[]>([])
+  const secTweenRefs = useRef<gsap.core.Tween[]>([])
   const navRef = useRef<HTMLDivElement>(null)
   const logoRef = useRef<HTMLImageElement>(null)
 
-  /* ── Layout circles on mount + resize ── */
-  const layout = useCallback(() => {
-    circleRefs.current.forEach((circle, i) => {
-      if (!circle?.parentElement) return
-      const pill = circle.parentElement
-      const { width: w, height: h } = pill.getBoundingClientRect()
-      const R = ((w * w) / 4 + h * h) / (2 * h)
-      const D = Math.ceil(2 * R) + 2
-      const delta = Math.ceil(R - Math.sqrt(Math.max(0, R * R - (w * w) / 4))) + 1
-      const originY = D - delta
+  /* ── Shared: build GSAP timeline for a circle pill ── */
+  const buildPillTl = useCallback((circle: HTMLSpanElement, tls: gsap.core.Timeline[], i: number) => {
+    const pill = circle.parentElement
+    if (!pill) return
+    const { width: w, height: h } = pill.getBoundingClientRect()
+    const R = ((w * w) / 4 + h * h) / (2 * h)
+    const D = Math.ceil(2 * R) + 2
+    const delta = Math.ceil(R - Math.sqrt(Math.max(0, R * R - (w * w) / 4))) + 1
+    const originY = D - delta
 
-      circle.style.width = `${D}px`
-      circle.style.height = `${D}px`
-      circle.style.bottom = `-${delta}px`
+    circle.style.width = `${D}px`
+    circle.style.height = `${D}px`
+    circle.style.bottom = `-${delta}px`
 
-      gsap.set(circle, { xPercent: -50, scale: 0, transformOrigin: `50% ${originY}px` })
+    gsap.set(circle, { xPercent: -50, scale: 0, transformOrigin: `50% ${originY}px` })
 
-      const label = pill.querySelector<HTMLElement>('.pn-label')
-      const hover = pill.querySelector<HTMLElement>('.pn-label-hover')
-      if (label) gsap.set(label, { y: 0 })
-      if (hover) gsap.set(hover, { y: h + 12, opacity: 0 })
+    const label = pill.querySelector<HTMLElement>('.pn-label')
+    const hover = pill.querySelector<HTMLElement>('.pn-label-hover')
+    if (label) gsap.set(label, { y: 0 })
+    if (hover) gsap.set(hover, { y: h + 12, opacity: 0 })
 
-      tlRefs.current[i]?.kill()
-      const tl = gsap.timeline({ paused: true })
-      tl.to(circle, { scale: 1.2, xPercent: -50, duration: 2, ease: 'power3.out', overwrite: 'auto' }, 0)
-      if (label) tl.to(label, { y: -(h + 8), duration: 2, ease: 'power3.out', overwrite: 'auto' }, 0)
-      if (hover) {
-        gsap.set(hover, { y: Math.ceil(h + 100), opacity: 0 })
-        tl.to(hover, { y: 0, opacity: 1, duration: 2, ease: 'power3.out', overwrite: 'auto' }, 0)
-      }
-      tlRefs.current[i] = tl
-    })
+    tls[i]?.kill()
+    const tl = gsap.timeline({ paused: true })
+    tl.to(circle, { scale: 1.2, xPercent: -50, duration: 2, ease: 'power3.out', overwrite: 'auto' }, 0)
+    if (label) tl.to(label, { y: -(h + 8), duration: 2, ease: 'power3.out', overwrite: 'auto' }, 0)
+    if (hover) {
+      gsap.set(hover, { y: Math.ceil(h + 100), opacity: 0 })
+      tl.to(hover, { y: 0, opacity: 1, duration: 2, ease: 'power3.out', overwrite: 'auto' }, 0)
+    }
+    tls[i] = tl
   }, [])
+
+  /* ── Layout all circles on mount + resize ── */
+  const layout = useCallback(() => {
+    circleRefs.current.forEach((c, i) => c && buildPillTl(c, tlRefs.current, i))
+    secCircleRefs.current.forEach((c, i) => c && buildPillTl(c, secTlRefs.current, i))
+  }, [buildPillTl])
 
   useEffect(() => {
     layout()
@@ -90,10 +109,27 @@ export default function Navbar() {
     tweenRefs.current[i]?.kill()
     tweenRefs.current[i] = tl.tweenTo(0, { duration: 0.2, ease: 'power3.out', overwrite: 'auto' })
   }
+  const secEnter = (i: number) => {
+    const tl = secTlRefs.current[i]
+    if (!tl) return
+    secTweenRefs.current[i]?.kill()
+    secTweenRefs.current[i] = tl.tweenTo(tl.duration(), { duration: 0.3, ease: 'power3.out', overwrite: 'auto' })
+  }
+  const secLeave = (i: number) => {
+    const tl = secTlRefs.current[i]
+    if (!tl) return
+    secTweenRefs.current[i]?.kill()
+    secTweenRefs.current[i] = tl.tweenTo(0, { duration: 0.2, ease: 'power3.out', overwrite: 'auto' })
+  }
 
 
   const openDrawer = () => { setDrawerOpen(true); document.body.style.overflow = 'hidden' }
   const closeDrawer = () => { setDrawerOpen(false); document.body.style.overflow = '' }
+
+  /* Restore body scroll if unmounted while drawer is open */
+  useEffect(() => {
+    return () => { document.body.style.overflow = '' }
+  }, [])
 
   return (
     <>
@@ -145,7 +181,53 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Search row */}
+        {/* Search row with sector pills — commented out for now
+        <div className="pn-search-row">
+          <div className="pn-sectors pn-sectors--left">
+            {SECTORS_LEFT.map((s, i) => (
+              <Link
+                key={s.slug}
+                href={`/category/${s.slug}`}
+                className="pn-sec"
+                style={{ '--sec-c': s.color } as React.CSSProperties}
+                onMouseEnter={() => secEnter(i)}
+                onMouseLeave={() => secLeave(i)}
+              >
+                <span
+                  className="pn-circle pn-circle--sec"
+                  ref={el => { secCircleRefs.current[i] = el }}
+                  aria-hidden="true"
+                />
+                <span className="pn-label-stack">
+                  <span className="pn-label">{s.label}</span>
+                  <span className="pn-label-hover" aria-hidden="true">{s.label}</span>
+                </span>
+              </Link>
+            ))}
+          </div>
+          <div className="pn-sectors pn-sectors--right">
+            {SECTORS_RIGHT.map((s, i) => (
+              <Link
+                key={s.slug}
+                href={`/category/${s.slug}`}
+                className="pn-sec"
+                style={{ '--sec-c': s.color } as React.CSSProperties}
+                onMouseEnter={() => secEnter(i + 3)}
+                onMouseLeave={() => secLeave(i + 3)}
+              >
+                <span
+                  className="pn-circle pn-circle--sec"
+                  ref={el => { secCircleRefs.current[i + 3] = el }}
+                  aria-hidden="true"
+                />
+                <span className="pn-label-stack">
+                  <span className="pn-label">{s.label}</span>
+                  <span className="pn-label-hover" aria-hidden="true">{s.label}</span>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div> */}
         <GlobalSearch placeholder="Search businesses, tools, categories" />
       </header>
       <div className="pn-spacer" />

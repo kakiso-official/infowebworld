@@ -4,8 +4,8 @@
 
 /* ── Section + container ── */
 .cb {
-  padding: calc(140px + clamp(2rem, 4vw, 3rem)) 0 clamp(3rem, 6vw, 5rem);
-  margin-top: -140px;
+  padding: calc(152px + clamp(2rem, 4vw, 3rem)) 0 clamp(3rem, 6vw, 5rem);
+  margin-top: -152px;
   background: #fff;
   min-height: 60vh;
   position: relative;
@@ -498,8 +498,8 @@
 
 @media (max-width: 768px) {
   .cb {
-    margin-top: -126px;
-    padding-top: calc(126px + clamp(1.5rem, 3vw, 2.5rem));
+    margin-top: -112px;
+    padding-top: calc(112px + clamp(1.5rem, 3vw, 2.5rem));
   }
   .cb-sectors { columns: 2; column-gap: 1rem }
   .cb-sectors .cb-sector { margin-bottom: 1rem }
@@ -514,8 +514,8 @@
 
 @media (max-width: 480px) {
   .cb {
-    margin-top: -114px;
-    padding-top: calc(114px + clamp(1.25rem, 3vw, 2rem));
+    margin-top: -98px;
+    padding-top: calc(98px + clamp(1.25rem, 3vw, 2rem));
   }
   .cb-sectors { columns: 1 }
   .cb-sectors .cb-sector { margin-bottom: 1rem }
