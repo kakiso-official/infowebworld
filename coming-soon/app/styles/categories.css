@@ -93,6 +93,65 @@
   font-size: .85rem; color: var(--h-muted);
 }
 
+/* ── Breadcrumb ── */
+.cb-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  margin-bottom: 1rem;
+  font-family: var(--font-nunito), sans-serif;
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--h-muted);
+}
+.cb-breadcrumb a {
+  color: var(--h-muted);
+  text-decoration: none;
+  transition: color .2s;
+}
+.cb-breadcrumb a:hover {
+  color: var(--h-accent);
+}
+.cb-breadcrumb-sep {
+  color: var(--h-border);
+}
+.cb-breadcrumb span:last-child {
+  color: #1A1A1A;
+}
+
+/* ── Sector card count badge ── */
+.cb-sector-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 .45rem;
+  border-radius: 999px;
+  background: rgba(0,0,0,.08);
+  font-family: var(--font-nunito), sans-serif;
+  font-size: .68rem;
+  font-weight: 800;
+  color: #1A1A1A;
+  margin-left: auto;
+}
+
+/* ── Sector row listing count ── */
+.cb-sector-row-count {
+  margin-left: auto;
+  font-size: .68rem;
+  font-weight: 800;
+  color: var(--h-muted);
+  opacity: .6;
+}
+
+/* ── Cat row parent back-link ── */
+.cb-cat-row--parent {
+  font-style: italic;
+  color: var(--h-muted);
+  font-size: .72rem;
+}
+
 /* ── Hero ── */
 .cb-hero {
   margin-bottom: clamp(2rem, 4vw, 3rem);

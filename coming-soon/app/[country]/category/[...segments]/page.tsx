@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import Navbar from '../../../components/Navbar'
 import Footer from '../../../components/Footer'
 import CategoryPage from '../CategoryPage'
+import SectorAllBrowse from '../components/SectorAllBrowse'
 import { getSectorMeta } from '../sector/sector-demo-data'
 import { COUNTRY_LABELS, ROOT_COUNTRY } from '../../../config/countries'
 import type { CountryCode } from '../../../config/countries'
@@ -241,6 +242,21 @@ export async function generateMetadata({
   const countryName = COUNTRY_LABELS[country as CountryCode] || 'United States'
   const monthYear = currentMonthYear()
 
+  /* ── /all page — sector categories browse ── */
+  if (segments.length === 2 && segments[1] === 'all' && L1_SLUGS.has(slug)) {
+    const meta = getSectorMeta(slug)
+    const title = `All ${meta.seoTitle} Categories in ${countryName} | InfoWebWorld`
+    const description = `Browse all categories and subcategories within ${meta.seoTitle}. Find, compare, and connect with the best tools and services.`
+    const url = canonicalUrl(country, `/category/${slug}/all`)
+    return {
+      title,
+      description,
+      alternates: { canonical: url },
+      openGraph: { title, description, url, siteName: 'InfoWebWorld', type: 'website' },
+      robots: { index: false, follow: false },
+    }
+  }
+
   /* ── L1 Sectors — hardcoded rich meta ── */
   if (L1_SLUGS.has(slug)) {
     const meta = getSectorMeta(slug)
@@ -291,6 +307,17 @@ export default async function CategoryDetailRoute({
   const countryName = COUNTRY_LABELS[country as CountryCode] || 'United States'
   const monthYear = currentMonthYear()
 
+  /* ── /all page — render sector browse ── */
+  if (segments.length === 2 && segments[1] === 'all' && slug && L1_SLUGS.has(slug)) {
+    return (
+      <>
+        <Navbar sectorSlug={slug} />
+        <Suspense><SectorAllBrowse sectorSlug={slug} /></Suspense>
+        <Footer />
+      </>
+    )
+  }
+
   // JSON-LD for L1 sectors (rendered via SectorLanding's own useEffect)
   // JSON-LD for L2/L3 — inject server-side via <script> tags
   let jsonLdScripts: React.ReactNode = null
@@ -317,10 +344,11 @@ export default async function CategoryDetailRoute({
     }
   }
 
+  const isSector = slug && L1_SLUGS.has(slug) && segments.length === 1
   return (
     <>
       {jsonLdScripts}
-      <Navbar />
+      <Navbar sectorSlug={isSector ? slug : undefined} />
       <Suspense><CategoryPage segments={segments} /></Suspense>
       <Footer />
     </>

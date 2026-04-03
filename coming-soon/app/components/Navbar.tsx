@@ -34,7 +34,7 @@ const SECTORS_RIGHT: Sector[] = [
   { label: 'Professional Services', slug: 'professional-services', color: '#2FAE6A' },
 ]
 
-export default function Navbar() {
+export default function Navbar({ sectorSlug }: { sectorSlug?: string } = {}) {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const circleRefs = useRef<(HTMLSpanElement | null)[]>([])
   const tlRefs = useRef<gsap.core.Timeline[]>([])
@@ -143,10 +143,14 @@ export default function Navbar() {
           {/* Nav pills */}
           <div ref={navRef} className="pn-nav">
             <ul className="pn-list">
-              {NAV_ITEMS.map((item, i) => (
+              {NAV_ITEMS.map((item, i) => {
+                const href = item.label === 'Categories' && sectorSlug
+                  ? `/category/${sectorSlug}/all`
+                  : item.href
+                return (
                 <li key={item.label} className="pn-item">
                   <Link
-                    href={item.href}
+                    href={href}
                     className={`pn-pill${item.cta ? ' pn-pill--cta' : ''}`}
                     onMouseEnter={() => enter(i)}
                     onMouseLeave={() => leave(i)}
@@ -162,7 +166,7 @@ export default function Navbar() {
                     </span>
                   </Link>
                 </li>
-              ))}
+              )})}
             </ul>
           </div>
 
@@ -244,12 +248,17 @@ export default function Navbar() {
           </button>
         </div>
         <div className="pn-drawer-body">
-          {NAV_ITEMS.map(item => (
-            <Link key={item.label} href={item.href} className={`pn-drawer-link${item.cta ? ' pn-drawer-link--cta' : ''}`} onClick={closeDrawer}>
-              {item.label}
-              {item.comingSoon && <span className="pn-drawer-badge">Coming Soon</span>}
-            </Link>
-          ))}
+          {NAV_ITEMS.map(item => {
+            const href = item.label === 'Categories' && sectorSlug
+              ? `/category/${sectorSlug}/all`
+              : item.href
+            return (
+              <Link key={item.label} href={href} className={`pn-drawer-link${item.cta ? ' pn-drawer-link--cta' : ''}`} onClick={closeDrawer}>
+                {item.label}
+                {item.comingSoon && <span className="pn-drawer-badge">Coming Soon</span>}
+              </Link>
+            )
+          })}
         </div>
         <div className="pn-drawer-foot">
           <Link href="/business" className="pn-drawer-biz" onClick={closeDrawer}>
