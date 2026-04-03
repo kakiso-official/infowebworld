@@ -1,123 +1,199 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from '../../../components/CountryLink'
 import { BASE } from '../../../config/base-path'
+import CountrySwitcher from '../../../components/CountrySwitcher'
+import { gsap } from 'gsap'
+import GlobalSearch from '../../../components/GlobalSearch'
 
 const bp = BASE
 
-/* ── Sparkle SVG icon (used in Coming Soon tooltips) ── */
-const Sparkle = () => (
-  <svg viewBox="0 0 24 24" className="ghd-cs-star">
-    <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
-  </svg>
-)
+/* ═══════════════════════════════════════════
+   PillNav for /business — anchor links to sections
+   ═══════════════════════════════════════════ */
 
-/* ── Wrapper that shows a "Coming Soon" tooltip on hover ── */
-const CsWrap = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <div className={`ghd-cs-wrap${className ? ` ${className}` : ''}`}>
-    {children}
-    <div className="ghd-cs-tip">
-      <div className="ghd-cs-pill">
-        <Sparkle />
-        <span>Coming Soon</span>
-      </div>
-    </div>
-  </div>
-)
+type NavItem = { label: string; href: string; cta?: boolean; anchor?: boolean }
 
-/* ── Sub-nav item as anchor link ── */
-const NavItem = ({ label, href }: { label: string; href: string }) => (
-  <a href={href} className="ghd-sub-link">{label}</a>
-)
+const NAV_ITEMS: NavItem[] = [
+  { label: 'Why List', href: '#benefits', anchor: true },
+  { label: 'Plans', href: '#founding', anchor: true },
+  { label: 'Features', href: '#pricing', anchor: true },
+  { label: 'Compare', href: '#compare', anchor: true },
+  { label: 'Get Listed', href: '/plans', cta: true },
+]
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const circleRefs = useRef<(HTMLSpanElement | null)[]>([])
+  const tlRefs = useRef<gsap.core.Timeline[]>([])
+  const tweenRefs = useRef<gsap.core.Tween[]>([])
+  const navRef = useRef<HTMLDivElement>(null)
+  const logoRef = useRef<HTMLImageElement>(null)
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+  const layout = useCallback(() => {
+    circleRefs.current.forEach((circle, i) => {
+      if (!circle?.parentElement) return
+      const pill = circle.parentElement
+      const { width: w, height: h } = pill.getBoundingClientRect()
+      const R = ((w * w) / 4 + h * h) / (2 * h)
+      const D = Math.ceil(2 * R) + 2
+      const delta = Math.ceil(R - Math.sqrt(Math.max(0, R * R - (w * w) / 4))) + 1
+      const originY = D - delta
+
+      circle.style.width = `${D}px`
+      circle.style.height = `${D}px`
+      circle.style.bottom = `-${delta}px`
+
+      gsap.set(circle, { xPercent: -50, scale: 0, transformOrigin: `50% ${originY}px` })
+
+      const label = pill.querySelector<HTMLElement>('.pn-label')
+      const hover = pill.querySelector<HTMLElement>('.pn-label-hover')
+      if (label) gsap.set(label, { y: 0 })
+      if (hover) gsap.set(hover, { y: h + 12, opacity: 0 })
+
+      tlRefs.current[i]?.kill()
+      const tl = gsap.timeline({ paused: true })
+      tl.to(circle, { scale: 1.2, xPercent: -50, duration: 2, ease: 'power3.out', overwrite: 'auto' }, 0)
+      if (label) tl.to(label, { y: -(h + 8), duration: 2, ease: 'power3.out', overwrite: 'auto' }, 0)
+      if (hover) {
+        gsap.set(hover, { y: Math.ceil(h + 100), opacity: 0 })
+        tl.to(hover, { y: 0, opacity: 1, duration: 2, ease: 'power3.out', overwrite: 'auto' }, 0)
+      }
+      tlRefs.current[i] = tl
+    })
   }, [])
 
-  const open = () => { setDrawerOpen(true); document.body.style.overflow = 'hidden' }
-  const close = () => { setDrawerOpen(false); document.body.style.overflow = '' }
+  useEffect(() => {
+    layout()
+    window.addEventListener('resize', layout)
+    document.fonts?.ready?.then(layout).catch(() => {})
+
+    if (navRef.current) {
+      gsap.set(navRef.current, { width: 0, overflow: 'hidden' })
+      gsap.to(navRef.current, { width: 'auto', duration: 0.6, ease: 'power3.out' })
+    }
+
+    return () => window.removeEventListener('resize', layout)
+  }, [layout])
+
+  const enter = (i: number) => {
+    const tl = tlRefs.current[i]
+    if (!tl) return
+    tweenRefs.current[i]?.kill()
+    tweenRefs.current[i] = tl.tweenTo(tl.duration(), { duration: 0.3, ease: 'power3.out', overwrite: 'auto' })
+  }
+  const leave = (i: number) => {
+    const tl = tlRefs.current[i]
+    if (!tl) return
+    tweenRefs.current[i]?.kill()
+    tweenRefs.current[i] = tl.tweenTo(0, { duration: 0.2, ease: 'power3.out', overwrite: 'auto' })
+  }
+
+
+  const openDrawer = () => { setDrawerOpen(true); document.body.style.overflow = 'hidden' }
+  const closeDrawer = () => { setDrawerOpen(false); document.body.style.overflow = '' }
+
+  /* Smooth scroll for anchor links */
+  const handleClick = (e: React.MouseEvent, href: string, isAnchor?: boolean) => {
+    if (!isAnchor) return
+    e.preventDefault()
+    const el = document.querySelector(href)
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    if (drawerOpen) closeDrawer()
+  }
 
   return (
     <>
-      <header className={`ghd${scrolled ? ' ghd--scrolled' : ''}`}>
-        {/* ══ Row 1: Logo | Search | Login | IWW for Businesses ══ */}
-        <div className="ghd-top">
-          <div className="container ghd-top-inner">
-            <Link href="/" className="ghd-logo">
-              <img src={`${bp}/logo/infowebworldlogo-logoforlightbackgrounds.png`} alt="InfoWebWorld" />
-            </Link>
+      <header className="pn-header">
+        <div className="pn-bar">
+          <Link href="/" className="pn-logo">
+            <img ref={logoRef} src={`${bp}/logo/infowebworldlogo-logoforlightbackgrounds.png`} alt="InfoWebWorld" />
+          </Link>
 
-            <div className="ghd-actions">
-              <CsWrap>
-                <button type="button" className="ghd-search-btn" aria-label="Search">
-                  <svg viewBox="0 0 24 24" className="ghd-search-ic">
-                    <circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />
-                  </svg>
-                </button>
-              </CsWrap>
-              <CsWrap>
-                <button type="button" className="ghd-login">
-                  <svg viewBox="0 0 24 24" className="ghd-login-ic">
-                    <circle cx="12" cy="8" r="5" /><path d="M20 21a8 8 0 0 0-16 0" />
-                  </svg>
-                  Log in
-                </button>
-              </CsWrap>
-            </div>
+          <div ref={navRef} className="pn-nav">
+            <ul className="pn-list">
+              {NAV_ITEMS.map((item, i) => (
+                <li key={item.label} className="pn-item">
+                  {item.cta ? (
+                    <Link
+                      href={item.href}
+                      className="pn-pill pn-pill--cta"
+                      onMouseEnter={() => enter(i)}
+                      onMouseLeave={() => leave(i)}
+                    >
+                      <span className="pn-circle" ref={el => { circleRefs.current[i] = el }} aria-hidden="true" />
+                      <span className="pn-label-stack">
+                        <span className="pn-label">{item.label}</span>
+                        <span className="pn-label-hover" aria-hidden="true">{item.label}</span>
+                      </span>
+                    </Link>
+                  ) : (
+                    <a
+                      href={item.href}
+                      className="pn-pill"
+                      onClick={e => handleClick(e, item.href, item.anchor)}
+                      onMouseEnter={() => enter(i)}
+                      onMouseLeave={() => leave(i)}
+                    >
+                      <span className="pn-circle" ref={el => { circleRefs.current[i] = el }} aria-hidden="true" />
+                      <span className="pn-label-stack">
+                        <span className="pn-label">{item.label}</span>
+                        <span className="pn-label-hover" aria-hidden="true">{item.label}</span>
+                      </span>
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
 
-            <button className="ghd-burger" aria-label="Menu" onClick={open}>
-              <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" /></svg>
+          <div className="pn-actions">
+            <Link href="/business" className="pn-biz">iWW for Business</Link>
+          </div>
+
+          <div className="pn-right">
+            <CountrySwitcher />
+            <button className="pn-burger" aria-label="Menu" onClick={openDrawer}>
+              <span className="pn-burger-line" />
+              <span className="pn-burger-line" />
             </button>
           </div>
         </div>
 
-        {/* ══ Row 2: Categories | Write a Review | Compare | Deals | News | Get Listed ══ */}
-        <div className="ghd-sub">
-          <div className="container ghd-sub-inner">
-            <NavItem label="Why List with Us!" href="#benefits" />
-            <NavItem label="Pre Launch Plan" href="#founding" />
-            <NavItem label="Features & Benefits" href="#pricing" />
-            <NavItem label="Compare" href="#compare" />
-            <Link href="/plans" className="ghd-sub-cta">
-              Get Listed
-              <svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
-            </Link>
-          </div>
-        </div>
+        {/* Search row */}
+        <GlobalSearch placeholder="Search tools, services, listings" />
       </header>
+      <div className="pn-spacer" />
 
-      {/* ══ Mobile overlay + drawer ══ */}
-      <div className={`ghd-overlay${drawerOpen ? ' ghd-overlay--open' : ''}`} onClick={close} />
-      <div className={`ghd-drawer${drawerOpen ? ' ghd-drawer--open' : ''}`}>
-        <div className="ghd-drawer-head">
-          <Link href="/" className="ghd-logo" onClick={close}>
+      {/* ══ Mobile drawer ══ */}
+      <div className={`pn-overlay${drawerOpen ? ' pn-overlay--open' : ''}`} onClick={closeDrawer} />
+      <div className={`pn-drawer${drawerOpen ? ' pn-drawer--open' : ''}`}>
+        <div className="pn-drawer-head">
+          <Link href="/" className="pn-logo" onClick={closeDrawer}>
             <img src={`${bp}/logo/infowebworldlogo-logoforlightbackgrounds.png`} alt="InfoWebWorld" />
           </Link>
-          <button className="ghd-drawer-close" aria-label="Close" onClick={close}>
+          <button className="pn-drawer-close" aria-label="Close" onClick={closeDrawer}>
             <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
           </button>
         </div>
-
-        <div className="ghd-drawer-body">
-          <a href="#benefits" className="ghd-drawer-link" onClick={close}>Why List with Us!</a>
-          <a href="#founding" className="ghd-drawer-link" onClick={close}>Pre Launch Plan</a>
-          <a href="#pricing" className="ghd-drawer-link" onClick={close}>Features & Benefits</a>
-          <a href="#compare" className="ghd-drawer-link" onClick={close}>Compare</a>
-          <div className="ghd-drawer-sep" />
-          <div className="ghd-drawer-link">Search<span className="ghd-cs-badge">Coming Soon</span></div>
-          <div className="ghd-drawer-link">Log in<span className="ghd-cs-badge">Coming Soon</span></div>
-        </div>
-
-        <div className="ghd-drawer-foot">
-          <Link href="/business" className="ghd-sub-cta ghd-sub-cta--full" onClick={close}>
+        <div className="pn-drawer-body">
+          {NAV_ITEMS.filter(item => !item.cta).map(item => (
+            <a
+              key={item.label}
+              href={item.href}
+              className="pn-drawer-link"
+              onClick={e => handleClick(e, item.href, item.anchor)}
+            >
+              {item.label}
+            </a>
+          ))}
+          <Link href="/plans" className="pn-drawer-link pn-drawer-link--cta" onClick={closeDrawer}>
             Get Listed
-            <svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+          </Link>
+        </div>
+        <div className="pn-drawer-foot">
+          <Link href="/business" className="pn-drawer-biz" onClick={closeDrawer}>
+            iWW for Business
           </Link>
         </div>
       </div>

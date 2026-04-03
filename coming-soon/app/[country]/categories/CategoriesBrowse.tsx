@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo } from 'react'
 import Link from '../../components/CountryLink'
 import { fetchLaunchedCategories } from '../../iww-hq/data/category-storage'
 import type { Category } from '../../iww-hq/data/category-storage'
+import HIcon from '../category/sector/components/HIcon'
 
 /* ═══════════════════════════════════════════
    Types & tree builder
@@ -31,31 +32,6 @@ function countByLevel(node: CatNode, lvl: number): number {
   return node.children.reduce((s, c) => s + (c.level === lvl ? 1 : 0) + countByLevel(c, lvl), 0)
 }
 
-/* ═══════════════════════════════════════════
-   SVG icon helper
-   ═══════════════════════════════════════════ */
-
-const Ico = ({ d, size = 20, color = 'currentColor', sw = 1.5 }: {
-  d: string; size?: number; color?: string; sw?: number
-}) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
-    stroke={color} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">
-    {d.split('|').map((p, i) => <path key={i} d={p} />)}
-  </svg>
-)
-
-const ico = {
-  cpu:    'M4 4h16v16H4z|M9 1v3|M15 1v3|M9 20v3|M15 20v3|M1 9h3|M1 15h3|M20 9h3|M20 15h3',
-  code:   'M16 18l6-6-6-6|M8 6l-6 6 6 6',
-  globe:  'M12 2a10 10 0 100 20 10 10 0 000-20z|M2 12h20|M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10|M12 2a15.3 15.3 0 00-4 10 15.3 15.3 0 004 10',
-  trend:  'M23 6l-9.5 9.5-5-5L1 18|M17 6h6v6',
-  home:   'M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z|M9 22V12h6v10',
-  brief:  'M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z|M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16',
-  search: 'M11 3a8 8 0 100 16 8 8 0 000-16z|M21 21l-4.35-4.35',
-  arrow:  'M5 12h14|M12 5l7 7-7 7',
-  layers: 'M12 2L2 7l10 5 10-5-10-5z|M2 17l10 5 10-5|M2 12l10 5 10-5',
-  x:      'M18 6L6 18|M6 6l12 12',
-}
 
 /* ═══════════════════════════════════════════
    Sector metadata — icon, accent, pastel bg
@@ -63,13 +39,13 @@ const ico = {
 
 function sectorMeta(name: string) {
   const n = name.toLowerCase()
-  if (n.includes('artificial') || n.includes('machine learning')) return { icon: ico.cpu,   color: '#8B5CF6', pastel: '#DDD6FE' }
-  if (n.includes('software') || n.includes('saas'))               return { icon: ico.code,  color: '#3B82F6', pastel: '#BFDBFE' }
-  if (n.includes('it service') || n.includes('agencies'))         return { icon: ico.globe, color: '#14B8A6', pastel: '#99F6E4' }
-  if (n.includes('startup') || n.includes('innovation'))          return { icon: ico.trend, color: '#E8553D', pastel: '#FECACA' }
-  if (n.includes('local'))                                        return { icon: ico.home,  color: '#F59E0B', pastel: '#FDE68A' }
-  if (n.includes('professional'))                                 return { icon: ico.brief, color: '#2FAE6A', pastel: '#BBF7D0' }
-  return { icon: ico.layers, color: '#E8553D', pastel: '#FECACA' }
+  if (n.includes('artificial') || n.includes('machine learning')) return { icon: 'cpu',        color: '#8B5CF6', pastel: '#DDD6FE' }
+  if (n.includes('software') || n.includes('saas'))               return { icon: 'code',       color: '#3B82F6', pastel: '#BFDBFE' }
+  if (n.includes('it service') || n.includes('agencies'))         return { icon: 'globe',      color: '#14B8A6', pastel: '#99F6E4' }
+  if (n.includes('startup') || n.includes('innovation'))          return { icon: 'trendingUp', color: '#E8553D', pastel: '#FECACA' }
+  if (n.includes('local'))                                        return { icon: 'home',       color: '#F59E0B', pastel: '#FDE68A' }
+  if (n.includes('professional'))                                 return { icon: 'briefcase',  color: '#2FAE6A', pastel: '#BBF7D0' }
+  return { icon: 'layers', color: '#E8553D', pastel: '#FECACA' }
 }
 
 /* ═══════════════════════════════════════════
@@ -118,6 +94,15 @@ export default function CategoriesBrowse() {
 
   return (
     <section className="cb">
+      <div className="cb-shapes" aria-hidden="true">
+        <div className="cb-shape cb-shape--1" />
+        <div className="cb-shape cb-shape--2" />
+        <div className="cb-shape cb-shape--3" />
+        <div className="cb-shape cb-shape--4" />
+        <div className="cb-shape cb-shape--5" />
+        <div className="cb-shape cb-shape--6" />
+        <div className="cb-shape cb-shape--7" />
+      </div>
       <div className="cb-wrap">
 
         {/* ── Hero ── */}
@@ -125,7 +110,7 @@ export default function CategoriesBrowse() {
           <div className="cb-hero-top">
             <h1 className="cb-title">Explore <em>Categories</em></h1>
             <p className="cb-desc">
-              Discover businesses across {(stats.l2 + stats.l3).toLocaleString()} categories in {stats.sectors} industry sectors. Find the right tools, services, and solutions for your needs.
+              <strong>{(stats.l2 + stats.l3).toLocaleString()} categories</strong> across <strong>{stats.sectors} industry sectors</strong>. Find, compare, and connect with the best tools, services, and solutions.
             </p>
             <div className="cb-hero-pills">
               {[
@@ -141,17 +126,17 @@ export default function CategoriesBrowse() {
           </div>
 
           <div className="cb-search">
-            <span className="cb-search-ico"><Ico d={ico.search} size={18} /></span>
+            <span className="cb-search-ico"><HIcon name="globalSearch" size={24} /></span>
             <input
               type="text"
-              placeholder="Search across all categories\u2026"
+              placeholder="Search AI, SaaS, Marketing, CRM"
               value={search}
               onChange={e => setSearch(e.target.value)}
               onBlur={() => setTimeout(() => setSearch(''), 200)}
             />
             {search && (
               <button className="cb-search-x" onClick={() => setSearch('')} aria-label="Clear">
-                <Ico d={ico.x} size={14} />
+                <HIcon name="cancel" size={14} />
               </button>
             )}
 
@@ -166,7 +151,7 @@ export default function CategoriesBrowse() {
                       const trail = parent ? parent.name : ''
                       return (
                         <Link key={cat.id} href={`/category/${cat.slug}`} className="cb-dropdown-row">
-                          <Ico d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6|M15 3h6v6|M10 14L21 3" size={14} />
+                          <HIcon name="externalLink" size={14} />
                           <span className="cb-dropdown-name">{cat.name}</span>
                           {trail && <span className="cb-dropdown-trail">{trail}</span>}
                         </Link>
@@ -201,7 +186,7 @@ export default function CategoriesBrowse() {
                 >
                   {/* Colored header with icon + name */}
                   <Link href={`/category/${sector.slug}`} className="cb-sector-hd">
-                    <Ico d={meta.icon} size={32} color="var(--h-heading)" sw={1.2} />
+                    <HIcon name={meta.icon} size={32} color="#000" sw={1.2} />
                     <h2 className="cb-sector-name">{sector.name}</h2>
                   </Link>
 

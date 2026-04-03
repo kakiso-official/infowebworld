@@ -1,7 +1,7 @@
 'use client'
 import { HugeiconsIcon } from '@hugeicons/react'
 import {
-  Search01Icon, StarIcon, RocketIcon, Rocket01Icon, Home01Icon,
+  Search01Icon, Search02Icon, SearchVisualIcon, GlobalSearchIcon, StarIcon, RocketIcon, Rocket01Icon, Home01Icon,
   Shield01Icon, CodeIcon, EyeIcon, UserGroupIcon, BarChartIcon,
   GlobeIcon, Globe02Icon, CloudIcon, FlashIcon, GridIcon,
   LayerIcon, FilterIcon, Building01Icon, Building02Icon, Message01Icon,
@@ -14,7 +14,7 @@ import {
 } from '@hugeicons/core-free-icons'
 
 const ICON_MAP: Record<string, typeof StarIcon> = {
-  search: Search01Icon, star: StarIcon, rocket: RocketIcon, rocket01: Rocket01Icon,
+  search: Search01Icon, search02: Search02Icon, searchVisual: SearchVisualIcon, globalSearch: GlobalSearchIcon, star: StarIcon, rocket: RocketIcon, rocket01: Rocket01Icon,
   home: Home01Icon, shield: Shield01Icon, code: CodeIcon, eye: EyeIcon,
   users: UserGroupIcon, barChart: BarChartIcon, chartColumn: ChartColumnIcon,
   globe: GlobeIcon, globe02: Globe02Icon, cloud: CloudIcon, zap: FlashIcon,
