@@ -13,8 +13,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: .5rem;
-  padding: .75rem 1.25rem;
   pointer-events: none;
 }
 /* Spacer to push content below fixed header */
@@ -141,10 +139,8 @@
   width: 100%;
   max-width: 600px;
   pointer-events: auto;
-  flex: 1;
-  min-width: 240px;
+  padding: .4rem 0;
 }
-.gs-wrap .pn-search { width: 100% }
 .pn-search--active {
   border-color: #1A1A1A;
   box-shadow: 0 6px 24px rgba(0,0,0,.1);
@@ -331,18 +327,18 @@
   text-align: center;
 }
 
-/* ── The dark pill bar ── */
+/* ── Top bar — full width, edge to edge ── */
 .pn-bar {
   display: flex;
   align-items: center;
   gap: .75rem;
+  width: 100%;
   height: 64px;
   background: #fff;
-  border: 2px solid #E8E3DE;
-  border-radius: 999px;
-  padding: 0 .75rem;
+  border-bottom: 1.5px solid #E8E3DE;
+  padding: 0 clamp(1rem, 3vw, 2.5rem);
   pointer-events: auto;
-  box-shadow: 0 6px 32px rgba(0,0,0,.08);
+  box-shadow: 0 2px 12px rgba(0,0,0,.04);
 }
 
 /* ── Logo ── */
@@ -353,7 +349,7 @@
   padding: 0 .85rem 0 .65rem;
 }
 .pn-logo img {
-  height: 44px;
+  height: 52px;
   width: auto;
   display: block;
 }
@@ -362,6 +358,8 @@
 .pn-nav {
   display: flex;
   align-items: center;
+  flex: 1;
+  justify-content: center;
 }
 .pn-list {
   list-style: none;
@@ -369,8 +367,8 @@
   padding: 3px;
   display: flex;
   align-items: stretch;
-  gap: 4px;
-  height: 56px;
+  gap: 6px;
+  height: 50px;
 }
 .pn-item {
   display: flex;
@@ -385,7 +383,7 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  padding: 0 24px;
+  padding: 0 22px;
   border-radius: 999px;
   background: #F5F2EF;
   text-decoration: none;
@@ -454,20 +452,20 @@
 .pn-actions {
   display: flex;
   align-items: center;
-  gap: .4rem;
-  margin-left: .25rem;
+  gap: .5rem;
+  flex-shrink: 0;
 }
 .pn-biz {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 50px;
-  padding: 0 24px;
+  height: 44px;
+  padding: 0 22px;
   border-radius: 999px;
   background: #1A1A1A;
   color: #fff;
   font-family: var(--font-nunito), sans-serif;
-  font-size: .88rem;
+  font-size: .82rem;
   font-weight: 800;
   text-decoration: none;
   white-space: nowrap;
@@ -485,8 +483,8 @@
 .pn-right {
   display: flex;
   align-items: center;
-  gap: .4rem;
-  margin-left: .25rem;
+  gap: .5rem;
+  flex-shrink: 0;
 }
 
 /* ── Burger (mobile) ── */
@@ -521,9 +519,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: .5rem;
-  height: 50px;
-  padding: 0 24px;
+  gap: .4rem;
+  height: 44px;
+  padding: 0 18px;
   border-radius: 999px;
   border: none;
   background: #F5F2EF;
@@ -787,11 +785,7 @@
   .pn-nav { display: none }
   .pn-actions { display: none }
   .pn-burger { display: flex }
-  .pn-bar {
-    width: 100%;
-    justify-content: space-between;
-    padding: 0 .65rem;
-  }
+  .pn-bar { justify-content: space-between }
   .pn-search { max-width: 100% }
   .pn-sectors { display: none }
   .pn-search-row { justify-content: center }
@@ -799,13 +793,9 @@
 
 /* Mobile */
 @media (max-width: 768px) {
-  .pn-header {
-    padding: .5rem .75rem;
-    gap: .3rem;
-  }
   .pn-bar {
     height: 52px;
-    padding: 0 .5rem;
+    padding: 0 .75rem;
   }
   .pn-logo img {
     height: 34px;
@@ -849,13 +839,9 @@
 
 /* Small phones */
 @media (max-width: 480px) {
-  .pn-header {
-    padding: .4rem .5rem;
-    gap: .25rem;
-  }
   .pn-bar {
     height: 46px;
-    padding: 0 .35rem;
+    padding: 0 .5rem;
   }
   .pn-logo img {
     height: 28px;
@@ -878,6 +864,7 @@
   .pn-bar {
     height: 42px;
     gap: .25rem;
+    padding: 0 .4rem;
   }
   .pn-logo img { height: 24px }
   .pn-search { height: 36px }

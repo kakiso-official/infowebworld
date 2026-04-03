@@ -206,10 +206,12 @@ export default function SectorAllBrowse({ sectorSlug }: { sectorSlug: string }) 
               style={{ '--sc-pastel': meta.pastel, '--sc': meta.color } as React.CSSProperties}
             >
               <Link href={`/category/${l2.slug}`} className="cb-sector-hd">
-                <h2 className="cb-sector-name">{l2.name}</h2>
-                {l2.l3Count > 0 && (
-                  <span className="cb-sector-count">{l2.l3Count}</span>
-                )}
+                <h2 className="cb-sector-name">
+                  {l2.name}
+                  {l2.l3Count > 0 && (
+                    <span className="cb-sector-count">{l2.l3Count}</span>
+                  )}
+                </h2>
               </Link>
 
               {l2.children.length > 0 && (
