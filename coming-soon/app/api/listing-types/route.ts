@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
 
     let sql = `SELECT id, category_id AS categoryId, name, slug
                FROM listing_types
-               WHERE is_active = 1`
+               WHERE 1=1`
     const params: (string | number)[] = []
 
     if (categoryId) {
