@@ -7,7 +7,7 @@ import { SearchVisualIcon, Cancel01Icon, ArrowRight01Icon } from '@hugeicons/cor
 type CategoryResult = {
   id: number; name: string; slug: string; level: number;
   color: string; icon: string; parent_name: string | null;
-  listing_count: number
+  listing_count: number; sector_slug: string | null
 }
 type ListingResult = {
   id: number; slug: string; company_name: string; tagline: string;
@@ -117,7 +117,7 @@ export default function GlobalSearch({ placeholder = 'Search businesses, tools, 
             <div className="gs-section">
               <div className="gs-section-label">Categories</div>
               {results!.categories.map(cat => (
-                <Link key={cat.id} href={`/${cat.slug}`} className="gs-row" onClick={close}>
+                <Link key={cat.id} href={cat.sector_slug ? `/${cat.sector_slug}/${cat.slug}` : `/${cat.slug}`} className="gs-row" onClick={close}>
                   <span className="gs-row-dot" style={{ background: cat.color || '#E8553D' }} />
                   <span className="gs-row-name">{hl(cat.name)}</span>
                   {cat.parent_name && <span className="gs-row-trail">{cat.parent_name}</span>}

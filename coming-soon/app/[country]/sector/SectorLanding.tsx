@@ -102,7 +102,7 @@ export default function SectorLanding({ category, allCategories }: { category: C
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
 
-      <SectorHero category={category} meta={meta} sectorName={sectorName} shortName={shortName} l2Cats={l2Cats} l3Cats={l3Cats} demos={demos} listings={listings} />
+      <SectorHero category={category} meta={meta} sectorName={sectorName} shortName={shortName} l2Cats={l2Cats} l3Cats={l3Cats} demos={demos} listings={listings} sectorSlug={category.slug} />
 
       <SectorSection title="Just Landed" subtitle={`New companies recently listed in ${shortName}`} iconKey="rocket" viewAll={`/${category.slug}`}>
         <CardGrid items={pickJustLanded(demos)} />
@@ -118,7 +118,7 @@ export default function SectorLanding({ category, allCategories }: { category: C
 
       <SectorSection title="Popular Categories" subtitle={`Explore ${sectorName} by category`} iconKey="grid" viewAll="/categories" alt>
         <div className="sl-cats-grid">
-          {l2WithCounts.map(c => <CategoryCard key={c.slug} cat={c} color={meta.color} />)}
+          {l2WithCounts.map(c => <CategoryCard key={c.slug} cat={c} color={meta.color} sectorSlug={category.slug} />)}
         </div>
       </SectorSection>
 
@@ -159,7 +159,7 @@ export default function SectorLanding({ category, allCategories }: { category: C
             </div>
           </div>
           <div className="sl-chips">
-            {l3Cats.map(c => <Link key={c.id} href={`/${c.slug}`} className="sl-chip">{c.name}</Link>)}
+            {l3Cats.map(c => <Link key={c.id} href={`/${category.slug}/${c.slug}`} className="sl-chip">{c.name}</Link>)}
           </div>
         </div>
       </div>

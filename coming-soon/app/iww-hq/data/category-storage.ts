@@ -25,6 +25,7 @@ export type Category = {
   seoNoIndex: boolean
   parentName?: string
   parentSlug?: string
+  sectorSlug?: string
   subcategories?: Category[]
   listingTypes?: { id: string; name: string; slug: string }[]
   createdAt: string
@@ -60,6 +61,7 @@ function mapRow(r: Record<string, unknown>): Category {
     seoNoIndex: !!(r.seo_no_index ?? false),
     parentName: r.parent_name ? String(r.parent_name) : undefined,
     parentSlug: r.parent_slug ? String(r.parent_slug) : undefined,
+    sectorSlug: r.sector_slug ? String(r.sector_slug) : undefined,
     subcategories: undefined,
     createdAt: String(r.created_at ?? new Date().toISOString()),
     updatedAt: String(r.updated_at ?? new Date().toISOString()),

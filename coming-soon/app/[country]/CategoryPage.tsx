@@ -41,7 +41,7 @@ const sampleListings: DemoListing[] = [
 
 const ITEMS_PER_PAGE = 10
 
-export default function CategoryPage({ segments }: { segments?: string[] }) {
+export default function CategoryPage({ segments, sectorSlug }: { segments?: string[]; sectorSlug?: string }) {
   const router = useRouter()
   const siteCountry = useCountry()
   const slug = segments?.[0] || null
@@ -100,7 +100,7 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
     // If state removed, clear city
     if (!merged.state) { merged.city = null }
     const routeGeo = ROUTE_TO_GEO_SLUG[siteCountry]
-    const url = buildCategoryUrl(merged, routeGeo)
+    const url = buildCategoryUrl(merged, routeGeo, sectorSlug)
     const prefix = siteCountry === ROOT_COUNTRY ? '' : `/${siteCountry}`
     router.push(`${prefix}${url}`, { scroll: false })
   }, [slug, locationCountry, locationState, locationCity, selectedListingType, selectedTags, siteCountry, router])
@@ -158,7 +158,12 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
       { '@type': 'ListItem', position: 2, name: 'Categories', item: 'https://infowebworld.com/categories' },
     ]
     let pos = 3
-    if (category.parentName && category.parentSlug) items.push({ '@type': 'ListItem', position: pos++, name: category.parentName, item: `https://infowebworld.com/${category.parentSlug}` })
+    if (category.parentName && category.parentSlug) {
+      const parentUrl = category.level === 3 && sectorSlug
+        ? `https://infowebworld.com/${sectorSlug}/${category.parentSlug}`
+        : `https://infowebworld.com/${category.parentSlug}`
+      items.push({ '@type': 'ListItem', position: pos++, name: category.parentName, item: parentUrl })
+    }
     items.push({ '@type': 'ListItem', position: pos, name: category.name })
 
     const desc = category.seoDescription || category.description || `Explore top ${category.name} businesses on InfoWebWorld.`
@@ -272,8 +277,9 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
   const popularSearches = useMemo(() => {
     if (!category) return []
     const pills: { name: string; href: string }[] = []
-    for (const sc of (category.subcategories || []).slice(0, 8)) pills.push({ name: sc.name, href: `/${sc.slug}` })
-    for (const lt of (category.listingTypes || []).slice(0, 4)) pills.push({ name: lt.name, href: `/${category.slug}?type=${lt.slug}` })
+    const sp = sectorSlug ? `/${sectorSlug}` : ''
+    for (const sc of (category.subcategories || []).slice(0, 8)) pills.push({ name: sc.name, href: `${sp}/${sc.slug}` })
+    for (const lt of (category.listingTypes || []).slice(0, 4)) pills.push({ name: lt.name, href: `${sp}/${category.slug}?type=${lt.slug}` })
     return pills
   }, [category])
 
@@ -340,6 +346,7 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
 
         <CategoryHero
           category={c}
+          sectorSlug={sectorSlug}
           locationCountry={locationCountry}
           locationState={locationState}
           locationCity={locationCity}
@@ -347,7 +354,7 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
           onStateChange={handleStateChange}
           onCityChange={handleCityChange}
         />
-        <SubcategoryChips subcategories={subcats} />
+        <SubcategoryChips subcategories={subcats} sectorSlug={sectorSlug} />
 
         {/* Filter pills row (mobile) */}
         {showFilters && (

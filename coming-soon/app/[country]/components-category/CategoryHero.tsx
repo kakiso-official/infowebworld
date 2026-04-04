@@ -18,6 +18,7 @@ import { I, ic } from './icons'
 
 type Props = {
   category: Category
+  sectorSlug?: string
   locationCountry: GeoCountry | null
   locationState: GeoState | null
   locationCity: GeoCity | null
@@ -181,7 +182,7 @@ function generateCategoryDesc(
   return templates[pick % templates.length]
 }
 
-export default function CategoryHero({ category: c, locationCountry, locationState, locationCity, onLocationCountryChange, onStateChange, onCityChange }: Props) {
+export default function CategoryHero({ category: c, sectorSlug, locationCountry, locationState, locationCity, onLocationCountryChange, onStateChange, onCityChange }: Props) {
   const siteCountry = useCountry()
 
   /* Only one dropdown open at a time */
@@ -253,7 +254,7 @@ export default function CategoryHero({ category: c, locationCountry, locationSta
         {c.parentName && c.parentSlug && (
           <>
             <span className="cd-breadcrumb-sep">&gt;</span>
-            <Link href={`/${c.parentSlug}`}>{c.parentName}</Link>
+            <Link href={c.level === 3 && sectorSlug ? `/${sectorSlug}/${c.parentSlug}` : `/${c.parentSlug}`}>{c.parentName}</Link>
           </>
         )}
         <span className="cd-breadcrumb-sep">&gt;</span>

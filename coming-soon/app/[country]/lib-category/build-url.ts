@@ -13,8 +13,9 @@ import type { ParsedCategoryFilters } from './parse-segments'
 export function buildCategoryUrl(
   filters: Partial<ParsedCategoryFilters> & { categorySlug: string },
   routeCountryGeoSlug?: string,
+  sectorSlug?: string,
 ): string {
-  const parts = ['', filters.categorySlug]
+  const parts = sectorSlug ? ['', sectorSlug, filters.categorySlug] : ['', filters.categorySlug]
 
   if (filters.locationCountry) {
     // Skip the country segment if it matches the route country prefix

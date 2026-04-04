@@ -198,7 +198,7 @@ function buildJsonLd(listing: ListingRow, breadcrumb: BreadcrumbItem[]) {
       '@type': 'ListItem',
       position: i + 3,
       name: bc.name,
-      item: `https://infowebworld.com/${bc.slug}`,
+      item: i === 0 ? `https://infowebworld.com/${bc.slug}` : `https://infowebworld.com/${breadcrumb[0].slug}/${bc.slug}`,
     })),
     { '@type': 'ListItem', position: breadcrumb.length + 3, name: companyName },
   ]

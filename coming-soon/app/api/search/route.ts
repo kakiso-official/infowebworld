@@ -17,13 +17,15 @@ export async function GET(req: Request) {
       id: number; name: string; slug: string; level: number;
       color: string; icon: string; description: string;
       parent_name: string | null; parent_slug: string | null;
-      listing_count: number
+      sector_slug: string | null; listing_count: number
     }>(
       `SELECT c.id, c.name, c.slug, c.level, c.color, c.icon, c.description,
               c.listing_count,
-              p.name AS parent_name, p.slug AS parent_slug
+              p.name AS parent_name, p.slug AS parent_slug,
+              CASE WHEN c.level = 1 THEN c.slug WHEN c.level = 2 THEN p.slug WHEN c.level = 3 THEN gp.slug END AS sector_slug
        FROM categories c
        LEFT JOIN categories p ON p.id = c.parent_id
+       LEFT JOIN categories gp ON gp.id = p.parent_id
        WHERE c.is_launched = 1 AND c.is_navigation = 1
          AND (c.name LIKE ? OR c.description LIKE ?)
        ORDER BY

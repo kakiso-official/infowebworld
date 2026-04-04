@@ -2,8 +2,9 @@ import Link from '../../components/CountryLink'
 
 type Sub = { id: string; slug: string; name: string; listingCount: number }
 
-export default function SubcategoryChips({ subcategories }: { subcategories: Sub[] }) {
+export default function SubcategoryChips({ subcategories, sectorSlug }: { subcategories: Sub[]; sectorSlug?: string }) {
   if (!subcategories.length) return null
+  const sp = sectorSlug ? `/${sectorSlug}` : ''
   return (
     <div className="cd-subcats">
       <h3 className="cd-subcats-label">Subcategories</h3>
@@ -11,7 +12,7 @@ export default function SubcategoryChips({ subcategories }: { subcategories: Sub
         {subcategories.map(sc => (
           <Link
             key={sc.id}
-            href={`/${sc.slug}`}
+            href={`${sp}/${sc.slug}`}
             className="cd-subcat-chip"
           >
             {sc.name}

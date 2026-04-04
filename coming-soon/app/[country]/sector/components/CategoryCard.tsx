@@ -7,11 +7,12 @@ import HIcon from './HIcon'
 type Props = {
   cat: { name: string; slug: string; listingCount: number; childCount: number; icon?: string }
   color: string
+  sectorSlug?: string
 }
 
-export default function CategoryCard({ cat, color }: Props) {
+export default function CategoryCard({ cat, color, sectorSlug }: Props) {
   return (
-    <Link href={`/${cat.slug}`} className="sl-cat">
+    <Link href={sectorSlug ? `/${sectorSlug}/${cat.slug}` : `/${cat.slug}`} className="sl-cat">
       <div className="sl-cat-icon" style={{ background: `${color}14` }}>
         <HIcon name={cat.icon || 'grid'} size={22} color={color} />
       </div>

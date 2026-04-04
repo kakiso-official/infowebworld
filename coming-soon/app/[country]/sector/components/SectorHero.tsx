@@ -32,9 +32,10 @@ const catHomes = [
 type Props = {
   category: Category; meta: SectorMeta; sectorName: string; shortName: string
   l2Cats: Category[]; l3Cats: Category[]; demos: SectorDemo[]; listings: RealSubmission[]
+  sectorSlug: string
 }
 
-export default function SectorHero({ category, meta, sectorName, shortName, l2Cats, l3Cats, demos, listings }: Props) {
+export default function SectorHero({ category, meta, sectorName, shortName, l2Cats, l3Cats, demos, listings, sectorSlug }: Props) {
   const router = useRouter()
   const country = useCountry()
 
@@ -139,7 +140,7 @@ export default function SectorHero({ category, meta, sectorName, shortName, l2Ca
 
   const handleSearch = (e: React.FormEvent) => { e.preventDefault(); setFocused(true) }
   const goToResult = (slug: string) => { setFocused(false); router.push(slug ? `/${country}/company/${slug}` : `/${country}/business`) }
-  const goToCategory = (slug: string) => { setFocused(false); router.push(`/${country}/${slug}`) }
+  const goToCategory = (slug: string) => { setFocused(false); router.push(`/${country}/${sectorSlug}/${slug}`) }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (!showDropdown) return
@@ -218,7 +219,7 @@ export default function SectorHero({ category, meta, sectorName, shortName, l2Ca
   const catUp = (_e: React.PointerEvent, i: number) => {
     const p = catP.current[i]; p.drag = false
     catEls.current[i]?.classList.remove('hero-cat--grab')
-    if (!p.moved) router.push(`/${country}/${heroCats[i].slug}`)
+    if (!p.moved) router.push(`/${country}/${sectorSlug}/${heroCats[i].slug}`)
   }
 
   /* ── 3D swipeable card stack ── */

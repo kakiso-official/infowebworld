@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import CategoryPage from '../CategoryPage'
@@ -28,6 +29,27 @@ const DOMAIN = 'https://infowebworld.com'
 function canonicalUrl(country: string, path: string) {
   const prefix = country === ROOT_COUNTRY ? '' : `/${country}`
   return `${DOMAIN}${prefix}${path}`
+}
+
+/* ── Look up L1 sector slug for any category (L1/L2/L3) ── */
+async function getSectorSlugForCategory(categorySlug: string): Promise<string | null> {
+  try {
+    const row = await queryOne(
+      `SELECT
+        CASE
+          WHEN c.level = 1 THEN c.slug
+          WHEN c.level = 2 THEN p.slug
+          WHEN c.level = 3 THEN gp.slug
+        END as sector_slug
+      FROM categories c
+      LEFT JOIN categories p ON p.id = c.parent_id
+      LEFT JOIN categories gp ON gp.id = p.parent_id
+      WHERE c.slug = ? AND c.is_active = 1
+      LIMIT 1`,
+      [categorySlug]
+    )
+    return row?.sector_slug ? String(row.sector_slug) : null
+  } catch { return null }
 }
 
 /* ── Fetch category from DB for SEO (server-side only) ── */
@@ -102,7 +124,7 @@ async function fetchCategoryForSeo(slug: string): Promise<CatSeo | null> {
 }
 
 /* ── Build metadata for L2/L3 categories ── */
-function buildCategoryMeta(cat: CatSeo, country: string, countryName: string, monthYear: string): Metadata {
+function buildCategoryMeta(cat: CatSeo, country: string, countryName: string, monthYear: string, sectorSlug: string): Metadata {
   const baseName = cat.seoTitle || cat.name
   const levelLabel = cat.level === 2 ? 'Software & Services' : 'Tools & Solutions'
   const title = `Best ${baseName} ${levelLabel} in ${countryName} ${monthYear} | InfoWebWorld`
@@ -114,7 +136,7 @@ function buildCategoryMeta(cat: CatSeo, country: string, countryName: string, mo
     ? `${baseDesc} Compare ${listingText}${subText} in ${countryName}. Updated ${monthYear}.`
     : `Discover and compare the best ${baseName} companies in ${countryName}. Browse ${listingText}${subText}, read reviews, and find the right solution. Updated ${monthYear}. InfoWebWorld.com`
 
-  const url = canonicalUrl(country, `/${cat.slug}`)
+  const url = canonicalUrl(country, `/${sectorSlug}/${cat.slug}`)
   const ogImage = cat.seoOgImage || cat.coverImage || `${DOMAIN}/og-image.png`
 
   // Merge DB keywords + auto-generated
@@ -153,10 +175,10 @@ function buildCategoryMeta(cat: CatSeo, country: string, countryName: string, mo
 }
 
 /* ── Build JSON-LD schemas for L2/L3 categories ── */
-function buildJsonLd(cat: CatSeo, country: string, countryName: string, monthYear: string) {
+function buildJsonLd(cat: CatSeo, country: string, countryName: string, monthYear: string, sectorSlug: string) {
   const baseName = cat.seoTitle || cat.name
   const baseDesc = cat.seoDescription || cat.description
-  const url = canonicalUrl(country, `/${cat.slug}`)
+  const url = canonicalUrl(country, `/${sectorSlug}/${cat.slug}`)
 
   // BreadcrumbList
   const bcItems: Record<string, unknown>[] = [
@@ -165,10 +187,15 @@ function buildJsonLd(cat: CatSeo, country: string, countryName: string, monthYea
   ]
   let pos = 3
   if (cat.parentName && cat.parentSlug) {
+    // If parent is L1 (cat.level === 2), link directly to /{parentSlug}
+    // If parent is L2 (cat.level === 3), link to /{sectorSlug}/{parentSlug}
+    const parentUrl = cat.level === 2
+      ? canonicalUrl(country, `/${cat.parentSlug}`)
+      : canonicalUrl(country, `/${sectorSlug}/${cat.parentSlug}`)
     bcItems.push({
       '@type': 'ListItem', position: pos++,
       name: cat.parentName,
-      item: canonicalUrl(country, `/${cat.parentSlug}`),
+      item: parentUrl,
     })
   }
   bcItems.push({ '@type': 'ListItem', position: pos, name: cat.name })
@@ -242,6 +269,14 @@ export async function generateMetadata({
   const countryName = COUNTRY_LABELS[country as CountryCode] || 'United States'
   const monthYear = currentMonthYear()
 
+  // Determine actual category slug: if first segment is L1 and there's a second, category is segments[1]
+  let categorySlug = slug
+  let sectorSlug = ''
+  if (L1_SLUGS.has(slug) && segments.length >= 2 && segments[1] !== 'all') {
+    sectorSlug = slug
+    categorySlug = segments[1]
+  }
+
   /* ── /all page — sector categories browse ── */
   if (segments.length === 2 && segments[1] === 'all' && L1_SLUGS.has(slug)) {
     const meta = getSectorMeta(slug)
@@ -257,8 +292,8 @@ export async function generateMetadata({
     }
   }
 
-  /* ── L1 Sectors — hardcoded rich meta ── */
-  if (L1_SLUGS.has(slug)) {
+  /* ── L1 Sectors — hardcoded rich meta (only when L1 is the sole segment) ── */
+  if (L1_SLUGS.has(slug) && segments.length === 1) {
     const meta = getSectorMeta(slug)
     const title = `Best ${meta.seoTitle} in ${countryName} ${monthYear} | InfoWebWorld`
     const description = `${meta.seoDescription} Compare the best in ${countryName}, ${monthYear}. InfoWebWorld.com`
@@ -288,10 +323,15 @@ export async function generateMetadata({
   }
 
   /* ── L2 / L3 — fetch from DB ── */
-  const cat = await fetchCategoryForSeo(slug)
+  const cat = await fetchCategoryForSeo(categorySlug)
   if (!cat) return {}
 
-  return buildCategoryMeta(cat, country, countryName, monthYear)
+  // If no sectorSlug yet (old URL without L1 prefix), look it up from DB
+  if (!sectorSlug) {
+    sectorSlug = (await getSectorSlugForCategory(categorySlug)) || ''
+  }
+
+  return buildCategoryMeta(cat, country, countryName, monthYear, sectorSlug)
 }
 
 /* ════════════════════════════════════════
@@ -307,6 +347,23 @@ export default async function CategoryDetailRoute({
   const countryName = COUNTRY_LABELS[country as CountryCode] || 'United States'
   const monthYear = currentMonthYear()
 
+  // Determine actual category slug and sector prefix
+  let categorySlug = slug || ''
+  let sectorSlug = ''
+  if (slug && L1_SLUGS.has(slug) && segments.length >= 2 && segments[1] !== 'all') {
+    sectorSlug = slug
+    categorySlug = segments[1]
+  }
+
+  /* ── Redirect old URLs without L1 prefix to new prefixed URLs ── */
+  if (slug && !L1_SLUGS.has(segments[0])) {
+    const sector = await getSectorSlugForCategory(segments[0])
+    if (sector) {
+      const prefix = country === ROOT_COUNTRY ? '' : `/${country}`
+      redirect(`${prefix}/${sector}/${segments.join('/')}`)
+    }
+  }
+
   /* ── /all page — render sector browse ── */
   if (segments.length === 2 && segments[1] === 'all' && slug && L1_SLUGS.has(slug)) {
     return (
@@ -321,10 +378,12 @@ export default async function CategoryDetailRoute({
   // JSON-LD for L1 sectors (rendered via SectorLanding's own useEffect)
   // JSON-LD for L2/L3 — inject server-side via <script> tags
   let jsonLdScripts: React.ReactNode = null
-  if (slug && !L1_SLUGS.has(slug)) {
-    const cat = await fetchCategoryForSeo(slug)
+  if (categorySlug && !L1_SLUGS.has(categorySlug)) {
+    const cat = await fetchCategoryForSeo(categorySlug)
     if (cat) {
-      const schemas = buildJsonLd(cat, country, countryName, monthYear)
+      // If no sectorSlug yet, look it up from DB
+      const resolvedSector = sectorSlug || (await getSectorSlugForCategory(categorySlug)) || ''
+      const schemas = buildJsonLd(cat, country, countryName, monthYear, resolvedSector)
       jsonLdScripts = (
         <>
           <script
@@ -345,11 +404,17 @@ export default async function CategoryDetailRoute({
   }
 
   const isSector = slug && L1_SLUGS.has(slug) && segments.length === 1
+  const navSector = sectorSlug || (isSector ? slug : undefined)
   return (
     <>
       {jsonLdScripts}
-      <Navbar sectorSlug={isSector ? slug : undefined} />
-      <Suspense><CategoryPage segments={segments} /></Suspense>
+      <Navbar sectorSlug={navSector} />
+      <Suspense>
+        <CategoryPage
+          segments={L1_SLUGS.has(segments[0]) && segments.length > 1 ? segments.slice(1) : segments}
+          sectorSlug={sectorSlug || slug || ''}
+        />
+      </Suspense>
       <Footer />
     </>
   )

@@ -72,12 +72,12 @@ export default function CategoriesBrowse() {
       .sort((a, b) => a.level - b.level || a.name.localeCompare(b.name))
   }, [categories, search])
 
-  /* All L2 nodes enriched with parent sector meta */
+  /* All L2 nodes enriched with parent sector meta + sector slug */
   const allL2 = useMemo(() => {
-    const out: (CatNode & { parentMeta: ReturnType<typeof sectorMeta> })[] = []
+    const out: (CatNode & { parentMeta: ReturnType<typeof sectorMeta>; parentSlug: string })[] = []
     tree.forEach(sector => {
       const meta = sectorMeta(sector.name)
-      sector.children.forEach(l2 => out.push({ ...l2, parentMeta: meta }))
+      sector.children.forEach(l2 => out.push({ ...l2, parentMeta: meta, parentSlug: sector.slug }))
     })
     return out
   }, [tree])
@@ -150,7 +150,7 @@ export default function CategoriesBrowse() {
                       const parent = categories.find(c => c.id === cat.parentId)
                       const trail = parent ? parent.name : ''
                       return (
-                        <Link key={cat.id} href={`/${cat.slug}`} className="cb-dropdown-row">
+                        <Link key={cat.id} href={cat.sectorSlug ? `/${cat.sectorSlug}/${cat.slug}` : `/${cat.slug}`} className="cb-dropdown-row">
                           <HIcon name="externalLink" size={14} />
                           <span className="cb-dropdown-name">{cat.name}</span>
                           {trail && <span className="cb-dropdown-trail">{trail}</span>}
@@ -195,7 +195,7 @@ export default function CategoriesBrowse() {
                     {sector.children.map(child => (
                       <Link
                         key={child.id}
-                        href={`/${child.slug}`}
+                        href={`/${sector.slug}/${child.slug}`}
                         className="cb-sector-row"
                       >
                         {child.name}
@@ -218,14 +218,14 @@ export default function CategoriesBrowse() {
                 className="cb-cat"
                 style={{ '--sc-pastel': cat.parentMeta.pastel, '--sc': cat.parentMeta.color } as React.CSSProperties}
               >
-                <Link href={`/${cat.slug}`} className="cb-cat-hd">
+                <Link href={`/${cat.parentSlug}/${cat.slug}`} className="cb-cat-hd">
                   <h3 className="cb-cat-name">{cat.name}</h3>
                 </Link>
 
                 {cat.children.length > 0 && (
                   <div className="cb-cat-body">
                     {cat.children.map(child => (
-                      <Link key={child.id} href={`/${child.slug}`} className="cb-cat-row">
+                      <Link key={child.id} href={`/${cat.parentSlug}/${child.slug}`} className="cb-cat-row">
                         {child.name}
                       </Link>
                     ))}

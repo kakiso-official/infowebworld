@@ -204,12 +204,16 @@ export default function ListingDetailPage({ slug: slugProp, initialData }: { slu
               <Link href="/" className="ld-crumb"><I d={ic.home} size={10} sw={2} /> Home</Link>
               <span className="ld-crumb-sep">/</span>
               <Link href="/categories" className="ld-crumb">Categories</Link>
-              {breadcrumb.map((bc, i) => (
-                <span key={i} style={{ display: 'contents' }}>
-                  <span className="ld-crumb-sep">/</span>
-                  <Link href={`/${bc.slug}`} className="ld-crumb ld-crumb--cat" style={{ color, background: `${color}14` }}>{bc.name}</Link>
-                </span>
-              ))}
+              {breadcrumb.map((bc, i) => {
+                const sectorSlug = breadcrumb[0]?.slug
+                const bcHref = i === 0 ? `/${bc.slug}` : `/${sectorSlug}/${bc.slug}`
+                return (
+                  <span key={i} style={{ display: 'contents' }}>
+                    <span className="ld-crumb-sep">/</span>
+                    <Link href={bcHref} className="ld-crumb ld-crumb--cat" style={{ color, background: `${color}14` }}>{bc.name}</Link>
+                  </span>
+                )
+              })}
               <span className="ld-crumb-sep">/</span>
               <span className="ld-crumb ld-crumb--current">{L.companyName}</span>
             </nav>
