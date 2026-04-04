@@ -103,7 +103,7 @@ export default function CategoryPage({ segments, sectorSlug }: { segments?: stri
     const url = buildCategoryUrl(merged, routeGeo, sectorSlug)
     const prefix = siteCountry === ROOT_COUNTRY ? '' : `/${siteCountry}`
     router.push(`${prefix}${url}`, { scroll: false })
-  }, [slug, locationCountry, locationState, locationCity, selectedListingType, selectedTags, siteCountry, router])
+  }, [slug, locationCountry, locationState, locationCity, selectedListingType, selectedTags, siteCountry, sectorSlug, router])
 
   /* ── Data fetching — ALL in parallel ── */
   useEffect(() => {
@@ -229,6 +229,11 @@ export default function CategoryPage({ segments, sectorSlug }: { segments?: stri
     setLocationCity(c); setPage(1)
     pushFilters({ locationCountry: country, city: c })
   }
+  /* ── Atomic location change (country+state+city at once) — used by search bar ── */
+  const handleLocationChange = useCallback((country: GeoCountry | null, state: GeoState | null, city: GeoCity | null) => {
+    setLocationCountry(country); setLocationState(state); setLocationCity(city); setPage(1)
+    pushFilters({ locationCountry: country, state, city })
+  }, [pushFilters])
 
   /* ── Filtering ── */
   const filteredDemo = useMemo(() => {
@@ -353,6 +358,7 @@ export default function CategoryPage({ segments, sectorSlug }: { segments?: stri
           onLocationCountryChange={handleLocationCountryChange}
           onStateChange={handleStateChange}
           onCityChange={handleCityChange}
+          onLocationChange={handleLocationChange}
         />
         <SubcategoryChips subcategories={subcats} sectorSlug={sectorSlug} />
 

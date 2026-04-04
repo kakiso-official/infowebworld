@@ -1,4 +1,4 @@
-import { Country, State, City } from 'country-state-city'
+import { Country, State, City, type ICity } from 'country-state-city'
 
 /* ── Slug helper ── */
 export function toSlug(name: string): string {
@@ -62,4 +62,29 @@ export function getCities(countryIso: string, stateCode: string): Map<string, Ge
 
 export function lookupCity(countryIso: string, stateCode: string, slug: string): GeoCity | null {
   return getCities(countryIso, stateCode).get(slug) || null
+}
+
+/* ── Global search helpers ── */
+let _allStatesArr: { name: string; slug: string; stateCode: string; isoCode: string; countryName: string }[] | null = null
+let _allCitiesArr: ICity[] | null = null
+
+export function getAllStatesArray() {
+  if (_allStatesArr) return _allStatesArr
+  const countriesMap = getLocationCountries()
+  const countryByIso = new Map<string, string>()
+  countriesMap.forEach(c => countryByIso.set(c.isoCode, c.name))
+  _allStatesArr = State.getAllStates().map(s => ({
+    name: s.name,
+    slug: toSlug(s.name),
+    stateCode: s.isoCode,
+    isoCode: s.countryCode,
+    countryName: countryByIso.get(s.countryCode) || s.countryCode,
+  }))
+  return _allStatesArr
+}
+
+export function getAllCitiesArray(): ICity[] {
+  if (_allCitiesArr) return _allCitiesArr
+  _allCitiesArr = City.getAllCities()
+  return _allCitiesArr
 }
