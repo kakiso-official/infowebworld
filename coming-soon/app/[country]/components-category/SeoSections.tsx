@@ -52,15 +52,22 @@ function parseInternalLinks(text: string, sectorSlug: string) {
   return parts.length ? parts : text
 }
 
+function jp(val: unknown) {
+  if (!val) return null
+  if (typeof val === 'object') return val
+  if (typeof val === 'string') { try { return JSON.parse(val) } catch { return null } }
+  return null
+}
+
 export default function SeoSections({ seoContent: sc, categoryName, categorySlug, sectorSlug, countryName, allCategories, topCities }: Props) {
   if (!sc) return null
 
-  const bg = sc.buyers_guide
-  const useCases = sc.use_cases
-  const comps = sc.comparisons
-  const kw = sc.long_tail_keywords
-  const faq = sc.extended_faq
-  const compCats = sc.complementary_categories
+  const bg = jp(sc.buyers_guide) as any
+  const useCases = jp(sc.use_cases) as any[]
+  const comps = jp(sc.comparisons) as any[]
+  const kw = jp(sc.long_tail_keywords) as any
+  const faq = jp(sc.extended_faq) as any[]
+  const compCats = jp(sc.complementary_categories) as string[]
 
   // Find matching categories for internal linking
   const findCatSlug = (name: string) => {
