@@ -614,8 +614,8 @@
 .cd-hero { margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1.5px solid var(--h-border-light); min-height: 160px }
 .cd-hero-title { font-family: var(--font-bricolage), sans-serif; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800; color: #000; line-height: 1.1; letter-spacing: -.025em; margin-bottom: .5rem }
 .cd-hero-desc { font-family: var(--font-nunito), sans-serif; font-size: clamp(.85rem, 1.8vw, .95rem); color: #000; line-height: 1.7; max-width: 640px; margin-bottom: 1rem }
-/* Server-side skeleton — full semantic HTML visible to crawlers, hidden once client loads */
-.cd-server-skeleton { padding: 1.5rem var(--container-px, 1.5rem) 2rem; max-width: 1200px; margin: 0 auto }
+/* Server-side skeleton — in DOM for crawlers (H1, H2, FAQ), visually hidden for users */
+.cd-server-skeleton { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0 }
 .cd-server-breadcrumb { font-family: var(--font-nunito), sans-serif; font-size: .78rem; color: var(--h-muted); margin-bottom: .75rem }
 .cd-server-breadcrumb a { color: var(--h-muted); text-decoration: none }
 .cd-server-breadcrumb a:hover { color: var(--h-accent) }

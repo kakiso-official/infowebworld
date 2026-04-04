@@ -19,5 +19,5 @@ export default function CountryLink({ href, ...props }: LinkProps) {
   const prefixed = shouldPrefix(hrefStr)
     ? country === ROOT_COUNTRY ? hrefStr : `/${country}${hrefStr}`
     : hrefStr
-  return <Link href={prefixed} {...props} />
+  return <Link href={prefixed} target="_blank" rel="noopener noreferrer" {...props} />
 }

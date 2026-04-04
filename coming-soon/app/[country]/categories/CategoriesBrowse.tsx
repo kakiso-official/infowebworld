@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, useMemo } from 'react'
 import Link from '../../components/CountryLink'
-import { fetchLaunchedCategories } from '../../iww-hq/data/category-storage'
+import { fetchLaunchedCategories, mapRow } from '../../iww-hq/data/category-storage'
 import type { Category } from '../../iww-hq/data/category-storage'
 import HIcon from '../sector/components/HIcon'
 
@@ -52,14 +52,16 @@ function sectorMeta(name: string) {
    Component
    ═══════════════════════════════════════════ */
 
-export default function CategoriesBrowse() {
-  const [categories, setCategories] = useState<Category[]>([])
-  const [loading, setLoading] = useState(true)
+export default function CategoriesBrowse({ initialCategories }: { initialCategories?: Record<string, unknown>[] }) {
+  const initCats = useMemo(() => initialCategories?.map(r => mapRow(r)) ?? [], [initialCategories])
+  const [categories, setCategories] = useState<Category[]>(initCats)
+  const [loading, setLoading] = useState(!initialCategories?.length)
   const [search, setSearch] = useState('')
 
   useEffect(() => {
+    if (initialCategories?.length) { setLoading(false); return }
     fetchLaunchedCategories().then(setCategories).finally(() => setLoading(false))
-  }, [])
+  }, [initialCategories])
 
   const tree = useMemo(() => buildTree(categories), [categories])
 

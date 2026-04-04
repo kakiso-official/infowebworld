@@ -3,9 +3,9 @@ import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from '../components/CountryLink'
 import { useCountry } from '../config/country-context'
-import { fetchCategoryBySlug, fetchLaunchedCategories } from '../iww-hq/data/category-storage'
+import { fetchCategoryBySlug, fetchLaunchedCategories, mapRow as mapCategoryRow } from '../iww-hq/data/category-storage'
 import type { Category } from '../iww-hq/data/category-storage'
-import { fetchCategoryListings } from '../iww-hq/data/submissions-storage'
+import { fetchCategoryListings, mapRow as mapSubmissionRow } from '../iww-hq/data/submissions-storage'
 import type { RealSubmission } from '../iww-hq/data/submissions-storage'
 import { fetchAllTagGroups } from '../iww-hq/data/tag-storage'
 import type { TagGroup } from '../iww-hq/data/tag-storage'
@@ -41,19 +41,46 @@ const sampleListings: DemoListing[] = [
 
 const ITEMS_PER_PAGE = 10
 
-export default function CategoryPage({ segments, sectorSlug }: { segments?: string[]; sectorSlug?: string }) {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+type InitialData = {
+  category: any
+  allCategories: any[]
+  tagGroups: any[]
+  listings: any[]
+  listingTotal: number
+}
+
+export default function CategoryPage({ segments, sectorSlug, initialData }: { segments?: string[]; sectorSlug?: string; initialData?: InitialData }) {
   const router = useRouter()
   const siteCountry = useCountry()
   const slug = segments?.[0] || null
 
-  /* ── State ── */
-  const [category, setCategory] = useState<Category | null>(null)
-  const [allCats, setAllCats] = useState<Category[]>([])
-  const [related, setRelated] = useState<Category[]>([])
+  /* ── Process server-provided initial data ── */
+  const initCat = useMemo(() => {
+    if (!initialData?.category) return null
+    const raw = initialData.category
+    const cat = mapCategoryRow(raw)
+    if (typeof raw.activeListings === 'number') cat.listingCount = raw.activeListings
+    if (raw.parent) { cat.parentName = String(raw.parent.name || ''); cat.parentSlug = String(raw.parent.slug || '') }
+    if (Array.isArray(raw.subcategories)) cat.subcategories = raw.subcategories.map((s: Record<string, unknown>) => mapCategoryRow(s))
+    if (Array.isArray(raw.listingTypes)) cat.listingTypes = raw.listingTypes.map((lt: Record<string, unknown>) => ({ id: String(lt.id), name: String(lt.name), slug: String(lt.slug) }))
+    return cat
+  }, [initialData])
+  const initAllCats = useMemo(() => initialData?.allCategories?.map((r: Record<string, unknown>) => mapCategoryRow(r)) ?? [], [initialData])
+  const initListings = useMemo(() => initialData?.listings?.map((r: Record<string, unknown>) => mapSubmissionRow(r)) ?? [], [initialData])
+  const initTagGroups = useMemo(() => (initialData?.tagGroups ?? []) as TagGroup[], [initialData])
+
+  /* ── State — pre-populated from server data when available ── */
+  const [category, setCategory] = useState<Category | null>(initCat)
+  const [allCats, setAllCats] = useState<Category[]>(initAllCats)
+  const [related, setRelated] = useState<Category[]>(() => {
+    if (!initCat || !initAllCats.length) return []
+    return initAllCats.filter(c => c.id !== initCat.id && ((initCat.parentId && c.parentId === initCat.parentId) || (!initCat.parentId && c.level === initCat.level))).slice(0, 9)
+  })
   const [notFound, setNotFound] = useState(false)
-  const [listings, setListings] = useState<RealSubmission[]>([])
-  const [listingTotal, setListingTotal] = useState(0)
-  const [tagGroups, setTagGroups] = useState<TagGroup[]>([])
+  const [listings, setListings] = useState<RealSubmission[]>(initListings)
+  const [listingTotal, setListingTotal] = useState(initialData?.listingTotal ?? 0)
+  const [tagGroups, setTagGroups] = useState<TagGroup[]>(initTagGroups)
   const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set())
   const [selectedListingType, setSelectedListingType] = useState<string>('')
   const [sortBy, setSortBy] = useState<'newest' | 'name-az' | 'name-za'>('newest')
@@ -105,18 +132,12 @@ export default function CategoryPage({ segments, sectorSlug }: { segments?: stri
     router.push(`${prefix}${url}`, { scroll: false })
   }, [slug, locationCountry, locationState, locationCity, selectedListingType, selectedTags, siteCountry, sectorSlug, router])
 
-  /* ── Hide server skeleton once client content is ready ── */
-  useEffect(() => {
-    if (category) {
-      const el = document.querySelector('.cd-server-skeleton')
-      if (el) (el as HTMLElement).style.display = 'none'
-    }
-  }, [category])
-
-  /* ── Data fetching — ALL in parallel ── */
+  /* ── Data fetching — skip if server pre-loaded data ── */
   useEffect(() => {
     if (!slug) { setNotFound(true); return }
-    // Fire all 3 API calls simultaneously
+    // If server provided initial data, skip all client fetches
+    if (initialData && category) return
+
     const catP = fetchCategoryBySlug(slug)
     const relP = fetchLaunchedCategories()
     const tagP = fetchAllTagGroups()
@@ -124,7 +145,6 @@ export default function CategoryPage({ segments, sectorSlug }: { segments?: stri
     catP.then(cat => {
       if (!cat) { setNotFound(true); return }
       setCategory(cat)
-      // Fetch listings as soon as we have the category ID
       fetchCategoryListings(cat.id, 1).then(res => { setListings(res.data); setListingTotal(res.total) })
     })
     relP.then(all => {
@@ -134,6 +154,7 @@ export default function CategoryPage({ segments, sectorSlug }: { segments?: stri
       })
     })
     tagP.then(setTagGroups)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug])
 
   /* Re-fetch listings on page change */

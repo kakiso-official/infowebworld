@@ -56,7 +56,7 @@ function parseJson(val: unknown): unknown[] {
   return []
 }
 
-function mapRow(r: Record<string, unknown>): RealSubmission {
+export function mapRow(r: Record<string, unknown>): RealSubmission {
   return {
     id: String(r.id ?? ''),
     companyName: String(r.company_name ?? ''),

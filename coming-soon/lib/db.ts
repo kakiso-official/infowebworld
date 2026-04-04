@@ -10,7 +10,7 @@ function getPool() {
       database: process.env.DATABASE_NAME,
       user: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
-      connectionLimit: 5,
+      connectionLimit: 3,
       waitForConnections: true,
       connectTimeout: 10000,
       enableKeepAlive: true,

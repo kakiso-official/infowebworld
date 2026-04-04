@@ -35,7 +35,7 @@ export type Category = {
 const API = '/api'
 
 /** Map DB snake_case row to Category */
-function mapRow(r: Record<string, unknown>): Category {
+export function mapRow(r: Record<string, unknown>): Category {
   const seoKw = typeof r.seo_keywords === 'string' ? JSON.parse(r.seo_keywords || '[]') : (r.seo_keywords ?? [])
 
   return {

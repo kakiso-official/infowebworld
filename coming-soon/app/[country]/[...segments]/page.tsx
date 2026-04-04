@@ -8,7 +8,7 @@ import SectorAllBrowse from '../components-category/SectorAllBrowse'
 import { getSectorMeta } from '../sector/sector-demo-data'
 import { COUNTRY_LABELS, ROOT_COUNTRY } from '../../config/countries'
 import type { CountryCode } from '../../config/countries'
-import { queryOne } from '@/lib/db'
+import { query, queryOne } from '@/lib/db'
 
 /* ── Known L1 sector slugs ── */
 const L1_SLUGS = new Set([
@@ -123,6 +123,110 @@ async function fetchCategoryForSeo(slug: string): Promise<CatSeo | null> {
   }
 }
 
+/* ── Fetch ALL category page data server-side (replaces 4 client API calls) ── */
+async function fetchCategoryPageData(categorySlug: string) {
+  try {
+    // 1. Category by slug (with parent, subcategories, listing types, active count)
+    const catRow = await queryOne(
+      `SELECT c.*, p.name as parent_name, p.slug as parent_slug,
+              CASE WHEN c.level = 1 THEN c.slug WHEN c.level = 2 THEN p.slug WHEN c.level = 3 THEN gp.slug END as sector_slug
+       FROM categories c
+       LEFT JOIN categories p ON p.id = c.parent_id
+       LEFT JOIN categories gp ON gp.id = p.parent_id
+       WHERE c.slug = ? AND c.is_active = 1 LIMIT 1`,
+      [categorySlug]
+    )
+    if (!catRow) return null
+
+    const cid = Number(catRow.id)
+    const level = Number(catRow.level)
+
+    // Batch 1: category-specific queries (3 connections max)
+    const [subcats, listingTypes, parentRow] = await Promise.all([
+      query(
+        `SELECT c.*, (SELECT COUNT(*) FROM submissions s WHERE s.category_id = c.id AND s.status IN ('active','paid')) as listing_count
+         FROM categories c WHERE c.parent_id = ? AND c.is_active = 1 AND c.is_navigation = 1 ORDER BY c.sort_order`,
+        [cid]
+      ),
+      level === 3
+        ? query('SELECT id, name, slug, sort_order FROM listing_types WHERE category_id = ? ORDER BY sort_order', [cid])
+        : level === 2
+        ? query('SELECT lt.id, lt.name, lt.slug, lt.sort_order FROM listing_types lt JOIN categories c ON c.id = lt.category_id WHERE c.parent_id = ? AND c.is_active = 1 ORDER BY lt.sort_order', [cid])
+        : query('SELECT lt.id, lt.name, lt.slug, lt.sort_order FROM listing_types lt JOIN categories c3 ON c3.id = lt.category_id JOIN categories c2 ON c2.id = c3.parent_id WHERE c2.parent_id = ? AND c3.is_active = 1 ORDER BY lt.sort_order LIMIT 200', [cid]),
+      catRow.parent_id ? queryOne('SELECT id, name, slug, icon, color FROM categories WHERE id = ?', [catRow.parent_id]) : Promise.resolve(null),
+    ])
+
+    // Batch 2: global + listing queries (3 connections max)
+    const [countRow, allCats, tagGroups] = await Promise.all([
+      queryOne(
+        `SELECT COUNT(*) as cnt FROM submissions s WHERE s.status IN ('active','paid') AND s.category_id IN (
+          SELECT id FROM categories WHERE id = ? AND is_active = 1
+          UNION SELECT id FROM categories WHERE parent_id = ? AND is_active = 1
+          UNION SELECT c3.id FROM categories c3 JOIN categories c2 ON c2.id = c3.parent_id WHERE c2.parent_id = ? AND c3.is_active = 1
+        )`, [cid, cid, cid]
+      ),
+      query(
+        `SELECT c.*, p.name as parent_name, p.slug as parent_slug,
+                CASE WHEN c.level = 1 THEN c.slug WHEN c.level = 2 THEN p.slug WHEN c.level = 3 THEN gp.slug END as sector_slug
+         FROM categories c LEFT JOIN categories p ON p.id = c.parent_id LEFT JOIN categories gp ON gp.id = p.parent_id
+         WHERE c.is_launched = 1 AND c.is_active = 1 AND c.is_navigation = 1 ORDER BY c.sort_order`
+      ),
+      query('SELECT id, name, slug, description, icon, color FROM tag_groups WHERE is_active = 1 ORDER BY sort_order'),
+    ])
+
+    // Batch 3: tags + listings (2 connections max)
+    const [tagRows, listings, listingCount] = await Promise.all([
+      query('SELECT t.id, t.tag_group_id, t.name, t.slug FROM tags t JOIN tag_groups tg ON tg.id = t.tag_group_id WHERE t.is_active = 1 AND tg.is_active = 1 ORDER BY t.sort_order'),
+      query(
+        `SELECT s.*, c.name as category_name, c.slug as category_slug, c.color as category_color, c.icon as category_icon,
+                lt.name as listing_type_name, lt.slug as listing_type_slug
+         FROM submissions s
+         LEFT JOIN categories c ON c.id = s.category_id
+         LEFT JOIN listing_types lt ON lt.id = s.listing_type_id
+         WHERE s.status IN ('active','paid') AND s.category_id IN (
+           SELECT id FROM categories WHERE id = ? AND is_active = 1
+           UNION SELECT id FROM categories WHERE parent_id = ? AND is_active = 1
+           UNION SELECT c3.id FROM categories c3 JOIN categories c2 ON c2.id = c3.parent_id WHERE c2.parent_id = ? AND c3.is_active = 1
+         ) ORDER BY s.approved_at DESC, s.created_at DESC LIMIT 20`,
+        [cid, cid, cid]
+      ),
+      queryOne(
+        `SELECT COUNT(*) as cnt FROM submissions s WHERE s.status IN ('active','paid') AND s.category_id IN (
+          SELECT id FROM categories WHERE id = ? AND is_active = 1
+          UNION SELECT id FROM categories WHERE parent_id = ? AND is_active = 1
+          UNION SELECT c3.id FROM categories c3 JOIN categories c2 ON c2.id = c3.parent_id WHERE c2.parent_id = ? AND c3.is_active = 1
+        )`, [cid, cid, cid]
+      ),
+    ])
+
+    // Build tag groups with nested tags
+    const tagsByGroup = new Map<number, unknown[]>()
+    for (const t of tagRows as Array<{ id: number; tag_group_id: number; name: string; slug: string }>) {
+      const list = tagsByGroup.get(t.tag_group_id) ?? []
+      list.push({ id: t.id, tagGroupId: t.tag_group_id, name: t.name, slug: t.slug })
+      tagsByGroup.set(t.tag_group_id, list)
+    }
+    const tagGroupsData = (tagGroups as Array<Record<string, unknown>>).map(g => ({
+      id: String(g.id), name: String(g.name), slug: String(g.slug),
+      description: String(g.description ?? ''), icon: String(g.icon ?? ''), color: String(g.color ?? ''),
+      sortOrder: Number(g.sort_order ?? 0), isActive: true,
+      tags: (tagsByGroup.get(Number(g.id)) ?? []) as Array<{ id: number; name: string; slug: string; tagGroupId: number }>,
+    }))
+
+    // Serialize all data to plain JSON (avoids mysql2 Buffer issues)
+    return JSON.parse(JSON.stringify({
+      category: { ...catRow, subcategories: subcats, listingTypes: listingTypes, parent: parentRow, activeListings: Number(countRow?.cnt ?? 0) },
+      allCategories: allCats,
+      tagGroups: tagGroupsData,
+      listings: listings,
+      listingTotal: Number(listingCount?.cnt ?? 0),
+    }))
+  } catch (err) {
+    console.error('fetchCategoryPageData error:', err)
+    return null
+  }
+}
+
 /* ── Build metadata for L2/L3 categories ── */
 function buildCategoryMeta(cat: CatSeo, country: string, countryName: string, monthYear: string, sectorSlug: string): Metadata {
   const baseName = cat.seoTitle || cat.name
@@ -178,7 +282,7 @@ function buildCategoryMeta(cat: CatSeo, country: string, countryName: string, mo
       description,
       images: [ogImage],
     },
-    robots: { index: true, follow: true },
+    robots: { index: false, follow: false },
   }
 }
 
@@ -296,7 +400,7 @@ export async function generateMetadata({
       description,
       alternates: { canonical: url },
       openGraph: { title, description, url, siteName: 'InfoWebWorld', type: 'website' },
-      robots: { index: true, follow: true },
+      robots: { index: false, follow: false },
     }
   }
 
@@ -326,7 +430,7 @@ export async function generateMetadata({
         description,
         images: [meta.heroImage],
       },
-      robots: { index: true, follow: true },
+      robots: { index: false, follow: false },
     }
   }
 
@@ -374,116 +478,135 @@ export default async function CategoryDetailRoute({
 
   /* ── /all page — render sector browse ── */
   if (segments.length === 2 && segments[1] === 'all' && slug && L1_SLUGS.has(slug)) {
+    const allRows = await query(
+      `SELECT c.*, p.name as parent_name, p.slug as parent_slug,
+              CASE WHEN c.level = 1 THEN c.slug WHEN c.level = 2 THEN p.slug WHEN c.level = 3 THEN gp.slug END as sector_slug
+       FROM categories c LEFT JOIN categories p ON p.id = c.parent_id LEFT JOIN categories gp ON gp.id = p.parent_id
+       WHERE c.is_launched = 1 AND c.is_active = 1 AND c.is_navigation = 1 ORDER BY c.sort_order`
+    ).catch(() => [])
+    const initialCategories = JSON.parse(JSON.stringify(allRows))
+
+    const sectorMeta = getSectorMeta(slug)
+    const sectorName = sectorMeta.seoTitle
+    const sectorRow = allRows.find((r: any) => String(r.slug) === slug)
+    const sectorId = sectorRow ? Number(sectorRow.id) : 0
+    const l2InSector = allRows.filter((r: any) => Number(r.parent_id) === sectorId).length
+
+    const allJsonLd = (
+      <>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://infowebworld.com' },
+            { '@type': 'ListItem', position: 2, name: 'Categories', item: canonicalUrl(country, '/categories') },
+            { '@type': 'ListItem', position: 3, name: sectorName },
+          ]
+        })}} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org', '@type': 'CollectionPage',
+          name: `All ${sectorName} Categories`, url: canonicalUrl(country, `/${slug}/all`),
+        })}} />
+      </>
+    )
+
     return (
       <>
+        {allJsonLd}
         <Navbar sectorSlug={slug} />
-        <Suspense><SectorAllBrowse sectorSlug={slug} /></Suspense>
+        <div className="cd-server-skeleton">
+          <nav className="cd-server-breadcrumb" aria-label="Breadcrumb">
+            <a href="/categories">All Categories</a><span> &gt; </span><span>{sectorName}</span>
+          </nav>
+          <h1 className="cd-server-h1">All {sectorName} Categories</h1>
+          <p className="cd-server-desc">Browse all categories and subcategories within {sectorName}. {l2InSector} categories to explore.</p>
+          <h2 className="cd-server-h2">Categories in {sectorName}</h2>
+        </div>
+        <Suspense><SectorAllBrowse sectorSlug={slug} initialCategories={initialCategories} /></Suspense>
         <Footer />
       </>
     )
   }
 
-  // JSON-LD for L1 sectors (rendered via SectorLanding's own useEffect)
-  // JSON-LD for L2/L3 — inject server-side via <script> tags
-  let jsonLdScripts: React.ReactNode = null
-  if (categorySlug && !L1_SLUGS.has(categorySlug)) {
-    const cat = await fetchCategoryForSeo(categorySlug)
-    if (cat) {
-      // If no sectorSlug yet, look it up from DB
-      const resolvedSector = sectorSlug || (await getSectorSlugForCategory(categorySlug)) || ''
-      const schemas = buildJsonLd(cat, country, countryName, monthYear, resolvedSector)
-      jsonLdScripts = (
-        <>
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.breadcrumb) }}
-          />
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.collection) }}
-          />
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.faq) }}
-          />
-        </>
-      )
-    }
-  }
-
   const isSector = slug && L1_SLUGS.has(slug) && segments.length === 1
   const navSector = sectorSlug || (isSector ? slug : undefined)
+  const isL2L3 = categorySlug && !L1_SLUGS.has(categorySlug)
 
-  /* ── Server-side skeleton for L2/L3 — full semantic HTML visible to crawlers ── */
-  let serverSkeleton: React.ReactNode = null
-  if (categorySlug && !L1_SLUGS.has(categorySlug)) {
-    const cat = await fetchCategoryForSeo(categorySlug).catch(() => null)
-    if (cat) {
-      const year = new Date().getFullYear()
-      const desc = cat.seoDescription || cat.description || `Compare the best ${cat.name} companies in ${countryName}. Verified reviews, pricing & features.`
-      const parentHref = cat.parentSlug
-        ? (cat.level === 3 && sectorSlug ? `/${sectorSlug}/${cat.parentSlug}` : `/${cat.parentSlug}`)
-        : null
+  /* ── Fetch ALL data for L2/L3 pages in a single server-side batch ── */
+  const pageData = isL2L3 ? await fetchCategoryPageData(categorySlug) : null
 
-      // Generate FAQ server-side (same 5 Qs as client renders)
-      const faqItems = [
-        { q: `What is ${cat.name}?`, a: cat.description || `${cat.name} encompasses businesses and solutions that help organizations succeed.` },
-        { q: `How do I find the best ${cat.name} companies?`, a: `Browse verified ${cat.name} companies on InfoWebWorld. Use filters to narrow by listing type, features, and tags.` },
-        { q: `Is it free to list my ${cat.name} business?`, a: 'Yes, InfoWebWorld offers a free listing option. Premium plans are available for enhanced visibility and a verified badge.' },
-        { q: `How are ${cat.name} companies ranked?`, a: 'Rankings are based on verified reviews, satisfaction scores, and market presence. Our team verifies every listing.' },
-        { q: `Can I compare ${cat.name} solutions?`, a: `Yes! Compare ${cat.name} solutions across features, pricing, satisfaction scores, and more.` },
-      ]
-
-      serverSkeleton = (
-        <div className="cd-server-skeleton">
-          {/* Breadcrumb */}
-          <nav className="cd-server-breadcrumb" aria-label="Breadcrumb">
-            <a href="/">Home</a>
-            <span> &gt; </span>
-            <a href="/categories">Categories</a>
-            {cat.parentName && parentHref && (
-              <>
-                <span> &gt; </span>
-                <a href={parentHref}>{cat.parentName}</a>
-              </>
-            )}
-            <span> &gt; </span>
-            <span>{cat.name}</span>
-          </nav>
-
-          {/* H1 */}
-          <h1 className="cd-server-h1">Best {cat.name} in {countryName} {year}</h1>
-
-          {/* Description */}
-          <p className="cd-server-desc">{desc}</p>
-
-          {/* Stats */}
-          <div className="cd-server-stats">
-            <span><strong>{cat.listingCount || 0}</strong> companies</span>
-            {cat.subcategoryCount > 0 && <span><strong>{cat.subcategoryCount}</strong> subcategories</span>}
-          </div>
-
-          {/* Section headings — proper H2/H3 hierarchy for crawlers */}
-          <h2 className="cd-server-h2">Top {cat.name} Companies in {countryName}</h2>
-          <p className="cd-server-section-desc">Browse and compare verified {cat.name} providers. Read reviews, compare features, and connect directly.</p>
-
-          {cat.subcategoryCount > 0 && (
-            <h2 className="cd-server-h2">Explore {cat.name} Subcategories</h2>
-          )}
-
-          {/* FAQ */}
-          <section className="cd-server-faq">
-            <h2 className="cd-server-h2">Frequently Asked Questions</h2>
-            {faqItems.map((f, i) => (
-              <div key={i} className="cd-server-faq-item">
-                <h3 className="cd-server-h3">{f.q}</h3>
-                <p>{f.a}</p>
-              </div>
-            ))}
-          </section>
-        </div>
-      )
+  /* ── JSON-LD — built from pageData (no extra DB call) ── */
+  let jsonLdScripts: React.ReactNode = null
+  if (isL2L3 && pageData?.category) {
+    const c = pageData.category
+    const resolvedSector = sectorSlug || String(c.sector_slug || '')
+    // Build CatSeo from pageData to reuse buildJsonLd
+    const catSeo: CatSeo = {
+      id: Number(c.id), name: String(c.name ?? ''), slug: String(c.slug ?? ''), level: Number(c.level ?? 2),
+      description: String(c.description ?? ''), coverImage: String(c.cover_image ?? ''),
+      seoTitle: String(c.seo_title ?? ''), seoDescription: String(c.seo_description ?? ''),
+      seoKeywords: (() => { try { return typeof c.seo_keywords === 'string' ? JSON.parse(c.seo_keywords || '[]') : (c.seo_keywords ?? []) } catch { return [] } })(),
+      seoOgImage: String(c.seo_og_image ?? ''), seoCanonical: String(c.seo_canonical ?? ''),
+      parentName: String(c.parent_name ?? ''), parentSlug: String(c.parent_slug ?? ''),
+      listingCount: pageData.listingTotal ?? 0,
+      subcategoryCount: Array.isArray(c.subcategories) ? c.subcategories.length : 0,
     }
+    const schemas = buildJsonLd(catSeo, country, countryName, monthYear, resolvedSector)
+    jsonLdScripts = (
+      <>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.breadcrumb) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.collection) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.faq) }} />
+      </>
+    )
+  }
+
+  /* ── Server-side skeleton — visible in initial HTML for crawlers + fast paint ── */
+  let serverSkeleton: React.ReactNode = null
+  if (isL2L3) {
+    const catInfo = pageData?.category
+    const catName = catInfo?.name ? String(catInfo.name) : categorySlug
+    const catDesc = catInfo?.seo_description || catInfo?.description || `Compare the best ${catName} companies in ${countryName}.`
+    const parentName = catInfo?.parent_name ? String(catInfo.parent_name) : ''
+    const parentSlug = catInfo?.parent_slug ? String(catInfo.parent_slug) : ''
+    const catLevel = Number(catInfo?.level ?? 2)
+    const listingCount = pageData?.listingTotal ?? 0
+    const subCount = Array.isArray(catInfo?.subcategories) ? catInfo.subcategories.length : 0
+    const parentHref = parentSlug ? (catLevel === 3 && sectorSlug ? `/${sectorSlug}/${parentSlug}` : `/${parentSlug}`) : null
+    const year = new Date().getFullYear()
+
+    const faqItems = [
+      { q: `What is ${catName}?`, a: String(catInfo?.description || `${catName} encompasses businesses and solutions that help organizations succeed.`) },
+      { q: `How do I find the best ${catName} companies?`, a: `Browse verified ${catName} companies on InfoWebWorld. Use filters to narrow by listing type, features, and tags.` },
+      { q: `Is it free to list my ${catName} business?`, a: 'Yes, InfoWebWorld offers a free listing option. Premium plans are available for enhanced visibility.' },
+      { q: `How are ${catName} companies ranked?`, a: 'Rankings are based on verified reviews, satisfaction scores, and market presence.' },
+      { q: `Can I compare ${catName} solutions?`, a: `Yes! Compare ${catName} solutions across features, pricing, satisfaction scores, and more.` },
+    ]
+
+    serverSkeleton = (
+      <div className="cd-server-skeleton">
+        <nav className="cd-server-breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a><span> &gt; </span>
+          <a href="/categories">Categories</a>
+          {parentName && parentHref && (<><span> &gt; </span><a href={parentHref}>{parentName}</a></>)}
+          <span> &gt; </span><span>{catName}</span>
+        </nav>
+        <h1 className="cd-server-h1">Best {catName} in {countryName} {year}</h1>
+        <p className="cd-server-desc">{catDesc}</p>
+        <div className="cd-server-stats">
+          <span><strong>{listingCount}</strong> companies</span>
+          {subCount > 0 && <span><strong>{subCount}</strong> subcategories</span>}
+        </div>
+        <h2 className="cd-server-h2">Top {catName} Companies in {countryName}</h2>
+        <p className="cd-server-section-desc">Browse and compare verified {catName} providers. Read reviews, compare features, and connect directly.</p>
+        {subCount > 0 && <h2 className="cd-server-h2">Explore {catName} Subcategories</h2>}
+        <section className="cd-server-faq">
+          <h2 className="cd-server-h2">Frequently Asked Questions</h2>
+          {faqItems.map((f, i) => (
+            <div key={i} className="cd-server-faq-item"><h3 className="cd-server-h3">{f.q}</h3><p>{f.a}</p></div>
+          ))}
+        </section>
+      </div>
+    )
   }
 
   const catSegments = L1_SLUGS.has(segments[0]) && segments.length > 1 ? segments.slice(1) : segments
@@ -497,6 +620,7 @@ export default async function CategoryDetailRoute({
         <CategoryPage
           segments={catSegments}
           sectorSlug={sectorSlug || slug || ''}
+          initialData={pageData || undefined}
         />
       </Suspense>
       <Footer />
