@@ -558,11 +558,80 @@ export default async function CategoryDetailRoute({
   const navSector = sectorSlug || (isSector ? slug : undefined)
   const isL2L3 = categorySlug && !L1_SLUGS.has(categorySlug)
 
-  /* ── Fetch ALL data for L2/L3 pages in a single server-side batch ── */
-  const pageData = isL2L3 ? await fetchCategoryPageData(categorySlug) : null
+  /* ── Fetch ALL data server-side ── */
+  let pageData: Awaited<ReturnType<typeof fetchCategoryPageData>> = null
 
-  /* ── JSON-LD — built from pageData (no extra DB call) ── */
+  if (isSector && slug) {
+    // L1 sector: fetch allCategories (cached) + listings for this sector
+    const catRow = await queryOne(
+      `SELECT c.* FROM categories c WHERE c.slug = ? AND c.is_active = 1 LIMIT 1`, [slug]
+    ).catch(() => null)
+    const cid = catRow ? Number(catRow.id) : 0
+    const [allCats, listings, listingCount] = await Promise.all([
+      getCachedAllCategories(),
+      cid ? query(
+        `SELECT s.*, c.name as category_name, c.slug as category_slug, c.color as category_color, c.icon as category_icon
+         FROM submissions s LEFT JOIN categories c ON c.id = s.category_id
+         WHERE s.status IN ('active','paid') AND s.category_id IN (
+           SELECT id FROM categories WHERE id = ? AND is_active = 1
+           UNION SELECT id FROM categories WHERE parent_id = ? AND is_active = 1
+           UNION SELECT c3.id FROM categories c3 JOIN categories c2 ON c2.id = c3.parent_id WHERE c2.parent_id = ? AND c3.is_active = 1
+         ) ORDER BY s.approved_at DESC LIMIT 20`, [cid, cid, cid]
+      ).catch(() => []) : Promise.resolve([]),
+      cid ? queryOne(
+        `SELECT COUNT(*) as cnt FROM submissions s WHERE s.status IN ('active','paid') AND s.category_id IN (
+           SELECT id FROM categories WHERE id = ? UNION SELECT id FROM categories WHERE parent_id = ?
+           UNION SELECT c3.id FROM categories c3 JOIN categories c2 ON c2.id = c3.parent_id WHERE c2.parent_id = ?
+         )`, [cid, cid, cid]
+      ).catch(() => null) : Promise.resolve(null),
+    ])
+    pageData = JSON.parse(JSON.stringify({
+      category: catRow,
+      allCategories: allCats,
+      tagGroups: [],
+      listings,
+      listingTotal: Number(listingCount?.cnt ?? 0),
+    }))
+  } else if (isL2L3) {
+    pageData = await fetchCategoryPageData(categorySlug)
+  }
+
+  /* ── JSON-LD ── */
   let jsonLdScripts: React.ReactNode = null
+
+  // L1 sector JSON-LD (server-side instead of client)
+  if (isSector && slug) {
+    const sMeta = getSectorMeta(slug)
+    const sName = sMeta.seoTitle
+    const sUrl = canonicalUrl(country, `/${slug}`)
+    jsonLdScripts = (
+      <>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: DOMAIN },
+            { '@type': 'ListItem', position: 2, name: 'Categories', item: canonicalUrl(country, '/categories') },
+            { '@type': 'ListItem', position: 3, name: sName },
+          ]
+        })}} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org', '@type': 'CollectionPage',
+          name: sName, description: sMeta.seoDescription, url: sUrl,
+          isPartOf: { '@type': 'WebSite', name: 'InfoWebWorld', url: DOMAIN },
+        })}} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org', '@type': 'FAQPage',
+          mainEntity: [
+            { '@type': 'Question', name: `What is ${sName}?`, acceptedAnswer: { '@type': 'Answer', text: sMeta.description } },
+            { '@type': 'Question', name: `How to find the best ${sName} companies?`, acceptedAnswer: { '@type': 'Answer', text: `Browse verified ${sName} companies on InfoWebWorld. Compare services, read reviews and connect directly.` } },
+            { '@type': 'Question', name: `Is it free to list my business?`, acceptedAnswer: { '@type': 'Answer', text: 'Yes, InfoWebWorld offers free business listing with optional premium plans.' } },
+          ]
+        })}} />
+      </>
+    )
+  }
+
+  // L2/L3 JSON-LD
   if (isL2L3 && pageData?.category) {
     const c = pageData.category
     const resolvedSector = sectorSlug || String(c.sector_slug || '')
@@ -587,8 +656,33 @@ export default async function CategoryDetailRoute({
     )
   }
 
-  /* ── Server-side skeleton — visible in initial HTML for crawlers + fast paint ── */
+  /* ── Server-side skeleton — in DOM for crawlers (sr-only CSS) ── */
   let serverSkeleton: React.ReactNode = null
+
+  // L1 sector skeleton
+  if (isSector && slug) {
+    const sMeta = getSectorMeta(slug)
+    const sName = sMeta.seoTitle
+    const year = new Date().getFullYear()
+    serverSkeleton = (
+      <div className="cd-server-skeleton">
+        <nav className="cd-server-breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a><span> &gt; </span><a href="/categories">Categories</a><span> &gt; </span><span>{sName}</span>
+        </nav>
+        <h1 className="cd-server-h1">Best {sName} in {countryName} {year}</h1>
+        <p className="cd-server-desc">{sMeta.seoDescription}</p>
+        <h2 className="cd-server-h2">Top {sName} Companies</h2>
+        <h2 className="cd-server-h2">Popular {sName} Categories</h2>
+        <section className="cd-server-faq">
+          <h2 className="cd-server-h2">Frequently Asked Questions</h2>
+          <div className="cd-server-faq-item"><h3 className="cd-server-h3">What is {sName}?</h3><p>{sMeta.description}</p></div>
+          <div className="cd-server-faq-item"><h3 className="cd-server-h3">How to find the best {sName} companies?</h3><p>Browse verified {sName} companies on InfoWebWorld.</p></div>
+        </section>
+      </div>
+    )
+  }
+
+  // L2/L3 skeleton
   if (isL2L3) {
     const catInfo = pageData?.category
     const catName = catInfo?.name ? String(catInfo.name) : categorySlug

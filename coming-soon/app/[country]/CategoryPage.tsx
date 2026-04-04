@@ -358,7 +358,7 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
 
   /* ── L1 Sector → dedicated landing page ── */
   if (category.level === 1) {
-    return <SectorLanding category={category} allCategories={allCats} />
+    return <SectorLanding category={category} allCategories={allCats} initialListings={listings} />
   }
 
   const c = category

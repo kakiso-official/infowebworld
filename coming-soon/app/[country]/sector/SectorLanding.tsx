@@ -23,17 +23,18 @@ import SectorCta from './components/SectorCta'
 
 const BASE = 'https://infowebworld.com'
 
-export default function SectorLanding({ category, allCategories }: { category: Category; allCategories: Category[] }) {
+export default function SectorLanding({ category, allCategories, initialListings }: { category: Category; allCategories: Category[]; initialListings?: RealSubmission[] }) {
   const country = useCountry()
   const countryName = COUNTRY_LABELS[country as CountryCode] || 'India'
   const meta = getSectorMeta(category.slug)
   const demos = useMemo(() => getSectorDemos(category.slug), [category.slug])
 
-  /* Fetch real listings for this L1 sector */
-  const [listings, setListings] = useState<RealSubmission[]>([])
+  /* Use server-provided listings or fetch client-side as fallback */
+  const [listings, setListings] = useState<RealSubmission[]>(initialListings ?? [])
   useEffect(() => {
+    if (initialListings?.length) return
     fetchCategoryListings(category.id, 1).then(res => setListings(res.data))
-  }, [category.id])
+  }, [category.id, initialListings])
 
   const l2Cats = useMemo(() =>
     allCategories.filter(c => c.parentId === category.id && c.level === 2)
