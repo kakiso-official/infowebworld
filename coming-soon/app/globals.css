@@ -45,6 +45,9 @@
   font-display: swap;
 }
 
+/* Navigation progress bar */
+.np-bar { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: #E8553D; z-index: 99999; transform-origin: left; transition: transform .2s ease, opacity .3s ease; pointer-events: none }
+
 /* ═══════════════════════════════════════════════════════
    DESIGN TOKENS — Same warm premium palette as React app
    ═══════════════════════════════════════════════════════ */

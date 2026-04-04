@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Nunito, Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
+import { Suspense } from "react";
 import PageTracker from "./components/PageTracker";
+import NavigationProgress from "./components/NavigationProgress";
 
 const nunito = Nunito({
   variable: "--font-nunito",
@@ -88,6 +90,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#FAF5F0" />
       </head>
       <body className={`${nunito.variable} ${bricolage.variable}`}>
+        <Suspense><NavigationProgress /></Suspense>
         <PageTracker />{children}
       </body>
     </html>
