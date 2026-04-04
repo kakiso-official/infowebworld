@@ -105,6 +105,12 @@ export default function CategoryPage({ segments, sectorSlug }: { segments?: stri
     router.push(`${prefix}${url}`, { scroll: false })
   }, [slug, locationCountry, locationState, locationCity, selectedListingType, selectedTags, siteCountry, sectorSlug, router])
 
+  /* ── Hide server-side hero once client has mounted ── */
+  useEffect(() => {
+    const el = document.querySelector('.cd-server-hero')
+    if (el) (el as HTMLElement).style.display = 'none'
+  }, [])
+
   /* ── Data fetching — ALL in parallel ── */
   useEffect(() => {
     if (!slug) { setNotFound(true); return }

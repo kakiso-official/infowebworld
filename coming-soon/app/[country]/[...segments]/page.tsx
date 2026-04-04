@@ -126,15 +126,13 @@ async function fetchCategoryForSeo(slug: string): Promise<CatSeo | null> {
 /* ── Build metadata for L2/L3 categories ── */
 function buildCategoryMeta(cat: CatSeo, country: string, countryName: string, monthYear: string, sectorSlug: string): Metadata {
   const baseName = cat.seoTitle || cat.name
-  const levelLabel = cat.level === 2 ? 'Software & Services' : 'Tools & Solutions'
-  const title = `Best ${baseName} ${levelLabel} in ${countryName} ${monthYear} | InfoWebWorld`
+  // Title: 50-60 chars max
+  const year = new Date().getFullYear()
+  const title = `Best ${baseName} in ${countryName} ${year} | InfoWebWorld`
 
-  const baseDesc = cat.seoDescription || cat.description
-  const listingText = cat.listingCount > 0 ? `${cat.listingCount} verified companies` : 'verified companies'
-  const subText = cat.subcategoryCount > 0 ? ` across ${cat.subcategoryCount} subcategories` : ''
-  const description = baseDesc
-    ? `${baseDesc} Compare ${listingText}${subText} in ${countryName}. Updated ${monthYear}.`
-    : `Discover and compare the best ${baseName} companies in ${countryName}. Browse ${listingText}${subText}, read reviews, and find the right solution. Updated ${monthYear}. InfoWebWorld.com`
+  // Description: 100-130 chars max
+  const countText = cat.listingCount > 0 ? `${cat.listingCount}+ ` : ''
+  const description = `Compare ${countText}${baseName} companies in ${countryName}. Verified reviews, pricing & features. Updated ${monthYear}.`
 
   const url = canonicalUrl(country, `/${sectorSlug}/${cat.slug}`)
   const ogImage = cat.seoOgImage || cat.coverImage || `${DOMAIN}/og-image.png`
@@ -155,7 +153,17 @@ function buildCategoryMeta(cat: CatSeo, country: string, countryName: string, mo
     title,
     description,
     keywords,
-    alternates: { canonical: cat.seoCanonical || url },
+    alternates: {
+      canonical: cat.seoCanonical || url,
+      languages: {
+        'en-IN': `${DOMAIN}/in/${sectorSlug}/${cat.slug}`,
+        'en-US': `${DOMAIN}/${sectorSlug}/${cat.slug}`,
+        'en-GB': `${DOMAIN}/uk/${sectorSlug}/${cat.slug}`,
+        'en-AU': `${DOMAIN}/au/${sectorSlug}/${cat.slug}`,
+        'en-CA': `${DOMAIN}/ca/${sectorSlug}/${cat.slug}`,
+        'en': `${DOMAIN}/${sectorSlug}/${cat.slug}`,
+      },
+    },
     openGraph: {
       title,
       description,
@@ -170,7 +178,7 @@ function buildCategoryMeta(cat: CatSeo, country: string, countryName: string, mo
       description,
       images: [ogImage],
     },
-    robots: { index: false, follow: false },
+    robots: { index: true, follow: true },
   }
 }
 
@@ -288,7 +296,7 @@ export async function generateMetadata({
       description,
       alternates: { canonical: url },
       openGraph: { title, description, url, siteName: 'InfoWebWorld', type: 'website' },
-      robots: { index: false, follow: false },
+      robots: { index: true, follow: true },
     }
   }
 
@@ -318,7 +326,7 @@ export async function generateMetadata({
         description,
         images: [meta.heroImage],
       },
-      robots: { index: false, follow: false },
+      robots: { index: true, follow: true },
     }
   }
 
@@ -405,10 +413,30 @@ export default async function CategoryDetailRoute({
 
   const isSector = slug && L1_SLUGS.has(slug) && segments.length === 1
   const navSector = sectorSlug || (isSector ? slug : undefined)
+
+  // Server-side H1 + description for L2/L3 (visible to crawlers before JS loads)
+  let serverHero: React.ReactNode = null
+  if (categorySlug && !L1_SLUGS.has(categorySlug)) {
+    const cat = jsonLdScripts ? await fetchCategoryForSeo(categorySlug).catch(() => null) : null
+    // Use already-fetched cat if available, otherwise re-fetch
+    const heroData = cat || (await fetchCategoryForSeo(categorySlug).catch(() => null))
+    if (heroData) {
+      const year = new Date().getFullYear()
+      const heroDesc = heroData.seoDescription || heroData.description || `Compare the best ${heroData.name} companies in ${countryName}. Verified reviews, pricing & features.`
+      serverHero = (
+        <div className="cd-server-hero" aria-hidden="false">
+          <h1 className="cd-server-h1">Best {heroData.name} in {countryName} {year}</h1>
+          <p className="cd-server-desc">{heroDesc}</p>
+        </div>
+      )
+    }
+  }
+
   return (
     <>
       {jsonLdScripts}
       <Navbar sectorSlug={navSector} />
+      {serverHero}
       <Suspense>
         <CategoryPage
           segments={L1_SLUGS.has(segments[0]) && segments.length > 1 ? segments.slice(1) : segments}

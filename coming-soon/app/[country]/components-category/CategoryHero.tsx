@@ -1,23 +1,14 @@
 'use client'
-import { useState, useRef, useEffect, useMemo, useCallback } from 'react'
+import { useMemo } from 'react'
+import dynamic from 'next/dynamic'
 import Link from '../../components/CountryLink'
 import { useCountry } from '../../config/country-context'
 import { COUNTRY_LABELS, ROUTE_TO_GEO_SLUG, ROUTE_TO_ISO } from '../../config/countries'
 import type { CountryCode } from '../../config/countries'
 import type { Category } from '../../iww-hq/data/category-storage'
-import {
-  getLocationCountries,
-  getStates,
-  getCities,
-  lookupLocationCountry,
-  getAllStatesArray,
-  getAllCitiesArray,
-  toSlug,
-  type GeoCountry,
-  type GeoState,
-  type GeoCity,
-} from '../../lib/geo-slugs'
-import { I, ic } from './icons'
+import { lookupLocationCountry, type GeoCountry, type GeoState, type GeoCity } from '../../lib/geo-slugs'
+
+const LocationSearch = dynamic(() => import('./LocationSearch'), { ssr: false })
 
 type Props = {
   category: Category
@@ -29,18 +20,6 @@ type Props = {
   onStateChange: (val: GeoState | null) => void
   onCityChange: (val: GeoCity | null) => void
   onLocationChange?: (country: GeoCountry | null, state: GeoState | null, city: GeoCity | null) => void
-}
-
-/* ── Location search result types ── */
-type LocResult = {
-  type: 'country' | 'state' | 'city'
-  name: string
-  slug: string
-  meta: string // e.g. "Gujarat, India" for a city
-  isoCode?: string
-  stateCode?: string
-  countrySlug?: string
-  stateSlug?: string
 }
 
 /* ── Dynamic SEO description generator ── */
@@ -128,10 +107,6 @@ function generateCategoryDesc(
 
 export default function CategoryHero({ category: c, sectorSlug, locationCountry, locationState, locationCity, onLocationCountryChange, onStateChange, onCityChange, onLocationChange }: Props) {
   const siteCountry = useCountry()
-  const [locQuery, setLocQuery] = useState('')
-  const [locOpen, setLocOpen] = useState(false)
-  const locRef = useRef<HTMLDivElement>(null)
-  const locInputRef = useRef<HTMLInputElement>(null)
 
   /* Resolve route country to a GeoCountry */
   const routeGeoCountry = useMemo(() => {
@@ -143,173 +118,9 @@ export default function CategoryHero({ category: c, sectorSlug, locationCountry,
   const effectiveCountry = useMemo(() => locationCountry || routeGeoCountry, [locationCountry, routeGeoCountry])
   const effectiveIso = effectiveCountry?.isoCode || ROUTE_TO_ISO[siteCountry as CountryCode] || ''
 
-  /* ── Debounced search query ── */
-  const [debouncedQ, setDebouncedQ] = useState('')
-  useEffect(() => {
-    const t = setTimeout(() => setDebouncedQ(locQuery.trim().toLowerCase()), 200)
-    return () => clearTimeout(t)
-  }, [locQuery])
-
-  /* ── Pre-build state name index (once, cached) ── */
-  const stateIndex = useMemo(() => {
-    const idx = new Map<string, string>() // "ISO:stateCode" → stateName
-    getAllStatesArray().forEach(s => idx.set(`${s.isoCode}:${s.stateCode}`, s.name))
-    return idx
-  }, [])
-
-  const countryNameByIso = useMemo(() => {
-    const m = new Map<string, string>()
-    getLocationCountries().forEach(c => m.set(c.isoCode, c.name))
-    return m
-  }, [])
-
-  /* ── Location search results — ALL countries, states, cities ── */
-  const locResults = useMemo((): LocResult[] => {
-    const q = debouncedQ
-    if (!q || q.length < 2) return []
-
-    const ql = q.toLowerCase()
-    const countries: LocResult[] = []
-    const states: LocResult[] = []
-    const cities: LocResult[] = []
-
-    // ─ Countries (250 — instant)
-    getLocationCountries().forEach(c => {
-      if (c.name.toLowerCase().includes(ql)) {
-        countries.push({ type: 'country', name: c.name, slug: c.slug, meta: '', isoCode: c.isoCode })
-      }
-    })
-    countries.sort((a, b) => {
-      const ap = a.name.toLowerCase().startsWith(ql) ? 0 : 1
-      const bp = b.name.toLowerCase().startsWith(ql) ? 0 : 1
-      return ap - bp || a.name.localeCompare(b.name)
-    })
-
-    // ─ States (~5K — instant). Effective country first, then rest.
-    const allSt = getAllStatesArray()
-    const localStates: LocResult[] = []
-    const otherStates: LocResult[] = []
-    for (const s of allSt) {
-      if (localStates.length + otherStates.length >= 30) break
-      if (s.name.toLowerCase().includes(ql)) {
-        const cSlug = lookupLocationCountry(toSlug(s.countryName))?.slug
-        const item: LocResult = { type: 'state', name: s.name, slug: s.slug, meta: s.countryName, isoCode: s.isoCode, stateCode: s.stateCode, countrySlug: cSlug }
-        if (s.isoCode === effectiveIso) localStates.push(item); else otherStates.push(item)
-      }
-    }
-    localStates.sort((a, b) => (a.name.toLowerCase().startsWith(ql) ? 0 : 1) - (b.name.toLowerCase().startsWith(ql) ? 0 : 1) || a.name.localeCompare(b.name))
-    states.push(...localStates, ...otherStates)
-
-    // ─ Cities (~148K — cached array, ~10ms scan). Collect local + global separately.
-    const allCities = getAllCitiesArray()
-    const localCities: typeof allCities[number][] = []
-    const globalCities: typeof allCities[number][] = []
-    for (const ct of allCities) {
-      if (localCities.length >= 15 && globalCities.length >= 15) break
-      if (ct.name.toLowerCase().includes(ql)) {
-        if (ct.countryCode === effectiveIso) { if (localCities.length < 15) localCities.push(ct) }
-        else { if (globalCities.length < 15) globalCities.push(ct) }
-      }
-    }
-    // Sort each: prefix first, then alpha
-    const sortCities = (arr: typeof allCities) => arr.sort((a, b) => {
-      const ap = a.name.toLowerCase().startsWith(ql) ? 0 : 1
-      const bp = b.name.toLowerCase().startsWith(ql) ? 0 : 1
-      return ap - bp || a.name.localeCompare(b.name)
-    })
-    sortCities(localCities)
-    sortCities(globalCities)
-    const merged = [...localCities, ...globalCities]
-
-    for (const ct of merged.slice(0, 15)) {
-      const cName = countryNameByIso.get(ct.countryCode) || ct.countryCode
-      const sName = stateIndex.get(`${ct.countryCode}:${ct.stateCode}`) || ct.stateCode
-      const cSlug = lookupLocationCountry(toSlug(cName))?.slug
-      cities.push({
-        type: 'city', name: ct.name, slug: toSlug(ct.name),
-        meta: `${sName}, ${cName}`,
-        isoCode: ct.countryCode, stateCode: ct.stateCode,
-        stateSlug: toSlug(sName), countrySlug: cSlug,
-      })
-    }
-
-    // Deduplicate
-    const seen = new Set<string>()
-    const dedup = (arr: LocResult[]) => arr.filter(r => {
-      const k = `${r.type}:${r.name}:${r.meta}`
-      if (seen.has(k)) return false
-      seen.add(k)
-      return true
-    })
-
-    return [...dedup(countries).slice(0, 6), ...dedup(states).slice(0, 8), ...dedup(cities).slice(0, 10)]
-  }, [debouncedQ, effectiveIso, stateIndex, countryNameByIso])
-
-  /* ── Handle selection — resolve all 3 levels, push once ── */
-  const handleLocSelect = useCallback((r: LocResult) => {
-    let country: GeoCountry | null = null
-    let state: GeoState | null = null
-    let city: GeoCity | null = null
-
-    // Resolve country
-    if (r.countrySlug) {
-      country = lookupLocationCountry(r.countrySlug)
-    } else if (r.isoCode) {
-      getLocationCountries().forEach(c => { if (c.isoCode === r.isoCode) country = c })
-    }
-
-    // Resolve state (for state/city selections)
-    if (r.type === 'state' || r.type === 'city') {
-      if (r.isoCode && r.type === 'state') {
-        state = getStates(r.isoCode).get(r.slug) || null
-      } else if (r.isoCode && r.stateSlug) {
-        state = getStates(r.isoCode).get(r.stateSlug) || null
-      }
-    }
-
-    // Resolve city
-    if (r.type === 'city' && r.isoCode && r.stateCode) {
-      city = getCities(r.isoCode, r.stateCode).get(r.slug) || null
-    }
-
-    // Single atomic update — URL pushes once with all values
-    if (onLocationChange) {
-      onLocationChange(country, state, city)
-    } else {
-      // Fallback: use individual handlers
-      if (country) onLocationCountryChange(country)
-      if (state) onStateChange(state)
-      if (city) onCityChange(city)
-    }
-
-    setLocQuery('')
-    setLocOpen(false)
-  }, [onLocationChange, onLocationCountryChange, onStateChange, onCityChange])
-
-  /* ── Close on outside click or Escape ── */
-  useEffect(() => {
-    if (!locOpen) return
-    const onClick = (e: MouseEvent) => {
-      if (locRef.current && !locRef.current.contains(e.target as Node)) setLocOpen(false)
-    }
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setLocOpen(false) }
-    document.addEventListener('mousedown', onClick)
-    document.addEventListener('keydown', onKey)
-    return () => { document.removeEventListener('mousedown', onClick); document.removeEventListener('keydown', onKey) }
-  }, [locOpen])
-
   /* ── Location display text ── */
   const countryDisplayName = effectiveCountry?.name || COUNTRY_LABELS[siteCountry as CountryCode] || ''
   const locationText = [locationCity?.name, locationState?.name, countryDisplayName].filter(Boolean).join(', ')
-
-  /* ── Clear location ── */
-  const clearLocation = () => {
-    if (onLocationChange) {
-      onLocationChange(null, null, null)
-    } else {
-      onLocationCountryChange(null)
-    }
-  }
 
   return (
     <div className="cd-hero">
@@ -328,74 +139,22 @@ export default function CategoryHero({ category: c, sectorSlug, locationCountry,
         <span className="cd-breadcrumb-current">{c.name}</span>
       </nav>
 
-      {/* Title with location text */}
-      <h1 className="cd-hero-title">
+      {/* Title — h2 because server-side H1 is rendered above by page.tsx */}
+      <h2 className="cd-hero-title">
         Best in {c.name} in {locationText}
-      </h1>
+      </h2>
 
-      {/* Location search bar */}
-      <div className="cd-loc-search" ref={locRef}>
-        <div className="cd-loc-bar">
-          <I d={ic.search} size={16} color="var(--h-muted)" sw={2} />
-          <input
-            ref={locInputRef}
-            className="cd-loc-input"
-            placeholder="Search country, state, or city..."
-            value={locQuery}
-            onChange={e => { setLocQuery(e.target.value); setLocOpen(true) }}
-            onFocus={() => { if (locQuery.length >= 2) setLocOpen(true) }}
-          />
-          {(locationCity || locationState || locationCountry) && (
-            <button type="button" className="cd-loc-clear" onClick={clearLocation} title="Clear location">
-              <I d={ic.x} size={14} color="var(--h-muted)" sw={2} />
-            </button>
-          )}
-        </div>
-        {locOpen && debouncedQ.length >= 2 && locResults.length === 0 && (
-          <div className="cd-loc-dropdown">
-            <div className="cd-loc-empty">No locations found for &ldquo;{debouncedQ}&rdquo;</div>
-          </div>
-        )}
-        {locOpen && locResults.length > 0 && (
-          <div className="cd-loc-dropdown">
-            {/* Countries */}
-            {locResults.some(r => r.type === 'country') && (
-              <>
-                <div className="cd-loc-group-label">Countries</div>
-                {locResults.filter(r => r.type === 'country').map(r => (
-                  <button key={`c-${r.slug}`} type="button" className="cd-loc-option" onClick={() => handleLocSelect(r)}>
-                    <span className="cd-loc-option-name">{r.name}</span>
-                  </button>
-                ))}
-              </>
-            )}
-            {/* States */}
-            {locResults.some(r => r.type === 'state') && (
-              <>
-                <div className="cd-loc-group-label">States</div>
-                {locResults.filter(r => r.type === 'state').map(r => (
-                  <button key={`s-${r.slug}-${r.isoCode}`} type="button" className="cd-loc-option" onClick={() => handleLocSelect(r)}>
-                    <span className="cd-loc-option-name">{r.name}</span>
-                    <span className="cd-loc-option-meta">{r.meta}</span>
-                  </button>
-                ))}
-              </>
-            )}
-            {/* Cities */}
-            {locResults.some(r => r.type === 'city') && (
-              <>
-                <div className="cd-loc-group-label">Cities</div>
-                {locResults.filter(r => r.type === 'city').map(r => (
-                  <button key={`ct-${r.slug}-${r.stateCode}`} type="button" className="cd-loc-option" onClick={() => handleLocSelect(r)}>
-                    <span className="cd-loc-option-name">{r.name}</span>
-                    <span className="cd-loc-option-meta">{r.meta}</span>
-                  </button>
-                ))}
-              </>
-            )}
-          </div>
-        )}
-      </div>
+      {/* Location search — dynamically imported to avoid bundling 16MB geo data upfront */}
+      {onLocationChange && (
+        <LocationSearch
+          effectiveIso={effectiveIso}
+          effectiveCountryName={countryDisplayName}
+          locationCountry={locationCountry}
+          locationState={locationState}
+          locationCity={locationCity}
+          onLocationChange={onLocationChange}
+        />
+      )}
 
       {/* Description — dynamic per category + location */}
       <p className="cd-hero-desc">
