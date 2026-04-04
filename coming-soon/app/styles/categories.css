@@ -1,3 +1,8 @@
+/* ── Loading skeleton shimmer ── */
+.cd-skel { display: block; background: #f0ebe6 }
+.cd-skel--shimmer { background: linear-gradient(90deg, #f0ebe6 25%, #faf5f0 50%, #f0ebe6 75%); background-size: 200% 100%; animation: cdShimmer 1.5s ease infinite }
+@keyframes cdShimmer { 0% { background-position: 200% 0 } 100% { background-position: -200% 0 } }
+
 /* ============================================================
    CATEGORIES BROWSE — cb-* namespace
    ============================================================ */

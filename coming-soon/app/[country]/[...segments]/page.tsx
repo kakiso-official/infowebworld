@@ -1,6 +1,9 @@
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
+
+/** Cache page on Vercel edge for 60s — serves in ~10ms from CDN */
+export const revalidate = 60
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import CategoryPage from '../CategoryPage'

@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { query } from '@/lib/db'
+
+/** Cache page on Vercel edge for 60s */
+export const revalidate = 60
 import { COUNTRY_LABELS, ROOT_COUNTRY } from '../../config/countries'
 import type { CountryCode } from '../../config/countries'
 import Navbar from '../../components/Navbar'
