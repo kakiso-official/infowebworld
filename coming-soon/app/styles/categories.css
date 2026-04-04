@@ -614,10 +614,25 @@
 .cd-hero { margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1.5px solid var(--h-border-light); min-height: 160px }
 .cd-hero-title { font-family: var(--font-bricolage), sans-serif; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800; color: #000; line-height: 1.1; letter-spacing: -.025em; margin-bottom: .5rem }
 .cd-hero-desc { font-family: var(--font-nunito), sans-serif; font-size: clamp(.85rem, 1.8vw, .95rem); color: #000; line-height: 1.7; max-width: 640px; margin-bottom: 1rem }
-/* Server-side hero — visible to crawlers in initial HTML, hidden via JS once client mounts */
-.cd-server-hero { padding: 2rem var(--container-px, 1.5rem); max-width: 1200px; margin: 0 auto; min-height: 80px }
+/* Server-side skeleton — full semantic HTML visible to crawlers, hidden once client loads */
+.cd-server-skeleton { padding: 1.5rem var(--container-px, 1.5rem) 2rem; max-width: 1200px; margin: 0 auto }
+.cd-server-breadcrumb { font-family: var(--font-nunito), sans-serif; font-size: .78rem; color: var(--h-muted); margin-bottom: .75rem }
+.cd-server-breadcrumb a { color: var(--h-muted); text-decoration: none }
+.cd-server-breadcrumb a:hover { color: var(--h-accent) }
 .cd-server-h1 { font-family: var(--font-bricolage), sans-serif; font-size: clamp(1.4rem, 3.5vw, 2.2rem); font-weight: 900; color: #000; margin: 0 0 .5rem }
-.cd-server-desc { font-family: var(--font-nunito), sans-serif; font-size: .9rem; color: #555; line-height: 1.6; max-width: 600px; margin: 0 }
+.cd-server-desc { font-family: var(--font-nunito), sans-serif; font-size: .88rem; color: #555; line-height: 1.65; max-width: 600px; margin: 0 0 1rem }
+.cd-server-stats { display: flex; gap: .75rem; flex-wrap: wrap; margin-bottom: 2rem; font-family: var(--font-nunito), sans-serif; font-size: .82rem; color: #555 }
+.cd-server-stats strong { color: var(--h-accent); font-weight: 800 }
+.cd-server-h2 { font-family: var(--font-bricolage), sans-serif; font-size: clamp(1.1rem, 2.5vw, 1.5rem); font-weight: 800; color: #000; margin: 1.5rem 0 .5rem }
+.cd-server-h3 { font-family: var(--font-nunito), sans-serif; font-size: .95rem; font-weight: 700; color: #000; margin: .75rem 0 .25rem }
+.cd-server-section-desc { font-family: var(--font-nunito), sans-serif; font-size: .85rem; color: #555; line-height: 1.6; margin: 0 0 1rem }
+.cd-server-faq { margin-top: 1.5rem }
+.cd-server-faq-item { margin-bottom: .75rem }
+.cd-server-faq-item p { font-family: var(--font-nunito), sans-serif; font-size: .82rem; color: #555; line-height: 1.6; margin: .15rem 0 0 }
+@media (max-width: 480px) {
+  .cd-server-skeleton { padding: 1rem }
+  .cd-server-h1 { font-size: 1.3rem }
+}
 
 /* Location search bar */
 .cd-loc-search { position: relative; max-width: 440px; margin-bottom: 1.25rem }

@@ -105,11 +105,13 @@ export default function CategoryPage({ segments, sectorSlug }: { segments?: stri
     router.push(`${prefix}${url}`, { scroll: false })
   }, [slug, locationCountry, locationState, locationCity, selectedListingType, selectedTags, siteCountry, sectorSlug, router])
 
-  /* ── Hide server-side hero once client has mounted ── */
+  /* ── Hide server skeleton once client content is ready ── */
   useEffect(() => {
-    const el = document.querySelector('.cd-server-hero')
-    if (el) (el as HTMLElement).style.display = 'none'
-  }, [])
+    if (category) {
+      const el = document.querySelector('.cd-server-skeleton')
+      if (el) (el as HTMLElement).style.display = 'none'
+    }
+  }, [category])
 
   /* ── Data fetching — ALL in parallel ── */
   useEffect(() => {

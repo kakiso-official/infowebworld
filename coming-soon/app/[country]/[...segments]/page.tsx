@@ -414,32 +414,88 @@ export default async function CategoryDetailRoute({
   const isSector = slug && L1_SLUGS.has(slug) && segments.length === 1
   const navSector = sectorSlug || (isSector ? slug : undefined)
 
-  // Server-side H1 + description for L2/L3 (visible to crawlers before JS loads)
-  let serverHero: React.ReactNode = null
+  /* ── Server-side skeleton for L2/L3 — full semantic HTML visible to crawlers ── */
+  let serverSkeleton: React.ReactNode = null
   if (categorySlug && !L1_SLUGS.has(categorySlug)) {
-    const cat = jsonLdScripts ? await fetchCategoryForSeo(categorySlug).catch(() => null) : null
-    // Use already-fetched cat if available, otherwise re-fetch
-    const heroData = cat || (await fetchCategoryForSeo(categorySlug).catch(() => null))
-    if (heroData) {
+    const cat = await fetchCategoryForSeo(categorySlug).catch(() => null)
+    if (cat) {
       const year = new Date().getFullYear()
-      const heroDesc = heroData.seoDescription || heroData.description || `Compare the best ${heroData.name} companies in ${countryName}. Verified reviews, pricing & features.`
-      serverHero = (
-        <div className="cd-server-hero" aria-hidden="false">
-          <h1 className="cd-server-h1">Best {heroData.name} in {countryName} {year}</h1>
-          <p className="cd-server-desc">{heroDesc}</p>
+      const desc = cat.seoDescription || cat.description || `Compare the best ${cat.name} companies in ${countryName}. Verified reviews, pricing & features.`
+      const parentHref = cat.parentSlug
+        ? (cat.level === 3 && sectorSlug ? `/${sectorSlug}/${cat.parentSlug}` : `/${cat.parentSlug}`)
+        : null
+
+      // Generate FAQ server-side (same 5 Qs as client renders)
+      const faqItems = [
+        { q: `What is ${cat.name}?`, a: cat.description || `${cat.name} encompasses businesses and solutions that help organizations succeed.` },
+        { q: `How do I find the best ${cat.name} companies?`, a: `Browse verified ${cat.name} companies on InfoWebWorld. Use filters to narrow by listing type, features, and tags.` },
+        { q: `Is it free to list my ${cat.name} business?`, a: 'Yes, InfoWebWorld offers a free listing option. Premium plans are available for enhanced visibility and a verified badge.' },
+        { q: `How are ${cat.name} companies ranked?`, a: 'Rankings are based on verified reviews, satisfaction scores, and market presence. Our team verifies every listing.' },
+        { q: `Can I compare ${cat.name} solutions?`, a: `Yes! Compare ${cat.name} solutions across features, pricing, satisfaction scores, and more.` },
+      ]
+
+      serverSkeleton = (
+        <div className="cd-server-skeleton">
+          {/* Breadcrumb */}
+          <nav className="cd-server-breadcrumb" aria-label="Breadcrumb">
+            <a href="/">Home</a>
+            <span> &gt; </span>
+            <a href="/categories">Categories</a>
+            {cat.parentName && parentHref && (
+              <>
+                <span> &gt; </span>
+                <a href={parentHref}>{cat.parentName}</a>
+              </>
+            )}
+            <span> &gt; </span>
+            <span>{cat.name}</span>
+          </nav>
+
+          {/* H1 */}
+          <h1 className="cd-server-h1">Best {cat.name} in {countryName} {year}</h1>
+
+          {/* Description */}
+          <p className="cd-server-desc">{desc}</p>
+
+          {/* Stats */}
+          <div className="cd-server-stats">
+            <span><strong>{cat.listingCount || 0}</strong> companies</span>
+            {cat.subcategoryCount > 0 && <span><strong>{cat.subcategoryCount}</strong> subcategories</span>}
+          </div>
+
+          {/* Section headings — proper H2/H3 hierarchy for crawlers */}
+          <h2 className="cd-server-h2">Top {cat.name} Companies in {countryName}</h2>
+          <p className="cd-server-section-desc">Browse and compare verified {cat.name} providers. Read reviews, compare features, and connect directly.</p>
+
+          {cat.subcategoryCount > 0 && (
+            <h2 className="cd-server-h2">Explore {cat.name} Subcategories</h2>
+          )}
+
+          {/* FAQ */}
+          <section className="cd-server-faq">
+            <h2 className="cd-server-h2">Frequently Asked Questions</h2>
+            {faqItems.map((f, i) => (
+              <div key={i} className="cd-server-faq-item">
+                <h3 className="cd-server-h3">{f.q}</h3>
+                <p>{f.a}</p>
+              </div>
+            ))}
+          </section>
         </div>
       )
     }
   }
 
+  const catSegments = L1_SLUGS.has(segments[0]) && segments.length > 1 ? segments.slice(1) : segments
+
   return (
     <>
       {jsonLdScripts}
       <Navbar sectorSlug={navSector} />
-      {serverHero}
+      {serverSkeleton}
       <Suspense>
         <CategoryPage
-          segments={L1_SLUGS.has(segments[0]) && segments.length > 1 ? segments.slice(1) : segments}
+          segments={catSegments}
           sectorSlug={sectorSlug || slug || ''}
         />
       </Suspense>

@@ -124,24 +124,9 @@ export default function CategoryHero({ category: c, sectorSlug, locationCountry,
 
   return (
     <div className="cd-hero">
-      {/* Breadcrumb */}
-      <nav className="cd-breadcrumb">
-        <Link href="/">Home</Link>
-        <span className="cd-breadcrumb-sep">&gt;</span>
-        <Link href="/categories">Categories</Link>
-        {c.parentName && c.parentSlug && (
-          <>
-            <span className="cd-breadcrumb-sep">&gt;</span>
-            <Link href={c.level === 3 && sectorSlug ? `/${sectorSlug}/${c.parentSlug}` : `/${c.parentSlug}`}>{c.parentName}</Link>
-          </>
-        )}
-        <span className="cd-breadcrumb-sep">&gt;</span>
-        <span className="cd-breadcrumb-current">{c.name}</span>
-      </nav>
-
-      {/* Title — h2 because server-side H1 is rendered above by page.tsx */}
+      {/* Location-aware subtitle — updates when user searches a location */}
       <h2 className="cd-hero-title">
-        Best in {c.name} in {locationText}
+        {c.name} in {locationText}
       </h2>
 
       {/* Location search — dynamically imported to avoid bundling 16MB geo data upfront */}
