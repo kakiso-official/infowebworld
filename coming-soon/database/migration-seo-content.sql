@@ -3,7 +3,7 @@
 
 CREATE TABLE IF NOT EXISTS category_seo_content (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  category_id INT NOT NULL,
+  category_id SMALLINT(5) UNSIGNED NOT NULL,
   rich_description TEXT DEFAULT NULL COMMENT '500-800 word unique description',
   buyers_guide JSON DEFAULT NULL COMMENT '{ features: [], questions: [], pitfalls: [], pricing_info: "" }',
   use_cases JSON DEFAULT NULL COMMENT '[{ title, description, icon }]',
