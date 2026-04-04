@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { query } from '@/lib/db'
+import { unstable_cache } from 'next/cache'
 
-/** Cache page on Vercel edge for 60s */
 export const revalidate = 60
+
 import { COUNTRY_LABELS, ROOT_COUNTRY } from '../../config/countries'
 import type { CountryCode } from '../../config/countries'
 import Navbar from '../../components/Navbar'
@@ -45,16 +46,21 @@ export default async function CategoriesPage({ params }: { params: Promise<{ cou
   const { country } = await params
   const countryName = COUNTRY_LABELS[country as CountryCode] || 'United States'
 
-  const rows = await query(
-    `SELECT c.*, p.name as parent_name, p.slug as parent_slug,
-            CASE WHEN c.level = 1 THEN c.slug WHEN c.level = 2 THEN p.slug WHEN c.level = 3 THEN gp.slug END as sector_slug
-     FROM categories c
-     LEFT JOIN categories p ON p.id = c.parent_id
-     LEFT JOIN categories gp ON gp.id = p.parent_id
-     WHERE c.is_launched = 1 AND c.is_active = 1 AND c.is_navigation = 1
-     ORDER BY c.sort_order`
-  ).catch(() => [])
-  const initialCategories = JSON.parse(JSON.stringify(rows))
+  const getCachedCategories = unstable_cache(
+    async () => {
+      const r = await query(
+        `SELECT c.*, p.name as parent_name, p.slug as parent_slug,
+                CASE WHEN c.level = 1 THEN c.slug WHEN c.level = 2 THEN p.slug WHEN c.level = 3 THEN gp.slug END as sector_slug
+         FROM categories c LEFT JOIN categories p ON p.id = c.parent_id LEFT JOIN categories gp ON gp.id = p.parent_id
+         WHERE c.is_launched = 1 AND c.is_active = 1 AND c.is_navigation = 1 ORDER BY c.sort_order`
+      )
+      return JSON.parse(JSON.stringify(r))
+    },
+    ['all-categories-browse'],
+    { revalidate: 300 }
+  )
+  const rows = await getCachedCategories().catch(() => [])
+  const initialCategories = rows
 
   const sectors = rows.filter((r: any) => Number(r.level) === 1).length
   const l2Count = rows.filter((r: any) => Number(r.level) === 2).length

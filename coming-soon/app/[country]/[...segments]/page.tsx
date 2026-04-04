@@ -1,23 +1,74 @@
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-
-/** Cache page on Vercel edge for 60s — serves in ~10ms from CDN */
-export const revalidate = 60
+import { unstable_cache } from 'next/cache'
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import CategoryPage from '../CategoryPage'
 import SectorAllBrowse from '../components-category/SectorAllBrowse'
 import { getSectorMeta } from '../sector/sector-demo-data'
-import { COUNTRY_LABELS, ROOT_COUNTRY } from '../../config/countries'
+import { COUNTRY_LABELS, ROOT_COUNTRY, VALID_COUNTRIES } from '../../config/countries'
 import type { CountryCode } from '../../config/countries'
 import { query, queryOne } from '@/lib/db'
+
+/** ISR: cache on Vercel edge for 60s */
+export const revalidate = 60
 
 /* ── Known L1 sector slugs ── */
 const L1_SLUGS = new Set([
   'artificial-intelligence-ml', 'software-saas', 'it-services-agencies',
   'startups-innovation', 'local-business', 'professional-services',
 ])
+
+/** Pre-build L1 sector pages at deploy time — instant 10ms from CDN */
+export async function generateStaticParams() {
+  const params: { country: string; segments: string[] }[] = []
+  for (const country of VALID_COUNTRIES) {
+    for (const slug of L1_SLUGS) {
+      params.push({ country, segments: [slug] })
+    }
+  }
+  return params
+}
+
+/* ── Cached shared data (same across ALL category pages, cached 5 min) ── */
+const getCachedAllCategories = unstable_cache(
+  async () => {
+    const rows = await query(
+      `SELECT c.*, p.name as parent_name, p.slug as parent_slug,
+              CASE WHEN c.level = 1 THEN c.slug WHEN c.level = 2 THEN p.slug WHEN c.level = 3 THEN gp.slug END as sector_slug
+       FROM categories c LEFT JOIN categories p ON p.id = c.parent_id LEFT JOIN categories gp ON gp.id = p.parent_id
+       WHERE c.is_launched = 1 AND c.is_active = 1 AND c.is_navigation = 1 ORDER BY c.sort_order`
+    )
+    return JSON.parse(JSON.stringify(rows))
+  },
+  ['all-categories'],
+  { revalidate: 300 }
+)
+
+const getCachedTagsWithGroups = unstable_cache(
+  async () => {
+    const [groups, tags] = await Promise.all([
+      query('SELECT id, name, slug, description, icon, color FROM tag_groups WHERE is_active = 1 ORDER BY sort_order'),
+      query('SELECT t.id, t.tag_group_id, t.name, t.slug FROM tags t JOIN tag_groups tg ON tg.id = t.tag_group_id WHERE t.is_active = 1 AND tg.is_active = 1 ORDER BY t.sort_order'),
+    ])
+    const tagsByGroup = new Map<number, unknown[]>()
+    for (const t of tags as Array<{ id: number; tag_group_id: number; name: string; slug: string }>) {
+      const list = tagsByGroup.get(t.tag_group_id) ?? []
+      list.push({ id: t.id, tagGroupId: t.tag_group_id, name: t.name, slug: t.slug })
+      tagsByGroup.set(t.tag_group_id, list)
+    }
+    const data = (groups as Array<Record<string, unknown>>).map(g => ({
+      id: String(g.id), name: String(g.name), slug: String(g.slug),
+      description: String(g.description ?? ''), icon: String(g.icon ?? ''), color: String(g.color ?? ''),
+      sortOrder: Number(g.sort_order ?? 0), isActive: true,
+      tags: (tagsByGroup.get(Number(g.id)) ?? []),
+    }))
+    return JSON.parse(JSON.stringify(data))
+  },
+  ['tag-groups-with-tags'],
+  { revalidate: 300 }
+)
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
 
@@ -126,10 +177,10 @@ async function fetchCategoryForSeo(slug: string): Promise<CatSeo | null> {
   }
 }
 
-/* ── Fetch ALL category page data server-side (replaces 4 client API calls) ── */
+/* ── Fetch category page data — 2 DB round trips + cached shared data ── */
 async function fetchCategoryPageData(categorySlug: string) {
   try {
-    // 1. Category by slug (with parent, subcategories, listing types, active count)
+    // Round trip 1: category row (everything else depends on this)
     const catRow = await queryOne(
       `SELECT c.*, p.name as parent_name, p.slug as parent_slug,
               CASE WHEN c.level = 1 THEN c.slug WHEN c.level = 2 THEN p.slug WHEN c.level = 3 THEN gp.slug END as sector_slug
@@ -144,8 +195,8 @@ async function fetchCategoryPageData(categorySlug: string) {
     const cid = Number(catRow.id)
     const level = Number(catRow.level)
 
-    // Batch 1: category-specific queries (3 connections max)
-    const [subcats, listingTypes, parentRow] = await Promise.all([
+    // Round trip 2: all category-specific queries + cached shared data (parallel)
+    const [subcats, listingTypes, parentRow, countRow, listings, listingCount, allCats, tagGroupsData] = await Promise.all([
       query(
         `SELECT c.*, (SELECT COUNT(*) FROM submissions s WHERE s.category_id = c.id AND s.status IN ('active','paid')) as listing_count
          FROM categories c WHERE c.parent_id = ? AND c.is_active = 1 AND c.is_navigation = 1 ORDER BY c.sort_order`,
@@ -157,10 +208,6 @@ async function fetchCategoryPageData(categorySlug: string) {
         ? query('SELECT lt.id, lt.name, lt.slug, lt.sort_order FROM listing_types lt JOIN categories c ON c.id = lt.category_id WHERE c.parent_id = ? AND c.is_active = 1 ORDER BY lt.sort_order', [cid])
         : query('SELECT lt.id, lt.name, lt.slug, lt.sort_order FROM listing_types lt JOIN categories c3 ON c3.id = lt.category_id JOIN categories c2 ON c2.id = c3.parent_id WHERE c2.parent_id = ? AND c3.is_active = 1 ORDER BY lt.sort_order LIMIT 200', [cid]),
       catRow.parent_id ? queryOne('SELECT id, name, slug, icon, color FROM categories WHERE id = ?', [catRow.parent_id]) : Promise.resolve(null),
-    ])
-
-    // Batch 2: global + listing queries (3 connections max)
-    const [countRow, allCats, tagGroups] = await Promise.all([
       queryOne(
         `SELECT COUNT(*) as cnt FROM submissions s WHERE s.status IN ('active','paid') AND s.category_id IN (
           SELECT id FROM categories WHERE id = ? AND is_active = 1
@@ -168,18 +215,6 @@ async function fetchCategoryPageData(categorySlug: string) {
           UNION SELECT c3.id FROM categories c3 JOIN categories c2 ON c2.id = c3.parent_id WHERE c2.parent_id = ? AND c3.is_active = 1
         )`, [cid, cid, cid]
       ),
-      query(
-        `SELECT c.*, p.name as parent_name, p.slug as parent_slug,
-                CASE WHEN c.level = 1 THEN c.slug WHEN c.level = 2 THEN p.slug WHEN c.level = 3 THEN gp.slug END as sector_slug
-         FROM categories c LEFT JOIN categories p ON p.id = c.parent_id LEFT JOIN categories gp ON gp.id = p.parent_id
-         WHERE c.is_launched = 1 AND c.is_active = 1 AND c.is_navigation = 1 ORDER BY c.sort_order`
-      ),
-      query('SELECT id, name, slug, description, icon, color FROM tag_groups WHERE is_active = 1 ORDER BY sort_order'),
-    ])
-
-    // Batch 3: tags + listings (2 connections max)
-    const [tagRows, listings, listingCount] = await Promise.all([
-      query('SELECT t.id, t.tag_group_id, t.name, t.slug FROM tags t JOIN tag_groups tg ON tg.id = t.tag_group_id WHERE t.is_active = 1 AND tg.is_active = 1 ORDER BY t.sort_order'),
       query(
         `SELECT s.*, c.name as category_name, c.slug as category_slug, c.color as category_color, c.icon as category_icon,
                 lt.name as listing_type_name, lt.slug as listing_type_slug
@@ -200,28 +235,16 @@ async function fetchCategoryPageData(categorySlug: string) {
           UNION SELECT c3.id FROM categories c3 JOIN categories c2 ON c2.id = c3.parent_id WHERE c2.parent_id = ? AND c3.is_active = 1
         )`, [cid, cid, cid]
       ),
+      // These are CACHED — ~0ms after first call (shared across all pages)
+      getCachedAllCategories(),
+      getCachedTagsWithGroups(),
     ])
 
-    // Build tag groups with nested tags
-    const tagsByGroup = new Map<number, unknown[]>()
-    for (const t of tagRows as Array<{ id: number; tag_group_id: number; name: string; slug: string }>) {
-      const list = tagsByGroup.get(t.tag_group_id) ?? []
-      list.push({ id: t.id, tagGroupId: t.tag_group_id, name: t.name, slug: t.slug })
-      tagsByGroup.set(t.tag_group_id, list)
-    }
-    const tagGroupsData = (tagGroups as Array<Record<string, unknown>>).map(g => ({
-      id: String(g.id), name: String(g.name), slug: String(g.slug),
-      description: String(g.description ?? ''), icon: String(g.icon ?? ''), color: String(g.color ?? ''),
-      sortOrder: Number(g.sort_order ?? 0), isActive: true,
-      tags: (tagsByGroup.get(Number(g.id)) ?? []) as Array<{ id: number; name: string; slug: string; tagGroupId: number }>,
-    }))
-
-    // Serialize all data to plain JSON (avoids mysql2 Buffer issues)
     return JSON.parse(JSON.stringify({
-      category: { ...catRow, subcategories: subcats, listingTypes: listingTypes, parent: parentRow, activeListings: Number(countRow?.cnt ?? 0) },
+      category: { ...catRow, subcategories: subcats, listingTypes, parent: parentRow, activeListings: Number(countRow?.cnt ?? 0) },
       allCategories: allCats,
       tagGroups: tagGroupsData,
-      listings: listings,
+      listings,
       listingTotal: Number(listingCount?.cnt ?? 0),
     }))
   } catch (err) {
