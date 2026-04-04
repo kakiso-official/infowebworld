@@ -74,58 +74,93 @@ async function generateForCategory(categoryId: number) {
   const catName = String(cat.name)
   const sectorName = sector ? String(sector.name) : ''
 
-  // ── 1. Rich Description ──
-  const descPrompt = `You are an expert SEO content writer for a business directory platform (InfoWebWorld.com).
+  // Fetch cousin categories (same L1, different L2) for more internal links
+  const sectorId = sector ? Number(sector.id) : (parent ? Number(parent.id) : 0)
+  const cousins = sectorId ? await query(
+    `SELECT c.name, c.slug FROM categories c WHERE c.parent_id IN (SELECT id FROM categories WHERE parent_id = ? AND is_active = 1) AND c.id != ? AND c.is_active = 1 AND c.is_navigation = 1 ORDER BY RAND() LIMIT 12`,
+    [sectorId, categoryId]
+  ) : []
 
-Write a comprehensive, unique description for this business category page. This will be the main content on the page.
+  const siblingList = (siblings as Array<Record<string, unknown>>).map(s => `${s.name} (slug: ${s.slug})`).join(', ')
+  const cousinList = (cousins as Array<Record<string, unknown>>).map(c => `${c.name} (slug: ${c.slug})`).join(', ')
+  const subcatList = (subcats as Array<Record<string, unknown>>).map(s => `${s.name} (slug: ${s.slug})`).join(', ')
+
+  // ── ANTI-AI STYLE GUIDE (shared across all prompts) ──
+  const styleGuide = `
+CRITICAL WRITING RULES — your output MUST pass AI detection tools with <10% AI score:
+- Write like a seasoned industry journalist, NOT an AI assistant
+- Use contractions naturally (don't, won't, it's, they're, you'll)
+- Vary sentence length dramatically: mix 5-word punches with 25-word complex sentences
+- Start paragraphs differently each time — NEVER start with "In today's", "In the realm of", "When it comes to", "It's important to", "Whether you're"
+- Use specific numbers and data points (even approximate ones like "roughly 60% of mid-size companies")
+- Include occasional informal phrasing ("here's the thing", "the bottom line", "let's be honest")
+- Reference real-world context (market shifts, buyer behavior, industry pain points)
+- Avoid AI giveaway patterns: no bullet-point-like paragraphs, no "Furthermore/Moreover/Additionally" transitions
+- Use active voice predominantly. Passive voice sparingly for variety.
+- NO generic filler. Every sentence must add specific value.
+- Do NOT use the word "landscape" or "leverage" or "navigate" or "robust" or "comprehensive" or "delve" or "crucial"
+`
+
+  // ── 1. Rich Description ──
+  const descPrompt = `You're a senior tech editor writing a category overview for a business directory.
 
 ${ctx}
 
-Requirements:
-- 500-700 words, well-structured with natural paragraphs
-- Write in an authoritative, helpful tone (like G2 or Capterra would)
-- Include what this category encompasses, who uses it, key benefits, common use cases
-- Naturally mention related terms and synonyms for SEO
-- Do NOT use markdown headers (no # or ##). Just plain paragraphs.
-- Do NOT mention "InfoWebWorld" in the text body
-- Write as editorial content, not marketing copy
-- Include 2-3 natural internal link suggestions as [LINK:category-slug:Display Text] format
+RELATED CATEGORIES TO LINK (use [LINK:slug:Display Text] format):
+Siblings: ${siblingList || 'none'}
+Cousins in sector: ${cousinList || 'none'}
+Subcategories: ${subcatList || 'none'}
 
-Return ONLY the description text, nothing else.`
+${styleGuide}
+
+Write a 600-800 word overview of "${catName}" for people researching solutions in this space. Structure:
+- Opening paragraph: what this category actually is, in plain terms (3-4 sentences)
+- Who buys these solutions and why — specific roles, company types, pain points (4-5 sentences)
+- The current state of the market — what's changed recently, what buyers should know (3-4 sentences)
+- Key capabilities that separate good solutions from great ones (4-5 sentences)
+- Where this fits in the bigger picture — how it connects to adjacent categories (3-4 sentences, use [LINK:slug:Text] here)
+- Closing paragraph: practical advice for someone starting their search (3-4 sentences)
+
+Include 6-10 internal links as [LINK:slug:Display Text] spread naturally throughout. Link to siblings, cousins, and subcategories where they fit the context.
+
+No markdown. No headers. No bullet points. Just flowing editorial paragraphs.
+Return ONLY the description text.`
 
   const richDescription = await callGemini(descPrompt)
 
   // ── 2. Buyer's Guide ──
-  const guidePrompt = `You are an expert business technology advisor.
+  const guidePrompt = `You're a procurement consultant advising a VP of Operations.
 
 ${ctx}
+${styleGuide}
 
-Generate a buyer's guide for someone evaluating ${catName} solutions. Return valid JSON only, no markdown:
+Create a practical buyer's guide for evaluating ${catName} vendors. Return valid JSON only, no markdown:
 
 {
   "features": [
-    { "title": "Feature Name", "description": "Why this matters and what to look for (1-2 sentences)" }
+    { "title": "Feature Name", "description": "One sharp sentence on why this matters, written like advice from a colleague who's been through 50 vendor evaluations" }
   ],
-  "questions": ["Question to ask vendors..."],
-  "pitfalls": ["Common mistake to avoid..."],
-  "pricing_info": "Brief overview of typical pricing models and ranges for ${catName} (2-3 sentences)"
+  "questions": ["Direct, specific question to ask a vendor — not generic fluff"],
+  "pitfalls": ["Real mistake buyers make, described in one blunt sentence"],
+  "pricing_info": "2-3 sentences about how ${catName} is typically priced — mention actual models (per seat, usage-based, flat fee) and rough ranges where possible"
 }
 
-Include exactly 6 features, 5 questions, 4 pitfalls. Be specific to ${catName}, not generic.`
+Exactly 6 features, 5 questions, 4 pitfalls. Every item must be specific to ${catName} — nothing that could apply to any software category.`
 
   const guideRaw = await callGemini(guidePrompt)
   const buyersGuide = JSON.parse(cleanJson(guideRaw))
 
   // ── 3. Use Cases ──
   const useCasePrompt = `${ctx}
+${styleGuide}
 
-Generate 5 specific use cases for ${catName}. Return valid JSON only:
+Generate 5 real-world use cases for ${catName}. Each targets a different industry or team type. Return valid JSON only:
 
 [
-  { "title": "Use Case Title (e.g. '${catName} for Healthcare')", "description": "2-3 sentence description of how this industry/role uses ${catName}", "icon": "one of: building, heart, graduation, cart, code, briefcase, users, globe, chart, shield" }
+  { "title": "Specific Title (e.g., '${catName} for D2C E-commerce Brands')", "description": "2-3 sentences describing the actual problem this industry faces and how ${catName} solves it. Be specific — mention workflows, metrics, or outcomes.", "icon": "one of: building, heart, graduation, cart, code, briefcase, users, globe, chart, shield" }
 ]
 
-Make each use case target a different industry or business size. Be specific, not generic.`
+Don't use generic titles like "For Small Business". Be specific: "For Series-A SaaS Startups" or "For Hospital IT Departments".`
 
   const useCaseRaw = await callGemini(useCasePrompt)
   const useCases = JSON.parse(cleanJson(useCaseRaw))
@@ -133,71 +168,73 @@ Make each use case target a different industry or business size. Be specific, no
   // ── 4. Comparisons ──
   const siblingNames = (siblings as Array<Record<string, unknown>>).slice(0, 4).map(s => `${s.name} (slug: ${s.slug})`)
   const compPrompt = `${ctx}
+${styleGuide}
 
-Generate comparison summaries between "${catName}" and these related categories:
+Write comparison blurbs between "${catName}" and these related categories:
 ${siblingNames.map((s, i) => `${i + 1}. ${s}`).join('\n')}
+${siblingNames.length === 0 ? 'Generate 3 comparisons with commonly confused or compared alternatives in this space. Use realistic category names and slugs.' : ''}
 
 Return valid JSON only:
 [
-  { "vs_name": "Other Category Name", "vs_slug": "other-category-slug", "summary": "2-3 sentence comparison explaining key differences", "differences": ["Difference 1", "Difference 2", "Difference 3"] }
+  { "vs_name": "Other Category Name", "vs_slug": "other-category-slug", "summary": "2-3 sentence comparison that a real buyer would find useful. What's the actual decision point between these two?", "differences": ["Sharp difference 1", "Sharp difference 2", "Sharp difference 3"] }
 ]
 
-${siblingNames.length === 0 ? 'If no siblings available, generate 2 comparisons with commonly compared alternatives in this space.' : ''}`
+Write differences as decisive statements, not vague observations.`
 
   const compRaw = await callGemini(compPrompt)
   const comparisons = JSON.parse(cleanJson(compRaw))
 
   // ── 5. Long-tail Keywords ──
-  const kwPrompt = `Generate long-tail keyword phrases for a "${catName}" category page on a business directory. Return valid JSON only:
+  const year = new Date().getFullYear()
+  const kwPrompt = `Generate realistic long-tail search queries that real buyers type when looking for ${catName} solutions. Return valid JSON only:
 
 {
-  "by_industry": ["Best ${catName} for Healthcare", "Best ${catName} for Finance", "Best ${catName} for Education", "Best ${catName} for E-commerce", "Best ${catName} for Real Estate", "Best ${catName} for Manufacturing"],
-  "by_size": ["Best ${catName} for Startups", "Best ${catName} for Small Business", "Best ${catName} for Enterprise", "Best ${catName} for Agencies", "Best ${catName} for Freelancers", "Best ${catName} for Mid-Market"],
-  "by_need": ["Free ${catName} Tools", "Open Source ${catName}", "Best ${catName} with API", "Best ${catName} for Teams", "${catName} with Free Trial", "Affordable ${catName} Solutions", "Best ${catName} ${new Date().getFullYear()}", "${catName} Reviews & Ratings"]
+  "by_industry": ["Best ${catName} for Healthcare", "Best ${catName} for Financial Services", "Best ${catName} for Education", "Best ${catName} for E-commerce", "Best ${catName} for Real Estate", "Best ${catName} for Manufacturing", "Best ${catName} for Logistics", "Best ${catName} for SaaS Companies"],
+  "by_size": ["Best ${catName} for Startups", "Best ${catName} for Small Business", "Best ${catName} for Enterprise", "Best ${catName} for Agencies", "Best ${catName} for Freelancers", "Best ${catName} for Mid-Market", "Best ${catName} for Solopreneurs", "Best ${catName} for Remote Teams"],
+  "by_need": ["Free ${catName} Tools ${year}", "Open Source ${catName} Alternatives", "Best ${catName} with API Integration", "Best ${catName} for Teams Under 50", "${catName} with Free Trial", "Affordable ${catName} for Bootstrapped Startups", "Top Rated ${catName} ${year}", "${catName} Comparison & Reviews", "Best ${catName} with Mobile App", "Enterprise-Grade ${catName} Platforms"]
 }
 
-Make keywords specific and natural-sounding. Each should be a real search query someone would type.`
+Make every keyword something a real person would Google. No AI-sounding phrases.`
 
   const kwRaw = await callGemini(kwPrompt)
   const longTailKeywords = JSON.parse(cleanJson(kwRaw))
 
   // ── 6. Complementary Categories ──
-  const compCatPrompt = `${ctx}
+  const compCatPrompt = `A company just bought a ${catName} solution. What 5 other categories of tools/services would they typically need next? Think about the actual workflow — what comes before, after, or alongside ${catName}?
 
-What 4-5 other business software/service categories would complement "${catName}"? These are categories that a business using ${catName} would also likely need.
+Return valid JSON array of category names only:
+["Category Name 1", "Category Name 2", "Category Name 3", "Category Name 4", "Category Name 5"]
 
-Return valid JSON array of category descriptions only:
-["Category Name 1", "Category Name 2", "Category Name 3", "Category Name 4"]
-
-Be specific. For example, if the category is "CRM Software", complementary would be "Email Marketing", "Sales Analytics", "Customer Support", "Marketing Automation".`
+Be specific and practical. These should be categories that genuinely appear together in a company's tech stack or service vendor list.`
 
   const compCatRaw = await callGemini(compCatPrompt)
   const complementaryCategories = JSON.parse(cleanJson(compCatRaw))
 
   // ── 7. Extended FAQ ──
   const faqPrompt = `${ctx}
+${styleGuide}
 
-Generate 12 frequently asked questions and detailed answers about "${catName}" for a business directory page. Return valid JSON only:
+Write 12 FAQ entries about "${catName}" that real buyers actually search for. Return valid JSON only:
 
 [
-  { "q": "Question?", "a": "Detailed answer (2-4 sentences)" }
+  { "q": "Question phrased exactly how someone would Google it?", "a": "3-4 sentence answer that's genuinely helpful. Include a specific fact, number, or recommendation. Don't hedge with 'it depends' — give a real answer first, then add nuance." }
 ]
 
-Include questions about:
-- What ${catName} is and how it works
-- Pricing and cost
-- Key features to look for
-- Best options for different business sizes
-- Implementation and migration
-- ROI and benefits
-- Comparisons with alternatives
-- Integration capabilities
-- Security and compliance
-- Free vs paid options
-- Trends in ${catName}
-- How to evaluate vendors
+Topics to cover (one question each):
+1. What ${catName} actually does (plain English)
+2. Typical cost / pricing ranges
+3. Must-have features
+4. Best option for small teams (<20 people)
+5. Best option for enterprise
+6. How long implementation takes
+7. ${catName} vs the most common alternative
+8. Integration requirements
+9. Security / compliance standards
+10. Free or open-source options
+11. How to evaluate vendors (red flags)
+12. Current trends shaping ${catName} in ${year}
 
-Make answers informative and specific to ${catName}. Each answer should be 2-4 sentences.`
+Write answers like a knowledgeable friend giving advice, not a corporate FAQ page.`
 
   const faqRaw = await callGemini(faqPrompt)
   const extendedFaq = JSON.parse(cleanJson(faqRaw))
