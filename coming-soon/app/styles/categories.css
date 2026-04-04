@@ -1,7 +1,68 @@
-/* ── Loading skeleton shimmer ── */
-.cd-skel { display: block; background: #f0ebe6 }
-.cd-skel--shimmer { background: linear-gradient(90deg, #f0ebe6 25%, #faf5f0 50%, #f0ebe6 75%); background-size: 200% 100%; animation: cdShimmer 1.5s ease infinite }
-@keyframes cdShimmer { 0% { background-position: 200% 0 } 100% { background-position: -200% 0 } }
+/* ══════════════════════════════════════
+   Loading skeleton
+   ══════════════════════════════════════ */
+.sk-page { background: #fff; min-height: 100vh; padding: clamp(1rem, 3vw, 2rem) 0 }
+.sk-container { max-width: 1340px; margin: 0 auto; padding: 0 clamp(.75rem, 2.5vw, 1.5rem) }
+
+/* Base shimmer block */
+.sk { display: block; border-radius: 6px; background: linear-gradient(90deg, #f0ebe6 25%, #faf5f0 50%, #f0ebe6 75%); background-size: 200% 100%; animation: skShimmer 1.4s ease-in-out infinite }
+@keyframes skShimmer { 0% { background-position: 200% 0 } 100% { background-position: -200% 0 } }
+
+/* Rows */
+.sk-row { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center }
+.sk-row--breadcrumb { margin-bottom: 1rem }
+.sk-row--pills { margin-bottom: 1.5rem }
+.sk-row--chips { margin-bottom: 1.75rem }
+
+/* Individual skeleton elements */
+.sk--sm { width: 36px; height: 10px }
+.sk--md { width: 64px; height: 10px }
+.sk--lg { width: 100px; height: 10px }
+.sk--title { width: 55%; max-width: 400px; height: clamp(24px, 4vw, 34px); border-radius: 8px; margin-bottom: .75rem }
+.sk--desc { width: 75%; max-width: 500px; height: 13px; margin-bottom: .4rem }
+.sk--desc-short { width: 50%; max-width: 320px; margin-bottom: 1.25rem }
+.sk--pill { width: 88px; height: 28px; border-radius: 999px }
+.sk--pill-wide { width: 112px }
+.sk--search { width: 100%; max-width: 420px; height: 46px; border-radius: 999px; margin-bottom: 1.5rem }
+.sk--search-wide { max-width: 560px; height: 50px }
+.sk--chip { width: 80px; height: 30px; border-radius: 999px }
+.sk--chip-lg { width: 110px }
+.sk--chip-sm { width: 64px }
+.sk--section-heading { width: 180px; height: 22px; border-radius: 6px; margin-bottom: 1.25rem }
+
+/* Card skeleton */
+.sk-cards { display: grid; grid-template-columns: 1fr; gap: 1rem }
+.sk-card { border: 2px solid #f0ebe6; border-radius: 14px; padding: clamp(1rem, 2vw, 1.25rem) }
+.sk-card-head { display: flex; gap: .75rem; margin-bottom: .75rem; align-items: center }
+.sk--avatar { width: 48px; height: 48px; border-radius: 10px; flex-shrink: 0 }
+.sk-card-info { flex: 1; min-width: 0 }
+.sk--card-title { width: 65%; height: 15px; margin-bottom: 6px }
+.sk--card-sub { width: 85%; height: 11px }
+.sk--card-line { width: 100%; height: 11px; margin-bottom: 5px }
+.sk--card-line-short { width: 70%; margin-bottom: .75rem }
+.sk-card-actions { display: flex; gap: .5rem }
+.sk--btn { width: 96px; height: 32px; border-radius: 8px }
+.sk--btn-sm { width: 72px }
+
+/* Sector card skeleton (categories page) */
+.sk-grid--sectors { display: grid; grid-template-columns: 1fr; gap: 1rem }
+.sk-sector-card { border: 2px solid #f0ebe6; border-radius: 14px; overflow: hidden }
+.sk--sector-header { height: 52px; border-radius: 0 }
+.sk-sector-body { padding: .85rem }
+.sk--sector-row { width: 80%; height: 13px; margin-bottom: .5rem }
+.sk--sector-row-md { width: 65% }
+.sk--sector-row-lg { width: 90% }
+.sk--sector-row-sm { width: 50% }
+
+/* ── Responsive ── */
+@media (min-width: 640px) {
+  .sk-cards { grid-template-columns: repeat(2, 1fr) }
+  .sk-grid--sectors { grid-template-columns: repeat(2, 1fr) }
+}
+@media (min-width: 1024px) {
+  .sk-cards { grid-template-columns: repeat(2, 1fr) }
+  .sk-grid--sectors { grid-template-columns: repeat(3, 1fr) }
+}
 
 /* ============================================================
    CATEGORIES BROWSE — cb-* namespace

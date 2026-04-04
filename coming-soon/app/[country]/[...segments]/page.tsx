@@ -20,12 +20,13 @@ const L1_SLUGS = new Set([
   'startups-innovation', 'local-business', 'professional-services',
 ])
 
-/** Pre-build L1 sector pages at deploy time — instant 10ms from CDN */
+/** Pre-build L1 sector pages + /all pages at deploy time — instant 10ms from CDN */
 export async function generateStaticParams() {
   const params: { country: string; segments: string[] }[] = []
   for (const country of VALID_COUNTRIES) {
     for (const slug of L1_SLUGS) {
-      params.push({ country, segments: [slug] })
+      params.push({ country, segments: [slug] })           // L1 sector page
+      params.push({ country, segments: [slug, 'all'] })    // /all browse page
     }
   }
   return params
