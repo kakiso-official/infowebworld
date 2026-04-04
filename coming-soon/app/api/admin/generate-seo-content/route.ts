@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import { query, queryOne, execute } from '@/lib/db'
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent'
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent'
 
 async function callGemini(prompt: string): Promise<string> {
   const key = process.env.GEMINI_API_KEY
@@ -210,7 +210,7 @@ Make answers informative and specific to ${catName}. Each answer should be 2-4 s
       `UPDATE category_seo_content SET
         rich_description = ?, buyers_guide = ?, use_cases = ?, comparisons = ?,
         long_tail_keywords = ?, complementary_categories = ?, extended_faq = ?,
-        generated_at = NOW(), model_version = 'gemini-2.0-flash'
+        generated_at = NOW(), model_version = 'gemini-2.0-flash-lite'
        WHERE category_id = ?`,
       [
         richDescription,
