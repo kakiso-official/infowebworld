@@ -1,12 +1,12 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from '../../../../components/CountryLink'
-import { useCountry } from '../../../../config/country-context'
-import { COUNTRY_LABELS } from '../../../../config/countries'
-import type { CountryCode } from '../../../../config/countries'
-import type { Category } from '../../../../iww-hq/data/category-storage'
-import type { RealSubmission } from '../../../../iww-hq/data/submissions-storage'
+import Link from '../../../components/CountryLink'
+import { useCountry } from '../../../config/country-context'
+import { COUNTRY_LABELS } from '../../../config/countries'
+import type { CountryCode } from '../../../config/countries'
+import type { Category } from '../../../iww-hq/data/category-storage'
+import type { RealSubmission } from '../../../iww-hq/data/submissions-storage'
 import type { SectorMeta, SectorDemo } from '../sector-demo-data'
 
 /* ── Category pill colors (vibrant solids, same palette as homepage) ── */
@@ -139,7 +139,7 @@ export default function SectorHero({ category, meta, sectorName, shortName, l2Ca
 
   const handleSearch = (e: React.FormEvent) => { e.preventDefault(); setFocused(true) }
   const goToResult = (slug: string) => { setFocused(false); router.push(slug ? `/${country}/company/${slug}` : `/${country}/business`) }
-  const goToCategory = (slug: string) => { setFocused(false); router.push(`/${country}/category/${slug}`) }
+  const goToCategory = (slug: string) => { setFocused(false); router.push(`/${country}/${slug}`) }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (!showDropdown) return
@@ -218,7 +218,7 @@ export default function SectorHero({ category, meta, sectorName, shortName, l2Ca
   const catUp = (_e: React.PointerEvent, i: number) => {
     const p = catP.current[i]; p.drag = false
     catEls.current[i]?.classList.remove('hero-cat--grab')
-    if (!p.moved) router.push(`/${country}/category/${heroCats[i].slug}`)
+    if (!p.moved) router.push(`/${country}/${heroCats[i].slug}`)
   }
 
   /* ── 3D swipeable card stack ── */

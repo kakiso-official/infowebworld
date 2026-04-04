@@ -1,8 +1,8 @@
 'use client'
 import { useState, useEffect, useMemo } from 'react'
-import Link from '../../../components/CountryLink'
-import { fetchLaunchedCategories } from '../../../iww-hq/data/category-storage'
-import type { Category } from '../../../iww-hq/data/category-storage'
+import Link from '../../components/CountryLink'
+import { fetchLaunchedCategories } from '../../iww-hq/data/category-storage'
+import type { Category } from '../../iww-hq/data/category-storage'
 import HIcon from '../sector/components/HIcon'
 
 /* ═══════════════════════════════════════════
@@ -175,7 +175,7 @@ export default function SectorAllBrowse({ sectorSlug }: { sectorSlug: string }) 
                       const parent = categories.find(c => c.id === cat.parentId)
                       const trail = parent ? parent.name : ''
                       return (
-                        <Link key={cat.id} href={`/category/${cat.slug}`} className="cb-dropdown-row">
+                        <Link key={cat.id} href={`/${cat.slug}`} className="cb-dropdown-row">
                           <HIcon name="externalLink" size={14} />
                           <span className="cb-dropdown-name">{cat.name}</span>
                           {trail && <span className="cb-dropdown-trail">{trail}</span>}
@@ -205,7 +205,7 @@ export default function SectorAllBrowse({ sectorSlug }: { sectorSlug: string }) 
               className="cb-sector"
               style={{ '--sc-pastel': meta.pastel, '--sc': meta.color } as React.CSSProperties}
             >
-              <Link href={`/category/${l2.slug}`} className="cb-sector-hd">
+              <Link href={`/${l2.slug}`} className="cb-sector-hd">
                 <h2 className="cb-sector-name">
                   {l2.name}
                   {l2.l3Count > 0 && (
@@ -219,7 +219,7 @@ export default function SectorAllBrowse({ sectorSlug }: { sectorSlug: string }) 
                   {l2.children.map(l3 => (
                     <Link
                       key={l3.id}
-                      href={`/category/${l3.slug}`}
+                      href={`/${l3.slug}`}
                       className="cb-sector-row"
                     >
                       {l3.name}

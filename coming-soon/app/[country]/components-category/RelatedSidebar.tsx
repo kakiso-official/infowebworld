@@ -1,6 +1,6 @@
-import Link from '../../../components/CountryLink'
+import Link from '../../components/CountryLink'
 import { I, ic, type IconKey } from './icons'
-import type { Category } from '../../../iww-hq/data/category-storage'
+import type { Category } from '../../iww-hq/data/category-storage'
 
 export default function RelatedSidebar({ categories, color }: { categories: Category[]; color: string }) {
   if (!categories.length) return null
@@ -16,7 +16,7 @@ export default function RelatedSidebar({ categories, color }: { categories: Cate
           return (
             <Link
               key={rc.id}
-              href={`/category/${rc.slug}`}
+              href={`/${rc.slug}`}
               className="cd-related-side-item"
             >
               <div className="cd-related-side-icon" style={{ background: `${rcColor}10` }}>

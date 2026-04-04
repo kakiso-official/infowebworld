@@ -1,4 +1,4 @@
-import Link from '../../../components/CountryLink'
+import Link from '../../components/CountryLink'
 import { I, ic } from './icons'
 
 type Pill = { name: string; href: string }

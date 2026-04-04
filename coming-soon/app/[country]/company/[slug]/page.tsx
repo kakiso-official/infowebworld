@@ -198,7 +198,7 @@ function buildJsonLd(listing: ListingRow, breadcrumb: BreadcrumbItem[]) {
       '@type': 'ListItem',
       position: i + 3,
       name: bc.name,
-      item: `https://infowebworld.com/category/${bc.slug}`,
+      item: `https://infowebworld.com/${bc.slug}`,
     })),
     { '@type': 'ListItem', position: breadcrumb.length + 3, name: companyName },
   ]
@@ -281,7 +281,7 @@ function buildJsonLd(listing: ListingRow, breadcrumb: BreadcrumbItem[]) {
 
   // Category
   if (L.category_name) {
-    business.additionalType = `https://infowebworld.com/category/${L.category_slug}`
+    business.additionalType = `https://infowebworld.com/${L.category_slug}`
   }
 
   // ── 4. FAQPage schema (CRITICAL for AI Overview — 3.2x more likely to appear) ──

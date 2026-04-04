@@ -40,6 +40,18 @@ const nextConfig: NextConfig = {
         destination: '/:path',
         permanent: true,
       },
+      // Redirect old /category/:slug URLs to /:slug (removed /category/ prefix)
+      {
+        source: '/category/:path*',
+        destination: '/:path*',
+        permanent: true,
+      },
+      // Country-prefixed /category/ redirect
+      {
+        source: '/:country(in|us|uk|ca|au|eu)/category/:path*',
+        destination: '/:country/:path*',
+        permanent: true,
+      },
     ]
   },
 };

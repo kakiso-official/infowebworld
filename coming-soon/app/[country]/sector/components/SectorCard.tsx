@@ -1,9 +1,9 @@
 'use client'
-import Link from '../../../../components/CountryLink'
+import Link from '../../../components/CountryLink'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Tick01Icon, Award01Icon, ChartIncreaseIcon, ArrowRight01Icon } from '@hugeicons/core-free-icons'
 import HIcon from './HIcon'
-import Stars from '../../components/Stars'
+import Stars from '../../components-category/Stars'
 import type { SectorDemo } from '../sector-demo-data'
 
 export default function SectorCard({ item, rank }: { item: SectorDemo; rank?: number }) {

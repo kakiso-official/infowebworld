@@ -92,7 +92,7 @@ export default function CategoryEditor() {
           <div>
             <label style={lbl}>Slug (URL)</label>
             <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
-              <span style={{ height: 44, padding: '0 .75rem', display: 'flex', alignItems: 'center', borderRadius: '12px 0 0 12px', border: '1.5px solid var(--h-border)', borderRight: 'none', background: 'var(--h-bg)', fontSize: '.72rem', fontWeight: 600, color: 'var(--h-muted)', whiteSpace: 'nowrap' }}>/category/</span>
+              <span style={{ height: 44, padding: '0 .75rem', display: 'flex', alignItems: 'center', borderRadius: '12px 0 0 12px', border: '1.5px solid var(--h-border)', borderRight: 'none', background: 'var(--h-bg)', fontSize: '.72rem', fontWeight: 600, color: 'var(--h-muted)', whiteSpace: 'nowrap' }}>infowebworld.com/</span>
               <input style={{ ...inp, borderRadius: '0 12px 12px 0', flex: 1 }} placeholder={slugPreview} value={cat.slug} onChange={e => set('slug', e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, ''))} onFocus={fo} onBlur={bl} />
               <button type="button" onClick={() => set('slug', generateCategorySlug(cat.name || 'untitled'))} style={{ ...btnInactive, height: 44, padding: '0 .85rem', marginLeft: '.4rem', whiteSpace: 'nowrap', fontSize: '.6rem' }}>Auto</button>
             </div>

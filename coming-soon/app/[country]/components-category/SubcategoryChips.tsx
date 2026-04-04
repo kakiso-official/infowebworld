@@ -1,4 +1,4 @@
-import Link from '../../../components/CountryLink'
+import Link from '../../components/CountryLink'
 
 type Sub = { id: string; slug: string; name: string; listingCount: number }
 
@@ -11,7 +11,7 @@ export default function SubcategoryChips({ subcategories }: { subcategories: Sub
         {subcategories.map(sc => (
           <Link
             key={sc.id}
-            href={`/category/${sc.slug}`}
+            href={`/${sc.slug}`}
             className="cd-subcat-chip"
           >
             {sc.name}

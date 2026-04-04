@@ -1,7 +1,7 @@
 'use client'
 import { useState, useMemo } from 'react'
 import { I, ic } from './icons'
-import type { TagGroup } from '../../../iww-hq/data/tag-storage'
+import type { TagGroup } from '../../iww-hq/data/tag-storage'
 import FilterModal from './FilterModal'
 import {
   getLocationCountries,
@@ -10,7 +10,7 @@ import {
   type GeoCountry,
   type GeoState,
   type GeoCity,
-} from '../../../lib/geo-slugs'
+} from '../../lib/geo-slugs'
 
 const PREVIEW_COUNT = 5
 

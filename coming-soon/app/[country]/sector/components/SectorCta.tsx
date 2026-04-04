@@ -1,5 +1,5 @@
 'use client'
-import Link from '../../../../components/CountryLink'
+import Link from '../../../components/CountryLink'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { RocketIcon, ArrowRight01Icon, Shield01Icon } from '@hugeicons/core-free-icons'
 

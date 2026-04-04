@@ -1,5 +1,5 @@
 'use client'
-import Link from '../../../../components/CountryLink'
+import Link from '../../../components/CountryLink'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { ArrowRight01Icon } from '@hugeicons/core-free-icons'
 import HIcon from './HIcon'
@@ -11,7 +11,7 @@ type Props = {
 
 export default function CategoryCard({ cat, color }: Props) {
   return (
-    <Link href={`/category/${cat.slug}`} className="sl-cat">
+    <Link href={`/${cat.slug}`} className="sl-cat">
       <div className="sl-cat-icon" style={{ background: `${color}14` }}>
         <HIcon name={cat.icon || 'grid'} size={22} color={color} />
       </div>

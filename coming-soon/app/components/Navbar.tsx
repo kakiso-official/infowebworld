@@ -145,7 +145,7 @@ export default function Navbar({ sectorSlug }: { sectorSlug?: string } = {}) {
             <ul className="pn-list">
               {NAV_ITEMS.map((item, i) => {
                 const href = item.label === 'Categories' && sectorSlug
-                  ? `/category/${sectorSlug}/all`
+                  ? `/${sectorSlug}/all`
                   : item.href
                 return (
                 <li key={item.label} className="pn-item">
@@ -191,7 +191,7 @@ export default function Navbar({ sectorSlug }: { sectorSlug?: string } = {}) {
             {SECTORS_LEFT.map((s, i) => (
               <Link
                 key={s.slug}
-                href={`/category/${s.slug}`}
+                href={`/${s.slug}`}
                 className="pn-sec"
                 style={{ '--sec-c': s.color } as React.CSSProperties}
                 onMouseEnter={() => secEnter(i)}
@@ -213,7 +213,7 @@ export default function Navbar({ sectorSlug }: { sectorSlug?: string } = {}) {
             {SECTORS_RIGHT.map((s, i) => (
               <Link
                 key={s.slug}
-                href={`/category/${s.slug}`}
+                href={`/${s.slug}`}
                 className="pn-sec"
                 style={{ '--sec-c': s.color } as React.CSSProperties}
                 onMouseEnter={() => secEnter(i + 3)}
@@ -250,7 +250,7 @@ export default function Navbar({ sectorSlug }: { sectorSlug?: string } = {}) {
         <div className="pn-drawer-body">
           {NAV_ITEMS.map(item => {
             const href = item.label === 'Categories' && sectorSlug
-              ? `/category/${sectorSlug}/all`
+              ? `/${sectorSlug}/all`
               : item.href
             return (
               <Link key={item.label} href={href} className={`pn-drawer-link${item.cta ? ' pn-drawer-link--cta' : ''}`} onClick={closeDrawer}>

@@ -1,10 +1,10 @@
 'use client'
 import { useState, useRef, useEffect, useMemo, useCallback } from 'react'
-import Link from '../../../components/CountryLink'
-import { useCountry } from '../../../config/country-context'
-import { COUNTRY_LABELS, ROUTE_TO_GEO_SLUG, ROUTE_TO_ISO } from '../../../config/countries'
-import type { CountryCode } from '../../../config/countries'
-import type { Category } from '../../../iww-hq/data/category-storage'
+import Link from '../../components/CountryLink'
+import { useCountry } from '../../config/country-context'
+import { COUNTRY_LABELS, ROUTE_TO_GEO_SLUG, ROUTE_TO_ISO } from '../../config/countries'
+import type { CountryCode } from '../../config/countries'
+import type { Category } from '../../iww-hq/data/category-storage'
 import {
   getLocationCountries,
   getStates,
@@ -13,7 +13,7 @@ import {
   type GeoCountry,
   type GeoState,
   type GeoCity,
-} from '../../../lib/geo-slugs'
+} from '../../lib/geo-slugs'
 import { I, ic } from './icons'
 
 type Props = {
@@ -253,7 +253,7 @@ export default function CategoryHero({ category: c, locationCountry, locationSta
         {c.parentName && c.parentSlug && (
           <>
             <span className="cd-breadcrumb-sep">&gt;</span>
-            <Link href={`/category/${c.parentSlug}`}>{c.parentName}</Link>
+            <Link href={`/${c.parentSlug}`}>{c.parentName}</Link>
           </>
         )}
         <span className="cd-breadcrumb-sep">&gt;</span>

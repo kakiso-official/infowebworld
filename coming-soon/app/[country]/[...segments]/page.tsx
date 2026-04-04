@@ -1,12 +1,12 @@
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
-import Navbar from '../../../components/Navbar'
-import Footer from '../../../components/Footer'
+import Navbar from '../../components/Navbar'
+import Footer from '../../components/Footer'
 import CategoryPage from '../CategoryPage'
-import SectorAllBrowse from '../components/SectorAllBrowse'
+import SectorAllBrowse from '../components-category/SectorAllBrowse'
 import { getSectorMeta } from '../sector/sector-demo-data'
-import { COUNTRY_LABELS, ROOT_COUNTRY } from '../../../config/countries'
-import type { CountryCode } from '../../../config/countries'
+import { COUNTRY_LABELS, ROOT_COUNTRY } from '../../config/countries'
+import type { CountryCode } from '../../config/countries'
 import { queryOne } from '@/lib/db'
 
 /* ── Known L1 sector slugs ── */
@@ -114,7 +114,7 @@ function buildCategoryMeta(cat: CatSeo, country: string, countryName: string, mo
     ? `${baseDesc} Compare ${listingText}${subText} in ${countryName}. Updated ${monthYear}.`
     : `Discover and compare the best ${baseName} companies in ${countryName}. Browse ${listingText}${subText}, read reviews, and find the right solution. Updated ${monthYear}. InfoWebWorld.com`
 
-  const url = canonicalUrl(country, `/category/${cat.slug}`)
+  const url = canonicalUrl(country, `/${cat.slug}`)
   const ogImage = cat.seoOgImage || cat.coverImage || `${DOMAIN}/og-image.png`
 
   // Merge DB keywords + auto-generated
@@ -156,7 +156,7 @@ function buildCategoryMeta(cat: CatSeo, country: string, countryName: string, mo
 function buildJsonLd(cat: CatSeo, country: string, countryName: string, monthYear: string) {
   const baseName = cat.seoTitle || cat.name
   const baseDesc = cat.seoDescription || cat.description
-  const url = canonicalUrl(country, `/category/${cat.slug}`)
+  const url = canonicalUrl(country, `/${cat.slug}`)
 
   // BreadcrumbList
   const bcItems: Record<string, unknown>[] = [
@@ -168,7 +168,7 @@ function buildJsonLd(cat: CatSeo, country: string, countryName: string, monthYea
     bcItems.push({
       '@type': 'ListItem', position: pos++,
       name: cat.parentName,
-      item: canonicalUrl(country, `/category/${cat.parentSlug}`),
+      item: canonicalUrl(country, `/${cat.parentSlug}`),
     })
   }
   bcItems.push({ '@type': 'ListItem', position: pos, name: cat.name })
@@ -247,7 +247,7 @@ export async function generateMetadata({
     const meta = getSectorMeta(slug)
     const title = `All ${meta.seoTitle} Categories in ${countryName} | InfoWebWorld`
     const description = `Browse all categories and subcategories within ${meta.seoTitle}. Find, compare, and connect with the best tools and services.`
-    const url = canonicalUrl(country, `/category/${slug}/all`)
+    const url = canonicalUrl(country, `/${slug}/all`)
     return {
       title,
       description,
@@ -262,7 +262,7 @@ export async function generateMetadata({
     const meta = getSectorMeta(slug)
     const title = `Best ${meta.seoTitle} in ${countryName} ${monthYear} | InfoWebWorld`
     const description = `${meta.seoDescription} Compare the best in ${countryName}, ${monthYear}. InfoWebWorld.com`
-    const url = canonicalUrl(country, `/category/${slug}`)
+    const url = canonicalUrl(country, `/${slug}`)
 
     return {
       title,

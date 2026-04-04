@@ -1,13 +1,13 @@
 'use client'
 import { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from '../../../../components/CountryLink'
-import { useCountry } from '../../../../config/country-context'
+import Link from '../../../components/CountryLink'
+import { useCountry } from '../../../config/country-context'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Search01Icon, GridIcon, LayerIcon, StarIcon, ArrowRight01Icon, Cancel01Icon, Tick01Icon } from '@hugeicons/core-free-icons'
 import HIcon from './HIcon'
-import Stars from '../../components/Stars'
-import type { Category } from '../../../../iww-hq/data/category-storage'
+import Stars from '../../components-category/Stars'
+import type { Category } from '../../../iww-hq/data/category-storage'
 import type { SectorDemo } from '../sector-demo-data'
 
 type Props = { sectorName: string; shortName: string; color: string; l2Cats: Category[]; l3Cats: Category[]; demos: SectorDemo[] }
@@ -29,10 +29,10 @@ export default function SectorSearch({ sectorName, shortName, color, l2Cats, l3C
     const groups: ResultGroup[] = []
 
     const catMatches = l2Cats.filter(c => c.name.toLowerCase().includes(q) || (c.description || '').toLowerCase().includes(q)).slice(0, 4)
-    if (catMatches.length) groups.push({ label: 'Categories', icon: GridIcon, items: catMatches.map(c => ({ type: 'category', name: c.name, href: `/${country}/category/${c.slug}`, meta: `${l3Cats.filter(l3 => l3.parentId === c.id).length} subcategories`, icon: c.icon || 'grid', color })) })
+    if (catMatches.length) groups.push({ label: 'Categories', icon: GridIcon, items: catMatches.map(c => ({ type: 'category', name: c.name, href: `/${country}/${c.slug}`, meta: `${l3Cats.filter(l3 => l3.parentId === c.id).length} subcategories`, icon: c.icon || 'grid', color })) })
 
     const subMatches = l3Cats.filter(c => c.name.toLowerCase().includes(q) || (c.description || '').toLowerCase().includes(q)).slice(0, 5)
-    if (subMatches.length) groups.push({ label: 'Subcategories', icon: LayerIcon, items: subMatches.map(c => { const p = l2Cats.find(x => x.id === c.parentId); return { type: 'subcategory', name: c.name, href: `/${country}/category/${c.slug}`, meta: p ? p.name : sectorName, icon: c.icon || 'layers', color } }) })
+    if (subMatches.length) groups.push({ label: 'Subcategories', icon: LayerIcon, items: subMatches.map(c => { const p = l2Cats.find(x => x.id === c.parentId); return { type: 'subcategory', name: c.name, href: `/${country}/${c.slug}`, meta: p ? p.name : sectorName, icon: c.icon || 'layers', color } }) })
 
     const listMatches = demos.filter(d => d.name.toLowerCase().includes(q) || d.tagline.toLowerCase().includes(q) || d.category.toLowerCase().includes(q)).slice(0, 6)
     if (listMatches.length) groups.push({ label: 'Listings', icon: StarIcon, items: listMatches.map(d => ({ type: 'listing', name: d.name, href: `/${country}/business`, meta: d.tagline, score: d.score, reviews: d.reviews, icon: d.icon, color: d.color, badges: d.badges })) })

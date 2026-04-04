@@ -5,7 +5,7 @@ import {
   type GeoCountry,
   type GeoState,
   type GeoCity,
-} from '../../../lib/geo-slugs'
+} from '../../lib/geo-slugs'
 
 /* ── Parsed result ── */
 export type ParsedCategoryFilters = {
@@ -32,7 +32,7 @@ export type ParsedCategoryFilters = {
  *   4. Try next as listing type slug (checked against known slugs)
  *   5. All remaining = tag slugs
  *
- * @param segments - URL path segments after /category/
+ * @param segments - URL path segments after /{categorySlug}/
  * @param knownListingTypeSlugs - Set of valid listing type slugs (for disambiguation)
  * @param knownTagSlugs - Set of valid tag slugs
  * @param routeCountryIso - ISO code of the route prefix country (e.g. 'IN' for /in).

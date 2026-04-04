@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from 'react'
 import Link from '../../components/CountryLink'
 import { fetchLaunchedCategories } from '../../iww-hq/data/category-storage'
 import type { Category } from '../../iww-hq/data/category-storage'
-import HIcon from '../category/sector/components/HIcon'
+import HIcon from '../sector/components/HIcon'
 
 /* ═══════════════════════════════════════════
    Types & tree builder
@@ -150,7 +150,7 @@ export default function CategoriesBrowse() {
                       const parent = categories.find(c => c.id === cat.parentId)
                       const trail = parent ? parent.name : ''
                       return (
-                        <Link key={cat.id} href={`/category/${cat.slug}`} className="cb-dropdown-row">
+                        <Link key={cat.id} href={`/${cat.slug}`} className="cb-dropdown-row">
                           <HIcon name="externalLink" size={14} />
                           <span className="cb-dropdown-name">{cat.name}</span>
                           {trail && <span className="cb-dropdown-trail">{trail}</span>}
@@ -185,7 +185,7 @@ export default function CategoriesBrowse() {
                   style={{ '--sc-pastel': meta.pastel, '--sc': meta.color } as React.CSSProperties}
                 >
                   {/* Colored header with icon + name */}
-                  <Link href={`/category/${sector.slug}`} className="cb-sector-hd">
+                  <Link href={`/${sector.slug}`} className="cb-sector-hd">
                     <HIcon name={meta.icon} size={32} color="#000" sw={1.2} />
                     <h2 className="cb-sector-name">{sector.name}</h2>
                   </Link>
@@ -195,7 +195,7 @@ export default function CategoriesBrowse() {
                     {sector.children.map(child => (
                       <Link
                         key={child.id}
-                        href={`/category/${child.slug}`}
+                        href={`/${child.slug}`}
                         className="cb-sector-row"
                       >
                         {child.name}
@@ -218,14 +218,14 @@ export default function CategoriesBrowse() {
                 className="cb-cat"
                 style={{ '--sc-pastel': cat.parentMeta.pastel, '--sc': cat.parentMeta.color } as React.CSSProperties}
               >
-                <Link href={`/category/${cat.slug}`} className="cb-cat-hd">
+                <Link href={`/${cat.slug}`} className="cb-cat-hd">
                   <h3 className="cb-cat-name">{cat.name}</h3>
                 </Link>
 
                 {cat.children.length > 0 && (
                   <div className="cb-cat-body">
                     {cat.children.map(child => (
-                      <Link key={child.id} href={`/category/${child.slug}`} className="cb-cat-row">
+                      <Link key={child.id} href={`/${child.slug}`} className="cb-cat-row">
                         {child.name}
                       </Link>
                     ))}

@@ -207,7 +207,7 @@ export default function ListingDetailPage({ slug: slugProp, initialData }: { slu
               {breadcrumb.map((bc, i) => (
                 <span key={i} style={{ display: 'contents' }}>
                   <span className="ld-crumb-sep">/</span>
-                  <Link href={`/category/${bc.slug}`} className="ld-crumb ld-crumb--cat" style={{ color, background: `${color}14` }}>{bc.name}</Link>
+                  <Link href={`/${bc.slug}`} className="ld-crumb ld-crumb--cat" style={{ color, background: `${color}14` }}>{bc.name}</Link>
                 </span>
               ))}
               <span className="ld-crumb-sep">/</span>

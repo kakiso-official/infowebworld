@@ -2,7 +2,7 @@ import type { ParsedCategoryFilters } from './parse-segments'
 
 /**
  * Build a category URL from parsed filters.
- * Returns path starting from /category/...
+ * Returns path starting from /{categorySlug}/...
  * The country routing prefix (/in, /us, etc.) is NOT included — caller adds it.
  *
  * @param filters - The filter state to encode
@@ -14,7 +14,7 @@ export function buildCategoryUrl(
   filters: Partial<ParsedCategoryFilters> & { categorySlug: string },
   routeCountryGeoSlug?: string,
 ): string {
-  const parts = ['/category', filters.categorySlug]
+  const parts = ['', filters.categorySlug]
 
   if (filters.locationCountry) {
     // Skip the country segment if it matches the route country prefix

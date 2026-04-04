@@ -1,14 +1,14 @@
 'use client'
 import { useState, useEffect, useMemo } from 'react'
-import Link from '../../../components/CountryLink'
-import { useCountry } from '../../../config/country-context'
-import { COUNTRY_LABELS } from '../../../config/countries'
-import type { CountryCode } from '../../../config/countries'
+import Link from '../../components/CountryLink'
+import { useCountry } from '../../config/country-context'
+import { COUNTRY_LABELS } from '../../config/countries'
+import type { CountryCode } from '../../config/countries'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { LayerIcon, ArrowLeft01Icon } from '@hugeicons/core-free-icons'
-import type { Category } from '../../../iww-hq/data/category-storage'
-import { fetchCategoryListings } from '../../../iww-hq/data/submissions-storage'
-import type { RealSubmission } from '../../../iww-hq/data/submissions-storage'
+import type { Category } from '../../iww-hq/data/category-storage'
+import { fetchCategoryListings } from '../../iww-hq/data/submissions-storage'
+import type { RealSubmission } from '../../iww-hq/data/submissions-storage'
 import {
   getSectorMeta, getSectorDemos,
   pickJustLanded, pickTopRated, pickEditorsChoice,
@@ -56,7 +56,7 @@ export default function SectorLanding({ category, allCategories }: { category: C
 
   const sectorName = category.name
   const shortName = sectorName.split('&')[0].trim()
-  const pageUrl = `${BASE}/${country}/category/${category.slug}`
+  const pageUrl = `${BASE}/${country}/${category.slug}`
 
   /* ── JSON-LD Structured Data ── */
   const faqs = [
@@ -104,11 +104,11 @@ export default function SectorLanding({ category, allCategories }: { category: C
 
       <SectorHero category={category} meta={meta} sectorName={sectorName} shortName={shortName} l2Cats={l2Cats} l3Cats={l3Cats} demos={demos} listings={listings} />
 
-      <SectorSection title="Just Landed" subtitle={`New companies recently listed in ${shortName}`} iconKey="rocket" viewAll={`/category/${category.slug}`}>
+      <SectorSection title="Just Landed" subtitle={`New companies recently listed in ${shortName}`} iconKey="rocket" viewAll={`/${category.slug}`}>
         <CardGrid items={pickJustLanded(demos)} />
       </SectorSection>
 
-      <SectorSection title={`Top Rated in ${shortName}`} subtitle="Highest satisfaction scores from verified reviews" iconKey="star" viewAll={`/category/${category.slug}`} alt>
+      <SectorSection title={`Top Rated in ${shortName}`} subtitle="Highest satisfaction scores from verified reviews" iconKey="star" viewAll={`/${category.slug}`} alt>
         <CardGrid items={pickTopRated(demos)} ranked />
       </SectorSection>
 
@@ -126,7 +126,7 @@ export default function SectorLanding({ category, allCategories }: { category: C
         <CardGrid items={pickRisingStars(demos)} />
       </SectorSection>
 
-      <SectorSection title="Most Reviewed" subtitle="Trusted by the community with the most user reviews" iconKey="users" viewAll={`/category/${category.slug}`} alt>
+      <SectorSection title="Most Reviewed" subtitle="Trusted by the community with the most user reviews" iconKey="users" viewAll={`/${category.slug}`} alt>
         <CardGrid items={pickMostReviewed(demos)} ranked />
       </SectorSection>
 
@@ -142,7 +142,7 @@ export default function SectorLanding({ category, allCategories }: { category: C
         <CardGrid items={pickTrending(demos)} />
       </SectorSection>
 
-      <SectorSection title="Compare Top Solutions" subtitle={`Side-by-side comparison of leading ${shortName} tools`} iconKey="grid" viewAll={`/category/${category.slug}`} alt>
+      <SectorSection title="Compare Top Solutions" subtitle={`Side-by-side comparison of leading ${shortName} tools`} iconKey="grid" viewAll={`/${category.slug}`} alt>
         <CardGrid items={pickCompare(demos)} ranked />
       </SectorSection>
 
@@ -159,7 +159,7 @@ export default function SectorLanding({ category, allCategories }: { category: C
             </div>
           </div>
           <div className="sl-chips">
-            {l3Cats.map(c => <Link key={c.id} href={`/category/${c.slug}`} className="sl-chip">{c.name}</Link>)}
+            {l3Cats.map(c => <Link key={c.id} href={`/${c.slug}`} className="sl-chip">{c.name}</Link>)}
           </div>
         </div>
       </div>

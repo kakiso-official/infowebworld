@@ -1,31 +1,31 @@
 'use client'
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from '../../components/CountryLink'
-import { useCountry } from '../../config/country-context'
-import { fetchCategoryBySlug, fetchLaunchedCategories } from '../../iww-hq/data/category-storage'
-import type { Category } from '../../iww-hq/data/category-storage'
-import { fetchCategoryListings } from '../../iww-hq/data/submissions-storage'
-import type { RealSubmission } from '../../iww-hq/data/submissions-storage'
-import { fetchAllTagGroups } from '../../iww-hq/data/tag-storage'
-import type { TagGroup } from '../../iww-hq/data/tag-storage'
-import { parseSegments, type ParsedCategoryFilters } from './lib/parse-segments'
-import { buildCategoryUrl } from './lib/build-url'
-import { lookupLocationCountry, type GeoCountry, type GeoState, type GeoCity } from '../../lib/geo-slugs'
-import { COUNTRY_LABELS, ROUTE_TO_GEO_SLUG, ROUTE_TO_ISO, ROOT_COUNTRY } from '../../config/countries'
-import type { CountryCode } from '../../config/countries'
+import Link from '../components/CountryLink'
+import { useCountry } from '../config/country-context'
+import { fetchCategoryBySlug, fetchLaunchedCategories } from '../iww-hq/data/category-storage'
+import type { Category } from '../iww-hq/data/category-storage'
+import { fetchCategoryListings } from '../iww-hq/data/submissions-storage'
+import type { RealSubmission } from '../iww-hq/data/submissions-storage'
+import { fetchAllTagGroups } from '../iww-hq/data/tag-storage'
+import type { TagGroup } from '../iww-hq/data/tag-storage'
+import { parseSegments, type ParsedCategoryFilters } from './lib-category/parse-segments'
+import { buildCategoryUrl } from './lib-category/build-url'
+import { lookupLocationCountry, type GeoCountry, type GeoState, type GeoCity } from '../lib/geo-slugs'
+import { COUNTRY_LABELS, ROUTE_TO_GEO_SLUG, ROUTE_TO_ISO, ROOT_COUNTRY } from '../config/countries'
+import type { CountryCode } from '../config/countries'
 
 import SectorLanding from './sector/SectorLanding'
-import { I, ic } from './components/icons'
-import CategoryHero from './components/CategoryHero'
-import SubcategoryChips from './components/SubcategoryChips'
-import FilterSidebar from './components/FilterSidebar'
-import { DemoListingCard, RealListingCard, type DemoListing } from './components/ListingCard'
-import Pagination from './components/Pagination'
-import CompactCta from './components/CompactCta'
-import TrustSection from './components/TrustSection'
-import FaqAccordion from './components/FaqAccordion'
-import PopularSearches from './components/PopularSearches'
+import { I, ic } from './components-category/icons'
+import CategoryHero from './components-category/CategoryHero'
+import SubcategoryChips from './components-category/SubcategoryChips'
+import FilterSidebar from './components-category/FilterSidebar'
+import { DemoListingCard, RealListingCard, type DemoListing } from './components-category/ListingCard'
+import Pagination from './components-category/Pagination'
+import CompactCta from './components-category/CompactCta'
+import TrustSection from './components-category/TrustSection'
+import FaqAccordion from './components-category/FaqAccordion'
+import PopularSearches from './components-category/PopularSearches'
 
 /* ── Sample listings ── */
 const sampleListings: DemoListing[] = [
@@ -158,7 +158,7 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
       { '@type': 'ListItem', position: 2, name: 'Categories', item: 'https://infowebworld.com/categories' },
     ]
     let pos = 3
-    if (category.parentName && category.parentSlug) items.push({ '@type': 'ListItem', position: pos++, name: category.parentName, item: `https://infowebworld.com/category/${category.parentSlug}` })
+    if (category.parentName && category.parentSlug) items.push({ '@type': 'ListItem', position: pos++, name: category.parentName, item: `https://infowebworld.com/${category.parentSlug}` })
     items.push({ '@type': 'ListItem', position: pos, name: category.name })
 
     const desc = category.seoDescription || category.description || `Explore top ${category.name} businesses on InfoWebWorld.`
@@ -272,8 +272,8 @@ export default function CategoryPage({ segments }: { segments?: string[] }) {
   const popularSearches = useMemo(() => {
     if (!category) return []
     const pills: { name: string; href: string }[] = []
-    for (const sc of (category.subcategories || []).slice(0, 8)) pills.push({ name: sc.name, href: `/category/${sc.slug}` })
-    for (const lt of (category.listingTypes || []).slice(0, 4)) pills.push({ name: lt.name, href: `/category/${category.slug}?type=${lt.slug}` })
+    for (const sc of (category.subcategories || []).slice(0, 8)) pills.push({ name: sc.name, href: `/${sc.slug}` })
+    for (const lt of (category.listingTypes || []).slice(0, 4)) pills.push({ name: lt.name, href: `/${category.slug}?type=${lt.slug}` })
     return pills
   }, [category])
 

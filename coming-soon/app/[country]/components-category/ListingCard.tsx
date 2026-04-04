@@ -1,9 +1,9 @@
 'use client'
 import { useState } from 'react'
-import Link from '../../../components/CountryLink'
+import Link from '../../components/CountryLink'
 import { I, ic, type IconKey } from './icons'
 import Stars from './Stars'
-import type { RealSubmission } from '../../../iww-hq/data/submissions-storage'
+import type { RealSubmission } from '../../iww-hq/data/submissions-storage'
 
 /* ── Demo listing type ── */
 export type DemoListing = {

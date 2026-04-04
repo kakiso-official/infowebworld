@@ -16,7 +16,7 @@ export async function GET() {
         const lastmod = new Date(cat.updated_at).toISOString().split('T')[0]
         const priority = cat.level === 1 ? '0.8' : cat.level === 2 ? '0.7' : '0.6'
         return `  <url>
-    <loc>${BASE}/category/${cat.slug}</loc>
+    <loc>${BASE}/${cat.slug}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>${priority}</priority>
