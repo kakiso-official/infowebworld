@@ -197,7 +197,7 @@ async function fetchCategoryPageData(categorySlug: string) {
     const level = Number(catRow.level)
 
     // Round trip 2: all category-specific queries + cached shared data (parallel)
-    const [subcats, listingTypes, parentRow, countRow, listings, listingCount, allCats, tagGroupsData] = await Promise.all([
+    const [subcats, listingTypes, parentRow, countRow, listings, listingCount, allCats, tagGroupsData, seoContentRow] = await Promise.all([
       query(
         `SELECT c.*, (SELECT COUNT(*) FROM submissions s WHERE s.category_id = c.id AND s.status IN ('active','paid')) as listing_count
          FROM categories c WHERE c.parent_id = ? AND c.is_active = 1 AND c.is_navigation = 1 ORDER BY c.sort_order`,
@@ -239,6 +239,8 @@ async function fetchCategoryPageData(categorySlug: string) {
       // These are CACHED — ~0ms after first call (shared across all pages)
       getCachedAllCategories(),
       getCachedTagsWithGroups(),
+      // SEO content (Gemini-generated, stored in DB)
+      queryOne('SELECT * FROM category_seo_content WHERE category_id = ?', [cid]).catch(() => null),
     ])
 
     return JSON.parse(JSON.stringify({
@@ -247,6 +249,7 @@ async function fetchCategoryPageData(categorySlug: string) {
       tagGroups: tagGroupsData,
       listings,
       listingTotal: Number(listingCount?.cnt ?? 0),
+      seoContent: seoContentRow || null,
     }))
   } catch (err) {
     console.error('fetchCategoryPageData error:', err)
@@ -720,8 +723,13 @@ export default async function CategoryDetailRoute({
         <h2 className="cd-server-h2">Top {catName} Companies in {countryName}</h2>
         <p className="cd-server-section-desc">Browse and compare verified {catName} providers. Read reviews, compare features, and connect directly.</p>
         {subCount > 0 && <h2 className="cd-server-h2">Explore {catName} Subcategories</h2>}
+        <h2 className="cd-server-h2">About {catName}</h2>
+        <h2 className="cd-server-h2">What to Look for in {catName}</h2>
+        <h2 className="cd-server-h2">{catName} Use Cases</h2>
+        <h2 className="cd-server-h2">{catName} vs Alternatives</h2>
+        <h2 className="cd-server-h2">Find the Best {catName}</h2>
         <section className="cd-server-faq">
-          <h2 className="cd-server-h2">Frequently Asked Questions</h2>
+          <h2 className="cd-server-h2">Frequently Asked Questions about {catName}</h2>
           {faqItems.map((f, i) => (
             <div key={i} className="cd-server-faq-item"><h3 className="cd-server-h3">{f.q}</h3><p>{f.a}</p></div>
           ))}

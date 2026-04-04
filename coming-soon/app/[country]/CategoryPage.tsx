@@ -24,6 +24,7 @@ import { DemoListingCard, RealListingCard, type DemoListing } from './components
 import Pagination from './components-category/Pagination'
 import CompactCta from './components-category/CompactCta'
 import TrustSection from './components-category/TrustSection'
+import SeoSections from './components-category/SeoSections'
 import FaqAccordion from './components-category/FaqAccordion'
 import PopularSearches from './components-category/PopularSearches'
 
@@ -48,6 +49,7 @@ type InitialData = {
   tagGroups: any[]
   listings: any[]
   listingTotal: number
+  seoContent?: any
 }
 
 export default function CategoryPage({ segments, sectorSlug, initialData }: { segments?: string[]; sectorSlug?: string; initialData?: InitialData }) {
@@ -504,9 +506,22 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
 
         </div>
 
+        {/* Gemini-generated SEO content sections */}
+        {initialData?.seoContent && (
+          <SeoSections
+            seoContent={initialData.seoContent}
+            categoryName={c.name}
+            categorySlug={c.slug}
+            sectorSlug={sectorSlug || ''}
+            countryName={COUNTRY_LABELS[siteCountry as CountryCode] || 'United States'}
+            allCategories={allCats}
+            topCities={['Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Hyderabad', 'Pune', 'Kolkata', 'Ahmedabad']}
+          />
+        )}
+
         <CompactCta categoryName={c.name} spotsLeft={200 - c.listingCount} color={color} />
         <PopularSearches searches={popularSearches} />
-        <FaqAccordion faqs={faqs} />
+        {!initialData?.seoContent && <FaqAccordion faqs={faqs} />}
         <TrustSection color={color} />
 
         <Link href="/categories" className="cd-back-link" style={{ color }}>

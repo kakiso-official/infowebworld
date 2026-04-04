@@ -2,6 +2,7 @@
    ALL @import MUST come first — CSS specification rule
    ═══════════════════════════════════════════════════════ */
 @import "./styles/not-found.css";
+@import "./styles/seo-sections.css";
 @import "./styles/sector/page.css";
 @import "./styles/sector/hero.css";
 @import "./styles/sector/search.css";
