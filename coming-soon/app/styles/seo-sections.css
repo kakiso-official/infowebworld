@@ -10,10 +10,15 @@
 .seo-h2 { font-family: var(--font-bricolage), sans-serif; font-size: clamp(1.25rem, 2.8vw, 1.7rem); font-weight: 900; color: #000; margin: 0 0 1.15rem; line-height: 1.15 }
 .seo-h3 { font-family: var(--font-nunito), sans-serif; font-size: .95rem; font-weight: 800; color: #000; margin: 0 0 .4rem }
 
-/* Rich Description */
-.seo-para { font-family: var(--font-nunito), sans-serif; font-size: .88rem; color: #333; line-height: 1.75; margin: 0 0 .85rem; max-width: 720px }
-.seo-inline-link { color: var(--h-accent); font-weight: 600; text-decoration: none; border-bottom: 1px solid transparent; transition: border-color .15s }
-.seo-inline-link:hover { border-bottom-color: var(--h-accent) }
+/* ── Rich Description — editorial layout ── */
+.seo-about-header { display: flex; align-items: baseline; gap: .75rem; flex-wrap: wrap; margin-bottom: 1.25rem }
+.seo-about-meta { display: inline-flex; align-items: center; gap: .35rem; font-family: var(--font-nunito), sans-serif; font-size: .72rem; font-weight: 700; color: var(--h-muted); letter-spacing: .02em; text-transform: uppercase }
+.seo-about-body { border-left: 4px solid var(--cd-color, var(--h-accent)); padding-left: clamp(1rem, 2.5vw, 1.75rem); max-width: 760px }
+.seo-para { font-family: var(--font-nunito), sans-serif; font-size: .9rem; color: #333; line-height: 1.8; margin: 0 0 1rem }
+.seo-para--lead { font-size: .95rem; color: #1a1a1a; font-weight: 600; line-height: 1.75 }
+.seo-para--lead::first-letter { font-family: var(--font-bricolage), serif; font-size: 2.8em; font-weight: 900; float: left; line-height: .8; margin: .06em .15em 0 0; color: var(--cd-color, var(--h-accent)) }
+.seo-inline-link { color: var(--cd-color, var(--h-accent)); font-weight: 700; text-decoration: none; border-bottom: 1.5px solid transparent; transition: border-color .15s }
+.seo-inline-link:hover { border-bottom-color: currentColor }
 
 /* Buyer's Guide */
 .seo-guide-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: .85rem; margin-bottom: 1.25rem }

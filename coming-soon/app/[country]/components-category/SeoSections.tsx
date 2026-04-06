@@ -119,17 +119,30 @@ export default function SeoSections({ seoContent: sc, categoryName, categorySlug
         />
       )}
 
-      {/* ── Rich Description ── */}
-      {sc.rich_description && (
-        <section className="seo-section seo-description" aria-labelledby="seo-about">
-          <h2 className="seo-h2" id="seo-about">About {categoryName}</h2>
-          <div itemProp="articleBody">
-            {sc.rich_description.split('\n\n').filter(Boolean).map((para, i) => (
-              <p key={i} className="seo-para">{parseInternalLinks(para, sectorSlug)}</p>
-            ))}
-          </div>
-        </section>
-      )}
+      {/* ── Rich Description — editorial layout ── */}
+      {sc.rich_description && (() => {
+        const paragraphs = sc.rich_description.split('\n\n').filter(Boolean)
+        const wordCount = sc.rich_description.split(/\s+/).length
+        const readMin = Math.max(1, Math.ceil(wordCount / 230))
+        return (
+          <section className="seo-section seo-description" aria-labelledby="seo-about">
+            <div className="seo-about-header">
+              <h2 className="seo-h2" id="seo-about">About {categoryName}</h2>
+              <span className="seo-about-meta">
+                <Ico name="chart" size={13} color="var(--cd-color, var(--h-accent))" />
+                {readMin} min read &middot; {wordCount} words
+              </span>
+            </div>
+            <div className="seo-about-body" itemProp="articleBody">
+              {paragraphs.map((para, i) => (
+                <p key={i} className={`seo-para${i === 0 ? ' seo-para--lead' : ''}`}>
+                  {parseInternalLinks(para, sectorSlug)}
+                </p>
+              ))}
+            </div>
+          </section>
+        )
+      })()}
 
       {/* ── Buyer's Guide ── */}
       {bg && bg.features && (
