@@ -4,8 +4,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { VALID_COUNTRIES, COUNTRY_LABELS, COUNTRY_FLAGS, COOKIE_NAME, COOKIE_MAX_AGE, ROOT_COUNTRY } from '../config/countries'
 import type { CountryCode } from '../config/countries'
 import { useCountry } from '../config/country-context'
-import { HugeiconsIcon } from '@hugeicons/react'
-import { Globe02Icon, ArrowDown01Icon } from '@hugeicons/core-free-icons'
+import { I, ic } from './icons'
 
 export default function CountrySwitcher() {
   const country = useCountry()
@@ -47,9 +46,9 @@ export default function CountrySwitcher() {
         onClick={() => setOpen(!open)}
         aria-label="Select country"
       >
-        <span className="hd-country-globe"><HugeiconsIcon icon={Globe02Icon} size={20} color="currentColor" strokeWidth={1.5} /></span>
+        <span className="hd-country-globe"><I d={ic.globe} size={20} color="currentColor" sw={1.5} /></span>
         <span className="hd-country-code">{country.toUpperCase()}</span>
-        <span className="hd-country-chev"><HugeiconsIcon icon={ArrowDown01Icon} size={16} color="currentColor" strokeWidth={2} /></span>
+        <span className="hd-country-chev"><I d={ic.chevronDown} size={16} color="currentColor" sw={2} /></span>
       </button>
 
       {open && (

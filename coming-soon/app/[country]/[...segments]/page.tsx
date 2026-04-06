@@ -542,7 +542,7 @@ export default async function CategoryDetailRoute({
     return (
       <>
         {allJsonLd}
-        <Navbar sectorSlug={slug} />
+        <Navbar sectorSlug={slug} hideSearch />
         <div className="cd-server-skeleton">
           <nav className="cd-server-breadcrumb" aria-label="Breadcrumb">
             <a href="/categories">All Categories</a><span> &gt; </span><span>{sectorName}</span>
@@ -743,7 +743,7 @@ export default async function CategoryDetailRoute({
   return (
     <>
       {jsonLdScripts}
-      <Navbar sectorSlug={navSector} />
+      <Navbar sectorSlug={navSector} hideSearch />
       {serverSkeleton}
       <Suspense>
         <CategoryPage

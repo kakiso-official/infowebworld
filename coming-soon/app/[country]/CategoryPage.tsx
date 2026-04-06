@@ -11,22 +11,25 @@ import { fetchAllTagGroups } from '../iww-hq/data/tag-storage'
 import type { TagGroup } from '../iww-hq/data/tag-storage'
 import { parseSegments, type ParsedCategoryFilters } from './lib-category/parse-segments'
 import { buildCategoryUrl } from './lib-category/build-url'
-import { lookupLocationCountry, type GeoCountry, type GeoState, type GeoCity } from '../lib/geo-slugs'
+import { lookupLocationCountry, preloadCSC, type GeoCountry, type GeoState, type GeoCity } from '../lib/geo-slugs'
 import { COUNTRY_LABELS, ROUTE_TO_GEO_SLUG, ROUTE_TO_ISO, ROOT_COUNTRY } from '../config/countries'
 import type { CountryCode } from '../config/countries'
 
-import SectorLanding from './sector/SectorLanding'
+import dynamic from 'next/dynamic'
 import { I, ic } from './components-category/icons'
 import CategoryHero from './components-category/CategoryHero'
 import SubcategoryChips from './components-category/SubcategoryChips'
-import FilterSidebar from './components-category/FilterSidebar'
 import { DemoListingCard, RealListingCard, type DemoListing } from './components-category/ListingCard'
 import Pagination from './components-category/Pagination'
 import CompactCta from './components-category/CompactCta'
-import TrustSection from './components-category/TrustSection'
-import SeoSections from './components-category/SeoSections'
-import FaqAccordion from './components-category/FaqAccordion'
-import PopularSearches from './components-category/PopularSearches'
+
+/* Heavy / below-fold components — loaded on demand */
+const SectorLanding = dynamic(() => import('./sector/SectorLanding'))
+const FilterSidebar = dynamic(() => import('./components-category/FilterSidebar'))
+const SeoSections = dynamic(() => import('./components-category/SeoSections'))
+const TrustSection = dynamic(() => import('./components-category/TrustSection'))
+const FaqAccordion = dynamic(() => import('./components-category/FaqAccordion'))
+const PopularSearches = dynamic(() => import('./components-category/PopularSearches'))
 
 /* ── Sample listings ── */
 const sampleListings: DemoListing[] = [
@@ -95,10 +98,14 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
   const [locationState, setLocationState] = useState<GeoState | null>(null)
   const [locationCity, setLocationCity] = useState<GeoCity | null>(null)
 
+  /* ── Pre-load geo data for URL parsing + filters ── */
+  const [geoReady, setGeoReady] = useState(false)
+  useEffect(() => { preloadCSC().then(() => setGeoReady(true)) }, [])
+
   /* ── Parse URL segments into filter state ── */
   const [segmentsParsed, setSegmentsParsed] = useState(false)
   useEffect(() => {
-    if (!segments?.length || !category) return
+    if (!segments?.length || !category || !geoReady) return
     const ltSlugs = new Set((category.listingTypes || []).map(lt => lt.slug))
     const tagSlugs = new Set(tagGroups.flatMap(g => g.tags).map(t => t.slug))
     const routeIso = ROUTE_TO_ISO[siteCountry]
@@ -110,7 +117,7 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
     if (parsed.listingType) setSelectedListingType(parsed.listingType)
     if (parsed.tags.length) setSelectedTags(new Set(parsed.tags))
     setSegmentsParsed(true)
-  }, [segments, category, tagGroups, siteCountry])
+  }, [segments, category, tagGroups, siteCountry, geoReady])
 
   /* ── Push URL on filter change ── */
   const pushFilters = useCallback((overrides: Partial<ParsedCategoryFilters>) => {
@@ -165,57 +172,7 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
     fetchCategoryListings(category.id, page).then(res => { setListings(res.data); setListingTotal(res.total) })
   }, [category, page])
 
-  /* ── SEO meta tags ── */
-  useEffect(() => {
-    if (!category) return
-    document.title = `${category.seoTitle || category.name} | InfoWebWorld`
-    const setMeta = (n: string, v: string) => {
-      let el = document.querySelector(`meta[name="${n}"]`) || document.querySelector(`meta[property="${n}"]`)
-      if (!el) { el = document.createElement('meta'); el.setAttribute(n.startsWith('og:') ? 'property' : 'name', n); document.head.appendChild(el) }
-      el.setAttribute('content', v)
-    }
-    setMeta('description', category.seoDescription || category.description)
-    if (category.seoKeywords.length) setMeta('keywords', category.seoKeywords.join(', '))
-    setMeta('og:title', category.seoTitle || category.name)
-    setMeta('og:description', category.seoDescription || category.description)
-    if (category.seoOgImage || category.coverImage) setMeta('og:image', category.seoOgImage || category.coverImage)
-  }, [category])
-
-  /* ── JSON-LD ── */
-  useEffect(() => {
-    if (!category) return
-    const items: { '@type': string; position: number; name: string; item?: string }[] = [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://infowebworld.com' },
-      { '@type': 'ListItem', position: 2, name: 'Categories', item: 'https://infowebworld.com/categories' },
-    ]
-    let pos = 3
-    if (category.parentName && category.parentSlug) {
-      const parentUrl = category.level === 3 && sectorSlug
-        ? `https://infowebworld.com/${sectorSlug}/${category.parentSlug}`
-        : `https://infowebworld.com/${category.parentSlug}`
-      items.push({ '@type': 'ListItem', position: pos++, name: category.parentName, item: parentUrl })
-    }
-    items.push({ '@type': 'ListItem', position: pos, name: category.name })
-
-    const desc = category.seoDescription || category.description || `Explore top ${category.name} businesses on InfoWebWorld.`
-    const faqEntries = [
-      { q: `What is ${category.name}?`, a: desc },
-      { q: `How to find the best ${category.name} companies?`, a: `Browse verified ${category.name} companies on InfoWebWorld, compare services, read reviews, and connect directly.` },
-      { q: `Is it free to list my ${category.name} business?`, a: 'Yes, InfoWebWorld offers free business listing with optional premium plans for enhanced visibility.' },
-      { q: `How are ${category.name} companies ranked?`, a: 'Rankings are based on verified reviews, user satisfaction scores, and market presence. Our team verifies every listing.' },
-      { q: `Can I compare ${category.name} solutions?`, a: `Yes! Use our comparison tools to evaluate ${category.name} solutions side by side across features, pricing, and satisfaction scores.` },
-    ]
-
-    const s1 = document.createElement('script'); s1.type = 'application/ld+json'; s1.id = 'schema-category-breadcrumb'
-    s1.text = JSON.stringify({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: items })
-    document.head.appendChild(s1)
-
-    const s2 = document.createElement('script'); s2.type = 'application/ld+json'; s2.id = 'schema-category-faq'
-    s2.text = JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqEntries.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) })
-    document.head.appendChild(s2)
-
-    return () => { document.getElementById('schema-category-breadcrumb')?.remove(); document.getElementById('schema-category-faq')?.remove() }
-  }, [category])
+  /* SEO meta tags and JSON-LD are handled server-side in [...segments]/page.tsx */
 
   /* ── Handlers ── */
   const toggleTag = (s: string) => {
@@ -515,7 +472,6 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
             sectorSlug={sectorSlug || ''}
             countryName={COUNTRY_LABELS[siteCountry as CountryCode] || 'United States'}
             allCategories={allCats}
-            topCities={['Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Hyderabad', 'Pune', 'Kolkata', 'Ahmedabad']}
           />
         )}
 

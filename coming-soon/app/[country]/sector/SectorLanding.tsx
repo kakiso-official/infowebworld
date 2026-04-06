@@ -4,8 +4,7 @@ import Link from '../../components/CountryLink'
 import { useCountry } from '../../config/country-context'
 import { COUNTRY_LABELS } from '../../config/countries'
 import type { CountryCode } from '../../config/countries'
-import { HugeiconsIcon } from '@hugeicons/react'
-import { LayerIcon, ArrowLeft01Icon } from '@hugeicons/core-free-icons'
+import { I, ic } from '../../components/icons'
 import type { Category } from '../../iww-hq/data/category-storage'
 import { fetchCategoryListings } from '../../iww-hq/data/submissions-storage'
 import type { RealSubmission } from '../../iww-hq/data/submissions-storage'
@@ -152,7 +151,7 @@ export default function SectorLanding({ category, allCategories, initialListings
         <div className="sl-section-inner">
           <div className="sl-section-header">
             <div className="sl-section-left">
-              <span className="sl-section-icon"><HugeiconsIcon icon={LayerIcon} size={20} color="var(--sl-color)" strokeWidth={2} /></span>
+              <span className="sl-section-icon"><I d={ic.layers} size={20} color="var(--sl-color)" sw={2} /></span>
               <div>
                 <h2 className="sl-section-title">Explore All Subcategories</h2>
                 <p className="sl-section-sub">Dive deeper into {sectorName}</p>
@@ -169,7 +168,7 @@ export default function SectorLanding({ category, allCategories, initialListings
 
       <div className="sl-back">
         <Link href="/categories" className="sl-back-link">
-          <HugeiconsIcon icon={ArrowLeft01Icon} size={14} color="var(--sl-color)" strokeWidth={2} /> Back to All Categories
+          <I d={ic.arrowLeft} size={14} color="var(--sl-color)" sw={2} /> Back to All Categories
         </Link>
       </div>
     </section>

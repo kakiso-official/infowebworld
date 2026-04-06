@@ -19,6 +19,9 @@
 .pn-spacer {
   height: 152px;
 }
+.pn-spacer--compact {
+  height: 66px;
+}
 
 /* ── Search row ── */
 .pn-search {
@@ -359,6 +362,13 @@
   display: flex;
   align-items: center;
   flex: 1;
+  overflow: hidden;
+  max-width: 0;
+  transition: max-width .6s cubic-bezier(.22, 1, .36, 1);
+}
+.pn-nav--ready {
+  max-width: 800px;
+  overflow: visible;
   justify-content: center;
 }
 .pn-list {
@@ -396,16 +406,23 @@
   background: var(--h-accent);
 }
 
-/* ── Hover circle (GSAP-animated) ── */
+/* ── Hover circle (CSS-only, replaces GSAP) ── */
 .pn-circle {
   position: absolute;
   left: 50%;
-  bottom: 0;
+  bottom: -4px;
+  width: 120%;
+  aspect-ratio: 1;
   border-radius: 50%;
   background: #1A1A1A;
   pointer-events: none;
   z-index: 1;
-  will-change: transform;
+  transform: translateX(-50%) scale(0);
+  transform-origin: 50% 80%;
+  transition: transform .3s cubic-bezier(.22, 1, .36, 1);
+}
+.pn-pill:hover .pn-circle {
+  transform: translateX(-50%) scale(1.2);
 }
 .pn-pill--cta .pn-circle {
   background: #1A1A1A;
@@ -417,6 +434,7 @@
   display: inline-block;
   line-height: 1;
   z-index: 2;
+  overflow: hidden;
 }
 .pn-label {
   position: relative;
@@ -429,7 +447,10 @@
   color: #1A1A1A;
   letter-spacing: .02em;
   text-transform: uppercase;
-  will-change: transform;
+  transition: transform .3s cubic-bezier(.22, 1, .36, 1);
+}
+.pn-pill:hover .pn-label {
+  transform: translateY(-130%);
 }
 .pn-label-hover {
   position: absolute;
@@ -443,7 +464,13 @@
   color: #fff;
   letter-spacing: .02em;
   text-transform: uppercase;
-  will-change: transform, opacity;
+  transform: translateY(130%);
+  opacity: 0;
+  transition: transform .3s cubic-bezier(.22, 1, .36, 1), opacity .2s ease;
+}
+.pn-pill:hover .pn-label-hover {
+  transform: translateY(0);
+  opacity: 1;
 }
 .pn-pill--cta .pn-label { color: #fff }
 .pn-pill--cta .pn-label-hover { color: var(--h-accent) }
@@ -805,6 +832,7 @@
   .pn-search input { font-size: .85rem }
   .pn-search-btn { height: 32px; padding: 0 1rem; font-size: .7rem }
   .pn-spacer { height: 112px }
+  .pn-spacer--compact { height: 54px }
   .hd-country-btn {
     height: 42px;
     padding: 0 14px;
@@ -851,6 +879,7 @@
   .pn-search-btn { height: 28px; padding: 0 .85rem; font-size: .65rem }
   .pn-burger-line { width: 14px }
   .pn-spacer { height: 98px }
+  .pn-spacer--compact { height: 48px }
   .hd-country-btn {
     height: 38px;
     padding: 0 10px;
@@ -870,6 +899,7 @@
   .pn-search { height: 36px }
   .pn-search-btn { height: 26px; padding: 0 .75rem; font-size: .62rem }
   .pn-spacer { height: 92px }
+  .pn-spacer--compact { height: 44px }
   .hd-country-btn {
     height: 32px;
     padding: 0 8px;

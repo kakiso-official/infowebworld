@@ -43,7 +43,7 @@ export default function BlogList() {
           { l: 'Total Posts', v: posts.length, c: '#E8553D' },
           { l: 'Published', v: published, c: '#2FAE6A' },
           { l: 'Drafts', v: drafts, c: '#F59E0B' },
-          { l: 'Total Posts', v: posts.length, c: '#3B82F6' },
+          { l: 'Categories', v: new Set(posts.map(p => p.category).filter(Boolean)).size, c: '#3B82F6' },
         ].map(s => (
           <div key={s.l} style={{ background: '#fff', borderRadius: 20, border: '1.5px solid var(--h-border)', padding: '1rem 1.15rem', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: s.c }} />

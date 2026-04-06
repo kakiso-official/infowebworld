@@ -1,5 +1,5 @@
 'use client'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { I, ic } from './icons'
 import type { TagGroup } from '../../iww-hq/data/tag-storage'
 import FilterModal from './FilterModal'
@@ -7,6 +7,7 @@ import {
   getLocationCountries,
   getStates,
   getCities,
+  preloadCSC,
   type GeoCountry,
   type GeoState,
   type GeoCity,
@@ -46,12 +47,18 @@ type Props = {
 
 /* ── Location dropdowns ── */
 function LocationSection(p: Props & { effectiveIso: string }) {
+  const [geoReady, setGeoReady] = useState(() => getLocationCountries().size > 0)
+  useEffect(() => {
+    if (geoReady) return
+    preloadCSC().then(() => setGeoReady(true))
+  }, [geoReady])
   const countries = useMemo(() => {
+    if (!geoReady) return []
     const arr: GeoCountry[] = []
     getLocationCountries().forEach(c => arr.push(c))
     arr.sort((a, b) => a.name.localeCompare(b.name))
     return arr
-  }, [])
+  }, [geoReady])
   const states = useMemo(() => {
     if (!p.effectiveIso) return []
     const arr: GeoState[] = []

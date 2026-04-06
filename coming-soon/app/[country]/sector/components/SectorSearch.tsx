@@ -3,15 +3,14 @@ import { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from '../../../components/CountryLink'
 import { useCountry } from '../../../config/country-context'
-import { HugeiconsIcon } from '@hugeicons/react'
-import { Search01Icon, GridIcon, LayerIcon, StarIcon, ArrowRight01Icon, Cancel01Icon, Tick01Icon } from '@hugeicons/core-free-icons'
+import { I, ic, getIconPath } from '../../../components/icons'
 import HIcon from './HIcon'
 import Stars from '../../components-category/Stars'
 import type { Category } from '../../../iww-hq/data/category-storage'
 import type { SectorDemo } from '../sector-demo-data'
 
 type Props = { sectorName: string; shortName: string; color: string; sectorSlug: string; l2Cats: Category[]; l3Cats: Category[]; demos: SectorDemo[] }
-type ResultGroup = { label: string; icon: typeof GridIcon; items: ResultItem[] }
+type ResultGroup = { label: string; iconKey: string; items: ResultItem[] }
 type ResultItem = { type: 'category' | 'subcategory' | 'listing'; name: string; href: string; meta?: string; score?: number; reviews?: number; icon?: string; color?: string; badges?: string[] }
 
 export default function SectorSearch({ sectorName, shortName, color, sectorSlug, l2Cats, l3Cats, demos }: Props) {
@@ -29,16 +28,16 @@ export default function SectorSearch({ sectorName, shortName, color, sectorSlug,
     const groups: ResultGroup[] = []
 
     const catMatches = l2Cats.filter(c => c.name.toLowerCase().includes(q) || (c.description || '').toLowerCase().includes(q)).slice(0, 4)
-    if (catMatches.length) groups.push({ label: 'Categories', icon: GridIcon, items: catMatches.map(c => ({ type: 'category', name: c.name, href: `/${country}/${sectorSlug}/${c.slug}`, meta: `${l3Cats.filter(l3 => l3.parentId === c.id).length} subcategories`, icon: c.icon || 'grid', color })) })
+    if (catMatches.length) groups.push({ label: 'Categories', iconKey: 'grid', items: catMatches.map(c => ({ type: 'category', name: c.name, href: `/${country}/${sectorSlug}/${c.slug}`, meta: `${l3Cats.filter(l3 => l3.parentId === c.id).length} subcategories`, icon: c.icon || 'grid', color })) })
 
     const subMatches = l3Cats.filter(c => c.name.toLowerCase().includes(q) || (c.description || '').toLowerCase().includes(q)).slice(0, 5)
-    if (subMatches.length) groups.push({ label: 'Subcategories', icon: LayerIcon, items: subMatches.map(c => { const p = l2Cats.find(x => x.id === c.parentId); return { type: 'subcategory', name: c.name, href: `/${country}/${sectorSlug}/${c.slug}`, meta: p ? p.name : sectorName, icon: c.icon || 'layers', color } }) })
+    if (subMatches.length) groups.push({ label: 'Subcategories', iconKey: 'layers', items: subMatches.map(c => { const p = l2Cats.find(x => x.id === c.parentId); return { type: 'subcategory', name: c.name, href: `/${country}/${sectorSlug}/${c.slug}`, meta: p ? p.name : sectorName, icon: c.icon || 'layers', color } }) })
 
     const listMatches = demos.filter(d => d.name.toLowerCase().includes(q) || d.tagline.toLowerCase().includes(q) || d.category.toLowerCase().includes(q)).slice(0, 6)
-    if (listMatches.length) groups.push({ label: 'Listings', icon: StarIcon, items: listMatches.map(d => ({ type: 'listing', name: d.name, href: `/${country}/business`, meta: d.tagline, score: d.score, reviews: d.reviews, icon: d.icon, color: d.color, badges: d.badges })) })
+    if (listMatches.length) groups.push({ label: 'Listings', iconKey: 'star', items: listMatches.map(d => ({ type: 'listing', name: d.name, href: `/${country}/business`, meta: d.tagline, score: d.score, reviews: d.reviews, icon: d.icon, color: d.color, badges: d.badges })) })
 
     return groups
-  }, [query, l2Cats, l3Cats, demos, color, country, sectorName])
+  }, [query, l2Cats, l3Cats, demos, color, country, sectorName, sectorSlug])
 
   const flatItems = useMemo(() => results.flatMap(g => g.items), [results])
   const totalResults = flatItems.length
@@ -65,31 +64,31 @@ export default function SectorSearch({ sectorName, shortName, color, sectorSlug,
   return (
     <div className="sl-search" ref={wrapRef}>
       <div className={`sl-search-bar${showDropdown ? ' sl-search-bar--open' : ''}`}>
-        <HugeiconsIcon icon={Search01Icon} size={18} color="var(--h-muted)" strokeWidth={2} />
+        <I d={ic.search} size={18} color="var(--h-muted)" sw={2} />
         <input ref={inputRef} type="text" className="sl-search-input" placeholder={`Search ${shortName} categories, tools and services...`} value={query} onChange={e => { setQuery(e.target.value); setOpen(true) }} onFocus={() => { if (query.trim().length >= 2) setOpen(true) }} onKeyDown={onKeyDown} autoComplete="off" spellCheck={false} />
-        {query && <button className="sl-search-clear" onClick={() => { setQuery(''); setOpen(false); inputRef.current?.focus() }} type="button" aria-label="Clear"><HugeiconsIcon icon={Cancel01Icon} size={16} color="var(--h-muted)" strokeWidth={2} /></button>}
+        {query && <button className="sl-search-clear" onClick={() => { setQuery(''); setOpen(false); inputRef.current?.focus() }} type="button" aria-label="Clear"><I d={ic.x} size={16} color="var(--h-muted)" sw={2} /></button>}
       </div>
 
       {showDropdown && (
         <div className="sl-search-dropdown">
           {results.map(group => (
             <div key={group.label} className="sl-search-group">
-              <div className="sl-search-group-label"><HugeiconsIcon icon={group.icon} size={14} color={color} strokeWidth={2} />{group.label}<span className="sl-search-group-count">{group.items.length}</span></div>
+              <div className="sl-search-group-label"><I d={getIconPath(group.iconKey)} size={14} color={color} sw={2} />{group.label}<span className="sl-search-group-count">{group.items.length}</span></div>
               {group.items.map(item => {
                 flatIdx++
                 const idx = flatIdx
                 return (
                   <Link key={`${item.type}-${item.name}-${idx}`} href={item.href} className={`sl-search-item${idx === activeIdx ? ' sl-search-item--active' : ''}`} onClick={() => { setOpen(false); setQuery('') }} onMouseEnter={() => setActiveIdx(idx)}>
                     <div className="sl-search-item-icon" style={{ background: `${item.color || color}14` }}>
-                      {item.type === 'listing' ? <HIcon name={item.icon || 'grid'} size={18} color={item.color || color} sw={1.5} /> : item.type === 'category' ? <HugeiconsIcon icon={GridIcon} size={16} color={color} strokeWidth={2} /> : <HugeiconsIcon icon={LayerIcon} size={16} color={color} strokeWidth={2} />}
+                      {item.type === 'listing' ? <HIcon name={item.icon || 'grid'} size={18} color={item.color || color} sw={1.5} /> : <I d={getIconPath(item.type === 'category' ? 'grid' : 'layers')} size={16} color={color} sw={2} />}
                     </div>
                     <div className="sl-search-item-body">
                       <span className="sl-search-item-name">{highlight(item.name, query)}</span>
                       {item.type === 'listing' && item.score ? (
-                        <span className="sl-search-item-meta"><span className="sl-search-item-score">{item.score.toFixed(1)}</span><Stars rating={Math.round(item.score)} size={11} /><span className="sl-search-item-reviews">({item.reviews})</span>{item.badges?.includes('verified') && <span className="sl-search-item-badge"><HugeiconsIcon icon={Tick01Icon} size={9} color="#2FAE6A" strokeWidth={3} /> Verified</span>}</span>
+                        <span className="sl-search-item-meta"><span className="sl-search-item-score">{item.score.toFixed(1)}</span><Stars rating={Math.round(item.score)} size={11} /><span className="sl-search-item-reviews">({item.reviews})</span>{item.badges?.includes('verified') && <span className="sl-search-item-badge"><I d={ic.check} size={9} color="#2FAE6A" sw={3} /> Verified</span>}</span>
                       ) : <span className="sl-search-item-meta">{item.meta}</span>}
                     </div>
-                    <HugeiconsIcon icon={ArrowRight01Icon} size={14} color="var(--h-muted)" strokeWidth={2} className="sl-search-item-arrow" />
+                    <I d={ic.arrow} size={14} color="var(--h-muted)" sw={2} />
                   </Link>
                 )
               })}
@@ -101,7 +100,7 @@ export default function SectorSearch({ sectorName, shortName, color, sectorSlug,
 
       {open && query.trim().length >= 2 && !results.length && (
         <div className="sl-search-dropdown">
-          <div className="sl-search-empty"><HugeiconsIcon icon={Search01Icon} size={24} color="var(--h-muted)" strokeWidth={1.5} /><p>No results for &ldquo;{query}&rdquo; in {shortName}</p><span>Try a different keyword or browse categories below</span></div>
+          <div className="sl-search-empty"><I d={ic.search} size={24} color="var(--h-muted)" sw={1.5} /><p>No results for &ldquo;{query}&rdquo; in {shortName}</p><span>Try a different keyword or browse categories below</span></div>
         </div>
       )}
     </div>

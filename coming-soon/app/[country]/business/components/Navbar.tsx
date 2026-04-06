@@ -1,15 +1,15 @@
 'use client'
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from '../../../components/CountryLink'
 import { BASE } from '../../../config/base-path'
 import CountrySwitcher from '../../../components/CountrySwitcher'
-import { gsap } from 'gsap'
 import GlobalSearch from '../../../components/GlobalSearch'
 
 const bp = BASE
 
 /* ═══════════════════════════════════════════
    PillNav for /business — anchor links to sections
+   CSS-only hover animations (replaced GSAP)
    ═══════════════════════════════════════════ */
 
 type NavItem = { label: string; href: string; cta?: boolean; anchor?: boolean }
@@ -24,74 +24,17 @@ const NAV_ITEMS: NavItem[] = [
 
 export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const circleRefs = useRef<(HTMLSpanElement | null)[]>([])
-  const tlRefs = useRef<gsap.core.Timeline[]>([])
-  const tweenRefs = useRef<gsap.core.Tween[]>([])
   const navRef = useRef<HTMLDivElement>(null)
-  const logoRef = useRef<HTMLImageElement>(null)
 
-  const layout = useCallback(() => {
-    circleRefs.current.forEach((circle, i) => {
-      if (!circle?.parentElement) return
-      const pill = circle.parentElement
-      const { width: w, height: h } = pill.getBoundingClientRect()
-      const R = ((w * w) / 4 + h * h) / (2 * h)
-      const D = Math.ceil(2 * R) + 2
-      const delta = Math.ceil(R - Math.sqrt(Math.max(0, R * R - (w * w) / 4))) + 1
-      const originY = D - delta
-
-      circle.style.width = `${D}px`
-      circle.style.height = `${D}px`
-      circle.style.bottom = `-${delta}px`
-
-      gsap.set(circle, { xPercent: -50, scale: 0, transformOrigin: `50% ${originY}px` })
-
-      const label = pill.querySelector<HTMLElement>('.pn-label')
-      const hover = pill.querySelector<HTMLElement>('.pn-label-hover')
-      if (label) gsap.set(label, { y: 0 })
-      if (hover) gsap.set(hover, { y: h + 12, opacity: 0 })
-
-      tlRefs.current[i]?.kill()
-      const tl = gsap.timeline({ paused: true })
-      tl.to(circle, { scale: 1.2, xPercent: -50, duration: 2, ease: 'power3.out', overwrite: 'auto' }, 0)
-      if (label) tl.to(label, { y: -(h + 8), duration: 2, ease: 'power3.out', overwrite: 'auto' }, 0)
-      if (hover) {
-        gsap.set(hover, { y: Math.ceil(h + 100), opacity: 0 })
-        tl.to(hover, { y: 0, opacity: 1, duration: 2, ease: 'power3.out', overwrite: 'auto' }, 0)
-      }
-      tlRefs.current[i] = tl
-    })
-  }, [])
-
-  useEffect(() => {
-    layout()
-    window.addEventListener('resize', layout)
-    document.fonts?.ready?.then(layout).catch(() => {})
-
-    if (navRef.current) {
-      gsap.set(navRef.current, { width: 0, overflow: 'hidden' })
-      gsap.to(navRef.current, { width: 'auto', duration: 0.6, ease: 'power3.out' })
-    }
-
-    return () => window.removeEventListener('resize', layout)
-  }, [layout])
-
-  const enter = (i: number) => {
-    const tl = tlRefs.current[i]
-    if (!tl) return
-    tweenRefs.current[i]?.kill()
-    tweenRefs.current[i] = tl.tweenTo(tl.duration(), { duration: 0.3, ease: 'power3.out', overwrite: 'auto' })
-  }
-  const leave = (i: number) => {
-    const tl = tlRefs.current[i]
-    if (!tl) return
-    tweenRefs.current[i]?.kill()
-    tweenRefs.current[i] = tl.tweenTo(0, { duration: 0.2, ease: 'power3.out', overwrite: 'auto' })
-  }
-
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { requestAnimationFrame(() => setMounted(true)) }, [])
 
   const openDrawer = () => { setDrawerOpen(true); document.body.style.overflow = 'hidden' }
   const closeDrawer = () => { setDrawerOpen(false); document.body.style.overflow = '' }
+
+  useEffect(() => {
+    return () => { document.body.style.overflow = '' }
+  }, [])
 
   /* Smooth scroll for anchor links */
   const handleClick = (e: React.MouseEvent, href: string, isAnchor?: boolean) => {
@@ -107,35 +50,24 @@ export default function Navbar() {
       <header className="pn-header">
         <div className="pn-bar">
           <Link href="/" className="pn-logo">
-            <img ref={logoRef} src={`${bp}/logo/infowebworldlogo-logoforlightbackgrounds.png`} alt="InfoWebWorld" />
+            <img src={`${bp}/logo/infowebworldlogo-logoforlightbackgrounds.png`} alt="InfoWebWorld" />
           </Link>
 
-          <div ref={navRef} className="pn-nav">
+          <div ref={navRef} className={`pn-nav${mounted ? ' pn-nav--ready' : ''}`}>
             <ul className="pn-list">
-              {NAV_ITEMS.map((item, i) => (
+              {NAV_ITEMS.map((item) => (
                 <li key={item.label} className="pn-item">
                   {item.cta ? (
-                    <Link
-                      href={item.href}
-                      className="pn-pill pn-pill--cta"
-                      onMouseEnter={() => enter(i)}
-                      onMouseLeave={() => leave(i)}
-                    >
-                      <span className="pn-circle" ref={el => { circleRefs.current[i] = el }} aria-hidden="true" />
+                    <Link href={item.href} className="pn-pill pn-pill--cta">
+                      <span className="pn-circle" aria-hidden="true" />
                       <span className="pn-label-stack">
                         <span className="pn-label">{item.label}</span>
                         <span className="pn-label-hover" aria-hidden="true">{item.label}</span>
                       </span>
                     </Link>
                   ) : (
-                    <a
-                      href={item.href}
-                      className="pn-pill"
-                      onClick={e => handleClick(e, item.href, item.anchor)}
-                      onMouseEnter={() => enter(i)}
-                      onMouseLeave={() => leave(i)}
-                    >
-                      <span className="pn-circle" ref={el => { circleRefs.current[i] = el }} aria-hidden="true" />
+                    <a href={item.href} className="pn-pill" onClick={e => handleClick(e, item.href, item.anchor)}>
+                      <span className="pn-circle" aria-hidden="true" />
                       <span className="pn-label-stack">
                         <span className="pn-label">{item.label}</span>
                         <span className="pn-label-hover" aria-hidden="true">{item.label}</span>
@@ -160,7 +92,6 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Search row */}
         <GlobalSearch placeholder="Search tools, services, listings" />
       </header>
       <div className="pn-spacer" />
@@ -178,12 +109,7 @@ export default function Navbar() {
         </div>
         <div className="pn-drawer-body">
           {NAV_ITEMS.filter(item => !item.cta).map(item => (
-            <a
-              key={item.label}
-              href={item.href}
-              className="pn-drawer-link"
-              onClick={e => handleClick(e, item.href, item.anchor)}
-            >
+            <a key={item.label} href={item.href} className="pn-drawer-link" onClick={e => handleClick(e, item.href, item.anchor)}>
               {item.label}
             </a>
           ))}

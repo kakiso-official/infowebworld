@@ -7,6 +7,7 @@ import {
   lookupLocationCountry,
   getAllStatesArray,
   getAllCitiesArray,
+  preloadCSC,
   toSlug,
   type GeoCountry,
   type GeoState,
@@ -46,17 +47,32 @@ export default function LocationSearch({ effectiveIso, locationCountry, location
     return () => clearTimeout(t)
   }, [query])
 
-  /* ── Pre-built indexes ── */
-  const stateIndex = useMemo(() => {
-    const idx = new Map<string, string>()
-    getAllStatesArray().forEach(s => idx.set(`${s.isoCode}:${s.stateCode}`, s.name))
-    return idx
-  }, [])
+  /* ── Pre-built indexes (loaded async) ── */
+  const [stateIndex, setStateIndex] = useState<Map<string, string>>(new Map())
+  const [countryNameByIso, setCountryNameByIso] = useState<Map<string, string>>(new Map())
+  const [allStates, setAllStates] = useState<{ name: string; slug: string; stateCode: string; isoCode: string; countryName: string }[]>([])
+  const [allCities, setAllCities] = useState<{ name: string; stateCode: string; countryCode: string }[]>([])
 
-  const countryNameByIso = useMemo(() => {
-    const m = new Map<string, string>()
-    getLocationCountries().forEach(c => m.set(c.isoCode, c.name))
-    return m
+  useEffect(() => {
+    let cancelled = false
+    async function load() {
+      await preloadCSC()
+      if (cancelled) return
+      const states = await getAllStatesArray()
+      const cities = await getAllCitiesArray()
+      const idx = new Map<string, string>()
+      states.forEach(s => idx.set(`${s.isoCode}:${s.stateCode}`, s.name))
+      const cMap = new Map<string, string>()
+      getLocationCountries().forEach(c => cMap.set(c.isoCode, c.name))
+      if (!cancelled) {
+        setStateIndex(idx)
+        setCountryNameByIso(cMap)
+        setAllStates(states)
+        setAllCities(cities)
+      }
+    }
+    load()
+    return () => { cancelled = true }
   }, [])
 
   /* ── Search ── */
@@ -75,7 +91,7 @@ export default function LocationSearch({ effectiveIso, locationCountry, location
     countries.sort((a, b) => (a.name.toLowerCase().startsWith(ql) ? 0 : 1) - (b.name.toLowerCase().startsWith(ql) ? 0 : 1) || a.name.localeCompare(b.name))
 
     // States (~5K)
-    const allSt = getAllStatesArray()
+    const allSt = allStates
     const localSt: LocResult[] = []
     const otherSt: LocResult[] = []
     for (const s of allSt) {
@@ -90,7 +106,6 @@ export default function LocationSearch({ effectiveIso, locationCountry, location
     states.push(...localSt, ...otherSt)
 
     // Cities (~148K)
-    const allCities = getAllCitiesArray()
     const localC: typeof allCities[number][] = []
     const globalC: typeof allCities[number][] = []
     for (const ct of allCities) {
@@ -113,7 +128,7 @@ export default function LocationSearch({ effectiveIso, locationCountry, location
     const seen = new Set<string>()
     const dedup = (arr: LocResult[]) => arr.filter(r => { const k = `${r.type}:${r.name}:${r.meta}`; if (seen.has(k)) return false; seen.add(k); return true })
     return [...dedup(countries).slice(0, 6), ...dedup(states).slice(0, 8), ...dedup(cities).slice(0, 10)]
-  }, [dq, effectiveIso, stateIndex, countryNameByIso])
+  }, [dq, effectiveIso, stateIndex, countryNameByIso, allStates, allCities])
 
   /* ── Handle selection ── */
   const handleSelect = useCallback((r: LocResult) => {

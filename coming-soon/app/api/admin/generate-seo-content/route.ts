@@ -88,7 +88,7 @@ async function generateForCategory(categoryId: number) {
   // ── ANTI-AI STYLE GUIDE (shared across all prompts) ──
   const styleGuide = `
 CRITICAL WRITING RULES — your output MUST pass AI detection tools with <10% AI score:
-- Write like a seasoned industry journalist, NOT an AI assistant
+- Write like a seasoned industry journalist/analyst, NOT an AI assistant
 - Use contractions naturally (don't, won't, it's, they're, you'll)
 - Vary sentence length dramatically: mix 5-word punches with 25-word complex sentences
 - Start paragraphs differently each time — NEVER start with "In today's", "In the realm of", "When it comes to", "It's important to", "Whether you're"
@@ -98,54 +98,68 @@ CRITICAL WRITING RULES — your output MUST pass AI detection tools with <10% AI
 - Avoid AI giveaway patterns: no bullet-point-like paragraphs, no "Furthermore/Moreover/Additionally" transitions
 - Use active voice predominantly. Passive voice sparingly for variety.
 - NO generic filler. Every sentence must add specific value.
-- Do NOT use the word "landscape" or "leverage" or "navigate" or "robust" or "comprehensive" or "delve" or "crucial"
+- Do NOT use these words: "landscape", "leverage", "navigate", "robust", "comprehensive", "delve", "crucial", "streamline", "empower", "revolutionize", "cutting-edge", "seamless", "holistic"
+
+GEOGRAPHY RULE — ABSOLUTELY CRITICAL:
+- Do NOT mention any country, state, city, region, or geographic location
+- Do NOT say "in India", "in the US", "globally", "worldwide", "across the globe", "around the world"
+- Write as if geography doesn't exist. The content is universal — it applies to any buyer anywhere
+- No "international", "local", "regional" qualifiers either
 `
 
   // ── 1. Rich Description ──
-  const descPrompt = `You're a senior tech editor writing a category overview for a business directory.
+  const descPrompt = `You're a senior technology analyst writing a definitive category overview for InfoWebWorld, a business discovery platform.
 
 ${ctx}
 
-RELATED CATEGORIES TO LINK (use [LINK:slug:Display Text] format):
-Siblings: ${siblingList || 'none'}
-Cousins in sector: ${cousinList || 'none'}
-Subcategories: ${subcatList || 'none'}
+INTERNAL LINKS — you MUST weave these into the text using [LINK:slug:Display Text] format:
+Sibling categories (same level): ${siblingList || 'none'}
+Related subcategories (children): ${subcatList || 'none'}
+Cousin categories (same sector, different parent): ${cousinList || 'none'}
 
 ${styleGuide}
 
-Write a 600-800 word overview of "${catName}" for people researching solutions in this space. Structure:
-- Opening paragraph: what this category actually is, in plain terms (3-4 sentences)
-- Who buys these solutions and why — specific roles, company types, pain points (4-5 sentences)
-- The current state of the market — what's changed recently, what buyers should know (3-4 sentences)
-- Key capabilities that separate good solutions from great ones (4-5 sentences)
-- Where this fits in the bigger picture — how it connects to adjacent categories (3-4 sentences, use [LINK:slug:Text] here)
-- Closing paragraph: practical advice for someone starting their search (3-4 sentences)
+Write a 700-900 word editorial overview of "${catName}" — the kind of piece a buyer reads before starting vendor evaluation. This is NOT a sales page. It's an authoritative, opinionated guide.
 
-Include 6-10 internal links as [LINK:slug:Display Text] spread naturally throughout. Link to siblings, cousins, and subcategories where they fit the context.
+Structure (use flowing paragraphs, NOT these as headers):
+1. Open with a crisp definition of what ${catName} actually means in practice. Not a dictionary definition — explain what problems these tools/services solve and for whom. (3-4 sentences)
+2. Explain who actually buys ${catName} solutions — name specific roles (CTOs, ops managers, marketing directors, etc.), company stages, and the trigger events that make someone start searching. (4-5 sentences)
+3. Describe how this market has shifted recently. What used to be acceptable that isn't anymore? What capabilities went from "nice to have" to table stakes? Reference pricing model shifts, consolidation, AI integration, or whatever's real for this category. (4-5 sentences)
+4. Lay out the 4-5 capabilities that actually separate top-tier ${catName} providers from the rest. Be specific and opinionated — don't just list features, explain WHY each matters. (5-6 sentences)
+5. Map how ${catName} connects to adjacent categories. A buyer evaluating ${catName} is probably also looking at [LINK to siblings/cousins]. Explain the relationship — does one replace the other? Do they complement? Is there overlap? Use at LEAST 4-5 [LINK:slug:Text] references here. (4-5 sentences)
+6. Close with actionable advice: what to prioritize, what to watch out for, and where to start comparing. Mention browsing subcategories if they exist. (3-4 sentences)
 
-No markdown. No headers. No bullet points. Just flowing editorial paragraphs.
+LINKING RULES:
+- Include 10-15 internal links total, spread across ALL paragraphs (not clustered in one section)
+- Every sibling category should be linked at least once
+- Link subcategories when mentioning specific niches or specializations
+- Link cousins when drawing cross-category comparisons
+- Make link text read naturally: "[LINK:ai-writing-tools:AI writing tools]" not "[LINK:ai-writing-tools:AI Writing Tools category]"
+
+No markdown. No headers. No bullet points. No numbered lists. Just flowing editorial paragraphs.
 Return ONLY the description text.`
 
   const richDescription = await callGemini(descPrompt)
 
   // ── 2. Buyer's Guide ──
-  const guidePrompt = `You're a procurement consultant advising a VP of Operations.
+  const guidePrompt = `You're a procurement consultant who's evaluated 100+ ${catName} vendors. A VP just asked you: "What should I actually look for?"
 
 ${ctx}
 ${styleGuide}
 
-Create a practical buyer's guide for evaluating ${catName} vendors. Return valid JSON only, no markdown:
+Create a brutally practical buyer's guide for ${catName}. No fluff — only things that matter during a real evaluation. Return valid JSON only, no markdown:
 
 {
   "features": [
-    { "title": "Feature Name", "description": "One sharp sentence on why this matters, written like advice from a colleague who's been through 50 vendor evaluations" }
+    { "title": "Specific Feature Name", "description": "One sharp sentence explaining why this feature makes or breaks a ${catName} deployment. Reference a real scenario or consequence." }
   ],
-  "questions": ["Direct, specific question to ask a vendor — not generic fluff"],
-  "pitfalls": ["Real mistake buyers make, described in one blunt sentence"],
-  "pricing_info": "2-3 sentences about how ${catName} is typically priced — mention actual models (per seat, usage-based, flat fee) and rough ranges where possible"
+  "questions": ["A pointed question to ask vendors during a demo — the kind that separates serious providers from pretenders"],
+  "pitfalls": ["A specific mistake you've seen buyers make with ${catName} — describe the mistake AND the consequence in one blunt sentence"],
+  "pricing_info": "2-3 sentences about how ${catName} is typically priced. Name actual pricing models (per seat, per API call, usage tiers, flat fee, revenue share). Give approximate ranges where realistic (e.g., '$50-200/seat/month for mid-market'). Mention hidden costs buyers miss."
 }
 
-Exactly 6 features, 5 questions, 4 pitfalls. Every item must be specific to ${catName} — nothing that could apply to any software category.`
+Exactly 6 features, 5 questions, 4 pitfalls.
+EVERY item must be deeply specific to ${catName}. Test each item: if you could swap in a different category name and it still makes sense, rewrite it. Generic = useless.`
 
   const guideRaw = await callGemini(guidePrompt)
   const buyersGuide = JSON.parse(cleanJson(guideRaw))
@@ -154,58 +168,92 @@ Exactly 6 features, 5 questions, 4 pitfalls. Every item must be specific to ${ca
   const useCasePrompt = `${ctx}
 ${styleGuide}
 
-Generate 5 real-world use cases for ${catName}. Each targets a different industry or team type. Return valid JSON only:
+Generate 5 real-world use cases showing how different types of organizations use ${catName}. Each must target a completely different industry vertical or team function. Return valid JSON only:
 
 [
-  { "title": "Specific Title (e.g., '${catName} for D2C E-commerce Brands')", "description": "2-3 sentences describing the actual problem this industry faces and how ${catName} solves it. Be specific — mention workflows, metrics, or outcomes.", "icon": "one of: building, heart, graduation, cart, code, briefcase, users, globe, chart, shield" }
+  { "title": "Specific Title (e.g., '${catName} for D2C E-commerce Brands')", "description": "2-3 sentences: name the specific pain point this buyer type faces, how ${catName} addresses it, and what measurable outcome they get. Mention a workflow, metric, or before/after.", "icon": "one of: building, heart, graduation, cart, code, briefcase, users, globe, chart, shield" }
 ]
 
-Don't use generic titles like "For Small Business". Be specific: "For Series-A SaaS Startups" or "For Hospital IT Departments".`
+RULES:
+- No generic titles like "For Small Business" or "For Enterprises" — be specific: "For Series-A SaaS Startups", "For Hospital IT Departments", "For D2C Brands Scaling Past $5M ARR"
+- Each description must mention a SPECIFIC workflow, pain point, or outcome unique to that buyer type
+- Do NOT mention any country, city, or region
+- Cover a diverse spread: at least one startup, one enterprise, one non-tech industry`
 
   const useCaseRaw = await callGemini(useCasePrompt)
   const useCases = JSON.parse(cleanJson(useCaseRaw))
 
   // ── 4. Comparisons ──
-  const siblingNames = (siblings as Array<Record<string, unknown>>).slice(0, 4).map(s => `${s.name} (slug: ${s.slug})`)
+  // Only use REAL sibling categories — never compare a category to itself
+  const siblingNames = (siblings as Array<Record<string, unknown>>)
+    .filter(s => String(s.name).toLowerCase() !== catName.toLowerCase() && String(s.slug) !== String(cat.slug))
+    .slice(0, 4)
+    .map(s => `${s.name} (slug: ${s.slug})`)
+
   const compPrompt = `${ctx}
 ${styleGuide}
 
-Write comparison blurbs between "${catName}" and these related categories:
-${siblingNames.map((s, i) => `${i + 1}. ${s}`).join('\n')}
-${siblingNames.length === 0 ? 'Generate 3 comparisons with commonly confused or compared alternatives in this space. Use realistic category names and slugs.' : ''}
+You're writing "vs" comparison blurbs for "${catName}" against DIFFERENT categories that buyers commonly confuse or evaluate side-by-side.
+
+${siblingNames.length >= 2 ? `Compare "${catName}" against these specific sibling categories:
+${siblingNames.map((s, i) => `${i + 1}. ${s}`).join('\n')}` : `"${catName}" has few direct siblings. Generate 3 comparisons against well-known alternative categories that buyers in the ${sectorName || 'technology'} space commonly evaluate alongside or instead of "${catName}". Pick categories that are genuinely DIFFERENT but serve overlapping buyer needs.`}
+
+CRITICAL RULES:
+- NEVER compare "${catName}" to itself or to a category with essentially the same name
+- Each comparison must be between TWO CLEARLY DIFFERENT categories
+- The "vs_slug" must be a plausible URL slug for the OTHER category (not "${cat.slug}")
+- Write from the buyer's perspective: "If you need X, go with [Category A]. If you need Y, go with [Category B]."
 
 Return valid JSON only:
 [
-  { "vs_name": "Other Category Name", "vs_slug": "other-category-slug", "summary": "2-3 sentence comparison that a real buyer would find useful. What's the actual decision point between these two?", "differences": ["Sharp difference 1", "Sharp difference 2", "Sharp difference 3"] }
+  { "vs_name": "Other Category Name", "vs_slug": "other-category-slug", "summary": "2-3 sentence comparison written like a consultant's recommendation. State the core tradeoff clearly — when should a buyer pick one over the other?", "differences": ["Decisive difference 1 — e.g. 'Category A focuses on X while Category B handles Y'", "Decisive difference 2", "Decisive difference 3"] }
 ]
 
-Write differences as decisive statements, not vague observations.`
+Write differences as decisive, opinionated statements. Not "both are good" — tell the buyer what actually matters.`
 
   const compRaw = await callGemini(compPrompt)
   const comparisons = JSON.parse(cleanJson(compRaw))
 
   // ── 5. Long-tail Keywords ──
   const year = new Date().getFullYear()
-  const kwPrompt = `Generate realistic long-tail search queries that real buyers type when looking for ${catName} solutions. Return valid JSON only:
+  const kwPrompt = `Generate realistic long-tail search queries that real buyers type into Google when evaluating ${catName} solutions. These must be GLOBAL keywords — no country, city, or region names.
+
+Return valid JSON only:
 
 {
   "by_industry": ["Best ${catName} for Healthcare", "Best ${catName} for Financial Services", "Best ${catName} for Education", "Best ${catName} for E-commerce", "Best ${catName} for Real Estate", "Best ${catName} for Manufacturing", "Best ${catName} for Logistics", "Best ${catName} for SaaS Companies"],
   "by_size": ["Best ${catName} for Startups", "Best ${catName} for Small Business", "Best ${catName} for Enterprise", "Best ${catName} for Agencies", "Best ${catName} for Freelancers", "Best ${catName} for Mid-Market", "Best ${catName} for Solopreneurs", "Best ${catName} for Remote Teams"],
-  "by_need": ["Free ${catName} Tools ${year}", "Open Source ${catName} Alternatives", "Best ${catName} with API Integration", "Best ${catName} for Teams Under 50", "${catName} with Free Trial", "Affordable ${catName} for Bootstrapped Startups", "Top Rated ${catName} ${year}", "${catName} Comparison & Reviews", "Best ${catName} with Mobile App", "Enterprise-Grade ${catName} Platforms"]
+  "by_need": ["Free ${catName} Tools ${year}", "Open Source ${catName} Alternatives", "Best ${catName} with API Integration", "${catName} vs [Top Competitor Category]", "${catName} with Free Trial", "Affordable ${catName} for Bootstrapped Startups", "Top Rated ${catName} ${year}", "${catName} Comparison & Reviews ${year}", "Best ${catName} with Mobile App", "Enterprise-Grade ${catName} Platforms"]
 }
 
-Make every keyword something a real person would Google. No AI-sounding phrases.`
+RULES:
+- Every keyword must be something a real person would actually Google
+- NO country/city/region names in any keyword
+- Replace the "[Top Competitor Category]" placeholder with a real competing category name
+- Include the year "${year}" in at least 3 keywords across all groups
+- Focus on buyer-intent keywords (comparison, pricing, alternatives, reviews) not informational`
 
   const kwRaw = await callGemini(kwPrompt)
   const longTailKeywords = JSON.parse(cleanJson(kwRaw))
 
   // ── 6. Complementary Categories ──
-  const compCatPrompt = `A company just bought a ${catName} solution. What 5 other categories of tools/services would they typically need next? Think about the actual workflow — what comes before, after, or alongside ${catName}?
+  const compCatPrompt = `A company just purchased a ${catName} solution. What 5 other categories of tools or services do they typically evaluate next?
+
+Think about the real workflow:
+- What feeds data INTO ${catName}? (upstream tools)
+- What consumes output FROM ${catName}? (downstream tools)
+- What runs alongside ${catName} in the same team's stack?
+
+${ctx}
 
 Return valid JSON array of category names only:
 ["Category Name 1", "Category Name 2", "Category Name 3", "Category Name 4", "Category Name 5"]
 
-Be specific and practical. These should be categories that genuinely appear together in a company's tech stack or service vendor list.`
+RULES:
+- Be specific: "Marketing Automation" not "Marketing Tools"
+- These must be DIFFERENT categories, not variations of ${catName}
+- Think real tech stack / vendor list pairings — what would you see together on a G2 or Gartner comparison
+- No geographic references`
 
   const compCatRaw = await callGemini(compCatPrompt)
   const complementaryCategories = JSON.parse(cleanJson(compCatRaw))
@@ -214,27 +262,31 @@ Be specific and practical. These should be categories that genuinely appear toge
   const faqPrompt = `${ctx}
 ${styleGuide}
 
-Write 12 FAQ entries about "${catName}" that real buyers actually search for. Return valid JSON only:
+Write 12 FAQ entries about "${catName}" — the questions real buyers Google before making a purchase decision. Return valid JSON only:
 
 [
-  { "q": "Question phrased exactly how someone would Google it?", "a": "3-4 sentence answer that's genuinely helpful. Include a specific fact, number, or recommendation. Don't hedge with 'it depends' — give a real answer first, then add nuance." }
+  { "q": "Question phrased exactly how someone would type it into Google", "a": "3-4 sentence answer that gives a DIRECT, opinionated recommendation first, then adds nuance. Include a specific number, price range, or timeframe wherever possible. No hedging." }
 ]
 
-Topics to cover (one question each):
-1. What ${catName} actually does (plain English)
-2. Typical cost / pricing ranges
-3. Must-have features
-4. Best option for small teams (<20 people)
-5. Best option for enterprise
-6. How long implementation takes
-7. ${catName} vs the most common alternative
-8. Integration requirements
-9. Security / compliance standards
-10. Free or open-source options
-11. How to evaluate vendors (red flags)
-12. Current trends shaping ${catName} in ${year}
+Topics (one question each):
+1. What ${catName} actually does — explain it like the buyer has never heard of it
+2. How much does ${catName} cost? — give actual price ranges and pricing models
+3. What are the must-have features? — name 3-4 non-negotiable capabilities
+4. What's the best ${catName} for small teams? — recommend a type/approach, not a brand
+5. What's the best ${catName} for enterprise? — different requirements than #4
+6. How long does ${catName} implementation take? — give a realistic timeline range
+7. ${catName} vs [name the most commonly confused alternative category] — decisive comparison
+8. What integrations should ${catName} support? — name specific systems/protocols
+9. What security/compliance standards matter? — name actual standards (SOC 2, GDPR, HIPAA, etc.)
+10. Are there free or open-source ${catName} options? — honest assessment of viability
+11. Red flags when evaluating ${catName} vendors — specific warning signs from real evaluations
+12. What's changing in ${catName} right now? — actual ${year} trends, not buzzwords
 
-Write answers like a knowledgeable friend giving advice, not a corporate FAQ page.`
+RULES:
+- Write each answer like a knowledgeable consultant giving frank advice over coffee
+- NO geographic references (no countries, cities, regions)
+- Every answer must contain at least one specific number, price, timeframe, or named standard
+- The "vs" question (#7) must compare against a DIFFERENT category, not ${catName} itself`
 
   const faqRaw = await callGemini(faqPrompt)
   const extendedFaq = JSON.parse(cleanJson(faqRaw))

@@ -1,19 +1,14 @@
 'use client'
 import Link from '../../../components/CountryLink'
-import { HugeiconsIcon } from '@hugeicons/react'
-import {
-  StarIcon, RocketIcon, FlashIcon, GridIcon, LayerIcon,
-  Building01Icon, UserGroupIcon, ChartIncreaseIcon, Award01Icon, EyeIcon, Shield01Icon,
-  ArrowRight01Icon,
-} from '@hugeicons/core-free-icons'
+import { I, ic, getIconPath } from '../../../components/icons'
 import SectorCard from './SectorCard'
 import type { SectorDemo } from '../sector-demo-data'
 
-const SEC_ICONS: Record<string, typeof StarIcon> = {
-  rocket: RocketIcon, star: StarIcon, zap: FlashIcon,
-  grid: GridIcon, trendingUp: ChartIncreaseIcon, users: UserGroupIcon,
-  building: Building01Icon, layers: LayerIcon, award: Award01Icon,
-  eye: EyeIcon, shield: Shield01Icon,
+const SEC_ICONS: Record<string, string> = {
+  rocket: 'rocket', star: 'star', zap: 'zap',
+  grid: 'grid', trendingUp: 'trendingUp', users: 'users',
+  building: 'building', layers: 'layers', award: 'award',
+  eye: 'eye', shield: 'shield',
 }
 
 export default function SectorSection({
@@ -22,14 +17,14 @@ export default function SectorSection({
   title: string; subtitle?: string; iconKey: string
   viewAll?: string; alt?: boolean; children: React.ReactNode
 }) {
-  const icon = SEC_ICONS[iconKey] || GridIcon
+  const iconName = SEC_ICONS[iconKey] || 'grid'
   return (
     <div className={`sl-section${alt ? ' sl-section--alt' : ''}`}>
       <div className="sl-section-inner">
         <div className="sl-section-header">
           <div className="sl-section-left">
             <span className="sl-section-icon">
-              <HugeiconsIcon icon={icon} size={20} color="var(--sl-color)" strokeWidth={2} />
+              <I d={getIconPath(iconName)} size={20} color="var(--sl-color)" sw={2} />
             </span>
             <div>
               <h2 className="sl-section-title">{title}</h2>
@@ -39,7 +34,7 @@ export default function SectorSection({
           {viewAll && (
             <Link href={viewAll} className="sl-section-viewall">
               View All
-              <HugeiconsIcon icon={ArrowRight01Icon} size={14} color="currentColor" strokeWidth={2.5} />
+              <I d={ic.arrow} size={14} color="currentColor" sw={2.5} />
             </Link>
           )}
         </div>

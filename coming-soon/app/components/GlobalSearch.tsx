@@ -1,8 +1,7 @@
 'use client'
 import { useState, useRef, useEffect, useCallback } from 'react'
 import Link from './CountryLink'
-import { HugeiconsIcon } from '@hugeicons/react'
-import { SearchVisualIcon, Cancel01Icon, ArrowRight01Icon } from '@hugeicons/core-free-icons'
+import { I, ic } from './icons'
 
 type CategoryResult = {
   id: number; name: string; slug: string; level: number;
@@ -91,7 +90,7 @@ export default function GlobalSearch({ placeholder = 'Search businesses, tools, 
         <span className="pn-search-icon">
           {loading
             ? <span className="gs-spinner" />
-            : <HugeiconsIcon icon={SearchVisualIcon} size={22} color="#1A1A1A" strokeWidth={2} />
+            : <I d={ic.search} size={22} color="#1A1A1A" sw={2} />
           }
         </span>
         <input
@@ -103,7 +102,7 @@ export default function GlobalSearch({ placeholder = 'Search businesses, tools, 
         />
         {query && (
           <button className="gs-clear" onClick={clear} aria-label="Clear" type="button">
-            <HugeiconsIcon icon={Cancel01Icon} size={14} color="currentColor" strokeWidth={2} />
+            <I d={ic.x} size={14} color="currentColor" sw={2} />
           </button>
         )}
         <button className="pn-search-btn" type="button" onClick={() => search(query.trim())}>Search</button>
@@ -149,7 +148,7 @@ export default function GlobalSearch({ placeholder = 'Search businesses, tools, 
                   </span>
                   {l.category_name && <span className="gs-row-trail">{l.category_name}</span>}
                   <span className="gs-row-arrow">
-                    <HugeiconsIcon icon={ArrowRight01Icon} size={14} color="currentColor" strokeWidth={2} />
+                    <I d={ic.arrow} size={14} color="currentColor" sw={2} />
                   </span>
                 </Link>
               ))}
