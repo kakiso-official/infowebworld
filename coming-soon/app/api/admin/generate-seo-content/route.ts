@@ -184,32 +184,44 @@ RULES:
   const useCases = JSON.parse(cleanJson(useCaseRaw))
 
   // ── 4. Comparisons ──
-  // Only use REAL sibling categories — never compare a category to itself
-  const siblingNames = (siblings as Array<Record<string, unknown>>)
-    .filter(s => String(s.name).toLowerCase() !== catName.toLowerCase() && String(s.slug) !== String(cat.slug))
-    .slice(0, 4)
-    .map(s => `${s.name} (slug: ${s.slug})`)
+  // Do NOT use sibling categories — they're in the same taxonomy branch (e.g., all AI subcategories).
+  // Instead, ask Gemini for ALTERNATIVE APPROACHES to the same buyer problem.
 
-  const compPrompt = `${ctx}
+  const compPrompt = `You're a technology analyst writing "vs" comparisons for a buyer research page.
+
+The category is: "${catName}"
+${parent ? `Parent category: ${parent.name}` : ''}
+${sector ? `Industry sector: ${sector.name}` : ''}
+
+A buyer considering "${catName}" is trying to solve a specific problem. Your job: identify 3-4 FUNDAMENTALLY DIFFERENT types of solutions that solve the SAME problem or serve the SAME buyer need — but with a completely different approach.
+
 ${styleGuide}
 
-You're writing "vs" comparison blurbs for "${catName}" against DIFFERENT categories that buyers commonly confuse or evaluate side-by-side.
+EXAMPLE of what GOOD comparisons look like:
+- "AI Chatbots" vs "Live Chat Software" (AI automation vs human agents)
+- "AI Chatbots" vs "Knowledge Base Platforms" (conversational vs self-serve)
+- "AI Chatbots" vs "Helpdesk & Ticketing Systems" (proactive vs reactive)
+- "Project Management Tools" vs "Spreadsheets & Manual Tracking" (purpose-built vs general)
 
-${siblingNames.length >= 2 ? `Compare "${catName}" against these specific sibling categories:
-${siblingNames.map((s, i) => `${i + 1}. ${s}`).join('\n')}` : `"${catName}" has few direct siblings. Generate 3 comparisons against well-known alternative categories that buyers in the ${sectorName || 'technology'} space commonly evaluate alongside or instead of "${catName}". Pick categories that are genuinely DIFFERENT but serve overlapping buyer needs.`}
+EXAMPLE of what BAD comparisons look like (DO NOT DO THIS):
+- "AI Chatbots" vs "AI Writing Tools" (both are AI — different problem entirely)
+- "AI Chatbots" vs "AI Image Generation" (completely unrelated buyer need)
+- "CRM Software" vs "ERP Software" (different departments, different problem)
 
-CRITICAL RULES:
-- NEVER compare "${catName}" to itself or to a category with essentially the same name
-- Each comparison must be between TWO CLEARLY DIFFERENT categories
-- The "vs_slug" must be a plausible URL slug for the OTHER category (not "${cat.slug}")
-- Write from the buyer's perspective: "If you need X, go with [Category A]. If you need Y, go with [Category B]."
+THE KEY TEST: Would a real buyer actually be torn between these two options? Would they Google "${catName} vs [Alternative]"? If not, it's a bad comparison.
 
-Return valid JSON only:
+Generate 3-4 comparisons. Return valid JSON only:
 [
-  { "vs_name": "Other Category Name", "vs_slug": "other-category-slug", "summary": "2-3 sentence comparison written like a consultant's recommendation. State the core tradeoff clearly — when should a buyer pick one over the other?", "differences": ["Decisive difference 1 — e.g. 'Category A focuses on X while Category B handles Y'", "Decisive difference 2", "Decisive difference 3"] }
+  { "vs_name": "Alternative Solution Category", "vs_slug": "url-friendly-slug", "summary": "2-3 sentences explaining the core tradeoff from a buyer's perspective. When does ${catName} win? When does the alternative win? Be decisive — don't say both are good.", "differences": ["Key difference 1: ${catName} does X while Alternative does Y", "Key difference 2: specific tradeoff about cost, speed, or capability", "Key difference 3: who should pick which — name the buyer type"] }
 ]
 
-Write differences as decisive, opinionated statements. Not "both are good" — tell the buyer what actually matters.`
+CRITICAL RULES:
+- The alternative must solve the SAME buyer problem with a DIFFERENT approach
+- NEVER compare against another subcategory from the same sector (no "AI vs AI", no "SaaS vs SaaS")
+- NEVER use "${catName}" or variations of it as the alternative
+- The "vs_slug" must NOT be "${String(cat.slug)}"
+- Think: what would the buyer use if "${catName}" didn't exist? THAT is the real alternative
+- Write differences as decisive recommendations, not vague observations`
 
   const compRaw = await callGemini(compPrompt)
   const comparisons = JSON.parse(cleanJson(compRaw))
