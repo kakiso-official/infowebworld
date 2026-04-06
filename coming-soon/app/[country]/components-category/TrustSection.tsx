@@ -9,7 +9,7 @@ export default function TrustSection({ color }: { color: string }) {
 
   return (
     <div className="cd-trust">
-      <h3 className="cd-trust-title">Why Trust InfoWebWorld</h3>
+      <h3 className="cd-trust-title">Why Trust <em>InfoWebWorld</em></h3>
       <div className="cd-trust-grid">
         {items.map((t, i) => (
           <div key={i} className="cd-trust-card">

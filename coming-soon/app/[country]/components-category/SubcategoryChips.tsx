@@ -1,4 +1,5 @@
 import Link from '../../components/CountryLink'
+import { I, ic } from '../../components/icons'
 
 type Sub = { id: string; slug: string; name: string; listingCount: number }
 
@@ -6,8 +7,7 @@ export default function SubcategoryChips({ subcategories, sectorSlug }: { subcat
   if (!subcategories.length) return null
   const sp = sectorSlug ? `/${sectorSlug}` : ''
   return (
-    <div className="cd-subcats">
-      <h3 className="cd-subcats-label">Subcategories</h3>
+    <nav className="cd-subcats" aria-label="Subcategories">
       <div className="cd-subcats-list">
         {subcategories.map(sc => (
           <Link
@@ -15,11 +15,14 @@ export default function SubcategoryChips({ subcategories, sectorSlug }: { subcat
             href={`${sp}/${sc.slug}`}
             className="cd-subcat-chip"
           >
-            {sc.name}
-            {sc.listingCount > 0 && <span style={{ opacity: .5, marginLeft: '.25rem' }}>({sc.listingCount})</span>}
+            <span className="cd-subcat-name">{sc.name}</span>
+            {sc.listingCount > 0 && (
+              <span className="cd-subcat-count">{sc.listingCount}</span>
+            )}
+            <I d={ic.arrow} size={12} color="currentColor" sw={2} />
           </Link>
         ))}
       </div>
-    </div>
+    </nav>
   )
 }

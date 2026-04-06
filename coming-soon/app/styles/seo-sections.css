@@ -2,13 +2,13 @@
    SEO Sections — seo-* namespace
    ══════════════════════════════════════ */
 
-.seo-sections { margin-top: 2rem }
-.seo-section { margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 1px solid var(--h-border-light) }
+.seo-sections { margin-top: 2.5rem }
+.seo-section { margin-bottom: 2.5rem; padding-bottom: 2.5rem; border-bottom: 1.5px solid var(--h-border-light) }
 .seo-section:last-child { border-bottom: none }
 
-/* Headings */
-.seo-h2 { font-family: var(--font-bricolage), sans-serif; font-size: clamp(1.2rem, 2.5vw, 1.6rem); font-weight: 800; color: #000; margin: 0 0 1rem; line-height: 1.2 }
-.seo-h3 { font-family: var(--font-nunito), sans-serif; font-size: .95rem; font-weight: 700; color: #000; margin: 0 0 .35rem }
+/* Headings — accent underline matching /categories style */
+.seo-h2 { font-family: var(--font-bricolage), sans-serif; font-size: clamp(1.25rem, 2.8vw, 1.7rem); font-weight: 900; color: #000; margin: 0 0 1.15rem; line-height: 1.15 }
+.seo-h3 { font-family: var(--font-nunito), sans-serif; font-size: .95rem; font-weight: 800; color: #000; margin: 0 0 .4rem }
 
 /* Rich Description */
 .seo-para { font-family: var(--font-nunito), sans-serif; font-size: .88rem; color: #333; line-height: 1.75; margin: 0 0 .85rem; max-width: 720px }
@@ -16,48 +16,59 @@
 .seo-inline-link:hover { border-bottom-color: var(--h-accent) }
 
 /* Buyer's Guide */
-.seo-guide-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: .75rem; margin-bottom: 1rem }
-.seo-guide-card { padding: 1rem 1.15rem; border: 1.5px solid var(--h-border); border-radius: 12px; background: #fff; transition: border-color .2s }
-.seo-guide-card:hover { border-color: var(--h-accent) }
-.seo-guide-card p { font-family: var(--font-nunito), sans-serif; font-size: .82rem; color: #555; line-height: 1.6; margin: 0 }
-.seo-pricing-note { font-family: var(--font-nunito), sans-serif; font-size: .85rem; color: #555; background: var(--h-bg); padding: .85rem 1rem; border-radius: 10px; line-height: 1.6 }
+.seo-guide-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: .85rem; margin-bottom: 1.25rem }
+.seo-guide-card { padding: 1.15rem 1.25rem; border: 2px solid #000; border-radius: 14px; background: #fff; transition: transform .25s cubic-bezier(.16,1,.3,1), box-shadow .25s }
+.seo-guide-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.06) }
+.seo-guide-card p { font-family: var(--font-nunito), sans-serif; font-size: .84rem; color: #444; line-height: 1.65; margin: 0 }
+.seo-guide-questions { margin-top: 1.25rem }
+.seo-guide-questions ol { padding-left: 1.25rem; margin: .5rem 0 0 }
+.seo-guide-questions li { font-family: var(--font-nunito), sans-serif; font-size: .84rem; color: #444; line-height: 1.7; margin-bottom: .4rem }
+.seo-guide-pitfalls { margin-top: 1.25rem }
+.seo-guide-pitfalls ul { padding-left: 1.25rem; margin: .5rem 0 0 }
+.seo-guide-pitfalls li { font-family: var(--font-nunito), sans-serif; font-size: .84rem; color: #444; line-height: 1.7; margin-bottom: .4rem }
+.seo-pricing-note { font-family: var(--font-nunito), sans-serif; font-size: .88rem; color: #333; background: #fff; border: 2px solid #000; padding: 1rem 1.25rem; border-radius: 14px; line-height: 1.65; margin-top: 1.25rem }
+.seo-pricing-note p { margin: .35rem 0 0 }
 
 /* Use Cases */
-.seo-usecase-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: .75rem }
-.seo-usecase-card { padding: 1.15rem; border: 1.5px solid var(--h-border); border-radius: 12px; background: #fff; transition: border-color .2s }
-.seo-usecase-card:hover { border-color: var(--h-accent) }
-.seo-usecase-icon { margin-bottom: .5rem }
-.seo-usecase-card p { font-family: var(--font-nunito), sans-serif; font-size: .82rem; color: #555; line-height: 1.6; margin: 0 }
+.seo-usecase-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: .85rem }
+.seo-usecase-card { padding: 1.25rem; border: 2px solid #000; border-radius: 14px; background: #fff; transition: transform .25s cubic-bezier(.16,1,.3,1), box-shadow .25s }
+.seo-usecase-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.06) }
+.seo-usecase-icon { margin-bottom: .6rem }
+.seo-usecase-card p { font-family: var(--font-nunito), sans-serif; font-size: .84rem; color: #444; line-height: 1.65; margin: 0 }
 
 /* Comparisons */
-.seo-comp-list { display: flex; flex-direction: column; gap: .75rem }
-.seo-comp-card { padding: 1.15rem; border: 1.5px solid var(--h-border); border-radius: 12px; background: #fff }
-.seo-comp-summary { font-family: var(--font-nunito), sans-serif; font-size: .85rem; color: #555; line-height: 1.65; margin: .25rem 0 .5rem }
-.seo-comp-diffs { margin: 0; padding: 0 0 0 1.25rem; font-family: var(--font-nunito), sans-serif; font-size: .82rem; color: #555; line-height: 1.8 }
+.seo-comp-list { display: flex; flex-direction: column; gap: .85rem }
+.seo-comp-card { padding: 1.25rem; border: 2px solid #000; border-radius: 14px; background: #fff; transition: transform .25s cubic-bezier(.16,1,.3,1), box-shadow .25s }
+.seo-comp-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.06) }
+.seo-comp-summary { font-family: var(--font-nunito), sans-serif; font-size: .86rem; color: #444; line-height: 1.7; margin: .3rem 0 .65rem }
+.seo-comp-diffs { margin: 0; padding: 0; font-family: var(--font-nunito), sans-serif; font-size: .84rem; color: #444; line-height: 1.8 }
+.seo-comp-diffs dt { position: absolute; width: 1px; height: 1px; clip: rect(0,0,0,0); overflow: hidden }
+.seo-comp-diffs dd { margin: 0; padding: .3rem 0 .3rem 1.15rem; position: relative }
+.seo-comp-diffs dd::before { content: ''; position: absolute; left: 0; top: .65rem; width: 6px; height: 6px; border-radius: 50%; background: var(--cd-color, var(--h-accent)) }
 
 /* Long-Tail Keyword Pills */
-.seo-kw-group { margin-bottom: 1rem }
-.seo-kw-pills { display: flex; flex-wrap: wrap; gap: .4rem }
-.seo-kw-pill { display: inline-flex; padding: .4rem .85rem; font-family: var(--font-nunito), sans-serif; font-size: .78rem; font-weight: 600; color: #000; background: var(--h-bg); border: 1.5px solid var(--h-border); border-radius: 999px; white-space: nowrap; transition: border-color .15s, background .15s }
-.seo-kw-pill:hover { border-color: var(--h-accent); background: #fff }
+.seo-kw-group { margin-bottom: 1.25rem }
+.seo-kw-pills { display: flex; flex-wrap: wrap; gap: .45rem }
+.seo-kw-pill { display: inline-flex; padding: .45rem .95rem; font-family: var(--font-nunito), sans-serif; font-size: .78rem; font-weight: 700; color: #000; background: #fff; border: 2px solid #000; border-radius: 999px; white-space: nowrap; transition: all .2s cubic-bezier(.16,1,.3,1) }
+.seo-kw-pill:hover { border-color: var(--cd-color, var(--h-accent)); color: var(--cd-color, var(--h-accent)); transform: translateY(-1px) }
 .seo-kw-pill--link { text-decoration: none; cursor: pointer; color: #000 }
-.seo-kw-pill--link:hover { color: var(--h-accent) }
+.seo-kw-pill--link:hover { color: var(--cd-color, var(--h-accent)) }
 
 /* Also Explore */
-.seo-explore-grid { display: flex; flex-wrap: wrap; gap: .5rem }
-.seo-explore-card { display: inline-flex; padding: .55rem 1rem; font-family: var(--font-nunito), sans-serif; font-size: .82rem; font-weight: 600; color: #000; background: #fff; border: 2px solid #000; border-radius: 10px; text-decoration: none; transition: background .15s, color .15s }
-.seo-explore-card:hover { background: #000; color: #fff }
+.seo-explore-grid { display: flex; flex-wrap: wrap; gap: .55rem }
+.seo-explore-card { display: inline-flex; padding: .6rem 1.1rem; font-family: var(--font-nunito), sans-serif; font-size: .84rem; font-weight: 700; color: #000; background: #fff; border: 2px solid #000; border-radius: 14px; text-decoration: none; transition: all .2s cubic-bezier(.16,1,.3,1) }
+.seo-explore-card:hover { background: #000; color: #fff; transform: translateY(-1px) }
 
 /* Extended FAQ */
-.seo-faq-list { display: flex; flex-direction: column; gap: .5rem }
-.seo-faq-item { border: 1.5px solid var(--h-border); border-radius: 12px; overflow: hidden; transition: border-color .2s }
-.seo-faq-item[open] { border-color: var(--h-accent) }
-.seo-faq-q { display: flex; align-items: center; padding: .85rem 1.15rem; cursor: pointer; list-style: none; font-family: var(--font-nunito), sans-serif }
+.seo-faq-list { display: flex; flex-direction: column; gap: .6rem }
+.seo-faq-item { border: 2px solid #000; border-radius: 14px; overflow: hidden; transition: border-color .2s, box-shadow .25s }
+.seo-faq-item[open] { border-color: var(--cd-color, var(--h-accent)); box-shadow: 0 4px 16px rgba(0,0,0,.05) }
+.seo-faq-q { display: flex; align-items: center; padding: .95rem 1.25rem; cursor: pointer; list-style: none; font-family: var(--font-nunito), sans-serif; font-size: .9rem; font-weight: 700; color: #000; transition: color .2s }
 .seo-faq-q::-webkit-details-marker { display: none }
-.seo-faq-q h3 { font-size: .88rem; font-weight: 700; color: #000; margin: 0; flex: 1 }
-.seo-faq-q::after { content: '+'; font-size: 1.2rem; font-weight: 700; color: var(--h-accent); margin-left: .75rem; transition: transform .2s }
-.seo-faq-item[open] .seo-faq-q::after { content: '−' }
-.seo-faq-a { padding: 0 1.15rem 1rem; font-family: var(--font-nunito), sans-serif; font-size: .84rem; color: #555; line-height: 1.7; margin: 0 }
+.seo-faq-q::after { content: '+'; font-size: 1.25rem; font-weight: 800; color: var(--cd-color, var(--h-accent)); margin-left: .75rem; transition: transform .2s }
+.seo-faq-item[open] .seo-faq-q::after { content: '\2212' }
+.seo-faq-a { padding: 0 1.25rem 1.15rem }
+.seo-faq-a p { font-family: var(--font-nunito), sans-serif; font-size: .86rem; color: #444; line-height: 1.75; margin: 0 }
 
 /* ── Responsive ── */
 @media (max-width: 640px) {
@@ -66,4 +77,6 @@
   .seo-h2 { font-size: 1.15rem }
   .seo-kw-pills { gap: .3rem }
   .seo-kw-pill { font-size: .72rem; padding: .35rem .7rem }
+  .seo-comp-card { padding: 1rem }
+  .seo-faq-q { padding: .8rem 1rem; font-size: .84rem }
 }

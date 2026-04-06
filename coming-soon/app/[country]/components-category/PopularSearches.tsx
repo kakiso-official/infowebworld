@@ -7,7 +7,7 @@ export default function PopularSearches({ searches }: { searches: Pill[] }) {
   if (!searches.length) return null
   return (
     <div className="cd-popular">
-      <h3 className="cd-popular-title">Popular searches</h3>
+      <h3 className="cd-popular-title">Popular <em>Searches</em></h3>
       <div className="cd-popular-pills">
         {searches.map((pill, i) => (
           <Link

@@ -334,7 +334,16 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
   const hasAnyFilter = selectedTags.size > 0 || !!selectedListingType || !!locationCountry
 
   return (
-    <section className="cd-page">
+    <section className="cd-page" style={{ '--cd-color': color } as React.CSSProperties}>
+      {/* ── Decorative background shapes ── */}
+      <div className="cd-shapes" aria-hidden="true">
+        <div className="cd-shape cd-shape--1" style={{ background: color }} />
+        <div className="cd-shape cd-shape--2" />
+        <div className="cd-shape cd-shape--3" style={{ background: color }} />
+        <div className="cd-shape cd-shape--4" />
+        <div className="cd-shape cd-shape--5" />
+      </div>
+
       <div className="cd-wrap">
 
         <CategoryHero
