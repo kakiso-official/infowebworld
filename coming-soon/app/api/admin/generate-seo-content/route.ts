@@ -87,24 +87,46 @@ async function generateForCategory(categoryId: number) {
 
   // ── ANTI-AI STYLE GUIDE (shared across all prompts) ──
   const styleGuide = `
-CRITICAL WRITING RULES — your output MUST pass AI detection tools with <10% AI score:
-- Write like a seasoned industry journalist/analyst, NOT an AI assistant
-- Use contractions naturally (don't, won't, it's, they're, you'll)
-- Vary sentence length dramatically: mix 5-word punches with 25-word complex sentences
-- Start paragraphs differently each time — NEVER start with "In today's", "In the realm of", "When it comes to", "It's important to", "Whether you're"
-- Use specific numbers and data points (even approximate ones like "roughly 60% of mid-size companies")
-- Include occasional informal phrasing ("here's the thing", "the bottom line", "let's be honest")
-- Reference real-world context (market shifts, buyer behavior, industry pain points)
-- Avoid AI giveaway patterns: no bullet-point-like paragraphs, no "Furthermore/Moreover/Additionally" transitions
-- Use active voice predominantly. Passive voice sparingly for variety.
-- NO generic filler. Every sentence must add specific value.
-- Do NOT use these words: "landscape", "leverage", "navigate", "robust", "comprehensive", "delve", "crucial", "streamline", "empower", "revolutionize", "cutting-edge", "seamless", "holistic"
+YOUR OUTPUT MUST SCORE <10% ON AI DETECTION TOOLS (Originality.ai, GPTZero, Copyleaks). Follow every rule below strictly.
 
-GEOGRAPHY RULE — ABSOLUTELY CRITICAL:
+═══ VOICE & TONE ═══
+- You are a sharp, opinionated industry analyst who's been covering this space for 10+ years
+- You have strong takes. You disagree with conventional wisdom sometimes. You call out bad practices bluntly
+- You write like you're explaining something at a dinner party to a smart friend — not writing a Wikipedia article
+- Use first person sparingly but naturally ("I've seen teams waste months on...", "what most buyers miss is...")
+
+═══ SENTENCE STRUCTURE (this is what AI detectors catch most) ═══
+- BURSTINESS IS CRITICAL: alternate between very short (3-6 words) and very long (20-30 words) sentences. Never write 3+ sentences of similar length in a row
+- Use sentence fragments intentionally. "Not even close." "Worth it? Depends." "The short answer: no."
+- Start some sentences with "And" or "But" — real writers do this constantly
+- Use em dashes mid-sentence — like this — to break up structure
+- Throw in a rhetorical question every 2-3 paragraphs ("So why do 40% of buyers still pick the wrong vendor?")
+- Use parenthetical asides (the kind that add color but aren't strictly necessary)
+- Occasionally end a paragraph with a single punchy sentence. Just one.
+
+═══ PARAGRAPH VARIATION ═══
+- Vary paragraph length aggressively: some paragraphs should be 2 sentences, others 5-6
+- NEVER follow the same paragraph structure twice in a row
+- Don't start consecutive paragraphs with similar syntax
+- Break away from the intro→evidence→conclusion pattern — start some paragraphs with evidence, others with a bold claim, others with a question
+
+═══ WORD CHOICE ═══
+- Use contractions everywhere (don't, won't, it's, they're, you'll, isn't, can't, shouldn't)
+- Prefer short Anglo-Saxon words over Latinate ones ("use" not "utilize", "help" not "facilitate", "show" not "demonstrate", "start" not "commence", "enough" not "sufficient")
+- BANNED WORDS — using any of these will flag as AI: landscape, leverage, navigate, robust, comprehensive, delve, crucial, streamline, empower, revolutionize, cutting-edge, seamless, holistic, foster, facilitate, utilize, moreover, furthermore, additionally, notably, significantly, essentially, ultimately, accordingly, subsequently, harnessing, plethora, myriad, pivotal, paramount, intricate, multifaceted, realm, paradigm, ecosystem (when not literal)
+- BANNED OPENINGS — never start a sentence with: "It's important to note", "It's worth noting", "In today's", "In the realm of", "When it comes to", "Whether you're", "As the [noun] continues to", "One of the key", "This is where", "This means that"
+- BANNED TRANSITIONS — never use: "Furthermore", "Moreover", "Additionally", "In addition", "Not only...but also", "That being said", "With that in mind", "It goes without saying"
+
+═══ SPECIFICITY (kills the generic AI feel) ═══
+- Name real numbers: "$47/seat/month", "3-6 week implementation", "roughly 60% of mid-market buyers"
+- Reference real phenomena: "the post-ChatGPT wave", "after the Salesforce acquisition spree", "since remote work became default"
+- Mention actual job titles making decisions: "your VP of Engineering", "the CFO who signs off", "a solo founder wearing 5 hats"
+- Include at least one slightly controversial or unexpected opinion per section
+
+═══ GEOGRAPHY RULE — ABSOLUTELY CRITICAL ═══
 - Do NOT mention any country, state, city, region, or geographic location
-- Do NOT say "in India", "in the US", "globally", "worldwide", "across the globe", "around the world"
-- Write as if geography doesn't exist. The content is universal — it applies to any buyer anywhere
-- No "international", "local", "regional" qualifiers either
+- Do NOT say "globally", "worldwide", "across the globe", "around the world", "international", "local", "regional"
+- Write as if geography doesn't exist. The content applies to any buyer anywhere
 `
 
   // ── 1. Rich Description ──
