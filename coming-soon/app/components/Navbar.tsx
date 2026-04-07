@@ -200,6 +200,7 @@ export default function Navbar({ sectorSlug, hideSearch }: { sectorSlug?: string
   const [hidden, setHidden] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [activeDD, setActiveDD] = useState<string | null>(null)
+  const [mobCatOpen, setMobCatOpen] = useState(false)
   const [sectorCols, setSectorCols] = useState<DDSector[] | null>(() => {
     /* Instant render if cache already warm */
     if (sectorSlug && _catCache) return buildSectorCols(_catCache, sectorSlug)
@@ -412,51 +413,88 @@ export default function Navbar({ sectorSlug, hideSearch }: { sectorSlug?: string
 
       <div className="nh-spacer" />
 
-      {/* ═══ Mobile menu ═══ */}
-      <div className={`nh-mob-bg${menuOpen ? ' nh-mob-bg--on' : ''}`} onClick={closeMenu} />
-      <nav className={`nh-mob${menuOpen ? ' nh-mob--open' : ''}`} aria-label="Mobile">
+      {/* ═══ Mobile menu — full-screen overlay ═══ */}
+      <div className={`nh-mob${menuOpen ? ' nh-mob--open' : ''}`}>
+        {/* Top bar — logo + close */}
         <div className="nh-mob-head">
           <Link href="/" className="nh-logo" onClick={closeMenu}>
             <img src={`${BASE}/logo/infowebworldlogo-logoforlightbackgrounds.png`} alt="InfoWebWorld" />
           </Link>
           <button className="nh-mob-close" onClick={closeMenu} aria-label="Close" type="button">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
               strokeWidth="2" strokeLinecap="round">
               <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           </button>
         </div>
+
+        {/* Search */}
+        <div className="nh-mob-search">
+          <GlobalSearch placeholder="Search categories, companies..." />
+        </div>
+
+        {/* Scrollable nav body */}
         <div className="nh-mob-body">
-          <div className="nh-mob-section">
-            <Link href="/categories" className="nh-mob-link" onClick={closeMenu}
-              style={menuOpen ? { animationDelay: '0ms' } : undefined}>
-              Categories
-            </Link>
-            <div className="nh-mob-sectors">
-              {DD_SECTORS.map(s => ({ name: s.header, slug: s.slug })).map(s => (
-                <Link key={s.slug} href={`/${s.slug}`} className="nh-mob-sector" onClick={closeMenu}>
-                  {s.name}
+          {/* Categories — accordion */}
+          <div className="nh-mob-acc">
+            <button className={`nh-mob-acc-trigger${mobCatOpen ? ' nh-mob-acc-trigger--open' : ''}`}
+              onClick={() => setMobCatOpen(o => !o)} type="button">
+              <span>Categories</span>
+              <svg className="nh-mob-acc-chev" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+            <div className={`nh-mob-acc-body${mobCatOpen ? ' nh-mob-acc-body--open' : ''}`}>
+              {DD_SECTORS.map(s => (
+                <Link key={s.slug} href={`/${s.slug}`} className="nh-mob-acc-item" onClick={closeMenu}>
+                  <span className="nh-mob-acc-dot" style={{ background: s.items[0]?.color }} />
+                  {s.header}
                 </Link>
               ))}
+              <Link href="/categories" className="nh-mob-acc-all" onClick={closeMenu}>
+                View all categories →
+              </Link>
             </div>
           </div>
+
+          {/* Other nav links */}
           {NAV_ITEMS.filter(i => !i.cta && i.label !== 'Categories').map((item, i) => (
             <Link key={item.label} href={item.href} className="nh-mob-link" onClick={closeMenu}
-              style={menuOpen ? { animationDelay: `${(i + 1) * 60}ms` } : undefined}>
-              {item.label}
-              {item.comingSoon && <span className="nh-mob-badge">Soon</span>}
+              style={menuOpen ? { animationDelay: `${(i + 1) * 50}ms` } : undefined}>
+              <span>{item.label}</span>
+              {item.comingSoon && <span className="nh-mob-badge">Coming Soon</span>}
             </Link>
           ))}
-          <Link href="/business" className="nh-mob-link nh-mob-link--cta" onClick={closeMenu}
-            style={menuOpen ? { animationDelay: `${4 * 60}ms` } : undefined}>
-            Get Listed
+
+          {/* Divider */}
+          <div className="nh-mob-divider" />
+
+          {/* iWW Business */}
+          <Link href="/business" className="nh-mob-link" onClick={closeMenu}
+            style={menuOpen ? { animationDelay: '200ms' } : undefined}>
+            <span>iWW Business</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" />
+            </svg>
           </Link>
         </div>
+
+        {/* Fixed bottom — CTA + Country */}
         <div className="nh-mob-foot">
-          <Link href="/business" className="nh-mob-biz" onClick={closeMenu}>iWW for Business</Link>
-          <div className="nh-mob-country"><CountrySwitcher /></div>
+          <Link href="/business" className="nh-mob-cta" onClick={closeMenu}>
+            Get Listed
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+            </svg>
+          </Link>
+          <div className="nh-mob-foot-row">
+            <CountrySwitcher />
+          </div>
         </div>
-      </nav>
+      </div>
     </>
   )
 }
