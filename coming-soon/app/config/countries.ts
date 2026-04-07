@@ -39,7 +39,7 @@ export function geoToCountry(isoCode: string | null | undefined): CountryCode {
   const code = isoCode.toUpperCase()
   if (code === 'IN') return 'in'
   if (code === 'US') return 'us'
-  if (code === 'GB') return 'uk'
+  if (code === 'UK') return 'uk'
   if (code === 'CA') return 'ca'
   if (code === 'AU') return 'au'
   if (EU_CODES.has(code)) return 'eu'
@@ -69,7 +69,7 @@ export const ROUTE_TO_GEO_SLUG: Partial<Record<CountryCode, string>> = {
 export const ROUTE_TO_ISO: Partial<Record<CountryCode, string>> = {
   in: 'IN',
   us: 'US',
-  uk: 'GB',
+  uk: 'UK',
   ca: 'CA',
   au: 'AU',
 }

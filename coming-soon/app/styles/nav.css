@@ -5,7 +5,7 @@
    ════════════════════════════════════════════════════════ */
 
 :root {
-  --nh-h: 76px;
+  --nh-h: 116px;
   --nh-ease: cubic-bezier(0.4, 0, 0.2, 1);
   --nh-spring: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -38,15 +38,27 @@
   transform: translateY(-100%);
 }
 
-/* Inner container */
-.nh-inner {
-  max-width: 100%;
-  height: 100%;
-  margin: 0 auto;
+/* ── Row 1: logo + search + actions ── */
+.nh-row-top {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  height: 68px;
   padding: 0 clamp(20px, 3vw, 48px);
+  gap: 16px;
+}
+
+/* ── Row 2: nav links ── */
+.nh-row-sub {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  height: 44px;
+  padding: 0 clamp(20px, 3vw, 48px);
+  gap: 4px;
+  border-top: 1px solid rgba(0, 0, 0, 0.04);
 }
 
 /* ══════════════════════════════════
@@ -69,13 +81,7 @@
 /* ══════════════════════════════════
    Nav links — centered, text-only
    ══════════════════════════════════ */
-.nh-nav {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-left: 24px;
-  flex-shrink: 0;
-}
+/* Nav is now in row 2 — no margin needed */
 
 .nh-link {
   position: relative;
@@ -117,25 +123,28 @@
    Inline search bar
    ══════════════════════════════════ */
 .nh-search-inline {
-  flex: 1;
-  max-width: 520px;
+  max-width: 640px;
   min-width: 200px;
-  margin: 0 24px;
+  width: 100%;
+  justify-self: center;
+  position: relative;
+  z-index: 10;
 }
 .nh-search-inline .pn-search {
-  height: 40px;
+  height: 46px;
   border-radius: 999px;
 }
 .nh-search-inline .pn-search input {
-  font-size: 14px;
+  font-size: 15px;
 }
 .nh-search-inline .pn-search-btn {
-  height: 30px;
-  padding: 0 12px;
-  font-size: 11px;
+  height: 34px;
+  padding: 0 16px;
+  font-size: 12px;
   border-radius: 999px;
 }
 .nh-search-inline .gs-dropdown {
+  background: #ffffff;
   border-radius: 14px;
   border: 1.5px solid rgba(0, 0, 0, 0.08);
   margin-top: 6px;
@@ -321,6 +330,14 @@
 .nh-link--active .nh-link-chev { transform: rotate(180deg); }
 .nh-link--active { color: #000; }
 .nh-link--active::after { transform: scaleX(1); }
+
+/* Sector-specific link — appears only on L1 pages */
+.nh-link--sector {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--h-accent, #E8553D);
+}
+.nh-link--sector::after { background: var(--h-accent, #E8553D); }
 /* Dim links also get active style on dropdown open */
 .nh-link--dim.nh-link--active { color: rgba(0, 0, 0, 0.6); }
 
@@ -329,7 +346,7 @@
    ══════════════════════════════════ */
 .nh-mega {
   position: absolute;
-  top: var(--nh-h);
+  top: 100%;
   left: 0;
   right: 0;
   background: #fff;
@@ -685,7 +702,7 @@ a.nh-dd-col-head:hover { color: #000; }
   padding: 0 16px;
   border: none;
   border-radius: 10px;
-  background: #0a0a0a;
+  background: var(--h-accent, #E8553D);
   color: #fff;
   font: 600 13px/1 var(--font-inter, 'Inter', sans-serif);
   letter-spacing: 0.03em;
@@ -693,7 +710,7 @@ a.nh-dd-col-head:hover { color: #000; }
   cursor: pointer;
   transition: background 200ms ease;
 }
-.pn-search-btn:hover { background: var(--h-accent, #E8553D); }
+.pn-search-btn:hover { background: #D44A33; }
 
 .gs-clear {
   display: flex;
@@ -728,13 +745,13 @@ a.nh-dd-col-head:hover { color: #000; }
   top: 100%;
   left: 0;
   right: 0;
-  background: #fff;
+  background: #ffffff;
   border: 1.5px solid rgba(0, 0, 0, 0.08);
   border-top: none;
   border-radius: 0 0 14px 14px;
   max-height: 400px;
   overflow-y: auto;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
   animation: nhDropIn 200ms var(--nh-ease) both;
 }
 
@@ -937,6 +954,8 @@ a.nh-dd-col-head:hover { color: #000; }
 .hd-country-option--active { background: rgba(232, 85, 61, 0.06); font-weight: 600; }
 .hd-country-option--active:hover { background: rgba(232, 85, 61, 0.1); }
 
+.hd-country-option--global { font-weight: 600; }
+.hd-country-divider { height: 1px; background: rgba(0, 0, 0, 0.06); margin: 4px 6px; }
 .hd-country-flag { font-size: 18px; line-height: 1; }
 .hd-country-label { flex: 1; }
 .hd-country-slug {
@@ -1170,12 +1189,14 @@ a.nh-dd-col-head:hover { color: #000; }
 
 /* ── Tablet: ≤1024px ── */
 @media (max-width: 1024px) {
-  .nh-nav { display: none; }
+  :root { --nh-h: 60px; }
+  .nh-row-sub { display: none; }
   .nh-search-inline { display: none; }
   .nh-biz { display: none; }
   .nh-mega { display: none; }
   .nh-burger { display: flex; }
   .nh-mob-search { display: block; }
+  .nh-row-top { height: var(--nh-h); }
 
   /* Country dropdown → bottom sheet on mobile */
   .nh-mob .hd-country-dropdown {
@@ -1197,7 +1218,7 @@ a.nh-dd-col-head:hover { color: #000; }
 /* ── Mobile: ≤768px ── */
 @media (max-width: 768px) {
   :root { --nh-h: 60px; }
-  .nh-inner { padding: 0 16px; }
+  .nh-row-top { padding: 0 16px; }
   .nh-logo img { height: 32px; }
 
   /* Header: Logo left, CTA + Burger right */
@@ -1297,7 +1318,7 @@ a.nh-dd-col-head:hover { color: #000; }
 /* ── Small phone: ≤480px ── */
 @media (max-width: 480px) {
   :root { --nh-h: 54px; }
-  .nh-inner { padding: 0 14px; }
+  .nh-row-top { padding: 0 14px; }
   .nh-logo img { height: 28px; }
   .nh-cta { padding: 7px 14px; font-size: 12px; }
   .hd-country-btn { height: 32px; padding: 0 8px; font-size: 11px; }
@@ -1315,7 +1336,7 @@ a.nh-dd-col-head:hover { color: #000; }
 /* ── Extra small: ≤380px ── */
 @media (max-width: 380px) {
   :root { --nh-h: 50px; }
-  .nh-inner { padding: 0 12px; gap: 6px; }
+  .nh-row-top { padding: 0 12px; gap: 6px; }
   .nh-logo img { height: 24px; }
   .nh-cta { padding: 6px 12px; font-size: 11px; }
   .hd-country-btn { height: 30px; padding: 0 6px; }

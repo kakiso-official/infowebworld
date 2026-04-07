@@ -112,6 +112,10 @@ export default function CategoryHero({ category: c, sectorSlug, locationCountry,
     <div className="cd-hero">
       {/* ── Breadcrumb ── */}
       <nav className="cd-breadcrumb" aria-label="Breadcrumb">
+        <Link href="/" className="cd-breadcrumb-home" aria-label="Home">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </Link>
+        <span className="cd-breadcrumb-sep">/</span>
         <Link href="/categories">Categories</Link>
         <span className="cd-breadcrumb-sep">/</span>
         {c.parentName && c.parentSlug && (
@@ -127,18 +131,6 @@ export default function CategoryHero({ category: c, sectorSlug, locationCountry,
       <h2 className="cd-hero-title">
         Best <em style={{ color }}>{c.name}</em> in {locationText}
       </h2>
-
-      {/* ── Location search ── */}
-      {onLocationChange && (
-        <LocationSearch
-          effectiveIso={effectiveIso}
-          effectiveCountryName={countryDisplayName}
-          locationCountry={locationCountry}
-          locationState={locationState}
-          locationCity={locationCity}
-          onLocationChange={onLocationChange}
-        />
-      )}
 
       {/* ── Description ── */}
       <p className="cd-hero-desc">

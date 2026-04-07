@@ -1,5 +1,6 @@
 'use client'
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { I, ic } from './icons'
 import type { TagGroup } from '../../iww-hq/data/tag-storage'
 import FilterModal from './FilterModal'
@@ -14,6 +15,63 @@ import {
 } from '../../lib/geo-slugs'
 
 const PREVIEW_COUNT = 5
+
+/* ── Custom select dropdown (replaces native <select>) ── */
+function CustomSelect({ value, placeholder, options, disabled, onChange, color }: {
+  value: string; placeholder: string; disabled?: boolean; color?: string
+  options: { value: string; label: string }[]
+  onChange: (val: string) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const [search, setSearch] = useState('')
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    const h = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false) }
+    document.addEventListener('mousedown', h)
+    return () => document.removeEventListener('mousedown', h)
+  }, [open])
+
+  const filtered = search
+    ? options.filter(o => o.label.toLowerCase().includes(search.toLowerCase()))
+    : options
+  const selectedLabel = options.find(o => o.value === value)?.label || placeholder
+
+  return (
+    <div className="cd-cs" ref={ref}>
+      <button type="button" className={`cd-cs-btn${disabled ? ' cd-cs-btn--disabled' : ''}`}
+        onClick={() => !disabled && setOpen(o => !o)}>
+        <span className={value ? 'cd-cs-val' : 'cd-cs-ph'}>{selectedLabel}</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'transform 200ms', transform: open ? 'rotate(180deg)' : 'none', flexShrink: 0 }}><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      {open && (
+        <div className="cd-cs-drop">
+          {options.length > 8 && (
+            <div className="cd-cs-search">
+              <input type="text" placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)} autoFocus />
+            </div>
+          )}
+          <div className="cd-cs-list">
+            <button type="button" className={`cd-cs-opt${!value ? ' cd-cs-opt--active' : ''}`}
+              onClick={() => { onChange(''); setOpen(false); setSearch('') }}>
+              {placeholder}
+            </button>
+            {filtered.map(o => (
+              <button key={o.value} type="button"
+                className={`cd-cs-opt${value === o.value ? ' cd-cs-opt--active' : ''}`}
+                style={value === o.value && color ? { color } : undefined}
+                onClick={() => { onChange(o.value); setOpen(false); setSearch('') }}>
+                {o.label}
+                {value === o.value && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
 
 type Props = {
   color: string
@@ -80,33 +138,38 @@ function LocationSection(p: Props & { effectiveIso: string }) {
         <I d={ic.mapPin} size={14} color={p.color} sw={2} />
         Location
       </h4>
-      <div className="cd-fs-select-wrap">
-        <select className="cd-fs-select" value={p.locationCountry?.slug || ''} onChange={e => {
-          if (!e.target.value) { p.onLocationCountryChange(null); return }
-          const c = countries.find(c => c.slug === e.target.value); if (c) p.onLocationCountryChange(c)
-        }}>
-          <option value="">All Countries</option>
-          {countries.map(c => <option key={c.isoCode} value={c.slug}>{c.name}</option>)}
-        </select>
-      </div>
-      <div className="cd-fs-select-wrap">
-        <select className="cd-fs-select" value={p.locationState?.slug || ''} disabled={!p.effectiveIso} onChange={e => {
-          if (!e.target.value) { p.onStateChange(null); return }
-          const s = states.find(s => s.slug === e.target.value); if (s) p.onStateChange(s)
-        }}>
-          <option value="">{p.effectiveIso ? 'All States' : 'Select country first'}</option>
-          {states.map(s => <option key={s.stateCode} value={s.slug}>{s.name}</option>)}
-        </select>
-      </div>
-      <div className="cd-fs-select-wrap">
-        <select className="cd-fs-select" value={p.locationCity?.slug || ''} disabled={!p.locationState} onChange={e => {
-          if (!e.target.value) { p.onCityChange(null); return }
-          const c = cities.find(c => c.slug === e.target.value); if (c) p.onCityChange(c)
-        }}>
-          <option value="">{p.locationState ? 'All Cities' : 'Select state first'}</option>
-          {cities.map(c => <option key={c.slug} value={c.slug}>{c.name}</option>)}
-        </select>
-      </div>
+      <CustomSelect
+        value={p.locationCountry?.slug || ''}
+        placeholder="All Countries"
+        color={p.color}
+        options={countries.map(c => ({ value: c.slug, label: c.name }))}
+        onChange={val => {
+          if (!val) { p.onLocationCountryChange(null); return }
+          const c = countries.find(c => c.slug === val); if (c) p.onLocationCountryChange(c)
+        }}
+      />
+      <CustomSelect
+        value={p.locationState?.slug || ''}
+        placeholder={p.effectiveIso ? 'All States' : 'Select country first'}
+        disabled={!p.effectiveIso}
+        color={p.color}
+        options={states.map(s => ({ value: s.slug, label: s.name }))}
+        onChange={val => {
+          if (!val) { p.onStateChange(null); return }
+          const s = states.find(s => s.slug === val); if (s) p.onStateChange(s)
+        }}
+      />
+      <CustomSelect
+        value={p.locationCity?.slug || ''}
+        placeholder={p.locationState ? 'All Cities' : 'Select state first'}
+        disabled={!p.locationState}
+        color={p.color}
+        options={cities.map(c => ({ value: c.slug, label: c.name }))}
+        onChange={val => {
+          if (!val) { p.onCityChange(null); return }
+          const c = cities.find(c => c.slug === val); if (c) p.onCityChange(c)
+        }}
+      />
     </div>
   )
 }
@@ -276,40 +339,41 @@ function FilterContent(p: Props) {
   )
 }
 
-/* ── Main: desktop sidebar + mobile drawer ── */
+/* ── Main: filter drawer — portaled to document.body so it sits above everything ── */
 export default function FilterSidebar(p: Props) {
-  if (!p.isL3) return null
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
 
-  return (
+  if (!p.isL3 || !mounted) return null
+
+  return createPortal(
     <>
-      {/* Desktop */}
-      <aside className="cd-sidebar cd-fs-sidebar">
-        <FilterContent {...p} />
-      </aside>
+      {/* Overlay */}
+      <div className={`cd-sidebar-overlay${p.isOpen ? ' cd-sidebar-overlay--open' : ''}`} onClick={p.onClose} />
 
-      {/* Mobile drawer */}
-      {p.isOpen && (
-        <div className="cd-drawer-overlay" onClick={p.onClose}>
-          <div className="cd-drawer" onClick={e => e.stopPropagation()}>
-            <div className="cd-drawer-header">
-              <h3 className="cd-drawer-title">
-                <I d={ic.filter} size={16} color={p.color} sw={2} /> Filters
-              </h3>
-              <button className="cd-drawer-close" onClick={p.onClose}>
-                <I d={ic.x} size={18} color="var(--h-heading)" sw={2} />
-              </button>
-            </div>
-            <div className="cd-drawer-body">
-              <FilterContent {...p} />
-            </div>
-            <div className="cd-drawer-footer">
-              <button className="cd-drawer-apply" style={{ background: p.color }} onClick={p.onClose}>
-                Show {p.totalFilteredCount} results
-              </button>
-            </div>
-          </div>
+      {/* Right-side drawer */}
+      <aside className={`cd-sidebar${p.isOpen ? ' cd-sidebar--open' : ''}`}>
+        <div className="cd-sidebar-head">
+          <span className="cd-sidebar-head-title">Filters</span>
+          <button className="cd-sidebar-head-close" onClick={p.onClose} type="button" aria-label="Close filters">
+            <I d={ic.x} size={18} color="#000" sw={2} />
+          </button>
         </div>
-      )}
-    </>
+        <div className="cd-sidebar-body">
+          <FilterContent {...p} />
+        </div>
+        {p.hasAnyFilter && (
+          <div style={{ padding: '12px 24px 20px', borderTop: '1px solid rgba(0,0,0,0.06)', flexShrink: 0, background: '#fff', position: 'sticky', bottom: 0 }}>
+            <button
+              onClick={p.onClose}
+              style={{ width: '100%', padding: '14px', borderRadius: '12px', border: 'none', background: p.color, color: '#fff', font: '700 15px/1 var(--font-inter, Inter, sans-serif)', cursor: 'pointer' }}
+            >
+              Show {p.totalFilteredCount} results
+            </button>
+          </div>
+        )}
+      </aside>
+    </>,
+    document.body
   )
 }

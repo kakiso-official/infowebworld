@@ -545,7 +545,7 @@ export default async function CategoryDetailRoute({
         <Navbar sectorSlug={slug} />
         <div className="cd-server-skeleton">
           <nav className="cd-server-breadcrumb" aria-label="Breadcrumb">
-            <a href="/categories">All Categories</a><span> &gt; </span><span>{sectorName}</span>
+            <a href="/" aria-label="Home"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a><span> &gt; </span><a href="/categories">All Categories</a><span> &gt; </span><span>{sectorName}</span>
           </nav>
           <h1 className="cd-server-h1">All {sectorName} Categories</h1>
           <p className="cd-server-desc">Browse all categories and subcategories within {sectorName}. {l2InSector} categories to explore.</p>
@@ -670,7 +670,7 @@ export default async function CategoryDetailRoute({
     serverSkeleton = (
       <div className="cd-server-skeleton">
         <nav className="cd-server-breadcrumb" aria-label="Breadcrumb">
-          <a href="/">Home</a><span> &gt; </span><a href="/categories">Categories</a><span> &gt; </span><span>{sName}</span>
+          <a href="/" aria-label="Home"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a><span> &gt; </span><a href="/categories">Categories</a><span> &gt; </span><span>{sName}</span>
         </nav>
         <h1 className="cd-server-h1">Best {sName} in {countryName} {year}</h1>
         <p className="cd-server-desc">{sMeta.seoDescription}</p>
@@ -709,7 +709,7 @@ export default async function CategoryDetailRoute({
     serverSkeleton = (
       <div className="cd-server-skeleton">
         <nav className="cd-server-breadcrumb" aria-label="Breadcrumb">
-          <a href="/">Home</a><span> &gt; </span>
+          <a href="/" aria-label="Home"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a><span> &gt; </span>
           <a href="/categories">Categories</a>
           {parentName && parentHref && (<><span> &gt; </span><a href={parentHref}>{parentName}</a></>)}
           <span> &gt; </span><span>{catName}</span>

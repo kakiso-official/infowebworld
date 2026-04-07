@@ -271,37 +271,15 @@ export default function Navbar({ sectorSlug, hideSearch }: { sectorSlug?: string
   return (
     <>
       <header className={cls}>
-        <div className="nh-inner">
+        {/* Row 1 — Logo | Search (center) | Actions */}
+        <div className="nh-row-top">
           <Link href="/" className="nh-logo">
             <img src={`${BASE}/logo/infowebworldlogo-logoforlightbackgrounds.png`} alt="InfoWebWorld" />
           </Link>
 
-          <nav className="nh-nav" aria-label="Main">
-            {NAV_ITEMS.filter(i => !i.cta).map(item => {
-              const href = item.label === 'Categories' && sectorSlug
-                ? `/${sectorSlug}/all` : item.href
-              return (
-                <div key={item.label} className="nh-link-wrap"
-                  onMouseEnter={() => item.dropdown ? openDD(item.label) : undefined}
-                  onMouseLeave={item.dropdown ? scheduleCloseDD : undefined}>
-                  <Link href={href}
-                    className={[
-                      'nh-link',
-                      item.comingSoon && 'nh-link--dim',
-                      activeDD === item.label && 'nh-link--active',
-                    ].filter(Boolean).join(' ')}>
-                    {item.label}
-                    {item.dropdown && <Chev />}
-                  </Link>
-                </div>
-              )
-            })}
-          </nav>
-
-          {/* Inline search bar */}
           {!hideSearch && (
             <div className="nh-search-inline">
-              <GlobalSearch placeholder="Search categories, companies..." />
+              <GlobalSearch placeholder="Search categories, companies, articles..." />
             </div>
           )}
 
@@ -317,68 +295,99 @@ export default function Navbar({ sectorSlug, hideSearch }: { sectorSlug?: string
           </div>
         </div>
 
+        {/* Row 2 — Nav links */}
+        <nav className="nh-row-sub" aria-label="Main">
+          {NAV_ITEMS.filter(i => !i.cta).map(item => {
+            const el = (
+              <div key={item.label} className="nh-link-wrap"
+                onMouseEnter={() => item.dropdown ? openDD(item.label) : undefined}
+                onMouseLeave={item.dropdown ? scheduleCloseDD : undefined}>
+                <Link href={item.href}
+                  className={[
+                    'nh-link',
+                    item.comingSoon && 'nh-link--dim',
+                    activeDD === item.label && 'nh-link--active',
+                  ].filter(Boolean).join(' ')}>
+                  {item.label}
+                  {item.dropdown && <Chev />}
+                </Link>
+              </div>
+            )
+
+            /* Insert sector link right after Categories */
+            if (item.label === 'Categories' && sectorSlug && sectorCols && sectorCols.length > 0) {
+              const sectorName = DD_SECTORS.find(s => s.slug === sectorSlug)?.header || sectorSlug
+              return [
+                el,
+                <div key="__sector__" className="nh-link-wrap"
+                  onMouseEnter={() => openDD('__sector__')}
+                  onMouseLeave={scheduleCloseDD}>
+                  <span className={`nh-link nh-link--sector${activeDD === '__sector__' ? ' nh-link--active' : ''}`}>
+                    {sectorName}
+                    <Chev />
+                  </span>
+                </div>
+              ]
+            }
+            return el
+          })}
+        </nav>
+
         {/* ═══ Mega-menu dropdown ═══ */}
         <div className={`nh-mega${activeDD ? ' nh-mega--open' : ''}`}
           onMouseEnter={keepDD} onMouseLeave={scheduleCloseDD}>
           <div className="nh-mega-inner">
 
-            {/* ── Categories dropdown ── */}
-            {activeDD === 'Categories' && (() => {
-              /* On sector pages: show L2 as headers, L3 as items (same layout, one level deeper) */
-              if (sectorSlug && sectorCols && sectorCols.length > 0) {
-                const previewCount = 5
-                const visibleCols = sectorCols.slice(0, 12)
-                return (
-                  <div className="nh-dd-cats" key={`sector-${sectorSlug}`}>
-                    <div className="nh-dd-grid">
-                      {visibleCols.map(col => (
-                        <div key={col.slug} className="nh-dd-col">
-                          <Link href={`/${sectorSlug}/${col.slug}`} className="nh-dd-col-head" onClick={closeDD}>
-                            {col.header}
-                          </Link>
-                          {col.items.slice(0, previewCount).map(item => (
-                            <Link key={item.slug} href={`/${sectorSlug}/${item.slug}`}
-                              className="nh-dd-item" onClick={closeDD}>
-                              <span className="nh-dd-item-name" style={{ color: item.color }}>{item.name}</span>
-                            </Link>
-                          ))}
-                          <Link href={`/${sectorSlug}/${col.slug}`} className="nh-dd-more"
-                            style={{ color: col.items[0]?.color }} onClick={closeDD}>
-                            View all →
-                          </Link>
-                        </div>
+            {/* ── Categories dropdown — always global (L1 → L2) ── */}
+            {activeDD === 'Categories' && (
+              <div className="nh-dd-cats" key="cats-all">
+                <div className="nh-dd-grid">
+                  {DD_SECTORS.map(sector => (
+                    <div key={sector.slug} className="nh-dd-col">
+                      <Link href={`/${sector.slug}`} className="nh-dd-col-head" onClick={closeDD}>
+                        {sector.header}
+                      </Link>
+                      {sector.items.slice(0, DD_PREVIEW_COUNT).map(item => (
+                        <Link key={item.slug} href={`/${sector.slug}/${item.slug}`}
+                          className="nh-dd-item" onClick={closeDD}>
+                          <span className="nh-dd-item-name" style={{ color: item.color }}>{item.name}</span>
+                          {item.desc && <span className="nh-dd-item-desc">{item.desc}</span>}
+                        </Link>
                       ))}
+                      <Link href={`/${sector.slug}/all`} className="nh-dd-more"
+                        style={{ color: sector.items[0]?.color }} onClick={closeDD}>
+                        View all →
+                      </Link>
                     </div>
-                  </div>
-                )
-              }
-
-              /* Default: show L1 as headers, L2 as items */
-              return (
-                <div className="nh-dd-cats" key="cats-all">
-                  <div className="nh-dd-grid">
-                    {DD_SECTORS.map(sector => (
-                      <div key={sector.slug} className="nh-dd-col">
-                        <Link href={`/${sector.slug}`} className="nh-dd-col-head" onClick={closeDD}>
-                          {sector.header}
-                        </Link>
-                        {sector.items.slice(0, DD_PREVIEW_COUNT).map(item => (
-                          <Link key={item.slug} href={`/${sector.slug}/${item.slug}`}
-                            className="nh-dd-item" onClick={closeDD}>
-                            <span className="nh-dd-item-name" style={{ color: item.color }}>{item.name}</span>
-                            {item.desc && <span className="nh-dd-item-desc">{item.desc}</span>}
-                          </Link>
-                        ))}
-                        <Link href={`/${sector.slug}/all`} className="nh-dd-more"
-                          style={{ color: sector.items[0]?.color }} onClick={closeDD}>
-                          View all →
-                        </Link>
-                      </div>
-                    ))}
-                  </div>
+                  ))}
                 </div>
-              )
-            })()}
+              </div>
+            )}
+
+            {/* ── Sector-specific dropdown (L2 → L3) — only on L1 pages ── */}
+            {activeDD === '__sector__' && sectorCols && sectorCols.length > 0 && (
+              <div className="nh-dd-cats" key={`sector-${sectorSlug}`}>
+                <div className="nh-dd-grid">
+                  {sectorCols.slice(0, 12).map(col => (
+                    <div key={col.slug} className="nh-dd-col">
+                      <Link href={`/${sectorSlug}/${col.slug}`} className="nh-dd-col-head" onClick={closeDD}>
+                        {col.header}
+                      </Link>
+                      {col.items.slice(0, 5).map(item => (
+                        <Link key={item.slug} href={`/${sectorSlug}/${item.slug}`}
+                          className="nh-dd-item" onClick={closeDD}>
+                          <span className="nh-dd-item-name" style={{ color: item.color }}>{item.name}</span>
+                        </Link>
+                      ))}
+                      <Link href={`/${sectorSlug}/${col.slug}`} className="nh-dd-more"
+                        style={{ color: col.items[0]?.color }} onClick={closeDD}>
+                        View all →
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* ── Coming Soon panels ── */}
             {activeDD && SOON[activeDD] && (

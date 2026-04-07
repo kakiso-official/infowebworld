@@ -53,7 +53,20 @@ export default function CountrySwitcher() {
 
       {open && (
         <div className="hd-country-dropdown">
-          {VALID_COUNTRIES.map(c => (
+          {/* Global option */}
+          <button
+            type="button"
+            className="hd-country-option hd-country-option--global"
+            onClick={() => switchCountry(ROOT_COUNTRY)}
+          >
+            <span className="hd-country-flag">🌍</span>
+            <span className="hd-country-label">Global</span>
+          </button>
+          <div className="hd-country-divider" />
+          {/* Countries — alphabetically sorted */}
+          {[...VALID_COUNTRIES]
+            .sort((a, b) => COUNTRY_LABELS[a].localeCompare(COUNTRY_LABELS[b]))
+            .map(c => (
             <button
               key={c}
               type="button"
@@ -62,7 +75,7 @@ export default function CountrySwitcher() {
             >
               <span className="hd-country-flag">{COUNTRY_FLAGS[c]}</span>
               <span className="hd-country-label">{COUNTRY_LABELS[c]}</span>
-              <span className="hd-country-slug">{c.toUpperCase()}</span>
+              <span className="hd-country-slug">{c === 'uk' ? 'UK' : c.toUpperCase()}</span>
             </button>
           ))}
         </div>

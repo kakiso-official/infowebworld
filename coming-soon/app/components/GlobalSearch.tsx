@@ -37,9 +37,16 @@ export default function GlobalSearch({ placeholder = 'Search businesses, tools, 
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
-  /* Close on Escape */
+  /* Close on Escape, focus on Ctrl+K / Cmd+K */
+  const inputRef = useRef<HTMLInputElement>(null)
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false)
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        inputRef.current?.focus()
+      }
+    }
     document.addEventListener('keydown', handler)
     return () => document.removeEventListener('keydown', handler)
   }, [])
@@ -94,6 +101,7 @@ export default function GlobalSearch({ placeholder = 'Search businesses, tools, 
           }
         </span>
         <input
+          ref={inputRef}
           type="text"
           placeholder={placeholder}
           value={query}

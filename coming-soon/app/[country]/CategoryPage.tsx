@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from '../components/CountryLink'
 import { useCountry } from '../config/country-context'
@@ -89,6 +89,18 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
   const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set())
   const [selectedListingType, setSelectedListingType] = useState<string>('')
   const [sortBy, setSortBy] = useState<'newest' | 'name-az' | 'name-za'>('newest')
+  const [sortOpen, setSortOpen] = useState(false)
+  const sortRef = useRef<HTMLDivElement>(null)
+
+  /* Close sort dropdown on outside click */
+  useEffect(() => {
+    if (!sortOpen) return
+    const handler = (e: MouseEvent) => {
+      if (sortRef.current && !sortRef.current.contains(e.target as Node)) setSortOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [sortOpen])
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [openAccordions, setOpenAccordions] = useState<Set<string>>(new Set())
   const [page, setPage] = useState(1)
@@ -359,26 +371,10 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
         />
         <SubcategoryChips subcategories={subcats} sectorSlug={sectorSlug} />
 
-        {/* Filter pills row (mobile) */}
-        {showFilters && (
-          <button
-            className="cd-filter-btn"
-            onClick={() => setSidebarOpen(true)}
-          >
-            <I d={ic.sliders} size={14} color={color} sw={2} />
-            All filters
-            {hasAnyFilter && (
-              <span className="cd-filter-badge" style={{ background: color }}>
-                {selectedTags.size + (selectedListingType ? 1 : 0) + (locationCountry ? 1 : 0) + (locationState ? 1 : 0) + (locationCity ? 1 : 0)}
-              </span>
-            )}
-          </button>
-        )}
+        {/* Main layout: listings only (no sidebar in grid) */}
+        <div className="cd-layout">
 
-        {/* Main layout: sidebar + listings */}
-        <div className={showFilters ? 'cd-layout cd-layout--with-filters' : 'cd-layout'}>
-
-          {/* Left filter sidebar (L2+L3, desktop only) */}
+          {/* Filter drawer — slides from right, 35% width */}
           {showFilters && (
             <FilterSidebar
               color={color}
@@ -415,21 +411,40 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
             {/* Toolbar */}
             <div className="cd-toolbar">
               <span className="cd-toolbar-count">
-                Companies (<strong>{totalCount}</strong>)
+                Top in {category?.name || 'Category'} (<strong>{totalCount}</strong>)
                 {!hasListings && <span className="cd-toolbar-demo">(Preview)</span>}
               </span>
-              <label className="cd-toolbar-sort">
-                Sort by:
-                <select
-                  className="cd-toolbar-select"
-                  value={sortBy}
-                  onChange={e => { setSortBy(e.target.value as typeof sortBy); setPage(1) }}
-                >
-                  <option value="newest">Most relevant</option>
-                  <option value="name-az">Name A-Z</option>
-                  <option value="name-za">Name Z-A</option>
-                </select>
-              </label>
+              <div className="cd-toolbar-right">
+              {showFilters && (
+                <button className="cd-filter-btn" onClick={() => setSidebarOpen(true)} type="button">
+                  <I d={ic.sliders} size={14} color={color} sw={2} />
+                  Filters
+                  {hasAnyFilter && (
+                    <span className="cd-filter-badge" style={{ background: color }}>
+                      {selectedTags.size + (selectedListingType ? 1 : 0) + (locationCountry ? 1 : 0) + (locationState ? 1 : 0) + (locationCity ? 1 : 0)}
+                    </span>
+                  )}
+                </button>
+              )}
+              <div className="cd-sort" ref={sortRef}>
+                <button className="cd-sort-btn" onClick={() => setSortOpen(o => !o)} type="button">
+                  Sort: {{ newest: 'Most relevant', 'name-az': 'Name A-Z', 'name-za': 'Name Z-A' }[sortBy]}
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'transform 200ms', transform: sortOpen ? 'rotate(180deg)' : 'none' }}><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                {sortOpen && (
+                  <div className="cd-sort-dropdown">
+                    {([['newest', 'Most relevant'], ['name-az', 'Name A-Z'], ['name-za', 'Name Z-A']] as const).map(([val, label]) => (
+                      <button key={val} type="button"
+                        className={`cd-sort-option${sortBy === val ? ' cd-sort-option--active' : ''}`}
+                        onClick={() => { setSortBy(val); setSortOpen(false); setPage(1) }}>
+                        {label}
+                        {sortBy === val && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              </div>
             </div>
 
             {/* Listing cards */}

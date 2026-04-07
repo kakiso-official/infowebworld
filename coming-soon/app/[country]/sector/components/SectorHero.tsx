@@ -309,7 +309,9 @@ export default function SectorHero({ category, meta, sectorName, shortName, l2Ca
         {/* ── LEFT ── */}
         <div className="hero-left">
           <nav className="sl-hero-breadcrumb" aria-label="Breadcrumb">
-            <Link href="/">Home</Link>
+            <Link href="/" aria-label="Home">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </Link>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
             <Link href="/categories">Categories</Link>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>

@@ -72,31 +72,18 @@ export default function Navbar() {
   return (
     <>
       <header className={cls}>
-        <div className="nh-inner">
-          {/* Logo */}
+        {/* Row 1 — Logo | Search (center) | Actions */}
+        <div className="nh-row-top">
           <Link href="/" className="nh-logo">
             <img src={`${BASE}/logo/infowebworldlogo-logoforlightbackgrounds.png`} alt="InfoWebWorld" />
           </Link>
 
-          {/* Nav — anchor links */}
-          <nav className="nh-nav" aria-label="Main">
-            {NAV_ITEMS.filter(i => !i.cta).map(item => (
-              <a key={item.label} href={item.href} className="nh-link"
-                onClick={e => handleAnchor(e, item.href, item.anchor)}>
-                {item.label}
-              </a>
-            ))}
-          </nav>
-
-          {/* Inline search bar */}
           <div className="nh-search-inline">
             <GlobalSearch placeholder="Search tools, services, listings" />
           </div>
 
-          {/* Right actions */}
           <div className="nh-actions">
             <CountrySwitcher />
-
             <Link href="/plans" className="nh-cta">
               <span>Get Listed</span>
               <svg className="nh-cta-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none"
@@ -104,7 +91,6 @@ export default function Navbar() {
                 <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
               </svg>
             </Link>
-
             <button className="nh-burger" onClick={toggleMenu}
               aria-label="Menu" aria-expanded={menuOpen} type="button">
               <span className={`nh-burger-bars${menuOpen ? ' nh-burger-bars--x' : ''}`}>
@@ -113,6 +99,16 @@ export default function Navbar() {
             </button>
           </div>
         </div>
+
+        {/* Row 2 — Anchor nav links */}
+        <nav className="nh-row-sub" aria-label="Main">
+          {NAV_ITEMS.filter(i => !i.cta).map(item => (
+            <a key={item.label} href={item.href} className="nh-link"
+              onClick={e => handleAnchor(e, item.href, item.anchor)}>
+              {item.label}
+            </a>
+          ))}
+        </nav>
       </header>
 
       {/* Spacer */}
