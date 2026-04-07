@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Nunito, Bricolage_Grotesque } from "next/font/google";
+import { Nunito, Bricolage_Grotesque, Inter } from "next/font/google";
 import "./globals.css";
 import { Suspense } from "react";
 import PageTracker from "./components/PageTracker";
@@ -15,6 +15,12 @@ const bricolage = Bricolage_Grotesque({
   variable: "--font-bricolage",
   subsets: ["latin"],
   weight: ["400", "800"],
+});
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -89,7 +95,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <meta name="theme-color" content="#FAF5F0" />
       </head>
-      <body className={`${nunito.variable} ${bricolage.variable}`}>
+      <body className={`${nunito.variable} ${bricolage.variable} ${inter.variable}`}>
         <Suspense><NavigationProgress /></Suspense>
         <PageTracker />{children}
       </body>

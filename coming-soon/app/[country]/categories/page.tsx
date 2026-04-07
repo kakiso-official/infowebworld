@@ -100,7 +100,7 @@ export default async function CategoriesPage({ params }: { params: Promise<{ cou
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd.collection) }}
       />
-      <Navbar hideSearch />
+      <Navbar />
       <div className="cd-server-skeleton">
         <h1 className="cd-server-h1">Business Categories in {countryName}</h1>
         <p className="cd-server-desc">Explore {sectors} industry sectors, {l2Count} categories, and {l3Count} subcategories. Find and compare verified businesses across every industry.</p>

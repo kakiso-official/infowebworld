@@ -10,7 +10,7 @@
   position: relative;
 }
 @media (min-width: 769px) {
-  .cs-hero { height: calc(100vh - 152px); height: calc(100dvh - 152px); padding-top: clamp(2rem, 4vh, 3.5rem) }
+  .cs-hero { height: calc(100vh - var(--nh-h, 64px)); height: calc(100dvh - var(--nh-h, 64px)); padding-top: clamp(2rem, 4vh, 3.5rem) }
   .cs-bg-text-br { display: none }
 }
 .cs-bg-text {
@@ -305,8 +305,8 @@
 @media (max-width: 768px) {
   /* ── Hero container ── */
   .cs-hero {
-    min-height: calc(100vh - 112px);
-    min-height: calc(100svh - 112px);
+    min-height: calc(100vh - var(--nh-h, 56px));
+    min-height: calc(100svh - var(--nh-h, 56px));
     padding-top: clamp(2rem, 8svh, 6rem);
     padding-bottom: clamp(1rem, 2svh, 2rem);
     align-items: flex-start;
