@@ -19,7 +19,7 @@ import dynamic from 'next/dynamic'
 import { I, ic } from './components-category/icons'
 import CategoryHero from './components-category/CategoryHero'
 import SubcategoryChips from './components-category/SubcategoryChips'
-import { DemoListingCard, RealListingCard, type DemoListing } from './components-category/ListingCard'
+import { RealListingCard } from './components-category/ListingCard'
 import Pagination from './components-category/Pagination'
 import CompactCta from './components-category/CompactCta'
 
@@ -31,17 +31,7 @@ const TrustSection = dynamic(() => import('./components-category/TrustSection'))
 const FaqAccordion = dynamic(() => import('./components-category/FaqAccordion'))
 const PopularSearches = dynamic(() => import('./components-category/PopularSearches'))
 
-/* ── Sample listings ── */
-const sampleListings: DemoListing[] = [
-  { name: 'CloudSync Pro', tagline: 'Enterprise cloud storage and real-time sync for distributed teams', description: 'CloudSync Pro is an enterprise-grade cloud storage platform designed to help distributed teams collaborate in real-time. The platform enables seamless file synchronization across devices with end-to-end encryption, granular access controls, and automated backup scheduling for mission-critical data.', logoIcon: 'cloud', logoColor: '#3B82F6', score: '4.6', stars: 4, reviews: '234', cat: 'Cloud Storage', listingType: 'SaaS Platform', verified: true, features: ['Real-time file sync', 'Team collaboration', 'End-to-end encryption'], website: '#', tags: ['enterprise', 'subscription-saas', 'medium-51-200'] },
-  { name: 'NovaByte Analytics', tagline: 'AI-powered business intelligence and data visualization', description: 'NovaByte Analytics is an AI-powered business intelligence platform that transforms raw data into actionable insights. The platform offers custom dashboards, predictive analytics, and automated reporting to help organizations make data-driven decisions faster and more accurately.', logoIcon: 'pieChart', logoColor: '#8B5CF6', score: '4.8', stars: 5, reviews: '189', cat: 'Data Analytics', listingType: 'SaaS Platform', verified: true, features: ['AI-powered insights', 'Custom dashboards', 'Data connectors'], website: '#', tags: ['enterprise', 'subscription-saas', 'large-201-1000'] },
-  { name: 'CodeForge IDE', tagline: 'Cloud-based IDE with AI code completion and collaboration', description: 'CodeForge IDE is a cloud-based integrated development environment featuring AI-powered code completion, real-time pair programming, and built-in Git workflows. The platform supports 40+ programming languages and integrates with popular CI/CD pipelines for seamless deployment.', logoIcon: 'code', logoColor: '#14B8A6', score: '4.9', stars: 5, reviews: '421', cat: 'DevOps', listingType: 'Developer Tool', verified: true, features: ['AI code completion', 'Real-time collaboration', 'Git integration'], website: '#', tags: ['startup', 'freemium', 'small-2-10'] },
-  { name: 'ShieldVault Security', tagline: 'Enterprise-grade cybersecurity with zero-trust architecture', description: 'ShieldVault Security is an enterprise cybersecurity platform built on zero-trust architecture. It provides real-time threat detection, vulnerability scanning, compliance monitoring, and incident response automation to protect organizations against evolving cyber threats.', logoIcon: 'shield', logoColor: '#2FAE6A', score: '4.5', stars: 4, reviews: '312', cat: 'Cybersecurity', listingType: 'Enterprise Solution', verified: true, features: ['Zero-trust architecture', 'Threat detection', 'Compliance dashboard'], website: '#', tags: ['enterprise', 'custom-pricing', 'large-201-1000'] },
-  { name: 'FlowStack CRM', tagline: 'Modern CRM with workflow automation and AI lead scoring', description: 'FlowStack CRM is a modern customer relationship management platform that combines workflow automation with AI-powered lead scoring. The platform helps sales teams prioritize prospects, automate follow-ups, and manage the entire sales pipeline from lead to close.', logoIcon: 'trendingUp', logoColor: '#EC4899', score: '4.7', stars: 5, reviews: '156', cat: 'CRM', listingType: 'SaaS Platform', verified: true, features: ['AI lead scoring', 'Pipeline automation', 'Email campaigns'], website: '#', tags: ['healthcare', 'subscription-saas', 'medium-51-200'] },
-  { name: 'PixelBoard Design', tagline: 'Collaborative design platform for product teams and agencies', description: 'PixelBoard Design is a collaborative design platform built for product teams and creative agencies. It offers real-time multiplayer editing, design system management, interactive prototyping, and developer handoff tools — all in one unified workspace.', logoIcon: 'monitor', logoColor: '#F59E0B', score: '4.7', stars: 5, reviews: '287', cat: 'Design Tools', listingType: 'SaaS Platform', verified: true, features: ['Real-time collaboration', 'Design systems', 'Prototyping'], website: '#', tags: ['startup', 'freemium', 'small-2-10'] },
-  { name: 'MetrikHQ', tagline: 'Product analytics with session replay and feature flag management', description: 'MetrikHQ is a product analytics platform that combines session replay, feature flag management, and funnel analysis to help product teams understand user behavior. Track events, visualize user journeys, and run A/B experiments — all without writing complex queries.', logoIcon: 'barChart', logoColor: '#6366F1', score: '4.4', stars: 4, reviews: '198', cat: 'Analytics', listingType: 'Developer Tool', verified: true, features: ['Session replay', 'Feature flags', 'Funnel analysis'], website: '#', tags: ['healthcare', 'freemium', 'medium-51-200'] },
-  { name: 'BridgeComm', tagline: 'Unified team messaging, video calls, and project boards', description: 'BridgeComm is a unified team communication platform that brings messaging, HD video conferencing, and project management boards into a single workspace. Built for hybrid teams, it offers threaded conversations, screen sharing, and integrations with 100+ business tools.', logoIcon: 'messageCircle', logoColor: '#0EA5E9', score: '4.5', stars: 4, reviews: '342', cat: 'Team Communication', listingType: 'Enterprise Solution', verified: true, features: ['Team messaging', 'HD video calls', 'Project boards'], website: '#', tags: ['enterprise', 'subscription-saas', 'large-201-1000'] },
-]
+/* ── No demo listings — only real DB listings shown ── */
 
 const ITEMS_PER_PAGE = 10
 
@@ -266,20 +256,7 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
     })
   }, [pushFilters])
 
-  /* ── Filtering ── */
-  const filteredDemo = useMemo(() => {
-    let r = [...sampleListings]
-    if (selectedListingType) r = r.filter(i => i.listingType.toLowerCase().replace(/\s+/g, '-') === selectedListingType)
-    if (selectedTags.size > 0) {
-      const byGroup = new Map<string, Set<string>>()
-      for (const ts of selectedTags) for (const g of tagGroups) { if (g.tags.find(t => t.slug === ts)) { if (!byGroup.has(g.id)) byGroup.set(g.id, new Set()); byGroup.get(g.id)!.add(ts); break } }
-      r = r.filter(i => { for (const [, gt] of byGroup) if (!Array.from(gt).some(t => i.tags.includes(t))) return false; return true })
-    }
-    if (sortBy === 'name-az') r.sort((a, b) => a.name.localeCompare(b.name))
-    else if (sortBy === 'name-za') r.sort((a, b) => b.name.localeCompare(a.name))
-    return r
-  }, [selectedListingType, selectedTags, sortBy, tagGroups])
-
+  /* ── Filtering (real listings only) ── */
   const filteredReal = useMemo(() => {
     let r = [...listings]
     if (selectedListingType) r = r.filter(i => i.listingTypeSlug === selectedListingType)
@@ -287,16 +264,6 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
     else if (sortBy === 'name-za') r.sort((a, b) => b.companyName.localeCompare(a.companyName))
     return r
   }, [listings, selectedListingType, sortBy])
-
-  const demoLTCounts = useMemo(() => { const m = new Map<string, number>(); sampleListings.forEach(i => { const s = i.listingType.toLowerCase().replace(/\s+/g, '-'); m.set(s, (m.get(s) || 0) + 1) }); return m }, [])
-  const demoLTs = useMemo(() => { const m = new Map<string, string>(); sampleListings.forEach(i => { const s = i.listingType.toLowerCase().replace(/\s+/g, '-'); if (!m.has(s)) m.set(s, i.listingType) }); return Array.from(m.entries()).map(([slug, name]) => ({ slug, name })) }, [])
-  const demoTagCounts = useMemo(() => { const m = new Map<string, number>(); sampleListings.forEach(i => i.tags.forEach(t => m.set(t, (m.get(t) || 0) + 1))); return m }, [])
-
-  /* ── Pagination (before early returns — Rules of Hooks) ── */
-  const demoPaginated = useMemo(() => {
-    const s = (page - 1) * ITEMS_PER_PAGE
-    return filteredDemo.slice(s, s + ITEMS_PER_PAGE)
-  }, [filteredDemo, page])
 
   const faqs = useMemo(() => {
     if (!category) return []
@@ -366,14 +333,14 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
   const c = category
   const color = c.color || '#E8553D'
   const subcats = c.subcategories || []
-  const hasListings = c.listingCount > 0 || listings.length > 0
+  const hasListings = listings.length > 0
   const isL3 = c.level === 3
   const showFilters = true
   const ltFromCat = c.listingTypes || []
-  const sidebarLTs = ltFromCat.length > 0 ? ltFromCat : demoLTs.map(lt => ({ id: lt.slug, name: lt.name, slug: lt.slug }))
-  const getLTCount = (s: string) => hasListings ? listings.filter(l => l.listingTypeSlug === s).length : demoLTCounts.get(s) || 0
-  const totalCount = hasListings ? filteredReal.length : filteredDemo.length
-  const totalPages = hasListings ? Math.max(1, Math.ceil(listingTotal / ITEMS_PER_PAGE)) : Math.max(1, Math.ceil(filteredDemo.length / ITEMS_PER_PAGE))
+  const sidebarLTs = ltFromCat
+  const getLTCount = (s: string) => listings.filter(l => l.listingTypeSlug === s).length
+  const totalCount = filteredReal.length
+  const totalPages = Math.max(1, Math.ceil(listingTotal / ITEMS_PER_PAGE))
   const hasAnyFilter = selectedTags.size > 0 || !!selectedListingType || !!locationCountry
 
   return (
@@ -453,10 +420,10 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
               onClearFilters={clearFilters}
               hasAnyFilter={hasAnyFilter}
               getListingTypeCount={getLTCount}
-              totalAllCount={hasListings ? listings.length : sampleListings.length}
+              totalAllCount={listings.length}
               totalFilteredCount={totalCount}
               hasListings={hasListings}
-              demoTagCounts={demoTagCounts}
+              demoTagCounts={new Map()}
               locationCountry={locationCountry}
               locationState={locationState}
               locationCity={locationCity}
@@ -474,7 +441,6 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
             <div className="cd-toolbar">
               <span className="cd-toolbar-count">
                 Top in {category?.name || 'Category'} - {new Date().toLocaleString('en-US', { month: 'long' })} {new Date().getFullYear()} (<strong>{totalCount}</strong>)
-                {!hasListings && <span className="cd-toolbar-demo">(Preview)</span>}
               </span>
               <div className="cd-toolbar-right">
               {showFilters && (
@@ -526,38 +492,27 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
 
             {/* Listing cards */}
             <div>
-              {!hasListings ? (
-                demoPaginated.length > 0 ? (
-                  demoPaginated.map((item, i) => <DemoListingCard key={i} item={item} isPreview allItems={sampleListings} />)
-                ) : (
-                  <div className="cd-empty">
-                    <I d={ic.search} size={32} color="var(--h-muted)" sw={1.5} />
-                    <p>No listings match your filters.</p>
-                    <button onClick={clearFilters} className="cd-empty-btn" style={{ color }}>Clear all filters</button>
-                  </div>
-                )
+              {filteredReal.length > 0 ? (
+                filteredReal.map(item => <RealListingCard key={item.id} item={item} color={color} />)
               ) : (
-                filteredReal.length > 0 ? (
-                  filteredReal.map(item => <RealListingCard key={item.id} item={item} color={color} />)
-                ) : (
-                  <div className="cd-empty">
-                    <I d={ic.search} size={32} color="var(--h-muted)" sw={1.5} />
-                    <p>No listings match your filters.</p>
-                    <button onClick={clearFilters} className="cd-empty-btn" style={{ color }}>Clear all filters</button>
-                  </div>
-                )
+                <div className="cd-empty">
+                  <I d={ic.search} size={32} color="var(--h-muted)" sw={1.5} />
+                  {hasAnyFilter ? (
+                    <>
+                      <p>No listings match your filters.</p>
+                      <button onClick={clearFilters} className="cd-empty-btn" style={{ color }}>Clear all filters</button>
+                    </>
+                  ) : (
+                    <>
+                      <p>No listings yet in <strong>{c.name}</strong>.</p>
+                      <Link href={`/business?category=${encodeURIComponent(c.name)}`} className="cd-empty-btn" style={{ color }}>
+                        Be the First to List Here
+                      </Link>
+                    </>
+                  )}
+                </div>
               )}
             </div>
-
-            {/* Preview fade */}
-            {!hasListings && demoPaginated.length > 0 && (
-              <div className="cd-preview-fade">
-                <p className="cd-preview-text">Preview of how <strong>{c.name}</strong> will look on InfoWebWorld</p>
-                <Link href={`/business?category=${encodeURIComponent(c.name)}`} className="cd-preview-btn" style={{ background: color, borderColor: color }}>
-                  <I d={ic.plus} size={15} color="#fff" sw={2.5} /> Be the First to List Here
-                </Link>
-              </div>
-            )}
 
             <Pagination page={page} totalPages={totalPages} onPageChange={setPage} color={color} />
           </div>
