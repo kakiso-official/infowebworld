@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { VALID_COUNTRIES, DEFAULT_COUNTRY, COOKIE_NAME, COOKIE_MAX_AGE, ROOT_COUNTRY, geoToCountry, isValidCountry } from './app/config/countries'
+import { COOKIE_NAME, COOKIE_MAX_AGE, GLOBAL_COUNTRY, GLOBAL_COOKIE, geoToCountry, isValidCountry } from './app/config/countries'
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -25,18 +25,7 @@ export function middleware(request: NextRequest) {
 
   const firstSeg = pathname.split('/')[1]
 
-  // If someone visits /us/... → strip prefix and redirect to root
-  if (firstSeg === ROOT_COUNTRY) {
-    const rest = pathname.replace(new RegExp(`^/${ROOT_COUNTRY}(/|$)`), '/')
-    const url = request.nextUrl.clone()
-    url.pathname = rest
-    const response = NextResponse.redirect(url, 308)
-    response.cookies.set(COOKIE_NAME, ROOT_COUNTRY, { path: '/', maxAge: COOKIE_MAX_AGE, sameSite: 'lax' })
-    if (isVercelApp) response.headers.set('X-Robots-Tag', 'noindex, nofollow')
-    return response
-  }
-
-  // Check if first segment is already a valid country prefix (non-root)
+  // First segment is a valid country prefix → let it through
   if (isValidCountry(firstSeg)) {
     const response = NextResponse.next()
     if (!request.cookies.get(COOKIE_NAME)) {
@@ -46,29 +35,42 @@ export function middleware(request: NextRequest) {
     return response
   }
 
-  // No country prefix — determine country: cookie > geo header > default
-  let country = DEFAULT_COUNTRY
-  const cookieVal = request.cookies.get(COOKIE_NAME)?.value
-  if (cookieVal && isValidCountry(cookieVal)) {
-    country = cookieVal
-  } else {
-    const geo = request.headers.get('x-vercel-ip-country')
-    country = geoToCountry(geo)
-  }
+  // No country prefix — determine if we should redirect or serve global
 
-  // US (root country) → serve at root path via rewrite (no redirect, no prefix)
-  if (country === ROOT_COUNTRY) {
-    const response = NextResponse.rewrite(new URL(`/${ROOT_COUNTRY}${pathname}`, request.url))
-    response.cookies.set(COOKIE_NAME, ROOT_COUNTRY, { path: '/', maxAge: COOKIE_MAX_AGE, sameSite: 'lax' })
+  // If user explicitly chose "Global" → serve root (no redirect)
+  const cookieVal = request.cookies.get(COOKIE_NAME)?.value
+  if (cookieVal === GLOBAL_COOKIE) {
+    const response = NextResponse.rewrite(new URL(`/${GLOBAL_COUNTRY}${pathname}`, request.url))
     if (isVercelApp) response.headers.set('X-Robots-Tag', 'noindex, nofollow')
     return response
   }
 
-  // Other countries → redirect to /{country}{pathname}{search}
-  const url = request.nextUrl.clone()
-  url.pathname = `/${country}${pathname}`
-  const response = NextResponse.redirect(url, 307)
-  response.cookies.set(COOKIE_NAME, country, { path: '/', maxAge: COOKIE_MAX_AGE, sameSite: 'lax' })
+  // Check cookie for a saved country preference
+  if (cookieVal && isValidCountry(cookieVal)) {
+    const url = request.nextUrl.clone()
+    url.pathname = `/${cookieVal}${pathname}`
+    const response = NextResponse.redirect(url, 307)
+    if (isVercelApp) response.headers.set('X-Robots-Tag', 'noindex, nofollow')
+    return response
+  }
+
+  // Detect from Vercel geo header
+  const geo = request.headers.get('x-vercel-ip-country')
+  const country = geoToCountry(geo)
+
+  if (country) {
+    // Supported country → redirect to /{country}/path and set cookie
+    const url = request.nextUrl.clone()
+    url.pathname = `/${country}${pathname}`
+    const response = NextResponse.redirect(url, 307)
+    response.cookies.set(COOKIE_NAME, country, { path: '/', maxAge: COOKIE_MAX_AGE, sameSite: 'lax' })
+    if (isVercelApp) response.headers.set('X-Robots-Tag', 'noindex, nofollow')
+    return response
+  }
+
+  // Unsupported country → serve global (root, no prefix)
+  // Rewrite internally so [country] param has a value
+  const response = NextResponse.rewrite(new URL(`/${GLOBAL_COUNTRY}${pathname}`, request.url))
   if (isVercelApp) response.headers.set('X-Robots-Tag', 'noindex, nofollow')
   return response
 }

@@ -5,7 +5,7 @@ import { unstable_cache } from 'next/cache'
 
 export const revalidate = 60
 
-import { COUNTRY_LABELS, ROOT_COUNTRY } from '../../config/countries'
+import { COUNTRY_LABELS } from '../../config/countries'
 import type { CountryCode } from '../../config/countries'
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ country: 
 
   const title = `Business Categories in ${countryName} ${year} | InfoWebWorld`
   const description = `Browse 500+ business categories across AI, SaaS, IT Services, Startups & more. Compare verified companies in ${countryName}.`
-  const url = country === ROOT_COUNTRY ? `${DOMAIN}/categories` : `${DOMAIN}/${country}/categories`
+  const url = `${DOMAIN}${country === 'global' ? '' : `/${country}`}/categories`
 
   return {
     title,
@@ -29,11 +29,11 @@ export async function generateMetadata({ params }: { params: Promise<{ country: 
       canonical: url,
       languages: {
         'en-IN': `${DOMAIN}/in/categories`,
-        'en-US': `${DOMAIN}/categories`,
+        'en-US': `${DOMAIN}/us/categories`,
         'en-GB': `${DOMAIN}/uk/categories`,
         'en-AU': `${DOMAIN}/au/categories`,
         'en-CA': `${DOMAIN}/ca/categories`,
-        'en': `${DOMAIN}/categories`,
+        'x-default': `${DOMAIN}/categories`,
       },
     },
     openGraph: { title, description, url, siteName: 'InfoWebWorld', type: 'website' },
@@ -69,7 +69,7 @@ export default async function CategoriesPage({ params }: { params: Promise<{ cou
   const year = new Date().getFullYear()
   const title = `Business Categories in ${countryName} ${year} | InfoWebWorld`
   const description = `Browse 500+ business categories across AI, SaaS, IT Services, Startups & more. Compare verified companies in ${countryName}.`
-  const url = country === ROOT_COUNTRY ? `${DOMAIN}/categories` : `${DOMAIN}/${country}/categories`
+  const url = `${DOMAIN}${country === 'global' ? '' : `/${country}`}/categories`
 
   const jsonLd = {
     breadcrumb: {

@@ -7,7 +7,7 @@ import Footer from '../../components/Footer'
 import CategoryPage from '../CategoryPage'
 import SectorAllBrowse from '../components-category/SectorAllBrowse'
 import { getSectorMeta } from '../sector/sector-demo-data'
-import { COUNTRY_LABELS, ROOT_COUNTRY, VALID_COUNTRIES } from '../../config/countries'
+import { COUNTRY_LABELS, VALID_COUNTRIES } from '../../config/countries'
 import type { CountryCode } from '../../config/countries'
 import { query, queryOne } from '@/lib/db'
 
@@ -80,9 +80,9 @@ function currentMonthYear() {
 
 const DOMAIN = 'https://infowebworld.com'
 
-/** US (ROOT_COUNTRY) gets root paths, others get /{country}/ prefix */
+/** Real countries get /{country}/ prefix, global gets root */
 function canonicalUrl(country: string, path: string) {
-  const prefix = country === ROOT_COUNTRY ? '' : `/${country}`
+  const prefix = country === 'global' ? '' : `/${country}`
   return `${DOMAIN}${prefix}${path}`
 }
 
@@ -291,11 +291,11 @@ function buildCategoryMeta(cat: CatSeo, country: string, countryName: string, mo
       canonical: cat.seoCanonical || url,
       languages: {
         'en-IN': `${DOMAIN}/in/${sectorSlug}/${cat.slug}`,
-        'en-US': `${DOMAIN}/${sectorSlug}/${cat.slug}`,
+        'en-US': `${DOMAIN}/us/${sectorSlug}/${cat.slug}`,
         'en-GB': `${DOMAIN}/uk/${sectorSlug}/${cat.slug}`,
         'en-AU': `${DOMAIN}/au/${sectorSlug}/${cat.slug}`,
         'en-CA': `${DOMAIN}/ca/${sectorSlug}/${cat.slug}`,
-        'en': `${DOMAIN}/${sectorSlug}/${cat.slug}`,
+        'x-default': `${DOMAIN}/${sectorSlug}/${cat.slug}`,
       },
     },
     openGraph: {
@@ -501,7 +501,7 @@ export default async function CategoryDetailRoute({
   if (slug && !L1_SLUGS.has(segments[0])) {
     const sector = await getSectorSlugForCategory(segments[0])
     if (sector) {
-      const prefix = country === ROOT_COUNTRY ? '' : `/${country}`
+      const prefix = country === 'global' ? '' : `/${country}`
       redirect(`${prefix}/${sector}/${segments.join('/')}`)
     }
   }

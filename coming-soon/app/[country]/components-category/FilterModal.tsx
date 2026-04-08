@@ -2,7 +2,7 @@
 import { useEffect, useRef } from 'react'
 import { I, ic } from './icons'
 
-type Item = { slug: string; name: string; count?: number }
+type Item = { slug: string; name: string; count?: number; group?: string }
 
 type Props = {
   title: string
@@ -23,15 +23,19 @@ export default function FilterModal({ title, items, selected, onToggle, onClose,
     return () => { document.body.style.overflow = ''; window.removeEventListener('keydown', onKey) }
   }, [onClose])
 
-  // Group items alphabetically
+  // If items have group field, group by that; otherwise group alphabetically by first letter
+  const hasGroups = items.some(i => i.group)
   const grouped = new Map<string, Item[]>()
   for (const item of items) {
-    const letter = item.name.charAt(0).toUpperCase()
-    const key = /[A-Z]/.test(letter) ? letter : '#'
+    const key = hasGroups
+      ? (item.group || 'Other')
+      : (() => { const l = item.name.charAt(0).toUpperCase(); return /[A-Z]/.test(l) ? l : '#' })()
     if (!grouped.has(key)) grouped.set(key, [])
     grouped.get(key)!.push(item)
   }
-  const sortedKeys = Array.from(grouped.keys()).sort((a, b) => a === '#' ? -1 : b === '#' ? 1 : a.localeCompare(b))
+  const sortedKeys = hasGroups
+    ? Array.from(grouped.keys()) // preserve insertion order for L4 groups
+    : Array.from(grouped.keys()).sort((a, b) => a === '#' ? -1 : b === '#' ? 1 : a.localeCompare(b))
 
   return (
     <div className="cd-fm-overlay" ref={overlayRef} onClick={e => { if (e.target === overlayRef.current) onClose() }}>

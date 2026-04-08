@@ -350,7 +350,7 @@ RULES:
     await execute(
       `INSERT INTO category_seo_content
         (category_id, rich_description, buyers_guide, use_cases, comparisons, long_tail_keywords, complementary_categories, extended_faq, generated_at, model_version)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), 'gemini-2.0-flash')`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), 'gemini-2.5-flash')`,
       [
         categoryId,
         richDescription,
@@ -367,63 +367,148 @@ RULES:
   return { categoryId, name: catName, success: true }
 }
 
-/* ── POST: Generate for single category or batch ── */
+/* ── Generate a SINGLE section for a category ── */
+async function generateSection(categoryId: number, section: string) {
+  const cat = await queryOne('SELECT * FROM categories WHERE id = ?', [categoryId])
+  if (!cat) throw new Error(`Category ${categoryId} not found`)
+
+  const parent = cat.parent_id ? await queryOne('SELECT id, name, slug, level, parent_id FROM categories WHERE id = ?', [cat.parent_id]) : null
+  let sector = null
+  if (Number(cat.level) === 2 && parent) sector = parent
+  else if (Number(cat.level) === 3 && parent) {
+    sector = parent.parent_id ? await queryOne('SELECT id, name, slug FROM categories WHERE id = ?', [parent.parent_id]) : parent
+  }
+  const subcats = await query('SELECT name, slug FROM categories WHERE parent_id = ? AND is_active = 1 AND is_navigation = 1 ORDER BY sort_order', [categoryId])
+  const listingTypes = await query('SELECT name, slug FROM listing_types WHERE category_id = ? ORDER BY sort_order LIMIT 30', [categoryId])
+  const siblings = cat.parent_id
+    ? await query('SELECT name, slug FROM categories WHERE parent_id = ? AND id != ? AND is_active = 1 AND is_navigation = 1 ORDER BY sort_order LIMIT 10', [cat.parent_id, categoryId])
+    : []
+  const ctx = buildContext(cat, parent, sector, subcats as Array<Record<string, unknown>>, listingTypes as Array<Record<string, unknown>>)
+  const catName = String(cat.name)
+  const sectorId = sector ? Number(sector.id) : (parent ? Number(parent.id) : 0)
+  const cousins = sectorId ? await query(
+    `SELECT c.name, c.slug FROM categories c WHERE c.parent_id IN (SELECT id FROM categories WHERE parent_id = ? AND is_active = 1) AND c.id != ? AND c.is_active = 1 AND c.is_navigation = 1 ORDER BY RAND() LIMIT 12`,
+    [sectorId, categoryId]
+  ) : []
+  const siblingList = (siblings as Array<Record<string, unknown>>).map(s => `${s.name} (slug: ${s.slug})`).join(', ')
+  const cousinList = (cousins as Array<Record<string, unknown>>).map(c => `${c.name} (slug: ${c.slug})`).join(', ')
+  const subcatList = (subcats as Array<Record<string, unknown>>).map(s => `${s.name} (slug: ${s.slug})`).join(', ')
+
+  const styleGuideShort = `Write like a sharp, opinionated industry analyst. Use contractions, vary sentence lengths, be specific with numbers. NO geographic references. NO AI-flagged words (landscape, leverage, robust, comprehensive, etc.).`
+
+  let column = ''
+  let value: string
+
+  if (section === 'ai_summary') {
+    column = 'ai_summary'
+    const prompt = `${ctx}\n\n${styleGuideShort}\n\nWrite a 2-3 sentence AI overview summary for "${catName}". This appears at the top of the category page as a quick snapshot for buyers. Be concise, specific, and actionable. Mention what the category covers, who it's for, and one key differentiator or trend. No markdown, no bullet points — just flowing text. Return ONLY the summary text.`
+    value = await callGemini(prompt)
+  } else if (section === 'rich_description') {
+    column = 'rich_description'
+    const prompt = `You're a senior technology analyst writing a definitive category overview for InfoWebWorld.\n\n${ctx}\n\nINTERNAL LINKS — weave these using [LINK:slug:Display Text] format:\nSiblings: ${siblingList || 'none'}\nSubcategories: ${subcatList || 'none'}\nCousins: ${cousinList || 'none'}\n\n${styleGuideShort}\n\nWrite a 700-900 word editorial overview of "${catName}". Flowing paragraphs, 10-15 internal links, no headers/bullets. Return ONLY the text.`
+    value = await callGemini(prompt)
+  } else if (section === 'buyers_guide') {
+    column = 'buyers_guide'
+    const prompt = `${ctx}\n${styleGuideShort}\n\nCreate a buyer's guide for ${catName}. Return valid JSON only:\n{"features":[{"title":"...","description":"..."}],"questions":["..."],"pitfalls":["..."],"pricing_info":"..."}\n6 features, 5 questions, 4 pitfalls. Every item specific to ${catName}.`
+    value = JSON.stringify(JSON.parse(cleanJson(await callGemini(prompt))))
+  } else if (section === 'use_cases') {
+    column = 'use_cases'
+    const prompt = `${ctx}\n${styleGuideShort}\n\nGenerate 5 real-world use cases for ${catName}. Return valid JSON array:\n[{"title":"...","description":"2-3 sentences","icon":"building|heart|graduation|cart|code|briefcase|users|globe|chart|shield"}]\nDiverse industries, specific workflows.`
+    value = JSON.stringify(JSON.parse(cleanJson(await callGemini(prompt))))
+  } else if (section === 'comparisons') {
+    column = 'comparisons'
+    const prompt = `The category is: "${catName}"\n${parent ? `Parent: ${parent.name}` : ''}\n${sector ? `Sector: ${sector.name}` : ''}\n\n${styleGuideShort}\n\nGenerate 3-4 "${catName} vs [Alternative]" comparisons. Alternatives must be FUNDAMENTALLY DIFFERENT approaches to the same buyer problem. Return valid JSON:\n[{"vs_name":"...","vs_slug":"...","summary":"2-3 sentences","differences":["..."]}]\nNever compare against same-sector subcategories.`
+    value = JSON.stringify(JSON.parse(cleanJson(await callGemini(prompt))))
+  } else if (section === 'long_tail_keywords') {
+    column = 'long_tail_keywords'
+    const year = new Date().getFullYear()
+    const prompt = `Generate long-tail keywords for ${catName}. Return valid JSON:\n{"by_industry":["8 keywords"],"by_size":["8 keywords"],"by_need":["10 keywords"]}\nNo geographic references. Include year ${year} in 3+ keywords.`
+    value = JSON.stringify(JSON.parse(cleanJson(await callGemini(prompt))))
+  } else if (section === 'complementary_categories') {
+    column = 'complementary_categories'
+    const prompt = `A company just purchased ${catName}. What 5 other categories do they typically evaluate next? Return JSON array of names only:\n["Category 1","Category 2","Category 3","Category 4","Category 5"]`
+    value = JSON.stringify(JSON.parse(cleanJson(await callGemini(prompt))))
+  } else if (section === 'extended_faq') {
+    column = 'extended_faq'
+    const prompt = `${ctx}\n${styleGuideShort}\n\nWrite 12 FAQ entries for "${catName}". Return valid JSON:\n[{"q":"Question as someone would Google it","a":"3-4 sentence direct answer with specific numbers/prices/timeframes"}]\nTopics: definition, pricing, must-have features, best for small teams, best for enterprise, implementation time, vs alternative, integrations, compliance, free/open-source options, red flags, trends.`
+    value = JSON.stringify(JSON.parse(cleanJson(await callGemini(prompt))))
+  } else {
+    throw new Error(`Unknown section: ${section}`)
+  }
+
+  // Upsert just this column
+  const existing = await queryOne('SELECT id FROM category_seo_content WHERE category_id = ?', [categoryId])
+  if (existing) {
+    await execute(`UPDATE category_seo_content SET ${column} = ?, generated_at = NOW(), model_version = 'gemini-2.5-flash' WHERE category_id = ?`, [value, categoryId])
+  } else {
+    await execute(`INSERT INTO category_seo_content (category_id, ${column}, generated_at, model_version) VALUES (?, ?, NOW(), 'gemini-2.5-flash')`, [categoryId, value])
+  }
+
+  return { categoryId, name: catName, section, success: true }
+}
+
+/* ── POST: Generate for single category, single section, or batch ── */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { categoryId, batch } = body
+    const { categoryId, section } = body
 
-    // Single category
+    // Single section for a category
+    if (categoryId && section) {
+      const result = await generateSection(Number(categoryId), section)
+      return Response.json({ ok: true, ...result })
+    }
+
+    // All sections for a single category
     if (categoryId) {
       const result = await generateForCategory(Number(categoryId))
       return Response.json({ ok: true, ...result })
     }
 
-    // Batch: generate for all L2/L3 categories
-    if (batch) {
-      const cats = await query(
-        'SELECT id, name FROM categories WHERE level IN (2, 3) AND is_active = 1 AND is_navigation = 1 ORDER BY level, sort_order'
-      ) as Array<{ id: number; name: string }>
-
-      const results: { id: number; name: string; success: boolean; error?: string }[] = []
-
-      // Process sequentially to avoid rate limits
-      for (const cat of cats) {
-        try {
-          await generateForCategory(cat.id)
-          results.push({ id: cat.id, name: cat.name, success: true })
-        } catch (err) {
-          results.push({ id: cat.id, name: cat.name, success: false, error: String(err) })
-        }
-        // Small delay between API calls to respect rate limits
-        await new Promise(r => setTimeout(r, 500))
-      }
-
-      const succeeded = results.filter(r => r.success).length
-      const failed = results.filter(r => !r.success).length
-      return Response.json({ ok: true, total: cats.length, succeeded, failed, results })
-    }
-
-    return Response.json({ error: 'Provide categoryId or batch: true' }, { status: 400 })
+    return Response.json({ error: 'Provide categoryId (and optional section)' }, { status: 400 })
   } catch (err) {
     console.error('generate-seo-content error:', err)
     return Response.json({ error: String(err) }, { status: 500 })
   }
 }
 
-/* ── GET: Check generation status ── */
+const SECTION_COLS = ['ai_summary','rich_description','buyers_guide','use_cases','comparisons','long_tail_keywords','complementary_categories','extended_faq'] as const
+
+/* ── GET: Check generation status with per-category section breakdown ── */
 export async function GET() {
   try {
     const total = await queryOne('SELECT COUNT(*) as cnt FROM categories WHERE level IN (2, 3) AND is_active = 1 AND is_navigation = 1')
     const generated = await queryOne('SELECT COUNT(*) as cnt FROM category_seo_content WHERE rich_description IS NOT NULL')
-    const recent = await query(
-      'SELECT sc.category_id, c.name, c.slug, sc.generated_at, sc.model_version FROM category_seo_content sc JOIN categories c ON c.id = sc.category_id ORDER BY sc.generated_at DESC LIMIT 10'
+
+    // Per-category section status
+    const rows = await query(
+      `SELECT sc.category_id,
+              sc.ai_summary IS NOT NULL AND sc.ai_summary != '' as has_ai_summary,
+              sc.rich_description IS NOT NULL AND sc.rich_description != '' as has_rich_description,
+              sc.buyers_guide IS NOT NULL AND sc.buyers_guide != '' as has_buyers_guide,
+              sc.use_cases IS NOT NULL AND sc.use_cases != '' as has_use_cases,
+              sc.comparisons IS NOT NULL AND sc.comparisons != '' as has_comparisons,
+              sc.long_tail_keywords IS NOT NULL AND sc.long_tail_keywords != '' as has_long_tail_keywords,
+              sc.complementary_categories IS NOT NULL AND sc.complementary_categories != '' as has_complementary_categories,
+              sc.extended_faq IS NOT NULL AND sc.extended_faq != '' as has_extended_faq,
+              sc.generated_at, sc.model_version
+       FROM category_seo_content sc`
     )
+
+    // Build a map: categoryId → { sections, generatedAt }
+    const sectionMap: Record<number, { sections: Record<string, boolean>; generatedAt: string }> = {}
+    for (const r of rows as Array<Record<string, unknown>>) {
+      const cid = Number(r.category_id)
+      const sections: Record<string, boolean> = {}
+      for (const col of SECTION_COLS) sections[col] = Number(r[`has_${col}`]) === 1
+      sectionMap[cid] = { sections, generatedAt: String(r.generated_at || '') }
+    }
+
     return Response.json({
       ok: true,
       total: Number(total?.cnt ?? 0),
       generated: Number(generated?.cnt ?? 0),
-      recent,
+      sectionMap,
     })
   } catch (err) {
     return Response.json({ error: String(err) }, { status: 500 })

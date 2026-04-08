@@ -99,12 +99,24 @@ type Props = {
   onLocationCountryChange: (val: GeoCountry | null) => void
   onStateChange: (val: GeoState | null) => void
   onCityChange: (val: GeoCity | null) => void
+  /** Apply all filters at once (location + listing type + tags) */
+  onApplyFilters: (filters: {
+    locationCountry: GeoCountry | null
+    locationState: GeoState | null
+    locationCity: GeoCity | null
+    listingType: string
+    tags: Set<string>
+  }) => void
   /** ISO code of the effective country (route fallback when locationCountry is null) */
   effectiveIso: string
 }
 
-/* ── Location dropdowns ── */
-function LocationSection(p: Props & { effectiveIso: string }) {
+/* ── Location dropdowns (uses draft state from parent) ── */
+function LocationSection({ draftCountry, draftState, draftCity, effectiveIso, color, onDraftCountry, onDraftState, onDraftCity }: {
+  draftCountry: GeoCountry | null; draftState: GeoState | null; draftCity: GeoCity | null
+  effectiveIso: string; color: string
+  onDraftCountry: (v: GeoCountry | null) => void; onDraftState: (v: GeoState | null) => void; onDraftCity: (v: GeoCity | null) => void
+}) {
   const [geoReady, setGeoReady] = useState(() => getLocationCountries().size > 0)
   useEffect(() => {
     if (geoReady) return
@@ -117,57 +129,58 @@ function LocationSection(p: Props & { effectiveIso: string }) {
     arr.sort((a, b) => a.name.localeCompare(b.name))
     return arr
   }, [geoReady])
+  const draftIso = draftCountry?.isoCode || effectiveIso
   const states = useMemo(() => {
-    if (!p.effectiveIso) return []
+    if (!draftIso) return []
     const arr: GeoState[] = []
-    getStates(p.effectiveIso).forEach(s => arr.push(s))
+    getStates(draftIso).forEach(s => arr.push(s))
     arr.sort((a, b) => a.name.localeCompare(b.name))
     return arr
-  }, [p.effectiveIso])
+  }, [draftIso])
   const cities = useMemo(() => {
-    if (!p.effectiveIso || !p.locationState) return []
+    if (!draftIso || !draftState) return []
     const arr: GeoCity[] = []
-    getCities(p.effectiveIso, p.locationState.stateCode).forEach(c => arr.push(c))
+    getCities(draftIso, draftState.stateCode).forEach(c => arr.push(c))
     arr.sort((a, b) => a.name.localeCompare(b.name))
     return arr
-  }, [p.effectiveIso, p.locationState])
+  }, [draftIso, draftState])
 
   return (
     <div className="cd-fs-section">
       <h4 className="cd-fs-heading">
-        <I d={ic.mapPin} size={14} color={p.color} sw={2} />
+        <I d={ic.mapPin} size={14} color={color} sw={2} />
         Location
       </h4>
       <CustomSelect
-        value={p.locationCountry?.slug || ''}
+        value={draftCountry?.slug || ''}
         placeholder="All Countries"
-        color={p.color}
+        color={color}
         options={countries.map(c => ({ value: c.slug, label: c.name }))}
         onChange={val => {
-          if (!val) { p.onLocationCountryChange(null); return }
-          const c = countries.find(c => c.slug === val); if (c) p.onLocationCountryChange(c)
+          if (!val) { onDraftCountry(null); onDraftState(null); onDraftCity(null); return }
+          const c = countries.find(c => c.slug === val); if (c) { onDraftCountry(c); onDraftState(null); onDraftCity(null) }
         }}
       />
       <CustomSelect
-        value={p.locationState?.slug || ''}
-        placeholder={p.effectiveIso ? 'All States' : 'Select country first'}
-        disabled={!p.effectiveIso}
-        color={p.color}
+        value={draftState?.slug || ''}
+        placeholder={draftIso ? 'All States' : 'Select country first'}
+        disabled={!draftIso}
+        color={color}
         options={states.map(s => ({ value: s.slug, label: s.name }))}
         onChange={val => {
-          if (!val) { p.onStateChange(null); return }
-          const s = states.find(s => s.slug === val); if (s) p.onStateChange(s)
+          if (!val) { onDraftState(null); onDraftCity(null); return }
+          const s = states.find(s => s.slug === val); if (s) { onDraftState(s); onDraftCity(null) }
         }}
       />
       <CustomSelect
-        value={p.locationCity?.slug || ''}
-        placeholder={p.locationState ? 'All Cities' : 'Select state first'}
-        disabled={!p.locationState}
-        color={p.color}
+        value={draftCity?.slug || ''}
+        placeholder={draftState ? 'All Cities' : 'Select state first'}
+        disabled={!draftState}
+        color={color}
         options={cities.map(c => ({ value: c.slug, label: c.name }))}
         onChange={val => {
-          if (!val) { p.onCityChange(null); return }
-          const c = cities.find(c => c.slug === val); if (c) p.onCityChange(c)
+          if (!val) { onDraftCity(null); return }
+          const c = cities.find(c => c.slug === val); if (c) onDraftCity(c)
         }}
       />
     </div>
@@ -188,52 +201,86 @@ function CheckItem({ slug, name, count, checked, color, onChange }: { slug: stri
   )
 }
 
-/* ── Filter content (used in both desktop sidebar and mobile drawer) ── */
+/* ── Filter content — uses local draft state, applies on "Show Results" click ── */
 function FilterContent(p: Props) {
   const [modalSection, setModalSection] = useState<string | null>(null)
 
-  // Which modal is open
+  /* ── Draft state — mirrors parent props initially, changes stay local until apply ── */
+  const [dCountry, setDCountry] = useState<GeoCountry | null>(p.locationCountry)
+  const [dState, setDState] = useState<GeoState | null>(p.locationState)
+  const [dCity, setDCity] = useState<GeoCity | null>(p.locationCity)
+  const [dLT, setDLT] = useState(p.selectedListingType)
+  const [dTags, setDTags] = useState<Set<string>>(new Set(p.selectedTags))
+
+  /* Sync draft when parent props change (e.g. URL navigation, clear from outside) */
+  useEffect(() => { setDCountry(p.locationCountry) }, [p.locationCountry])
+  useEffect(() => { setDState(p.locationState) }, [p.locationState])
+  useEffect(() => { setDCity(p.locationCity) }, [p.locationCity])
+  useEffect(() => { setDLT(p.selectedListingType) }, [p.selectedListingType])
+  useEffect(() => { setDTags(new Set(p.selectedTags)) }, [p.selectedTags])
+
+  const toggleDraftTag = (slug: string) => {
+    setDTags(prev => { const n = new Set(prev); if (n.has(slug)) n.delete(slug); else n.add(slug); return n })
+  }
+
+  /* Check if draft differs from current applied state */
+  const draftChanged = dCountry?.slug !== (p.locationCountry?.slug || undefined)
+    || dState?.slug !== (p.locationState?.slug || undefined)
+    || dCity?.slug !== (p.locationCity?.slug || undefined)
+    || dLT !== p.selectedListingType
+    || dTags.size !== p.selectedTags.size
+    || [...dTags].some(t => !p.selectedTags.has(t))
+
+  const hasDraftFilter = !!dCountry || !!dState || !!dCity || !!dLT || dTags.size > 0
+
+  const applyFilters = () => {
+    p.onApplyFilters({ locationCountry: dCountry, locationState: dState, locationCity: dCity, listingType: dLT, tags: dTags })
+    p.onClose()
+  }
+
+  const clearAll = () => {
+    setDCountry(null); setDState(null); setDCity(null); setDLT(''); setDTags(new Set())
+  }
+
   const modalTagGroup = p.tagGroups.find(g => g.id === modalSection) || null
   const showLTModal = modalSection === '__listing_types__'
 
   return (
     <>
-      {/* Header */}
-      <h3 className="cd-fs-title">Filter results</h3>
 
-      {/* Active pills */}
-      {p.hasAnyFilter && (
+      {/* Active draft pills */}
+      {hasDraftFilter && (
         <div className="cd-fs-active">
           <div className="cd-fs-active-header">
-            <span className="cd-fs-active-label">Active Filters</span>
-            <button onClick={p.onClearFilters} className="cd-fs-clear" style={{ color: p.color }}>Clear All</button>
+            <span className="cd-fs-active-label">Filters</span>
+            <button onClick={clearAll} className="cd-fs-clear" style={{ color: p.color }}>Clear All</button>
           </div>
           <div className="cd-fs-active-pills">
-            {p.locationCountry && (
+            {dCountry && (
               <span className="cd-fs-pill" style={{ background: `${p.color}10`, color: p.color, borderColor: `${p.color}30` }}>
                 <I d={ic.mapPin} size={10} color={p.color} sw={2} />
-                {p.locationCountry.name}
-                {p.locationState && <> &rsaquo; {p.locationState.name}</>}
-                {p.locationCity && <> &rsaquo; {p.locationCity.name}</>}
-                <button onClick={() => p.onLocationCountryChange(null)} className="cd-fs-pill-x" style={{ color: p.color }}>
+                {dCountry.name}
+                {dState && <> &rsaquo; {dState.name}</>}
+                {dCity && <> &rsaquo; {dCity.name}</>}
+                <button onClick={() => { setDCountry(null); setDState(null); setDCity(null) }} className="cd-fs-pill-x" style={{ color: p.color }}>
                   <I d={ic.x} size={9} color={p.color} sw={2.5} />
                 </button>
               </span>
             )}
-            {p.selectedListingType && (
+            {dLT && (
               <span className="cd-fs-pill" style={{ background: `${p.color}10`, color: p.color, borderColor: `${p.color}30` }}>
-                {p.listingTypes.find(lt => lt.slug === p.selectedListingType)?.name || p.selectedListingType}
-                <button onClick={() => p.onListingTypeChange('')} className="cd-fs-pill-x" style={{ color: p.color }}>
+                {p.listingTypes.find(lt => lt.slug === dLT)?.name || dLT}
+                <button onClick={() => setDLT('')} className="cd-fs-pill-x" style={{ color: p.color }}>
                   <I d={ic.x} size={9} color={p.color} sw={2.5} />
                 </button>
               </span>
             )}
-            {Array.from(p.selectedTags).map(tagSlug => {
+            {Array.from(dTags).map(tagSlug => {
               const tag = p.tagGroups.flatMap(g => g.tags).find(t => t.slug === tagSlug)
               return tag ? (
                 <span key={tagSlug} className="cd-fs-pill" style={{ background: `${p.color}10`, color: p.color, borderColor: `${p.color}30` }}>
                   {tag.name}
-                  <button onClick={() => p.onToggleTag(tagSlug)} className="cd-fs-pill-x" style={{ color: p.color }}>
+                  <button onClick={() => toggleDraftTag(tagSlug)} className="cd-fs-pill-x" style={{ color: p.color }}>
                     <I d={ic.x} size={9} color={p.color} sw={2.5} />
                   </button>
                 </span>
@@ -244,39 +291,63 @@ function FilterContent(p: Props) {
       )}
 
       {/* Location filters */}
-      <LocationSection {...p} effectiveIso={p.effectiveIso} />
+      <LocationSection
+        draftCountry={dCountry} draftState={dState} draftCity={dCity}
+        effectiveIso={dCountry?.isoCode || p.effectiveIso}
+        color={p.color}
+        onDraftCountry={setDCountry} onDraftState={setDState} onDraftCity={setDCity}
+      />
 
-      {/* Listing types — open, show first 5, "SEE FULL LIST" */}
-      {p.listingTypes.length > 0 && (
-        <div className="cd-fs-section">
-          <h4 className="cd-fs-heading">
-            Listing Types
-            <I d={ic.chevronDown} size={13} color="var(--h-muted)" sw={2} />
-          </h4>
-          <div className="cd-fs-check-list">
-            {p.listingTypes.slice(0, PREVIEW_COUNT).map(lt => (
-              <CheckItem
-                key={lt.slug}
-                slug={lt.slug}
-                name={lt.name}
-                count={p.getListingTypeCount(lt.slug)}
-                checked={p.selectedListingType === lt.slug}
-                color={p.color}
-                onChange={() => p.onListingTypeChange(p.selectedListingType === lt.slug ? '' : lt.slug)}
-              />
+      {/* Listing types — grouped by L4 (part before ":"), L5 as items */}
+      {p.listingTypes.length > 0 && (() => {
+        // Group listing types: "L4: L5" → { l4Name → [{ slug, l5Name }] }
+        const groups: { l4: string; items: { slug: string; name: string }[] }[] = []
+        const groupMap = new Map<string, { slug: string; name: string }[]>()
+        for (const lt of p.listingTypes) {
+          const colonIdx = lt.name.indexOf(':')
+          const l4 = colonIdx > 0 ? lt.name.slice(0, colonIdx).trim() : 'Other'
+          const l5 = colonIdx > 0 ? lt.name.slice(colonIdx + 1).trim() : lt.name
+          if (!groupMap.has(l4)) { groupMap.set(l4, []); groups.push({ l4, items: groupMap.get(l4)! }) }
+          groupMap.get(l4)!.push({ slug: lt.slug, name: l5 })
+        }
+        const GROUPS_PREVIEW = 3 // show first 3 L4 groups
+        const previewGroups = groups.slice(0, GROUPS_PREVIEW)
+        return (
+          <div className="cd-fs-section">
+            <h4 className="cd-fs-heading">
+              Listing Types
+              <I d={ic.chevronDown} size={13} color="var(--h-muted)" sw={2} />
+            </h4>
+            {previewGroups.map(g => (
+              <div key={g.l4} className="cd-fs-lt-group">
+                <div className="cd-fs-lt-l4">{g.l4}</div>
+                <div className="cd-fs-check-list">
+                  {g.items.slice(0, PREVIEW_COUNT).map(item => (
+                    <CheckItem
+                      key={item.slug}
+                      slug={item.slug}
+                      name={item.name}
+                      count={p.getListingTypeCount(item.slug)}
+                      checked={dLT === item.slug}
+                      color={p.color}
+                      onChange={() => setDLT(dLT === item.slug ? '' : item.slug)}
+                    />
+                  ))}
+                </div>
+              </div>
             ))}
+            {groups.length > GROUPS_PREVIEW && (
+              <button className="cd-fs-see-all" style={{ color: p.color }} onClick={() => setModalSection('__listing_types__')}>
+                SEE FULL LIST ({groups.length} types)
+              </button>
+            )}
           </div>
-          {p.listingTypes.length > PREVIEW_COUNT && (
-            <button className="cd-fs-see-all" style={{ color: p.color }} onClick={() => setModalSection('__listing_types__')}>
-              SEE FULL LIST
-            </button>
-          )}
-        </div>
-      )}
+        )
+      })()}
 
-      {/* Tag groups — all open, show first 5, "SEE FULL LIST" */}
-      {p.tagGroups.map(group => {
-        const selectedInGroup = group.tags.filter(t => p.selectedTags.has(t.slug)).length
+      {/* Tag groups — skip Location tag group (handled by dropdowns above) */}
+      {p.tagGroups.filter(g => g.slug !== 'location').map(group => {
+        const selectedInGroup = group.tags.filter(t => dTags.has(t.slug)).length
         return (
           <div key={group.id} className="cd-fs-section">
             <h4 className="cd-fs-heading">
@@ -298,9 +369,9 @@ function FilterContent(p: Props) {
                     slug={tag.slug}
                     name={tag.name}
                     count={!p.hasListings && count > 0 ? count : undefined}
-                    checked={p.selectedTags.has(tag.slug)}
+                    checked={dTags.has(tag.slug)}
                     color={p.color}
-                    onChange={() => p.onToggleTag(tag.slug)}
+                    onChange={() => toggleDraftTag(tag.slug)}
                   />
                 )
               })}
@@ -318,9 +389,12 @@ function FilterContent(p: Props) {
       {showLTModal && (
         <FilterModal
           title="Listing Types"
-          items={p.listingTypes.map(lt => ({ slug: lt.slug, name: lt.name, count: p.getListingTypeCount(lt.slug) }))}
-          selected={new Set(p.selectedListingType ? [p.selectedListingType] : [])}
-          onToggle={slug => p.onListingTypeChange(p.selectedListingType === slug ? '' : slug)}
+          items={p.listingTypes.map(lt => {
+            const ci = lt.name.indexOf(':')
+            return { slug: lt.slug, name: ci > 0 ? lt.name.slice(ci + 1).trim() : lt.name, group: ci > 0 ? lt.name.slice(0, ci).trim() : undefined, count: p.getListingTypeCount(lt.slug) }
+          })}
+          selected={new Set(dLT ? [dLT] : [])}
+          onToggle={slug => setDLT(dLT === slug ? '' : slug)}
           onClose={() => setModalSection(null)}
           color={p.color}
         />
@@ -329,12 +403,23 @@ function FilterContent(p: Props) {
         <FilterModal
           title={modalTagGroup.name}
           items={modalTagGroup.tags.map(t => ({ slug: t.slug, name: t.name, count: p.hasListings ? undefined : (p.demoTagCounts.get(t.slug) || 0) }))}
-          selected={p.selectedTags}
-          onToggle={p.onToggleTag}
+          selected={dTags}
+          onToggle={toggleDraftTag}
           onClose={() => setModalSection(null)}
           color={p.color}
         />
       )}
+
+      {/* ── Sticky "Show Results" button ── */}
+      <div className="cd-fs-sticky-foot">
+        <button
+          onClick={applyFilters}
+          className="cd-fs-apply-btn"
+          style={{ background: draftChanged ? p.color : 'rgba(0,0,0,0.08)', color: draftChanged ? '#fff' : 'rgba(0,0,0,0.4)' }}
+        >
+          {draftChanged ? 'Show Results' : 'No changes'}
+        </button>
+      </div>
     </>
   )
 }
@@ -362,16 +447,6 @@ export default function FilterSidebar(p: Props) {
         <div className="cd-sidebar-body">
           <FilterContent {...p} />
         </div>
-        {p.hasAnyFilter && (
-          <div style={{ padding: '12px 24px 20px', borderTop: '1px solid rgba(0,0,0,0.06)', flexShrink: 0, background: '#fff', position: 'sticky', bottom: 0 }}>
-            <button
-              onClick={p.onClose}
-              style={{ width: '100%', padding: '14px', borderRadius: '12px', border: 'none', background: p.color, color: '#fff', font: '700 15px/1 var(--font-inter, Inter, sans-serif)', cursor: 'pointer' }}
-            >
-              Show {p.totalFilteredCount} results
-            </button>
-          </div>
-        )}
       </aside>
     </>,
     document.body

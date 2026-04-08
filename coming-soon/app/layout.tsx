@@ -4,6 +4,7 @@ import "./globals.css";
 import { Suspense } from "react";
 import PageTracker from "./components/PageTracker";
 import NavigationProgress from "./components/NavigationProgress";
+import ScrollToTop from "./components/ScrollToTop";
 
 const nunito = Nunito({
   variable: "--font-nunito",
@@ -98,6 +99,7 @@ export default function RootLayout({
       <body className={`${nunito.variable} ${bricolage.variable} ${inter.variable}`}>
         <Suspense><NavigationProgress /></Suspense>
         <PageTracker />{children}
+        <ScrollToTop />
       </body>
     </html>
   );

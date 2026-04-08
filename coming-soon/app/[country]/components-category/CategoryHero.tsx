@@ -14,6 +14,7 @@ const LocationSearch = dynamic(() => import('./LocationSearch'), { ssr: false })
 type Props = {
   category: Category
   sectorSlug?: string
+  sectorName?: string
   locationCountry: GeoCountry | null
   locationState: GeoState | null
   locationCity: GeoCity | null
@@ -89,7 +90,7 @@ function generateCategoryDesc(
   return templates[pick % templates.length]
 }
 
-export default function CategoryHero({ category: c, sectorSlug, locationCountry, locationState, locationCity, onLocationCountryChange, onStateChange, onCityChange, onLocationChange }: Props) {
+export default function CategoryHero({ category: c, sectorSlug, sectorName, locationCountry, locationState, locationCity, onLocationCountryChange, onStateChange, onCityChange, onLocationChange }: Props) {
   const siteCountry = useCountry()
   const color = c.color || 'var(--h-accent)'
 
@@ -110,21 +111,53 @@ export default function CategoryHero({ category: c, sectorSlug, locationCountry,
 
   return (
     <div className="cd-hero">
-      {/* ── Breadcrumb ── */}
+      {/* ── Breadcrumb: Home / Categories / L1 / L2 / L3 / Location ── */}
       <nav className="cd-breadcrumb" aria-label="Breadcrumb">
         <Link href="/" className="cd-breadcrumb-home" aria-label="Home">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         </Link>
         <span className="cd-breadcrumb-sep">/</span>
         <Link href="/categories">Categories</Link>
-        <span className="cd-breadcrumb-sep">/</span>
-        {c.parentName && c.parentSlug && (
+
+        {/* L1 Sector (always show if sectorSlug exists) */}
+        {sectorSlug && sectorName && (
           <>
-            <Link href={sectorSlug ? `/${sectorSlug}` : `/${c.parentSlug}`}>{c.parentName}</Link>
             <span className="cd-breadcrumb-sep">/</span>
+            <Link href={`/${sectorSlug}`}>{sectorName}</Link>
           </>
         )}
+
+        {/* L2 Parent (show for L3 categories — parent is L2) */}
+        {c.level === 3 && c.parentName && c.parentSlug && sectorSlug && (
+          <>
+            <span className="cd-breadcrumb-sep">/</span>
+            <Link href={`/${sectorSlug}/${c.parentSlug}`}>{c.parentName}</Link>
+          </>
+        )}
+
+        {/* Current category */}
+        <span className="cd-breadcrumb-sep">/</span>
         <span className="cd-breadcrumb-current">{c.name}</span>
+
+        {/* Location filters (if any active) */}
+        {locationCountry && (
+          <>
+            <span className="cd-breadcrumb-sep">/</span>
+            <span className="cd-breadcrumb-loc">{locationCountry.name}</span>
+          </>
+        )}
+        {locationState && (
+          <>
+            <span className="cd-breadcrumb-sep">/</span>
+            <span className="cd-breadcrumb-loc">{locationState.name}</span>
+          </>
+        )}
+        {locationCity && (
+          <>
+            <span className="cd-breadcrumb-sep">/</span>
+            <span className="cd-breadcrumb-loc">{locationCity.name}</span>
+          </>
+        )}
       </nav>
 
       {/* ── Title with accent ── */}

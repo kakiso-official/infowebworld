@@ -12,7 +12,7 @@ import type { TagGroup } from '../iww-hq/data/tag-storage'
 import { parseSegments, type ParsedCategoryFilters } from './lib-category/parse-segments'
 import { buildCategoryUrl } from './lib-category/build-url'
 import { lookupLocationCountry, preloadCSC, type GeoCountry, type GeoState, type GeoCity } from '../lib/geo-slugs'
-import { COUNTRY_LABELS, ROUTE_TO_GEO_SLUG, ROUTE_TO_ISO, ROOT_COUNTRY } from '../config/countries'
+import { COUNTRY_LABELS, ROUTE_TO_GEO_SLUG, ROUTE_TO_ISO } from '../config/countries'
 import type { CountryCode } from '../config/countries'
 
 import dynamic from 'next/dynamic'
@@ -131,6 +131,17 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
     setSegmentsParsed(true)
   }, [segments, category, tagGroups, siteCountry, geoReady])
 
+  /* ── Auto-select route country in location dropdown (not for global) ── */
+  useEffect(() => {
+    if (!geoReady || !segmentsParsed) return
+    if (locationCountry) return          // URL already set a location
+    if (siteCountry === 'global') return // global = no default country
+    const geoSlug = ROUTE_TO_GEO_SLUG[siteCountry]
+    if (!geoSlug) return
+    const geo = lookupLocationCountry(geoSlug)
+    if (geo) setLocationCountry(geo)
+  }, [geoReady, segmentsParsed, siteCountry, locationCountry])
+
   /* ── Push URL on filter change ── */
   const pushFilters = useCallback((overrides: Partial<ParsedCategoryFilters>) => {
     if (!slug) return
@@ -149,7 +160,7 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
     if (!merged.state) { merged.city = null }
     const routeGeo = ROUTE_TO_GEO_SLUG[siteCountry]
     const url = buildCategoryUrl(merged, routeGeo, sectorSlug)
-    const prefix = siteCountry === ROOT_COUNTRY ? '' : `/${siteCountry}`
+    const prefix = siteCountry === 'global' ? '' : `/${siteCountry}`
     router.push(`${prefix}${url}`, { scroll: false })
   }, [slug, locationCountry, locationState, locationCity, selectedListingType, selectedTags, siteCountry, sectorSlug, router])
 
@@ -233,6 +244,26 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
   const handleLocationChange = useCallback((country: GeoCountry | null, state: GeoState | null, city: GeoCity | null) => {
     setLocationCountry(country); setLocationState(state); setLocationCity(city); setPage(1)
     pushFilters({ locationCountry: country, state, city })
+  }, [pushFilters])
+
+  /* ── Apply all sidebar filters at once ── */
+  const handleApplyFilters = useCallback((filters: {
+    locationCountry: GeoCountry | null; locationState: GeoState | null; locationCity: GeoCity | null
+    listingType: string; tags: Set<string>
+  }) => {
+    setLocationCountry(filters.locationCountry)
+    setLocationState(filters.locationState)
+    setLocationCity(filters.locationCity)
+    setSelectedListingType(filters.listingType)
+    setSelectedTags(filters.tags)
+    setPage(1)
+    pushFilters({
+      locationCountry: filters.locationCountry,
+      state: filters.locationState,
+      city: filters.locationCity,
+      listingType: filters.listingType || null,
+      tags: Array.from(filters.tags),
+    })
   }, [pushFilters])
 
   /* ── Filtering ── */
@@ -361,6 +392,7 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
         <CategoryHero
           category={c}
           sectorSlug={sectorSlug}
+          sectorName={sectorSlug ? (allCats.find(x => x.slug === sectorSlug)?.name || '') : ''}
           locationCountry={locationCountry}
           locationState={locationState}
           locationCity={locationCity}
@@ -371,8 +403,37 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
         />
         <SubcategoryChips subcategories={subcats} sectorSlug={sectorSlug} />
 
+        {/* ── Table of Contents — only when Gemini content exists ── */}
+        {initialData?.seoContent && (() => {
+          const sc = initialData.seoContent
+          const bg = sc.buyers_guide && (typeof sc.buyers_guide === 'string' ? (() => { try { return JSON.parse(sc.buyers_guide) } catch { return null } })() : sc.buyers_guide)
+          const tocItems: { id: string; label: string; icon: string }[] = []
+          tocItems.push({ id: 'cd-listings', label: 'Top Companies', icon: ic.building })
+          if (sc.rich_description) tocItems.push({ id: 'seo-about', label: 'About', icon: ic.file })
+          if (bg?.features) tocItems.push({ id: 'seo-guide', label: "Buyer's Guide", icon: ic.search })
+          if (sc.use_cases) tocItems.push({ id: 'seo-usecases', label: 'Use Cases', icon: ic.grid })
+          if (sc.comparisons) tocItems.push({ id: 'seo-compare', label: 'Alternatives', icon: ic.layers })
+          if (sc.long_tail_keywords) tocItems.push({ id: 'seo-find', label: 'Find Best', icon: ic.tag })
+          if (sc.complementary_categories) tocItems.push({ id: 'seo-explore', label: 'Related', icon: ic.globe })
+          if (sc.extended_faq) tocItems.push({ id: 'seo-faq', label: 'FAQ', icon: ic.helpCircle })
+          return (
+            <nav className="cd-toc" aria-label="Page contents">
+              <span className="cd-toc-label">On this page</span>
+              <div className="cd-toc-list">
+                {tocItems.map(item => (
+                  <a key={item.id} href={`#${item.id}`} className="cd-toc-item" style={{ '--toc-c': color } as React.CSSProperties}
+                    onClick={e => { e.preventDefault(); document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }}>
+                    <I d={item.icon} size={13} color="currentColor" sw={2} />
+                    {item.label}
+                  </a>
+                ))}
+              </div>
+            </nav>
+          )
+        })()}
+
         {/* Main layout: listings only (no sidebar in grid) */}
-        <div className="cd-layout">
+        <div className="cd-layout" id="cd-listings">
 
           {/* Filter drawer — slides from right, 35% width */}
           {showFilters && (
@@ -402,6 +463,7 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
               onLocationCountryChange={handleLocationCountryChange}
               onStateChange={handleStateChange}
               onCityChange={handleCityChange}
+              onApplyFilters={handleApplyFilters}
               effectiveIso={locationCountry?.isoCode || ROUTE_TO_ISO[siteCountry as CountryCode] || ''}
             />
           )}
@@ -411,7 +473,7 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
             {/* Toolbar */}
             <div className="cd-toolbar">
               <span className="cd-toolbar-count">
-                Top in {category?.name || 'Category'} (<strong>{totalCount}</strong>)
+                Top in {category?.name || 'Category'} - {new Date().toLocaleString('en-US', { month: 'long' })} {new Date().getFullYear()} (<strong>{totalCount}</strong>)
                 {!hasListings && <span className="cd-toolbar-demo">(Preview)</span>}
               </span>
               <div className="cd-toolbar-right">
@@ -446,6 +508,21 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
               </div>
               </div>
             </div>
+
+            {/* AI Summary */}
+            {initialData?.seoContent?.ai_summary && (
+              <div className="cd-ai-summary">
+                <div className="cd-ai-summary-footer">
+                  <svg className="cd-ai-summary-icon" width="28" height="28" viewBox="0 0 24 24" fill="none">
+                    <path d="M10 7l-.516 1.394C8.808 10.222 8.47 11.136 7.803 11.803 7.136 12.47 6.222 12.808 4.394 13.484L3 14l1.394.516c1.828.676 2.742 1.014 3.409 1.681.667.667 1.005 1.581 1.681 3.409L10 21l.516-1.394c.676-1.828 1.014-2.742 1.681-3.409.667-.667 1.581-1.005 3.409-1.681L17 14l-1.394-.516c-1.828-.676-2.742-1.014-3.409-1.681-.667-.667-1.005-1.581-1.681-3.409L10 7z" stroke="url(#aiStar)" strokeWidth="1.5" strokeLinejoin="round" />
+                    <path d="M18 3l-.221.597c-.29.784-.435 1.175-.721 1.461-.286.286-.677.431-1.461.721L15 6l.597.221c.784.29 1.175.435 1.461.721.286.286.431.677.721 1.461L18 9l.221-.597c.29-.784.435-1.175.721-1.461.286-.286.677-.431 1.461-.721L21 6l-.597-.221c-.784-.29-1.175-.435-1.461-.721-.286-.286-.431-.677-.721-1.461L18 3z" stroke="url(#aiStar)" strokeWidth="1.5" strokeLinejoin="round" />
+                    <defs><linearGradient id="aiStar" x1="3" y1="3" x2="21" y2="21"><stop stopColor="#7C3AED" /><stop offset="1" stopColor="#3B82F6" /></linearGradient></defs>
+                  </svg>
+                  <span className="cd-ai-summary-label">Summarized by AI</span>
+                </div>
+                <p className="cd-ai-summary-text">{initialData.seoContent.ai_summary}</p>
+              </div>
+            )}
 
             {/* Listing cards */}
             <div>

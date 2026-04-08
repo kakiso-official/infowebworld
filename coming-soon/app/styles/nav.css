@@ -957,6 +957,7 @@ a.nh-dd-col-head:hover { color: #000; }
 .hd-country-option--global { font-weight: 600; }
 .hd-country-divider { height: 1px; background: rgba(0, 0, 0, 0.06); margin: 4px 6px; }
 .hd-country-flag { font-size: 18px; line-height: 1; }
+.hd-country-flag-img { width: 22px; height: 16px; object-fit: cover; border-radius: 2px; flex-shrink: 0; }
 .hd-country-label { flex: 1; }
 .hd-country-slug {
   font: 600 11px/1 var(--font-inter, 'Inter', sans-serif);

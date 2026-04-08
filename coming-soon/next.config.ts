@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'infowebworld.com' },
+      { protocol: 'https', hostname: 'flagcdn.com' },
     ],
   },
   async rewrites() {

@@ -331,6 +331,7 @@ export default function Navbar({ sectorSlug, hideSearch }: { sectorSlug?: string
             }
             return el
           })}
+          <Link href="/business" className="nh-cta">Get Listed</Link>
         </nav>
 
         {/* ═══ Mega-menu dropdown ═══ */}

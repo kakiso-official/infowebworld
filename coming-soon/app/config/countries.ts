@@ -1,11 +1,15 @@
 /* ── Country routing configuration ── */
 
-export const VALID_COUNTRIES = ['in', 'us', 'uk', 'ca', 'au', 'eu'] as const
+export const VALID_COUNTRIES = ['in', 'us', 'uk', 'ca', 'au', 'eu', 'global'] as const
 export type CountryCode = (typeof VALID_COUNTRIES)[number]
+/** The 6 real countries (excludes 'global') */
+export const REAL_COUNTRIES = ['in', 'us', 'uk', 'ca', 'au', 'eu'] as const
 
-export const DEFAULT_COUNTRY: CountryCode = 'in'
-/** US uses root URLs (no /us/ prefix) — all other countries get /{code}/ prefix */
-export const ROOT_COUNTRY: CountryCode = 'us'
+export const DEFAULT_COUNTRY: CountryCode = 'us'
+/** Cookie value set when user explicitly picks "Global" in switcher */
+export const GLOBAL_COOKIE = 'global'
+/** The internal [country] param value for root/global pages */
+export const GLOBAL_COUNTRY: CountryCode = 'global'
 export const COOKIE_NAME = 'iww-country'
 export const COOKIE_MAX_AGE = 365 * 24 * 60 * 60 // 1 year
 
@@ -16,6 +20,7 @@ export const COUNTRY_LABELS: Record<CountryCode, string> = {
   ca: 'Canada',
   au: 'Australia',
   eu: 'Europe',
+  global: 'Worldwide',
 }
 
 export const COUNTRY_FLAGS: Record<CountryCode, string> = {
@@ -25,6 +30,18 @@ export const COUNTRY_FLAGS: Record<CountryCode, string> = {
   ca: '\u{1F1E8}\u{1F1E6}',
   au: '\u{1F1E6}\u{1F1FA}',
   eu: '\u{1F1EA}\u{1F1FA}',
+  global: '\u{1F310}',
+}
+
+/** ISO codes for flag image CDN (flagcdn.com) — Windows doesn't render emoji flags */
+export const COUNTRY_FLAG_ISO: Record<CountryCode, string> = {
+  in: 'in',
+  us: 'us',
+  uk: 'gb',
+  ca: 'ca',
+  au: 'au',
+  eu: 'eu',
+  global: 'eu',
 }
 
 /* Map Vercel's x-vercel-ip-country (ISO 3166-1 alpha-2) to our slugs */
@@ -34,24 +51,24 @@ const EU_CODES = new Set([
   'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE', 'NO', 'CH', 'IS',
 ])
 
-export function geoToCountry(isoCode: string | null | undefined): CountryCode {
-  if (!isoCode) return DEFAULT_COUNTRY
+/** Returns the matching country code, or null for unsupported countries (→ global) */
+export function geoToCountry(isoCode: string | null | undefined): CountryCode | null {
+  if (!isoCode) return null
   const code = isoCode.toUpperCase()
   if (code === 'IN') return 'in'
   if (code === 'US') return 'us'
-  if (code === 'UK') return 'uk'
+  if (code === 'GB') return 'uk'
   if (code === 'CA') return 'ca'
   if (code === 'AU') return 'au'
   if (EU_CODES.has(code)) return 'eu'
-  return DEFAULT_COUNTRY
+  return null
 }
 
 export function isValidCountry(s: string): s is CountryCode {
   return (VALID_COUNTRIES as readonly string[]).includes(s)
 }
 
-/** Countries that appear in the URL as a prefix (excludes ROOT_COUNTRY) */
-export const PREFIXED_COUNTRIES = VALID_COUNTRIES.filter(c => c !== ROOT_COUNTRY)
+/** All 6 countries appear in the URL as /{code}/ prefix. Root (no prefix) = Global. */
 
 /**
  * Map route country code → geo-slugs country slug (used by country-state-city).
