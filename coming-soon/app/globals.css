@@ -47,7 +47,16 @@
 }
 
 /* Navigation progress bar */
-.np-bar { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: #E8553D; z-index: 99999; transform-origin: left; transition: transform .2s ease, opacity .3s ease; pointer-events: none }
+.np-bar {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 99999;
+  background: linear-gradient(90deg, #E8553D, #f97316, #E8553D);
+  background-size: 200% 100%;
+  animation: npShine 1.5s linear infinite;
+  transform-origin: left; transform: scaleX(0);
+  transition: transform .15s linear, opacity .25s ease;
+  pointer-events: none; will-change: transform;
+}
+@keyframes npShine { 0% { background-position: 200% 0 } 100% { background-position: -200% 0 } }
 
 /* ═══════════════════════════════════════════════════════
    DESIGN TOKENS — Same warm premium palette as React app

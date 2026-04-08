@@ -21,15 +21,15 @@ import CategoryHero from './components-category/CategoryHero'
 import SubcategoryChips from './components-category/SubcategoryChips'
 import { RealListingCard } from './components-category/ListingCard'
 import Pagination from './components-category/Pagination'
-import CompactCta from './components-category/CompactCta'
+// CompactCta, PopularSearches, TrustSection replaced by cd-bottom-cta
 
 /* Heavy / below-fold components — loaded on demand */
 const SectorLanding = dynamic(() => import('./sector/SectorLanding'))
 const FilterSidebar = dynamic(() => import('./components-category/FilterSidebar'))
 const SeoSections = dynamic(() => import('./components-category/SeoSections'))
-const TrustSection = dynamic(() => import('./components-category/TrustSection'))
-const FaqAccordion = dynamic(() => import('./components-category/FaqAccordion'))
-const PopularSearches = dynamic(() => import('./components-category/PopularSearches'))
+// TrustSection removed — replaced by bottom CTA
+// FaqAccordion removed — Gemini extended_faq replaces it
+// PopularSearches removed — replaced by bottom CTA
 
 /* ── No demo listings — only real DB listings shown ── */
 
@@ -265,26 +265,7 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
     return r
   }, [listings, selectedListingType, sortBy])
 
-  const faqs = useMemo(() => {
-    if (!category) return []
-    const n = category.name, d = category.description || `${n} encompasses businesses and solutions that help organizations succeed.`
-    return [
-      { q: `What is ${n}?`, a: d },
-      { q: `How do I find the best ${n} companies?`, a: `Browse verified ${n} companies on InfoWebWorld. Use filters to narrow by listing type, features, and tags.` },
-      { q: `Is it free to list my ${n} business?`, a: 'Yes, InfoWebWorld offers a free listing option. Premium plans are available for enhanced visibility and a verified badge.' },
-      { q: `How are ${n} companies ranked?`, a: 'Rankings are based on verified reviews, satisfaction scores, and market presence. Our team verifies every listing.' },
-      { q: `Can I compare ${n} solutions?`, a: `Yes! Compare ${n} solutions across features, pricing, satisfaction scores, and more.` },
-    ]
-  }, [category])
-
-  const popularSearches = useMemo(() => {
-    if (!category) return []
-    const pills: { name: string; href: string }[] = []
-    const sp = sectorSlug ? `/${sectorSlug}` : ''
-    for (const sc of (category.subcategories || []).slice(0, 8)) pills.push({ name: sc.name, href: `${sp}/${sc.slug}` })
-    for (const lt of (category.listingTypes || []).slice(0, 4)) pills.push({ name: lt.name, href: `${sp}/${category.slug}?type=${lt.slug}` })
-    return pills
-  }, [category])
+  /* faqs + popularSearches removed — Gemini content covers these */
 
   /* ── Not found / loading ── */
   if (notFound) {
@@ -331,7 +312,19 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
   }
 
   const c = category
-  const color = c.color || '#E8553D'
+  // Derive color: use DB value, or infer from sector slug
+  const sectorColorMap: Record<string, string> = {
+    'artificial-intelligence-ml': '#8B5CF6',
+    'software-saas': '#3B82F6',
+    'it-services-agencies': '#14B8A6',
+    'startups-innovation': '#E8553D',
+    'local-business': '#F59E0B',
+    'professional-services': '#2FAE6A',
+  }
+  const color = (c.color && c.color !== '#E8553D' ? c.color : null)
+    || (sectorSlug ? sectorColorMap[sectorSlug] : null)
+    || c.color
+    || '#E8553D'
   const subcats = c.subcategories || []
   const hasListings = listings.length > 0
   const isL3 = c.level === 3
@@ -341,7 +334,10 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
   const getLTCount = (s: string) => listings.filter(l => l.listingTypeSlug === s).length
   const totalCount = filteredReal.length
   const totalPages = Math.max(1, Math.ceil(listingTotal / ITEMS_PER_PAGE))
-  const hasAnyFilter = selectedTags.size > 0 || !!selectedListingType || !!locationCountry
+  // Route country auto-selected (no state/city) doesn't count as a user filter
+  const defaultGeo = ROUTE_TO_GEO_SLUG[siteCountry as CountryCode]
+  const isDefaultLocationOnly = !!locationCountry && locationCountry.slug === defaultGeo && !locationState && !locationCity
+  const hasAnyFilter = selectedTags.size > 0 || !!selectedListingType || (!!locationCountry && !isDefaultLocationOnly) || !!locationState || !!locationCity
 
   return (
     <section className="cd-page" style={{ '--cd-color': color } as React.CSSProperties}>
@@ -368,30 +364,41 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
           onCityChange={handleCityChange}
           onLocationChange={handleLocationChange}
         />
-        <SubcategoryChips subcategories={subcats} sectorSlug={sectorSlug} />
+        {subcats.length > 0 && <SubcategoryChips subcategories={subcats} sectorSlug={sectorSlug} />}
 
         {/* ── Table of Contents — only when Gemini content exists ── */}
         {initialData?.seoContent && (() => {
           const sc = initialData.seoContent
           const bg = sc.buyers_guide && (typeof sc.buyers_guide === 'string' ? (() => { try { return JSON.parse(sc.buyers_guide) } catch { return null } })() : sc.buyers_guide)
-          const tocItems: { id: string; label: string; icon: string }[] = []
-          tocItems.push({ id: 'cd-listings', label: 'Top Companies', icon: ic.building })
-          if (sc.rich_description) tocItems.push({ id: 'seo-about', label: 'About', icon: ic.file })
-          if (bg?.features) tocItems.push({ id: 'seo-guide', label: "Buyer's Guide", icon: ic.search })
-          if (sc.use_cases) tocItems.push({ id: 'seo-usecases', label: 'Use Cases', icon: ic.grid })
-          if (sc.comparisons) tocItems.push({ id: 'seo-compare', label: 'Alternatives', icon: ic.layers })
-          if (sc.long_tail_keywords) tocItems.push({ id: 'seo-find', label: 'Find Best', icon: ic.tag })
-          if (sc.complementary_categories) tocItems.push({ id: 'seo-explore', label: 'Related', icon: ic.globe })
-          if (sc.extended_faq) tocItems.push({ id: 'seo-faq', label: 'FAQ', icon: ic.helpCircle })
+          const tocItems: { id: string; label: string; desc: string; icon: string }[] = []
+          tocItems.push({ id: 'cd-listings', label: 'Top Companies', desc: 'Browse verified listings', icon: ic.building })
+          if (sc.rich_description) tocItems.push({ id: 'seo-about', label: 'About', desc: 'Editorial overview', icon: ic.file })
+          if (bg?.features) tocItems.push({ id: 'seo-guide', label: "Buyer's Guide", desc: 'What to look for', icon: ic.search })
+          if (sc.use_cases) tocItems.push({ id: 'seo-usecases', label: 'Use Cases', desc: 'Real-world scenarios', icon: ic.grid })
+          if (sc.comparisons) tocItems.push({ id: 'seo-compare', label: 'Alternatives', desc: 'Compare approaches', icon: ic.layers })
+          if (sc.long_tail_keywords) tocItems.push({ id: 'seo-find', label: 'Find Best', desc: 'Search by need', icon: ic.tag })
+          if (sc.complementary_categories) tocItems.push({ id: 'seo-explore', label: 'Related', desc: 'Adjacent categories', icon: ic.globe })
+          if (sc.extended_faq) tocItems.push({ id: 'seo-faq', label: 'FAQ', desc: 'Common questions', icon: ic.helpCircle })
           return (
-            <nav className="cd-toc" aria-label="Page contents">
-              <span className="cd-toc-label">On this page</span>
-              <div className="cd-toc-list">
-                {tocItems.map(item => (
-                  <a key={item.id} href={`#${item.id}`} className="cd-toc-item" style={{ '--toc-c': color } as React.CSSProperties}
+            <nav className="cd-toc" aria-label="Page contents" style={{ '--toc-c': color } as React.CSSProperties}>
+              <div className="cd-toc-header">
+                <h3 className="cd-toc-title">
+                  <I d={ic.layers} size={14} color={color} sw={2} />
+                  On this page
+                  <span className="cd-toc-count">{tocItems.length}</span>
+                </h3>
+              </div>
+              <div className="cd-toc-grid">
+                {tocItems.map((item, i) => (
+                  <a key={item.id} href={`#${item.id}`} className="cd-toc-item"
                     onClick={e => { e.preventDefault(); document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }}>
-                    <I d={item.icon} size={13} color="currentColor" sw={2} />
-                    {item.label}
+                    <span className="cd-toc-num">{String(i + 1).padStart(2, '0')}</span>
+                    <span className="cd-toc-icon"><I d={item.icon} size={15} color={color} sw={2} /></span>
+                    <span className="cd-toc-body">
+                      <span className="cd-toc-label">{item.label}</span>
+                      <span className="cd-toc-desc">{item.desc}</span>
+                    </span>
+                    <I d={ic.arrow} size={12} color="var(--cd-color, var(--h-accent))" sw={2} />
                   </a>
                 ))}
               </div>
@@ -494,22 +501,64 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
             <div>
               {filteredReal.length > 0 ? (
                 filteredReal.map(item => <RealListingCard key={item.id} item={item} color={color} />)
-              ) : (
+              ) : hasAnyFilter ? (
                 <div className="cd-empty">
                   <I d={ic.search} size={32} color="var(--h-muted)" sw={1.5} />
-                  {hasAnyFilter ? (
-                    <>
-                      <p>No listings match your filters.</p>
-                      <button onClick={clearFilters} className="cd-empty-btn" style={{ color }}>Clear all filters</button>
-                    </>
-                  ) : (
-                    <>
-                      <p>No listings yet in <strong>{c.name}</strong>.</p>
-                      <Link href={`/business?category=${encodeURIComponent(c.name)}`} className="cd-empty-btn" style={{ color }}>
-                        Be the First to List Here
-                      </Link>
-                    </>
-                  )}
+                  <p>No listings match your filters.</p>
+                  <button onClick={clearFilters} className="cd-empty-btn" style={{ color }}>Clear all filters</button>
+                </div>
+              ) : (
+                <div className="cd-first" style={{ '--first-c': color } as React.CSSProperties}>
+                  {/* Floating shapes */}
+                  <div className="cd-first-shapes">
+                    <div className="cd-first-shape cd-first-shape--1" />
+                    <div className="cd-first-shape cd-first-shape--2" />
+                    <div className="cd-first-shape cd-first-shape--3" />
+                    <div className="cd-first-shape cd-first-shape--4" />
+                    <div className="cd-first-shape cd-first-shape--5" />
+                  </div>
+                  {/* Rocket icon — Hugeicons rocket */}
+                  <div className="cd-first-icon">
+                    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M8 10.167L12.123 6.043c1.125-1.125 1.687-1.687 2.308-2.14a9.447 9.447 0 014.308-1.784C19.499 2 20.294 2 21.885 2c.083 0 .115.038.115.115 0 1.591 0 2.386-.119 3.145a9.447 9.447 0 01-1.784 4.308c-.454.62-1.016 1.183-2.14 2.308L13.832 16" />
+                      <path d="M10.341 8.098c-1.703 0-3.843-.36-5.437.3C3.737 8.881 2.878 10 2 10.879l3.306 1.416c.876.376.34 1.481.196 2.207-.162.808-.153.838.43 1.42l2.146 2.146c.583.583.612.592 1.42.43.726-.145 1.831-.68 2.207.196L13.12 22c.878-.878 1.998-1.737 2.481-2.904.66-1.594.3-3.734.3-5.437" />
+                      <path d="M12 20l-1 1M4 12l-1 1" />
+                      <path d="M15 4.08a8.835 8.835 0 013.161 1.38A8.468 8.468 0 0119.92 9" />
+                    </svg>
+                  </div>
+                  {/* Badge */}
+                  <span className="cd-first-badge">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M13.728 3.444l1.76 3.549c.24.494.88.968 1.42 1.058l3.19.535c2.04.342 2.52 1.835 1.05 3.306l-2.48 2.5c-.42.424-.65 1.24-.52 1.825l.71 3.095c.56 2.45-.73 3.397-2.88 2.117l-2.99-1.785c-.54-.322-1.43-.322-1.98 0L8.018 21.43c-2.14 1.28-3.44.322-2.88-2.117l.71-3.095c.13-.585-.1-1.401-.52-1.825l-2.48-2.5c-1.46-1.471-.99-2.964 1.05-3.306l3.19-.535c.53-.09 1.17-.564 1.41-1.058l1.76-3.55c.96-1.925 2.52-1.925 3.48 0z" /></svg>
+                    #1 Spot Available
+                  </span>
+                  {/* Heading */}
+                  <h3 className="cd-first-heading">
+                    Be the <em>First</em> to List in<br />{c.name}
+                  </h3>
+                  {/* Description */}
+                  <p className="cd-first-desc">
+                    No companies listed here yet. Claim the top spot, get a dofollow backlink, and be seen by every buyer searching this category.
+                  </p>
+                  {/* Perks */}
+                  <div className="cd-first-perks">
+                    <span className="cd-first-perk">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 2l.295.797c.29.783.435 1.175.721 1.46.286.286.677.432 1.461.722L20.4 5.2l-.797.295c-.784.29-1.175.435-1.461.721-.286.286-.431.677-.721 1.461L17 8.6l-.295-.797c-.29-.783-.435-1.175-.721-1.46-.286-.286-.677-.432-1.461-.722L13.6 5.2l.797-.295c.784-.29 1.175-.435 1.461-.721.286-.286.431-.677.721-1.461L17 2z" /><path d="M6 4l.221.597c.29.784.435 1.175.721 1.461.286.286.677.431 1.461.721L9.4 7l-.597.221c-.784.29-1.175.435-1.461.721-.286.286-.431.677-.721 1.461L6 10l-.221-.597c-.29-.784-.435-1.175-.721-1.461-.286-.286-.677-.431-1.461-.721L2.6 7l.597-.221c.784-.29 1.175-.435 1.461-.721.286-.286.431-.677.721-1.461L6 4z" /></svg>
+                      Dofollow Backlink
+                    </span>
+                    <span className="cd-first-perk">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 12V18" /><path d="M12 18c-1.674 0-3.13 1.012-3.882 2.505-.36.713.155 1.495.84 1.495h6.083c.685 0 1.2-.782.84-1.495C15.13 19.012 13.674 18 12 18z" /><path d="M12 12c3.866 0 7-3.117 7-6.962 0-.1-.002-.2-.006-.3-.043-1-.064-1.5-.741-2.119C17.575 2 16.825 2 15.324 2H8.676c-1.5 0-2.25 0-2.928.62-.672.618-.694 1.118-.736 2.118A7.115 7.115 0 005 5.038C5 8.883 8.134 12 12 12z" /></svg>
+                      Verified Badge
+                    </span>
+                    <span className="cd-first-perk">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 21h14" /><path d="M14.915 7.611l-1.107-2.23c-.789-1.587-1.183-2.381-1.808-2.381s-1.019.794-1.808 2.382L9.085 7.61c-.504 1.015-.756 1.522-1.205 1.636a2.26 2.26 0 01-.095.019c-.458.07-.886-.299-1.741-1.037C4.012 6.476 3 5.6 2.38 5.95a1.1 1.1 0 00-.114.076C1.702 6.454 2.095 7.74 2.882 10.315l1.166 3.813c.423 1.384.635 2.076 1.17 2.474.535.398 1.255.398 2.693.398h8.178c1.438 0 2.158 0 2.693-.398.535-.398.747-1.09 1.17-2.474l1.166-3.813c.787-2.574 1.18-3.861.617-4.29a1.095 1.095 0 00-.115-.077c-.617-.349-1.629.527-3.66 2.28-.856.737-1.284 1.106-1.742 1.036a2.26 2.26 0 01-.095-.019c-.45-.114-.701-.621-1.205-1.635z" /></svg>
+                      Top Placement
+                    </span>
+                  </div>
+                  {/* CTA */}
+                  <Link href={`/business?category=${encodeURIComponent(c.name)}`} className="cd-first-cta">
+                    Get Listed Now
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
+                  </Link>
                 </div>
               )}
             </div>
@@ -531,14 +580,26 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
           />
         )}
 
-        <CompactCta categoryName={c.name} spotsLeft={200 - c.listingCount} color={color} />
-        <PopularSearches searches={popularSearches} />
-        {!initialData?.seoContent && <FaqAccordion faqs={faqs} />}
-        <TrustSection color={color} />
-
-        <Link href="/categories" className="cd-back-link" style={{ color }}>
-          <I d={ic.arrowLeft} size={14} color={color} sw={2} /> Back to Categories
-        </Link>
+        {/* ── Bottom CTA bar ── */}
+        <div className="cd-bottom-cta" style={{ '--bc': color } as React.CSSProperties}>
+          <div className="cd-bottom-cta-left">
+            <span className="cd-bottom-cta-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13.728 3.444l1.76 3.549c.24.494.88.968 1.42 1.058l3.19.535c2.04.342 2.52 1.835 1.05 3.306l-2.48 2.5c-.42.424-.65 1.24-.52 1.825l.71 3.095c.56 2.45-.73 3.397-2.88 2.117l-2.99-1.785c-.54-.322-1.43-.322-1.98 0L8.018 21.43c-2.14 1.28-3.44.322-2.88-2.117l.71-3.095c.13-.585-.1-1.401-.52-1.825l-2.48-2.5c-1.46-1.471-.99-2.964 1.05-3.306l3.19-.535c.53-.09 1.17-.564 1.41-1.058l1.76-3.55c.96-1.925 2.52-1.925 3.48 0z" /></svg>
+              {Math.max(0, 200 - c.listingCount)} founding spots left
+            </span>
+            <h3 className="cd-bottom-cta-heading">List your business in <em>{c.name}</em></h3>
+            <p className="cd-bottom-cta-desc">Dofollow backlink · Verified badge · Top placement · From $99/yr</p>
+          </div>
+          <div className="cd-bottom-cta-right">
+            <Link href={`/business?category=${encodeURIComponent(c.name)}`} className="cd-bottom-cta-btn">
+              Get Listed
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
+            </Link>
+            <Link href="/categories" className="cd-bottom-cta-back">
+              <I d={ic.arrowLeft} size={13} color="currentColor" sw={2} /> All categories
+            </Link>
+          </div>
+        </div>
       </div>
     </section>
   )

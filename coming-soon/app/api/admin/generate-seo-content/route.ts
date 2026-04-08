@@ -3,26 +3,41 @@ import { query, queryOne, execute } from '@/lib/db'
 
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent'
 
+const MAX_RETRIES = 4
+const RETRY_CODES = new Set([429, 500, 503])
+
 async function callGemini(prompt: string): Promise<string> {
   const key = process.env.GEMINI_API_KEY
   if (!key) throw new Error('GEMINI_API_KEY not set')
 
-  const res = await fetch(`${GEMINI_API_URL}?key=${key}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.7, maxOutputTokens: 8192 },
-    }),
-  })
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    const res = await fetch(`${GEMINI_API_URL}?key=${key}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.7, maxOutputTokens: 8192 },
+      }),
+    })
 
-  if (!res.ok) {
+    if (res.ok) {
+      const json = await res.json()
+      return json.candidates?.[0]?.content?.parts?.[0]?.text || ''
+    }
+
+    // Retry on 429/500/503 with exponential backoff
+    if (RETRY_CODES.has(res.status) && attempt < MAX_RETRIES) {
+      const wait = Math.min(2000 * Math.pow(2, attempt), 30000) // 2s, 4s, 8s, 16s
+      console.log(`Gemini ${res.status} — retrying in ${wait / 1000}s (attempt ${attempt + 1}/${MAX_RETRIES})`)
+      await new Promise(r => setTimeout(r, wait))
+      continue
+    }
+
     const err = await res.text()
     throw new Error(`Gemini API error ${res.status}: ${err}`)
   }
 
-  const json = await res.json()
-  return json.candidates?.[0]?.content?.parts?.[0]?.text || ''
+  throw new Error('Gemini API: max retries exceeded')
 }
 
 function cleanJson(raw: string): string {
@@ -477,7 +492,7 @@ const SECTION_COLS = ['ai_summary','rich_description','buyers_guide','use_cases'
 /* ── GET: Check generation status with per-category section breakdown ── */
 export async function GET() {
   try {
-    const total = await queryOne('SELECT COUNT(*) as cnt FROM categories WHERE level IN (2, 3) AND is_active = 1 AND is_navigation = 1')
+    const total = await queryOne('SELECT COUNT(*) as cnt FROM categories WHERE level IN (2, 3)')
     const generated = await queryOne('SELECT COUNT(*) as cnt FROM category_seo_content WHERE rich_description IS NOT NULL')
 
     // Per-category section status

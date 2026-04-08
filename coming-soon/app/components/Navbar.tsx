@@ -28,19 +28,22 @@ const DD_SECTORS: DDSector[] = [
   {
     header: 'AI & ML', slug: 'artificial-intelligence-ml',
     items: [
-      { name: 'AI Assistants & Chatbots', desc: 'Virtual agents & conversational AI', slug: 'ai-assistants-chatbots', color: '#4361EE' },
-      { name: 'AI Content Creation', desc: 'Text, image & video generation', slug: 'ai-content-creation', color: '#4361EE' },
-      { name: 'AI Data & Analytics', desc: 'Predictive models & data tools', slug: 'ai-data-analytics', color: '#4361EE' },
-      { name: 'AI Developer Tools', desc: 'APIs, frameworks & ML ops', slug: 'ai-developer-tools', color: '#4361EE' },
-      { name: 'AI for Business', desc: 'Enterprise AI solutions', slug: 'ai-for-business', color: '#4361EE' },
-      { name: 'AI Document & File Tools', desc: 'Extraction, parsing & automation', slug: 'ai-document-file-tools', color: '#4361EE' },
-      { name: 'AI Browser & Desktop', slug: 'ai-browser-desktop', color: '#4361EE' },
-      { name: 'AI Career & Professional', slug: 'ai-career-professional', color: '#4361EE' },
-      { name: 'AI Characters & Companions', slug: 'ai-characters-companions', color: '#4361EE' },
-      { name: 'AI Creative Specialty', slug: 'ai-creative-specialty', color: '#4361EE' },
-      { name: 'AI for Industry', slug: 'ai-for-industry', color: '#4361EE' },
-      { name: 'AI Lifestyle & Personal', slug: 'ai-lifestyle-personal', color: '#4361EE' },
-      { name: 'AI Safety & Ethics', slug: 'ai-safety-ethics', color: '#4361EE' },
+      { name: 'AI Assistants & Chatbots', slug: 'ai-assistants-chatbots', color: '#8B5CF6' },
+      { name: 'AI Writing & Long-Form Text', slug: 'ai-writing-long-form-text', color: '#8B5CF6' },
+      { name: 'AI Image Generation', slug: 'ai-image-generation', color: '#8B5CF6' },
+      { name: 'AI Video Generation', slug: 'ai-video-generation', color: '#8B5CF6' },
+      { name: 'AI Audio Generation & Music', slug: 'ai-audio-generation-music', color: '#8B5CF6' },
+      { name: 'AI Code & Developer Tools', slug: 'ai-code-developer-tools', color: '#8B5CF6' },
+      { name: 'AI No-Code & App Builders', slug: 'ai-no-code-app-builders', color: '#8B5CF6' },
+      { name: 'AI Marketing & Growth', slug: 'ai-marketing-growth', color: '#8B5CF6' },
+      { name: 'AI Data Analysis & BI', slug: 'ai-data-analysis-bi', color: '#8B5CF6' },
+      { name: 'AI Education & Tutoring', slug: 'ai-education-tutoring', color: '#8B5CF6' },
+      { name: 'AI Healthcare & Medical', slug: 'ai-healthcare-medical', color: '#8B5CF6' },
+      { name: 'AI Design, Branding & Creative', slug: 'ai-design-branding-creative', color: '#8B5CF6' },
+      { name: 'AI eCommerce & Retail', slug: 'ai-ecommerce-retail', color: '#8B5CF6' },
+      { name: 'AI Cybersecurity & Privacy', slug: 'ai-cybersecurity-privacy', color: '#8B5CF6' },
+      { name: 'AI Agent Frameworks & Infrastructure', slug: 'ai-agent-frameworks-infrastructure', color: '#8B5CF6' },
+      { name: 'AI for Vertical Industries', slug: 'ai-for-vertical-industries', color: '#8B5CF6' },
     ],
   },
   {
@@ -355,7 +358,7 @@ export default function Navbar({ sectorSlug, hideSearch }: { sectorSlug?: string
                           {item.desc && <span className="nh-dd-item-desc">{item.desc}</span>}
                         </Link>
                       ))}
-                      <Link href={`/${sector.slug}/all`} className="nh-dd-more"
+                      <Link href={`/view-all-sub-categories-${sector.slug}`} className="nh-dd-more"
                         style={{ color: sector.items[0]?.color }} onClick={closeDD}>
                         View all →
                       </Link>

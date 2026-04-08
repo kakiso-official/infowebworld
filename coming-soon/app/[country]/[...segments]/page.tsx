@@ -20,13 +20,18 @@ const L1_SLUGS = new Set([
   'startups-innovation', 'local-business', 'professional-services',
 ])
 
-/** Pre-build L1 sector pages + /all pages at deploy time — instant 10ms from CDN */
+/** Helper: build the view-all slug for a sector */
+function viewAllSlug(sectorSlug: string) {
+  return `view-all-sub-categories-${sectorSlug}`
+}
+
+/** Pre-build L1 sector pages + view-all pages at deploy time — instant 10ms from CDN */
 export async function generateStaticParams() {
   const params: { country: string; segments: string[] }[] = []
   for (const country of VALID_COUNTRIES) {
     for (const slug of L1_SLUGS) {
-      params.push({ country, segments: [slug] })           // L1 sector page
-      params.push({ country, segments: [slug, 'all'] })    // /all browse page
+      params.push({ country, segments: [slug] })                          // L1 sector page
+      params.push({ country, segments: [viewAllSlug(slug)] })             // view-all browse page
     }
   }
   return params
@@ -411,20 +416,25 @@ export async function generateMetadata({
   const countryName = COUNTRY_LABELS[country as CountryCode] || 'United States'
   const monthYear = currentMonthYear()
 
+  // Check if this is a view-all-sub-categories page
+  const viewAllPrefix = 'view-all-sub-categories-'
+  const isViewAll = slug.startsWith(viewAllPrefix)
+  const viewAllSector = isViewAll ? slug.slice(viewAllPrefix.length) : null
+
   // Determine actual category slug: if first segment is L1 and there's a second, category is segments[1]
   let categorySlug = slug
   let sectorSlug = ''
-  if (L1_SLUGS.has(slug) && segments.length >= 2 && segments[1] !== 'all') {
+  if (!isViewAll && L1_SLUGS.has(slug) && segments.length >= 2) {
     sectorSlug = slug
     categorySlug = segments[1]
   }
 
-  /* ── /all page — sector categories browse ── */
-  if (segments.length === 2 && segments[1] === 'all' && L1_SLUGS.has(slug)) {
-    const meta = getSectorMeta(slug)
+  /* ── view-all page — sector categories browse ── */
+  if (isViewAll && viewAllSector && L1_SLUGS.has(viewAllSector)) {
+    const meta = getSectorMeta(viewAllSector)
     const title = `All ${meta.seoTitle} Categories in ${countryName} | InfoWebWorld`
     const description = `Browse all categories and subcategories within ${meta.seoTitle}. Find, compare, and connect with the best tools and services.`
-    const url = canonicalUrl(country, `/${slug}/all`)
+    const url = canonicalUrl(country, `/${viewAllSlug(viewAllSector)}`)
     return {
       title,
       description,
@@ -489,16 +499,27 @@ export default async function CategoryDetailRoute({
   const countryName = COUNTRY_LABELS[country as CountryCode] || 'United States'
   const monthYear = currentMonthYear()
 
+  // Check if this is a view-all page
+  const viewAllPrefix2 = 'view-all-sub-categories-'
+  const isViewAll2 = slug ? slug.startsWith(viewAllPrefix2) : false
+  const viewAllSector2 = isViewAll2 ? slug!.slice(viewAllPrefix2.length) : null
+
   // Determine actual category slug and sector prefix
   let categorySlug = slug || ''
   let sectorSlug = ''
-  if (slug && L1_SLUGS.has(slug) && segments.length >= 2 && segments[1] !== 'all') {
+  if (!isViewAll2 && slug && L1_SLUGS.has(slug) && segments.length >= 2) {
     sectorSlug = slug
     categorySlug = segments[1]
   }
 
+  /* ── Redirect old /all URLs to new view-all format ── */
+  if (segments.length === 2 && segments[1] === 'all' && slug && L1_SLUGS.has(slug)) {
+    const prefix = country === 'global' ? '' : `/${country}`
+    redirect(`${prefix}/${viewAllSlug(slug)}`)
+  }
+
   /* ── Redirect old URLs without L1 prefix to new prefixed URLs ── */
-  if (slug && !L1_SLUGS.has(segments[0])) {
+  if (!isViewAll2 && slug && !L1_SLUGS.has(segments[0])) {
     const sector = await getSectorSlugForCategory(segments[0])
     if (sector) {
       const prefix = country === 'global' ? '' : `/${country}`
@@ -506,8 +527,8 @@ export default async function CategoryDetailRoute({
     }
   }
 
-  /* ── /all page — render sector browse ── */
-  if (segments.length === 2 && segments[1] === 'all' && slug && L1_SLUGS.has(slug)) {
+  /* ── view-all page — render sector browse ── */
+  if (isViewAll2 && viewAllSector2 && L1_SLUGS.has(viewAllSector2)) {
     const allRows = await query(
       `SELECT c.*, p.name as parent_name, p.slug as parent_slug,
               CASE WHEN c.level = 1 THEN c.slug WHEN c.level = 2 THEN p.slug WHEN c.level = 3 THEN gp.slug END as sector_slug
@@ -516,9 +537,9 @@ export default async function CategoryDetailRoute({
     ).catch(() => [])
     const initialCategories = JSON.parse(JSON.stringify(allRows))
 
-    const sectorMeta = getSectorMeta(slug)
+    const sectorMeta = getSectorMeta(viewAllSector2)
     const sectorName = sectorMeta.seoTitle
-    const sectorRow = allRows.find((r: any) => String(r.slug) === slug)
+    const sectorRow = allRows.find((r: any) => String(r.slug) === viewAllSector2)
     const sectorId = sectorRow ? Number(sectorRow.id) : 0
     const l2InSector = allRows.filter((r: any) => Number(r.parent_id) === sectorId).length
 
@@ -534,7 +555,7 @@ export default async function CategoryDetailRoute({
         })}} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
           '@context': 'https://schema.org', '@type': 'CollectionPage',
-          name: `All ${sectorName} Categories`, url: canonicalUrl(country, `/${slug}/all`),
+          name: `All ${sectorName} Categories`, url: canonicalUrl(country, `/${viewAllSlug(viewAllSector2)}`),
         })}} />
       </>
     )
@@ -542,7 +563,7 @@ export default async function CategoryDetailRoute({
     return (
       <>
         {allJsonLd}
-        <Navbar sectorSlug={slug} />
+        <Navbar sectorSlug={viewAllSector2} />
         <div className="cd-server-skeleton">
           <nav className="cd-server-breadcrumb" aria-label="Breadcrumb">
             <a href="/" aria-label="Home"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a><span> &gt; </span><a href="/categories">All Categories</a><span> &gt; </span><span>{sectorName}</span>
@@ -551,7 +572,7 @@ export default async function CategoryDetailRoute({
           <p className="cd-server-desc">Browse all categories and subcategories within {sectorName}. {l2InSector} categories to explore.</p>
           <h2 className="cd-server-h2">Categories in {sectorName}</h2>
         </div>
-        <Suspense><SectorAllBrowse sectorSlug={slug} initialCategories={initialCategories} /></Suspense>
+        <Suspense><SectorAllBrowse sectorSlug={viewAllSector2} initialCategories={initialCategories} /></Suspense>
         <Footer />
       </>
     )

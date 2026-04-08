@@ -47,7 +47,7 @@ export function mapRow(r: Record<string, unknown>): Category {
     icon: String(r.icon ?? 'grid'),
     description: String(r.description ?? ''),
     coverImage: String(r.cover_image ?? ''),
-    color: String(r.color ?? '#E8553D'),
+    color: r.color ? String(r.color).trim() || '#E8553D' : '#E8553D',
     listingCount: Number(r.listing_count ?? 0),
     isLaunched: !!(r.is_launched ?? false),
     isFeatured: !!(r.is_featured ?? false),
