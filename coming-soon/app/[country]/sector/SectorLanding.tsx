@@ -189,13 +189,13 @@ export default function SectorLanding({ category, allCategories, seoContent }: {
             )}
             {buyersGuide.questions && (
               <div className="slp-guide-block">
-                <h3><I d={ic.help} size={16} color={color} sw={2} /> Questions to Ask</h3>
+                <h3><I d={ic.helpCircle} size={16} color={color} sw={2} /> Questions to Ask</h3>
                 <ol>{buyersGuide.questions.map((q, i) => <li key={i}>{q}</li>)}</ol>
               </div>
             )}
             {buyersGuide.pitfalls && (
               <div className="slp-guide-block slp-guide-block--warn">
-                <h3><I d={ic.alertTriangle} size={16} color="#E8553D" sw={2} /> Mistakes to Avoid</h3>
+                <h3><I d={ic.shield} size={16} color="#E8553D" sw={2} /> Mistakes to Avoid</h3>
                 <ul>{buyersGuide.pitfalls.map((p, i) => <li key={i}><strong>{p.mistake}</strong> &mdash; {p.consequence}</li>)}</ul>
               </div>
             )}
