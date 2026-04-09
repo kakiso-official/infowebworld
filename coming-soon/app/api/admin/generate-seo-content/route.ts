@@ -47,15 +47,17 @@ function cleanJson(raw: string): string {
 
 /* ── Build context string for a category ── */
 function buildContext(cat: Record<string, unknown>, parent: Record<string, unknown> | null, sector: Record<string, unknown> | null, subcats: Array<Record<string, unknown>>, listingTypes: Array<Record<string, unknown>>) {
+  const level = Number(cat.level)
   const parts: string[] = []
   parts.push(`Category: ${cat.name}`)
-  parts.push(`Level: ${cat.level === 2 ? 'L2 Category' : 'L3 Subcategory'}`)
+  parts.push(`Level: ${level === 1 ? 'L1 Sector (top-level industry vertical)' : level === 2 ? 'L2 Category' : 'L3 Subcategory'}`)
   if (parent) parts.push(`Parent Category: ${parent.name}`)
   if (sector) parts.push(`Industry Sector: ${sector.name}`)
   if (cat.description) parts.push(`Current Description: ${cat.description}`)
-  if (subcats.length) parts.push(`Subcategories: ${subcats.map(s => s.name).join(', ')}`)
+  if (subcats.length) parts.push(`${level === 1 ? 'L2 Categories' : 'Subcategories'}: ${subcats.map(s => s.name).join(', ')}`)
   if (listingTypes.length) parts.push(`Listing Types: ${listingTypes.slice(0, 20).map(lt => lt.name).join(', ')}`)
   parts.push(`Platform: InfoWebWorld.com — a global business discovery and listing platform`)
+  if (level === 1) parts.push(`NOTE: This is a TOP-LEVEL SECTOR page. Content should be broad, authoritative, and cover the entire vertical — not just one niche. Think "State of the Industry" editorial, not a product comparison.`)
   return parts.join('\n')
 }
 
@@ -65,12 +67,14 @@ async function generateForCategory(categoryId: number) {
   const cat = await queryOne('SELECT * FROM categories WHERE id = ?', [categoryId])
   if (!cat) throw new Error(`Category ${categoryId} not found`)
 
-  const parent = cat.parent_id ? await queryOne('SELECT id, name, slug, level FROM categories WHERE id = ?', [cat.parent_id]) : null
+  const parent = cat.parent_id ? await queryOne('SELECT id, name, slug, level, parent_id FROM categories WHERE id = ?', [cat.parent_id]) : null
 
   // Find L1 sector
   let sector = null
-  if (Number(cat.level) === 2 && parent) sector = parent
-  else if (Number(cat.level) === 3 && parent) {
+  const level = Number(cat.level)
+  if (level === 1) sector = cat // L1 IS the sector
+  else if (level === 2 && parent) sector = parent
+  else if (level === 3 && parent) {
     sector = parent.parent_id ? await queryOne('SELECT id, name, slug FROM categories WHERE id = ?', [parent.parent_id]) : parent
   }
 
@@ -492,7 +496,7 @@ const SECTION_COLS = ['ai_summary','rich_description','buyers_guide','use_cases'
 /* ── GET: Check generation status with per-category section breakdown ── */
 export async function GET() {
   try {
-    const total = await queryOne('SELECT COUNT(*) as cnt FROM categories WHERE level IN (2, 3)')
+    const total = await queryOne('SELECT COUNT(*) as cnt FROM categories WHERE level IN (1, 2, 3)')
     const generated = await queryOne('SELECT COUNT(*) as cnt FROM category_seo_content WHERE rich_description IS NOT NULL')
 
     // Per-category section status

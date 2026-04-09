@@ -38,7 +38,7 @@ export type SectorMeta = {
 }
 
 const META: Record<string, SectorMeta> = {
-  'artificial-intelligence-ml': {
+  'ai-ml': {
     color: '#8B5CF6', pastel: '#DDD6FE', pastelLight: '#F3F0FF',
     icon: 'code',
     heroImage: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1600&q=80&auto=format',
@@ -101,7 +101,7 @@ const META: Record<string, SectorMeta> = {
 }
 
 export function getSectorMeta(slug: string): SectorMeta {
-  return META[slug] || META['artificial-intelligence-ml']
+  return META[slug] || META['ai-ml']
 }
 
 /* ── Demo data per sector ── */
@@ -234,7 +234,7 @@ const PROFESSIONAL: Tuple[] = [
 
 /* ── Lookup ── */
 const DATA: Record<string, Tuple[]> = {
-  'artificial-intelligence-ml': AI_ML,
+  'ai-ml': AI_ML,
   'software-saas': SOFTWARE_SAAS,
   'it-services-agencies': IT_SERVICES,
   'startups-innovation': STARTUPS,

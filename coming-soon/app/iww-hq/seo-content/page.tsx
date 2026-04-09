@@ -17,7 +17,7 @@ const SECTIONS = [
 ] as const
 
 const SECTOR_COLORS: Record<string, string> = {
-  'artificial-intelligence-ml': '#8B5CF6',
+  'ai-ml': '#8B5CF6',
   'software-saas': '#3B82F6',
   'it-services-agencies': '#14B8A6',
   'startups-innovation': '#E8553D',
@@ -67,8 +67,8 @@ export default function SeoContentAdmin() {
   // Derive L1 sectors
   const sectors = useMemo(() => allCategories.filter(c => c.level === 1), [allCategories])
 
-  // Build L2/L3 for display
-  const l2l3 = useMemo(() => allCategories.filter(c => c.level >= 2), [allCategories])
+  // Build L1/L2/L3 for display (L1 sectors now eligible for Gemini content)
+  const l2l3 = useMemo(() => allCategories.filter(c => c.level >= 1), [allCategories])
 
   // Find sector for any category
   const getSectorSlug = useCallback((cat: Category): string => {

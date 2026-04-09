@@ -315,7 +315,7 @@ function FilterContent(p: Props) {
         return (
           <div className="cd-fs-section">
             <h4 className="cd-fs-heading">
-              Listing Types
+              Specializations
               <I d={ic.chevronDown} size={13} color="var(--h-muted)" sw={2} />
             </h4>
             {previewGroups.map(g => (
@@ -388,7 +388,7 @@ function FilterContent(p: Props) {
       {/* ── Full list modals ── */}
       {showLTModal && (
         <FilterModal
-          title="Listing Types"
+          title="Specializations"
           items={p.listingTypes.map(lt => {
             const ci = lt.name.indexOf(':')
             return { slug: lt.slug, name: ci > 0 ? lt.name.slice(ci + 1).trim() : lt.name, group: ci > 0 ? lt.name.slice(0, ci).trim() : undefined, count: p.getListingTypeCount(lt.slug) }
@@ -439,9 +439,14 @@ export default function FilterSidebar(p: Props) {
       {/* Right-side drawer */}
       <aside className={`cd-sidebar${p.isOpen ? ' cd-sidebar--open' : ''}`}>
         <div className="cd-sidebar-head">
-          <span className="cd-sidebar-head-title">Filters</span>
+          <div>
+            <span className="cd-sidebar-head-title">Filter Results</span>
+            <span style={{ display: 'block', fontSize: '.72rem', fontWeight: 500, color: 'rgba(0,0,0,.4)', marginTop: 4, fontFamily: 'var(--font-inter)' }}>
+              Narrow down by location, type & tags
+            </span>
+          </div>
           <button className="cd-sidebar-head-close" onClick={p.onClose} type="button" aria-label="Close filters">
-            <I d={ic.x} size={18} color="#000" sw={2} />
+            <I d={ic.x} size={16} color="currentColor" sw={2} />
           </button>
         </div>
         <div className="cd-sidebar-body">

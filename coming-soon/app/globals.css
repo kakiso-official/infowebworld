@@ -37,6 +37,13 @@
 @import "./styles/categories.css";
 @import "./styles/plans.css";
 
+/* ── AI Disclaimer ── */
+.ai-disclaimer { width: 100%; padding: clamp(1.5rem, 3vw, 2.5rem) 0; border-top: 1.5px solid rgba(0,0,0,.04) }
+.ai-disclaimer-inner { max-width: 760px; margin: 0 auto; padding: 0 clamp(1.25rem, 3vw, 2rem); display: flex; align-items: flex-start; gap: .75rem }
+.ai-disclaimer-icon { flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px; background: rgba(139,92,246,.06); display: flex; align-items: center; justify-content: center; margin-top: .1rem }
+.ai-disclaimer-text { font: 400 .78rem/1.7 var(--font-nunito), sans-serif; color: rgba(0,0,0,.4); margin: 0 }
+.ai-disclaimer-text strong { font-weight: 700; color: rgba(0,0,0,.55) }
+
 /* ── Local Soria font ── */
 @font-face {
   font-family: 'Soria';

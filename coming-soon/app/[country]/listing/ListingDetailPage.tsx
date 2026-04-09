@@ -345,7 +345,7 @@ export default function ListingDetailPage({ slug: slugProp, initialData }: { slu
                     <div key={i} className="ld-price-card">
                       <div className="ld-price-bar" style={{ background: `linear-gradient(90deg, ${color}40, ${color}10)` }} />
                       <p className="ld-price-name">{t.name}</p>
-                      <p className="ld-price-amount">{t.price ? `$${t.price}` : 'Custom'}</p>
+                      <p className="ld-price-amount">{t.price ? (String(t.price).startsWith('$') || String(t.price).toLowerCase() === 'custom' ? String(t.price) : `$${t.price}`) : 'Custom'}</p>
                       {t.period && <p className="ld-price-period">{t.period}</p>}
                     </div>
                   ))}

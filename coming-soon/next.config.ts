@@ -53,6 +53,17 @@ const nextConfig: NextConfig = {
         destination: '/:country/:path*',
         permanent: true,
       },
+      // Old AI slug → new short slug
+      {
+        source: '/artificial-intelligence-ml/:path*',
+        destination: '/ai-ml/:path*',
+        permanent: true,
+      },
+      {
+        source: '/:country(in|us|uk|ca|au|eu)/artificial-intelligence-ml/:path*',
+        destination: '/:country/ai-ml/:path*',
+        permanent: true,
+      },
     ]
   },
 };

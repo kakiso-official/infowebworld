@@ -3,12 +3,13 @@ import { Suspense } from 'react'
 import { query } from '@/lib/db'
 import { unstable_cache } from 'next/cache'
 
-export const revalidate = 60
+export const revalidate = 300
 
 import { COUNTRY_LABELS } from '../../config/countries'
 import type { CountryCode } from '../../config/countries'
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
+import AiDisclaimer from '../../components/AiDisclaimer'
 import CategoriesBrowse from './CategoriesBrowse'
 
 const DOMAIN = 'https://infowebworld.com'
@@ -38,7 +39,7 @@ export async function generateMetadata({ params }: { params: Promise<{ country: 
     },
     openGraph: { title, description, url, siteName: 'InfoWebWorld', type: 'website' },
     twitter: { card: 'summary_large_image', title, description },
-    robots: { index: false, follow: false },
+    robots: { index: true, follow: true },
   }
 }
 
@@ -49,14 +50,15 @@ export default async function CategoriesPage({ params }: { params: Promise<{ cou
   const getCachedCategories = unstable_cache(
     async () => {
       const r = await query(
-        `SELECT c.*, p.name as parent_name, p.slug as parent_slug,
+        `SELECT c.id, c.name, c.slug, c.level, c.parent_id, c.sort_order, c.color, c.description, c.listing_count,
+                p.name as parent_name, p.slug as parent_slug,
                 CASE WHEN c.level = 1 THEN c.slug WHEN c.level = 2 THEN p.slug WHEN c.level = 3 THEN gp.slug END as sector_slug
          FROM categories c LEFT JOIN categories p ON p.id = c.parent_id LEFT JOIN categories gp ON gp.id = p.parent_id
          WHERE c.is_launched = 1 AND c.is_active = 1 AND c.is_navigation = 1 ORDER BY c.sort_order`
       )
       return JSON.parse(JSON.stringify(r))
     },
-    ['all-categories-browse'],
+    ['all-categories-browse-v2'],
     { revalidate: 300 }
   )
   const rows = await getCachedCategories().catch(() => [])
@@ -110,6 +112,7 @@ export default async function CategoriesPage({ params }: { params: Promise<{ cou
       <Suspense fallback={null}>
         <CategoriesBrowse initialCategories={initialCategories} />
       </Suspense>
+      <AiDisclaimer />
       <Footer />
     </>
   )

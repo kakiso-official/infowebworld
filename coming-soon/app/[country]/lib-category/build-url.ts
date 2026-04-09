@@ -1,46 +1,41 @@
 import type { ParsedCategoryFilters } from './parse-segments'
 
 /**
- * Build a category URL from parsed filters.
- * Returns path starting from /{categorySlug}/...
- * The country routing prefix (/in, /us, etc.) is NOT included — caller adds it.
+ * Build a category URL with filters as query parameters.
+ * Base path: /{sectorSlug}/{categorySlug}
+ * Filters:   ?country=X&state=Y&city=Z&type=X&tags=X,Y
  *
- * @param filters - The filter state to encode
- * @param routeCountryGeoSlug - The geo slug of the route's country prefix (e.g. 'india' for /in).
- *   When the selected location country matches this, the country segment is omitted from the URL
- *   since it's already implied by the route prefix.
+ * Query-param URLs are naturally non-crawlable and feel like "filters applied".
  */
 export function buildCategoryUrl(
   filters: Partial<ParsedCategoryFilters> & { categorySlug: string },
-  routeCountryGeoSlug?: string,
+  _routeCountryGeoSlug?: string,
   sectorSlug?: string,
 ): string {
-  const parts = sectorSlug ? ['', sectorSlug, filters.categorySlug] : ['', filters.categorySlug]
+  // Base path — just sector + category slug, no filter segments
+  const basePath = sectorSlug
+    ? `/${sectorSlug}/${filters.categorySlug}`
+    : `/${filters.categorySlug}`
 
-  if (filters.locationCountry) {
-    // Skip the country segment if it matches the route country prefix
-    const sameAsRoute = routeCountryGeoSlug && filters.locationCountry.slug === routeCountryGeoSlug
+  // Build query params for active filters
+  const params = new URLSearchParams()
 
-    if (!sameAsRoute) {
-      parts.push(filters.locationCountry.slug)
-    }
-
-    if (filters.state) {
-      parts.push(filters.state.slug)
-
-      if (filters.city) {
-        parts.push(filters.city.slug)
-      }
-    }
+  if (filters.locationCountry?.slug) {
+    params.set('country', filters.locationCountry.slug)
   }
-
+  if (filters.state?.slug) {
+    params.set('state', filters.state.slug)
+  }
+  if (filters.city?.slug) {
+    params.set('city', filters.city.slug)
+  }
   if (filters.listingType) {
-    parts.push(filters.listingType)
+    params.set('type', filters.listingType)
+  }
+  if (filters.tags && filters.tags.length > 0) {
+    params.set('tags', filters.tags.join(','))
   }
 
-  for (const tag of filters.tags || []) {
-    parts.push(tag)
-  }
-
-  return parts.join('/')
+  const qs = params.toString()
+  return qs ? `${basePath}?${qs}` : basePath
 }

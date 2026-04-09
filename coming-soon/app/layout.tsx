@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Nunito, Bricolage_Grotesque, Inter } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { Suspense } from "react";
 import PageTracker from "./components/PageTracker";
@@ -97,6 +98,13 @@ export default function RootLayout({
         <meta name="theme-color" content="#FAF5F0" />
       </head>
       <body className={`${nunito.variable} ${bricolage.variable} ${inter.variable}`}>
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-C6LY2016NW" strategy="afterInteractive" />
+        <Script id="gtag-init" strategy="afterInteractive">{`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-C6LY2016NW');
+        `}</Script>
         <Suspense><NavigationProgress /></Suspense>
         <PageTracker />{children}
         <ScrollToTop />

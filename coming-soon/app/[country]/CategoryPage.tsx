@@ -1,17 +1,16 @@
 'use client'
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from '../components/CountryLink'
 import { useCountry } from '../config/country-context'
-import { fetchCategoryBySlug, fetchLaunchedCategories, mapRow as mapCategoryRow } from '../iww-hq/data/category-storage'
+import { mapRow as mapCategoryRow } from '../iww-hq/data/category-storage'
 import type { Category } from '../iww-hq/data/category-storage'
 import { fetchCategoryListings, mapRow as mapSubmissionRow } from '../iww-hq/data/submissions-storage'
 import type { RealSubmission } from '../iww-hq/data/submissions-storage'
-import { fetchAllTagGroups } from '../iww-hq/data/tag-storage'
 import type { TagGroup } from '../iww-hq/data/tag-storage'
-import { parseSegments, type ParsedCategoryFilters } from './lib-category/parse-segments'
+import type { ParsedCategoryFilters } from './lib-category/parse-segments'
 import { buildCategoryUrl } from './lib-category/build-url'
-import { lookupLocationCountry, preloadCSC, type GeoCountry, type GeoState, type GeoCity } from '../lib/geo-slugs'
+import { lookupLocationCountry, lookupState, lookupCity, preloadCSC, type GeoCountry, type GeoState, type GeoCity } from '../lib/geo-slugs'
 import { COUNTRY_LABELS, ROUTE_TO_GEO_SLUG, ROUTE_TO_ISO } from '../config/countries'
 import type { CountryCode } from '../config/countries'
 
@@ -23,10 +22,10 @@ import { RealListingCard } from './components-category/ListingCard'
 import Pagination from './components-category/Pagination'
 // CompactCta, PopularSearches, TrustSection replaced by cd-bottom-cta
 
-/* Heavy / below-fold components — loaded on demand */
-const SectorLanding = dynamic(() => import('./sector/SectorLanding'))
-const FilterSidebar = dynamic(() => import('./components-category/FilterSidebar'))
-const SeoSections = dynamic(() => import('./components-category/SeoSections'))
+/* Heavy / below-fold components — loaded on demand with loading placeholders */
+const SectorLanding = dynamic(() => import('./sector/SectorLanding'), { loading: () => <div style={{ minHeight: '100vh' }} />, ssr: true })
+const FilterSidebar = dynamic(() => import('./components-category/FilterSidebar'), { ssr: false })
+const SeoSections = dynamic(() => import('./components-category/SeoSections'), { loading: () => <div style={{ minHeight: 200 }} />, ssr: true })
 // TrustSection removed — replaced by bottom CTA
 // FaqAccordion removed — Gemini extended_faq replaces it
 // PopularSearches removed — replaced by bottom CTA
@@ -47,6 +46,7 @@ type InitialData = {
 
 export default function CategoryPage({ segments, sectorSlug, initialData }: { segments?: string[]; sectorSlug?: string; initialData?: InitialData }) {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const siteCountry = useCountry()
   const slug = segments?.[0] || null
 
@@ -100,37 +100,62 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
   const [locationState, setLocationState] = useState<GeoState | null>(null)
   const [locationCity, setLocationCity] = useState<GeoCity | null>(null)
 
-  /* ── Pre-load geo data for URL parsing + filters ── */
+  /* ── Pre-load geo data ONLY when needed (sidebar open or URL has geo params) ── */
   const [geoReady, setGeoReady] = useState(false)
-  useEffect(() => { preloadCSC().then(() => setGeoReady(true)) }, [])
-
-  /* ── Parse URL segments into filter state ── */
-  const [segmentsParsed, setSegmentsParsed] = useState(false)
+  const hasGeoParams = searchParams.has('country') || searchParams.has('state') || searchParams.has('city')
   useEffect(() => {
-    if (!segments?.length || !category || !geoReady) return
-    const ltSlugs = new Set((category.listingTypes || []).map(lt => lt.slug))
-    const tagSlugs = new Set(tagGroups.flatMap(g => g.tags).map(t => t.slug))
-    const routeIso = ROUTE_TO_ISO[siteCountry]
-    const routeGeo = ROUTE_TO_GEO_SLUG[siteCountry]
-    const parsed = parseSegments(segments, ltSlugs, tagSlugs, routeIso, routeGeo)
-    setLocationCountry(parsed.locationCountry)
-    setLocationState(parsed.state)
-    setLocationCity(parsed.city)
-    if (parsed.listingType) setSelectedListingType(parsed.listingType)
-    if (parsed.tags.length) setSelectedTags(new Set(parsed.tags))
-    setSegmentsParsed(true)
-  }, [segments, category, tagGroups, siteCountry, geoReady])
+    if (geoReady) return
+    // Load immediately if URL has geo filters, otherwise defer until sidebar opens
+    if (hasGeoParams || sidebarOpen) {
+      preloadCSC().then(() => setGeoReady(true))
+    }
+  }, [hasGeoParams, sidebarOpen, geoReady])
+
+  /* ── Parse filters from URL search params (?country=X&state=Y&city=Z&type=X&tags=X,Y) ── */
+  const [filtersParsed, setFiltersParsed] = useState(false)
+  useEffect(() => {
+    if (!category) return
+    // Non-geo params can be parsed immediately without CSC
+    const qType = searchParams.get('type')
+    const qTags = searchParams.get('tags')
+    if (qType) setSelectedListingType(qType)
+    if (qTags) setSelectedTags(new Set(qTags.split(',').filter(Boolean)))
+
+    // Geo params need CSC loaded first
+    if (!geoReady) { if (!hasGeoParams) setFiltersParsed(true); return }
+    const qCountry = searchParams.get('country')
+    const qState = searchParams.get('state')
+    const qCity = searchParams.get('city')
+
+    if (qCountry) {
+      const geo = lookupLocationCountry(qCountry)
+      if (geo) {
+        setLocationCountry(geo)
+        if (qState) {
+          const st = lookupState(geo.isoCode, qState)
+          if (st) {
+            setLocationState(st)
+            if (qCity) {
+              const ct = lookupCity(geo.isoCode, st.stateCode, qCity)
+              if (ct) setLocationCity(ct)
+            }
+          }
+        }
+      }
+    }
+    setFiltersParsed(true)
+  }, [geoReady, category, searchParams, hasGeoParams])
 
   /* ── Auto-select route country in location dropdown (not for global) ── */
   useEffect(() => {
-    if (!geoReady || !segmentsParsed) return
-    if (locationCountry) return          // URL already set a location
-    if (siteCountry === 'global') return // global = no default country
+    if (!geoReady || !filtersParsed) return
+    if (locationCountry) return
+    if (siteCountry === 'global') return
     const geoSlug = ROUTE_TO_GEO_SLUG[siteCountry]
     if (!geoSlug) return
     const geo = lookupLocationCountry(geoSlug)
     if (geo) setLocationCountry(geo)
-  }, [geoReady, segmentsParsed, siteCountry, locationCountry])
+  }, [geoReady, filtersParsed, siteCountry, locationCountry])
 
   /* ── Push URL on filter change ── */
   const pushFilters = useCallback((overrides: Partial<ParsedCategoryFilters>) => {
@@ -154,30 +179,11 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
     router.push(`${prefix}${url}`, { scroll: false })
   }, [slug, locationCountry, locationState, locationCity, selectedListingType, selectedTags, siteCountry, sectorSlug, router])
 
-  /* ── Data fetching — skip if server pre-loaded data ── */
+  /* ── Server always provides data — no client-side fetch fallback needed ── */
   useEffect(() => {
     if (!slug) { setNotFound(true); return }
-    // If server provided initial data, skip all client fetches
-    if (initialData && category) return
-
-    const catP = fetchCategoryBySlug(slug)
-    const relP = fetchLaunchedCategories()
-    const tagP = fetchAllTagGroups()
-
-    catP.then(cat => {
-      if (!cat) { setNotFound(true); return }
-      setCategory(cat)
-      fetchCategoryListings(cat.id, 1).then(res => { setListings(res.data); setListingTotal(res.total) })
-    })
-    relP.then(all => {
-      setAllCats(all)
-      catP.then(cat => {
-        if (cat) setRelated(all.filter(c => c.id !== cat.id && ((cat.parentId && c.parentId === cat.parentId) || (!cat.parentId && c.level === cat.level))).slice(0, 9))
-      })
-    })
-    tagP.then(setTagGroups)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slug])
+    if (!initialData || !category) setNotFound(true)
+  }, [slug, initialData, category])
 
   /* Re-fetch listings on page change */
   useEffect(() => {
@@ -308,13 +314,13 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
 
   /* ── L1 Sector → dedicated landing page ── */
   if (category.level === 1) {
-    return <SectorLanding category={category} allCategories={allCats} initialListings={listings} />
+    return <SectorLanding category={category} allCategories={allCats} seoContent={initialData?.seoContent} />
   }
 
   const c = category
   // Derive color: use DB value, or infer from sector slug
   const sectorColorMap: Record<string, string> = {
-    'artificial-intelligence-ml': '#8B5CF6',
+    'ai-ml': '#8B5CF6',
     'software-saas': '#3B82F6',
     'it-services-agencies': '#14B8A6',
     'startups-innovation': '#E8553D',

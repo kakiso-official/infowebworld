@@ -7,7 +7,7 @@ INSERT INTO listing_types (category_id, name, slug, sort_order) VALUES
 ((SELECT id FROM categories WHERE slug = 'ai-360-feedback-synthesizers' AND level = 3 LIMIT 1), 'Seller Tools AI: Seller Feedback AI', 'seller-tools-ai-seller-feedback-ai', 10);
 
 -- AI 3D Asset Generators for Games (9 listing types)
-INSERT INTO listing_types (category_id, name, slug, sort_order) VALUES
+INSERT INTO listing_types (category_id, name, slug, sort_order) VALUES  
 ((SELECT id FROM categories WHERE slug = 'ai-3d-asset-generators-for-games' AND level = 3 LIMIT 1), '3D Generation: Game Asset 3D', '3d-generation-game-asset-3d', 10),
 ((SELECT id FROM categories WHERE slug = 'ai-3d-asset-generators-for-games' AND level = 3 LIMIT 1), 'Game Asset AI: Game Environment AI', 'game-asset-ai-game-environment-ai', 20),
 ((SELECT id FROM categories WHERE slug = 'ai-3d-asset-generators-for-games' AND level = 3 LIMIT 1), 'Game Asset AI: Game Item Designer', 'game-asset-ai-game-item-designer', 30),
