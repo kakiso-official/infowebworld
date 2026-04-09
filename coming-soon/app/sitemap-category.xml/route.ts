@@ -3,7 +3,8 @@ import { query } from '@/lib/db'
 
 const BASE = 'https://infowebworld.com'
 
-export async function GET() {
+/** Shared category sitemap builder — used by both global and per-country routes */
+export async function buildCategorySitemap(countryPrefix: string = '') {
   let entries = ''
 
   try {
@@ -13,15 +14,17 @@ export async function GET() {
       FROM categories c
       LEFT JOIN categories p ON p.id = c.parent_id
       LEFT JOIN categories gp ON gp.id = p.parent_id
-      WHERE c.is_launched = 1 AND c.is_active = 1 AND c.is_navigation = 1
+      WHERE c.is_launched = 1 AND c.is_navigation = 1
       ORDER BY c.level, c.updated_at DESC`
     )
+
+    const prefix = countryPrefix ? `${BASE}/${countryPrefix}` : BASE
 
     entries = categories
       .map((cat) => {
         const lastmod = new Date(cat.updated_at).toISOString().split('T')[0]
         const priority = cat.level === 1 ? '0.8' : cat.level === 2 ? '0.7' : '0.6'
-        const loc = cat.level === 1 ? `${BASE}/${cat.slug}` : `${BASE}/${cat.sector_slug}/${cat.slug}`
+        const loc = cat.level === 1 ? `${prefix}/${cat.slug}` : `${prefix}/${cat.sector_slug}/${cat.slug}`
         return `  <url>
     <loc>${loc}</loc>
     <lastmod>${lastmod}</lastmod>
@@ -34,10 +37,15 @@ export async function GET() {
     // DB unavailable — return empty urlset
   }
 
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+  return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${entries}
 </urlset>`
+}
+
+/** Global/root category sitemap (no country prefix) */
+export async function GET() {
+  const xml = await buildCategorySitemap('')
 
   return new NextResponse(xml, {
     headers: {
