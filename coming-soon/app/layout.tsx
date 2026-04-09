@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://infowebworld.com"),
   title: "InfoWebWorld.com - Global Growth Platform - AI, SaaS, Startups, Business - Get Leads, Reviews, GEO & SEO Backlinks",
   description:
-    "Best Global Growth Platform - Discovery & Leads, Reviews, SEO backlinks, GEO, AEO - Business and Tools listing for AI & ML, SaaS & Software, Startups & Innovations, IT Services & Agencies, Local Businesses, Professional Services - InfoWebWorld.com",
+    "Global Growth Platform for business discovery, leads, verified reviews, and SEO backlinks. Explore AI, SaaS, startups, IT services, and more on InfoWebWorld.",
   keywords: [
     "business directory",
     "business listing",
@@ -80,9 +80,6 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  alternates: {
-    canonical: "https://infowebworld.com",
-  },
 };
 
 export default function RootLayout({
@@ -96,6 +93,9 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <meta name="theme-color" content="#FAF5F0" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
       </head>
       <body className={`${nunito.variable} ${bricolage.variable} ${inter.variable}`}>
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-C6LY2016NW" strategy="afterInteractive" />

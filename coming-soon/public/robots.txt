@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /iww-hq/
-Disallow: /iww-hq
+Disallow: /api/
+Disallow: /payment-test/
 
 Sitemap: https://infowebworld.com/sitemap.xml

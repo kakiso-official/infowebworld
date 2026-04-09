@@ -110,7 +110,7 @@ export default function CategoriesBrowse({ initialCategories }: { initialCategor
         {/* ── Hero ── */}
         <div className="cb-hero">
           <div className="cb-hero-top">
-            <h1 className="cb-title">Explore <em>Categories</em></h1>
+            <h2 className="cb-title">Explore <em>Categories</em></h2>
             <p className="cb-desc">
               <strong>{(stats.l2 + stats.l3).toLocaleString()} categories</strong> across <strong>{stats.sectors} industry sectors</strong>. Find, compare, and connect with the best tools, services, and solutions.
             </p>

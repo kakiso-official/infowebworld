@@ -34,22 +34,22 @@ InfoWebWorld is the Global Growth Platform to explore / search best trusted busi
           <div className="ft-columns">
             <div className="ft-col">
               <h4 className="ft-col-title">Company</h4>
-              <a href="#" className="ft-col-link">About</a>
+              <span className="ft-col-link">About</span>
                 <Link href="/contact" className="ft-col-link">Contact</Link>
-              <Link href="#" className="ft-col-link">Blog</Link>
+              <span className="ft-col-link">Blog</span>
             </div>
             <div className="ft-col">
               <h4 className="ft-col-title">iWW for Business</h4>
-                             <a href="#" className="ft-col-link">for Business</a>
+                             <span className="ft-col-link">for Business</span>
 
               <Link href="/business" className="ft-col-link">Get Listed</Link>
-               <a href="#pricing" className="ft-col-link">Pricing</a>
+               <span className="ft-col-link">Pricing</span>
             </div>
             <div className="ft-col">
               <h4 className="ft-col-title">Legal</h4>
-              <a href="#" className="ft-col-link">Privacy Policy</a>
-              <a href="#" className="ft-col-link">Terms of Service</a>
-              <a href="#" className="ft-col-link">Cookie Policy</a>
+              <span className="ft-col-link">Privacy Policy</span>
+              <span className="ft-col-link">Terms of Service</span>
+              <span className="ft-col-link">Cookie Policy</span>
             </div>
           </div>
         </div>

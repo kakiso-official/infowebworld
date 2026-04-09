@@ -194,10 +194,10 @@ export default function PlansPage() {
          ════════════════════════════════════════════ */}
       <section className="pln-title">
         <div className="container">
-          <div className="pln-title-tag">Plans & Pricing for Buisness Listings</div>
+          <div className="pln-title-tag">Plans & Pricing for Business Listings</div>
           <h1 className="pln-title-heading">
             One Platform<em>.</em> Two Plans<em>.</em><br />
-            List Your Buisness for <em>Global Growth</em>
+            List Your Business for <em>Global Growth</em>
           </h1>
           <p className="pln-title-desc">
             No hidden fees. No feature gates. Pick your plan and get the full power of InfoWebWorld.
@@ -217,10 +217,10 @@ export default function PlansPage() {
          ════════════════════════════════════════════ */}
       <section className="pln-hero">
         <div className="container">
-          <h1 className="pln-hero-heading">
+          <h2 className="pln-hero-heading">
             Simple <em>&amp;</em> transparent<br />
             pricing for every business
-          </h1>
+          </h2>
           <p className="pln-hero-desc">
             Whether you are a startup or an established brand, our plans give you
             full access to every feature. Pick the billing that works for you.

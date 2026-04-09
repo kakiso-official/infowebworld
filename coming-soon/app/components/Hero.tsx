@@ -7,7 +7,7 @@ import { addToWaitlist } from '../iww-hq/data/waitlist-storage'
 const words = ['Search', 'Compare', 'Discover', 'Connect', 'Review', ]
 
 export default function Hero() {
-  const [displayed, setDisplayed] = useState('')
+  const [displayed, setDisplayed] = useState('Search')
   const [jsReady, setJsReady] = useState(false)
   const [heroEmail, setHeroEmail] = useState('')
   const [heroMsg, setHeroMsg] = useState('')
@@ -127,8 +127,8 @@ export default function Hero() {
       </div>
       <div className="cs-marquee-mobile" aria-hidden="true">
         <div className="cs-marquee-track">
-          <span>Launching Soon - Global Growth Platfirm - InfoWebWorld.com - Discover & Connect - Leads - Reviews - Compare - News - Thousands of Categories - 100+ Countries Traffic -&nsbp;</span>
-          <span>Launching Soon - Global Growth Platfirm - InfoWebWorld.com - Discover & Connect - Leads - Reviews - Compare - News - Thousands of Categories - 100+ Countries Traffic -&nsbp;</span>
+          <span>Launching Soon - Global Growth Platform - InfoWebWorld.com - Discover & Connect - Leads - Reviews - Compare - News - Thousands of Categories - 100+ Countries Traffic -&nbsp;</span>
+          <span>Launching Soon - Global Growth Platform - InfoWebWorld.com - Discover & Connect - Leads - Reviews - Compare - News - Thousands of Categories - 100+ Countries Traffic -&nbsp;</span>
         </div>
       </div>
     </section>

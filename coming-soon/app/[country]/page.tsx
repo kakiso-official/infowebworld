@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Navbar from '../components/Navbar'
 import Hero from '../components/Hero'
 import Countdown from '../components/Countdown'
@@ -19,11 +20,40 @@ const orgJsonLd = {
   url: 'https://infowebworld.com',
   logo: 'https://infowebworld.com/logo/infowebworldlogo-logoforlightbackgrounds.png',
   description: 'Global business discovery platform with verified reviews, dofollow backlinks, and lead generation across 80+ industries.',
+  foundingDate: '2026',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Brain Stream Australia Pty Ltd',
+    addressLocality: 'Parramatta',
+    addressRegion: 'NSW',
+    postalCode: '2150',
+    addressCountry: 'AU',
+  },
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer support',
+    email: 'iww@brainstream.com.au',
+    url: 'https://infowebworld.com/contact',
+  },
   sameAs: [
     'https://x.com/infowebworld_x',
     'https://www.linkedin.com/company/infowebworld/',
     'https://www.instagram.com/infowebworld',
   ],
+}
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: 'https://infowebworld.com',
+    languages: {
+      'en-IN': 'https://infowebworld.com/in',
+      'en-US': 'https://infowebworld.com/us',
+      'en-GB': 'https://infowebworld.com/uk',
+      'en-CA': 'https://infowebworld.com/ca',
+      'en-AU': 'https://infowebworld.com/au',
+      'x-default': 'https://infowebworld.com',
+    },
+  },
 }
 
 const faqJsonLd = {
