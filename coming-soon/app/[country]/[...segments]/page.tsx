@@ -354,7 +354,7 @@ function buildCategoryMeta(cat: CatSeo, country: string, countryName: string, mo
 }
 
 /* ── Build JSON-LD schemas for L2/L3 categories ── */
-function buildJsonLd(cat: CatSeo, country: string, countryName: string, monthYear: string, sectorSlug: string, geminiFaq?: { question: string; answer: string }[] | null) {
+function buildJsonLd(cat: CatSeo, country: string, countryName: string, monthYear: string, sectorSlug: string, geminiFaq?: { q: string; a: string }[] | null) {
   const baseName = cat.seoTitle || cat.name
   const baseDesc = cat.seoDescription || cat.description
   const url = canonicalUrl(country, `/${sectorSlug}/${cat.slug}`)
@@ -401,8 +401,8 @@ function buildJsonLd(cat: CatSeo, country: string, countryName: string, monthYea
   const faqEntities = geminiFaq && geminiFaq.length > 0
     ? geminiFaq.map(f => ({
         '@type': 'Question' as const,
-        name: f.question,
-        acceptedAnswer: { '@type': 'Answer' as const, text: f.answer },
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer' as const, text: f.a },
       }))
     : [
       { '@type': 'Question' as const, name: `What is ${baseName}?`, acceptedAnswer: { '@type': 'Answer' as const, text: desc } },
@@ -641,9 +641,9 @@ export default async function CategoryDetailRoute({
     const sUrl = canonicalUrl(country, `/${slug}`)
     // Parse Gemini FAQ for richer JSON-LD
     const jpSec = (v: unknown) => { if (!v) return null; if (typeof v === 'string') { try { return JSON.parse(v) } catch { return null } } return v }
-    const sectorGeminiFaq = jpSec(pageData?.seoContent?.extended_faq) as { question: string; answer: string }[] | null
+    const sectorGeminiFaq = jpSec(pageData?.seoContent?.extended_faq) as { q: string; a: string }[] | null
     const sectorFaqEntities = sectorGeminiFaq && sectorGeminiFaq.length > 0
-      ? sectorGeminiFaq.map(f => ({ '@type': 'Question', name: f.question, acceptedAnswer: { '@type': 'Answer', text: f.answer } }))
+      ? sectorGeminiFaq.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } }))
       : [
           { '@type': 'Question', name: `What is ${sName}?`, acceptedAnswer: { '@type': 'Answer', text: sMeta.description } },
           { '@type': 'Question', name: `How to find the best ${sName} companies?`, acceptedAnswer: { '@type': 'Answer', text: `Browse verified ${sName} companies on InfoWebWorld. Compare services, read reviews and connect directly.` } },
@@ -692,7 +692,7 @@ export default async function CategoryDetailRoute({
     }
     // Parse Gemini extended_faq for JSON-LD rich snippets
     const jpFaq = (v: unknown) => { if (!v) return null; if (typeof v === 'string') { try { return JSON.parse(v) } catch { return null } } return v }
-    const geminiFaq = jpFaq(pageData?.seoContent?.extended_faq) as { question: string; answer: string }[] | null
+    const geminiFaq = jpFaq(pageData?.seoContent?.extended_faq) as { q: string; a: string }[] | null
     const schemas = buildJsonLd(catSeo, country, countryName, monthYear, resolvedSector, geminiFaq)
     jsonLdScripts = (
       <>

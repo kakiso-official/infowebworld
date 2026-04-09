@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://infowebworld.com"),
   title: "InfoWebWorld.com - Global Growth Platform - AI, SaaS, Startups, Business - Get Leads, Reviews, GEO & SEO Backlinks",
   description:
-    "Best Global Growth Platform - Discovery & Leads, Reviews, SEO backlinks, GEO, AEO - Business and Tools listing for AI & ML, SaaS & Software, Startups & Innovations, IT Servcies & Agencies, Local Businesses, Professional Services - InfoWebWorld.com",
+    "Best Global Growth Platform - Discovery & Leads, Reviews, SEO backlinks, GEO, AEO - Business and Tools listing for AI & ML, SaaS & Software, Startups & Innovations, IT Services & Agencies, Local Businesses, Professional Services - InfoWebWorld.com",
   keywords: [
     "business directory",
     "business listing",

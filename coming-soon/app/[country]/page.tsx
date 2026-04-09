@@ -10,11 +10,6 @@ const jsonLd = {
   name: 'InfoWebWorld',
   url: 'https://infowebworld.com',
   description: 'The global business discovery platform. Search, compare, and review businesses across 80+ industries in 12 countries.',
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: 'https://infowebworld.com/search?q={search_term_string}',
-    'query-input': 'required name=search_term_string',
-  },
 }
 
 const orgJsonLd = {
@@ -25,9 +20,9 @@ const orgJsonLd = {
   logo: 'https://infowebworld.com/logo/infowebworldlogo-logoforlightbackgrounds.png',
   description: 'Global business discovery platform with verified reviews, dofollow backlinks, and lead generation across 80+ industries.',
   sameAs: [
-    'https://twitter.com/infowebworld',
-    'https://linkedin.com/company/infowebworld',
-    'https://instagram.com/infowebworld',
+    'https://x.com/infowebworld_x',
+    'https://www.linkedin.com/company/infowebworld/',
+    'https://www.instagram.com/infowebworld',
   ],
 }
 

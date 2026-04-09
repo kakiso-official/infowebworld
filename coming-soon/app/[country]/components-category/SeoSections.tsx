@@ -73,16 +73,7 @@ export default function SeoSections({ seoContent: sc, categoryName, categorySlug
     return match ? { slug: match.slug, sector: match.sectorSlug || match.sector_slug || sectorSlug } : null
   }
 
-  /* ── Build FAQ JSON-LD from extended FAQ (richer than the hardcoded 5) ── */
-  const faqJsonLd = faq && faq.length > 0 ? {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: faq.map((f: any) => ({
-      '@type': 'Question',
-      name: f.q,
-      acceptedAnswer: { '@type': 'Answer', text: f.a },
-    })),
-  } : null
+  /* ── FAQ JSON-LD is rendered server-side in page.tsx — no duplicate here ── */
 
   /* ── Build ItemList JSON-LD for use cases ── */
   const useCaseJsonLd = useCases && useCases.length > 0 ? {
@@ -103,13 +94,7 @@ export default function SeoSections({ seoContent: sc, categoryName, categorySlug
       <meta itemProp="name" content={`${categoryName} — Buyer's Guide, Use Cases & Comparisons`} />
       <meta itemProp="author" content="InfoWebWorld Editorial" />
 
-      {/* ── JSON-LD: Extended FAQ (overrides basic 5-question FAQ from server) ── */}
-      {faqJsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-        />
-      )}
+      {/* ── FAQ JSON-LD rendered server-side in page.tsx ── */}
 
       {/* ── JSON-LD: Use Cases as ItemList ── */}
       {useCaseJsonLd && (
