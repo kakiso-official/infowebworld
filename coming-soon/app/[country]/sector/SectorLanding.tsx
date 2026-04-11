@@ -37,12 +37,16 @@ export default function SectorLanding({ category, allCategories, seoContent }: {
 
   const sc = seoContent || null
   const richDesc = sc?.rich_description ? String(sc.rich_description) : ''
-  const buyersGuide = jp(sc?.buyers_guide) as { features?: { title: string; description: string }[]; questions?: string[]; pitfalls?: { mistake: string; consequence: string }[]; pricing_info?: string } | null
+  const buyersGuide = jp(sc?.buyers_guide) as { features?: { title: string; description: string }[]; questions?: string[]; pitfalls?: (string | { mistake: string; consequence: string })[]; pricing_info?: string } | null
   const useCases = jp(sc?.use_cases) as { title: string; description: string; icon?: string }[] | null
   const comparisons = jp(sc?.comparisons) as { title: string; summary: string; differences?: string[] }[] | null
   const ltKeywords = jp(sc?.long_tail_keywords) as Record<string, string[]> | null
-  const complementary = jp(sc?.complementary_categories) as { name: string; slug?: string; description: string }[] | null
-  const extFaq = jp(sc?.extended_faq) as { question: string; answer: string }[] | null
+  const rawComp = jp(sc?.complementary_categories)
+  const complementary = Array.isArray(rawComp) ? rawComp.map((item: any) => {
+    if (typeof item === 'string') return { name: item, slug: undefined, description: '' }
+    return item as { name: string; slug?: string; description: string }
+  }) : null
+  const extFaq = jp(sc?.extended_faq) as { q?: string; a?: string; question?: string; answer?: string }[] | null
 
   const sectorName = category.name
   const shortName = sectorName.split('&')[0].trim()
@@ -54,11 +58,11 @@ export default function SectorLanding({ category, allCategories, seoContent }: {
   const totalListings = l2WithCounts.reduce((s, c) => s + (c.listingCount || 0), 0)
 
   const faqItems = extFaq && extFaq.length > 0 ? extFaq : [
-    { question: `What is ${sectorName}?`, answer: meta.description },
-    { question: `How to find the best ${sectorName} companies?`, answer: `Browse verified ${sectorName} companies on InfoWebWorld. Compare services, read reviews and connect directly.` },
-    { question: `Is it free to list my ${shortName} business?`, answer: 'Yes, InfoWebWorld offers free business listing with premium plans for enhanced visibility, verified badges and SEO backlinks.' },
-    { question: `How are ${sectorName} companies ranked?`, answer: 'Rankings are based on verified reviews, user satisfaction scores, market presence and listing completeness.' },
-    { question: `Can I compare ${shortName} solutions?`, answer: `Yes! Compare ${shortName} solutions side by side across features, pricing, reviews and satisfaction scores.` },
+    { q: `What is ${sectorName}?`, a: meta.description },
+    { q: `How to find the best ${sectorName} companies?`, a: `Browse verified ${sectorName} companies on InfoWebWorld. Compare services, read reviews and connect directly.` },
+    { q: `Is it free to list my ${shortName} business?`, a: 'Yes, InfoWebWorld offers free business listing with premium plans for enhanced visibility, verified badges and SEO backlinks.' },
+    { q: `How are ${sectorName} companies ranked?`, a: 'Rankings are based on verified reviews, user satisfaction scores, market presence and listing completeness.' },
+    { q: `Can I compare ${shortName} solutions?`, a: `Yes! Compare ${shortName} solutions side by side across features, pricing, reviews and satisfaction scores.` },
   ]
 
   const toggleFaq = (i: number) => setExpandedFaq(p => { const n = new Set(p); n.has(i) ? n.delete(i) : n.add(i); return n })
@@ -196,7 +200,13 @@ export default function SectorLanding({ category, allCategories, seoContent }: {
             {buyersGuide.pitfalls && (
               <div className="slp-guide-block slp-guide-block--warn">
                 <h3><I d={ic.shield} size={16} color="#E8553D" sw={2} /> Mistakes to Avoid</h3>
-                <ul>{buyersGuide.pitfalls.map((p, i) => <li key={i}><strong>{p.mistake}</strong> &mdash; {p.consequence}</li>)}</ul>
+                <ul>{buyersGuide.pitfalls.map((p: any, i: number) => {
+                  if (typeof p === 'string') return <li key={i}>{p}</li>
+                  const label = p.mistake || p.title || p.name || ''
+                  const detail = p.consequence || p.description || ''
+                  if (label && detail) return <li key={i}><strong>{label}</strong> &mdash; {detail}</li>
+                  return <li key={i}>{label || detail || JSON.stringify(p)}</li>
+                })}</ul>
               </div>
             )}
           </div>
@@ -288,8 +298,8 @@ export default function SectorLanding({ category, allCategories, seoContent }: {
             <div className="slp-explore-grid">
               {complementary.map((cc, i) => (
                 <div key={i} className="slp-explore-card">
-                  <h3>{cc.slug ? <Link href={`/${cc.slug}`}>{cc.name}</Link> : cc.name}</h3>
-                  <p>{cc.description}</p>
+                  <h3>{cc.name}</h3>
+                  {cc.description && <p>{cc.description}</p>}
                 </div>
               ))}
             </div>
@@ -308,10 +318,10 @@ export default function SectorLanding({ category, allCategories, seoContent }: {
               return (
                 <div key={i} className={`slp-faq${open ? ' slp-faq--open' : ''}`}>
                   <button className="slp-faq-q" onClick={() => toggleFaq(i)} aria-expanded={open}>
-                    <span>{f.question}</span>
+                    <span>{f.q || f.question}</span>
                     <span className="slp-faq-toggle" style={open ? { background: `${color}12`, color } : undefined}>{open ? '\u2212' : '+'}</span>
                   </button>
-                  <div className="slp-faq-a" style={{ maxHeight: open ? '500px' : '0' }}><p>{f.answer}</p></div>
+                  <div className="slp-faq-a" style={{ maxHeight: open ? '500px' : '0' }}><p>{f.a || f.answer}</p></div>
                 </div>
               )
             })}

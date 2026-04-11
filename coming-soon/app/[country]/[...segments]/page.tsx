@@ -466,7 +466,7 @@ export async function generateMetadata({
   /* ── L1 Sectors — hardcoded rich meta (only when L1 is the sole segment) ── */
   if (L1_SLUGS.has(slug) && segments.length === 1) {
     const meta = getSectorMeta(slug)
-    const title = `Best ${meta.seoTitle} in ${countryName} ${monthYear} | InfoWebWorld`
+    const title = `${meta.seoTitle} in ${countryName} ${monthYear} | InfoWebWorld`
     const description = `${meta.seoDescription} Compare the best in ${countryName}, ${monthYear}. InfoWebWorld.com`
     const url = canonicalUrl(country, `/${slug}`)
 

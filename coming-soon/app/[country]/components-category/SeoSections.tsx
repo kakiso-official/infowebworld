@@ -158,9 +158,13 @@ export default function SeoSections({ seoContent: sc, categoryName, categorySlug
             <div className="seo-guide-pitfalls">
               <h3 className="seo-h3">Common {categoryName} Buying Mistakes</h3>
               <ul>
-                {bg.pitfalls.map((p: string, i: number) => (
-                  <li key={i}>{p}</li>
-                ))}
+                {bg.pitfalls.map((p: any, i: number) => {
+                  if (typeof p === 'string') return <li key={i}>{p}</li>
+                  const label = p.mistake || p.title || p.name || ''
+                  const detail = p.consequence || p.description || ''
+                  if (label && detail) return <li key={i}><strong>{label}</strong> — {detail}</li>
+                  return <li key={i}>{label || detail}</li>
+                })}
               </ul>
             </div>
           )}

@@ -155,26 +155,211 @@
 .slp-back-link { display: inline-flex; align-items: center; gap: .4rem; font: 600 .82rem/1 var(--font-inter), sans-serif; text-decoration: none; transition: gap .2s }
 .slp-back-link:hover { gap: .6rem }
 
-/* ═══ RESPONSIVE ═══ */
-@media (max-width: 768px) {
-  .slp-hero { padding: clamp(1.5rem, 4vw, 2.5rem) 1rem clamp(1rem, 3vw, 1.5rem) }
-  .slp-hero-stats { gap: .5rem }
-  .slp-hero-stat { font-size: .72rem; padding: .35rem .6rem }
-  .slp-cat-grid { grid-template-columns: repeat(2, 1fr); gap: .6rem }
-  .slp-guide-grid { grid-template-columns: 1fr }
-  .slp-uc-grid { grid-template-columns: 1fr }
-  .slp-cmp-grid { grid-template-columns: 1fr }
-  .slp-explore-grid { grid-template-columns: 1fr }
-  .slp-article { flex-direction: column }
-  .slp-article-accent { width: 100%; height: 4px; border-radius: 4px; margin-bottom: .75rem }
-  .slp-article-body { padding-left: 0 }
-  .slp-cta-perks { gap: .4rem }
-  .slp-cta-perk { font-size: .7rem }
-  .slp-shape--1 { width: 200px; height: 200px }
-  .slp-shape--2 { width: 140px; height: 140px }
+/* ═══ RESPONSIVE — TABLET ═══ */
+@media (max-width: 1024px) {
+  .slp-sec { padding: clamp(2rem, 4.5vw, 3rem) 0 }
+  .slp-cat-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) }
+  .slp-cmp-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) }
 }
 
+/* ═══ RESPONSIVE — MOBILE ═══ */
+@media (max-width: 768px) {
+  /* ── Sections / Layout ── */
+  .slp-sec { padding: clamp(1.75rem, 4vw, 2.5rem) 0 }
+  .slp-sec--cta { padding: clamp(2rem, 5vw, 3rem) 0 }
+  .slp-inner { padding: 0 1rem }
+  .slp-h2 { font-size: clamp(1.25rem, 5.5vw, 1.65rem); margin-bottom: .25rem }
+  .slp-h2 em { text-decoration-thickness: 3px; text-underline-offset: 3px }
+  .slp-sub { font-size: .82rem; margin-bottom: 1.25rem; max-width: none }
+
+  /* ── Hero ── */
+  .slp-hero { padding: 1.5rem 1rem 1.25rem }
+  .slp-breadcrumb { font-size: .7rem; margin-bottom: 1rem; gap: .3rem }
+  .slp-h1 { font-size: clamp(1.4rem, 6.5vw, 1.8rem); margin-bottom: .5rem; max-width: none; letter-spacing: -.02em }
+  .slp-h1 em { text-decoration-thickness: 3px; text-underline-offset: 3px }
+  .slp-tagline { font-size: .8rem; margin-bottom: 1rem; max-width: none }
+  .slp-hero-stats { gap: .4rem; margin-bottom: .5rem }
+  .slp-hero-stat { font-size: .7rem; padding: .35rem .65rem; border-width: 1.5px }
+  .slp-hero-updated { font-size: .65rem }
+
+  /* ── AI Summary ── */
+  .slp-ai-card { padding: 1rem 1.15rem; border-radius: 14px }
+  .slp-ai-text { font-size: .84rem; line-height: 1.65 }
+
+  /* ── Category Grid ── */
+  .slp-cat-grid { grid-template-columns: repeat(2, 1fr); gap: .5rem }
+  .slp-cat-card { padding: .85rem 1rem; border-radius: 14px; border-width: 1.5px }
+  .slp-cat-head { margin-bottom: .45rem; padding: .3rem .4rem; border-radius: 8px }
+  .slp-cat-name { font-size: .82rem }
+  .slp-cat-meta { font-size: .68rem }
+  .slp-cat-count { font-size: .58rem; padding: .15rem .35rem }
+
+  /* ── Article / About ── */
+  .slp-about-top { gap: .65rem; margin-bottom: 1rem }
+  .slp-read-badge { font-size: .64rem; padding: .25rem .55rem }
+  .slp-article { flex-direction: column; max-width: none }
+  .slp-article-accent { width: 100%; height: 4px; border-radius: 4px; margin-bottom: .75rem }
+  .slp-article-body { padding-left: 0 }
+  .slp-article-body p { font-size: .85rem; line-height: 1.75; margin-bottom: .75rem }
+  .slp-article-body .slp-lead { font-size: .9rem }
+  .slp-article-body .slp-lead::first-letter { font-size: 2.2em }
+
+  /* ── Buyer's Guide ── */
+  .slp-guide-grid { grid-template-columns: 1fr; gap: .6rem; margin-bottom: 1.25rem }
+  .slp-guide-card { padding: 1rem; border-radius: 14px }
+  .slp-guide-num { font-size: 1.35rem }
+  .slp-guide-card h3 { font-size: .82rem }
+  .slp-guide-card p { font-size: .76rem }
+  .slp-guide-block { padding: 1rem; border-radius: 12px; margin: 1rem 0 }
+  .slp-guide-block h3 { font-size: .82rem; margin-bottom: .5rem }
+  .slp-guide-block li { font-size: .78rem }
+
+  /* ── Use Cases ── */
+  .slp-uc-grid { grid-template-columns: 1fr; gap: .6rem }
+  .slp-uc-card { padding: 1rem; border-radius: 14px }
+  .slp-uc-icon { width: 38px; height: 38px; border-radius: 10px; margin-bottom: .5rem }
+  .slp-uc-card h3 { font-size: .82rem }
+  .slp-uc-card p { font-size: .76rem }
+
+  /* ── Comparisons ── */
+  .slp-cmp-grid { grid-template-columns: 1fr; gap: .6rem }
+  .slp-cmp-card { padding: 1rem; border-radius: 14px }
+  .slp-cmp-card h3 { font-size: .84rem }
+  .slp-cmp-card p { font-size: .78rem }
+  .slp-cmp-card li { font-size: .74rem }
+
+  /* ── Subcategory Chips — horizontal scroll ── */
+  .slp-chips { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; gap: .35rem; padding-bottom: .25rem }
+  .slp-chips::-webkit-scrollbar { display: none }
+  .slp-chip { flex-shrink: 0; font-size: .72rem; padding: .4rem .7rem; border-radius: 8px; border-width: 1.5px }
+  .slp-view-all { font-size: .78rem; padding: .45rem 1rem; border-radius: 10px }
+
+  /* ── Keywords ── */
+  .slp-kw-wrap { gap: 1rem }
+  .slp-kw-label { font-size: .68rem; margin-bottom: .35rem }
+  .slp-kw-pills { gap: .3rem }
+  .slp-kw-pill { font-size: .7rem; padding: .35rem .6rem; border-radius: 8px }
+
+  /* ── Also Explore ── */
+  .slp-explore-grid { grid-template-columns: 1fr; gap: .5rem }
+  .slp-explore-card { padding: .9rem 1rem; border-radius: 12px }
+  .slp-explore-card h3 { font-size: .82rem }
+  .slp-explore-card p { font-size: .74rem }
+
+  /* ── FAQ — bigger touch targets ── */
+  .slp-faq-list { gap: .4rem; max-width: none }
+  .slp-faq { border-radius: 12px; border-width: 1.5px }
+  .slp-faq-q { padding: .85rem 1rem; font-size: .82rem; gap: .5rem; min-height: 48px }
+  .slp-faq-toggle { width: 32px; height: 32px; border-radius: 8px; font-size: 1.15rem }
+  .slp-faq-a p { font-size: .8rem; padding: 0 1rem .9rem; line-height: 1.65 }
+
+  /* ── CTA ── */
+  .slp-cta { padding: 1.75rem 1.25rem; border-radius: 18px }
+  .slp-cta-badge { font-size: .64rem; padding: .3rem .65rem }
+  .slp-cta-h { font-size: clamp(1.15rem, 5vw, 1.45rem) }
+  .slp-cta-p { font-size: .8rem; margin-bottom: 1rem }
+  .slp-cta-perks { gap: .35rem .6rem; margin-bottom: 1rem }
+  .slp-cta-perk { font-size: .7rem }
+  .slp-cta-btn { font-size: .84rem; padding: .8rem 1.75rem; border-radius: 12px; width: 100%; justify-content: center }
+
+  /* ── Back link ── */
+  .slp-back { padding: 1.25rem 1rem 2.5rem }
+  .slp-back-link { font-size: .78rem }
+
+  /* ── Background shapes — smaller on mobile ── */
+  .slp-shape--1 { width: 180px; height: 180px; top: -40px; right: -40px }
+  .slp-shape--2 { width: 120px; height: 120px }
+  .slp-shape--3 { width: 100px; height: 100px }
+  .slp-shape--4 { display: none }
+  .slp-shape--5 { display: none }
+}
+
+/* ═══ RESPONSIVE — SMALL PHONE ═══ */
 @media (max-width: 480px) {
-  .slp-cat-grid { grid-template-columns: 1fr }
-  .slp-hero-stats { flex-direction: column; gap: .35rem }
+  .slp-inner { padding: 0 .85rem }
+  .slp-sec { padding: clamp(1.5rem, 4vw, 2rem) 0 }
+  .slp-h2 { font-size: clamp(1.1rem, 5vw, 1.35rem) }
+  .slp-sub { font-size: .78rem; margin-bottom: 1rem }
+
+  /* ── Hero ── */
+  .slp-hero { padding: 1.15rem .85rem 1rem }
+  .slp-breadcrumb { font-size: .65rem; gap: .25rem; margin-bottom: .75rem }
+  .slp-h1 { font-size: clamp(1.2rem, 6vw, 1.5rem); line-height: 1.2 }
+  .slp-tagline { font-size: .76rem; line-height: 1.5; margin-bottom: .75rem }
+  .slp-hero-stats { flex-direction: column; gap: .3rem; align-items: stretch }
+  .slp-hero-stat { font-size: .68rem; padding: .35rem .6rem; text-align: center; justify-content: center; display: flex; gap: .25rem }
+
+  /* ── Category Grid — single column ── */
+  .slp-cat-grid { grid-template-columns: 1fr; gap: .4rem }
+  .slp-cat-card { flex-direction: row; align-items: center; padding: .7rem .85rem; gap: .65rem }
+  .slp-cat-head { margin-bottom: 0; padding: .3rem; border-radius: 8px; flex-shrink: 0 }
+  .slp-cat-name { font-size: .8rem; margin: 0 }
+  .slp-cat-meta { font-size: .66rem; margin: 0 }
+  .slp-cat-arrow { margin-top: 0; font-size: .85rem; margin-left: auto; flex-shrink: 0 }
+  .slp-cat-count { display: none }
+
+  /* ── Buyer's Guide ── */
+  .slp-guide-card { padding: .85rem }
+  .slp-guide-num { font-size: 1.2rem }
+  .slp-guide-block { padding: .85rem }
+  .slp-guide-block li { font-size: .76rem }
+
+  /* ── Use Cases ── */
+  .slp-uc-card { padding: .85rem }
+  .slp-uc-icon { width: 34px; height: 34px; border-radius: 8px }
+
+  /* ── Comparisons ── */
+  .slp-cmp-card { padding: .85rem }
+  .slp-cmp-card ul { padding-left: .85rem }
+
+  /* ── FAQ ── */
+  .slp-faq-q { padding: .75rem .85rem; font-size: .8rem }
+  .slp-faq-a p { font-size: .78rem; padding: 0 .85rem .8rem }
+
+  /* ── CTA ── */
+  .slp-cta { padding: 1.5rem 1rem; border-radius: 16px }
+  .slp-cta-h { font-size: clamp(1.05rem, 4.5vw, 1.3rem) }
+  .slp-cta-p { font-size: .76rem }
+  .slp-cta-perk { font-size: .67rem }
+  .slp-cta-btn { font-size: .8rem; padding: .75rem 1.5rem }
+
+  /* ── Article ── */
+  .slp-article-body p { font-size: .82rem; line-height: 1.7 }
+  .slp-article-body .slp-lead { font-size: .86rem }
+  .slp-article-body .slp-lead::first-letter { font-size: 2em }
+
+  /* ── Chips ── */
+  .slp-chip { font-size: .7rem; padding: .35rem .6rem }
+
+  /* ── Keywords ── */
+  .slp-kw-pill { font-size: .67rem; padding: .32rem .55rem }
+
+  /* ── Explore ── */
+  .slp-explore-card { padding: .75rem .85rem }
+}
+
+/* ═══ RESPONSIVE — EXTRA SMALL PHONE ═══ */
+@media (max-width: 380px) {
+  .slp-inner { padding: 0 .7rem }
+  .slp-hero { padding: 1rem .7rem .85rem }
+  .slp-h1 { font-size: 1.15rem }
+  .slp-h2 { font-size: 1.05rem }
+  .slp-tagline { font-size: .72rem }
+  .slp-breadcrumb { font-size: .6rem }
+  .slp-bc-current { max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+
+  .slp-hero-stat { font-size: .65rem; padding: .3rem .5rem }
+  .slp-cat-card { padding: .6rem .75rem; gap: .5rem }
+  .slp-cat-name { font-size: .76rem }
+  .slp-guide-card h3, .slp-uc-card h3, .slp-cmp-card h3 { font-size: .78rem }
+  .slp-faq-q { font-size: .76rem; min-height: 44px }
+  .slp-faq-toggle { width: 28px; height: 28px }
+  .slp-cta-btn { font-size: .76rem; padding: .7rem 1.25rem; border-radius: 10px }
+}
+
+/* ═══ REDUCED MOTION ═══ */
+@media (prefers-reduced-motion: reduce) {
+  .slp-cat-card, .slp-guide-card, .slp-uc-card, .slp-cmp-card, .slp-explore-card { animation: none; transition: none }
+  .slp--in .slp-hero { transition: none }
+  .slp-faq-a { transition: none }
 }

@@ -393,16 +393,31 @@ async function generateSection(categoryId: number, section: string) {
 
   const parent = cat.parent_id ? await queryOne('SELECT id, name, slug, level, parent_id FROM categories WHERE id = ?', [cat.parent_id]) : null
   let sector = null
-  if (Number(cat.level) === 2 && parent) sector = parent
-  else if (Number(cat.level) === 3 && parent) {
+  const level = Number(cat.level)
+  if (level === 1) sector = cat
+  else if (level === 2 && parent) sector = parent
+  else if (level === 3 && parent) {
     sector = parent.parent_id ? await queryOne('SELECT id, name, slug FROM categories WHERE id = ?', [parent.parent_id]) : parent
   }
   const subcats = await query('SELECT name, slug FROM categories WHERE parent_id = ? AND is_active = 1 AND is_navigation = 1 ORDER BY sort_order', [categoryId])
   const listingTypes = await query('SELECT name, slug FROM listing_types WHERE category_id = ? ORDER BY sort_order LIMIT 30', [categoryId])
+
+  // For L1 sectors, get sample listing types from descendant L3 categories
+  let effectiveListingTypes = listingTypes
+  if (level === 1 && (listingTypes as any[]).length === 0) {
+    effectiveListingTypes = await query(
+      `SELECT lt.name, lt.slug FROM listing_types lt
+       JOIN categories c3 ON lt.category_id = c3.id
+       JOIN categories c2 ON c3.parent_id = c2.id
+       WHERE c2.parent_id = ? ORDER BY RAND() LIMIT 30`,
+      [categoryId]
+    )
+  }
+
   const siblings = cat.parent_id
     ? await query('SELECT name, slug FROM categories WHERE parent_id = ? AND id != ? AND is_active = 1 AND is_navigation = 1 ORDER BY sort_order LIMIT 10', [cat.parent_id, categoryId])
     : []
-  const ctx = buildContext(cat, parent, sector, subcats as Array<Record<string, unknown>>, listingTypes as Array<Record<string, unknown>>)
+  const ctx = buildContext(cat, parent, sector, subcats as Array<Record<string, unknown>>, effectiveListingTypes as Array<Record<string, unknown>>)
   const catName = String(cat.name)
   const sectorId = sector ? Number(sector.id) : (parent ? Number(parent.id) : 0)
   const cousins = sectorId ? await query(
