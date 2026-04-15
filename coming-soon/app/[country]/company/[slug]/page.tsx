@@ -128,13 +128,7 @@ export async function generateMetadata({
     alternates: {
       canonical: url,
     },
-    robots: {
-      index: true,
-      follow: true,
-      'max-snippet': -1 as number,
-      'max-image-preview': 'large' as const,
-      'max-video-preview': -1 as number,
-    },
+    robots: { index: false, follow: false },
     openGraph: {
       type: 'website',
       title,
