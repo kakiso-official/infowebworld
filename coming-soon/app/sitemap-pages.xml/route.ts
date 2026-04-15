@@ -4,9 +4,9 @@ const BASE = 'https://infowebworld.com'
 
 const COUNTRIES = ['in', 'us', 'uk', 'ca', 'au', 'eu']
 
+/* Only the 4 indexable pages — matches middleware INDEXABLE_PATHS */
 const STATIC_PAGES = [
   { path: '/', changefreq: 'daily', priority: '1.0' },
-  { path: '/categories', changefreq: 'weekly', priority: '0.8' },
   { path: '/business', changefreq: 'weekly', priority: '0.9' },
   { path: '/plans', changefreq: 'monthly', priority: '0.8' },
   { path: '/contact', changefreq: 'monthly', priority: '0.6' },

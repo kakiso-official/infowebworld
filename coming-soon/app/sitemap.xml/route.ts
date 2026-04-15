@@ -2,13 +2,9 @@ import { NextResponse } from 'next/server'
 
 const BASE = 'https://infowebworld.com'
 
-const COUNTRIES = ['in', 'us', 'uk', 'ca', 'au', 'eu']
-
+/* Only the 4 indexable pages — category/company/blog sitemaps disabled to prevent bot-driven quota burn */
 const SUB_SITEMAPS = [
   'sitemap-pages.xml',
-  'sitemap-category.xml',                          // global/root categories
-  ...COUNTRIES.map(c => `sitemap-category-${c}.xml`), // per-country categories
-  'sitemap-company.xml',
 ]
 
 export async function GET() {

@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
 
     return Response.json(
       { ok: true, data },
-      { headers: { 'Cache-Control': 'public, max-age=300' } }
+      { headers: { 'Cache-Control': 'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400' } }
     )
   } catch (err) {
     console.error('GET /api/tags error:', err)

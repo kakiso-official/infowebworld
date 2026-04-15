@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
 
     return Response.json(
       { ok: true, data: settings },
-      { headers: { 'Cache-Control': 'public, max-age=120' } }
+      { headers: { 'Cache-Control': 'public, max-age=120, s-maxage=3600, stale-while-revalidate=86400' } }
     )
   } catch (err) {
     console.error('GET /api/settings error:', err)

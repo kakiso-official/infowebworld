@@ -14,10 +14,14 @@ function shouldNoindex(pathname: string): boolean {
 }
 
 /** Apply noindex header to non-indexable pages + all vercel.app requests */
-function applyRobotsTag(response: NextResponse, pathname: string, isVercelApp: boolean) {
+function applyHeaders(response: NextResponse, pathname: string, isVercelApp: boolean) {
   if (isVercelApp || shouldNoindex(pathname)) {
     response.headers.set('X-Robots-Tag', 'noindex, nofollow')
   }
+  // Let Vercel CDN cache all pages at the edge — reduces function invocations
+  // s-maxage=3600: CDN serves cached page for 1 hour
+  // stale-while-revalidate=86400: after 1h, serve stale while regenerating in background
+  response.headers.set('CDN-Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400')
 }
 
 export function middleware(request: NextRequest) {
@@ -49,7 +53,7 @@ export function middleware(request: NextRequest) {
     if (!request.cookies.get(COOKIE_NAME)) {
       response.cookies.set(COOKIE_NAME, firstSeg, { path: '/', maxAge: COOKIE_MAX_AGE, sameSite: 'lax' })
     }
-    applyRobotsTag(response, pathname, isVercelApp)
+    applyHeaders(response, pathname, isVercelApp)
     return response
   }
 
@@ -59,7 +63,7 @@ export function middleware(request: NextRequest) {
   const cookieVal = request.cookies.get(COOKIE_NAME)?.value
   if (cookieVal === GLOBAL_COOKIE) {
     const response = NextResponse.rewrite(new URL(`/${GLOBAL_COUNTRY}${pathname}`, request.url))
-    applyRobotsTag(response, pathname, isVercelApp)
+    applyHeaders(response, pathname, isVercelApp)
     return response
   }
 
@@ -68,7 +72,7 @@ export function middleware(request: NextRequest) {
     const url = request.nextUrl.clone()
     url.pathname = `/${cookieVal}${pathname}`
     const response = NextResponse.redirect(url, 307)
-    applyRobotsTag(response, pathname, isVercelApp)
+    applyHeaders(response, pathname, isVercelApp)
     return response
   }
 
@@ -81,13 +85,13 @@ export function middleware(request: NextRequest) {
     url.pathname = `/${country}${pathname}`
     const response = NextResponse.redirect(url, 307)
     response.cookies.set(COOKIE_NAME, country, { path: '/', maxAge: COOKIE_MAX_AGE, sameSite: 'lax' })
-    applyRobotsTag(response, pathname, isVercelApp)
+    applyHeaders(response, pathname, isVercelApp)
     return response
   }
 
   // Unsupported country → serve global (root, no prefix)
   const response = NextResponse.rewrite(new URL(`/${GLOBAL_COUNTRY}${pathname}`, request.url))
-  applyRobotsTag(response, pathname, isVercelApp)
+  applyHeaders(response, pathname, isVercelApp)
   return response
 }
 

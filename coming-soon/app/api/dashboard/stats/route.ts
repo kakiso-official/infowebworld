@@ -202,7 +202,7 @@ export async function GET(request: NextRequest) {
     }
 
     return Response.json(data, {
-      headers: { 'Cache-Control': 'public, max-age=60' },
+      headers: { 'Cache-Control': 'public, max-age=60, s-maxage=3600, stale-while-revalidate=86400' },
     })
   } catch (err) {
     console.error('Dashboard stats error:', err)
