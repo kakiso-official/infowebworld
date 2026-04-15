@@ -1,0 +1,439 @@
+/* ══════════════════════════════════════════════════════════
+   Admin Panel — Custom Form Elements (adm- namespace)
+   Scoped to .adm-scope wrapper (applied in AdminShell)
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Base variables ── */
+.adm-scope {
+  --adm-radius: 10px;
+  --adm-border: var(--h-border, #E8E3DE);
+  --adm-bg: var(--h-bg, #FAF5F0);
+  --adm-focus: #E8553D;
+  --adm-focus-ring: rgba(232, 85, 61, .08);
+  --adm-text: var(--h-heading, #1A1A1A);
+  --adm-muted: var(--h-muted, #9A9590);
+  --adm-font: var(--font-nunito, 'Nunito', sans-serif);
+  --adm-h: 40px;
+  --adm-fs: .78rem;
+}
+
+/* ══════════════════════════════════════
+   TEXT INPUTS, NUMBER, DATE, PASSWORD
+   ══════════════════════════════════════ */
+.adm-scope input[type="text"],
+.adm-scope input[type="number"],
+.adm-scope input[type="email"],
+.adm-scope input[type="password"],
+.adm-scope input[type="search"],
+.adm-scope input[type="url"],
+.adm-scope input[type="tel"],
+.adm-scope input[type="date"],
+.adm-scope input[type="datetime-local"],
+.adm-scope input:not([type]) {
+  width: 100%;
+  height: var(--adm-h);
+  padding: 0 .75rem;
+  border-radius: var(--adm-radius);
+  border: 1.5px solid var(--adm-border);
+  background: var(--adm-bg);
+  font-size: var(--adm-fs);
+  font-weight: 500;
+  color: var(--adm-text);
+  font-family: var(--adm-font);
+  outline: none;
+  transition: border-color .25s, box-shadow .25s, background .25s;
+  box-sizing: border-box;
+}
+.adm-scope input[type="text"]:focus,
+.adm-scope input[type="number"]:focus,
+.adm-scope input[type="email"]:focus,
+.adm-scope input[type="password"]:focus,
+.adm-scope input[type="search"]:focus,
+.adm-scope input[type="url"]:focus,
+.adm-scope input[type="tel"]:focus,
+.adm-scope input[type="date"]:focus,
+.adm-scope input[type="datetime-local"]:focus,
+.adm-scope input:not([type]):focus {
+  border-color: var(--adm-focus);
+  box-shadow: 0 0 0 3px var(--adm-focus-ring);
+  background: #fff;
+}
+.adm-scope input::placeholder {
+  color: var(--adm-muted);
+  font-weight: 500;
+}
+
+/* ══════════════════════════════════════
+   TEXTAREA
+   ══════════════════════════════════════ */
+.adm-scope textarea {
+  width: 100%;
+  padding: .55rem .75rem;
+  border-radius: var(--adm-radius);
+  border: 1.5px solid var(--adm-border);
+  background: var(--adm-bg);
+  font-size: var(--adm-fs);
+  font-weight: 500;
+  color: var(--adm-text);
+  font-family: var(--adm-font);
+  line-height: 1.65;
+  outline: none;
+  resize: vertical;
+  min-height: 80px;
+  transition: border-color .25s, box-shadow .25s, background .25s;
+  box-sizing: border-box;
+}
+.adm-scope textarea:focus {
+  border-color: var(--adm-focus);
+  box-shadow: 0 0 0 3px var(--adm-focus-ring);
+  background: #fff;
+}
+.adm-scope textarea::placeholder {
+  color: var(--adm-muted);
+  font-weight: 500;
+}
+
+/* ══════════════════════════════════════
+   SELECT — Custom dropdown arrow
+   !important needed because inline styles
+   set background shorthand which resets
+   background-image to none
+   ══════════════════════════════════════ */
+.adm-scope select {
+  height: var(--adm-h);
+  padding: 0 2.2rem 0 .75rem !important;
+  border-radius: var(--adm-radius);
+  border: 1.5px solid var(--adm-border);
+  background-color: var(--adm-bg);
+  font-size: var(--adm-fs);
+  font-weight: 600;
+  color: var(--adm-text);
+  font-family: var(--adm-font);
+  outline: none;
+  cursor: pointer;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  /* Arrow chevron — !important to beat inline background shorthand */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239A9590' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right .7rem center !important;
+  background-size: 12px !important;
+  transition: border-color .25s, box-shadow .25s, background-color .25s;
+  box-sizing: border-box;
+}
+.adm-scope select:focus {
+  border-color: var(--adm-focus);
+  box-shadow: 0 0 0 3px var(--adm-focus-ring);
+  background-color: #fff;
+}
+.adm-scope select:hover {
+  border-color: color-mix(in srgb, var(--adm-border), #000 15%);
+}
+/* Rotate arrow when open (modern browsers: Chrome 133+, Safari 17.2+) */
+.adm-scope select:open {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23E8553D' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 15l-6-6-6 6'/%3E%3C/svg%3E") !important;
+  border-color: var(--adm-focus);
+}
+/* Firefox uses a different pseudo-class */
+.adm-scope select:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 var(--adm-text);
+}
+
+/* ══════════════════════════════════════
+   CHECKBOX — Custom toggle pill
+   ══════════════════════════════════════ */
+.adm-scope input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 36px;
+  height: 20px;
+  border-radius: 999px;
+  border: 1.5px solid var(--adm-border);
+  background: var(--adm-bg);
+  cursor: pointer;
+  position: relative;
+  transition: background .25s, border-color .25s;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+.adm-scope input[type="checkbox"]::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--adm-muted);
+  transition: transform .25s cubic-bezier(.16, 1, .3, 1), background .25s;
+}
+.adm-scope input[type="checkbox"]:checked {
+  background: var(--adm-focus);
+  border-color: var(--adm-focus);
+}
+.adm-scope input[type="checkbox"]:checked::after {
+  transform: translateX(16px);
+  background: #fff;
+}
+.adm-scope input[type="checkbox"]:focus-visible {
+  box-shadow: 0 0 0 3px var(--adm-focus-ring);
+}
+/* Small checkbox variant — use class .adm-check-sm */
+.adm-scope .adm-check-sm {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+}
+.adm-scope .adm-check-sm::after {
+  content: '✓';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .65rem;
+  font-weight: 800;
+  color: transparent;
+  background: none;
+  border-radius: 0;
+  transform: none;
+  transition: color .15s;
+}
+.adm-scope .adm-check-sm:checked {
+  background: var(--adm-focus);
+  border-color: var(--adm-focus);
+}
+.adm-scope .adm-check-sm:checked::after {
+  color: #fff;
+  transform: none;
+  background: none;
+}
+
+/* ══════════════════════════════════════
+   RADIO — Custom dot
+   ══════════════════════════════════════ */
+.adm-scope input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--adm-border);
+  background: var(--adm-bg);
+  cursor: pointer;
+  position: relative;
+  transition: border-color .25s, background .25s;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+.adm-scope input[type="radio"]::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: transparent;
+  transition: background .2s;
+}
+.adm-scope input[type="radio"]:checked {
+  border-color: var(--adm-focus);
+}
+.adm-scope input[type="radio"]:checked::after {
+  background: var(--adm-focus);
+}
+.adm-scope input[type="radio"]:focus-visible {
+  box-shadow: 0 0 0 3px var(--adm-focus-ring);
+}
+
+/* ══════════════════════════════════════
+   COLOR PICKER — Rounded swatch
+   ══════════════════════════════════════ */
+.adm-scope input[type="color"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--adm-border);
+  border-radius: 10px;
+  padding: 2px;
+  cursor: pointer;
+  background: none;
+  overflow: hidden;
+  transition: border-color .2s, box-shadow .2s;
+}
+.adm-scope input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+.adm-scope input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 7px;
+}
+.adm-scope input[type="color"]::-moz-color-swatch {
+  border: none;
+  border-radius: 7px;
+}
+.adm-scope input[type="color"]:hover {
+  border-color: var(--adm-focus);
+}
+.adm-scope input[type="color"]:focus-visible {
+  box-shadow: 0 0 0 3px var(--adm-focus-ring);
+}
+
+/* ══════════════════════════════════════
+   FILE INPUT — Styled wrapper
+   ══════════════════════════════════════ */
+.adm-scope input[type="file"] {
+  width: 100%;
+  padding: .5rem .75rem;
+  border-radius: var(--adm-radius);
+  border: 1.5px dashed var(--adm-border);
+  background: var(--adm-bg);
+  font-size: .72rem;
+  font-weight: 500;
+  color: var(--adm-muted);
+  font-family: var(--adm-font);
+  cursor: pointer;
+  transition: border-color .25s, background .25s;
+}
+.adm-scope input[type="file"]:hover {
+  border-color: var(--adm-focus);
+  background: rgba(232, 85, 61, .03);
+}
+.adm-scope input[type="file"]::file-selector-button {
+  padding: .3rem .65rem;
+  border-radius: 8px;
+  border: 1.5px solid var(--adm-border);
+  background: #fff;
+  font-size: .65rem;
+  font-weight: 700;
+  color: var(--adm-text);
+  font-family: var(--adm-font);
+  cursor: pointer;
+  margin-right: .5rem;
+  transition: all .2s;
+}
+.adm-scope input[type="file"]::file-selector-button:hover {
+  border-color: var(--adm-focus);
+  color: var(--adm-focus);
+}
+
+/* ══════════════════════════════════════
+   RANGE — Styled slider
+   ══════════════════════════════════════ */
+.adm-scope input[type="range"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--adm-border);
+  outline: none;
+  cursor: pointer;
+}
+.adm-scope input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--adm-focus);
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,.15);
+  cursor: pointer;
+  transition: transform .15s;
+}
+.adm-scope input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+.adm-scope input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--adm-focus);
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,.15);
+  cursor: pointer;
+}
+
+/* ══════════════════════════════════════
+   LABELS
+   ══════════════════════════════════════ */
+.adm-scope label {
+  display: block;
+  font-size: .68rem;
+  font-weight: 700;
+  color: var(--adm-text);
+  margin-bottom: .3rem;
+  font-family: var(--adm-font);
+}
+/* Inline label for checkbox/radio rows */
+.adm-scope label:has(input[type="checkbox"]),
+.adm-scope label:has(input[type="radio"]) {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  cursor: pointer;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+/* ══════════════════════════════════════
+   FIELDSET & LEGEND
+   ══════════════════════════════════════ */
+.adm-scope fieldset {
+  border: 1.5px solid var(--adm-border);
+  border-radius: 12px;
+  padding: .85rem 1rem;
+  margin: 0 0 .75rem;
+  background: #fff;
+}
+.adm-scope legend {
+  font-size: .68rem;
+  font-weight: 800;
+  color: var(--adm-text);
+  padding: 0 .4rem;
+  font-family: var(--adm-font);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+/* ══════════════════════════════════════
+   DISABLED STATE
+   ══════════════════════════════════════ */
+.adm-scope input:disabled,
+.adm-scope textarea:disabled,
+.adm-scope select:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+  background: color-mix(in srgb, var(--adm-bg), #000 5%);
+}
+
+/* ══════════════════════════════════════
+   NUMBER INPUT — Hide spinner arrows
+   ══════════════════════════════════════ */
+.adm-scope input[type="number"]::-webkit-outer-spin-button,
+.adm-scope input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.adm-scope input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* ══════════════════════════════════════
+   SEARCH INPUT — Inline icon support
+   ══════════════════════════════════════ */
+.adm-scope input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%239A9590' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M18 6L6 18M6 6l12 12'/%3E%3C/svg%3E");
+  cursor: pointer;
+}

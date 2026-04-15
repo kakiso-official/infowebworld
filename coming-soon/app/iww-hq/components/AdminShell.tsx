@@ -27,7 +27,7 @@ export default function AdminShell({ children, onLogout }: { children: React.Rea
   const title = nav.find(n => path.startsWith(n.href))?.label || 'Admin'
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--h-bg)' }}>
+    <div className="adm-scope" style={{ display: 'flex', minHeight: '100vh', background: 'var(--h-bg)' }}>
       {/* Mobile overlay */}
       {open && <div onClick={() => setOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.35)', zIndex: 40 }} />}
 

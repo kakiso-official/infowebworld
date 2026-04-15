@@ -574,6 +574,14 @@ export default function SeoContentAdmin() {
                       fontWeight: 700, fontSize: '.7rem', cursor: generatingKey ? 'default' : 'pointer', fontFamily: 'inherit',
                     }}
                   >{active ? 'Generating...' : filled === 8 ? 'Regenerate All' : 'Generate All'}</button>
+                  <a
+                    href={`/iww-hq/seo-content/edit?id=${cat.id}`}
+                    style={{
+                      display: 'inline-block', marginTop: '.55rem', marginLeft: '.5rem', padding: '.35rem .75rem',
+                      borderRadius: 8, border: '1.5px solid var(--h-accent)', background: '#fff', color: 'var(--h-accent)',
+                      fontWeight: 700, fontSize: '.7rem', textDecoration: 'none', fontFamily: 'inherit',
+                    }}
+                  >✏️ Edit Content</a>
                 </div>
               )}
             </div>

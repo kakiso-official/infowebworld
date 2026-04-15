@@ -3,6 +3,8 @@
    ═══════════════════════════════════════════════════════ */
 @import "./styles/not-found.css";
 @import "./styles/seo-sections.css";
+@import "./styles/seo-editor.css";
+@import "./styles/admin-forms.css";
 @import "./styles/sector/page.css";
 @import "./styles/sector/hero.css";
 @import "./styles/sector/search.css";

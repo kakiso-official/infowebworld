@@ -31,7 +31,7 @@ export default function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', background: 'var(--h-bg)' }}>
+    <div className="adm-scope" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', background: 'var(--h-bg)' }}>
       <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: 380 }}>
         <div style={{ background: '#fff', borderRadius: 24, border: '1.5px solid var(--h-border)', padding: '2rem', boxShadow: '0 4px 24px rgba(0,0,0,.04)' }}>
           <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
