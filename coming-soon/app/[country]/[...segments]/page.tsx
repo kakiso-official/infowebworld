@@ -339,7 +339,7 @@ function buildCategoryMeta(cat: CatSeo, country: string, countryName: string, mo
       description,
       images: [ogImage],
     },
-    robots: { index: true, follow: true },
+    robots: { index: false, follow: false },
   }
 }
 
@@ -449,7 +449,7 @@ export async function generateMetadata({
       description,
       alternates: { canonical: url },
       openGraph: { title, description, url, siteName: 'InfoWebWorld', type: 'website' },
-      robots: { index: true, follow: true },
+      robots: { index: false, follow: false },
     }
   }
 
@@ -479,7 +479,7 @@ export async function generateMetadata({
         description,
         images: [meta.heroImage],
       },
-      robots: { index: true, follow: true },
+      robots: { index: false, follow: false },
     }
   }
 

@@ -1,7 +1,15 @@
 User-agent: *
-Allow: /
+Allow: /$
+Allow: /business$
+Allow: /plans$
+Allow: /contact$
 Disallow: /iww-hq/
 Disallow: /api/
 Disallow: /payment-test/
+Disallow: /category/
+Disallow: /categories/
+Disallow: /blog/
+Disallow: /company/
+Disallow: /listing/
 
 Sitemap: https://infowebworld.com/sitemap.xml

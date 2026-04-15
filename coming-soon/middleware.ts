@@ -2,6 +2,24 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { COOKIE_NAME, COOKIE_MAX_AGE, GLOBAL_COUNTRY, GLOBAL_COOKIE, geoToCountry, isValidCountry } from './app/config/countries'
 
+/* ── Only these 4 pages are indexable — everything else gets noindex ── */
+const INDEXABLE_PATHS = new Set(['', '/', '/business', '/plans', '/contact'])
+
+function shouldNoindex(pathname: string): boolean {
+  const firstSeg = pathname.split('/')[1] || ''
+  const restPath = isValidCountry(firstSeg)
+    ? pathname.slice(firstSeg.length + 1) || '/'
+    : pathname
+  return !INDEXABLE_PATHS.has(restPath)
+}
+
+/** Apply noindex header to non-indexable pages + all vercel.app requests */
+function applyRobotsTag(response: NextResponse, pathname: string, isVercelApp: boolean) {
+  if (isVercelApp || shouldNoindex(pathname)) {
+    response.headers.set('X-Robots-Tag', 'noindex, nofollow')
+  }
+}
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   const isVercelApp = request.headers.get('host')?.includes('vercel.app') ?? false
@@ -31,7 +49,7 @@ export function middleware(request: NextRequest) {
     if (!request.cookies.get(COOKIE_NAME)) {
       response.cookies.set(COOKIE_NAME, firstSeg, { path: '/', maxAge: COOKIE_MAX_AGE, sameSite: 'lax' })
     }
-    if (isVercelApp) response.headers.set('X-Robots-Tag', 'noindex, nofollow')
+    applyRobotsTag(response, pathname, isVercelApp)
     return response
   }
 
@@ -41,7 +59,7 @@ export function middleware(request: NextRequest) {
   const cookieVal = request.cookies.get(COOKIE_NAME)?.value
   if (cookieVal === GLOBAL_COOKIE) {
     const response = NextResponse.rewrite(new URL(`/${GLOBAL_COUNTRY}${pathname}`, request.url))
-    if (isVercelApp) response.headers.set('X-Robots-Tag', 'noindex, nofollow')
+    applyRobotsTag(response, pathname, isVercelApp)
     return response
   }
 
@@ -50,28 +68,26 @@ export function middleware(request: NextRequest) {
     const url = request.nextUrl.clone()
     url.pathname = `/${cookieVal}${pathname}`
     const response = NextResponse.redirect(url, 307)
-    if (isVercelApp) response.headers.set('X-Robots-Tag', 'noindex, nofollow')
+    applyRobotsTag(response, pathname, isVercelApp)
     return response
   }
 
-  // Detect from Vercel geo header
+  // Detect from geo header
   const geo = request.headers.get('x-vercel-ip-country')
   const country = geoToCountry(geo)
 
   if (country) {
-    // Supported country → redirect to /{country}/path and set cookie
     const url = request.nextUrl.clone()
     url.pathname = `/${country}${pathname}`
     const response = NextResponse.redirect(url, 307)
     response.cookies.set(COOKIE_NAME, country, { path: '/', maxAge: COOKIE_MAX_AGE, sameSite: 'lax' })
-    if (isVercelApp) response.headers.set('X-Robots-Tag', 'noindex, nofollow')
+    applyRobotsTag(response, pathname, isVercelApp)
     return response
   }
 
   // Unsupported country → serve global (root, no prefix)
-  // Rewrite internally so [country] param has a value
   const response = NextResponse.rewrite(new URL(`/${GLOBAL_COUNTRY}${pathname}`, request.url))
-  if (isVercelApp) response.headers.set('X-Robots-Tag', 'noindex, nofollow')
+  applyRobotsTag(response, pathname, isVercelApp)
   return response
 }
 
