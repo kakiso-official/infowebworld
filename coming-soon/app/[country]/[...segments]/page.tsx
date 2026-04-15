@@ -12,8 +12,8 @@ import { COUNTRY_LABELS, VALID_COUNTRIES } from '../../config/countries'
 import type { CountryCode } from '../../config/countries'
 import { query, queryOne } from '@/lib/db'
 
-/** ISR: cache on Vercel edge for 300s (5 min) — pages stay cached longer, fewer cold hits */
-export const revalidate = 300
+/** No ISR — render dynamically on each request to avoid Vercel ISR write quota */
+export const dynamic = 'force-dynamic'
 
 /* ── Known L1 sector slugs ── */
 const L1_SLUGS = new Set([
@@ -26,17 +26,7 @@ function viewAllSlug(sectorSlug: string) {
   return `view-all-sub-categories-${sectorSlug}`
 }
 
-/** Pre-build L1 sector pages + view-all pages at deploy time — instant 10ms from CDN */
-export async function generateStaticParams() {
-  const params: { country: string; segments: string[] }[] = []
-  for (const country of VALID_COUNTRIES) {
-    for (const slug of L1_SLUGS) {
-      params.push({ country, segments: [slug] })                          // L1 sector page
-      params.push({ country, segments: [viewAllSlug(slug)] })             // view-all browse page
-    }
-  }
-  return params
-}
+/* generateStaticParams removed — was pre-building 72 pages that generated ISR writes on every revalidation cycle */
 
 /* ── Sector-scoped categories (only the L1 + its L2/L3 children, ~200-3K rows instead of 14K) ── */
 async function getSectorCategories(sectorId: number) {
@@ -67,7 +57,7 @@ const getCachedAllCategories = unstable_cache(
     return JSON.parse(JSON.stringify(rows))
   },
   ['all-categories-l1l2-v3'],
-  { revalidate: 300 }
+  { revalidate: 86400 }
 )
 
 const getCachedTagsWithGroups = unstable_cache(
@@ -91,7 +81,7 @@ const getCachedTagsWithGroups = unstable_cache(
     return JSON.parse(JSON.stringify(data))
   },
   ['tag-groups-with-tags'],
-  { revalidate: 300 }
+  { revalidate: 86400 }
 )
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']

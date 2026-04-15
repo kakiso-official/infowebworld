@@ -3,7 +3,8 @@ import { Suspense } from 'react'
 import { query } from '@/lib/db'
 import { unstable_cache } from 'next/cache'
 
-export const revalidate = 300
+/** No ISR — render dynamically to avoid Vercel ISR write quota */
+export const dynamic = 'force-dynamic'
 
 import { COUNTRY_LABELS } from '../../config/countries'
 import type { CountryCode } from '../../config/countries'
@@ -59,7 +60,7 @@ export default async function CategoriesPage({ params }: { params: Promise<{ cou
       return JSON.parse(JSON.stringify(r))
     },
     ['all-categories-browse-v2'],
-    { revalidate: 300 }
+    { revalidate: 86400 }
   )
   const rows = await getCachedCategories().catch(() => [])
   const initialCategories = rows
