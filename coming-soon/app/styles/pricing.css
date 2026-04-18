@@ -41,6 +41,8 @@
 }
 .pr-col-head--lt { background: #FFF1EE; }
 .pr-col-head--yr { background: #F0F7FF; }
+.pr-col-head--st { background: #EEF4FF; }
+.pr-col-head--fr { background: #F3FAF6; }
 
 /* Toggle highlight on /plans */
 .pr-col-head--active {
@@ -135,6 +137,8 @@ button.pr-col-btn, button.pr-plan-btn {
 }
 .pr-col-cat-cell--lt { background: #FFF1EE; }
 .pr-col-cat-cell--yr { background: #F0F7FF; }
+.pr-col-cat-cell--st { background: #EEF4FF; }
+.pr-col-cat-cell--fr { background: #F3FAF6; }
 
 /* ── Feature row ── */
 .pr-col-row {
@@ -155,6 +159,118 @@ button.pr-col-btn, button.pr-plan-btn {
 }
 .pr-col-check--lt { background: #FFF1EE; }
 .pr-col-check--yr { background: #F0F7FF; }
+.pr-col-check--st { background: #EEF4FF; }
+.pr-col-check--fr { background: #F3FAF6; }
+
+/* ── Dash for missing features (Starter / Free) ── */
+.pr-col-dash {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.85rem, 1.2vw, 1.1rem);
+  font-weight: 600;
+  color: rgba(0, 0, 0, .22);
+  line-height: 1;
+}
+
+/* ── Extra button variants for Starter + Free ── */
+.pr-col-btn--starter { color: #fff; background: #3B82F6; }
+.pr-col-btn--starter:hover { box-shadow: 0 4px 12px rgba(59, 130, 246, .25); background: #1E40AF; }
+.pr-col-btn--free { color: #fff; background: #2FAE6A; }
+.pr-col-btn--free:hover { box-shadow: 0 4px 12px rgba(47, 174, 106, .25); background: #1F8A50; }
+
+/* ============================================================
+   5-COLUMN VARIANT (/plans only — Lifetime + Early Adopter + Starter + Free)
+   /business preview keeps default 3-col .pr-cols layout
+   ============================================================ */
+
+/* Scroll wrapper — horizontal scroll on viewports narrower than the table.
+   Feature column + 4 plan columns stay readable; user scrolls on narrow screens. */
+.pr-cols-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: .35rem;
+  margin: 0 calc(-1 * var(--container-pad, .75rem));
+  padding-left: var(--container-pad, .75rem);
+  padding-right: var(--container-pad, .75rem);
+}
+
+.pr-cols--4plans {
+  /* Keep columns generous — text never wraps absurdly. */
+  grid-template-columns:
+    minmax(340px, 1.3fr)
+    minmax(170px, 1fr)
+    minmax(170px, 1fr)
+    minmax(160px, .9fr)
+    minmax(160px, .9fr);
+  column-gap: clamp(.55rem, 1vw, .85rem);
+  max-width: 1200px;
+  min-width: 960px; /* never compress below this — triggers horizontal scroll */
+}
+
+/* Bump feature-row readability inside 4-plans variant (keeps fonts style same,
+   just ensures rows have real breathing room) */
+.pr-cols--4plans .pr-col-row {
+  font-size: clamp(.7rem, .85vw, .8rem);
+  line-height: 1.35;
+  padding: clamp(.45rem, .75vw, .6rem) 0;
+  padding-right: .85rem;
+}
+.pr-cols--4plans .pr-col-cat {
+  font-size: clamp(.78rem, 1vw, .92rem);
+  padding: clamp(.75rem, 1.3vw, 1rem) 0 clamp(.4rem, .7vw, .55rem);
+}
+.pr-cols--4plans .pr-col-name {
+  font-size: clamp(.78rem, 1.1vw, .95rem);
+}
+.pr-cols--4plans .pr-col-price {
+  font-size: clamp(1.75rem, 3.2vw, 2.35rem);
+}
+.pr-cols--4plans .pr-col-desc,
+.pr-cols--4plans .pr-col-period,
+.pr-cols--4plans .pr-col-slash {
+  font-size: clamp(.55rem, .75vw, .65rem);
+}
+.pr-cols--4plans .pr-col-btn {
+  font-size: clamp(.65rem, .9vw, .78rem);
+  padding: clamp(.5rem, .85vw, .65rem) .85rem;
+  margin-top: auto; /* anchor button to the bottom — aligns all 4 CTAs on one line */
+}
+.pr-cols--4plans .pr-ck {
+  width: clamp(15px, 1.4vw, 19px);
+  height: clamp(15px, 1.4vw, 19px);
+}
+
+/* ── Header alignment fix ──
+   Every card reserves top space for the "Recommend" badge so names/prices/
+   periods line up across all 4 cards. Only the Lifetime card actually renders
+   a badge; it's absolute-positioned into the reserved space above. Buttons
+   are pushed to the bottom (margin-top: auto above), so all 4 CTAs land on
+   the same horizontal line regardless of how much copy each card has. */
+.pr-cols--4plans .pr-col-head {
+  position: relative;
+  padding-top: clamp(1.65rem, 2.6vw, 2.35rem);
+}
+.pr-cols--4plans .pr-col-badge {
+  position: absolute;
+  top: clamp(.5rem, .9vw, .8rem);
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* Consistent bottom padding above the button row */
+.pr-cols--4plans .pr-col-name,
+.pr-cols--4plans .pr-col-desc,
+.pr-cols--4plans .pr-col-price,
+.pr-cols--4plans .pr-col-period,
+.pr-cols--4plans .pr-col-slash {
+  text-align: center;
+}
+
+/* Put a small, consistent gap between the last content line and the button */
+.pr-cols--4plans .pr-col-slash {
+  margin-bottom: clamp(.4rem, .7vw, .55rem);
+}
 
 /* Last row — round bottom corners */
 .pr-col-check--last { border-bottom: none; border-radius: 0 0 14px 14px; padding-bottom: clamp(.5rem, 1vw, .75rem); }
@@ -265,6 +381,11 @@ button.pr-col-btn, button.pr-plan-btn {
     grid-template-columns: 1fr clamp(95px, 24vw, 130px) clamp(95px, 24vw, 130px);
     column-gap: .35rem;
   }
+  /* Tablet / narrow viewports — table goes horizontal-scroll; columns stay readable */
+  .pr-cols--4plans {
+    /* same as desktop — user scrolls horizontally */
+    min-width: 900px;
+  }
   .pr-col-head { padding: clamp(.65rem, 2vw, .85rem) clamp(.35rem, 1vw, .5rem); }
   .pr-col-price { font-size: clamp(1.2rem, 4.5vw, 1.6rem); }
   .pr-col-btn { font-size: clamp(.45rem, 1.6vw, .55rem); padding: .3rem .45rem; }
@@ -288,6 +409,10 @@ button.pr-col-btn, button.pr-plan-btn {
     grid-template-columns: 1fr 80px 80px;
     column-gap: .25rem;
   }
+  /* Mobile — same scroll behavior, slightly smaller min-width */
+  .pr-cols--4plans {
+    min-width: 820px;
+  }
   .pr-col-head { padding: .5rem .3rem; border-radius: 10px 10px 0 0; }
   .pr-col-head--active { border-radius: 10px; }
   .pr-col-name { font-size: .55rem; }
@@ -307,6 +432,7 @@ button.pr-col-btn, button.pr-plan-btn {
 
 @media (max-width: 380px) {
   .pr-cols { grid-template-columns: 1fr 70px 70px; }
+  .pr-cols--4plans { min-width: 760px; }
   .pr-col-name { font-size: .5rem; }
   .pr-col-price { font-size: .95rem; }
   .pr-col-btn { font-size: .36rem; padding: .2rem .2rem; }

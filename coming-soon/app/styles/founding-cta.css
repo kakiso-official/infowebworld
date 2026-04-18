@@ -37,7 +37,7 @@
 }
 .fc-section-desc strong { color: var(--h-accent); font-weight: 700; }
 
-/* ── Two-card grid ── */
+/* ── Plan grid — 2 columns × 2 rows (4 cards total) ── */
 .fc-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -76,6 +76,24 @@
 /* ── Yearly card ── */
 .fc-card--yearly {
   border-color: var(--h-border);
+}
+
+/* ── Starter card (new) ── */
+.fc-card--starter {
+  border-color: rgba(59, 130, 246, .3);
+  box-shadow: 0 4px 20px rgba(59, 130, 246, .05);
+}
+.fc-card--starter:hover {
+  box-shadow: 0 8px 32px rgba(59, 130, 246, .14);
+}
+
+/* ── Free card (new) ── */
+.fc-card--free {
+  border-color: rgba(47, 174, 106, .3);
+  box-shadow: 0 4px 20px rgba(47, 174, 106, .05);
+}
+.fc-card--free:hover {
+  box-shadow: 0 8px 32px rgba(47, 174, 106, .14);
 }
 
 /* ── "Best Value" stamp — top-right corner ── */
@@ -117,6 +135,12 @@
 }
 .fc-ribbon--yearly {
   background: var(--h-heading);
+}
+.fc-ribbon--starter {
+  background: #3B82F6;
+}
+.fc-ribbon--free {
+  background: #2FAE6A;
 }
 
 /* ── Heading ── */
@@ -300,6 +324,42 @@ button.fc-btn {
   box-shadow: 0 4px 16px rgba(26, 26, 26, .18);
 }
 .fc-btn--yearly:hover .fc-btn-arrow { stroke: #fff; }
+
+/* Starter CTA — blue subscription button */
+.fc-btn--starter {
+  color: #fff;
+  background: #3B82F6;
+  border: 1.5px solid #3B82F6;
+}
+.fc-btn--starter::after {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
+}
+.fc-btn--starter .fc-btn-arrow { stroke: #fff; }
+.fc-btn--starter:hover {
+  color: #fff;
+  background: #1E40AF;
+  border-color: #1E40AF;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, .25);
+}
+.fc-btn--starter:hover .fc-btn-arrow { stroke: #fff; }
+
+/* Free CTA — green button */
+.fc-btn--free {
+  color: #fff;
+  background: #2FAE6A;
+  border: 1.5px solid #2FAE6A;
+}
+.fc-btn--free::after {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
+}
+.fc-btn--free .fc-btn-arrow { stroke: #fff; }
+.fc-btn--free:hover {
+  color: #fff;
+  background: #1F8A50;
+  border-color: #1F8A50;
+  box-shadow: 0 4px 16px rgba(47, 174, 106, .25);
+}
+.fc-btn--free:hover .fc-btn-arrow { stroke: #fff; }
 
 
 /* ── Guarantee seal ── */

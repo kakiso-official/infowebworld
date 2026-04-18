@@ -4,8 +4,11 @@ import Link from '../../components/CountryLink'
 import { fetchConfig } from '../../config/site-config'
 import PaymentModal from '../business/components/PaymentModal'
 import FoundingCTA from '../business/components/FoundingCTA'
+import FlexibleModal from '../business/components/FlexibleModal'
+import { STARTER_ROWS, FREE_ROWS } from '../business/components/planGating'
 
 type PlanKey = 'lifetime' | 'yearly'
+type FlexibleKey = 'free' | 'starter'
 
 /* ── Icons ── */
 const Ck = () => (
@@ -176,9 +179,9 @@ const faqs = [
 ]
 
 export default function PlansPage() {
-  const [billingTab, setBillingTab] = useState<'lifetime' | 'yearly'>('lifetime')
   const [openFaq, setOpenFaq] = useState<number | null>(null)
   const [modalPlan, setModalPlan] = useState<PlanKey | null>(null)
+  const [flexiblePlan, setFlexiblePlan] = useState<FlexibleKey | null>(null)
   const [slots, setSlots] = useState({ ltEx: false, yrEx: false })
   useEffect(() => {
     fetchConfig().then(c => setSlots({
@@ -225,24 +228,6 @@ export default function PlansPage() {
             Whether you are a startup or an established brand, our plans give you
             full access to every feature. Pick the billing that works for you.
           </p>
-
-          {/* Toggle */}
-          <div className="pln-toggle-wrap">
-            <button
-              type="button"
-              className={`pln-toggle-btn${billingTab === 'lifetime' ? ' pln-toggle-btn--active' : ''}`}
-              onClick={() => setBillingTab('lifetime')}
-            >
-              Lifetime
-            </button>
-            <button
-              type="button"
-              className={`pln-toggle-btn${billingTab === 'yearly' ? ' pln-toggle-btn--active' : ''}`}
-              onClick={() => setBillingTab('yearly')}
-            >
-              Yearly
-            </button>
-          </div>
         </div>
       </section>
 
@@ -253,10 +238,11 @@ export default function PlansPage() {
         <div className="container">
           <h2 className="pln-table-heading">Full Feature Comparison</h2>
 
-          <div className="pr-cols">
+          <div className="pr-cols-scroll">
+          <div className="pr-cols pr-cols--4plans">
             {/* Card headers */}
             <div className="pr-col-spacer" />
-            <div className={`pr-col-head pr-col-head--lt${billingTab === 'lifetime' ? ' pr-col-head--active' : ''}`}>
+            <div className="pr-col-head pr-col-head--lt">
               <div className="pr-col-badge">Recommend</div>
               <div className="pr-col-name">Elite Lifetime Founding Business Plan</div>
               <div className="pr-col-desc">Recommended For Businesses</div>
@@ -265,13 +251,29 @@ export default function PlansPage() {
               {!slots.ltEx && <div className="pr-col-slash"><span className="fc-strikethrough">$999</span> after Pioneer pre-launch window</div>}
               <button type="button" className="pr-col-btn pr-col-btn--primary" onClick={() => setModalPlan('lifetime')}>Claim Lifetime Spot</button>
             </div>
-            <div className={`pr-col-head pr-col-head--yr${billingTab === 'yearly' ? ' pr-col-head--active' : ''}`}>
+            <div className="pr-col-head pr-col-head--yr">
               <div className="pr-col-name">Early Adopter Plan</div>
               <div className="pr-col-desc">Flexible Membership</div>
               <div className="pr-col-price"><span>$</span>{slots.yrEx ? '239' : '99'}</div>
               <div className="pr-col-period">per year Locked forever</div>
               {!slots.yrEx && <div className="pr-col-slash"><span className="fc-strikethrough">$239/yr</span> after Pioneer pre-launch window</div>}
               <button type="button" className="pr-col-btn pr-col-btn--secondary" onClick={() => setModalPlan('yearly')}>Get Started</button>
+            </div>
+            <div className="pr-col-head pr-col-head--st">
+              <div className="pr-col-name">Starter Plan</div>
+              <div className="pr-col-desc">Flexible Yearly</div>
+              <div className="pr-col-price"><span>$</span>9</div>
+              <div className="pr-col-period">/year</div>
+              <div className="pr-col-slash">recurring subscription</div>
+              <button type="button" className="pr-col-btn pr-col-btn--starter" onClick={() => setFlexiblePlan('starter')}>Subscribe</button>
+            </div>
+            <div className="pr-col-head pr-col-head--fr">
+              <div className="pr-col-name">Free Plan</div>
+              <div className="pr-col-desc">Basic Listing</div>
+              <div className="pr-col-price"><span>$</span>0</div>
+              <div className="pr-col-period">forever</div>
+              <div className="pr-col-slash">no card required</div>
+              <button type="button" className="pr-col-btn pr-col-btn--free" onClick={() => setFlexiblePlan('free')}>Get Started</button>
             </div>
 
             {/* Feature rows */}
@@ -280,19 +282,30 @@ export default function PlansPage() {
                 <div className="pr-col-cat">{sec.title}</div>
                 <div className="pr-col-cat-cell pr-col-cat-cell--lt" />
                 <div className="pr-col-cat-cell pr-col-cat-cell--yr" />
+                <div className="pr-col-cat-cell pr-col-cat-cell--st" />
+                <div className="pr-col-cat-cell pr-col-cat-cell--fr" />
 
                 {sec.rows.map((row, ri) => {
                   const isLast = si === sections.length - 1 && ri === sec.rows.length - 1
+                  const hasStarter = STARTER_ROWS.has(row)
+                  const hasFree = FREE_ROWS.has(row)
                   return (
                     <Fragment key={row}>
                       <div className="pr-col-row">{row}</div>
                       <div className={`pr-col-check pr-col-check--lt${isLast ? ' pr-col-check--last' : ''}`}><Ck /></div>
                       <div className={`pr-col-check pr-col-check--yr${isLast ? ' pr-col-check--last' : ''}`}><Ck /></div>
+                      <div className={`pr-col-check pr-col-check--st${isLast ? ' pr-col-check--last' : ''}`}>
+                        {hasStarter ? <Ck /> : <span className="pr-col-dash">—</span>}
+                      </div>
+                      <div className={`pr-col-check pr-col-check--fr${isLast ? ' pr-col-check--last' : ''}`}>
+                        {hasFree ? <Ck /> : <span className="pr-col-dash">—</span>}
+                      </div>
                     </Fragment>
                   )
                 })}
               </Fragment>
             ))}
+          </div>
           </div>
         </div>
       </section>
@@ -343,12 +356,21 @@ export default function PlansPage() {
           </div>
         </div>
       </section>
-      {/* Payment Modal */}
+      {/* Payment Modal (Lifetime + Early Adopter) — unchanged */}
       {modalPlan && (
         <PaymentModal
           isOpen={!!modalPlan}
           onClose={() => setModalPlan(null)}
           plan={modalPlan}
+        />
+      )}
+
+      {/* Flexible Modal (Free + Starter) */}
+      {flexiblePlan && (
+        <FlexibleModal
+          isOpen={!!flexiblePlan}
+          onClose={() => setFlexiblePlan(null)}
+          plan={flexiblePlan}
         />
       )}
     </main>

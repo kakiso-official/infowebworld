@@ -1,0 +1,228 @@
+/* ============================================================
+   FLEXIBLE PLANS — Free + Starter ($49/yr subscription)
+   Namespace: fp-* (fully independent of fc-*, pr-* existing CSS)
+   ============================================================ */
+
+.fp-section {
+  padding: clamp(2.5rem, 5vw, 4rem) 0;
+  background: #fff;
+  border-top: 1px solid var(--h-border);
+}
+
+/* ── Section header ── */
+.fp-header {
+  text-align: center;
+  margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+}
+.fp-section-tag {
+  display: inline-flex; align-items: center; gap: .35rem;
+  padding: .3rem .75rem; border-radius: 999px;
+  background: rgba(var(--h-accent-rgb), .08);
+  border: 1px solid rgba(var(--h-accent-rgb), .12);
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .65rem; font-weight: 700; color: var(--h-accent);
+  text-transform: uppercase; letter-spacing: .06em;
+  margin-bottom: .75rem;
+}
+.fp-section-heading {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 800; color: var(--h-heading);
+  line-height: 1.1; letter-spacing: -.02em; margin-bottom: .5rem;
+}
+.fp-section-heading em { font-style: normal; color: var(--h-accent); }
+.fp-section-desc {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(.875rem, 1.2vw, 1rem); color: var(--h-body);
+  max-width: 520px; margin: 0 auto;
+}
+
+/* ── Two-card grid ── */
+.fp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  max-width: 860px;
+  margin: 0 auto;
+  align-items: stretch;
+}
+
+/* ── Card base ── */
+.fp-card {
+  position: relative;
+  padding: clamp(1.75rem, 3vw, 2.25rem) clamp(1.25rem, 2.5vw, 2rem);
+  background: #fff;
+  border: 1.5px solid var(--h-border);
+  border-radius: 18px;
+  display: flex; flex-direction: column;
+  transition: transform .3s cubic-bezier(.16, 1, .3, 1),
+              box-shadow .3s cubic-bezier(.16, 1, .3, 1);
+}
+.fp-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, .06);
+}
+
+/* ── Free card ── */
+.fp-card--free {
+  border-color: var(--h-border);
+  background: linear-gradient(180deg, #fff 0%, rgba(47, 174, 106, .03) 100%);
+}
+.fp-card--free:hover {
+  box-shadow: 0 8px 32px rgba(47, 174, 106, .08);
+}
+
+/* ── Starter card ── */
+.fp-card--starter {
+  border-color: rgba(59, 130, 246, .25);
+  background: linear-gradient(180deg, #fff 0%, rgba(59, 130, 246, .03) 100%);
+  box-shadow: 0 4px 20px rgba(59, 130, 246, .05);
+}
+.fp-card--starter:hover {
+  box-shadow: 0 8px 32px rgba(59, 130, 246, .12);
+}
+
+/* ── Badge (top-right) ── */
+.fp-badge {
+  position: absolute;
+  top: 14px; right: 14px;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .62rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .08em;
+  padding: .3rem .6rem;
+  border-radius: 999px;
+}
+.fp-badge--free {
+  color: #2FAE6A;
+  background: rgba(47, 174, 106, .1);
+  border: 1px solid rgba(47, 174, 106, .2);
+}
+.fp-badge--starter {
+  color: #1E40AF;
+  background: rgba(59, 130, 246, .1);
+  border: 1px solid rgba(59, 130, 246, .2);
+}
+
+/* ── Heading ── */
+.fp-heading {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(1.15rem, 1.8vw, 1.4rem);
+  font-weight: 800; color: var(--h-heading);
+  line-height: 1.2; letter-spacing: -.01em;
+  margin-bottom: 1rem;
+}
+
+/* ── Price block ── */
+.fp-price-block {
+  display: flex; align-items: baseline; gap: .35rem;
+  margin-bottom: .35rem;
+}
+.fp-price {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 900; color: var(--h-heading);
+  line-height: 1; letter-spacing: -.03em;
+}
+.fp-price-label {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .8rem; font-weight: 600; color: var(--h-body);
+}
+.fp-price-after {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .72rem; color: var(--h-muted);
+  margin-bottom: 1.25rem;
+}
+
+/* ── Features list ── */
+.fp-features {
+  list-style: none;
+  padding: 0; margin: 0 0 1.5rem 0;
+  display: flex; flex-direction: column; gap: .5rem;
+  flex: 1;
+}
+.fp-feature {
+  display: flex; align-items: center; gap: .55rem;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .82rem; color: var(--h-body);
+  line-height: 1.4;
+}
+.fp-check {
+  flex-shrink: 0;
+  width: 16px; height: 16px;
+  stroke: #2FAE6A;
+  fill: none; stroke-width: 2.5;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.fp-card--starter .fp-check {
+  stroke: #3B82F6;
+}
+
+/* ── CTA button ── */
+.fp-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .45rem;
+  width: 100%;
+  padding: .85rem 1.25rem;
+  border-radius: 999px; border: none;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .85rem; font-weight: 700;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s, background .2s;
+  margin-bottom: .9rem;
+}
+.fp-btn:hover {
+  transform: translateY(-1px);
+}
+.fp-btn-arrow {
+  width: 16px; height: 16px;
+  stroke: currentColor; fill: none; stroke-width: 2.5;
+  stroke-linecap: round; stroke-linejoin: round;
+  transition: transform .2s;
+}
+.fp-btn:hover .fp-btn-arrow { transform: translateX(3px); }
+
+/* Free button — outlined ghost */
+.fp-btn--free {
+  background: #1A1A1A; color: #fff;
+}
+.fp-btn--free:hover {
+  background: #2FAE6A;
+  box-shadow: 0 6px 20px rgba(47, 174, 106, .25);
+}
+
+/* Starter button — filled blue */
+.fp-btn--starter {
+  background: #3B82F6; color: #fff;
+}
+.fp-btn--starter:hover {
+  background: #1E40AF;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, .3);
+}
+
+/* ── Footer note / guarantee ── */
+.fp-note, .fp-guarantee {
+  display: flex; align-items: center; gap: .45rem;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .72rem; color: var(--h-muted);
+  line-height: 1.3;
+}
+.fp-guarantee strong {
+  color: var(--h-heading); font-weight: 700;
+}
+.fp-note-icon, .fp-guarantee-icon {
+  flex-shrink: 0;
+  width: 14px; height: 14px;
+  stroke: currentColor; fill: none; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .fp-grid {
+    grid-template-columns: 1fr;
+    max-width: 420px;
+  }
+  .fp-badge {
+    top: 12px; right: 12px;
+    font-size: .58rem; padding: .25rem .5rem;
+  }
+}

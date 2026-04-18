@@ -3,8 +3,11 @@ import { useState, useEffect, Fragment } from 'react'
 import Link from '../../../components/CountryLink'
 import { fetchConfig } from '../../../config/site-config'
 import PaymentModal from './PaymentModal'
+import FlexibleModal from './FlexibleModal'
+import { STARTER_ROWS, FREE_ROWS } from './planGating'
 
 type PlanKey = 'lifetime' | 'yearly'
+type FlexibleKey = 'free' | 'starter'
 
 const Ck = () => (
   <svg viewBox="0 0 24 24" className="pr-ck"><path d="M20 6 9 17l-5-5" /></svg>
@@ -149,6 +152,7 @@ const hiddenCount = totalFeatures - 10
 
 export default function Pricing() {
   const [modalPlan, setModalPlan] = useState<PlanKey | null>(null)
+  const [flexiblePlan, setFlexiblePlan] = useState<FlexibleKey | null>(null)
   const [slots, setSlots] = useState({ ltEx: false, yrEx: false })
   useEffect(() => {
     fetchConfig().then(c => setSlots({
@@ -165,13 +169,13 @@ export default function Pricing() {
           pricing for every business
         </h2>
 
-        <div className="pr-cols">
+        <div className="pr-cols-scroll">
+        <div className="pr-cols pr-cols--4plans">
           {/* ── Card headers row ── */}
           <div className="pr-col-spacer" />
 
           <div className="pr-col-head pr-col-head--lt">
-            <div className="pr-col-badge">
-Recommend</div>
+            <div className="pr-col-badge">Recommend</div>
             <div className="pr-col-name">Elite Founding Business Plan</div>
             <div className="pr-col-desc">Recommended For Businesses</div>
             <div className="pr-col-price"><span>$</span>{slots.ltEx ? '999' : '239'}</div>
@@ -189,18 +193,50 @@ Recommend</div>
             <button type="button" className="pr-col-btn pr-col-btn--secondary" onClick={() => setModalPlan('yearly')}>Get Started</button>
           </div>
 
+          <div className="pr-col-head pr-col-head--st">
+            <div className="pr-col-name">Starter Plan</div>
+            <div className="pr-col-desc">Flexible Yearly</div>
+            <div className="pr-col-price"><span>$</span>9</div>
+            <div className="pr-col-period">/year</div>
+            <div className="pr-col-slash">recurring subscription</div>
+            <button type="button" className="pr-col-btn pr-col-btn--starter" onClick={() => setFlexiblePlan('starter')}>Subscribe</button>
+          </div>
+
+          <div className="pr-col-head pr-col-head--fr">
+            <div className="pr-col-name">Free Plan</div>
+            <div className="pr-col-desc">Basic Listing</div>
+            <div className="pr-col-price"><span>$</span>0</div>
+            <div className="pr-col-period">forever</div>
+            <div className="pr-col-slash">no card required</div>
+            <button type="button" className="pr-col-btn pr-col-btn--free" onClick={() => setFlexiblePlan('free')}>Get Started</button>
+          </div>
+
           {/* ── Feature rows — first 10 only ── */}
           <div className="pr-col-cat">{sections[0].title}</div>
           <div className="pr-col-cat-cell pr-col-cat-cell--lt" />
           <div className="pr-col-cat-cell pr-col-cat-cell--yr" />
+          <div className="pr-col-cat-cell pr-col-cat-cell--st" />
+          <div className="pr-col-cat-cell pr-col-cat-cell--fr" />
 
-          {previewRows.map((row, ri) => (
-            <Fragment key={row}>
-              <div className="pr-col-row">{row}</div>
-              <div className={`pr-col-check pr-col-check--lt${ri === previewRows.length - 1 ? ' pr-col-check--last' : ''}`}><Ck /></div>
-              <div className={`pr-col-check pr-col-check--yr${ri === previewRows.length - 1 ? ' pr-col-check--last' : ''}`}><Ck /></div>
-            </Fragment>
-          ))}
+          {previewRows.map((row, ri) => {
+            const isLast = ri === previewRows.length - 1
+            const hasStarter = STARTER_ROWS.has(row)
+            const hasFree = FREE_ROWS.has(row)
+            return (
+              <Fragment key={row}>
+                <div className="pr-col-row">{row}</div>
+                <div className={`pr-col-check pr-col-check--lt${isLast ? ' pr-col-check--last' : ''}`}><Ck /></div>
+                <div className={`pr-col-check pr-col-check--yr${isLast ? ' pr-col-check--last' : ''}`}><Ck /></div>
+                <div className={`pr-col-check pr-col-check--st${isLast ? ' pr-col-check--last' : ''}`}>
+                  {hasStarter ? <Ck /> : <span className="pr-col-dash">—</span>}
+                </div>
+                <div className={`pr-col-check pr-col-check--fr${isLast ? ' pr-col-check--last' : ''}`}>
+                  {hasFree ? <Ck /> : <span className="pr-col-dash">—</span>}
+                </div>
+              </Fragment>
+            )
+          })}
+        </div>
         </div>
 
         {/* ── Fade + CTA ── */}
@@ -217,12 +253,21 @@ Recommend</div>
         </div>
       </div>
 
-      {/* Payment Modal */}
+      {/* Payment Modal — Lifetime + Early Adopter */}
       {modalPlan && (
         <PaymentModal
           isOpen={!!modalPlan}
           onClose={() => setModalPlan(null)}
           plan={modalPlan}
+        />
+      )}
+
+      {/* Flexible Modal — Free + Starter */}
+      {flexiblePlan && (
+        <FlexibleModal
+          isOpen={!!flexiblePlan}
+          onClose={() => setFlexiblePlan(null)}
+          plan={flexiblePlan}
         />
       )}
     </section>

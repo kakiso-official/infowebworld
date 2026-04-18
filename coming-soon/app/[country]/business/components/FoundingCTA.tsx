@@ -3,14 +3,19 @@
 import { useState, useEffect } from 'react'
 import { fetchConfig } from '../../../config/site-config'
 import PaymentModal from './PaymentModal'
+import FlexibleModal from './FlexibleModal'
 
 const features = ['Leads', 'Reviews', 'GEO', 'AEO', 'SEO Backlinks']
+const starterFeatures = ['Backlink', 'Reviews', 'Custom URL', 'FAQ', 'Analytics']
+const freeFeatures = ['Listing', 'Profile', 'Website Link', 'Social', '1 Category']
 
 type PlanKey = 'lifetime' | 'yearly'
+type FlexibleKey = 'free' | 'starter'
 
 export default function FoundingCTA() {
   const [cfg, setCfg] = useState({ lifetimeSlotsTotal: 199, lifetimeSlotsClaimed: 0, yearlySlotsTotal: 999, yearlySlotsClaimed: 0 })
   const [modalPlan, setModalPlan] = useState<PlanKey | null>(null)
+  const [flexiblePlan, setFlexiblePlan] = useState<FlexibleKey | null>(null)
 
   useEffect(() => {
     fetchConfig().then(c => setCfg({ lifetimeSlotsTotal: c.lifetimeSlotsTotal, lifetimeSlotsClaimed: c.lifetimeSlotsClaimed, yearlySlotsTotal: c.yearlySlotsTotal, yearlySlotsClaimed: c.yearlySlotsClaimed }))
@@ -30,7 +35,7 @@ export default function FoundingCTA() {
           <h2 className="fc-section-heading">
             Choose Your <em>Founding</em> Plan
           </h2><p>The earlier you join, the less you pay — forever. Only for Pioneer spots. Not Satisfied, we got you covered with Refund or Free Renewal, just ping us.</p>
-          
+
         </div>
 
         <div className="fc-grid">
@@ -129,7 +134,101 @@ export default function FoundingCTA() {
 
             <div className="fc-guarantee">
               <svg viewBox="0 0 24 24" className="fc-guarantee-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="M9 12l2 2 4-4" /></svg>
-              <span>Lead , CTA's — <strong>Less , Renewal is Free</strong></span>
+              <span>Lead , CTA&apos;s — <strong>Less , Renewal is Free</strong></span>
+            </div>
+          </div>
+
+          {/* ════════════ STARTER CARD (new) ════════════ */}
+          <div className="fc-card fc-card--starter">
+            <div className="fc-ribbon fc-ribbon--starter">Most Flexible</div>
+
+            <h3 className="fc-heading">
+              Starter<br />
+              Plan
+            </h3>
+
+            <div className="fc-price-block">
+              <span className="fc-price">$9</span>
+              <span className="fc-price-label">/year</span>
+            </div>
+            <div className="fc-price-after">
+              Recurring yearly. Cancel anytime.
+            </div>
+
+            <div className="fc-pills">
+              <span className="fc-pill fc-pill--slots">
+                <svg viewBox="0 0 24 24" className="fc-pill-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+                Unlimited Spots
+              </span>
+              <span className="fc-pill-divider" />
+              <span className="fc-pill fc-pill--renew">
+                <svg viewBox="0 0 24 24" className="fc-pill-icon"><path d="M23 4v6h-6M1 20v-6h6" /><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" /></svg>
+                Recurring Yearly
+              </span>
+            </div>
+
+            <div className="fc-features">
+              <span className="fc-features-label">Get</span>
+              {starterFeatures.map(f => (
+                <span key={f} className="fc-tag">{f}</span>
+              ))}
+            </div>
+
+            <button type="button" className="fc-btn fc-btn--starter" onClick={() => setFlexiblePlan('starter')}>
+              Subscribe — $9/yr
+              <svg viewBox="0 0 24 24" className="fc-btn-arrow"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+            </button>
+
+            <div className="fc-guarantee">
+              <svg viewBox="0 0 24 24" className="fc-guarantee-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="M9 12l2 2 4-4" /></svg>
+              <span>14-Day — <strong>Money Back Guarantee</strong></span>
+            </div>
+          </div>
+
+          {/* ════════════ FREE CARD (new) ════════════ */}
+          <div className="fc-card fc-card--free">
+            <div className="fc-ribbon fc-ribbon--free">Free Forever</div>
+
+            <h3 className="fc-heading">
+              Free<br />
+              Plan
+            </h3>
+
+            <div className="fc-price-block">
+              <span className="fc-price">$0</span>
+              <span className="fc-price-label">forever</span>
+            </div>
+            <div className="fc-price-after">
+              No card required. List instantly.
+            </div>
+
+            <div className="fc-pills">
+              <span className="fc-pill fc-pill--slots">
+                <svg viewBox="0 0 24 24" className="fc-pill-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+                Unlimited
+              </span>
+              <span className="fc-pill-divider" />
+              <span className="fc-pill fc-pill--renew">
+                <svg viewBox="0 0 24 24" className="fc-pill-icon"><path d="M23 4v6h-6M1 20v-6h6" /><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" /></svg>
+                Upgrade Anytime
+              </span>
+            </div>
+
+            <div className="fc-features">
+              <span className="fc-features-label">Get</span>
+              {freeFeatures.map(f => (
+                <span key={f} className="fc-tag">{f}</span>
+              ))}
+            </div>
+
+            <button type="button" className="fc-btn fc-btn--free" onClick={() => setFlexiblePlan('free')}>
+              Get Started Free
+              <svg viewBox="0 0 24 24" className="fc-btn-arrow"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+            </button>
+
+            <div className="fc-guarantee">
+              <svg viewBox="0 0 24 24" className="fc-guarantee-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="M9 12l2 2 4-4" /></svg>
+              <span>No Credit Card — <strong>Upgrade Later</strong></span>
             </div>
           </div>
         </div>
@@ -140,12 +239,21 @@ export default function FoundingCTA() {
         </a>
       </div>
 
-      {/* Payment Modal */}
+      {/* Payment Modal — Lifetime + Early Adopter (unchanged) */}
       {modalPlan && (
         <PaymentModal
           isOpen={!!modalPlan}
           onClose={() => setModalPlan(null)}
           plan={modalPlan}
+        />
+      )}
+
+      {/* Flexible Modal — Free + Starter */}
+      {flexiblePlan && (
+        <FlexibleModal
+          isOpen={!!flexiblePlan}
+          onClose={() => setFlexiblePlan(null)}
+          plan={flexiblePlan}
         />
       )}
     </section>
