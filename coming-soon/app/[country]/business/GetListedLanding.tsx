@@ -10,14 +10,24 @@ import Pricing from './components/Pricing'
 import HowItWorks from './components/HowItWorks'
 import Comparison from './components/Comparison'
 import FinalCTA from './components/FinalCTA'
-import ListingForm from './ListingForm'
+import ListingFormV2, { type PlanKey } from './ListingFormV2'
 import ScrollToTop from './components/ScrollToTop'
+
+const VALID_PLANS: PlanKey[] = ['free', 'starter', 'yearly', 'lifetime']
+
+function planFromUrl(): PlanKey | null {
+  if (typeof window === 'undefined') return null
+  const p = new URLSearchParams(window.location.search).get('plan')
+  return VALID_PLANS.includes(p as PlanKey) ? (p as PlanKey) : null
+}
 
 export default function GetListedLanding() {
   const [formOpen, setFormOpen] = useState(false)
   const [formMounted, setFormMounted] = useState(false)
+  const [plan, setPlan] = useState<PlanKey>('free')
 
-  const openForm = useCallback(() => {
+  const openForm = useCallback((withPlan?: PlanKey) => {
+    if (withPlan) setPlan(withPlan)
     setFormOpen(true)
     setFormMounted(true)
     document.body.style.overflow = 'hidden'
@@ -26,7 +36,22 @@ export default function GetListedLanding() {
   const closeForm = useCallback(() => {
     setFormOpen(false)
     document.body.style.overflow = ''
+    /* clean ?plan= from URL */
+    if (typeof window !== 'undefined' && window.location.search.includes('plan=')) {
+      const url = new URL(window.location.href)
+      url.searchParams.delete('plan')
+      window.history.replaceState({}, '', url.toString())
+    }
   }, [])
+
+  /* Auto-open from URL (?plan=X) after modals redirect to /business?plan=X */
+  useEffect(() => {
+    const p = planFromUrl()
+    if (p) {
+      setPlan(p)
+      openForm(p)
+    }
+  }, [openForm])
 
   /* Reset panel scroll to top each time it opens */
   useEffect(() => {
@@ -36,32 +61,35 @@ export default function GetListedLanding() {
     }
   }, [formOpen])
 
-  /* Restore body overflow on unmount (e.g. navigating away while panel is open) */
+  /* Restore body overflow on unmount */
   useEffect(() => {
     return () => { document.body.style.overflow = '' }
   }, [])
 
-  /* Intercept "get-listed" links and pricing CTA — open panel instead of navigating */
+  /* Intercept /business links — open panel instead of navigating.
+     Extracts ?plan= from the href if present. */
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       const el = e.target as HTMLElement
       const link = el.closest('a[href], button') as HTMLElement | null
       if (!link) return
-
-      /* Don't intercept clicks inside the panel itself */
       if (link.closest('.gl-panel')) return
 
       const href = link.getAttribute('href') || ''
-
-      /* Links to /business → open panel */
       if (href.includes('/business')) {
         e.preventDefault()
         e.stopPropagation()
-        openForm()
+        /* Try to read ?plan= from the link's href */
+        try {
+          const hrefUrl = new URL(href, window.location.origin)
+          const p = hrefUrl.searchParams.get('plan')
+          openForm(VALID_PLANS.includes(p as PlanKey) ? (p as PlanKey) : undefined)
+        } catch {
+          openForm()
+        }
         return
       }
 
-      /* Pricing CTA "Claim Founding Spot" → open panel */
       if (link.classList.contains('pr-cta--primary')) {
         e.preventDefault()
         e.stopPropagation()
@@ -85,7 +113,6 @@ export default function GetListedLanding() {
 
   return (
     <>
-      {/* Full landing page content — identical to home page */}
       <Hero />
       <Countdown />
       <Benefits />
@@ -98,13 +125,11 @@ export default function GetListedLanding() {
       <FinalCTA />
       <ScrollToTop />
 
-      {/* ── Backdrop overlay ── */}
       <div
         className={`gl-overlay${formOpen ? ' gl-overlay--open' : ''}`}
         onClick={closeForm}
       />
 
-      {/* ── Close button (fixed, above everything) ── */}
       {formOpen && (
         <button className="gl-panel-close" onClick={closeForm} aria-label="Close form">
           <svg viewBox="0 0 24 24">
@@ -114,9 +139,8 @@ export default function GetListedLanding() {
         </button>
       )}
 
-      {/* ── Slide-in form panel ── */}
       <div className={`gl-panel${formOpen ? ' gl-panel--open' : ''}`}>
-        {formMounted && <ListingForm />}
+        {formMounted && <ListingFormV2 plan={plan} />}
       </div>
     </>
   )

@@ -125,13 +125,13 @@ export default function PaymentModal({ isOpen, onClose, plan }: Props) {
     onClose()
     setTimeout(() => {
       const a = document.createElement('a')
-      a.href = '/business'
+      a.href = `/business?plan=${plan}`
       a.style.display = 'none'
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
     }, 150)
-  }, [onClose])
+  }, [onClose, plan])
 
   if (!isOpen) return null
 
