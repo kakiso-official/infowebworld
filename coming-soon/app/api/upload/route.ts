@@ -1,9 +1,20 @@
 import { NextRequest } from 'next/server'
+import { checkRateLimit } from '@/lib/rate-limit'
+import { getClientIp } from '@/lib/tracking'
 
 const CPANEL_UPLOAD_URL = 'https://infowebworld.com/infowebworld/api.php?action=file_upload'
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = await getClientIp()
+    const allowed = await checkRateLimit(ip, 'upload', 10, 600)
+    if (!allowed) {
+      return Response.json(
+        { error: 'Too many uploads. Try again later.' },
+        { status: 429 }
+      )
+    }
+
     const formData = await request.formData()
     const file = formData.get('file') as File | null
     const type = formData.get('type') as string | null

@@ -3,7 +3,6 @@ import { Nunito, Bricolage_Grotesque, Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { Suspense } from "react";
-import PageTracker from "./components/PageTracker";
 import NavigationProgress from "./components/NavigationProgress";
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -106,7 +105,7 @@ export default function RootLayout({
           gtag('config', 'G-C6LY2016NW');
         `}</Script>
         <Suspense><NavigationProgress /></Suspense>
-        <PageTracker />{children}
+        {children}
         <ScrollToTop />
       </body>
     </html>

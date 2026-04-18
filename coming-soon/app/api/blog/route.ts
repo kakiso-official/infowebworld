@@ -11,7 +11,10 @@ export async function GET(request: NextRequest) {
       LIMIT 50
     `)
 
-    return Response.json({ ok: true, data: rows })
+    return Response.json(
+      { ok: true, data: rows },
+      { headers: { 'Cache-Control': 'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400' } }
+    )
   } catch (err) {
     console.error('GET /api/blog error:', err)
     return Response.json({ error: 'Server error' }, { status: 500 })

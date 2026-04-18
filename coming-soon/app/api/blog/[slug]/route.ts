@@ -17,7 +17,10 @@ export async function GET(
       return Response.json({ error: 'Post not found' }, { status: 404 })
     }
 
-    return Response.json({ ok: true, data: post })
+    return Response.json(
+      { ok: true, data: post },
+      { headers: { 'Cache-Control': 'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400' } }
+    )
   } catch (err) {
     console.error('GET /api/blog/[slug] error:', err)
     return Response.json({ error: 'Server error' }, { status: 500 })
