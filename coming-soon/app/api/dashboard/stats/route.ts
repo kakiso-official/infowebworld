@@ -1,7 +1,10 @@
 import { NextRequest } from 'next/server'
 import { query, queryOne } from '@/lib/db'
+import { requireAdmin } from '@/lib/auth'
 
 export async function GET(request: NextRequest) {
+  const guard = await requireAdmin(request)
+  if (guard instanceof Response) return guard
   try {
     // --- Submission counts ---
     const submissionCounts = await queryOne<{

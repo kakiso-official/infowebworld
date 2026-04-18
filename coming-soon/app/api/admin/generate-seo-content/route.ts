@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server'
 import { query, queryOne, execute } from '@/lib/db'
+import { requireAdmin } from '@/lib/auth'
 
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent'
 
@@ -483,6 +484,8 @@ async function generateSection(categoryId: number, section: string) {
 
 /* ── POST: Generate for single category, single section, or batch ── */
 export async function POST(request: NextRequest) {
+  const guard = await requireAdmin(request)
+  if (guard instanceof Response) return guard
   try {
     const body = await request.json()
     const { categoryId, section } = body
@@ -509,7 +512,9 @@ export async function POST(request: NextRequest) {
 const SECTION_COLS = ['ai_summary','rich_description','buyers_guide','use_cases','comparisons','long_tail_keywords','complementary_categories','extended_faq'] as const
 
 /* ── GET: Check generation status with per-category section breakdown ── */
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const guard = await requireAdmin(request)
+  if (guard instanceof Response) return guard
   try {
     const total = await queryOne('SELECT COUNT(*) as cnt FROM categories WHERE level IN (1, 2, 3)')
     const generated = await queryOne('SELECT COUNT(*) as cnt FROM category_seo_content WHERE rich_description IS NOT NULL')

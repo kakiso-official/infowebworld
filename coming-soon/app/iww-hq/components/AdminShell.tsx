@@ -63,7 +63,11 @@ export default function AdminShell({ children, onLogout }: { children: React.Rea
         </nav>
 
         <div style={{ padding: '.65rem', borderTop: '1px solid rgba(255,255,255,.06)' }}>
-          <button onClick={() => { clearSession(); onLogout() }} style={{
+          <button onClick={async () => {
+            try { await fetch('/api/admin/logout', { method: 'POST', credentials: 'same-origin' }) } catch {}
+            clearSession()
+            onLogout()
+          }} style={{
             display: 'flex', alignItems: 'center', gap: '.65rem', width: '100%',
             padding: '.6rem .85rem', borderRadius: 12, border: 'none', cursor: 'pointer',
             fontSize: '.78rem', fontWeight: 600, color: 'rgba(255,255,255,.35)', background: 'transparent',

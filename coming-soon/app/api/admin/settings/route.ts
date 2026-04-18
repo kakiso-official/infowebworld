@@ -1,7 +1,10 @@
 import { NextRequest } from 'next/server'
 import { query, execute } from '@/lib/db'
+import { requireAdmin } from '@/lib/auth'
 
 export async function GET(request: NextRequest) {
+  const guard = await requireAdmin(request)
+  if (guard instanceof Response) return guard
   try {
     const rows = await query<{ key_name: string; value: string }>(
       'SELECT key_name, value FROM settings ORDER BY key_name'
@@ -23,6 +26,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const guard = await requireAdmin(request)
+  if (guard instanceof Response) return guard
   try {
     const body = await request.json()
 

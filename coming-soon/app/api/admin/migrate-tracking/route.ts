@@ -1,11 +1,16 @@
+import { NextRequest } from 'next/server'
 import { execute } from '@/lib/db'
+import { requireAdmin } from '@/lib/auth'
 
 /**
  * POST /api/admin/migrate-tracking
  * Ensures all tracking V2 columns exist on page_views.
  * Safe to run multiple times — skips columns that already exist.
  */
-export async function POST() {
+export async function POST(request: NextRequest) {
+  const guard = await requireAdmin(request)
+  if (guard instanceof Response) return guard
+
   const results: string[] = []
 
   const columns = [

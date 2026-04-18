@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { verifyCredentials, setSession } from '../utils/hash'
+import { setSession } from '../utils/hash'
 
 export default function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
   const [user, setUser] = useState('')
@@ -16,10 +16,29 @@ export default function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
     e.preventDefault()
     if (locked || loading) return
     setLoading(true); setErr('')
-    const ok = await verifyCredentials(user, pass)
-    if (ok) { setSession(); onSuccess() }
-    else { setAttempts(a => a + 1); setErr(attempts >= 4 ? 'Too many attempts. Refresh page.' : 'Invalid credentials.') }
-    setLoading(false)
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: user, password: pass }),
+        credentials: 'same-origin',
+      })
+      const data = await res.json().catch(() => ({}))
+      if (res.ok && data?.ok) {
+        setSession()
+        onSuccess()
+      } else {
+        setAttempts(a => a + 1)
+        const msg = res.status === 429
+          ? 'Too many login attempts. Try again later.'
+          : (data?.error || 'Invalid credentials.')
+        setErr(attempts >= 4 ? 'Too many attempts. Refresh page.' : msg)
+      }
+    } catch {
+      setErr('Network error. Try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const inputStyle: React.CSSProperties = {

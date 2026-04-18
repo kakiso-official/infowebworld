@@ -3,6 +3,7 @@ import crypto from 'node:crypto'
 import { query, queryOne, execute } from '@/lib/db'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { getClientIp } from '@/lib/tracking'
+import { adminCookieHeader } from '@/lib/auth'
 import { compare } from 'bcryptjs'
 
 export async function POST(request: NextRequest) {
@@ -66,15 +67,17 @@ export async function POST(request: NextRequest) {
       [ip, admin.id]
     )
 
-    return Response.json({
-      ok: true,
-      token,
-      admin: {
-        name: admin.display_name,
-        role: admin.role,
+    return Response.json(
+      {
+        ok: true,
+        admin: {
+          name: admin.display_name,
+          role: admin.role,
+        },
+        expiresAt: expiresAt.toISOString(),
       },
-      expiresAt: expiresAt.toISOString(),
-    })
+      { headers: { 'Set-Cookie': adminCookieHeader(token) } }
+    )
   } catch (err) {
     console.error('Admin login error:', err)
     return Response.json(

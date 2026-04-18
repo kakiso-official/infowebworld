@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server'
 import { queryOne, execute } from '@/lib/db'
+import { requireAdmin } from '@/lib/auth'
 
 function jp(val: unknown) {
   if (!val) return null
@@ -20,9 +21,11 @@ const VALID_SECTIONS = new Set([
 
 /* ── GET: Fetch SEO content + category meta for one category ── */
 export async function GET(
-  _req: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ categoryId: string }> }
 ) {
+  const guard = await requireAdmin(request)
+  if (guard instanceof Response) return guard
   const { categoryId } = await params
   const cid = Number(categoryId)
   if (!cid) return Response.json({ ok: false, error: 'Invalid category ID' }, { status: 400 })
@@ -80,6 +83,8 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ categoryId: string }> }
 ) {
+  const guard = await requireAdmin(req)
+  if (guard instanceof Response) return guard
   const { categoryId } = await params
   const cid = Number(categoryId)
   if (!cid) return Response.json({ ok: false, error: 'Invalid category ID' }, { status: 400 })

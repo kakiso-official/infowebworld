@@ -1,10 +1,13 @@
 import { NextRequest } from 'next/server'
 import { execute } from '@/lib/db'
+import { requireAdmin } from '@/lib/auth'
 
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const guard = await requireAdmin(request)
+  if (guard instanceof Response) return guard
   try {
     const { id } = await params
 

@@ -1,7 +1,10 @@
 import { NextRequest } from 'next/server'
 import { execute } from '@/lib/db'
+import { requireAdmin } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
+  const guard = await requireAdmin(request)
+  if (guard instanceof Response) return guard
   try {
     const body = await request.json()
     const { launched, level, parent_id } = body
