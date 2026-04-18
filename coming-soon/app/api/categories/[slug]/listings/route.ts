@@ -86,16 +86,19 @@ export async function GET(
 
     const listings = await query(listingSql, listingParams)
 
-    return Response.json({
-      ok: true,
-      data: listings,
-      meta: {
-        page,
-        perPage,
-        total,
-        totalPages: Math.ceil(total / perPage),
+    return Response.json(
+      {
+        ok: true,
+        data: listings,
+        meta: {
+          page,
+          perPage,
+          total,
+          totalPages: Math.ceil(total / perPage),
+        },
       },
-    })
+      { headers: { 'Cache-Control': 'public, max-age=300, s-maxage=86400, stale-while-revalidate=86400' } }
+    )
   } catch (err) {
     console.error('GET /api/categories/[slug]/listings error:', err)
     return Response.json({ error: 'Server error' }, { status: 500 })

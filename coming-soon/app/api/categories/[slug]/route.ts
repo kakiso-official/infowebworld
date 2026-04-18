@@ -93,7 +93,7 @@ export async function GET(
           activeListings: countRow?.count ?? 0,
         },
       },
-      { headers: { 'Cache-Control': 'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400' } }
+      { headers: { 'Cache-Control': 'public, max-age=300, s-maxage=86400, stale-while-revalidate=86400' } }
     )
   } catch (err) {
     console.error('GET /api/categories/[slug] error:', err)

@@ -67,7 +67,7 @@ export async function GET(
 
     return Response.json(
       { listing, breadcrumb, related },
-      { headers: { 'Cache-Control': 'public, max-age=120, s-maxage=3600, stale-while-revalidate=86400' } }
+      { headers: { 'Cache-Control': 'public, max-age=300, s-maxage=86400, stale-while-revalidate=86400' } }
     )
   } catch (err) {
     console.error('GET /api/listings/[slug] error:', err)
