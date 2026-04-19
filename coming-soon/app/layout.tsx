@@ -5,6 +5,7 @@ import "./globals.css";
 import { Suspense } from "react";
 import NavigationProgress from "./components/NavigationProgress";
 import ScrollToTop from "./components/ScrollToTop";
+import GoogleOneTap from "./components/auth/GoogleOneTap";
 
 const nunito = Nunito({
   variable: "--font-nunito",
@@ -105,6 +106,7 @@ export default function RootLayout({
           gtag('config', 'G-C6LY2016NW');
         `}</Script>
         <Suspense><NavigationProgress /></Suspense>
+        <Suspense><GoogleOneTap /></Suspense>
         {children}
         <ScrollToTop />
       </body>

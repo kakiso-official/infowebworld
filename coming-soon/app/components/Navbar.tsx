@@ -4,6 +4,7 @@ import Link from './CountryLink'
 import { BASE } from '../config/base-path'
 import CountrySwitcher from './CountrySwitcher'
 import GlobalSearch from './GlobalSearch'
+import UserMenu from './auth/UserMenu'
 
 /* ═══════════════════════════════════════════
    Header — Stripe-style mega-menu dropdowns
@@ -324,6 +325,7 @@ export default function Navbar({ sectorSlug, hideSearch }: { sectorSlug?: string
 
           <div className="nh-actions">
             <CountrySwitcher />
+            <UserMenu />
             <Link href="/business" className="nh-biz">iWW Business</Link>
             <button className="nh-burger" onClick={toggleMenu}
               aria-label="Menu" aria-expanded={menuOpen} type="button">

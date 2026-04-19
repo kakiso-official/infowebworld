@@ -195,11 +195,11 @@ export default function Pricing() {
 
           <div className="pr-col-head pr-col-head--st">
             <div className="pr-col-name">Starter Plan</div>
-            <div className="pr-col-desc">Flexible Yearly</div>
-            <div className="pr-col-price"><span>$</span>9</div>
-            <div className="pr-col-period">/year</div>
-            <div className="pr-col-slash">recurring subscription</div>
-            <button type="button" className="pr-col-btn pr-col-btn--starter" onClick={() => setFlexiblePlan('starter')}>Subscribe</button>
+            <div className="pr-col-desc">Pay Once, Yours Forever</div>
+            <div className="pr-col-price"><span>$</span>49</div>
+            <div className="pr-col-period">one-time</div>
+            <div className="pr-col-slash">no renewals · 14-day refund</div>
+            <button type="button" className="pr-col-btn pr-col-btn--starter" onClick={() => setFlexiblePlan('starter')}>Get Starter</button>
           </div>
 
           <div className="pr-col-head pr-col-head--fr">

@@ -28,7 +28,7 @@ export const PLAN_CAPS: Record<PlanKey, PlanCaps> = {
   starter: {
     maxScreenshots: 3, maxFeatures: 8, maxFaqs: 3, maxTags: 12, minSpecializations: 2,
     hasFaqs: true, hasPremium: false,
-    label: 'Starter', price: '$49/yr', accent: '#E8553D',
+    label: 'Starter', price: '$49 one-time', accent: '#E8553D',
     description: 'SEO-ready listing with reviews and backlink',
   },
   yearly: {

@@ -47,6 +47,8 @@ export const ic = {
   file: 'M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z|M14 2v6h6|M16 13H8|M16 17H8|M10 9H8',
   tag: 'M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z|M7 7h.01',
   helpCircle: 'M12 2a10 10 0 100 20 10 10 0 000-20z|M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3|M12 17h.01',
+  power: 'M18.36 6.64a9 9 0 1 1-12.73 0|M12 2v10',
+  lock: 'M4 11h16a1 1 0 011 1v9a1 1 0 01-1 1H4a1 1 0 01-1-1v-9a1 1 0 011-1z|M8 11V7a4 4 0 018 0v4',
 } as const
 
 /* Name alias map — resolves Hugeicons naming to our icon keys */

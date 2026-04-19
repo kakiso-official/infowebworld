@@ -11,15 +11,15 @@ interface Props {
 }
 
 /**
- * Modal for the two new plans. Independent of PaymentModal.tsx which handles
- * the existing Lifetime + Early Adopter Order flow.
+ * Modal for the two flexible plans. Separate from PaymentModal which
+ * carries the Founding Lifetime + Early Adopter offers.
  *
  * - Free: no PayPal. Success confirmation → open listing form.
- * - Starter: PayPal recurring subscription ($9/year — test pricing).
+ * - Starter: PayPal one-time payment ($49 lifetime). Real money, same
+ *   order flow as Elite Lifetime, just a different amount.
  */
 export default function FlexibleModal({ isOpen, onClose, plan }: Props) {
   const [paypalReady, setPaypalReady] = useState(false)
-  const [planId, setPlanId] = useState<string | null>(null)
   const [paying, setPaying] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState<string | null>(null)
@@ -29,10 +29,11 @@ export default function FlexibleModal({ isOpen, onClose, plan }: Props) {
   const isFree = plan === 'free'
   const isStarter = plan === 'starter'
 
-  const displayPrice = isFree ? '0' : '9'
-  const period = isFree ? 'forever' : '/year'
+  const displayPrice = isFree ? '0' : '49'
+  const amount = isFree ? '0.00' : '49.00'
+  const period = isFree ? 'forever' : 'one-time'
   const title = isFree ? 'Free Plan' : 'Starter Plan'
-  const tagText = isFree ? 'Free — Basic Listing' : 'Flexible — Yearly Subscription'
+  const tagText = isFree ? 'Free — Basic Listing' : 'Pay Once — Yours Forever'
   const features = isFree
     ? ['Basic Listing', 'Public Profile', 'Social Links', '1 Category']
     : ['DoFollow Backlink', 'Verified Reviews', 'Custom URL', 'FAQ Section', 'Basic Analytics']
@@ -61,34 +62,22 @@ export default function FlexibleModal({ isOpen, onClose, plan }: Props) {
     return () => window.removeEventListener('keydown', h)
   }, [isOpen, onClose])
 
-  /* ── Load PayPal Subscription SDK (Starter only).
-        Distinct script id from PaymentModal's one-time SDK so both can coexist. ── */
+  /* ── Load PayPal one-time SDK (Starter only). Shares the script id with
+        PaymentModal so we don't double-load the same SDK. ── */
   useEffect(() => {
     if (!isOpen || isFree) return
-    if (document.getElementById('paypal-sdk-sub')) { setPaypalReady(true); return }
+    if (document.getElementById('paypal-sdk')) { setPaypalReady(true); return }
     const s = document.createElement('script')
-    s.id = 'paypal-sdk-sub'
-    s.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&vault=true&intent=subscription`
+    s.id = 'paypal-sdk'
+    s.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=USD`
     s.onload = () => setPaypalReady(true)
     s.onerror = () => setError('Failed to load payment system. Please refresh.')
     document.head.appendChild(s)
   }, [isOpen, isFree])
 
-  /* ── Fetch the PayPal subscription plan ID for Starter ── */
+  /* ── Render PayPal buttons (Starter one-time) ── */
   useEffect(() => {
-    if (!isOpen || !isStarter || planId) return
-    fetch('/api/paypal/starter-plan')
-      .then(r => r.json())
-      .then(d => {
-        if (d.planId) setPlanId(d.planId)
-        else setError(d.error || 'Unable to load subscription plan.')
-      })
-      .catch(() => setError('Unable to load subscription plan.'))
-  }, [isOpen, isStarter, planId])
-
-  /* ── Render PayPal subscription buttons ── */
-  useEffect(() => {
-    if (!isOpen || !isStarter || !paypalReady || !planId || !paypalRef.current || success) return
+    if (!isOpen || !isStarter || !paypalReady || !paypalRef.current || success) return
     if (renderedRef.current === plan) return
 
     // @ts-expect-error PayPal SDK loaded globally
@@ -99,27 +88,31 @@ export default function FlexibleModal({ isOpen, onClose, plan }: Props) {
     renderedRef.current = plan
 
     paypal.Buttons({
-      style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'subscribe', height: 48 },
-      createSubscription: (_d: unknown, actions: { subscription: { create: (o: unknown) => Promise<string> } }) =>
-        actions.subscription.create({
-          plan_id: planId,
+      style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay', height: 48 },
+      createOrder: (_d: unknown, actions: { order: { create: (o: unknown) => Promise<string> } }) =>
+        actions.order.create({
+          purchase_units: [{
+            description: 'InfoWebWorld — Starter Plan (Lifetime)',
+            amount: { currency_code: 'USD', value: amount },
+          }],
         }),
-      onApprove: async (data: { subscriptionID: string }) => {
+      onApprove: async (_d: { orderID: string }, actions: { order: { capture: () => Promise<{ id: string }> } }) => {
         setPaying(true)
         setError('')
         try {
-          setSuccess(data.subscriptionID)
+          const details = await actions.order.capture()
+          setSuccess(details.id)
         } catch {
-          setError('Subscription capture failed. Please try again.')
+          setError('Payment capture failed. Please try again.')
         }
         setPaying(false)
       },
-      onError: () => setError('Subscription failed. Please try again.'),
-      onCancel: () => setError('Subscription was cancelled.'),
+      onError: () => setError('Payment failed. Please try again.'),
+      onCancel: () => setError('Payment was cancelled.'),
     }).render(paypalRef.current)
-  }, [isOpen, isStarter, paypalReady, planId, plan, success])
+  }, [isOpen, isStarter, paypalReady, plan, success, amount])
 
-  /* ── Continue (Free: skip payment, Starter: after successful subscription) ── */
+  /* ── Continue (Free: skip payment, Starter: after successful order) ── */
   const handleContinue = useCallback(() => {
     onClose()
     setTimeout(() => {
@@ -148,21 +141,21 @@ export default function FlexibleModal({ isOpen, onClose, plan }: Props) {
               <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>
             </div>
             <h3 className="pm-success-title">
-              {isFree ? 'Ready to list for free' : 'Subscription Active!'}
+              {isFree ? 'Ready to list for free' : 'Payment Successful!'}
             </h3>
             <p className="pm-success-desc">
               {isFree
                 ? 'Your free basic listing is one form away. No payment required.'
-                : <>Your <strong>Starter ($9/year)</strong> subscription is set up.</>}
+                : <>Your <strong>Starter Plan ($49 lifetime)</strong> is confirmed.</>}
             </p>
-            {success && <p className="pm-success-order">Subscription ID: {success}</p>}
+            {success && <p className="pm-success-order">Order ID: {success}</p>}
             <button type="button" className="pm-submit-btn" onClick={handleContinue}>
               {isFree ? 'Continue to Listing Form' : 'Submit Your Listing'}
               <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
             </button>
           </div>
         ) : (
-          /* ════════ STARTER SUBSCRIPTION STATE ════════ */
+          /* ════════ STARTER PAYMENT STATE ════════ */
           <>
             <div className="pm-tag pm-tag--yr">{tagText}</div>
 
@@ -190,10 +183,8 @@ export default function FlexibleModal({ isOpen, onClose, plan }: Props) {
               {paying ? (
                 <div className="pm-loading">
                   <svg viewBox="0 0 24 24" className="pm-spinner"><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg>
-                  Processing subscription...
+                  Processing payment...
                 </div>
-              ) : !planId ? (
-                <div className="pm-loading">Loading subscription plan...</div>
               ) : (
                 <div ref={paypalRef}>
                   {!paypalReady && <div className="pm-loading">Loading payment options...</div>}
@@ -210,7 +201,7 @@ export default function FlexibleModal({ isOpen, onClose, plan }: Props) {
 
             <p className="pm-secure">
               <svg viewBox="0 0 24 24" className="pm-lock-icon"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
-              Secure subscription powered by PayPal. Cancel anytime.
+              Secure one-time payment powered by PayPal. No renewals.
             </p>
           </>
         )}

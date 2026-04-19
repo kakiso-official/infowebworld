@@ -36,7 +36,7 @@ export default function FlexiblePlans() {
             Start smaller. <em>Grow</em> when ready.
           </h2>
           <p className="fp-section-desc">
-            Not ready for a founding spot? Get listed for free or go with our flexible Starter subscription.
+            Not ready for a founding spot? Get listed for free or lock in our Starter plan once for $49.
           </p>
         </div>
 

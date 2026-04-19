@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { query, queryOne, execute } from '@/lib/db'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { getClientIp } from '@/lib/tracking'
+import { getUserFromRequest } from '@/lib/user-auth'
 
 export async function GET(request: NextRequest) {
   try {
@@ -92,6 +93,10 @@ export async function POST(request: NextRequest) {
       planId = plan ? Number(plan.id) : null
     }
 
+    // Attach the authenticated business user (if any) so it shows on their dashboard
+    const authedUser = await getUserFromRequest(request)
+    const userId: number | null = authedUser ? authedUser.id : null
+
     const uuid = crypto.randomUUID()
     const slug = slugify(body.companyName) + '-' + uuid.slice(0, 8)
 
@@ -110,12 +115,12 @@ export async function POST(request: NextRequest) {
       `INSERT INTO submissions (
         uuid, slug, company_name, contact_name, email, phone_code, phone, website,
         category_id, listing_type_id, country_id, city, state, tagline, description,
-        founded_year, team_size, plan_id,
+        founded_year, team_size, plan_id, user_id,
         logo_url, screenshots, demo_video,
         features, integrations, pricing_model, pricing_tiers,
         funding, hq_location, linkedin, twitter, facebook, faqs,
         paypal_order_id, payment_status, status, ip_address
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         uuid, slug,
         body.companyName.trim(),
@@ -134,6 +139,7 @@ export async function POST(request: NextRequest) {
         body.founded ? Number(body.founded) : null,
         body.employees || null,
         planId,
+        userId,
         body.logoUrl || null,
         screenshots,
         body.demoVideo || null,

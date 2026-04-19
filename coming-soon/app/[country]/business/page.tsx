@@ -41,7 +41,7 @@ const faqJsonLd = {
     {
       '@type': 'Question',
       name: 'How much does it cost to list my business on InfoWebWorld?',
-      acceptedAnswer: { '@type': 'Answer', text: 'InfoWebWorld offers a free basic listing. Premium plans start at $99/year (Early Adopter) or $239 one-time (Elite Lifetime). Founding member pricing is available during pre-launch.' },
+      acceptedAnswer: { '@type': 'Answer', text: 'InfoWebWorld offers a free basic listing. Paid plans start at $49 one-time (Starter), $99/year (Early Adopter), or $239 one-time (Elite Lifetime). Founding member pricing is available during pre-launch.' },
     },
     {
       '@type': 'Question',
