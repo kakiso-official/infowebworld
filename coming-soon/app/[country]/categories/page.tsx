@@ -108,7 +108,6 @@ export default async function CategoriesPage({ params }: { params: Promise<{ cou
         <h1 className="cd-server-h1">Business Categories in {countryName}</h1>
         <p className="cd-server-desc">Explore {sectors} industry sectors, {l2Count} categories, and {l3Count} subcategories. Find and compare verified businesses across every industry.</p>
         <h2 className="cd-server-h2">All Sectors</h2>
-        <h2 className="cd-server-h2">All Categories</h2>
       </div>
       <Suspense fallback={null}>
         <CategoriesBrowse initialCategories={initialCategories} />

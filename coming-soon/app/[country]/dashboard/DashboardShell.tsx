@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { BASE } from '../../config/base-path'
+import { countryHref } from '../../config/countries'
 import { I, ic, type IconKey } from '../../components/icons'
 import { SECTIONS, FEATURES, unlockedBySection } from './features'
 import type { UserPlan } from '@/lib/user-plan-types'
@@ -59,7 +60,8 @@ export default function DashboardShell({ country, user, plan, children }: Props)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [loggingOut, setLoggingOut] = useState(false)
 
-  const base = `/${country}/dashboard`
+  const base = countryHref(country, '/dashboard')
+  const homeHref = countryHref(country)
   const unlocked = useMemo(() => unlockedBySection(plan.tier), [plan.tier])
 
   /** Grouped nav: Overview / Features / Account, each with a header. */
@@ -82,14 +84,14 @@ export default function DashboardShell({ country, user, plan, children }: Props)
     })
     const account: NavRow[] = [
       { key: 'settings', href: `${base}/settings`, label: 'Settings',    icon: 'sliders'      },
-      { key: 'browse',   href: `/${country}`,      label: 'Browse Site', icon: 'externalLink' },
+      { key: 'browse',   href: homeHref,           label: 'Browse Site', icon: 'externalLink' },
     ]
     return [
       { label: 'Overview', rows: overview },
       { label: 'Features', rows: features },
       { label: 'Account',  rows: account  },
     ]
-  }, [base, country, unlocked])
+  }, [base, homeHref, unlocked])
 
   const isActive = (row: NavRow): boolean => {
     if (row.sectionKey) {
@@ -110,7 +112,7 @@ export default function DashboardShell({ country, user, plan, children }: Props)
   const logout = async () => {
     setLoggingOut(true)
     await fetch('/api/auth/logout', { method: 'POST' })
-    router.push(`/${country}`)
+    router.push(homeHref)
     router.refresh()
   }
 
@@ -118,7 +120,7 @@ export default function DashboardShell({ country, user, plan, children }: Props)
     <div className="ds-root">
       {/* Mobile top bar */}
       <div className="ds-mobile-bar">
-        <Link href={`/${country}`} className="ds-mobile-logo">
+        <Link href={homeHref} className="ds-mobile-logo">
           <img src={`${BASE}/logo/infowebworldlogo-logoforlightbackgrounds.png`} alt="InfoWebWorld" />
         </Link>
         <button
@@ -135,14 +137,14 @@ export default function DashboardShell({ country, user, plan, children }: Props)
       <aside className={`ds-sidebar${drawerOpen ? ' ds-sidebar--open' : ''}`}>
         {/* Brand */}
         <div className="ds-brand">
-          <Link href={`/${country}`} className="ds-brand-logo" onClick={() => setDrawerOpen(false)}>
+          <Link href={homeHref} className="ds-brand-logo" onClick={() => setDrawerOpen(false)}>
             <img src={`${BASE}/logo/infowebworldlogo-logoforlightbackgrounds.png`} alt="InfoWebWorld" />
           </Link>
           <div className={`ds-plan-chip ${PLAN_CHIP_CLASS[plan.tier] || ''}`}>
             {plan.label}
             {plan.tier !== 'lifetime' && (
               <Link
-                href={`/${country}/plans`}
+                href={countryHref(country, '/business/plans')}
                 className="ds-plan-upgrade"
                 onClick={() => setDrawerOpen(false)}
               >

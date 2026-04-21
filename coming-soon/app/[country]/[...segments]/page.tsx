@@ -18,7 +18,7 @@ export const dynamic = 'force-dynamic'
 /* ── Known L1 sector slugs ── */
 const L1_SLUGS = new Set([
   'ai-ml', 'software-saas', 'it-services-agencies',
-  'startups-innovation', 'local-business', 'professional-services',
+  'startups-innovation', 'local-businesses', 'professional-services',
 ])
 
 /** Helper: build the view-all slug for a sector */
@@ -352,9 +352,8 @@ function buildJsonLd(cat: CatSeo, country: string, countryName: string, monthYea
   // BreadcrumbList
   const bcItems: Record<string, unknown>[] = [
     { '@type': 'ListItem', position: 1, name: 'Home', item: DOMAIN },
-    { '@type': 'ListItem', position: 2, name: 'Categories', item: canonicalUrl(country, '/categories') },
   ]
-  let pos = 3
+  let pos = 2
   if (cat.parentName && cat.parentSlug) {
     // If parent is L1 (cat.level === 2), link directly to /{parentSlug}
     // If parent is L2 (cat.level === 3), link to /{sectorSlug}/{parentSlug}
@@ -425,10 +424,13 @@ export async function generateMetadata({
   const countryName = COUNTRY_LABELS[country as CountryCode] || 'United States'
   const monthYear = currentMonthYear()
 
-  // Check if this is a view-all-sub-categories page
+  // Check if this is a view-all-sub-categories page (new nested form: /{sector}/view-all-sub-categories-{sector})
   const viewAllPrefix = 'view-all-sub-categories-'
-  const isViewAll = slug.startsWith(viewAllPrefix)
-  const viewAllSector = isViewAll ? slug.slice(viewAllPrefix.length) : null
+  const isViewAll =
+    segments.length === 2 &&
+    L1_SLUGS.has(slug) &&
+    segments[1].startsWith(viewAllPrefix)
+  const viewAllSector = isViewAll ? segments[1].slice(viewAllPrefix.length) : null
 
   // Determine actual category slug: if first segment is L1 and there's a second, category is segments[1]
   let categorySlug = slug
@@ -443,7 +445,7 @@ export async function generateMetadata({
     const meta = getSectorMeta(viewAllSector)
     const title = `All ${meta.seoTitle} Categories in ${countryName} | InfoWebWorld`
     const description = `Browse all categories and subcategories within ${meta.seoTitle}. Find, compare, and connect with the best tools and services.`
-    const url = canonicalUrl(country, `/${viewAllSlug(viewAllSector)}`)
+    const url = canonicalUrl(country, `/${viewAllSector}/${viewAllSlug(viewAllSector)}`)
     return {
       title,
       description,
@@ -508,10 +510,23 @@ export default async function CategoryDetailRoute({
   const countryName = COUNTRY_LABELS[country as CountryCode] || 'United States'
   const monthYear = currentMonthYear()
 
-  // Check if this is a view-all page
+  // Check if this is a view-all page (new nested form: /{sector}/view-all-sub-categories-{sector})
   const viewAllPrefix2 = 'view-all-sub-categories-'
-  const isViewAll2 = slug ? slug.startsWith(viewAllPrefix2) : false
-  const viewAllSector2 = isViewAll2 ? slug!.slice(viewAllPrefix2.length) : null
+  const isViewAll2 =
+    segments.length === 2 &&
+    !!slug &&
+    L1_SLUGS.has(slug) &&
+    segments[1].startsWith(viewAllPrefix2)
+  const viewAllSector2 = isViewAll2 ? segments[1].slice(viewAllPrefix2.length) : null
+
+  /* ── Redirect old flat /view-all-sub-categories-{sector} → /{sector}/view-all-sub-categories-{sector} ── */
+  if (slug && slug.startsWith(viewAllPrefix2) && segments.length === 1) {
+    const legacySector = slug.slice(viewAllPrefix2.length)
+    if (L1_SLUGS.has(legacySector)) {
+      const prefix = country === 'global' ? '' : `/${country}`
+      redirect(`${prefix}/${legacySector}/${viewAllSlug(legacySector)}`)
+    }
+  }
 
   // Determine actual category slug and sector prefix
   let categorySlug = slug || ''
@@ -521,10 +536,10 @@ export default async function CategoryDetailRoute({
     categorySlug = segments[1]
   }
 
-  /* ── Redirect old /all URLs to new view-all format ── */
+  /* ── Redirect old /sector/all URLs to new view-all nested format ── */
   if (segments.length === 2 && segments[1] === 'all' && slug && L1_SLUGS.has(slug)) {
     const prefix = country === 'global' ? '' : `/${country}`
-    redirect(`${prefix}/${viewAllSlug(slug)}`)
+    redirect(`${prefix}/${slug}/${viewAllSlug(slug)}`)
   }
 
   /* ── Redirect old URLs without L1 prefix to new prefixed URLs ── */
@@ -558,13 +573,12 @@ export default async function CategoryDetailRoute({
           '@context': 'https://schema.org', '@type': 'BreadcrumbList',
           itemListElement: [
             { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://infowebworld.com' },
-            { '@type': 'ListItem', position: 2, name: 'Categories', item: canonicalUrl(country, '/categories') },
-            { '@type': 'ListItem', position: 3, name: sectorName },
+            { '@type': 'ListItem', position: 2, name: sectorName },
           ]
         })}} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
           '@context': 'https://schema.org', '@type': 'CollectionPage',
-          name: `All ${sectorName} Categories`, url: canonicalUrl(country, `/${viewAllSlug(viewAllSector2)}`),
+          name: `All ${sectorName} Categories`, url: canonicalUrl(country, `/${viewAllSector2}/${viewAllSlug(viewAllSector2)}`),
         })}} />
       </>
     )
@@ -647,8 +661,7 @@ export default async function CategoryDetailRoute({
           '@context': 'https://schema.org', '@type': 'BreadcrumbList',
           itemListElement: [
             { '@type': 'ListItem', position: 1, name: 'Home', item: DOMAIN },
-            { '@type': 'ListItem', position: 2, name: 'Categories', item: canonicalUrl(country, '/categories') },
-            { '@type': 'ListItem', position: 3, name: sName },
+            { '@type': 'ListItem', position: 2, name: sName },
           ]
         })}} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({

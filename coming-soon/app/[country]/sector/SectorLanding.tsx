@@ -84,8 +84,6 @@ export default function SectorLanding({ category, allCategories, seoContent }: {
         <nav className="slp-breadcrumb" aria-label="Breadcrumb">
           <Link href="/"><I d={ic.home} size={13} color="rgba(0,0,0,.4)" sw={2} /></Link>
           <span className="slp-bc-sep">/</span>
-          <Link href="/categories">Categories</Link>
-          <span className="slp-bc-sep">/</span>
           <span className="slp-bc-current">{sectorName}</span>
         </nav>
 
@@ -263,7 +261,7 @@ export default function SectorLanding({ category, allCategories, seoContent }: {
               {l3Cats.slice(0, 200).map(c => <Link key={c.id} href={`/${category.slug}/${c.slug}`} className="slp-chip">{c.name}</Link>)}
             </nav>
             {l3Cats.length > 200 && (
-              <Link href={`/view-all-sub-categories-${category.slug}`} className="slp-view-all" style={{ color }}>
+              <Link href={`/${category.slug}/view-all-sub-categories-${category.slug}`} className="slp-view-all" style={{ color }}>
                 View all {l3Cats.length.toLocaleString()} subcategories &rarr;
               </Link>
             )}

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { queryOne } from '@/lib/db'
 import { USER_COOKIE_NAME } from '@/lib/user-auth'
 import { getUserPlan, canAccess, TIER_LABEL, TIER_PRICE, type PlanTier } from '@/lib/user-plan'
+import { countryHref } from '@/app/config/countries'
 import { findFeature, SECTIONS } from '../../features'
 import { I, ic } from '../../../../components/icons'
 
@@ -17,14 +18,14 @@ export default async function FeaturePage({
   const { country, slug } = await params
   const store = await cookies()
   const token = store.get(USER_COOKIE_NAME)?.value
-  if (!token) redirect(`/${country}/business`)
+  if (!token) redirect(countryHref(country, '/business'))
 
   const userRow = await queryOne<{ id: number }>(
     `SELECT u.id FROM business_sessions s JOIN business_users u ON u.id = s.user_id
      WHERE s.token = ? AND s.expires_at > NOW() LIMIT 1`,
     [token]
   )
-  if (!userRow) redirect(`/${country}/business`)
+  if (!userRow) redirect(countryHref(country, '/business'))
 
   const feature = findFeature(slug)
   if (!feature) notFound()
@@ -38,7 +39,7 @@ export default async function FeaturePage({
       <header className="ds-page-head">
         <div>
           <div className="dash-feat-crumb">
-            <Link href={`/${country}/dashboard`}>Dashboard</Link>
+            <Link href={countryHref(country, '/dashboard')}>Dashboard</Link>
             <span className="dash-feat-sep">/</span>
             <span>{section?.title}</span>
           </div>
@@ -171,7 +172,7 @@ function UpgradePanel({
                 </li>
               </ul>
               <Link
-                href={`/${country}/dashboard/new?plan=${opt.tier}`}
+                href={countryHref(country, `/dashboard/new?plan=${opt.tier}`)}
                 className={`dash-up-cta${opt.highlight ? ' dash-up-cta--pick' : ''}`}
               >
                 Upgrade to {TIER_LABEL[opt.tier]}
@@ -186,7 +187,7 @@ function UpgradePanel({
 
         <div className="dash-up-foot">
           Want to compare everything?{' '}
-          <Link href={`/${country}/plans`}>See the full plan comparison →</Link>
+          <Link href={countryHref(country, '/business/plans')}>See the full plan comparison →</Link>
         </div>
       </div>
     </section>

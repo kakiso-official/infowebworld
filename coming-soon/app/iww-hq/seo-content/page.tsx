@@ -21,7 +21,7 @@ const SECTOR_COLORS: Record<string, string> = {
   'software-saas': '#3B82F6',
   'it-services-agencies': '#14B8A6',
   'startups-innovation': '#E8553D',
-  'local-business': '#F59E0B',
+  'local-businesses': '#F59E0B',
   'professional-services': '#2FAE6A',
 }
 

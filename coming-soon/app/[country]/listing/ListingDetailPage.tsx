@@ -202,8 +202,6 @@ export default function ListingDetailPage({ slug: slugProp, initialData }: { slu
             {/* Breadcrumb */}
             <nav className="ld-crumbs">
               <Link href="/" className="ld-crumb"><I d={ic.home} size={10} sw={2} /> Home</Link>
-              <span className="ld-crumb-sep">/</span>
-              <Link href="/categories" className="ld-crumb">Categories</Link>
               {breadcrumb.map((bc, i) => {
                 const sectorSlug = breadcrumb[0]?.slug
                 const bcHref = i === 0 ? `/${bc.slug}` : `/${sectorSlug}/${bc.slug}`

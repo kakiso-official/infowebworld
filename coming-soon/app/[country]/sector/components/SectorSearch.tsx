@@ -3,6 +3,7 @@ import { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from '../../../components/CountryLink'
 import { useCountry } from '../../../config/country-context'
+import { countryHref } from '../../../config/countries'
 import { I, ic, getIconPath } from '../../../components/icons'
 import HIcon from './HIcon'
 import Stars from '../../components-category/Stars'
@@ -28,13 +29,13 @@ export default function SectorSearch({ sectorName, shortName, color, sectorSlug,
     const groups: ResultGroup[] = []
 
     const catMatches = l2Cats.filter(c => c.name.toLowerCase().includes(q) || (c.description || '').toLowerCase().includes(q)).slice(0, 4)
-    if (catMatches.length) groups.push({ label: 'Categories', iconKey: 'grid', items: catMatches.map(c => ({ type: 'category', name: c.name, href: `/${country}/${sectorSlug}/${c.slug}`, meta: `${l3Cats.filter(l3 => l3.parentId === c.id).length} subcategories`, icon: c.icon || 'grid', color })) })
+    if (catMatches.length) groups.push({ label: 'Categories', iconKey: 'grid', items: catMatches.map(c => ({ type: 'category', name: c.name, href: countryHref(country, `/${sectorSlug}/${c.slug}`), meta: `${l3Cats.filter(l3 => l3.parentId === c.id).length} subcategories`, icon: c.icon || 'grid', color })) })
 
     const subMatches = l3Cats.filter(c => c.name.toLowerCase().includes(q) || (c.description || '').toLowerCase().includes(q)).slice(0, 5)
-    if (subMatches.length) groups.push({ label: 'Subcategories', iconKey: 'layers', items: subMatches.map(c => { const p = l2Cats.find(x => x.id === c.parentId); return { type: 'subcategory', name: c.name, href: `/${country}/${sectorSlug}/${c.slug}`, meta: p ? p.name : sectorName, icon: c.icon || 'layers', color } }) })
+    if (subMatches.length) groups.push({ label: 'Subcategories', iconKey: 'layers', items: subMatches.map(c => { const p = l2Cats.find(x => x.id === c.parentId); return { type: 'subcategory', name: c.name, href: countryHref(country, `/${sectorSlug}/${c.slug}`), meta: p ? p.name : sectorName, icon: c.icon || 'layers', color } }) })
 
     const listMatches = demos.filter(d => d.name.toLowerCase().includes(q) || d.tagline.toLowerCase().includes(q) || d.category.toLowerCase().includes(q)).slice(0, 6)
-    if (listMatches.length) groups.push({ label: 'Listings', iconKey: 'star', items: listMatches.map(d => ({ type: 'listing', name: d.name, href: `/${country}/business`, meta: d.tagline, score: d.score, reviews: d.reviews, icon: d.icon, color: d.color, badges: d.badges })) })
+    if (listMatches.length) groups.push({ label: 'Listings', iconKey: 'star', items: listMatches.map(d => ({ type: 'listing', name: d.name, href: countryHref(country, '/business'), meta: d.tagline, score: d.score, reviews: d.reviews, icon: d.icon, color: d.color, badges: d.badges })) })
 
     return groups
   }, [query, l2Cats, l3Cats, demos, color, country, sectorName, sectorSlug])

@@ -6,17 +6,7 @@ import ContactPage from './ContactPage'
 export const metadata: Metadata = {
   title: 'Contact InfoWebWorld — Business Inquiries & Support',
   description: 'Get in touch with the InfoWebWorld team. We respond within 24 hours — questions, partnerships, business inquiries, feedback, or technical support.',
-  alternates: {
-    canonical: 'https://infowebworld.com/contact',
-    languages: {
-      'en-IN': 'https://infowebworld.com/in/contact',
-      'en-US': 'https://infowebworld.com/us/contact',
-      'en-GB': 'https://infowebworld.com/uk/contact',
-      'en-CA': 'https://infowebworld.com/ca/contact',
-      'en-AU': 'https://infowebworld.com/au/contact',
-      'x-default': 'https://infowebworld.com/contact',
-    },
-  },
+  robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
 }
 
 const breadcrumbJsonLd = {

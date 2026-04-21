@@ -23,6 +23,18 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // Redirect old /plans to /business/plans
+      {
+        source: '/plans',
+        destination: '/business/plans',
+        permanent: true,
+      },
+      // Country-prefixed /plans → /business/plans
+      {
+        source: '/:country(in|us|uk|ca|au|eu)/plans',
+        destination: '/:country/business/plans',
+        permanent: true,
+      },
       // Redirect old /listing/:slug to /company/:slug (proxy will add country prefix)
       {
         source: '/listing/:slug',
@@ -62,6 +74,27 @@ const nextConfig: NextConfig = {
       {
         source: '/:country(in|us|uk|ca|au|eu)/artificial-intelligence-ml/:path*',
         destination: '/:country/ai-ml/:path*',
+        permanent: true,
+      },
+      // Rename local-business → local-businesses (L1 sector)
+      {
+        source: '/local-business',
+        destination: '/local-businesses',
+        permanent: true,
+      },
+      {
+        source: '/local-business/:path*',
+        destination: '/local-businesses/:path*',
+        permanent: true,
+      },
+      {
+        source: '/:country(in|us|uk|ca|au|eu)/local-business',
+        destination: '/:country/local-businesses',
+        permanent: true,
+      },
+      {
+        source: '/:country(in|us|uk|ca|au|eu)/local-business/:path*',
+        destination: '/:country/local-businesses/:path*',
         permanent: true,
       },
     ]

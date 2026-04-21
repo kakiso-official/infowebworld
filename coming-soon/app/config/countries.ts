@@ -68,6 +68,17 @@ export function isValidCountry(s: string): s is CountryCode {
   return (VALID_COUNTRIES as readonly string[]).includes(s)
 }
 
+/**
+ * Build a user-facing URL path. Real countries get /{code}/ prefix; the
+ * internal 'global' value renders as bare (no prefix) since /global never
+ * appears in the browser URL bar.
+ */
+export function countryHref(country: string | null | undefined, path: string = ''): string {
+  if (!country || country === 'global') return path || '/'
+  const p = path.startsWith('/') ? path : (path ? `/${path}` : '')
+  return `/${country}${p}`
+}
+
 /** All 6 countries appear in the URL as /{code}/ prefix. Root (no prefix) = Global. */
 
 /**

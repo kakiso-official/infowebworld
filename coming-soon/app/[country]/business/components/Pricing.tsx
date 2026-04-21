@@ -245,7 +245,7 @@ export default function Pricing() {
             <span className="pr-preview-count">
               +{hiddenCount} more features across {sections.length} categories
             </span>
-            <Link href="/plans" className="pr-view-all-link">
+            <Link href="/business/plans" className="pr-view-all-link">
               View All {totalFeatures}+ Features
               <svg viewBox="0 0 24 24" className="pr-view-all-arrow"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
             </Link>

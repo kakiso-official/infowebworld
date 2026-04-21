@@ -8,8 +8,7 @@ const COUNTRIES = ['in', 'us', 'uk', 'ca', 'au', 'eu']
 const STATIC_PAGES = [
   { path: '/', changefreq: 'daily', priority: '1.0' },
   { path: '/business', changefreq: 'weekly', priority: '0.9' },
-  { path: '/plans', changefreq: 'monthly', priority: '0.8' },
-  { path: '/contact', changefreq: 'monthly', priority: '0.6' },
+  { path: '/business/plans', changefreq: 'monthly', priority: '0.8' },
 ]
 
 export async function GET() {

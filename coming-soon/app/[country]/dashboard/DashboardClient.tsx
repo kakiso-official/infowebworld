@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import { countryHref } from '../../config/countries'
 import type { UserPlan } from '@/lib/user-plan-types'
 
 interface SectionCard {
@@ -40,7 +41,7 @@ export default function DashboardClient({
 }
 
 function SectionTile({ country, s, index }: { country: string; s: SectionCard; index: number }) {
-  const href = `/${country}/dashboard/section/${s.key}`
+  const href = countryHref(country, `/dashboard/section/${s.key}`)
   const pct = s.total > 0 ? (s.unlocked / s.total) * 100 : 0
   const isFull = s.unlocked === s.total
   const allLocked = s.unlocked === 0 && s.total > 0

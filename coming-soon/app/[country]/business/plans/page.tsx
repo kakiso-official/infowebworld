@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import Navbar from '../../components/Navbar'
-import Footer from '../../components/Footer'
+import Navbar from '../../../components/Navbar'
+import Footer from '../../../components/Footer'
 import PlansPage from './PlansPage'
 
 export const metadata: Metadata = {
@@ -8,14 +8,14 @@ export const metadata: Metadata = {
   description:
     'Compare InfoWebWorld pricing plans — Lifetime and Yearly. Full feature comparison, transparent pricing, and everything you need to grow your business on the global discovery platform.',
   alternates: {
-    canonical: 'https://infowebworld.com/plans',
+    canonical: 'https://infowebworld.com/business/plans',
     languages: {
-      'en-IN': 'https://infowebworld.com/in/plans',
-      'en-US': 'https://infowebworld.com/us/plans',
-      'en-GB': 'https://infowebworld.com/uk/plans',
-      'en-CA': 'https://infowebworld.com/ca/plans',
-      'en-AU': 'https://infowebworld.com/au/plans',
-      'x-default': 'https://infowebworld.com/plans',
+      'en-IN': 'https://infowebworld.com/in/business/plans',
+      'en-US': 'https://infowebworld.com/us/business/plans',
+      'en-GB': 'https://infowebworld.com/uk/business/plans',
+      'en-CA': 'https://infowebworld.com/ca/business/plans',
+      'en-AU': 'https://infowebworld.com/au/business/plans',
+      'x-default': 'https://infowebworld.com/business/plans',
     },
   },
 }
@@ -42,7 +42,7 @@ const productJsonLd = {
       price: '239',
       priceCurrency: 'USD',
       availability: 'https://schema.org/InStock',
-      url: 'https://infowebworld.com/plans',
+      url: 'https://infowebworld.com/business/plans',
       description: 'One-time payment for permanent access to all features. No renewals, no price increases.',
     },
     {
@@ -51,7 +51,7 @@ const productJsonLd = {
       price: '99',
       priceCurrency: 'USD',
       availability: 'https://schema.org/InStock',
-      url: 'https://infowebworld.com/plans',
+      url: 'https://infowebworld.com/business/plans',
       priceSpecification: {
         '@type': 'UnitPriceSpecification',
         price: '99',

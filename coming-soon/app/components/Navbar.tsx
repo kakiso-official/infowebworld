@@ -111,7 +111,7 @@ const DD_SECTORS: DDSector[] = [
     ],
   },
   {
-    header: 'Local Business', slug: 'local-business',
+    header: 'Local Businesses', slug: 'local-businesses',
     items: [
       { name: 'Restaurants & Cuisines', slug: 'restaurants-cuisines', color: '#F59E0B' },
       { name: 'Beauty, Hair & Spa Services', slug: 'beauty-hair-spa-services', color: '#F59E0B' },
@@ -396,7 +396,7 @@ export default function Navbar({ sectorSlug, hideSearch }: { sectorSlug?: string
                           {item.desc && <span className="nh-dd-item-desc">{item.desc}</span>}
                         </Link>
                       ))}
-                      <Link href={`/view-all-sub-categories-${sector.slug}`} className="nh-dd-more"
+                      <Link href={`/${sector.slug}/view-all-sub-categories-${sector.slug}`} className="nh-dd-more"
                         style={{ color: sector.items[0]?.color }} onClick={closeDD}>
                         View all →
                       </Link>

@@ -187,14 +187,13 @@ function buildJsonLd(listing: ListingRow, breadcrumb: BreadcrumbItem[]) {
   // ── 2. BreadcrumbList schema ──
   const breadcrumbItems = [
     { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://infowebworld.com' },
-    { '@type': 'ListItem', position: 2, name: 'Categories', item: 'https://infowebworld.com/categories' },
     ...breadcrumb.map((bc, i) => ({
       '@type': 'ListItem',
-      position: i + 3,
+      position: i + 2,
       name: bc.name,
       item: i === 0 ? `https://infowebworld.com/${bc.slug}` : `https://infowebworld.com/${breadcrumb[0].slug}/${bc.slug}`,
     })),
-    { '@type': 'ListItem', position: breadcrumb.length + 3, name: companyName },
+    { '@type': 'ListItem', position: breadcrumb.length + 2, name: companyName },
   ]
 
   const breadcrumbSchema = {

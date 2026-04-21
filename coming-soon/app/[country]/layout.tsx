@@ -1,10 +1,10 @@
 import { notFound } from 'next/navigation'
-import { isValidCountry, VALID_COUNTRIES } from '../config/countries'
+import { isValidCountry, REAL_COUNTRIES } from '../config/countries'
 import type { CountryCode } from '../config/countries'
 import { CountryProvider } from '../config/country-context'
 
 export async function generateStaticParams() {
-  return VALID_COUNTRIES.map(c => ({ country: c }))
+  return REAL_COUNTRIES.map(c => ({ country: c }))
 }
 
 export default async function CountryLayout({

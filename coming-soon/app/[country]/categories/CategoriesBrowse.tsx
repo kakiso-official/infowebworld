@@ -74,16 +74,6 @@ export default function CategoriesBrowse({ initialCategories }: { initialCategor
       .sort((a, b) => a.level - b.level || a.name.localeCompare(b.name))
   }, [categories, search])
 
-  /* All L2 nodes enriched with parent sector meta + sector slug */
-  const allL2 = useMemo(() => {
-    const out: (CatNode & { parentMeta: ReturnType<typeof sectorMeta>; parentSlug: string })[] = []
-    tree.forEach(sector => {
-      const meta = sectorMeta(sector.name)
-      sector.children.forEach(l2 => out.push({ ...l2, parentMeta: meta, parentSlug: sector.slug }))
-    })
-    return out
-  }, [tree])
-
   const stats = useMemo(() => ({
     sectors: tree.length,
     l2: categories.filter(c => c.level === 2).length,
@@ -209,34 +199,7 @@ export default function CategoriesBrowse({ initialCategories }: { initialCategor
             })}
           </div>
 
-          {/* ══════════════════════════════════════
-             L2 Category cards — same card style
-             ══════════════════════════════════════ */}
-          <h2 className="cb-section-heading">All <em>Categories</em></h2>
-          <div className="cb-cats">
-            {allL2.map(cat => (
-              <div
-                key={cat.id}
-                className="cb-cat"
-                style={{ '--sc-pastel': cat.parentMeta.pastel, '--sc': cat.parentMeta.color } as React.CSSProperties}
-              >
-                <Link href={`/${cat.parentSlug}/${cat.slug}`} className="cb-cat-hd">
-                  <h3 className="cb-cat-name">{cat.name}</h3>
-                </Link>
-
-                {cat.children.length > 0 && (
-                  <div className="cb-cat-body">
-                    {cat.children.map(child => (
-                      <Link key={child.id} href={`/${cat.parentSlug}/${child.slug}`} className="cb-cat-row">
-                        {child.name}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-          </>
+        </>
       </div>
     </section>
   )

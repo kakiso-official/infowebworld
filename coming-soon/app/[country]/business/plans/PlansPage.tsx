@@ -1,12 +1,12 @@
 'use client'
 import { useState, useEffect, useCallback, Fragment } from 'react'
-import Link from '../../components/CountryLink'
-import { fetchConfig } from '../../config/site-config'
-import PaymentModal from '../business/components/PaymentModal'
-import FoundingCTA from '../business/components/FoundingCTA'
-import FlexibleModal from '../business/components/FlexibleModal'
-import { STARTER_ROWS, FREE_ROWS } from '../business/components/planGating'
-import SignupModal from '../../components/auth/SignupModal'
+import Link from '../../../components/CountryLink'
+import { fetchConfig } from '../../../config/site-config'
+import PaymentModal from '../components/PaymentModal'
+import FoundingCTA from '../components/FoundingCTA'
+import FlexibleModal from '../components/FlexibleModal'
+import { STARTER_ROWS, FREE_ROWS } from '../components/planGating'
+import SignupModal from '../../../components/auth/SignupModal'
 import { useAuth } from '@/lib/use-auth'
 
 type PlanKey = 'lifetime' | 'yearly'
@@ -29,7 +29,7 @@ const sections = [
     title: 'Business Listing Features',
     rows: [
       'Business Information Profile & Listing',
-      'human curation for business listing',
+      'Human curation for business listing',
       'Detailed Business Information: Logo, Description, Founding Year, etc',
       'Profile Page Customisation (Colours, Layout)',
       'Product / Service / Tool Name Title & Tagline',
@@ -217,11 +217,11 @@ export default function PlansPage() {
         <div className="container">
           <div className="pln-title-tag">Plans & Pricing for Business Listings</div>
           <h1 className="pln-title-heading">
-            One Platform<em>.</em> Two Plans<em>.</em><br />
+            One Platform<em>.</em> Four Plans<em>.</em><br />
             List Your Business for <em>Global Growth</em>
           </h1>
           <p className="pln-title-desc">
-            No hidden fees. No feature gates. Pick your plan and get the full power of InfoWebWorld.
+            Pick your plan and get the full power of InfoWebWorld.
           </p>
         </div>
       </section>
@@ -244,7 +244,7 @@ export default function PlansPage() {
           </h2>
           <p className="pln-hero-desc">
             Whether you are a startup or an established brand, our plans give you
-            full access to every feature. Pick the billing that works for you.
+             access to every feature. Pick the billing that works for you.
           </p>
         </div>
       </section>

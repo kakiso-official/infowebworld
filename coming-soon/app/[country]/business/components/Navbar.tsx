@@ -17,7 +17,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Plans',    href: '#founding', anchor: true },
   { label: 'Features', href: '#pricing', anchor: true },
   { label: 'Compare',  href: '#compare', anchor: true },
-  { label: 'Get Listed', href: '/plans', cta: true },
+  { label: 'Get Listed', href: '/business/plans', cta: true },
 ]
 
 export default function Navbar() {
@@ -84,7 +84,7 @@ export default function Navbar() {
 
           <div className="nh-actions">
             <CountrySwitcher />
-            <Link href="/plans" className="nh-cta">
+            <Link href="/business/plans" className="nh-cta">
               <span>Get Listed</span>
               <svg className="nh-cta-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -137,7 +137,7 @@ export default function Navbar() {
               {item.label}
             </a>
           ))}
-          <Link href="/plans" className="nh-mob-link nh-mob-link--cta" onClick={closeMenu}
+          <Link href="/business/plans" className="nh-mob-link nh-mob-link--cta" onClick={closeMenu}
             style={menuOpen ? { animationDelay: `${4 * 60}ms` } : undefined}>
             Get Listed
           </Link>

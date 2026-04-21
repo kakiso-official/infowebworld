@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { queryOne } from '@/lib/db'
 import { USER_COOKIE_NAME } from '@/lib/user-auth'
 import { getUserPlan } from '@/lib/user-plan'
+import { countryHref } from '@/app/config/countries'
 import { SECTIONS, unlockedBySection } from './features'
 import DashboardClient from './DashboardClient'
 
@@ -26,7 +27,7 @@ export default async function DashboardPage({
 }) {
   const { country } = await params
   const user = await getCurrentUser()
-  if (!user) redirect(`/${country}/business`)
+  if (!user) redirect(countryHref(country, '/business'))
 
   const plan = await getUserPlan(user.id)
   const perSection = unlockedBySection(plan.tier)

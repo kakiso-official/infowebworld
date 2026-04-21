@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from '../../../components/CountryLink'
 import { useCountry } from '../../../config/country-context'
-import { COUNTRY_LABELS } from '../../../config/countries'
+import { COUNTRY_LABELS, countryHref } from '../../../config/countries'
 import type { CountryCode } from '../../../config/countries'
 import type { Category } from '../../../iww-hq/data/category-storage'
 import type { RealSubmission } from '../../../iww-hq/data/submissions-storage'
@@ -139,8 +139,8 @@ export default function SectorHero({ category, meta, sectorName, shortName, l2Ca
   useEffect(() => { setActiveIdx(-1) }, [query])
 
   const handleSearch = (e: React.FormEvent) => { e.preventDefault(); setFocused(true) }
-  const goToResult = (slug: string) => { setFocused(false); router.push(slug ? `/${country}/company/${slug}` : `/${country}/business`) }
-  const goToCategory = (slug: string) => { setFocused(false); router.push(`/${country}/${sectorSlug}/${slug}`) }
+  const goToResult = (slug: string) => { setFocused(false); router.push(slug ? countryHref(country, `/company/${slug}`) : countryHref(country, '/business')) }
+  const goToCategory = (slug: string) => { setFocused(false); router.push(countryHref(country, `/${sectorSlug}/${slug}`)) }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (!showDropdown) return
@@ -219,7 +219,7 @@ export default function SectorHero({ category, meta, sectorName, shortName, l2Ca
   const catUp = (_e: React.PointerEvent, i: number) => {
     const p = catP.current[i]; p.drag = false
     catEls.current[i]?.classList.remove('hero-cat--grab')
-    if (!p.moved) router.push(`/${country}/${sectorSlug}/${heroCats[i].slug}`)
+    if (!p.moved) router.push(countryHref(country, `/${sectorSlug}/${heroCats[i].slug}`))
   }
 
   /* ── 3D swipeable card stack ── */
@@ -312,8 +312,6 @@ export default function SectorHero({ category, meta, sectorName, shortName, l2Ca
             <Link href="/" aria-label="Home">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             </Link>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-            <Link href="/categories">Categories</Link>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
             <span aria-current="page">{sectorName}</span>
           </nav>

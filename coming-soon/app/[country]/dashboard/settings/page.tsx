@@ -2,6 +2,7 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { queryOne } from '@/lib/db'
 import { USER_COOKIE_NAME } from '@/lib/user-auth'
+import { countryHref } from '@/app/config/countries'
 
 export const dynamic = 'force-dynamic'
 
@@ -13,7 +14,7 @@ export default async function SettingsPage({
   const { country } = await params
   const store = await cookies()
   const token = store.get(USER_COOKIE_NAME)?.value
-  if (!token) redirect(`/${country}/business`)
+  if (!token) redirect(countryHref(country, '/business'))
 
   const user = await queryOne<{
     email: string; name: string | null; provider: string
@@ -24,7 +25,7 @@ export default async function SettingsPage({
      WHERE s.token = ? AND s.expires_at > NOW() LIMIT 1`,
     [token]
   )
-  if (!user) redirect(`/${country}/business`)
+  if (!user) redirect(countryHref(country, '/business'))
 
   return (
     <div className="dash">
@@ -61,7 +62,7 @@ export default async function SettingsPage({
             <span className="set-row-val">{new Date(user.created_at).toLocaleDateString()}</span>
           </div>
         </div>
-        <p className="set-note">Profile editing is coming soon. Need help? <a href={`/${country}/contact`}>Contact us</a>.</p>
+        <p className="set-note">Profile editing is coming soon. Need help? <a href={countryHref(country, '/contact')}>Contact us</a>.</p>
       </section>
     </div>
   )

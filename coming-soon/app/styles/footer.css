@@ -8,29 +8,163 @@
 }
 
 /* ============================================================
+   NEWSLETTER STRIP — premium CTA at the top of the footer
+   ============================================================ */
+.ft-newsletter {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  padding: clamp(2rem, 4vw, 2.75rem) clamp(1.5rem, 3vw, 2.5rem);
+  margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+  border-radius: 20px;
+  background:
+    radial-gradient(ellipse at top left, rgba(232, 85, 61, .18), transparent 60%),
+    radial-gradient(ellipse at bottom right, rgba(59, 130, 246, .1), transparent 60%),
+    linear-gradient(135deg, rgba(255, 255, 255, .04), rgba(255, 255, 255, .015));
+  border: 1px solid rgba(255, 255, 255, .1);
+  overflow: hidden;
+}
+.ft-newsletter::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(232, 85, 61, .5), transparent);
+}
+
+.ft-nl-copy { min-width: 0 }
+.ft-nl-eyebrow {
+  display: inline-block;
+  padding: .3rem .75rem;
+  border-radius: 999px;
+  background: rgba(232, 85, 61, .15);
+  color: #F0A894;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .65rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-bottom: .85rem;
+}
+.ft-nl-title {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(1.35rem, 2.2vw, 1.7rem);
+  font-weight: 800;
+  letter-spacing: -.015em;
+  color: #fff;
+  margin: 0 0 .5rem;
+  line-height: 1.2;
+}
+.ft-nl-sub {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .88rem;
+  color: rgba(255, 255, 255, .55);
+  line-height: 1.6;
+  margin: 0;
+  max-width: 42ch;
+}
+
+.ft-nl-form-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: .65rem;
+}
+.ft-nl-form {
+  display: flex;
+  gap: .5rem;
+  background: rgba(0, 0, 0, .25);
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 999px;
+  padding: .3rem;
+  transition: border-color .25s, box-shadow .25s;
+}
+.ft-nl-form:focus-within {
+  border-color: rgba(232, 85, 61, .5);
+  box-shadow: 0 0 0 4px rgba(232, 85, 61, .12);
+}
+.ft-nl-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: .7rem 1.1rem;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .92rem;
+  color: #fff;
+  min-width: 0;
+}
+.ft-nl-input::placeholder { color: rgba(255, 255, 255, .35) }
+.ft-nl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .65rem 1.3rem;
+  background: var(--h-accent);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .85rem;
+  font-weight: 800;
+  letter-spacing: .01em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform .25s cubic-bezier(.16, 1, .3, 1), background .25s, box-shadow .25s;
+  box-shadow: 0 4px 14px rgba(232, 85, 61, .35);
+}
+.ft-nl-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(232, 85, 61, .5);
+}
+.ft-nl-btn:disabled { opacity: .7; cursor: wait }
+.ft-nl-btn--ok { background: #2FAE6A; box-shadow: 0 4px 14px rgba(47, 174, 106, .35) }
+.ft-nl-btn--dup { background: rgba(255, 255, 255, .15); color: #fff; box-shadow: none }
+.ft-nl-legal {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .68rem;
+  color: rgba(255, 255, 255, .35);
+  padding-left: .5rem;
+}
+
+/* ============================================================
    TOP — Brand + Columns
    ============================================================ */
 .ft-top {
   display: grid;
-  grid-template-columns: 1.2fr 2fr;
-  gap: clamp(2rem, 5vw, 5rem);
-  padding-bottom: clamp(2rem, 4vw, 3rem);
+  grid-template-columns: minmax(240px, 1.1fr) 3.4fr;
+  gap: clamp(2rem, 4vw, 4.5rem);
+  padding-bottom: clamp(2.5rem, 4vw, 3.5rem);
   border-bottom: 1px solid rgba(255, 255, 255, .08);
+  position: relative;
 }
 
 /* ── Brand ── */
-.ft-brand { max-width: 300px }
+.ft-brand {
+  max-width: 320px;
+  position: relative;
+  padding-right: clamp(1rem, 2vw, 2rem);
+}
+.ft-brand::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  right: 0;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(255,255,255,.1) 20%, rgba(255,255,255,.1) 80%, transparent);
+}
 .ft-logo {
-  height: 50px;
+  height: 52px;
   width: auto;
-  margin-bottom: .85rem;
+  margin-bottom: .95rem;
 }
 .ft-tagline {
   font-family: var(--font-nunito), 'Nunito', sans-serif;
-  font-size: .78rem;
-  color: rgba(255, 255, 255, .4);
-  line-height: 1.65;
-  margin-bottom: 1.25rem;
+  font-size: .8rem;
+  color: rgba(255, 255, 255, .5);
+  line-height: 1.7;
+  margin-bottom: 1.35rem;
 }
 
 /* ── Social icons ── */
@@ -71,52 +205,127 @@
   border-radius: 10px;
 }
 
-/* ── Nav columns ── */
+/* ── Nav columns (5-column grid) ── */
 .ft-columns {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 2rem);
+  align-items: start;
 }
 .ft-col {
   display: flex;
   flex-direction: column;
-  gap: .45rem;
+  gap: .5rem;
+  min-width: 0;
 }
 .ft-col-title {
+  position: relative;
   font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
-  font-size: .7rem;
+  font-size: .72rem;
   font-weight: 800;
   color: #fff;
   text-transform: uppercase;
-  letter-spacing: .08em;
-  margin-bottom: .4rem;
+  letter-spacing: .09em;
+  margin-bottom: .75rem;
+  padding-bottom: .55rem;
+}
+.ft-col-title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 22px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--h-accent);
+  opacity: .85;
 }
 .ft-col-link {
   font-family: var(--font-nunito), 'Nunito', sans-serif;
-  font-size: .8rem;
-  color: rgba(255, 255, 255, .45);
+  font-size: .78rem;
+  color: rgba(255, 255, 255, .5);
   font-weight: 500;
-  transition: color .25s, padding-left .25s;
+  line-height: 1.5;
+  transition: color .25s cubic-bezier(.16, 1, .3, 1), transform .25s cubic-bezier(.16, 1, .3, 1);
+  transform-origin: left center;
+  display: inline-block;
+  width: fit-content;
 }
 .ft-col-link:hover {
-  color: var(--h-accent);
-  padding-left: .2rem;
+  color: #fff;
+  transform: translateX(3px);
+}
+
+/* In-column divider between Top Categories and Discover sub-group */
+.ft-col-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, .08);
+  margin: .65rem 0 .35rem;
+  width: 100%;
+  max-width: 120px;
 }
 
 /* ============================================================
-   BOTTOM BAR — copyright + badges
+   BOTTOM BAR — copyright + country switcher + badges
    ============================================================ */
 .ft-bottom {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.25rem 0;
+  gap: 1.25rem;
+  padding: 1.5rem 0 1.35rem;
+  flex-wrap: wrap;
+}
+.ft-bottom-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Country switcher — dark theme override inside the footer */
+.ft-country-wrap .hd-country-btn {
+  background: rgba(255, 255, 255, .06);
+  border: 1px solid rgba(255, 255, 255, .12);
+  color: rgba(255, 255, 255, .75);
+  transition: background .25s, border-color .25s, color .25s;
+}
+.ft-country-wrap .hd-country-btn:hover {
+  background: rgba(255, 255, 255, .1);
+  border-color: rgba(232, 85, 61, .4);
+  color: #fff;
+}
+.ft-country-wrap .hd-country-code { color: inherit }
+.ft-country-wrap .hd-country-globe,
+.ft-country-wrap .hd-country-chev { color: inherit; opacity: .8 }
+.ft-country-wrap .hd-country-dropdown {
+  top: auto;
+  bottom: calc(100% + 8px);
+  right: 0;
+  background: #fff;
+  color: var(--h-body);
+  transform-origin: bottom right;
+  max-height: 340px;
+  overflow-y: auto;
+  box-shadow: 0 -12px 40px rgba(0, 0, 0, .18);
+  animation: ft-country-slide-up 180ms cubic-bezier(.16, 1, .3, 1);
+}
+@keyframes ft-country-slide-up {
+  from { opacity: 0; transform: translateY(6px) }
+  to   { opacity: 1; transform: translateY(0) }
 }
 .ft-copy {
   font-family: var(--font-nunito), 'Nunito', sans-serif;
-  font-size: .65rem;
-  color: rgba(255, 255, 255, .25);
+  font-size: .7rem;
+  color: rgba(255, 255, 255, .32);
+  letter-spacing: .01em;
 }
+.ft-copy-link {
+  color: rgba(255, 255, 255, .5);
+  font-size: .7rem;
+  font-weight: 600;
+}
+.ft-copy-link:hover { color: var(--h-accent); transform: none }
 
 /* ── Stat badges ── */
 .ft-badges { display: flex; gap: .5rem }
@@ -143,57 +352,78 @@
 }
 
 /* ============================================================
-   RESPONSIVE — Tablet
+   RESPONSIVE — Laptop (compress 5 cols)
    ============================================================ */
-@media (max-width: 768px) {
-  .ft-top {
+@media (max-width: 1100px) {
+  .ft-top { grid-template-columns: minmax(240px, 1fr) 3fr }
+  .ft-columns { gap: 1.25rem }
+  .ft-col-link { font-size: .74rem }
+  .ft-newsletter { padding: 1.75rem 1.5rem }
+}
+
+/* Newsletter stacks on narrower screens */
+@media (max-width: 860px) {
+  .ft-newsletter {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.5rem;
     text-align: center;
   }
-  .ft-brand {
-    max-width: none;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .ft-tagline {
-    max-width: 380px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 1rem;
-  }
-  .ft-social { justify-content: center }
-  .ft-columns {
-    grid-template-columns: repeat(3, 1fr);
-    text-align: center;
-  }
-  .ft-col { align-items: center }
-  .ft-col-link:hover { padding-left: 0 }
+  .ft-nl-sub { margin-left: auto; margin-right: auto }
+  .ft-nl-legal { padding-left: 0; text-align: center }
 }
 
 /* ============================================================
-   RESPONSIVE — Phone
+   RESPONSIVE — Tablet (5 → 3 columns, brand on top)
    ============================================================ */
-@media (max-width: 480px) {
-  .ft-columns {
+@media (max-width: 900px) {
+  .ft-top {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 2.5rem;
+  }
+  .ft-brand {
+    max-width: none;
+    padding-right: 0;
+  }
+  .ft-brand::after { display: none }
+  .ft-tagline { max-width: 520px }
+  .ft-columns {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE — Phone (3 → 2 columns)
+   ============================================================ */
+@media (max-width: 640px) {
+  .ft-columns {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem 1.25rem;
   }
   .ft-bottom {
     flex-direction: column;
-    gap: .75rem;
-    text-align: center;
+    align-items: flex-start;
+    gap: .85rem;
   }
-  .ft-badges { gap: .35rem }
-  .ft-badge { font-size: .5rem; padding: .15rem .4rem }
+  .ft-bottom-right { gap: .6rem }
+  .ft-badges { gap: .35rem; flex-wrap: wrap }
+  .ft-badge { font-size: .5rem; padding: .15rem .45rem }
+  .ft-nl-form { flex-direction: column; gap: .3rem; padding: .3rem; border-radius: 14px }
+  .ft-nl-input { width: 100%; text-align: center }
+  .ft-nl-btn { width: 100%; justify-content: center }
+}
+
+/* ── Small phones ── */
+@media (max-width: 420px) {
+  .ft-columns { grid-template-columns: 1fr; gap: 1.5rem }
+  .ft-col-title { margin-bottom: .55rem; padding-bottom: .45rem }
 }
 
 /* ── Extra-small phones ── */
 @media (max-width: 380px) {
   .ft { padding-top: clamp(1.75rem, 4vw, 2.5rem) }
-  .ft-tagline { font-size: .7rem }
-  .ft-col-link { font-size: .72rem }
+  .ft-tagline { font-size: .72rem }
+  .ft-col-link { font-size: .74rem }
   .ft-social a { width: 32px; height: 32px; border-radius: 8px }
   .ft-social svg { width: 13px; height: 13px }
 }

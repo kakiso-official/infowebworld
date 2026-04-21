@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import { countryHref } from '@/app/config/countries'
 
 export default async function ListingSlugRedirect({
   params,
@@ -6,5 +7,5 @@ export default async function ListingSlugRedirect({
   params: Promise<{ country: string; slug: string }>
 }) {
   const { country, slug } = await params
-  redirect(`/${country}/company/${slug}`)
+  redirect(countryHref(country, `/company/${slug}`))
 }

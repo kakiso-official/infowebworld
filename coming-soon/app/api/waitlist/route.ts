@@ -195,7 +195,7 @@ function buildWelcomeEmail(): string {
           <p style="margin:0;font-family:${F_BODY};font-size:11px;font-weight:600;color:#D5D0CA">
             <a href="https://infowebworld.com/business" target="_blank" style="color:#D5D0CA;text-decoration:none">Get Listed</a>
             <span style="color:#E8E4DF"> &nbsp;&#183;&nbsp; </span>
-            <a href="https://infowebworld.com/plans" target="_blank" style="color:#D5D0CA;text-decoration:none">Plans</a>
+            <a href="https://infowebworld.com/business/plans" target="_blank" style="color:#D5D0CA;text-decoration:none">Plans</a>
             <span style="color:#E8E4DF"> &nbsp;&#183;&nbsp; </span>
             <a href="https://infowebworld.com/contact" target="_blank" style="color:#D5D0CA;text-decoration:none">Contact</a>
           </p>

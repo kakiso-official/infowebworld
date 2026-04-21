@@ -1,0 +1,355 @@
+/* ============================================================
+   INFO PAGES — About, Media, Team, Legal, Help, etc.
+   Shared shell: hero + body + optional CTA.
+   ============================================================ */
+
+.ip {
+  background: var(--h-bg);
+  color: var(--h-body);
+  min-height: calc(100vh - 200px);
+}
+
+/* ── Hero ── */
+.ip-hero {
+  padding: clamp(4rem, 8vw, 7rem) 0 clamp(2.5rem, 5vw, 4rem);
+  border-bottom: 1px solid var(--h-border);
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 0%, rgba(232, 85, 61, .08), transparent 70%),
+    var(--h-bg);
+}
+.ip-hero-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 2rem);
+  text-align: center;
+}
+.ip-kicker {
+  display: inline-block;
+  padding: .35rem .85rem;
+  border-radius: 999px;
+  background: rgba(232, 85, 61, .1);
+  color: var(--h-accent);
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .7rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-bottom: 1.1rem;
+}
+.ip-title {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -.02em;
+  color: var(--h-heading);
+  margin: 0 0 1rem;
+}
+.ip-sub {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: clamp(1rem, 1.5vw, 1.15rem);
+  line-height: 1.65;
+  color: var(--h-body);
+  max-width: 640px;
+  margin: 0 auto;
+}
+.ip-updated {
+  display: inline-block;
+  margin-top: 1.1rem;
+  padding: .25rem .7rem;
+  border-radius: 999px;
+  background: rgba(0,0,0,.04);
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .72rem;
+  font-weight: 600;
+  color: rgba(0,0,0,.5);
+}
+.ip-soon-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  margin-top: 1.25rem;
+  padding: .4rem .9rem;
+  border-radius: 999px;
+  background: rgba(59, 130, 246, .1);
+  color: #2563EB;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .75rem;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+.ip-soon-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2563EB;
+  box-shadow: 0 0 0 0 rgba(37, 99, 235, .5);
+  animation: ip-pulse 2s infinite;
+}
+@keyframes ip-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(37, 99, 235, .5) }
+  70%  { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0) }
+  100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0) }
+}
+
+/* Coming-soon variant tweaks */
+.ip--coming-soon .ip-hero { padding-bottom: clamp(4rem, 8vw, 7rem) }
+
+/* ── Body ── */
+.ip-body { padding: clamp(2.5rem, 5vw, 4rem) 0 clamp(3rem, 6vw, 5rem) }
+.ip-body-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 2rem);
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--h-body);
+}
+
+.ip--legal .ip-body-inner { max-width: 780px }
+
+/* ── Section ── */
+.ip-section {
+  padding: clamp(1.25rem, 2vw, 1.75rem) 0;
+  scroll-margin-top: 100px;
+}
+.ip-section + .ip-section { border-top: 1px solid var(--h-border) }
+
+.ip-h2 {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(1.35rem, 2.2vw, 1.7rem);
+  font-weight: 800;
+  letter-spacing: -.01em;
+  color: var(--h-heading);
+  margin: 0 0 1rem;
+}
+.ip-h3 {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  color: var(--h-heading);
+  margin: 1.35rem 0 .5rem;
+}
+
+.ip-body-inner p {
+  margin: 0 0 1rem;
+  max-width: 68ch;
+}
+.ip-body-inner strong { color: var(--h-heading); font-weight: 700 }
+.ip-body-inner em { font-style: italic; color: var(--h-accent); font-weight: 600 }
+.ip-body-inner a:not(.ip-cta-btn):not(.ip-card-link) {
+  color: var(--h-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+  transition: color .2s;
+}
+.ip-body-inner a:not(.ip-cta-btn):not(.ip-card-link):hover { color: #B83E2E }
+
+.ip-body-inner ul, .ip-body-inner ol {
+  margin: 0 0 1.1rem;
+  padding-left: 1.35rem;
+}
+.ip-body-inner li { margin: .4rem 0; line-height: 1.65 }
+
+.ip-body-inner blockquote {
+  margin: 1.25rem 0;
+  padding: .85rem 1.15rem;
+  border-left: 3px solid var(--h-accent);
+  background: rgba(232, 85, 61, .04);
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+  color: var(--h-heading);
+}
+
+/* Sub-section wrapper */
+.ip-sub-section { margin: 1rem 0 }
+
+/* ── Cards ── */
+.ip-cards {
+  display: grid;
+  gap: 1rem;
+  margin: 1.25rem 0 1.5rem;
+}
+.ip-cards--2 { grid-template-columns: repeat(2, 1fr) }
+.ip-cards--3 { grid-template-columns: repeat(3, 1fr) }
+.ip-cards--4 { grid-template-columns: repeat(4, 1fr) }
+
+.ip-card {
+  padding: 1.25rem 1.1rem;
+  background: #fff;
+  border: 1.5px solid var(--h-border);
+  border-radius: 14px;
+  transition: border-color .25s, transform .25s, box-shadow .25s;
+}
+.ip-card:hover {
+  border-color: rgba(232, 85, 61, .3);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+.ip-card-icon {
+  display: inline-block;
+  font-size: 1.5rem;
+  margin-bottom: .55rem;
+}
+.ip-card-title {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--h-heading);
+  margin: 0 0 .4rem;
+}
+.ip-card-body {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .9rem;
+  line-height: 1.6;
+  color: var(--h-body);
+}
+.ip-card-body p { margin: 0 }
+
+/* ── Table of contents (legal) ── */
+.ip-toc {
+  padding: 1rem 1.25rem;
+  background: rgba(0,0,0,.02);
+  border: 1px solid var(--h-border);
+  border-radius: 12px;
+  margin: 0 0 2rem;
+}
+.ip-toc-label {
+  display: block;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .65rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,.5);
+  margin-bottom: .5rem;
+}
+.ip-toc-list {
+  list-style: decimal inside;
+  margin: 0;
+  padding: 0;
+  columns: 2;
+  column-gap: 1.5rem;
+  font-size: .88rem;
+}
+.ip-toc-list li { margin: .25rem 0; break-inside: avoid }
+.ip-toc-list a {
+  color: var(--h-body);
+  text-decoration: none;
+  transition: color .2s;
+}
+.ip-toc-list a:hover { color: var(--h-accent) }
+
+/* ── CTA ── */
+.ip-cta {
+  padding: 0 clamp(1rem, 4vw, 2rem) clamp(3rem, 6vw, 5rem);
+}
+.ip-cta-card {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: clamp(1.75rem, 4vw, 2.5rem);
+  background: linear-gradient(135deg, var(--h-heading) 0%, #2a2a2a 100%);
+  border-radius: 20px;
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 20px 60px rgba(0,0,0,.15);
+}
+.ip-cta-desc {
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: 1.05rem;
+  color: rgba(255,255,255,.75);
+  max-width: 520px;
+  margin: 0 auto 1.25rem;
+  line-height: 1.6;
+}
+.ip-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  padding: .85rem 1.6rem;
+  background: var(--h-accent);
+  color: #fff;
+  border-radius: 999px;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .95rem;
+  font-weight: 800;
+  letter-spacing: .01em;
+  box-shadow: 0 6px 20px rgba(232, 85, 61, .3);
+  transition: transform .25s cubic-bezier(.16, 1, .3, 1), box-shadow .25s;
+}
+.ip-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(232, 85, 61, .45);
+}
+
+/* ── FAQ accordion (for FAQs / Help pages) ── */
+.ip-faq {
+  border: 1px solid var(--h-border);
+  border-radius: 12px;
+  margin: .5rem 0;
+  background: #fff;
+  overflow: hidden;
+}
+.ip-faq summary {
+  padding: 1rem 1.25rem;
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-weight: 700;
+  font-size: .98rem;
+  color: var(--h-heading);
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  transition: background .2s;
+}
+.ip-faq summary:hover { background: rgba(0,0,0,.015) }
+.ip-faq summary::-webkit-details-marker { display: none }
+.ip-faq summary::after {
+  content: '';
+  width: 10px; height: 10px;
+  border-right: 2px solid var(--h-body);
+  border-bottom: 2px solid var(--h-body);
+  transform: rotate(45deg);
+  transition: transform .25s;
+  flex-shrink: 0;
+}
+.ip-faq[open] summary::after { transform: rotate(-135deg) }
+.ip-faq-body {
+  padding: 0 1.25rem 1.1rem;
+  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-size: .92rem;
+  line-height: 1.7;
+  color: var(--h-body);
+}
+
+/* ── Definition list (glossary) ── */
+.ip-dl { margin: 0 }
+.ip-dl dt {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--h-heading);
+  margin-top: 1.15rem;
+}
+.ip-dl dd {
+  margin: .3rem 0 0;
+  padding: 0;
+  color: var(--h-body);
+  font-size: .95rem;
+  line-height: 1.65;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .ip-cards--3, .ip-cards--4 { grid-template-columns: repeat(2, 1fr) }
+  .ip-toc-list { columns: 1 }
+}
+@media (max-width: 480px) {
+  .ip-cards--2, .ip-cards--3, .ip-cards--4 { grid-template-columns: 1fr }
+}

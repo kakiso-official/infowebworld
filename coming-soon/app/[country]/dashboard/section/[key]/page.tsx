@@ -5,6 +5,7 @@ import { queryOne } from '@/lib/db'
 import { USER_COOKIE_NAME } from '@/lib/user-auth'
 import { getUserPlan } from '@/lib/user-plan'
 import { canAccess, TIER_LABEL, type PlanTier } from '@/lib/user-plan-types'
+import { countryHref } from '@/app/config/countries'
 import { SECTIONS, FEATURES, type Feature } from '../../features'
 import { I, ic, type IconKey } from '../../../../components/icons'
 
@@ -35,14 +36,14 @@ export default async function SectionPage({
 
   const store = await cookies()
   const token = store.get(USER_COOKIE_NAME)?.value
-  if (!token) redirect(`/${country}/business`)
+  if (!token) redirect(countryHref(country, '/business'))
 
   const user = await queryOne<{ id: number }>(
     `SELECT u.id FROM business_sessions s JOIN business_users u ON u.id = s.user_id
      WHERE s.token = ? AND s.expires_at > NOW() LIMIT 1`,
     [token]
   )
-  if (!user) redirect(`/${country}/business`)
+  if (!user) redirect(countryHref(country, '/business'))
 
   const section = SECTIONS.find(s => s.key === key)
   if (!section) notFound()
@@ -68,7 +69,7 @@ export default async function SectionPage({
 
   return (
     <div className="sec-page" style={{ ['--sec-color' as string]: section.color }}>
-      <Link href={`/${country}/dashboard`} className="sec-back">
+      <Link href={countryHref(country, '/dashboard')} className="sec-back">
         <I d={ic.arrowLeft} size={12} sw={2} />
         <span>Dashboard</span>
       </Link>
@@ -95,7 +96,7 @@ export default async function SectionPage({
               </span>
             </div>
             {plan.tier !== 'lifetime' && (
-              <Link href={`/${country}/plans`} className="sec-stats-upgrade">
+              <Link href={countryHref(country, '/business/plans')} className="sec-stats-upgrade">
                 Upgrade
                 <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
@@ -138,7 +139,7 @@ export default async function SectionPage({
               </span>
               <span className={`sec-group-count sec-group-count--${tier}`}>{rows.length}</span>
               <Link
-                href={`/${country}/plans`}
+                href={countryHref(country, '/business/plans')}
                 className={`sec-group-cta sec-group-cta--${tier}`}
               >
                 Unlock for {TIER_PRICE_SHORT[tier]}
@@ -172,7 +173,7 @@ function UnlockedTile({
 }: { country: string; feature: Feature; index: number }) {
   return (
     <Link
-      href={`/${country}/dashboard/feature/${feature.slug}`}
+      href={countryHref(country, `/dashboard/feature/${feature.slug}`)}
       className="sec-tile sec-tile--on"
     >
       <div className="sec-tile-wash" aria-hidden="true" />
@@ -213,7 +214,7 @@ function LockedTile({
 }: { country: string; feature: Feature; index: number; tier: PlanTier }) {
   return (
     <Link
-      href={`/${country}/dashboard/feature/${feature.slug}`}
+      href={countryHref(country, `/dashboard/feature/${feature.slug}`)}
       className={`sec-tile sec-tile--off sec-tile--${tier}`}
     >
       {/* Diagonal shimmer strip — gives locked tiles a premium "gated" shine. */}

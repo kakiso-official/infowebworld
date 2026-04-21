@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server'
 import { COOKIE_NAME, COOKIE_MAX_AGE, GLOBAL_COUNTRY, GLOBAL_COOKIE, geoToCountry, isValidCountry } from './app/config/countries'
 
 /* ── Only these 4 pages are indexable — everything else gets noindex ── */
-const INDEXABLE_PATHS = new Set(['', '/', '/business', '/plans', '/contact'])
+const INDEXABLE_PATHS = new Set(['', '/', '/business', '/business/plans'])
 
 function shouldNoindex(pathname: string): boolean {
   const firstSeg = pathname.split('/')[1] || ''
@@ -27,6 +27,13 @@ function applyHeaders(response: NextResponse, pathname: string, isVercelApp: boo
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   const isVercelApp = request.headers.get('host')?.includes('vercel.app') ?? false
+
+  // Strip /global prefix — it's an internal rewrite target, never a browser URL
+  if (pathname === '/global' || pathname.startsWith('/global/')) {
+    const url = request.nextUrl.clone()
+    url.pathname = pathname.slice('/global'.length) || '/'
+    return NextResponse.redirect(url, 308)
+  }
 
   // Skip static assets, api, admin, sitemaps
   if (

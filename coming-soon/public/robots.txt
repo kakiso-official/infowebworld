@@ -1,8 +1,8 @@
 User-agent: *
 Allow: /$
 Allow: /business$
-Allow: /plans$
-Allow: /contact$
+Allow: /business/plans$
+Disallow: /contact
 Disallow: /iww-hq/
 Disallow: /api/
 Disallow: /payment-test/

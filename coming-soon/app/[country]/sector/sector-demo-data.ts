@@ -78,7 +78,7 @@ const META: Record<string, SectorMeta> = {
     seoDescription: 'Discover emerging startups, accelerators, innovation labs and venture tools. MVP builders, growth platforms, funding tools and startup communities. Verified listings.',
     seoKeywords: ['startups', 'accelerators', 'innovation platforms', 'startup tools', 'venture capital', 'MVP builders', 'growth hacking', 'startup community'],
   },
-  'local-business': {
+  'local-businesses': {
     color: '#F59E0B', pastel: '#FDE68A', pastelLight: '#FFFBEB',
     icon: 'home',
     heroImage: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1600&q=80&auto=format',
@@ -238,7 +238,7 @@ const DATA: Record<string, Tuple[]> = {
   'software-saas': SOFTWARE_SAAS,
   'it-services-agencies': IT_SERVICES,
   'startups-innovation': STARTUPS,
-  'local-business': LOCAL_BIZ,
+  'local-businesses': LOCAL_BIZ,
   'professional-services': PROFESSIONAL,
 }
 

@@ -111,13 +111,11 @@ export default function CategoryHero({ category: c, sectorSlug, sectorName, loca
 
   return (
     <div className="cd-hero">
-      {/* ── Breadcrumb: Home / Categories / L1 / L2 / L3 / Location ── */}
+      {/* ── Breadcrumb: Home / L1 / L2 / L3 / Location ── */}
       <nav className="cd-breadcrumb" aria-label="Breadcrumb">
         <Link href="/" className="cd-breadcrumb-home" aria-label="Home">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         </Link>
-        <span className="cd-breadcrumb-sep">/</span>
-        <Link href="/categories">Categories</Link>
 
         {/* L1 Sector (always show if sectorSlug exists) */}
         {sectorSlug && sectorName && (

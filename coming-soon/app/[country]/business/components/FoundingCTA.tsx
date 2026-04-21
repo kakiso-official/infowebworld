@@ -9,7 +9,7 @@ import { useAuth } from '@/lib/use-auth'
 
 const features = ['Leads', 'Reviews', 'GEO', 'AEO', 'SEO Backlinks']
 const starterFeatures = ['Backlink', 'Reviews', 'Custom URL', 'FAQ', 'Analytics']
-const freeFeatures = ['Listing', 'Profile', 'Website Link', 'Social', '1 Category']
+const freeFeatures = ['Listing', 'Search', 'Website Link', 'Visiblity','Social','1 Category']
 
 type PlanKey = 'lifetime' | 'yearly'
 type FlexibleKey = 'free' | 'starter'
@@ -63,8 +63,7 @@ export default function FoundingCTA() {
           <div className="fc-section-tag">Limited Pioneer Pre-Launch Spots</div>
           <h2 className="fc-section-heading">
             Choose Your <em>Founding</em> Plan
-          </h2><p>The earlier you join, the less you pay — forever. Only for Pioneer spots. Not Satisfied, we got you covered with Refund or Free Renewal, just ping us.</p>
-
+          </h2><p>The earlier you join, the less you pay — forever. Only for Pioneer spots. Not Satisfied, we got you covered with Refund or Free Renewal.</p>
         </div>
 
         <div className="fc-grid">
@@ -204,7 +203,7 @@ export default function FoundingCTA() {
             </div>
 
             <button type="button" className="fc-btn fc-btn--starter" onClick={() => gate('starter', () => setFlexiblePlan('starter'))}>
-              Get Starter — $49
+              Get Started
               <svg viewBox="0 0 24 24" className="fc-btn-arrow"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
             </button>
 

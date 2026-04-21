@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { queryOne } from '@/lib/db'
 import { USER_COOKIE_NAME } from '@/lib/user-auth'
 import { getUserPlan } from '@/lib/user-plan'
+import { countryHref } from '@/app/config/countries'
 import DashboardShell from './DashboardShell'
 
 export const dynamic = 'force-dynamic'
@@ -40,7 +41,7 @@ export default async function DashboardLayout({
 }) {
   const { country } = await params
   const user = await getCurrentUser()
-  if (!user) redirect(`/${country}/business`)
+  if (!user) redirect(countryHref(country, '/business'))
 
   const plan = await getUserPlan(user.id)
 
