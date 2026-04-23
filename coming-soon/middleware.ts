@@ -35,7 +35,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url, 308)
   }
 
-  // Skip static assets, api, admin, sitemaps
+  // Skip static assets, api, admin, sitemaps, and local test routes
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/api') ||
@@ -47,6 +47,7 @@ export function middleware(request: NextRequest) {
     pathname.startsWith('/og-image') ||
     pathname.startsWith('/icon') ||
     pathname.startsWith('/robots') ||
+    pathname.startsWith('/test-listing-page') ||
     pathname.match(/\.(svg|png|jpg|jpeg|gif|ico|css|js|woff|woff2|ttf|webp)$/)
   ) {
     return NextResponse.next()
