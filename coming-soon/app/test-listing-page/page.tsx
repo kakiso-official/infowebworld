@@ -254,244 +254,244 @@ const ALL_FEATURES: [string, number, number][] = [
   ['WYSIWYG Editor',               4.5, 14],
 ]
 
-/* ── Alternatives compared ── */
-const ALTERNATIVES = [
+/* ── Alternatives compared (4 columns — Mailchimp is highlighted/filled) ── */
+type AltRating = number | null
+type Alt = {
+  name: string; domain: string; rating: number; reviews: string
+  startingPrice: string | null; period?: string
+  freeTrial: boolean; freeVersion: boolean
+  ratings: { ease: AltRating; features: AltRating; value: AltRating; support: AltRating }
+  highlight: boolean
+}
+const ALTERNATIVES: Alt[] = [
   {
-    name: 'Mailchimp',
-    domain: 'mailchimp.com',
-    startingPrice: '$13',
-    period: '/mo',
-    freeVersion: true,
-    freeTrial: true,
-    ratings: { ease: 4.4, value: 4.1, features: 4.4, support: 4.0 },
+    name: 'Mailchimp', domain: 'mailchimp.com',
+    rating: 4.5, reviews: '17.5K',
+    startingPrice: '13', period: 'Per month',
+    freeTrial: true, freeVersion: true,
+    ratings: { ease: 4.4, features: 4.4, value: 4.4, support: 4.2 },
     highlight: true,
   },
   {
-    name: 'ActiveCampaign',
-    domain: 'activecampaign.com',
-    startingPrice: '$15',
-    period: '/mo',
-    freeVersion: false,
-    freeTrial: true,
-    ratings: { ease: 4.3, value: 4.4, features: 4.6, support: 4.5 },
+    name: 'Brevo', domain: 'brevo.com',
+    rating: 4.6, reviews: '3.4K',
+    startingPrice: null, period: 'No pricing info',
+    freeTrial: true, freeVersion: false,
+    ratings: { ease: null, features: null, value: null, support: null },
     highlight: false,
   },
   {
-    name: 'MailerLite',
-    domain: 'mailerlite.com',
-    startingPrice: '$9',
-    period: '/mo',
-    freeVersion: true,
-    freeTrial: true,
-    ratings: { ease: 4.7, value: 4.7, features: 4.4, support: 4.6 },
+    name: 'ActiveCampaign', domain: 'activecampaign.com',
+    rating: 4.6, reviews: '2.5K',
+    startingPrice: null, period: 'No pricing info',
+    freeTrial: true, freeVersion: false,
+    ratings: { ease: null, features: null, value: null, support: null },
+    highlight: false,
+  },
+  {
+    name: 'MailerLite', domain: 'mailerlite.com',
+    rating: 4.7, reviews: '2.2K',
+    startingPrice: null, period: 'No pricing info',
+    freeTrial: true, freeVersion: false,
+    ratings: { ease: null, features: null, value: null, support: null },
     highlight: false,
   },
 ]
 
-/* ── Pricing plans ── */
-const PRICING = {
-  monthly: [
-    {
-      name: 'Free',
-      price: '$0',
-      period: '/month',
-      cta: 'Get started',
-      features: [
-        '500 contacts',
-        '1,000 sends per month',
-        'Marketing CRM',
-        'Creative Assistant',
-        'Website builder',
-      ],
-    },
-    {
-      name: 'Essentials',
-      price: '$13',
-      period: '/month',
-      cta: 'Start 14-day trial',
-      features: [
-        '500 contacts included',
-        '5,000 sends per month',
-        'All Free features',
-        'A/B testing',
-        '24/7 email & chat support',
-        'Custom branding',
-      ],
-      popular: true,
-    },
-    {
-      name: 'Standard',
-      price: '$20',
-      period: '/month',
-      cta: 'Start 14-day trial',
-      features: [
-        '500 contacts included',
-        '6,000 sends per month',
-        'All Essentials features',
-        'Customer Journey Builder',
-        'Behavioral targeting',
-        'Send-time optimization',
-        'Predictive segmentation',
-      ],
-    },
-  ],
-  yearly: [
-    {
-      name: 'Free',
-      price: '$0',
-      period: '/year',
-      cta: 'Get started',
-      features: [
-        '500 contacts',
-        '1,000 sends per month',
-        'Marketing CRM',
-        'Creative Assistant',
-        'Website builder',
-      ],
-    },
-    {
-      name: 'Essentials',
-      price: '$140',
-      period: '/year',
-      cta: 'Start 14-day trial',
-      features: [
-        '500 contacts included',
-        '5,000 sends per month',
-        'All Free features',
-        'A/B testing',
-        '24/7 email & chat support',
-        'Custom branding',
-      ],
-      popular: true,
-    },
-    {
-      name: 'Standard',
-      price: '$216',
-      period: '/year',
-      cta: 'Start 14-day trial',
-      features: [
-        '500 contacts included',
-        '6,000 sends per month',
-        'All Essentials features',
-        'Customer Journey Builder',
-        'Behavioral targeting',
-        'Send-time optimization',
-        'Predictive segmentation',
-      ],
-    },
-  ],
-} as const
+/* ── Pricing plans (single flat list, no monthly/yearly toggle) ── */
+const PRICING_PLANS = [
+  {
+    name: 'Free',
+    price: '0.00',
+    features: [
+      '2500 Monthly Email Sends',
+      '1 User Seat',
+      'Pre-Built Email Templates',
+      '330+ Integrations',
+      'Reporting & Analytics',
+      'Forms and Landing Pages',
+      'Creative Assistant',
+      'Email support for first 30 days',
+    ],
+  },
+  {
+    name: 'Essentials',
+    price: '13',
+    features: [
+      '3 Seats',
+      'Owner & Admin',
+      'Up to 50,000 Contacts',
+      'Surveys',
+      'Audience Dashboard',
+      'Campaign Engagement',
+      'Purchase Behavior',
+      'Content Studio',
+    ],
+  },
+  {
+    name: 'Standard',
+    price: '20',
+    features: [
+      '6000 Monthly Email Sends',
+      '5 User Seats',
+      '4 Roles',
+      'Pre-Built Journeys',
+      'Custom-Coded Templates',
+      'Predictive Segmentation',
+      'Content Optimizer',
+      'Send Time Optimization',
+      'Dynamic Content',
+      '24/7 Email & Chat Support',
+    ],
+  },
+]
 
-/* ── User opinions about pricing (demo quotes) ── */
+/* ── User opinions about pricing/value (2 quotes w/ "Highly Relevant" badge) ── */
 const VALUE_QUOTES = [
   {
-    name: 'Jessica R.',
-    role: 'Head of Marketing',
-    industry: 'Non-profit, 11–50 employees',
-    thumb: 'up',
+    name: 'Haimal K.',
+    role: 'Founder and CEO',
+    initials: 'HK',
+    color: '#0C9A9A',
     quote:
-      'For a small non-profit, the free plan got us running campaigns without touching our budget. We upgraded to Essentials once we grew past 500 contacts and the jump felt reasonable.',
+      'The automation feature of mailchimp eliminates the need to send a welcome email after each subscription to our service and most importantly, mailchimp also prevents most of our emails from going into spam folders.',
   },
   {
-    name: 'Daniel B.',
-    role: 'E-commerce Lead',
-    industry: 'Retail, 51–200 employees',
-    thumb: 'down',
+    name: 'Brian Y.',
+    role: 'Visa Consulting Specialist',
+    initials: 'BY',
+    color: '#6B7280',
     quote:
-      'Moving from 10k to 25k contacts tripled our bill. Features like Customer Journey Builder are strong, but the contact-tier pricing is hard to justify for seasonal retailers.',
-  },
-  {
-    name: 'Linh P.',
-    role: 'Digital Marketing Manager',
-    industry: 'Agency, 2–10 employees',
-    thumb: 'up',
-    quote:
-      'Good value on Standard for agency work. Being able to manage multiple client audiences from one login is worth the price for us.',
+      'I prefer creating clean email templates and updating them in advance that ensures that the clients are kept informed even during the peak times of consultations.',
   },
 ]
 
-/* ── Integrations ── */
+/* ── Integrations (rich card layout with quote + author + pagination) ── */
 const INTEGRATIONS = [
-  { name: 'WordPress', domain: 'wordpress.com', rating: 4.6, category: 'CMS' },
-  { name: 'Zapier', domain: 'zapier.com', rating: 4.7, category: 'Automation' },
-  { name: 'WooCommerce', domain: 'woocommerce.com', rating: 4.5, category: 'E-commerce' },
-  { name: 'Squarespace', domain: 'squarespace.com', rating: 4.4, category: 'Website builder' },
-  { name: 'Shopify', domain: 'shopify.com', rating: 4.6, category: 'E-commerce' },
-  { name: 'Canva', domain: 'canva.com', rating: 4.7, category: 'Design' },
-  { name: 'Salesforce', domain: 'salesforce.com', rating: 4.3, category: 'CRM' },
-  { name: 'Stripe', domain: 'stripe.com', rating: 4.7, category: 'Payments' },
-  { name: 'HubSpot', domain: 'hubspot.com', rating: 4.4, category: 'CRM' },
-  { name: 'Google Analytics', domain: 'analytics.google.com', rating: 4.5, category: 'Analytics' },
-  { name: 'Slack', domain: 'slack.com', rating: 4.6, category: 'Team chat' },
-  { name: 'Eventbrite', domain: 'eventbrite.com', rating: 4.3, category: 'Events' },
+  {
+    name: 'WordPress', domain: 'wordpress.com', tag: 'Must-Have',
+    rating: 4.6, reviewCount: 116, pageOf: 20, pageNum: 1,
+    quote: 'I use WordPress everyday and have integrated Mailchimp with it with a lot of success. I feel that I have found my power combo of WordPress and Mailchimp. This integration is key for a successful website and email campaign integration. I highly recommend the combination. There are so many things you can do with both softwares and it is truly endless. Happy user here!',
+    author: 'Justin L.', authorRole: 'Songwriter/Producer', authorInitials: 'JL', authorColor: '#6B7280',
+  },
+  {
+    name: 'Zapier', domain: 'zapier.com', tag: 'Must-Have',
+    rating: 4.5, reviewCount: 37, pageOf: 9, pageNum: 1,
+    quote: 'Was very efficient in automating the importation of customer details into Mailchimp. As our budget was restricted, we ran into free use limits and imported the rest manually. But the connection worked great everytime.',
+    author: 'Ukeje A.', authorRole: 'Researcher', authorInitials: 'UA', authorColor: '#0C9A9A',
+  },
+  {
+    name: 'WooCommerce', domain: 'woocommerce.com', tag: 'Must-Have',
+    rating: 4.4, reviewCount: 36, pageOf: 7, pageNum: 1,
+    quote: 'When clients have a shop function it is a helpful tool for subscribing their leads for retargeting and future campaigns. Like customers who may be on the abandoned cart list, purchased at least once list, or did not purchase but signed up to be on the list. This allows each list to get the emails that will move them through the right funnels faster for better results.',
+    author: 'Rosie H.', authorRole: 'Lead Marketing', authorInitials: 'RH', authorColor: '#0C9A9A',
+  },
+  {
+    name: 'Squarespace', domain: 'squarespace.com', tag: 'Must-Have',
+    rating: 4.7, reviewCount: 17, pageOf: 7, pageNum: 1,
+    quote: 'We integrated our sales and customer contact from our Squarespace site with Mailchimp in order to manage our database and keep in contact with our customers using Mailchimp\u2019s advanced features.',
+    author: 'Jesse C.', authorRole: 'Managing Director', authorInitials: 'JC', authorColor: '#0C9A9A',
+  },
+  {
+    name: 'Shopify', domain: 'shopify.com', tag: 'Must-Have',
+    rating: 4.4, reviewCount: 40, pageOf: 6, pageNum: 1,
+    quote: 'It registers new clients and their marketing preferences, helps with abandoned cart emails and sales tracking. It\u2019s a great app to have in Shopify.',
+    author: 'Alexandra L.', authorRole: 'Customer success manager', authorInitials: 'AL', authorColor: '#0C9A9A',
+  },
+  {
+    name: 'Canva', domain: 'canva.com', tag: 'Must-Have',
+    rating: 4.8, reviewCount: 24, pageOf: 6, pageNum: 1,
+    quote: 'Perfect integration for quickly taking contact from my canna and directly sending it to my mailchimp account. No need for downloading then uploading over and over again.',
+    author: 'Cassidy L.', authorRole: 'Owner/Operator', authorInitials: 'CL', authorColor: '#0C9A9A',
+  },
 ]
 
-/* ── Customer support testimonials ── */
+/* ── Customer support — sentiment bullets + 3 quote cards ── */
+const SUPPORT_BULLETS = [
+  { kind: 'pos', text: 'A fair number of users say Mailchimp\u2019s customer service is fantastic, resolving issues quickly via chat or email.' },
+  { kind: 'pos', text: 'Multiple users appreciate the 24/7 support availability and find the team helpful in addressing problems when contacted.' },
+  { kind: 'neg', text: 'A portion of users report slow response times and difficulty reaching support, especially for non-premium accounts.' },
+  { kind: 'neg', text: 'Multiple users mention lack of phone support and inconsistent or unhelpful responses from customer service representatives.' },
+]
+
 const SUPPORT_QUOTES = [
   {
-    name: 'Amanda S.',
-    role: 'Customer Support',
-    industry: 'Retail, 11–50 employees',
-    sentiment: 'pos',
-    quote:
-      'Chat agents are responsive on Essentials and up. Knowledge base articles cover most of what a small team needs — we rarely escalate.',
+    name: 'Garrett M.', role: 'Chief Marketing Officer',
+    initials: 'GM', color: '#6B7280',
+    quote: 'There are a wide variety of pricing models so that you can find one that fits your business and sending needs and we always experienced good deliverability and fantastic customer support.',
   },
   {
-    name: 'Omar H.',
-    role: 'IT Administrator',
-    industry: 'Non-profit, 2–10 employees',
-    sentiment: 'neg',
-    quote:
-      'Free plan support is email-only and response times can be 48+ hours. Upgrade path is clear but small orgs notice the gap.',
+    name: 'Jess S.', role: 'Creative Director',
+    initials: 'JS', color: '#0C9A9A',
+    quote: 'Mailchimp offers a fantastic service that\u2019s easy to use, affords many options for customization, and provides reports, statistics, and helpful information for composing emails, collecting addresses, and improving interaction with subscribers.',
+  },
+  {
+    name: 'Jeremy C.', role: 'Co-Founder',
+    initials: 'JC', color: '#6B7280',
+    quote: 'This effectively meant that our business was completely without customer communication — purchases were processed but not confirmed, etc. And because Mailchimp\u2019s customer support staff was slow and arrogant, we had to endure almost 24 hours without basic business functions.',
   },
 ]
 
-/* ── FAQs ── */
+/* ── FAQs (first has embedded "better value" alternatives) ── */
+const FAQ_ALTS = [
+  { name: 'Brevo',          domain: 'brevo.com',          rating: 4.6, reviews: '3.4K' },
+  { name: 'ActiveCampaign', domain: 'activecampaign.com', rating: 4.6, reviews: '2.5K' },
+  { name: 'MailerLite',     domain: 'mailerlite.com',     rating: 4.7, reviews: '2.2K' },
+]
+
 const FAQS = [
   {
-    q: 'Who are the typical users of Mailchimp?',
-    a: 'Mailchimp is used by small businesses, e-commerce shops, marketing agencies, non-profits, content creators, and in-house marketing teams at mid-sized companies. The free and Essentials tiers are most popular with solopreneurs and teams under 50 people.',
+    q: 'Q. Who are the typical users of Mailchimp?',
+    a: 'Mailchimp has the following typical customers: Freelancers, Large Enterprises, Mid Size Businesses, Non Profit, Public Administrations, Small Business',
+    showAlts: true,
   },
   {
-    q: 'What is the cost of using Mailchimp?',
-    a: 'Mailchimp offers a free plan for up to 500 contacts. Paid plans start at $13/month (Essentials), $20/month (Standard), and $350/month (Premium). Pricing scales with contact-list size.',
+    q: 'Q. What is Mailchimp used for?',
+    a: 'Mailchimp is an email marketing and marketing automation platform used to design, send, and measure email campaigns — including newsletters, customer journeys, landing pages, and signup forms.',
+    showAlts: false,
   },
   {
-    q: 'Does Mailchimp have a mobile app?',
-    a: 'Yes. Mailchimp has free iOS and Android apps that let you draft campaigns, review analytics, and respond to contact activity on the go.',
+    q: 'Q. What are the benefits of using Mailchimp?',
+    a: 'A generous free tier, beginner-friendly drag-and-drop editor, hundreds of integrations with commerce and CRM tools, and detailed reporting on opens, clicks, and revenue.',
+    showAlts: false,
   },
   {
-    q: 'What level of customer support does Mailchimp offer?',
-    a: 'Mailchimp offers 24/7 email & chat support from Essentials and up, and phone support on Premium. A large self-serve knowledge base and community forum are available to all users.',
+    q: 'Q. What languages does Mailchimp support?',
+    a: 'The Mailchimp interface is available in English, Spanish, French, German, Portuguese (Brazil), and Italian. Emails and landing pages support any Unicode language.',
+    showAlts: false,
   },
   {
-    q: 'Does Mailchimp integrate with other tools?',
-    a: 'Yes — Mailchimp has 300+ integrations including Shopify, WooCommerce, Salesforce, Canva, WordPress, Zapier, Stripe, and Google Analytics.',
-  },
-  {
-    q: 'Which languages does Mailchimp support?',
-    a: 'The Mailchimp UI is available in English, Spanish, French, German, Portuguese (Brazil), and Italian. Email templates and landing pages support Unicode.',
+    q: 'Q. Does Mailchimp support mobile devices?',
+    a: 'Yes. Mailchimp has native iOS and Android apps for drafting campaigns, reviewing reports, and responding to audience activity on the go.',
+    showAlts: false,
   },
 ]
 
-/* ── Popular comparisons ── */
+/* ── Popular comparisons (15 cards, 3×5 grid) ── */
 const COMPARISONS = [
-  { a: 'Mailchimp', b: 'Constant Contact', ad: 'mailchimp.com', bd: 'constantcontact.com' },
-  { a: 'Mailchimp', b: 'HubSpot Marketing', ad: 'mailchimp.com', bd: 'hubspot.com' },
-  { a: 'Mailchimp', b: 'Klaviyo',          ad: 'mailchimp.com', bd: 'klaviyo.com' },
-  { a: 'Mailchimp', b: 'ActiveCampaign',   ad: 'mailchimp.com', bd: 'activecampaign.com' },
-  { a: 'Mailchimp', b: 'Brevo',            ad: 'mailchimp.com', bd: 'brevo.com' },
-  { a: 'Mailchimp', b: 'GetResponse',      ad: 'mailchimp.com', bd: 'getresponse.com' },
-  { a: 'Mailchimp', b: 'MailerLite',       ad: 'mailchimp.com', bd: 'mailerlite.com' },
-  { a: 'Mailchimp', b: 'Omnisend',         ad: 'mailchimp.com', bd: 'omnisend.com' },
-  { a: 'Mailchimp', b: 'Campaign Monitor', ad: 'mailchimp.com', bd: 'campaignmonitor.com' },
+  { b: 'Constant Contact',     bd: 'constantcontact.com' },
+  { b: 'ActiveCampaign',       bd: 'activecampaign.com' },
+  { b: 'HubSpot Marketing Hub', bd: 'hubspot.com' },
+  { b: 'SendGrid',             bd: 'sendgrid.com' },
+  { b: 'GetResponse',          bd: 'getresponse.com' },
+  { b: 'Emma by Marigold',     bd: 'myemma.com' },
+  { b: 'Moosend',              bd: 'moosend.com' },
+  { b: 'Brevo',                bd: 'brevo.com' },
+  { b: 'MailerLite',           bd: 'mailerlite.com' },
+  { b: 'Drip',                 bd: 'drip.com' },
+  { b: 'Keap',                 bd: 'keap.com' },
+  { b: 'AWeber',               bd: 'aweber.com' },
+  { b: 'MailUp',               bd: 'mailup.com' },
+  { b: 'iContact',             bd: 'icontact.com' },
+  { b: 'Kit',                  bd: 'kit.com' },
 ]
 
-/* ── Related categories ── */
+/* ── Related categories (12 items, folder-icon cards, 3×4 grid) ── */
 const RELATED_CATS = [
-  'Email Marketing', 'Marketing Automation', 'Email Tracking',
-  'Email Management', 'Newsletter', 'Landing Page',
-  'Lead Generation', 'Campaign Management', 'SMS Marketing',
+  'Email Management', 'Social Media Marketing', 'Marketing Analytics',
+  'CRM', 'Real Estate CRM', 'Email Tracking',
+  'Lead Management', 'Marketing Automation', 'Email Marketing',
+  'Survey', 'Landing Page', 'Campaign Management',
 ]
 
 /* ── Table of Contents anchor list ── */
@@ -629,6 +629,34 @@ function UserSilhouette() {
     <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
       <circle cx="12" cy="9" r="3.6" fill="currentColor" />
       <path d="M4.5 20c1.2-3.5 4.1-5.5 7.5-5.5s6.3 2 7.5 5.5" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function FolderIcon() {
+  return (
+    <svg viewBox="0 0 48 48" width="28" height="28" aria-hidden="true">
+      <path fill="none" stroke="#0C9A9A" strokeWidth="1.8" strokeLinejoin="round"
+        d="M6 14h12l3 4h21v22H6z" />
+      <path fill="none" stroke="#0C9A9A" strokeWidth="1.8" strokeLinejoin="round" opacity=".55"
+        d="M6 14l3 4h12l3 4h18" />
+    </svg>
+  )
+}
+
+function BracketIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+      <path fill="none" stroke="#9CA3AF" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"
+        d="M9 5H6v14h3M15 5h3v14h-3" />
+    </svg>
+  )
+}
+
+function ArrowLeftSm() {
+  return (
+    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+      <path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
@@ -848,7 +876,6 @@ function ThumbMixed() {
    ═══════════════════════════════════════════ */
 
 export default function TestListingPage() {
-  const [period, setPeriod] = useState<'monthly' | 'yearly'>('monthly')
   const [featureQ, setFeatureQ] = useState('')
   const [integrationQ, setIntegrationQ] = useState('')
   const [openFaq, setOpenFaq] = useState<number | null>(0)
@@ -856,6 +883,7 @@ export default function TestListingPage() {
   const [industryHover, setIndustryHover] = useState<number | null>(null)
   const [expandedFeatures, setExpandedFeatures] = useState<Set<number>>(() => new Set([0]))
   const [scrolled, setScrolled] = useState(false)
+  const [activeSection, setActiveSection] = useState<string>(TOC[0]?.id ?? '')
 
   const toggleFeature = (idx: number) => {
     setExpandedFeatures(prev => {
@@ -874,6 +902,9 @@ export default function TestListingPage() {
   useEffect(() => {
     let raf = 0
     let tocFixed = false
+    // Sub-header uses hysteresis so it doesn't disappear on scroll-up until
+    // the user is clearly back at the top (real navbar safely visible).
+    let subShown = false
 
     const handle = () => {
       if (raf) return
@@ -882,15 +913,30 @@ export default function TestListingPage() {
 
         const identity = document.querySelector<HTMLElement>('.tlp-identity')
         const toc      = document.querySelector<HTMLElement>('.tlp-toc')
+        const tocCol   = document.querySelector<HTMLElement>('.tlp-toc-col')
         const layout   = document.querySelector<HTMLElement>('.tlp-layout')
-        if (!identity || !toc || !layout) return
+        if (!identity || !toc || !tocCol || !layout) return
 
-        // — Sub-header visibility —
+        // — Sub-header visibility (hysteresis) —
+        //   SHOW  when identity strip scrolls out of view (scroll-down trigger)
+        //   HIDE  only when the user is essentially back at the very top of
+        //         the page — so on scroll-up the sub-header stays pinned
+        //         the whole time and never leaves a gap before the real
+        //         header appears.
         const idRect = identity.getBoundingClientRect()
-        const subOn  = idRect.bottom < 130
+        const subOn  = subShown
+          ? window.scrollY > 20    // stay shown until page is back at the top
+          : idRect.bottom < 100    // show on scroll-down when identity is almost out
+        subShown = subOn
         setScrolled(subOn)
 
-        // — ToC pinning —
+        // Toggle a scoped body-class so the site's main navbar can be
+        // pushed off-screen WHILE our sub-header is visible — a CSS rule
+        // in test-listing-page.css guards this on `body.tlp-subheader-active`
+        // so no other page is affected.
+        document.body.classList.toggle('tlp-subheader-active', subOn)
+
+        // — ToC pinning — measure the outer column (keeps grid intact) —
         const offsetTop   = subOn ? 76 : 132
         const layoutRect  = layout.getBoundingClientRect()
         const tocHeight   = toc.offsetHeight
@@ -898,7 +944,7 @@ export default function TestListingPage() {
                             layoutRect.bottom > offsetTop + tocHeight
 
         if (shouldPin && !tocFixed) {
-          const r = toc.getBoundingClientRect()
+          const r = tocCol.getBoundingClientRect()
           toc.style.position = 'fixed'
           toc.style.left     = `${r.left}px`
           toc.style.width    = `${r.width}px`
@@ -913,8 +959,12 @@ export default function TestListingPage() {
           toc.style.zIndex   = ''
           tocFixed = false
         } else if (shouldPin) {
-          // still pinned — just keep top correct as sub-header toggles
-          toc.style.top = `${offsetTop}px`
+          // still pinned — keep top correct as sub-header toggles,
+          // and re-sync left/width in case layout reflowed
+          const r = tocCol.getBoundingClientRect()
+          toc.style.left  = `${r.left}px`
+          toc.style.width = `${r.width}px`
+          toc.style.top   = `${offsetTop}px`
         }
       })
     }
@@ -940,7 +990,39 @@ export default function TestListingPage() {
       window.removeEventListener('scroll', handle)
       window.removeEventListener('resize', onResize)
       if (raf) cancelAnimationFrame(raf)
+      // Restore the real navbar on any other page
+      document.body.classList.remove('tlp-subheader-active')
     }
+  }, [])
+
+  // ToC scroll-spy — track which section is currently in the viewport's top
+  // band, so the active item in the sidebar reflects where the user is reading.
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      entries => {
+        const visible = entries.filter(e => e.isIntersecting)
+        if (visible.length === 0) return
+        // Pick the section whose top is closest to (just below) the header band
+        const topmost = visible.reduce((a, b) =>
+          b.boundingClientRect.top < a.boundingClientRect.top ? b : a
+        )
+        setActiveSection(topmost.target.id)
+      },
+      {
+        // "Active zone" = roughly top 40% of the viewport below the header
+        rootMargin: '-140px 0px -55% 0px',
+        threshold: 0,
+      }
+    )
+    const ids: string[] = []
+    TOC.forEach(t => {
+      const el = document.getElementById(t.id)
+      if (el) {
+        observer.observe(el)
+        ids.push(t.id)
+      }
+    })
+    return () => observer.disconnect()
   }, [])
 
   const filteredFeatures = useMemo(() => {
@@ -952,7 +1034,7 @@ export default function TestListingPage() {
   const filteredIntegrations = useMemo(() => {
     const q = integrationQ.trim().toLowerCase()
     if (!q) return INTEGRATIONS
-    return INTEGRATIONS.filter(i => i.name.toLowerCase().includes(q) || i.category.toLowerCase().includes(q))
+    return INTEGRATIONS.filter(i => i.name.toLowerCase().includes(q) || i.tag.toLowerCase().includes(q))
   }, [integrationQ])
 
   const overallRating = 4.4
@@ -1026,9 +1108,14 @@ export default function TestListingPage() {
             <aside className="tlp-toc" aria-label="Table of Contents">
               <div className="tlp-toc-title">Table of Contents</div>
               <ul>
-                {TOC.map((t, i) => (
+                {TOC.map(t => (
                   <li key={t.id}>
-                    <a href={`#${t.id}`} className={i === 0 ? 'is-active' : ''}>{t.label}</a>
+                    <a
+                      href={`#${t.id}`}
+                      className={t.id === activeSection ? 'is-active' : ''}
+                    >
+                      {t.label}
+                    </a>
                   </li>
                 ))}
               </ul>
@@ -1611,26 +1698,77 @@ export default function TestListingPage() {
               <div className="tlp-alt-grid">
                 {ALTERNATIVES.map(a => (
                   <div key={a.name} className={`tlp-alt ${a.highlight ? 'tlp-alt--hl' : ''}`}>
+                    {/* Logo + name + rating row */}
                     <div className="tlp-alt-head">
                       <img src={clearbit(a.domain)} alt={`${a.name} logo`} className="tlp-alt-logo" />
-                      <div className="tlp-alt-name">{a.name}</div>
+                      <div className="tlp-alt-head-right">
+                        <div className="tlp-alt-name">{a.name}</div>
+                        <div className="tlp-alt-mini-rating">
+                          <svg viewBox="0 0 24 24" width="12" height="12">
+                            <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
+                          </svg>
+                          <strong>{a.rating.toFixed(1)}</strong>
+                          <em>({a.reviews})</em>
+                        </div>
+                      </div>
                     </div>
-                    <a href="#" className="tlp-btn tlp-btn--outline">Learn more</a>
+
+                    <a href="#" className="tlp-alt-cta">Learn More</a>
+
+                    {/* Starting from block */}
                     <div className="tlp-alt-price-block">
-                      <div className="tlp-alt-price-lbl">Starting from</div>
-                      <div className="tlp-alt-price">
-                        <strong>{a.startingPrice}</strong><span>{a.period}</span>
+                      <div className="tlp-alt-price-head">
+                        <span>Starting from</span>
+                        <span className="tlp-info-ico"><InfoIcon /></span>
                       </div>
-                      <div className="tlp-alt-badges">
-                        {a.freeVersion && <span className="tlp-chip tlp-chip--pos">Free version</span>}
-                        {a.freeTrial && <span className="tlp-chip tlp-chip--pos">Free trial</span>}
-                      </div>
+                      {a.startingPrice ? (
+                        <div className="tlp-alt-price">
+                          <span className="tlp-alt-price-sym">$</span>
+                          <span className="tlp-alt-price-num">{a.startingPrice}</span>
+                        </div>
+                      ) : (
+                        <div className="tlp-alt-price tlp-alt-price--none">
+                          <svg viewBox="0 0 24 24" width="22" height="22">
+                            <circle cx="12" cy="12" r="9" fill="none" stroke="#D1D5DB" strokeWidth="1.8" />
+                            <path d="M8 12l2.5 2.5L16 9" fill="none" stroke="#9CA3AF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        </div>
+                      )}
+                      <div className="tlp-alt-period">{a.period}</div>
+
+                      <ul className="tlp-alt-flags">
+                        <li>
+                          <span>Free trial</span>
+                          {a.freeTrial
+                            ? <span className="tlp-alt-yes"><CheckSm /></span>
+                            : <span className="tlp-alt-no"><XSm /></span>}
+                        </li>
+                        <li>
+                          <span>Free version</span>
+                          {a.freeVersion
+                            ? <span className="tlp-alt-yes"><CheckSm /></span>
+                            : <span className="tlp-alt-no"><XSm /></span>}
+                        </li>
+                      </ul>
                     </div>
+
+                    {/* Detailed rating list */}
                     <ul className="tlp-alt-ratings">
-                      <li><span>Ease of use</span><Stars value={a.ratings.ease} size={12} /><em>{a.ratings.ease.toFixed(1)}</em></li>
-                      <li><span>Value for money</span><Stars value={a.ratings.value} size={12} /><em>{a.ratings.value.toFixed(1)}</em></li>
-                      <li><span>Features</span><Stars value={a.ratings.features} size={12} /><em>{a.ratings.features.toFixed(1)}</em></li>
-                      <li><span>Customer support</span><Stars value={a.ratings.support} size={12} /><em>{a.ratings.support.toFixed(1)}</em></li>
+                      {([
+                        ['Ease of Use',       a.ratings.ease],
+                        ['Features',          a.ratings.features],
+                        ['Value for Money',   a.ratings.value],
+                        ['Customer Support',  a.ratings.support],
+                      ] as [string, AltRating][]).map(([label, v]) => (
+                        <li key={label}>
+                          <svg viewBox="0 0 24 24" width="12" height="12">
+                            <path fill={v != null ? '#FFA91C' : '#E5E7EB'}
+                              d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
+                          </svg>
+                          <span>{label}</span>
+                          {v != null && <em>{v.toFixed(1)}</em>}
+                        </li>
+                      ))}
                     </ul>
                   </div>
                 ))}
@@ -1643,13 +1781,13 @@ export default function TestListingPage() {
                 <h2 className="tlp-inbox-title">Send this software info to my inbox</h2>
                 <form className="tlp-inbox-form" onSubmit={e => { e.preventDefault() }}>
                   <label className="tlp-inbox-label">Email Address <span>*</span></label>
-                  <div className="tlp-inbox-row">
-                    <input type="email" placeholder="name@company.com" required />
-                    <button type="submit" className="tlp-btn tlp-btn--primary">Send to my inbox</button>
+                  <input className="tlp-inbox-input" type="email" required />
+                  <div className="tlp-inbox-foot">
+                    <p className="tlp-inbox-legal">
+                      By proceeding, you agree to our <a href="#">Terms Of Use</a> and <a href="#">Privacy Policy</a>.
+                    </p>
+                    <button type="submit" className="tlp-inbox-btn">Send me the info</button>
                   </div>
-                  <p className="tlp-inbox-legal">
-                    By proceeding, you agree to our <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.
-                  </p>
                 </form>
               </div>
             </section>
@@ -1657,71 +1795,79 @@ export default function TestListingPage() {
             {/* ========== PRICING ========== */}
             <section id="pricing" className="tlp-sec">
               <h2 className="tlp-sec-title">Mailchimp pricing</h2>
-              <div className="tlp-price-head">
-                <div>
-                  <div className="tlp-price-rate-lbl">Value for money rating</div>
-                  <div className="tlp-price-rate-val">
-                    <Stars value={4.1} size={14} />
-                    <span>4.1 / 5</span>
-                  </div>
-                </div>
-                <div className="tlp-price-tabs" role="tablist">
-                  <button
-                    className={`tlp-tab ${period === 'monthly' ? 'is-active' : ''}`}
-                    onClick={() => setPeriod('monthly')}
-                    role="tab"
-                  >Monthly</button>
-                  <button
-                    className={`tlp-tab ${period === 'yearly' ? 'is-active' : ''}`}
-                    onClick={() => setPeriod('yearly')}
-                    role="tab"
-                  >Yearly</button>
-                </div>
+
+              <div className="tlp-price-meta">
+                <span>Value for money rating:</span>
+                <svg viewBox="0 0 24 24" width="14" height="14">
+                  <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
+                </svg>
+                <strong>4.4</strong>
+              </div>
+
+              <div className="tlp-price-sub">Pricing plans</div>
+              <div className="tlp-price-flags">
+                <span>Pricing details:</span>
+                <span className="tlp-price-flag">Free plan <CheckSm /></span>
+                <span className="tlp-price-flag">Free trial <CheckSm /></span>
+                <span className="tlp-price-flag">Subscription <CheckSm /></span>
               </div>
 
               <div className="tlp-pricing-grid">
-                {PRICING[period].map(p => {
-                  const popular = 'popular' in p && p.popular
-                  return (
-                    <div key={p.name} className={`tlp-plan ${popular ? 'tlp-plan--pop' : ''}`}>
-                      {popular && <div className="tlp-plan-rib">Most popular</div>}
+                {PRICING_PLANS.map(p => (
+                  <div key={p.name} className="tlp-plan">
+                    <div className="tlp-plan-top">
                       <div className="tlp-plan-name">{p.name}</div>
                       <div className="tlp-plan-price">
+                        <span className="tlp-plan-sym">$</span>
                         <span className="tlp-plan-amt">{p.price}</span>
-                        <span className="tlp-plan-per">{p.period}</span>
                       </div>
+                      <div className="tlp-plan-per">
+                        <InfoIcon /> Per month
+                      </div>
+                    </div>
+                    <div className="tlp-plan-body">
                       <div className="tlp-plan-feat-head">Features included:</div>
                       <ul className="tlp-plan-feat">
-                        {p.features.map(f => <li key={f}><Check />{f}</li>)}
+                        {p.features.map(f => <li key={f}>{f}</li>)}
                       </ul>
-                      <a href="#" className={`tlp-btn ${popular ? 'tlp-btn--primary' : 'tlp-btn--outline'}`}>{p.cta}</a>
                     </div>
-                  )
-                })}
+                  </div>
+                ))}
               </div>
 
-              <h3 className="tlp-h3 tlp-h3--spaced">User opinions about Mailchimp price and value</h3>
+              <div className="tlp-price-dots" aria-hidden="true">
+                <span className="is-active" />
+                <span />
+              </div>
+
+              <h3 className="tlp-vo-title">User opinions about Mailchimp price and value</h3>
+              <div className="tlp-price-meta">
+                <span>Value for money rating:</span>
+                <svg viewBox="0 0 24 24" width="14" height="14">
+                  <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
+                </svg>
+                <strong>4.4</strong>
+                <em>(17.5K)</em>
+              </div>
               <p className="tlp-sec-lead">
                 To see what individual users think of Mailchimp&apos;s price and value, check out the review snippets below.
               </p>
-              <div className="tlp-vq-grid">
+              <div className="tlp-vo-grid">
                 {VALUE_QUOTES.map(v => (
-                  <div key={v.name} className={`tlp-vq tlp-vq--${v.thumb}`}>
-                    <div className="tlp-vq-thumb" aria-hidden="true">
-                      {v.thumb === 'up' ? (
-                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.3a2 2 0 0 0 2-1.7l1.4-9a2 2 0 0 0-2-2.3H14zM2 22h4V11H2v11z"/></svg>
-                      ) : (
-                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.7a2 2 0 0 0-2 1.7L2.3 12.7a2 2 0 0 0 2 2.3H10zm12-13h-4v11h4V2z"/></svg>
-                      )}
+                  <div key={v.name} className="tlp-vo">
+                    <div className="tlp-vo-badge">
+                      <span className="tlp-vo-badge-ico"><CheckSm /></span>
+                      Highly Relevant
                     </div>
-                    <div className="tlp-vq-body">
-                      <p className="tlp-vq-q">&ldquo;{v.quote}&rdquo;</p>
-                      <div className="tlp-vq-who">
-                        <Avatar name={v.name} />
-                        <div>
-                          <div className="tlp-vq-name">{v.name}</div>
-                          <div className="tlp-vq-role">{v.role} · {v.industry}</div>
+                    <p className="tlp-vo-q">&ldquo;{v.quote}&rdquo;</p>
+                    <div className="tlp-vo-who">
+                      <span className="tlp-vo-av" style={{ background: v.color }}>{v.initials}</span>
+                      <div>
+                        <div className="tlp-vo-name">
+                          {v.name}
+                          <LinkedInBadge />
                         </div>
+                        <div className="tlp-vo-role">{v.role}</div>
                       </div>
                     </div>
                   </div>
@@ -1731,109 +1877,168 @@ export default function TestListingPage() {
 
             {/* ========== INTEGRATIONS ========== */}
             <section id="integrations" className="tlp-sec">
-              <h2 className="tlp-sec-title">Mailchimp integrations ({(17200).toLocaleString()})</h2>
-              <p className="tlp-sec-lead">Integrations rated by users</p>
-
-              <div className="tlp-int-head">
-                <p className="tlp-int-intro">
-                  We looked at {(17248).toLocaleString()} user reviews to identify which products are mentioned as
-                  Mailchimp integrations and how users feel about them.{' '}
-                  <a href="#" className="tlp-inline-link">Learn more about our methodology.</a>
-                </p>
-                <div className="tlp-int-search">
-                  <svg viewBox="0 0 24 24" className="tlp-allf-ico"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2" /><path d="M20 20l-3.5-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+              <div className="tlp-int-title-row">
+                <h2 className="tlp-sec-title" style={{ margin: 0 }}>
+                  Mailchimp integrations (2,089)
+                </h2>
+                <div className="tlp-af-search tlp-int-search">
                   <input
                     type="text"
                     placeholder="Search for an integration"
                     value={integrationQ}
                     onChange={e => setIntegrationQ(e.target.value)}
                   />
+                  <svg viewBox="0 0 24 24" className="tlp-af-search-ico" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2" />
+                    <path d="M20 20l-3.5-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  </svg>
                 </div>
               </div>
 
+              <h3 className="tlp-int-sub">Integrations rated by users</h3>
+              <p className="tlp-int-intro">
+                We looked at 17,580 user reviews to identify which products are mentioned as
+                Mailchimp integrations and how users feel about them.{' '}
+                <a href="#" className="tlp-inline-link">Learn more about our reviews.</a>
+              </p>
+
               <div className="tlp-int-grid">
-                {filteredIntegrations.map(i => (
+                {(integrationQ ? filteredIntegrations : INTEGRATIONS).map(i => (
                   <div key={i.name} className="tlp-int-card">
-                    <img src={clearbit(i.domain)} alt={`${i.name} logo`} className="tlp-int-logo" />
-                    <div className="tlp-int-info">
-                      <div className="tlp-int-name">{i.name}</div>
-                      <div className="tlp-int-cat">{i.category}</div>
-                      <div className="tlp-int-rating">
-                        <Stars value={i.rating} size={12} />
-                        <span>{i.rating.toFixed(1)} / 5</span>
+                    <div className="tlp-int-card-head">
+                      <img src={clearbit(i.domain)} alt={`${i.name} logo`} className="tlp-int-logo" />
+                      <div className="tlp-int-head-info">
+                        <div className="tlp-int-name">{i.name}</div>
+                        <span className="tlp-int-tag">{(i as typeof INTEGRATIONS[number]).tag ?? 'Must-Have'}</span>
+                      </div>
+                      <div className="tlp-int-rate">
+                        <div className="tlp-int-rate-lbl">Integration rating:</div>
+                        <div className="tlp-int-rate-val">
+                          <svg viewBox="0 0 24 24" width="13" height="13">
+                            <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
+                          </svg>
+                          <strong>{i.rating.toFixed(1)}</strong>
+                          <em>({(i as typeof INTEGRATIONS[number]).reviewCount ?? 0})</em>
+                        </div>
+                      </div>
+                    </div>
+                    <p className="tlp-int-quote">
+                      &ldquo;{(i as typeof INTEGRATIONS[number]).quote ?? ''}&rdquo;
+                    </p>
+                    <div className="tlp-int-foot">
+                      <div className="tlp-int-author">
+                        <span
+                          className="tlp-int-av"
+                          style={{ background: (i as typeof INTEGRATIONS[number]).authorColor ?? '#6B7280' }}
+                        >
+                          {(i as typeof INTEGRATIONS[number]).authorInitials ?? ''}
+                        </span>
+                        <div>
+                          <div className="tlp-int-author-name">
+                            {(i as typeof INTEGRATIONS[number]).author ?? ''}
+                          </div>
+                          <div className="tlp-int-author-role">
+                            {(i as typeof INTEGRATIONS[number]).authorRole ?? ''}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="tlp-int-pager" aria-hidden="true">
+                        <button type="button" className="tlp-int-arrow"><ArrowLeftSm /></button>
+                        <span>
+                          {(i as typeof INTEGRATIONS[number]).pageNum ?? 1}
+                          /{(i as typeof INTEGRATIONS[number]).pageOf ?? 1}
+                        </span>
+                        <button type="button" className="tlp-int-arrow tlp-int-arrow--r">
+                          <ArrowLeftSm />
+                        </button>
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
+
+              <button type="button" className="tlp-int-expand">
+                Expand list <ChevronDown />
+              </button>
             </section>
 
             {/* ========== CUSTOMER SUPPORT ========== */}
             <section id="support" className="tlp-sec">
               <h2 className="tlp-sec-title">Mailchimp customer support</h2>
-              <p className="tlp-sec-lead">What do users say about Mailchimp customer support?</p>
 
-              <div className="tlp-sup-grid">
-                <div className="tlp-sup-left">
-                  <div className="tlp-sup-rate">
-                    <div className="tlp-sup-num">4.0</div>
-                    <div>
-                      <div className="tlp-sup-lbl">Customer support rating</div>
-                      <Stars value={4.0} size={14} />
-                      <div className="tlp-sup-sm">Based on {reviewsCount.toLocaleString()} user reviews</div>
-                    </div>
+              <div className="tlp-cs-grid">
+                {/* Left: heading + rating + description + bullets */}
+                <div>
+                  <h3 className="tlp-cs-q">What do users say about Mailchimp customer support?</h3>
+                  <div className="tlp-cs-rate">
+                    <span>Customer support rating:</span>
+                    <svg viewBox="0 0 24 24" width="14" height="14">
+                      <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
+                    </svg>
+                    <strong>4.4</strong>
                   </div>
-                  <div className="tlp-sup-bars">
-                    {[
-                      { k: 'Excellent', v: 62, c: '#22C55E' },
-                      { k: 'Good',      v: 23, c: '#84CC16' },
-                      { k: 'Average',   v: 9,  c: '#EAB308' },
-                      { k: 'Poor',      v: 4,  c: '#F97316' },
-                      { k: 'Very poor', v: 2,  c: '#EF4444' },
-                    ].map(b => (
-                      <div key={b.k} className="tlp-sup-bar">
-                        <span className="tlp-sup-bar-k">{b.k}</span>
-                        <div className="tlp-sup-bar-t"><div style={{ width: `${b.v}%`, background: b.c }} /></div>
-                        <span className="tlp-sup-bar-v">{b.v}%</span>
-                      </div>
+                  <p className="tlp-cs-intro">
+                    We analyzed 143 verified user reviews to identify positive and negative aspects of
+                    Mailchimp customer support.{' '}
+                    <a href="#" className="tlp-inline-link">Learn more about our reviews.</a>
+                  </p>
+
+                  <ul className="tlp-cs-bullets">
+                    {SUPPORT_BULLETS.map(b => (
+                      <li key={b.text}>
+                        <span className={`tlp-cs-bullet tlp-cs-bullet--${b.kind}`}>
+                          {b.kind === 'pos' ? <PlusSm /> : <XSm />}
+                        </span>
+                        <span>{b.text}</span>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 </div>
 
-                <div className="tlp-sup-right">
-                  <div className="tlp-sup-col">
-                    <div className="tlp-sup-col-h">Support options</div>
-                    <ul>
-                      <li><Check /> Knowledge Base</li>
-                      <li><Check /> Email / Help Desk</li>
-                      <li><Check /> Chat</li>
-                      <li><Check /> FAQs / Forum</li>
-                      <li><Check /> Phone (Premium)</li>
-                    </ul>
-                  </div>
-                  <div className="tlp-sup-col">
-                    <div className="tlp-sup-col-h">Training options</div>
-                    <ul>
-                      <li><Check /> Documentation</li>
-                      <li><Check /> Videos</li>
-                      <li><Check /> Webinars</li>
-                      <li><Check /> Live Online</li>
-                    </ul>
-                  </div>
+                {/* Right: Support + Training options card */}
+                <div className="tlp-cs-opts">
+                  <div className="tlp-cs-opts-h">Support options</div>
+                  <ul className="tlp-cs-opts-list">
+                    {[
+                      'Email/help desk', 'Chat', 'Knowledge base',
+                      'FAQs/forum', '24/7 (live rep)', 'Phone support',
+                    ].map(o => (
+                      <li key={o}>
+                        <span>{o}</span>
+                        <CheckSm />
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="tlp-cs-opts-h tlp-cs-opts-h--spaced">Training options</div>
+                  <ul className="tlp-cs-opts-list">
+                    {['Live online', 'Videos', 'Webinars', 'Documentation'].map(o => (
+                      <li key={o}>
+                        <span>{o}</span>
+                        <CheckSm />
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
 
-              <div className="tlp-sup-quotes">
+              <p className="tlp-cs-lead">
+                To see what individual users say about Mailchimp&apos;s customer support, check the review snippets below.
+              </p>
+
+              <div className="tlp-cs-quotes">
                 {SUPPORT_QUOTES.map(q => (
-                  <div key={q.name} className={`tlp-tm tlp-tm--${q.sentiment}`}>
-                    <div className="tlp-tm-head">
-                      <Avatar name={q.name} />
+                  <div key={q.name} className="tlp-cs-quote">
+                    <p className="tlp-cs-quote-text">&ldquo;{q.quote}&rdquo;</p>
+                    <div className="tlp-cs-quote-who">
+                      <span className="tlp-cs-quote-av" style={{ background: q.color }}>{q.initials}</span>
                       <div>
-                        <div className="tlp-tm-name">{q.name}</div>
-                        <div className="tlp-tm-role">{q.role} · {q.industry}</div>
+                        <div className="tlp-cs-quote-name">
+                          {q.name}
+                          <LinkedInBadge />
+                        </div>
+                        <div className="tlp-cs-quote-role">{q.role}</div>
                       </div>
                     </div>
-                    <p className="tlp-tm-quote">&ldquo;{q.quote}&rdquo;</p>
                   </div>
                 ))}
               </div>
@@ -1842,18 +2047,49 @@ export default function TestListingPage() {
             {/* ========== FAQS ========== */}
             <section id="faqs" className="tlp-sec">
               <h2 className="tlp-sec-title">Mailchimp FAQs</h2>
-              <p className="tlp-sec-lead">Here are the questions most often asked by users.</p>
+              <p className="tlp-sec-lead">Here are some of the questions we get asked most often.</p>
 
               <ul className="tlp-faq-list">
                 {FAQS.map((f, i) => (
                   <li key={f.q} className={`tlp-faq ${openFaq === i ? 'is-open' : ''}`}>
-                    <button className="tlp-faq-q" onClick={() => setOpenFaq(openFaq === i ? null : i)}>
+                    <button
+                      className="tlp-faq-q"
+                      onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                      aria-expanded={openFaq === i}
+                    >
                       <span>{f.q}</span>
-                      <span className="tlp-faq-tog" aria-hidden="true">{openFaq === i ? '−' : '+'}</span>
+                      <span className={`tlp-faq-chev ${openFaq === i ? 'is-open' : ''}`} aria-hidden="true">
+                        <ChevronDown />
+                      </span>
                     </button>
-                    <div className="tlp-faq-a">
-                      <p>{f.a}</p>
-                    </div>
+                    {openFaq === i && (
+                      <div className="tlp-faq-a">
+                        <p>{f.a}</p>
+                        {f.showAlts && (
+                          <>
+                            <div className="tlp-faq-alts-h">These products have better value for money</div>
+                            <div className="tlp-faq-alts">
+                              {FAQ_ALTS.map(alt => (
+                                <a key={alt.name} href="#" className="tlp-faq-alt">
+                                  <img src={clearbit(alt.domain)} alt={alt.name} />
+                                  <div>
+                                    <div className="tlp-faq-alt-name">{alt.name}</div>
+                                    <div className="tlp-faq-alt-rate">
+                                      <svg viewBox="0 0 24 24" width="12" height="12">
+                                        <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
+                                      </svg>
+                                      <strong>{alt.rating.toFixed(1)}</strong>
+                                      <em>({alt.reviews})</em>
+                                    </div>
+                                  </div>
+                                </a>
+                              ))}
+                            </div>
+                            <a href="#alternatives" className="tlp-faq-see">See free alternatives</a>
+                          </>
+                        )}
+                      </div>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -1862,27 +2098,41 @@ export default function TestListingPage() {
             {/* ========== POPULAR COMPARISONS ========== */}
             <section id="compare" className="tlp-sec">
               <h2 className="tlp-sec-title">Popular comparisons with Mailchimp</h2>
+
               <div className="tlp-cmp-grid">
                 {COMPARISONS.map(c => (
                   <a key={c.b} href="#" className="tlp-cmp">
-                    <span className="tlp-cmp-pair">
-                      <img src={clearbit(c.ad)} alt="" />
+                    <div className="tlp-cmp-row">
+                      <img src={clearbit('mailchimp.com')} alt="Mailchimp" className="tlp-cmp-logo" />
+                      <span className="tlp-cmp-bracket"><BracketIcon /></span>
+                      <img src={clearbit(c.bd)} alt={c.b} className="tlp-cmp-logo" />
+                    </div>
+                    <div className="tlp-cmp-row tlp-cmp-names">
+                      <span className="tlp-cmp-name tlp-cmp-name--muted">Mailchimp</span>
                       <span className="tlp-cmp-vs">vs</span>
-                      <img src={clearbit(c.bd)} alt="" />
-                    </span>
-                    <span className="tlp-cmp-names">{c.a} <span className="tlp-cmp-mute">vs</span> {c.b}</span>
+                      <span className="tlp-cmp-name">{c.b}</span>
+                    </div>
                   </a>
                 ))}
               </div>
-              <a href="#" className="tlp-inline-link tlp-cmp-more">Browse all alternatives →</a>
+
+              <div className="tlp-cmp-more-wrap">
+                <a href="#" className="tlp-cmp-browse">Browse Alternatives</a>
+              </div>
             </section>
 
             {/* ========== RELATED CATEGORIES ========== */}
             <section className="tlp-sec tlp-rc-sec">
-              <h2 className="tlp-sec-title">Related categories</h2>
+              <h2 className="tlp-sec-title tlp-rc-title">
+                <span className="tlp-rc-accent" aria-hidden="true" />
+                Related categories
+              </h2>
               <div className="tlp-rc-grid">
                 {RELATED_CATS.map(c => (
-                  <a key={c} href="#" className="tlp-rc">{c}</a>
+                  <a key={c} href="#" className="tlp-rc">
+                    <span className="tlp-rc-icon"><FolderIcon /></span>
+                    <span className="tlp-rc-lbl">{c}</span>
+                  </a>
                 ))}
               </div>
             </section>
