@@ -95,16 +95,13 @@ function toPayload(c: Category): Record<string, unknown> {
   }
 }
 
+/* Taxonomy moved to a static file at app/config/categories-data.ts — no more
+   /api/categories fetch (the endpoint was returning 8.49 MB per call and was
+   the single biggest Vercel burn source). Re-run scripts/export-categories.mjs
+   when the admin changes categories, commit, push. */
 export async function fetchLaunchedCategories(): Promise<Category[]> {
-  try {
-    const res = await fetch(`${API}/categories`)
-    if (!res.ok) throw new Error('API error')
-    const json = await res.json()
-    const rows: Record<string, unknown>[] = json.data ?? json.categories ?? json
-    return rows.map(mapRow)
-  } catch {
-    return []
-  }
+  const { CATEGORIES } = await import('../../config/categories-data')
+  return CATEGORIES.map(r => mapRow(r as unknown as Record<string, unknown>))
 }
 
 export async function fetchCategoryBySlug(slug: string): Promise<Category | null> {

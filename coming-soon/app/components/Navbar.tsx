@@ -203,24 +203,16 @@ const Chev = () => (
   </svg>
 )
 
+import { CATEGORIES as STATIC_CATEGORIES } from '../config/categories-data'
+
 type CatRow = { id: number; name: string; slug: string; level: number; parent_id: number | null; color: string }
 
-/* ── Global category cache — fetched once, shared across all Navbar instances ── */
-let _catCache: CatRow[] | null = null
-let _catPromise: Promise<CatRow[]> | null = null
-
-function fetchCategories(): Promise<CatRow[]> {
-  if (_catCache) return Promise.resolve(_catCache)
-  if (_catPromise) return _catPromise
-  _catPromise = fetch('/api/categories')
-    .then(r => r.json())
-    .then(res => {
-      if (res.ok) { _catCache = res.data; return _catCache! }
-      return []
-    })
-    .catch(() => [])
-  return _catPromise
-}
+/* Hardcoded taxonomy — no /api/categories fetch anymore. The static file ships
+   in the initial JS bundle (cached forever via hashed filename), so the Navbar
+   builds its sector-specific dropdown synchronously from build-time data. If
+   the admin adds or launches a category, re-run scripts/export-categories.mjs
+   and commit the updated app/config/categories-data.ts. */
+const ALL_CATEGORIES: CatRow[] = STATIC_CATEGORIES as unknown as CatRow[]
 
 function buildSectorCols(cats: CatRow[], slug: string): DDSector[] {
   const l1 = cats.find(c => c.slug === slug && c.level === 1)
@@ -241,19 +233,17 @@ export default function Navbar({ sectorSlug, hideSearch }: { sectorSlug?: string
   const [menuOpen, setMenuOpen] = useState(false)
   const [activeDD, setActiveDD] = useState<string | null>(null)
   const [mobCatOpen, setMobCatOpen] = useState(false)
-  const [sectorCols, setSectorCols] = useState<DDSector[] | null>(() => {
-    /* Instant render if cache already warm */
-    if (sectorSlug && _catCache) return buildSectorCols(_catCache, sectorSlug)
-    return null
-  })
+  /* Taxonomy is static — computed synchronously from the hardcoded import,
+     no client fetch, no loading state. */
+  const [sectorCols, setSectorCols] = useState<DDSector[] | null>(() =>
+    sectorSlug ? buildSectorCols(ALL_CATEGORIES, sectorSlug) : null
+  )
   const lastY = useRef(0)
   const ddTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
-  /* Prefetch categories immediately — warm cache for dropdown */
+  /* Recompute if sectorSlug prop changes (client-side nav between sectors). */
   useEffect(() => {
-    fetchCategories().then(cats => {
-      if (sectorSlug && cats.length) setSectorCols(buildSectorCols(cats, sectorSlug))
-    })
+    setSectorCols(sectorSlug ? buildSectorCols(ALL_CATEGORIES, sectorSlug) : null)
   }, [sectorSlug])
 
   /* Scroll — RAF-throttled for zero jank */

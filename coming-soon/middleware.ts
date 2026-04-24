@@ -13,15 +13,26 @@ function shouldNoindex(pathname: string): boolean {
   return !INDEXABLE_PATHS.has(restPath)
 }
 
-/** Apply noindex header to non-indexable pages + all vercel.app requests */
+/* Routes that serve per-user content — must never be cached in a shared cache. */
+const AUTH_PATH_RE = /(^|\/)(dashboard|iww-hq)(\/|$)/
+
+/** Apply noindex header to non-indexable pages + all vercel.app requests. Also
+    set cache headers: Vercel edge caches all responses via CDN-Cache-Control,
+    and public non-auth pages additionally get a short browser cache so back /
+    forward navigation is instant instead of a fresh 700 KB HTML re-download. */
 function applyHeaders(response: NextResponse, pathname: string, isVercelApp: boolean) {
   if (isVercelApp || shouldNoindex(pathname)) {
     response.headers.set('X-Robots-Tag', 'noindex, nofollow')
   }
-  // Let Vercel CDN cache all pages at the edge — reduces function invocations
-  // s-maxage=3600: CDN serves cached page for 1 hour
-  // stale-while-revalidate=86400: after 1h, serve stale while regenerating in background
+  // Vercel CDN edge caches every page for 1h, with a 24h stale window while
+  // the function regenerates in the background. Zero browser-side impact.
   response.headers.set('CDN-Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400')
+
+  // Browser cache override — public pages only. Auth pages keep their default
+  // (no-store) so logged-in content never lingers in a shared cache.
+  if (!AUTH_PATH_RE.test(pathname)) {
+    response.headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300')
+  }
 }
 
 export function middleware(request: NextRequest) {

@@ -1,8 +1,9 @@
 'use client'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import Link from '../../components/CountryLink'
-import { fetchLaunchedCategories, mapRow } from '../../iww-hq/data/category-storage'
+import { mapRow } from '../../iww-hq/data/category-storage'
 import type { Category } from '../../iww-hq/data/category-storage'
+import { CATEGORIES as STATIC_CATS } from '../../config/categories-data'
 import HIcon from '../sector/components/HIcon'
 
 /* ═══════════════════════════════════════════
@@ -47,16 +48,16 @@ function sectorMeta(name: string) {
    Component
    ═══════════════════════════════════════════ */
 
-export default function SectorAllBrowse({ sectorSlug, initialCategories }: { sectorSlug: string; initialCategories?: Record<string, unknown>[] }) {
-  const initCats = useMemo(() => initialCategories?.map(r => mapRow(r)) ?? [], [initialCategories])
-  const [categories, setCategories] = useState<Category[]>(initCats)
-  const [loading, setLoading] = useState(!initialCategories?.length)
+/* Reads the taxonomy straight from the client bundle — no prop serialization,
+   no network fetch. Same static import as CategoriesBrowse uses, so the
+   browser only downloads the 573 KB gzipped chunk once across the whole site. */
+export default function SectorAllBrowse({ sectorSlug }: { sectorSlug: string }) {
+  const categories = useMemo<Category[]>(
+    () => STATIC_CATS.map(r => mapRow(r as unknown as Record<string, unknown>)),
+    []
+  )
   const [search, setSearch] = useState('')
-
-  useEffect(() => {
-    if (initialCategories?.length) { setLoading(false); return }
-    fetchLaunchedCategories().then(setCategories).finally(() => setLoading(false))
-  }, [initialCategories])
+  const loading = false
 
   /* Find the L1 sector in the tree */
   const tree = useMemo(() => buildTree(categories), [categories])

@@ -1,8 +1,9 @@
 'use client'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import Link from '../../components/CountryLink'
-import { fetchLaunchedCategories, mapRow } from '../../iww-hq/data/category-storage'
+import { mapRow } from '../../iww-hq/data/category-storage'
 import type { Category } from '../../iww-hq/data/category-storage'
+import { CATEGORIES as STATIC_CATS } from '../../config/categories-data'
 import HIcon from '../sector/components/HIcon'
 
 /* ═══════════════════════════════════════════
@@ -52,16 +53,17 @@ function sectorMeta(name: string) {
    Component
    ═══════════════════════════════════════════ */
 
-export default function CategoriesBrowse({ initialCategories }: { initialCategories?: Record<string, unknown>[] }) {
-  const initCats = useMemo(() => initialCategories?.map(r => mapRow(r)) ?? [], [initialCategories])
-  const [categories, setCategories] = useState<Category[]>(initCats)
-  const [loading, setLoading] = useState(!initialCategories?.length)
+/* Reads the taxonomy straight from the client bundle — no API, no hydration
+   payload from the server. STATIC_CATS is imported here (client file), so the
+   data lives in the JS chunk (hashed filename = cached forever) instead of
+   being serialized into every page's HTML. */
+export default function CategoriesBrowse() {
+  const categories = useMemo<Category[]>(
+    () => STATIC_CATS.map(r => mapRow(r as unknown as Record<string, unknown>)),
+    []
+  )
   const [search, setSearch] = useState('')
-
-  useEffect(() => {
-    if (initialCategories?.length) { setLoading(false); return }
-    fetchLaunchedCategories().then(setCategories).finally(() => setLoading(false))
-  }, [initialCategories])
+  const loading = false
 
   const tree = useMemo(() => buildTree(categories), [categories])
 
