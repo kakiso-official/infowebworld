@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
-import { redirect } from 'next/navigation'
+import { redirect, notFound } from 'next/navigation'
 import { unstable_cache } from 'next/cache'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
@@ -614,6 +614,14 @@ export default async function CategoryDetailRoute({
     }))
   } else if (isL2L3) {
     pageData = await fetchCategoryPageData(categorySlug)
+  }
+
+  /* ── Unknown route — render the designed app/not-found.tsx ──
+     Hits when the slug isn't an L1 sector, isn't a view-all path, and the
+     L2/L3 lookup found no match in the DB. Without this, the client falls
+     through to CategoryPage and shows an inline "Category Not Found" stub. */
+  if (!isSector && !isViewAll2 && !pageData?.category) {
+    notFound()
   }
 
   /* ── JSON-LD ── */

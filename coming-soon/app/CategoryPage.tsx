@@ -68,7 +68,6 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
     if (!initCat || !initAllCats.length) return []
     return initAllCats.filter(c => c.id !== initCat.id && ((initCat.parentId && c.parentId === initCat.parentId) || (!initCat.parentId && c.level === initCat.level))).slice(0, 9)
   })
-  const [notFound, setNotFound] = useState(false)
   const [listings, setListings] = useState<RealSubmission[]>(initListings)
   const [listingTotal, setListingTotal] = useState(initialData?.listingTotal ?? 0)
   const [tagGroups, setTagGroups] = useState<TagGroup[]>(initTagGroups)
@@ -162,12 +161,6 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
     router.push(url, { scroll: false })
   }, [slug, locationCountry, locationState, locationCity, selectedListingType, selectedTags, sectorSlug, router])
 
-  /* ── Server always provides data — no client-side fetch fallback needed ── */
-  useEffect(() => {
-    if (!slug) { setNotFound(true); return }
-    if (!initialData || !category) setNotFound(true)
-  }, [slug, initialData, category])
-
   /* Re-fetch listings on page change */
   useEffect(() => {
     if (!category || page === 1) return
@@ -238,23 +231,8 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
 
   /* faqs + popularSearches removed — Gemini content covers these */
 
-  /* ── Not found / loading ── */
-  if (notFound) {
-    return (
-      <section className="cd-page">
-        <div className="cd-wrap">
-          <div className="cd-not-found">
-            <div className="cd-not-found-icon">
-              <I d={ic.search} size={28} color="#E8553D" />
-            </div>
-            <h1>Category Not Found</h1>
-            <p>This category doesn&apos;t exist or hasn&apos;t been launched yet.</p>
-            <Link href="/categories" className="cd-not-found-btn">Browse Categories</Link>
-          </div>
-        </div>
-      </section>
-    )
-  }
+  /* ── Loading skeleton — only shown briefly during client-side navigation.
+     Unknown routes 404 server-side via notFound() in [...segments]/page.tsx. */
   if (!category) return (
     <section className="cd-page">
       <div className="cd-wrap cd-skeleton-wrap">
