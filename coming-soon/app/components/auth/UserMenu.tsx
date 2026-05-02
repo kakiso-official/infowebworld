@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
-import Link from '../CountryLink'
+import Link from 'next/link'
 import { useAuth } from '@/lib/use-auth'
 import SignupModal from './SignupModal'
 

@@ -1,4 +1,4 @@
-import Link from './CountryLink'
+import Link from 'next/link'
 
 export default function BusinessCTA() {
   return (

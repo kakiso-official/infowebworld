@@ -1,6 +1,6 @@
 'use client'
 import { useState, useRef, useEffect, useCallback } from 'react'
-import Link from './CountryLink'
+import Link from 'next/link'
 import { I, ic } from './icons'
 
 type CategoryResult = {

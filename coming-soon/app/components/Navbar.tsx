@@ -1,8 +1,7 @@
 'use client'
 import { useState, useEffect, useRef, useCallback } from 'react'
-import Link from './CountryLink'
+import Link from 'next/link'
 import { BASE } from '../config/base-path'
-import CountrySwitcher from './CountrySwitcher'
 import GlobalSearch from './GlobalSearch'
 import UserMenu from './auth/UserMenu'
 
@@ -314,7 +313,6 @@ export default function Navbar({ sectorSlug, hideSearch }: { sectorSlug?: string
           )}
 
           <div className="nh-actions">
-            <CountrySwitcher />
             <UserMenu />
             <Link href="/business" className="nh-biz">iWW Business</Link>
             <button className="nh-burger" onClick={toggleMenu}
@@ -531,9 +529,6 @@ export default function Navbar({ sectorSlug, hideSearch }: { sectorSlug?: string
               <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
             </svg>
           </Link>
-          <div className="nh-mob-foot-row">
-            <CountrySwitcher />
-          </div>
         </div>
       </div>
     </>

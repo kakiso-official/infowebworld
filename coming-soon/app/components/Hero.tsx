@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import Link from './CountryLink'
+import Link from 'next/link'
 import CurvedLoop from './CurvedLoop'
 import { addToWaitlist } from '../iww-hq/data/waitlist-storage'
 

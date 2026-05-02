@@ -1,12 +1,9 @@
-import Link from "./components/CountryLink";
+import Link from 'next/link';
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import { CountryProvider } from "./config/country-context";
-import { DEFAULT_COUNTRY } from "./config/countries";
 
 export default function RootNotFound() {
   return (
-    <CountryProvider country={DEFAULT_COUNTRY}>
       <div className="nf-wrap">
         <Navbar />
 
@@ -65,6 +62,5 @@ export default function RootNotFound() {
 
         <Footer />
       </div>
-    </CountryProvider>
   );
 }

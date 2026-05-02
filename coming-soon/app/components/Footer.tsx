@@ -1,5 +1,4 @@
-import Link from './CountryLink'
-import CountrySwitcher from './CountrySwitcher'
+import Link from 'next/link'
 import FooterNewsletter from './FooterNewsletter'
 
 import { BASE } from '../config/base-path'
@@ -145,9 +144,6 @@ export default function Footer() {
         <div className="ft-bottom">
           <span className="ft-copy">© 2004 – 2026. Brain Stream Australia Pty Ltd — <Link href="/" className="ft-col-link ft-copy-link">InfoWebWorld.com</Link>. All rights reserved.</span>
           <div className="ft-bottom-right">
-            <div className="ft-country-wrap" aria-label="Change country">
-              <CountrySwitcher />
-            </div>
             <div className="ft-badges">
               <span className="ft-badge ft-badge--coral">Thousands of Categories</span>
               <span className="ft-badge ft-badge--azure">100+ Countries Visitors</span>

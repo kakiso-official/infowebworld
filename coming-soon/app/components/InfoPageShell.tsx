@@ -1,6 +1,6 @@
 import Navbar from './Navbar'
 import Footer from './Footer'
-import Link from './CountryLink'
+import Link from 'next/link'
 
 /**
  * Shared page shell for informational pages (About, Legal, Help, etc.).

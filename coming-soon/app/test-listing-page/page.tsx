@@ -3,8 +3,6 @@
 import { useState, useMemo, useEffect } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import { CountryProvider } from '../config/country-context'
-import { DEFAULT_COUNTRY } from '../config/countries'
 
 /* ═══════════════════════════════════════════
    Test Listing Page — GetApp-style Mailchimp listing
@@ -1042,7 +1040,7 @@ export default function TestListingPage() {
   const sentimentPct = 87
 
   return (
-    <CountryProvider country={DEFAULT_COUNTRY}>
+    <>
       <Navbar />
 
       {/* ─── Compact sticky sub-header (slides in on scroll) ─── */}
@@ -2143,6 +2141,6 @@ export default function TestListingPage() {
       </main>
 
       <Footer />
-    </CountryProvider>
+    </>
   )
 }

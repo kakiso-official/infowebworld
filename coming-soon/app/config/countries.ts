@@ -1,103 +1,37 @@
-/* ── Country routing configuration ── */
+/* ── Country routing removed — single global URL space ──
+   This file is kept as a compat shim so existing call sites that import
+   countryHref() / etc. keep compiling without per-file edits. The functions
+   ignore any country argument and return bare paths. */
 
-export const VALID_COUNTRIES = ['in', 'us', 'uk', 'ca', 'au', 'eu', 'global'] as const
-export type CountryCode = (typeof VALID_COUNTRIES)[number]
-/** The 6 real countries (excludes 'global') */
-export const REAL_COUNTRIES = ['in', 'us', 'uk', 'ca', 'au', 'eu'] as const
+/** Stub type — kept so `country: string` props don't immediately break */
+export type CountryCode = string
 
-export const DEFAULT_COUNTRY: CountryCode = 'us'
-/** Cookie value set when user explicitly picks "Global" in switcher */
-export const GLOBAL_COOKIE = 'global'
-/** The internal [country] param value for root/global pages */
-export const GLOBAL_COUNTRY: CountryCode = 'global'
-export const COOKIE_NAME = 'iww-country'
-export const COOKIE_MAX_AGE = 365 * 24 * 60 * 60 // 1 year
+/** Empty list — generateStaticParams() callers will produce zero pre-rendered
+ *  country variants. Routes are now dynamic with a single URL space. */
+export const VALID_COUNTRIES: readonly string[] = []
+export const REAL_COUNTRIES: readonly string[] = []
+export const DEFAULT_COUNTRY = ''
+export const GLOBAL_COUNTRY = ''
+export const GLOBAL_COOKIE = ''
+export const COOKIE_NAME = ''
+export const COOKIE_MAX_AGE = 0
 
-export const COUNTRY_LABELS: Record<CountryCode, string> = {
-  in: 'India',
-  us: 'United States',
-  uk: 'United Kingdom',
-  ca: 'Canada',
-  au: 'Australia',
-  eu: 'Europe',
-  global: 'Worldwide',
-}
+export const COUNTRY_LABELS: Record<string, string> = {}
+export const COUNTRY_FLAGS: Record<string, string> = {}
+export const COUNTRY_FLAG_ISO: Record<string, string> = {}
+export const ROUTE_TO_GEO_SLUG: Record<string, string> = {}
+export const ROUTE_TO_ISO: Record<string, string> = {}
 
-export const COUNTRY_FLAGS: Record<CountryCode, string> = {
-  in: '\u{1F1EE}\u{1F1F3}',
-  us: '\u{1F1FA}\u{1F1F8}',
-  uk: '\u{1F1EC}\u{1F1E7}',
-  ca: '\u{1F1E8}\u{1F1E6}',
-  au: '\u{1F1E6}\u{1F1FA}',
-  eu: '\u{1F1EA}\u{1F1FA}',
-  global: '\u{1F310}',
-}
-
-/** ISO codes for flag image CDN (flagcdn.com) — Windows doesn't render emoji flags */
-export const COUNTRY_FLAG_ISO: Record<CountryCode, string> = {
-  in: 'in',
-  us: 'us',
-  uk: 'gb',
-  ca: 'ca',
-  au: 'au',
-  eu: 'eu',
-  global: 'eu',
-}
-
-/* Map Vercel's x-vercel-ip-country (ISO 3166-1 alpha-2) to our slugs */
-const EU_CODES = new Set([
-  'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR',
-  'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL',
-  'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE', 'NO', 'CH', 'IS',
-])
-
-/** Returns the matching country code, or null for unsupported countries (→ global) */
-export function geoToCountry(isoCode: string | null | undefined): CountryCode | null {
-  if (!isoCode) return null
-  const code = isoCode.toUpperCase()
-  if (code === 'IN') return 'in'
-  if (code === 'US') return 'us'
-  if (code === 'GB') return 'uk'
-  if (code === 'CA') return 'ca'
-  if (code === 'AU') return 'au'
-  if (EU_CODES.has(code)) return 'eu'
+export function geoToCountry(_iso: string | null | undefined): null {
   return null
 }
 
-export function isValidCountry(s: string): s is CountryCode {
-  return (VALID_COUNTRIES as readonly string[]).includes(s)
+export function isValidCountry(_s: string): _s is CountryCode {
+  return false
 }
 
-/**
- * Build a user-facing URL path. Real countries get /{code}/ prefix; the
- * internal 'global' value renders as bare (no prefix) since /global never
- * appears in the browser URL bar.
- */
-export function countryHref(country: string | null | undefined, path: string = ''): string {
-  if (!country || country === 'global') return path || '/'
-  const p = path.startsWith('/') ? path : (path ? `/${path}` : '')
-  return `/${country}${p}`
-}
-
-/** All 6 countries appear in the URL as /{code}/ prefix. Root (no prefix) = Global. */
-
-/**
- * Map route country code → geo-slugs country slug (used by country-state-city).
- * EU is not a single country so it has no geo slug.
- */
-export const ROUTE_TO_GEO_SLUG: Partial<Record<CountryCode, string>> = {
-  in: 'india',
-  us: 'united-states',
-  uk: 'united-kingdom',
-  ca: 'canada',
-  au: 'australia',
-}
-
-/** Map route country code → ISO 3166-1 alpha-2 code (for country-state-city lookups) */
-export const ROUTE_TO_ISO: Partial<Record<CountryCode, string>> = {
-  in: 'IN',
-  us: 'US',
-  uk: 'UK',
-  ca: 'CA',
-  au: 'AU',
+/** All paths are now bare. Country argument ignored. */
+export function countryHref(_country: string | null | undefined, path: string = ''): string {
+  if (!path) return '/'
+  return path.startsWith('/') ? path : `/${path}`
 }
