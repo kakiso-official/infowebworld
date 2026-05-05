@@ -1,9 +1,9 @@
 'use client'
 import { useMemo, useState } from 'react'
-import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import ListingFormV2, { type PlanKey } from '../../business/ListingFormV2'
-import { PLAN_CAPS } from '../../business/form/constants'
+import DashboardListingForm, { type PlanKey } from './form/DashboardListingForm'
+import { PLAN_CAPS } from './form/constants'
+import DashboardHeader from '../DashboardHeader'
 
 const VALID: PlanKey[] = ['free', 'starter', 'yearly', 'lifetime']
 
@@ -24,12 +24,10 @@ export default function NewListingClient() {
   if (!plan) {
     return (
       <div className="nl">
-        <header className="ds-page-head">
-          <div>
-            <h1 className="ds-page-title">Create a listing</h1>
-            <p className="ds-page-sub">Pick a plan to start. You can change it before publishing.</p>
-          </div>
-        </header>
+        <DashboardHeader
+          title="Create a listing"
+          subtitle="Pick a plan to start. You can change it before publishing."
+        />
 
         <div className="nl-plans">
           {VALID.map(key => {
@@ -46,7 +44,9 @@ export default function NewListingClient() {
                   <li>Up to {c.maxFeatures} features</li>
                   <li>Up to {c.maxTags} tags</li>
                   {c.hasFaqs && <li>FAQ section</li>}
-                  {c.hasPremium && <li>Premium details</li>}
+                  {c.hasKeyFeatures && <li>Rich key features</li>}
+                  {c.hasPricingTiers && <li>Pricing tiers</li>}
+                  {c.hasComplianceAndAwards && <li>Compliance &amp; awards</li>}
                 </ul>
                 <span className="nl-plan-pick">Select {c.label} →</span>
               </button>
@@ -59,20 +59,20 @@ export default function NewListingClient() {
 
   return (
     <div className="nl nl--form">
-      <header className="ds-page-head">
-        <div>
-          <h1 className="ds-page-title">New listing</h1>
-          <p className="ds-page-sub">
+      <DashboardHeader
+        title="New listing"
+        subtitle={
+          <>
             {selectedCaps?.label} plan · {selectedCaps?.price}
             {' · '}
             <button type="button" className="nl-change-plan" onClick={() => setPlan(null)}>
               change plan
             </button>
-          </p>
-        </div>
-      </header>
+          </>
+        }
+      />
 
-      <ListingFormV2 plan={plan} />
+      <DashboardListingForm plan={plan} />
     </div>
   )
 }

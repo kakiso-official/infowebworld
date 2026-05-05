@@ -373,27 +373,128 @@ button.pr-col-btn, button.pr-plan-btn {
 .pr-bottom-cta .pr-plan-btn { max-width: 100%; }
 
 /* ============================================================
+   MOBILE STACKED CARDS — replace the cramped 4-column table on phones
+   ============================================================ */
+.pr-mstack {
+  display: none;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+.pr-mcard {
+  border: 1.5px solid var(--h-border);
+  border-radius: 16px;
+  background: #fff;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .04);
+}
+.pr-mcard--lt { border-color: rgba(232, 85, 61, .35); }
+.pr-mcard--yr { border-color: rgba(26, 26, 26, .25); }
+.pr-mcard--st { border-color: rgba(59, 130, 246, .35); }
+.pr-mcard--fr { border-color: rgba(47, 174, 106, .35); }
+
+.pr-mcard-head {
+  padding: 1.25rem 1.1rem 1.1rem;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  position: relative;
+}
+.pr-mcard--lt .pr-mcard-head { background: #FFF1EE; }
+.pr-mcard--yr .pr-mcard-head { background: #F0F7FF; }
+.pr-mcard--st .pr-mcard-head { background: #EEF4FF; }
+.pr-mcard--fr .pr-mcard-head { background: #F3FAF6; }
+
+.pr-mcard-badge {
+  background: var(--h-accent); color: #fff;
+  font-size: .65rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 999px;
+  margin-bottom: .55rem;
+}
+.pr-mcard-name {
+  font-family: var(--font-bricolage), serif;
+  font-size: 1.05rem; font-weight: 700; color: var(--h-heading);
+  margin: 0 0 .2rem; letter-spacing: -.01em;
+}
+.pr-mcard-desc {
+  font-size: .8rem; color: var(--h-body);
+  margin: 0 0 .85rem;
+}
+.pr-mcard-price {
+  font-family: var(--font-bricolage), serif;
+  font-size: 2.4rem; font-weight: 800;
+  color: var(--h-heading); line-height: 1;
+}
+.pr-mcard-price span {
+  font-size: .9rem; font-weight: 700; vertical-align: super;
+  margin-right: 2px;
+}
+.pr-mcard-period {
+  font-size: .78rem; color: var(--h-body);
+  margin-top: .25rem;
+}
+.pr-mcard-slash {
+  font-size: .72rem; color: var(--h-mute);
+  margin-top: .35rem;
+}
+.pr-mcard-btn {
+  margin-top: .9rem !important;
+  width: 100%;
+  font-size: .85rem !important;
+  padding: .7rem 1rem !important;
+  border-radius: 10px !important;
+}
+
+.pr-mcard-feats {
+  padding: 1rem 1.1rem 1.1rem;
+}
+.pr-mcard-feats-title {
+  font-size: .72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em;
+  color: var(--h-mute);
+  margin-bottom: .65rem;
+}
+.pr-mcard-feats-list {
+  display: flex; flex-direction: column; gap: .45rem;
+  margin: 0; padding: 0; list-style: none;
+}
+.pr-mcard-feat {
+  display: flex; align-items: flex-start; gap: .6rem;
+  font-size: .82rem; line-height: 1.4;
+  color: var(--h-body);
+}
+.pr-mcard-feat.is-no { opacity: .5; }
+.pr-mcard-feat-mark {
+  flex-shrink: 0;
+  width: 18px; height: 18px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.pr-mcard-feat-mark .pr-ck {
+  width: 16px; height: 16px;
+  stroke: var(--h-accent);
+  stroke-width: 2.5;
+}
+.pr-mcard--st .pr-mcard-feat-mark .pr-ck { stroke: #3B82F6; }
+.pr-mcard--fr .pr-mcard-feat-mark .pr-ck { stroke: #2FAE6A; }
+.pr-mcard-feat-dash {
+  color: var(--h-mute); font-weight: 700;
+}
+.pr-mcard-feat-name {
+  flex: 1; min-width: 0;
+}
+
+/* ============================================================
    RESPONSIVE — TABLET
    ============================================================ */
 @media (max-width: 768px) {
   .pr-heading { margin-bottom: clamp(1rem, 3vw, 1.5rem); }
-  .pr-cols {
-    grid-template-columns: 1fr clamp(95px, 24vw, 130px) clamp(95px, 24vw, 130px);
-    column-gap: .35rem;
-  }
-  /* Tablet / narrow viewports — table goes horizontal-scroll; columns stay readable */
-  .pr-cols--4plans {
-    /* same as desktop — user scrolls horizontally */
-    min-width: 900px;
-  }
-  .pr-col-head { padding: clamp(.65rem, 2vw, .85rem) clamp(.35rem, 1vw, .5rem); }
-  .pr-col-price { font-size: clamp(1.2rem, 4.5vw, 1.6rem); }
-  .pr-col-btn { font-size: clamp(.45rem, 1.6vw, .55rem); padding: .3rem .45rem; }
-  .pr-col-badge { font-size: .38rem; padding: .08rem .35rem; }
-  .pr-col-cat { font-size: clamp(.55rem, 2.2vw, .65rem); }
-  .pr-col-row { font-size: clamp(.52rem, 2vw, .62rem); }
-  .pr-ck { width: 12px; height: 12px; }
-  .pr-preview-fade { margin-top: -70px; padding-top: 70px; }
+  /* Hide the desktop comparison table; show stacked cards instead */
+  .pr-cols-scroll { display: none; }
+  .pr-mstack { display: flex; }
+  /* Hide the "+N more features" preview-fade on mobile — each mobile card
+     already shows its own feature list, so the "view all" CTA below is enough */
+  .pr-preview-fade { margin-top: 0; padding-top: 0; }
+  .pr-preview-fade-inner { gap: .6rem; }
+  .pr-preview-count { font-size: .8rem; }
   .pr-table-row { grid-template-columns: 1fr 1fr; gap: .25rem .5rem; }
   .pr-table-feature { grid-column: 1 / -1; padding-right: 0; padding-bottom: .15rem; }
   .pr-table-val { justify-content: flex-start; padding-left: 1rem; }
@@ -405,37 +506,18 @@ button.pr-col-btn, button.pr-plan-btn {
    RESPONSIVE — SMALL MOBILE
    ============================================================ */
 @media (max-width: 480px) {
-  .pr-cols {
-    grid-template-columns: 1fr 80px 80px;
-    column-gap: .25rem;
-  }
-  /* Mobile — same scroll behavior, slightly smaller min-width */
-  .pr-cols--4plans {
-    min-width: 820px;
-  }
-  .pr-col-head { padding: .5rem .3rem; border-radius: 10px 10px 0 0; }
-  .pr-col-head--active { border-radius: 10px; }
-  .pr-col-name { font-size: .55rem; }
-  .pr-col-desc { font-size: .4rem; margin-bottom: .2rem; }
-  .pr-col-price { font-size: 1.05rem; }
-  .pr-col-period { font-size: .38rem; margin-bottom: .3rem; }
-  .pr-col-btn { font-size: .4rem; padding: .25rem .3rem; border-radius: 6px; }
-  .pr-col-badge { font-size: .35rem; padding: .06rem .25rem; margin-bottom: .15rem; }
-  .pr-col-cat { font-size: .5rem; padding: .4rem 0 .2rem; }
-  .pr-col-cat-cell { padding: .4rem 0 .2rem; }
-  .pr-col-row { font-size: .48rem; padding: .22rem 0; padding-right: .3rem; }
-  .pr-col-check { padding: .22rem 0; }
-  .pr-col-check--last { border-radius: 0 0 10px 10px; padding-bottom: .4rem; }
-  .pr-ck { width: 10px; height: 10px; stroke-width: 3; }
-  .pr-view-all-link { font-size: .65rem; padding: .4rem 1rem; }
+  .pr-mcard-head { padding: 1rem .9rem .95rem; }
+  .pr-mcard-feats { padding: .85rem .9rem .95rem; }
+  .pr-mcard-name { font-size: .98rem; }
+  .pr-mcard-desc { font-size: .76rem; margin-bottom: .7rem; }
+  .pr-mcard-price { font-size: 2.1rem; }
+  .pr-mcard-feat { font-size: .78rem; }
+  .pr-view-all-link { font-size: .8rem; padding: .55rem 1.1rem; }
 }
 
 @media (max-width: 380px) {
-  .pr-cols { grid-template-columns: 1fr 70px 70px; }
-  .pr-cols--4plans { min-width: 760px; }
-  .pr-col-name { font-size: .5rem; }
-  .pr-col-price { font-size: .95rem; }
-  .pr-col-btn { font-size: .36rem; padding: .2rem .2rem; }
-  .pr-col-row { font-size: .44rem; }
-  .pr-col-cat { font-size: .46rem; }
+  .pr-mcard-name { font-size: .92rem; }
+  .pr-mcard-price { font-size: 1.9rem; }
+  .pr-mcard-btn { font-size: .8rem !important; padding: .6rem .8rem !important; }
+  .pr-mcard-feat { font-size: .75rem; }
 }

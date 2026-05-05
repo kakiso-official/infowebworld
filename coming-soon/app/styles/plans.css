@@ -222,6 +222,202 @@
   margin-bottom: clamp(.75rem, 1.5vw, 1.25rem);
 }
 
+/* ============================================================
+   MOBILE-ONLY: tabs + filtered checklist (replaces wide desktop table)
+   Pattern: pick a plan tab → see exactly what it includes, grouped by
+   section. Gated plans (Starter / Free) get a dimmed "what you'd unlock"
+   block underneath so users still see the trade-off.
+   ============================================================ */
+.pln-mcompare {
+  display: none;
+}
+
+/* Plan tabs — sticky to top so they stay reachable while scrolling features */
+.pln-mtabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: .35rem;
+  padding: .5rem 0;
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  margin-bottom: .85rem;
+  border-bottom: 1px solid var(--h-border);
+}
+.pln-mtab {
+  border: 1.5px solid var(--h-border);
+  background: #fff;
+  border-radius: 10px;
+  padding: .55rem .25rem;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .15s ease;
+  min-width: 0;
+}
+.pln-mtab-label {
+  font-size: .72rem; font-weight: 700;
+  color: var(--h-heading);
+  letter-spacing: .02em;
+}
+.pln-mtab-price {
+  font-size: .68rem; font-weight: 600;
+  color: var(--h-mute);
+}
+.pln-mtab.is-active {
+  border-width: 2px;
+  background: #FAFAFA;
+}
+.pln-mtab--lt.is-active { border-color: var(--h-accent);  background: #FFF1EE; }
+.pln-mtab--yr.is-active { border-color: var(--h-heading); background: #F0F7FF; }
+.pln-mtab--st.is-active { border-color: #3B82F6;          background: #EEF4FF; }
+.pln-mtab--fr.is-active { border-color: #2FAE6A;          background: #F3FAF6; }
+.pln-mtab.is-active .pln-mtab-label { font-weight: 800; }
+.pln-mtab.is-active .pln-mtab-price { color: var(--h-heading); }
+
+/* Selected plan summary card */
+.pln-msel {
+  border: 1.5px solid var(--h-border);
+  border-radius: 16px;
+  padding: 1.25rem 1.1rem;
+  text-align: center;
+  margin-bottom: 1.25rem;
+  position: relative;
+}
+.pln-msel--lt { background: #FFF1EE; border-color: rgba(232, 85, 61, .35); }
+.pln-msel--yr { background: #F0F7FF; border-color: rgba(26, 26, 26, .25); }
+.pln-msel--st { background: #EEF4FF; border-color: rgba(59, 130, 246, .35); }
+.pln-msel--fr { background: #F3FAF6; border-color: rgba(47, 174, 106, .35); }
+
+.pln-msel-badge {
+  position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+  background: var(--h-accent); color: #fff;
+  font-size: .65rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 999px;
+}
+.pln-msel-name {
+  font-family: var(--font-bricolage), serif;
+  font-size: 1.1rem; font-weight: 700; color: var(--h-heading);
+  margin: 0 0 .2rem; letter-spacing: -.01em;
+}
+.pln-msel-desc {
+  font-size: .8rem; color: var(--h-body);
+  margin: 0 0 .85rem;
+}
+.pln-msel-price {
+  font-family: var(--font-bricolage), serif;
+  font-size: 2.4rem; font-weight: 800;
+  color: var(--h-heading); line-height: 1;
+}
+.pln-msel-price span {
+  font-size: .9rem; font-weight: 700; vertical-align: super;
+  margin-right: 2px;
+}
+.pln-msel-period { font-size: .78rem; color: var(--h-body); margin-top: .25rem; }
+.pln-msel-slash { font-size: .72rem; color: var(--h-mute); margin-top: .35rem; }
+.pln-msel-btn {
+  margin-top: .9rem !important;
+  width: 100%;
+  font-size: .85rem !important;
+  padding: .7rem 1rem !important;
+  border-radius: 10px !important;
+}
+.pln-msel-meta {
+  display: flex; justify-content: center; gap: .85rem;
+  margin-top: .85rem;
+  font-size: .72rem; font-weight: 600;
+  flex-wrap: wrap;
+}
+.pln-msel-meta-yes { color: #047857; }
+.pln-msel-meta-no  { color: var(--h-mute); }
+
+/* Section list */
+.pln-mlist {
+  display: flex; flex-direction: column; gap: 1rem;
+}
+.pln-msec {
+  border: 1px solid var(--h-border);
+  border-radius: 12px;
+  background: #fff;
+  padding: .85rem 1rem 1rem;
+}
+.pln-msec-title {
+  font-family: var(--font-bricolage), serif;
+  font-size: .82rem; font-weight: 700;
+  color: var(--h-heading);
+  margin: 0 0 .65rem;
+  text-transform: uppercase; letter-spacing: .04em;
+}
+.pln-msec-list {
+  display: flex; flex-direction: column; gap: .45rem;
+  list-style: none; margin: 0; padding: 0;
+}
+.pln-msec-row {
+  display: flex; align-items: flex-start; gap: .55rem;
+  font-size: .82rem; line-height: 1.4;
+  color: var(--h-body);
+}
+.pln-msec-mark {
+  flex-shrink: 0;
+  width: 18px; height: 18px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.pln-msec-mark .pr-ck {
+  width: 16px; height: 16px;
+  stroke-width: 2.5;
+}
+.pln-msec-mark--lt .pr-ck { stroke: var(--h-accent); }
+.pln-msec-mark--yr .pr-ck { stroke: var(--h-heading); }
+.pln-msec-mark--st .pr-ck { stroke: #3B82F6; }
+.pln-msec-mark--fr .pr-ck { stroke: #2FAE6A; }
+.pln-msec-name { flex: 1; min-width: 0; }
+
+/* Excluded ("Not in this plan") section */
+.pln-mexcl {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px dashed var(--h-border);
+}
+.pln-mexcl-head {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.pln-mexcl-title {
+  font-family: var(--font-bricolage), serif;
+  font-size: .95rem; font-weight: 700;
+  color: var(--h-heading);
+  margin: 0 0 .25rem;
+}
+.pln-mexcl-sub {
+  font-size: .76rem; color: var(--h-mute);
+  margin: 0;
+}
+.pln-mlist--dim { opacity: .85; }
+.pln-msec--dim {
+  background: #FAFAFA;
+  border-style: dashed;
+}
+.pln-msec-title--dim { color: var(--h-mute); }
+.pln-msec-row--locked { color: var(--h-mute); }
+.pln-msec-lock {
+  flex-shrink: 0;
+  width: 18px; height: 18px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--h-mute);
+}
+.pln-mexcl-cta {
+  margin-top: 1rem !important;
+  width: 100%;
+  font-size: .85rem !important;
+  padding: .75rem 1rem !important;
+  border-radius: 10px !important;
+  display: inline-flex !important;
+  align-items: center; justify-content: center;
+  gap: .4rem;
+}
+
 /* Column labels */
 .pln-table-labels {
   display: grid;
@@ -403,6 +599,10 @@
     border-radius: 14px;
   }
   .pln-table-heading { font-size: clamp(1rem, 4vw, 1.35rem); }
+
+  /* Show the mobile-friendly comparison (tabs + filtered list) — the wide
+     desktop pr-cols-scroll table is hidden by pricing.css's mobile rule */
+  .pln-mcompare { display: block; }
 
   /* Column labels — become inline badges inside each row */
   .pln-table-labels { display: none; }

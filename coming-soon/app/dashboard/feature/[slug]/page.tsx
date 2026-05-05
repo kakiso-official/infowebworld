@@ -1,12 +1,10 @@
-import { cookies } from 'next/headers'
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { queryOne } from '@/lib/db'
-import { USER_COOKIE_NAME } from '@/lib/user-auth'
+import { requireDashboardUser } from '@/lib/user-auth'
 import { getUserPlan, canAccess, TIER_LABEL, TIER_PRICE, type PlanTier } from '@/lib/user-plan'
-import { countryHref } from '@/app/config/countries'
 import { findFeature, SECTIONS } from '../../features'
 import { I, ic } from '../../../components/icons'
+import DashboardHeader from '../../DashboardHeader'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,64 +13,57 @@ export default async function FeaturePage({
 }: {
   params: Promise<{ slug: string }>
 }) {
-  const { slug  } = await params; const country = ""
-  const store = await cookies()
-  const token = store.get(USER_COOKIE_NAME)?.value
-  if (!token) redirect(countryHref(country, '/business'))
-
-  const userRow = await queryOne<{ id: number }>(
-    `SELECT u.id FROM business_sessions s JOIN business_users u ON u.id = s.user_id
-     WHERE s.token = ? AND s.expires_at > NOW() LIMIT 1`,
-    [token]
-  )
-  if (!userRow) redirect(countryHref(country, '/business'))
+  const { slug } = await params
+  const user = await requireDashboardUser()
 
   const feature = findFeature(slug)
   if (!feature) notFound()
 
-  const plan = await getUserPlan(userRow.id)
+  const plan = await getUserPlan(user.id)
   const section = SECTIONS.find(s => s.key === feature.sectionKey)
   const unlocked = canAccess(plan.tier, feature.requiredTier)
 
   return (
     <div className="dash dash-feat">
-      <header className="ds-page-head">
-        <div>
-          <div className="dash-feat-crumb">
-            <Link href={countryHref(country, '/dashboard')}>Dashboard</Link>
-            <span className="dash-feat-sep">/</span>
-            <span>{section?.title}</span>
-          </div>
-          <h1 className="ds-page-title">{feature.label}</h1>
-          <p className="ds-page-sub">
+      <DashboardHeader
+        title={feature.label}
+        subtitle={
+          <>
             Part of <strong>{section?.title}</strong> · Requires{' '}
             <span className={`dash-feat-tier dash-feat-tier--${feature.requiredTier}`}>
               {TIER_LABEL[feature.requiredTier]}
             </span>
             {' '}or higher
-          </p>
-        </div>
-        <div className="ds-page-actions">
-          {unlocked ? (
-            <span className="dash-feat-state dash-feat-state--on">
-              <I d={ic.check} size={14} sw={2.4} /> Unlocked
-            </span>
-          ) : (
-            <span className="dash-feat-state dash-feat-state--off">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
-                strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="4" y="11" width="16" height="10" rx="2" />
-                <path d="M8 11V7a4 4 0 0 1 8 0v4" />
-              </svg>
-              Locked
-            </span>
-          )}
-        </div>
-      </header>
+          </>
+        }
+        breadcrumb={{
+          trail: [
+            { label: 'Dashboard', href: '/dashboard' },
+            ...(section ? [{ label: section.title, href: `/dashboard/section/${section.key}` }] : []),
+          ],
+          current: feature.label,
+        }}
+      />
+      <div className="dash-feat-state-row">
+        {unlocked ? (
+          <span className="dash-feat-state dash-feat-state--on">
+            <I d={ic.check} size={14} sw={2.4} /> Unlocked
+          </span>
+        ) : (
+          <span className="dash-feat-state dash-feat-state--off">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
+              strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="4" y="11" width="16" height="10" rx="2" />
+              <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+            </svg>
+            Locked
+          </span>
+        )}
+      </div>
 
       {unlocked
         ? <UnlockedPanel label={feature.label} sectionBlurb={section?.blurb || ''} />
-        : <UpgradePanel country={country} feature={feature.label} required={feature.requiredTier} currentTier={plan.tier} />}
+        : <UpgradePanel feature={feature.label} required={feature.requiredTier} currentTier={plan.tier} />}
     </div>
   )
 }
@@ -117,8 +108,8 @@ function SkeletonRow() {
 /* ──────────────────── Locked: upgrade CTA ──────────────────── */
 
 function UpgradePanel({
-  country, feature, required, currentTier,
-}: { country: string; feature: string; required: PlanTier; currentTier: PlanTier }) {
+  feature, required, currentTier,
+}: { feature: string; required: PlanTier; currentTier: PlanTier }) {
   // Which plans unlock this feature? Show the two cheapest options that do,
   // so users always see a path up rather than being forced to Lifetime.
   const options: Array<{ tier: PlanTier; highlight?: boolean }> = (() => {
@@ -172,7 +163,7 @@ function UpgradePanel({
                 </li>
               </ul>
               <Link
-                href={countryHref(country, `/dashboard/new?plan=${opt.tier}`)}
+                href={`/dashboard/new?plan=${opt.tier}`}
                 className={`dash-up-cta${opt.highlight ? ' dash-up-cta--pick' : ''}`}
               >
                 Upgrade to {TIER_LABEL[opt.tier]}
@@ -187,7 +178,7 @@ function UpgradePanel({
 
         <div className="dash-up-foot">
           Want to compare everything?{' '}
-          <Link href={countryHref(country, '/business/plans')}>See the full plan comparison →</Link>
+          <Link href="/business/plans">See the full plan comparison →</Link>
         </div>
       </div>
     </section>

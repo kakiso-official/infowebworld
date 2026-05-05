@@ -1,9 +1,7 @@
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { query, queryOne } from '@/lib/db'
-import { USER_COOKIE_NAME } from '@/lib/user-auth'
-import { countryHref } from '@/app/config/countries'
+import { query } from '@/lib/db'
+import { requireDashboardUser } from '@/lib/user-auth'
+import DashboardHeader from '../DashboardHeader'
 
 export const dynamic = 'force-dynamic'
 
@@ -25,17 +23,8 @@ export default async function ListingsPage({
 }: {
   params: Promise<Record<string, never>>
 }) {
-  await params; const country = ""
-  const store = await cookies()
-  const token = store.get(USER_COOKIE_NAME)?.value
-  if (!token) redirect(countryHref(country, '/business'))
-
-  const user = await queryOne<{ id: number }>(
-    `SELECT u.id FROM business_sessions s JOIN business_users u ON u.id = s.user_id
-     WHERE s.token = ? AND s.expires_at > NOW() LIMIT 1`,
-    [token]
-  )
-  if (!user) redirect(countryHref(country, '/business'))
+  await params
+  const user = await requireDashboardUser()
 
   const listings = await query<SubmissionRow>(
     `SELECT s.uuid, s.slug, s.company_name, s.tagline, s.logo_url, s.status, s.created_at,
@@ -50,20 +39,18 @@ export default async function ListingsPage({
 
   return (
     <div className="dash">
-      <header className="ds-page-head">
-        <div>
-          <h1 className="ds-page-title">My listings</h1>
-          <p className="ds-page-sub">{listings.length} total</p>
-        </div>
-        <div className="ds-page-actions">
-          <Link href={countryHref(country, '/dashboard/new')} className="dash-cta-primary">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M12 5v14M5 12h14" />
-            </svg>
-            New listing
-          </Link>
-        </div>
-      </header>
+      <DashboardHeader
+        title="My listings"
+        subtitle={`${listings.length} total`}
+      />
+      <div className="dash-toolbar">
+        <Link href="/dashboard/new" className="dash-cta-primary">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+          New listing
+        </Link>
+      </div>
 
       {listings.length === 0 ? (
         <div className="dash-empty">
@@ -75,7 +62,7 @@ export default async function ListingsPage({
           </div>
           <h3>No listings yet</h3>
           <p>Create your first listing to show up on InfoWebWorld.</p>
-          <Link href={countryHref(country, '/dashboard/new')} className="dash-empty-cta">
+          <Link href="/dashboard/new" className="dash-empty-cta">
             Create your first listing
           </Link>
         </div>
@@ -103,7 +90,7 @@ export default async function ListingsPage({
                 </div>
                 <div className="dash-list-foot">
                   {isLive ? (
-                    <Link href={countryHref(country, `/company/${l.slug}`)} className="dash-list-btn">
+                    <Link href={`/company/${l.slug}`} className="dash-list-btn">
                       View listing
                       <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <path d="M7 17L17 7M7 7h10v10" />

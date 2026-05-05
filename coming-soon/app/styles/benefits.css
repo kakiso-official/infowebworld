@@ -1,329 +1,401 @@
 /* ============================================================
-   BENEFITS — Bold Pastel Bento · flex-swap on hover
+   BENEFITS — Anthropic-style bento, faithful to the reference
    /business page · bn-* namespace
+   - Cream section, near-invisible card borders, soft drop shadow
+   - Slim serif centred heading, no colored em
+   - Each highlight is an "install row" (coloured tile + name +
+     bordered chip with external-arrow on the right)
+   - Hero cards split: content panel left / tinted mock UI right
    ============================================================ */
 
 /* ── Section ── */
 .bn-section {
-  padding: clamp(3rem, 6vw, 5rem) 0;
-  background: var(--h-bg);
+  padding: clamp(2.5rem, 5vw, 4rem) 0;
+  background: #F4EFE4;
 }
 
-/* ── Heading ── */
+/* ── Heading: slim serif, centered, no colored accent ── */
+.bn-head {
+  text-align: center;
+  margin: 0 auto clamp(1.5rem, 3vw, 2.25rem);
+}
 .bn-heading {
   font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
-  font-size: clamp(1.5rem, 3.2vw, 2.4rem);
-  font-weight: 800; color: var(--h-heading);
-  line-height: 1.1; letter-spacing: -.02em; margin-bottom: .4rem;
+  font-size: clamp(1.45rem, 2.4vw, 1.85rem);
+  font-weight: 600;
+  color: #1A1A1A;
+  letter-spacing: -.005em;
+  line-height: 1.2;
+  margin: 0;
 }
-.bn-heading em { font-style: normal; color: var(--h-accent); }
 
 /* ============================================================
-   FLEX GRID — column of rows, tight gaps
+   GRID — 2 cols, hero spans both
    ============================================================ */
 .bn-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+/* ── Card base ── */
+/* Double-ring frame from the reference: outer border + a 5px "frame" gap of
+   the card bg + a subtle inner ring drawn by a pseudo-element. The inner
+   ring is what reads as the second curve at the corner. */
+.bn-card {
+  background: #FBF8F1;
+  border: 1px solid #D7CCB0;
+  border-radius: 24px;
+  padding: clamp(1.55rem, 2.2vw, 1.95rem); /* extra padding so content clears the inner ring */
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: clamp(1.5rem, 3vw, 2.5rem);
-}
-.bn-row {
-  display: flex;
-  gap: 8px;
-}
+  gap: .55rem;
+  position: relative;
+  box-shadow: 0 6px 20px rgba(60, 45, 20, .06);
 
-/* ── Default proportions: small = 1fr, large = 2fr ── */
-.bn-sm { flex: 1; min-width: 0; }
-.bn-lg { flex: 2; min-width: 0; }
-
-/* ============================================================
-   HOVER SWAP — JS-managed .bn-swap class (debounced, no oscillation)
-   ============================================================ */
-.bn-card {
-  transition: flex .6s cubic-bezier(.16, 1, .3, 1);
-}
-.bn-card-title,
-.bn-card-desc,
-.bn-card-num,
-.bn-card-list li {
-  transition: font-size .6s cubic-bezier(.16, 1, .3, 1);
-}
-.bn-grid.bn-swap .bn-sm { flex: 2; }
-.bn-grid.bn-swap .bn-lg { flex: 1; }
-
-/* Expanded small cards get bigger text */
-.bn-grid.bn-swap .bn-sm .bn-card-title {
-  font-size: clamp(1.3rem, 2.4vw, 1.7rem);
-}
-.bn-grid.bn-swap .bn-sm .bn-card-desc {
-  font-size: clamp(.9rem, 1.25vw, 1.05rem);
-}
-.bn-grid.bn-swap .bn-sm .bn-card-num {
-  font-size: clamp(.72rem, 1.1vw, .88rem);
-}
-.bn-grid.bn-swap .bn-sm .bn-card-list li {
-  font-size: clamp(.72rem, 1vw, .85rem);
-}
-
-/* ============================================================
-   COLOR THEMES — bold, vivid, bright fills
-   ============================================================ */
-.bn--coral {
-  background: #91C6BC;
-  --bn-fg: #1A1A1A; --bn-fg2: rgba(0,0,0,.65);
-  --bn-pill: #FF8F8F; --bn-pill-fg: #7A0000;
-  --bn-art: rgba(0,0,0,.08); --bn-solid: #4B9DA9  ;
-}
-.bn--emerald {
-  background: #DDC3C3;
-  --bn-fg: #1A1A1A; --bn-fg2: rgba(0,0,0,.65);
-  --bn-pill: #5EE098; --bn-pill-fg: #0A4D22;
-  --bn-art: rgba(0,0,0,.08); --bn-solid: #6B3F69;
-}
-.bn--azure {
-  background: #90C8AC;
-  --bn-fg: #1A1A1A; --bn-fg2: rgba(0,0,0,.65);
-  --bn-pill: #6BB5E8; --bn-pill-fg: #0A3260;
-  --bn-art: rgba(0,0,0,.08); --bn-solid: #73A9AD;
-}
-.bn--plum {
-  background: #DEB6AB;
-  --bn-fg: #1A1A1A; --bn-fg2: rgba(0,0,0,.6);
-  --bn-pill: #B580D0; --bn-pill-fg: #2E0E4A;
-  --bn-art: rgba(0,0,0,.08); --bn-solid: #AC7D88;
-}
-.bn--teal {
-  background: #D4C4A0;
-  --bn-fg: #1A1A1A; --bn-fg2: rgba(0,0,0,.65);
-  --bn-pill: #E8D48A; --bn-pill-fg: #4A3D10;
-  --bn-art: rgba(0,0,0,.08); --bn-solid: #A89868;
-}
-.bn--amber {
-  background: #94B5D4;
-  --bn-fg: #1A1A1A; --bn-fg2: rgba(0,0,0,.65);
-  --bn-pill: #F0C760; --bn-pill-fg: #5C4600;
-  --bn-art: rgba(0,0,0,.08); --bn-solid: #6B94B0;
-}
-.bn--rose {
-  background: #FF8FB7;
-  --bn-fg: #1A1A1A; --bn-fg2: rgba(0,0,0,.6);
-  --bn-pill: #F05A8D; --bn-pill-fg: #5A0024;
-  --bn-art: rgba(0,0,0,.08); --bn-solid: #E83C91;
-}
-.bn--sunset {
-  background: #C4A8D4;
-  --bn-fg: #1A1A1A; --bn-fg2: rgba(0,0,0,.65);
-  --bn-pill: #D490E8; --bn-pill-fg: #3A1050;
-  --bn-art: rgba(0,0,0,.08); --bn-solid: #9B7AB0;
-}
-
-/* ============================================================
-   CARD BASE
-   ============================================================ */
-.bn-card {
-  position: relative; overflow: hidden;
-  border-radius: 10px;
-  padding: clamp(1.35rem, 2.8vw, 2.15rem);
-  display: flex; flex-direction: column;
-
-  /* Scroll entrance — hidden until IO fires */
   opacity: 0;
-  transform: translateY(32px) scale(.96);
+  transform: translateY(14px);
+  transition:
+    opacity .45s ease var(--bn-i, 0ms),
+    transform .45s cubic-bezier(.16, 1, .3, 1) var(--bn-i, 0ms),
+    box-shadow .2s ease,
+    border-color .2s ease;
 }
-
-/* Entrance animation — backwards fill prevents delay flash */
-.bn-card.bn-in {
-  opacity: 1; transform: none;
-  animation: bnReveal .7s cubic-bezier(.16,1,.3,1) backwards;
-  animation-delay: var(--bn-i, 0ms);
-}
-@keyframes bnReveal {
-  from { opacity: 0; transform: translateY(32px) scale(.96); }
-  to   { opacity: 1; transform: none; }
-}
-
-
-/* ============================================================
-   CLOCKWISE DRAWING BORDER — SVG rect, stroke-dashoffset
-   Follows rounded corners perfectly.
-   ============================================================ */
-.bn-border {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
+/* Inner ring — only on standard cards. Hero cards have their own panel
+   split so the ring would conflict with the right-side tinted panel. */
+.bn-card--std::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(132, 110, 60, .14);
+  border-radius: 19px; /* outer 24 - inset 6 + 1 = inner radius */
   pointer-events: none;
-  z-index: 3;
+  z-index: 0;
 }
-.bn-border rect {
-  x: 0; y: 0;
-  width: 100%; height: 100%;
-  rx: 10px;
-  fill: none;
-  stroke: var(--bn-solid);
-  stroke-width: 4; /* half clipped by card overflow:hidden → visible 2px */
-  stroke-linecap: round;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  transition: stroke-dashoffset .25s ease;
+.bn-card--std > * { position: relative; z-index: 1; }
+.bn-card.bn-in {
+  opacity: 1;
+  transform: translateY(0);
 }
-.bn-card:hover .bn-border rect {
-  stroke-dashoffset: 0;
-  transition: stroke-dashoffset .7s cubic-bezier(.16, 1, .3, 1);
+.bn-card:hover {
+  box-shadow: 0 10px 28px rgba(60, 45, 20, .09);
+  border-color: #C2B28C;
 }
 
-/* ============================================================
-   STAT BADGE
-   ============================================================ */
-.bn-card-head {
-  position: absolute; top: -1px; right: -1px;
-  z-index: 4;
+/* ── Hero card (full width, split) ── */
+/* Padding on the outer card creates the visible "frame" gap that lets the
+   inner-ring effect work the same way standard cards do. Each panel then
+   gets its own border + bg + matching corner radii so the inner panels
+   sit inside the frame as their own rounded blocks. */
+.bn-card--hero {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: 0;
+  padding: 6px;
 }
-.bn-card-num {
-  display: block;
-  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
-  font-weight: 800;
-  font-size: clamp(.68rem, 1vw, .84rem);
-  color: #1A1A1A;
-  background: var(--bn-solid);
-  padding: .35rem .85rem;
-  border-radius: 0 10px 0 10px;
-  white-space: nowrap;
-  letter-spacing: .02em;
+.bn-card-left {
+  padding: clamp(1.4rem, 2vw, 1.85rem);
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  min-width: 0;
+  background: #FBF8F1;
+  border: 1px solid rgba(132, 110, 60, .14);
+  border-right: none;
+  border-radius: 18px 0 0 18px;
+}
+.bn-card-right {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  padding: clamp(1rem, 1.8vw, 1.5rem);
+  border: 1px solid rgba(132, 110, 60, .14);
+  border-radius: 0 18px 18px 0;
 }
 
-/* ============================================================
-   TITLE
-   ============================================================ */
+/* ── Title (small bold sans, like the reference's section labels) ── */
 .bn-card-title {
-  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
-  font-size: clamp(1.1rem, 2vw, 1.5rem);
-  font-weight: 800;
-  color: var(--bn-fg);
-  letter-spacing: -.02em; line-height: 1.15;
-  margin-bottom: clamp(.35rem, .7vw, .55rem);
-  position: relative; z-index: 2;
-}
-
-/* ============================================================
-   DESCRIPTION
-   ============================================================ */
-.bn-card-desc {
-  font-family: var(--font-nunito), 'Nunito', sans-serif;
-  font-size: clamp(.82rem, 1.1vw, .96rem);
-  color: var(--bn-fg2);
-  line-height: 1.6;
-  margin-bottom: clamp(.6rem, 1.1vw, .85rem);
-  position: relative; z-index: 2;
-}
-.bn-card-desc strong {
-  color: var(--bn-fg);
-  font-weight: 800;
-}
-
-/* ============================================================
-   LOTTIE ANIMATION — Lead Generation card (card 1)
-   ============================================================ */
-
-/* ============================================================
-   HIGHLIGHT PILLS
-   ============================================================ */
-.bn-card-list {
-  list-style: none; padding: 0; margin: 0;
-  display: flex; flex-wrap: wrap;
-  gap: clamp(.3rem, .5vw, .4rem);
-  margin-top: auto;
-  position: relative; z-index: 2;
-}
-.bn-card-list li {
-  display: inline-flex; align-items: center; gap: .3rem;
-  font-family: var(--font-nunito), 'Nunito', sans-serif;
-  font-size: clamp(.66rem, .92vw, .78rem);
+  font-family: var(--font-inter), -apple-system, sans-serif;
+  font-size: .92rem;
   font-weight: 700;
   color: #1A1A1A;
-  background: #fff;
-  padding: .24rem .56rem .24rem .4rem;
-  border-radius: 999px;
+  letter-spacing: -.005em;
+  line-height: 1.3;
+  margin: 0;
+}
+.bn-card--hero .bn-card-title { font-size: 1.05rem; }
+
+/* ── Description ── */
+.bn-card-desc {
+  font-family: var(--font-inter), -apple-system, sans-serif;
+  font-size: .82rem;
+  color: #5C5C5C;
+  line-height: 1.5;
+  margin: 0 0 .25rem;
+}
+.bn-card-desc strong {
+  color: #1A1A1A;
+  font-weight: 600;
 }
 
-.bn-ck {
-  width: clamp(12px, 1vw, 15px);
-  height: clamp(12px, 1vw, 15px);
+/* ============================================================
+   INSTALL ROWS — coloured tile + name + bordered chip
+   ============================================================ */
+.bn-rows {
+  list-style: none;
+  margin: .35rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.bn-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: .65rem;
+  padding: .6rem 0;
+  border-top: 1px solid rgba(0, 0, 0, .06);
+  font-family: var(--font-inter), -apple-system, sans-serif;
+}
+.bn-row:first-child { border-top: none; padding-top: .25rem; }
+
+.bn-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px; height: 22px;
+  border-radius: 5px;
+  font-size: .68rem;
+  font-weight: 800;
+  color: #fff;
   flex-shrink: 0;
-  stroke: #1A1A1A; fill: none;
-  stroke-width: 2.8;
-  stroke-linecap: round; stroke-linejoin: round;
+  letter-spacing: 0;
+}
+.bn-row-name {
+  font-size: .85rem;
+  font-weight: 500;
+  color: #1A1A1A;
+  line-height: 1.35;
+  min-width: 0;
+}
+.bn-row-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px 5px 11px;
+  border: 1px solid #D9D0BB;
+  border-radius: 999px;
+  font-size: .72rem;
+  font-weight: 600;
+  color: #5C5C5C;
+  background: rgba(255, 255, 255, .5);
+  white-space: nowrap;
+  transition: background .15s ease, border-color .15s ease, color .15s ease;
+  cursor: default;
+}
+.bn-row-chip:hover {
+  background: #fff;
+  border-color: #B8AC8A;
+  color: #1A1A1A;
+}
+.bn-ax {
+  width: 10px; height: 10px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 /* ============================================================
-   prefers-reduced-motion
+   PASTEL THEMES — tile colour per card. Hero cards also tint the
+   right-side panel so it reads as a distinct surface.
    ============================================================ */
-@media (prefers-reduced-motion: reduce) {
-  .bn-card { opacity: 1; transform: none; animation: none !important; transition: none !important; }
+.bn--coral   .bn-tile         { background: #E8553D; }
+.bn--coral   .bn-card-right   { background: #FBE8E1; }
+
+.bn--emerald .bn-tile         { background: #16A34A; }
+.bn--emerald .bn-card-right   { background: #E1F4E5; }
+
+.bn--azure   .bn-tile         { background: #3B82F6; }
+.bn--azure   .bn-card-right   { background: #DEEAFE; }
+
+.bn--plum    .bn-tile         { background: #8B5CF6; }
+.bn--plum    .bn-card-right   { background: #ECE2FE; }
+
+.bn--teal    .bn-tile         { background: #0D9488; }
+.bn--teal    .bn-card-right   { background: #D9F0EE; }
+
+.bn--amber   .bn-tile         { background: #D97706; }
+.bn--amber   .bn-card-right   { background: #FBEDC8; }
+
+.bn--rose    .bn-tile         { background: #DB2777; }
+.bn--rose    .bn-card-right   { background: #FCE0EE; }
+
+.bn--sunset  .bn-tile         { background: #FB7185; }
+.bn--sunset  .bn-card-right   { background: #FBE0E3; }
+
+/* ============================================================
+   HERO RIGHT-PANEL VISUALS — pure CSS mock UIs
+   ============================================================ */
+.bn-vis {
+  width: 100%;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .85);
+  border: 1px solid rgba(0, 0, 0, .06);
+  padding: .9rem;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .04);
+  font-family: var(--font-inter), -apple-system, sans-serif;
+  min-height: 220px;
+}
+
+/* ── Leads inbox mock ── */
+.bn-vis--leads {}
+.bn-vis-search {
+  display: flex; align-items: center; gap: .5rem;
+  padding: 7px 10px;
+  border: 1px solid #ECECEC;
+  border-radius: 8px;
+  font-size: .72rem;
+  font-weight: 600;
+  color: #5C5C5C;
+}
+.bn-vis-mag {
+  width: 13px; height: 13px;
+  fill: none; stroke: #5C5C5C;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  flex-shrink: 0;
+}
+.bn-vis-search > span:first-of-type { flex: 1; }
+.bn-vis-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #E8553D;
+  box-shadow: 0 0 0 3px rgba(232, 85, 61, .15);
+}
+.bn-vis-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: .55rem;
+  align-items: center;
+  padding: .5rem .25rem;
+  border-bottom: 1px solid #F1ECE0;
+}
+.bn-vis-row:last-child { border-bottom: none; }
+.bn-vis-av {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: #E8553D; color: #fff;
+  font-size: .65rem; font-weight: 700;
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.bn-vis-meta { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.bn-vis-meta strong { font-size: .76rem; color: #1A1A1A; font-weight: 700; }
+.bn-vis-meta span {
+  font-size: .68rem; color: #6B6B6B;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.bn-vis-time {
+  font-size: .65rem; color: #9A9A9A; font-weight: 500;
+  flex-shrink: 0;
+}
+
+/* ── Analytics chart mock ── */
+.bn-vis--analytics {}
+.bn-vis-stat {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: .25rem .5rem;
+  padding: 4px 2px 2px;
+}
+.bn-vis-stat-label {
+  grid-column: 1 / -1;
+  font-size: .7rem;
+  color: #6B6B6B;
+  font-weight: 500;
+}
+.bn-vis-stat-value {
+  font-family: Georgia, serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #1A1A1A;
+  letter-spacing: -.01em;
+}
+.bn-vis-stat-trend {
+  font-size: .72rem;
+  font-weight: 700;
+  color: #16A34A;
+}
+.bn-vis-chart {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  align-items: end;
+  gap: 6px;
+  height: 110px;
+  padding: 4px 2px;
+  border-bottom: 1px dashed #ECECEC;
+}
+.bn-vis-bar {
+  background: linear-gradient(180deg, #FB7185 0%, #F87171 100%);
+  border-radius: 3px 3px 0 0;
+  min-height: 18px;
+}
+.bn-vis-axis {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  font-size: .62rem;
+  color: #9A9A9A;
+  text-align: center;
+  padding: 4px 2px 0;
 }
 
 /* ============================================================
-   TABLET — keep flex rows, tighter
+   RESPONSIVE
    ============================================================ */
-@media (max-width: 1024px) {
-  .bn-grid { gap: 7px; }
-  .bn-row { gap: 7px; }
-
+@media (max-width: 900px) {
+  .bn-card--hero {
+    grid-template-columns: 1fr;
+  }
+  .bn-card-left {
+    border-right: 1px solid rgba(132, 110, 60, .14);
+    border-bottom: none;
+    border-radius: 18px 18px 0 0;
+  }
+  .bn-card-right {
+    border-top: none;
+    border-radius: 0 0 18px 18px;
+  }
 }
-
-/* ============================================================
-   MOBILE — dissolve rows into 2-col grid
-   ============================================================ */
 @media (max-width: 768px) {
-  .bn-section { padding: clamp(2rem, 5vw, 3rem) 0; }
-  .bn-heading { font-size: clamp(1.25rem, 5.5vw, 1.65rem); }
-
+  .bn-section { padding: clamp(2rem, 4vw, 3rem) 0; }
   .bn-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 6px;
-  }
-  .bn-row {
-    display: contents; /* dissolve wrapper — cards flow into grid */
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
   .bn-card {
-    transition: none; /* no swap on mobile */
+    padding: 1.25rem;
+    border-radius: 20px;
   }
-
-  .bn-card--1 { grid-column: 1 / -1; }
-  .bn-card--6 { grid-column: 1 / -1; }
-
-  .bn-card {
-    padding: clamp(.95rem, 2.8vw, 1.25rem);
-    border-radius: 8px;
-  }
-
-
-  .bn-card-title { font-size: clamp(.88rem, 3.2vw, 1.08rem); }
-  .bn-card-desc { font-size: clamp(.7rem, 2vw, .82rem); line-height: 1.5; }
-  .bn-card-num { font-size: clamp(.6rem, 1.8vw, .72rem); padding: .2rem .48rem; }
-
-  .bn-card-list li {
-    font-size: clamp(.58rem, 1.65vw, .68rem);
-    padding: .18rem .42rem .18rem .32rem;
-  }
-  .bn-ck { width: 11px; height: 11px; }
+  .bn-card--hero { padding: 0; }
+  .bn-card--hero .bn-card-left { padding: 1.25rem; }
+  .bn-card--hero .bn-card-right { padding: 1rem; }
+  .bn-row-chip { font-size: .68rem; padding: 4px 9px; }
+  .bn-tile { width: 20px; height: 20px; font-size: .62rem; }
 }
-
-/* ============================================================
-   SMALL PHONES
-   ============================================================ */
 @media (max-width: 480px) {
-  .bn-grid { gap: 5px; }
-  .bn-card { padding: clamp(.8rem, 2.2vw, 1rem); }
+  .bn-row-name { font-size: .8rem; }
+  .bn-vis { min-height: 180px; padding: .75rem; }
+  .bn-vis-stat-value { font-size: 1.25rem; }
+  .bn-vis-chart { height: 90px; }
 }
 
-/* ============================================================
-   EXTRA-SMALL PHONES
-   ============================================================ */
-@media (max-width: 380px) {
-  .bn-grid { gap: 4px; }
-  .bn-card {
-    padding: clamp(.7rem, 2vw, .9rem);
-    border-radius: 6px;
-  }
-  .bn-card-desc { font-size: .66rem; line-height: 1.45; }
+@media (prefers-reduced-motion: reduce) {
+  .bn-card { opacity: 1; transform: none; transition: none; }
 }

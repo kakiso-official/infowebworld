@@ -49,6 +49,11 @@ export const ic = {
   helpCircle: 'M12 2a10 10 0 100 20 10 10 0 000-20z|M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3|M12 17h.01',
   power: 'M18.36 6.64a9 9 0 1 1-12.73 0|M12 2v10',
   lock: 'M4 11h16a1 1 0 011 1v9a1 1 0 01-1 1H4a1 1 0 01-1-1v-9a1 1 0 011-1z|M8 11V7a4 4 0 018 0v4',
+  chevronRight: 'M9 6l6 6-6 6',
+  chevronUp: 'M6 15l6-6 6 6',
+  bell: 'M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9|M13.73 21a2 2 0 01-3.46 0',
+  info: 'M12 2a10 10 0 100 20 10 10 0 000-20z|M12 16v-4|M12 8h.01',
+  gift: 'M20 12v10H4V12|M2 7h20v5H2z|M12 22V7|M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z|M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z',
 } as const
 
 /* Name alias map — resolves Hugeicons naming to our icon keys */
@@ -72,7 +77,10 @@ export const ICON_ALIAS: Record<string, keyof typeof ic> = {
   verified: 'check', compass: 'compass',
   sliders: 'sliders', cancel: 'x', x: 'x',
   externalLink: 'externalLink', monitor: 'monitor',
-  chevronDown: 'chevronDown',
+  chevronDown: 'chevronDown', chevronRight: 'chevronRight', chevronUp: 'chevronUp',
+  bell: 'bell', notification: 'bell',
+  info: 'info', infoCircle: 'info',
+  gift: 'gift',
 }
 
 /** Resolve any icon name (including Hugeicons aliases) to an SVG path string */

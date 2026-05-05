@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
-import { countryHref } from '../config/countries'
 import type { UserPlan } from '@/lib/user-plan-types'
+import DashboardHeader from './DashboardHeader'
 
 interface SectionCard {
   key: string
@@ -19,9 +19,9 @@ interface SectionCard {
  * Layout locked to one viewport: 4 + 3 rows, no scroll anywhere.
  */
 export default function DashboardClient({
-  country, plan, sectionCards,
+  plan, sectionCards,
 }: {
-  country: string
+  country?: string
   plan: UserPlan
   sectionCards: SectionCard[]
 }) {
@@ -29,19 +29,25 @@ export default function DashboardClient({
   const botRow = sectionCards.slice(4)
 
   return (
-    <div className="dash-home">
-      <div className="dash-home-row">
-        {topRow.map((s, i) => <SectionTile key={s.key} country={country} s={s} index={i + 1} />)}
+    <>
+      <DashboardHeader
+        title="Home"
+        subtitle={`On the ${plan.label} plan · ${sectionCards.reduce((acc, s) => acc + s.unlocked, 0)} of ${sectionCards.reduce((acc, s) => acc + s.total, 0)} features unlocked`}
+      />
+      <div className="dash-home">
+        <div className="dash-home-row">
+          {topRow.map((s, i) => <SectionTile key={s.key} s={s} index={i + 1} />)}
+        </div>
+        <div className="dash-home-row">
+          {botRow.map((s, i) => <SectionTile key={s.key} s={s} index={i + 5} />)}
+        </div>
       </div>
-      <div className="dash-home-row">
-        {botRow.map((s, i) => <SectionTile key={s.key} country={country} s={s} index={i + 5} />)}
-      </div>
-    </div>
+    </>
   )
 }
 
-function SectionTile({ country, s, index }: { country: string; s: SectionCard; index: number }) {
-  const href = countryHref(country, `/dashboard/section/${s.key}`)
+function SectionTile({ s, index }: { s: SectionCard; index: number }) {
+  const href = `/dashboard/section/${s.key}`
   const pct = s.total > 0 ? (s.unlocked / s.total) * 100 : 0
   const isFull = s.unlocked === s.total
   const allLocked = s.unlocked === 0 && s.total > 0

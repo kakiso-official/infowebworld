@@ -178,59 +178,517 @@ body.tlp-subheader-active .nh {
   .tlp-sub-cta { display: none }
 }
 
-/* ─── Compact identity strip (replaces the old big yellow hero) ─── */
+/* ─── Pinned wrapper: identity + horizontal nav stay together on scroll ─── */
+.tlp-sticky-head {
+  background: var(--tlp-bg);
+}
+/* Spacer reserves vertical space below the fixed head so content below
+   doesn't jump up when we switch to position: fixed. */
+.tlp-sticky-head-spacer {
+  display: none;
+  height: var(--tlp-head-h, 0px);
+}
+/* When scrolled, the site navbar slides up (existing rule) and we pin the
+   head to top:0 of the viewport. Spacer fills the gap left in the flow. */
+body.tlp-subheader-active .tlp-sticky-head {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  box-shadow: 0 4px 14px rgba(17, 24, 39, .06);
+}
+body.tlp-subheader-active .tlp-sticky-head-spacer {
+  display: block;
+}
+
+/* ─── Compact head: drop address / phone / stats / dividers, shrink logo ─── */
+body.tlp-subheader-active .tlp-identity-inner {
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 24px;
+}
+body.tlp-subheader-active .tlp-id-logo {
+  width: 56px; height: 56px;
+  padding: 4px;
+}
+body.tlp-subheader-active .tlp-id-name {
+  font-size: 20px;
+  gap: 6px;
+}
+body.tlp-subheader-active .tlp-id-verified svg { width: 16px; height: 16px }
+body.tlp-subheader-active .tlp-id-body { gap: 4px }
+body.tlp-subheader-active .tlp-id-meta { font-size: 13px; gap: 6px }
+body.tlp-subheader-active .tlp-id-rate-num { font-size: 14px }
+body.tlp-subheader-active .tlp-id-vpill { padding: 2px 8px 2px 5px; font-size: 11.5px }
+body.tlp-subheader-active .tlp-id-line,
+body.tlp-subheader-active .tlp-id-tags,
+body.tlp-subheader-active .tlp-id-stats,
+body.tlp-subheader-active .tlp-id-divider,
+body.tlp-subheader-active .tlp-engage { display: none }
+
+body.tlp-subheader-active .tlp-id-actions {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+body.tlp-subheader-active .tlp-btn-primary,
+body.tlp-subheader-active .tlp-btn-outline {
+  padding: 9px 16px;
+  font-size: 13.5px;
+}
+body.tlp-subheader-active .tlp-write-review {
+  padding: 0;
+  white-space: nowrap;
+}
+
+@media (max-width: 1024px) {
+  body.tlp-subheader-active .tlp-identity-inner {
+    grid-template-columns: auto 1fr;
+    gap: 14px 18px;
+  }
+  body.tlp-subheader-active .tlp-id-actions {
+    grid-column: 1 / -1;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  body.tlp-subheader-active .tlp-write-review { flex-basis: auto }
+}
+
+/* ─── Company identity header (Clutch-style: identity / stats / actions) ─── */
 .tlp-identity {
   background: var(--tlp-bg);
   border-bottom: 1px solid var(--tlp-border);
 }
 .tlp-identity-inner {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto auto auto;
   align-items: center;
-  gap: 18px;
-  padding: 22px 24px 18px;
+  gap: 28px;
+  padding: 28px 24px;
   max-width: 1200px;
   margin: 0 auto;
 }
+
+/* ── Category tag pills — what this listing is about, at a glance ── */
+.tlp-id-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  margin-bottom: 4px;
+}
+.tlp-id-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--tlp-ink-2);
+  background: var(--tlp-bg-soft);
+  border: 1px solid var(--tlp-border);
+  border-radius: 999px;
+  white-space: nowrap;
+  text-decoration: none !important;
+  transition: background .15s ease, border-color .15s ease, color .15s ease;
+}
+.tlp-id-tag:hover {
+  background: var(--tlp-teal-50);
+  border-color: var(--tlp-teal);
+  color: var(--tlp-teal-600);
+}
+
+/* ── Engagement bar (follow + like / dislike / bookmark) — under phone ── */
+.tlp-engage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+/* ── Engagement button base — each variant gets its own colour identity at
+   rest (not just on click), so the affordances read as branded actions
+   instead of generic chips. Active = the saturated, "filled" version. ── */
+.tlp-eng-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: #fff;
+  border: 1.5px solid var(--tlp-border);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tlp-mute);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .18s ease, border-color .18s ease, color .18s ease,
+              transform .12s ease, box-shadow .18s ease;
+}
+.tlp-eng-btn:active { transform: scale(.96) }
+.tlp-eng-btn svg { flex-shrink: 0 }
+
+/* Subtle pop on icons when the button toggles to active — feedback that
+   confirms the click registered without being noisy. */
+.tlp-eng-btn.is-active svg { animation: tlpEngPop .26s cubic-bezier(.34, 1.56, .64, 1); }
+@keyframes tlpEngPop {
+  0%   { transform: scale(.6); }
+  60%  { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+
+/* ─── Like — soft green at rest, filled green when active ─── */
+.tlp-eng-btn--like {
+  background: #F0FDF4;
+  border-color: #BBF7D0;
+  color: #15803D;
+}
+.tlp-eng-btn--like:hover {
+  background: #DCFCE7;
+  border-color: #86EFAC;
+  color: #14532D;
+}
+.tlp-eng-btn--like.is-active {
+  background: #16A34A;
+  border-color: #16A34A;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, .28);
+}
+.tlp-eng-btn--like.is-active:hover {
+  background: #15803D;
+  border-color: #15803D;
+  color: #fff;
+}
+
+/* ─── Dislike — soft red at rest, filled red when active ─── */
+.tlp-eng-btn--dislike {
+  background: #FEF2F2;
+  border-color: #FECACA;
+  color: #B91C1C;
+}
+.tlp-eng-btn--dislike:hover {
+  background: #FEE2E2;
+  border-color: #FCA5A5;
+  color: #991B1B;
+}
+.tlp-eng-btn--dislike.is-active {
+  background: #DC2626;
+  border-color: #DC2626;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, .28);
+}
+.tlp-eng-btn--dislike.is-active:hover {
+  background: #B91C1C;
+  border-color: #B91C1C;
+  color: #fff;
+}
+
+/* ─── Bookmark / Save — soft amber at rest, filled amber when active ─── */
+.tlp-eng-btn--bookmark {
+  background: #FFFBEB;
+  border-color: #FDE68A;
+  color: #B45309;
+}
+.tlp-eng-btn--bookmark:hover {
+  background: #FEF3C7;
+  border-color: #FCD34D;
+  color: #92400E;
+}
+.tlp-eng-btn--bookmark.is-active {
+  background: #D97706;
+  border-color: #D97706;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(217, 119, 6, .3);
+}
+.tlp-eng-btn--bookmark.is-active:hover {
+  background: #B45309;
+  border-color: #B45309;
+  color: #fff;
+}
+
+@media (max-width: 540px) {
+  .tlp-engage { gap: 6px }
+  .tlp-eng-btn { padding: 6px 11px; font-size: 12.5px }
+  .tlp-eng-btn--follow .tlp-eng-count { padding: 2px 6px; font-size: 11px }
+}
 .tlp-id-logo {
-  width: 72px; height: 72px;
-  border-radius: 12px;
+  width: 132px; height: 132px;
+  border-radius: 6px;
   display: grid; place-items: center;
   flex-shrink: 0;
   overflow: hidden;
-  background: transparent;
+  background: var(--tlp-bg);
+  padding: 6px;
 }
-.tlp-id-logo img { width: 100%; height: 100%; object-fit: cover }
-.tlp-id-body { display: flex; flex-direction: column; gap: 3px; min-width: 0 }
+.tlp-id-logo img { width: 100%; height: 100%; object-fit: contain }
+
+.tlp-id-body { display: flex; flex-direction: column; gap: 6px; min-width: 0 }
 .tlp-id-name {
-  font-size: 22px; font-weight: 700;
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 26px; font-weight: 700;
   color: var(--tlp-ink); letter-spacing: -.01em;
   margin: 0;
+  line-height: 1.15;
 }
-.tlp-id-rate { display: flex; align-items: center; gap: 6px; font-size: 13.5px }
-.tlp-id-rate-num { font-weight: 700; color: var(--tlp-ink) }
-.tlp-id-rate-count { color: var(--tlp-mute) }
-.tlp-id-chev { color: var(--tlp-mute); display: inline-flex }
-.tlp-id-tagline { color: var(--tlp-mute); font-size: 13.5px; margin-top: 1px }
+.tlp-id-verified { display: inline-flex; align-items: center }
 
-/* Overview tab strip */
+.tlp-id-meta {
+  display: flex; align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  flex-wrap: wrap;
+}
+.tlp-id-rate-num { font-weight: 700; color: var(--tlp-ink); font-size: 15px }
+.tlp-stars { color: var(--tlp-amber) }
+.tlp-id-reviews {
+  color: var(--tlp-mute); font-weight: 500;
+  margin-left: 2px;
+}
+.tlp-id-vpill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px 3px 6px;
+  background: #ECFDF5;
+  color: #047857;
+  border-radius: 999px;
+  font-size: 12.5px; font-weight: 600;
+  margin-left: 4px;
+}
+
+.tlp-id-line {
+  display: flex; align-items: center; gap: 8px;
+  color: var(--tlp-ink-2);
+  font-size: 14px;
+  line-height: 1.4;
+}
+/* Combo row: address + phone on a single line, separated by a dot */
+.tlp-id-line--combo {
+  flex-wrap: wrap;
+  gap: 6px 10px;
+}
+.tlp-id-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+.tlp-id-info-sep {
+  color: var(--tlp-mute);
+  font-weight: 700;
+}
+@media (max-width: 720px) {
+  /* On narrow viewports, drop the separator and let the two infos wrap to
+     their own lines naturally — keeps each readable without an awkward dot */
+  .tlp-id-line--combo { flex-direction: column; align-items: flex-start; }
+  .tlp-id-info-sep { display: none; }
+}
+.tlp-id-icn {
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--tlp-green);
+  flex-shrink: 0;
+}
+
+.tlp-id-divider {
+  width: 1px;
+  background: var(--tlp-border);
+  align-self: stretch; /* matches whatever the natural card height is */
+  margin: 6px 0;
+}
+
+.tlp-id-stats {
+  display: flex; flex-direction: column;
+  gap: 10px;
+  min-width: 130px;
+}
+.tlp-stat-row {
+  display: flex; align-items: center; gap: 10px;
+  color: var(--tlp-ink-2);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.tlp-id-actions {
+  display: flex; flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  min-width: 180px;
+}
+/* Follow button (in actions column) — primary social CTA, full width with
+   the follower count split off into a darker pill on the right edge. Toggles
+   to a soft outlined "Following" state once tapped. */
+.tlp-btn-follow {
+  display: inline-flex; align-items: stretch; justify-content: stretch;
+  padding: 0;
+  background: linear-gradient(180deg, #0FAEAE 0%, #0C9A9A 100%);
+  color: #fff;
+  border: 1px solid #0C9A9A;
+  border-radius: 4px;
+  font-size: 14px; font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(12, 154, 154, .25);
+  transition: background .18s ease, border-color .18s ease, box-shadow .18s ease, transform .12s ease;
+}
+.tlp-btn-follow:hover {
+  background: linear-gradient(180deg, #0C9A9A 0%, #087070 100%);
+  border-color: #087070;
+  box-shadow: 0 4px 14px rgba(12, 154, 154, .35);
+  transform: translateY(-1px);
+}
+.tlp-btn-follow:active { transform: translateY(0) scale(.98) }
+.tlp-btn-follow-main {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 7px;
+  padding: 10px 14px;
+  flex: 1;
+}
+.tlp-btn-follow-count {
+  display: inline-flex; align-items: center;
+  padding: 0 12px;
+  background: rgba(0, 0, 0, .15);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .01em;
+  border-left: 1px solid rgba(0, 0, 0, .12);
+}
+/* "Following" — soft outlined post-action state */
+.tlp-btn-follow.is-active {
+  background: #E6F6F5;
+  border-color: #5BC2C2;
+  color: #087070;
+  box-shadow: none;
+}
+.tlp-btn-follow.is-active:hover {
+  background: #D6F0EF;
+  border-color: #0C9A9A;
+  transform: none;
+  box-shadow: none;
+}
+.tlp-btn-follow.is-active .tlp-btn-follow-count {
+  background: rgba(12, 154, 154, .15);
+  border-left-color: rgba(12, 154, 154, .2);
+  color: #087070;
+}
+
+.tlp-btn-primary {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px;
+  padding: 11px 18px;
+  background: #2A77E0;
+  color: #fff !important;
+  border-radius: 4px;
+  font-size: 14px; font-weight: 600;
+  text-decoration: none !important;
+  transition: background .15s ease;
+}
+.tlp-btn-primary:hover { background: #1F5FB8 }
+.tlp-btn-outline {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: #fff;
+  color: var(--tlp-green) !important;
+  border: 1px solid var(--tlp-green);
+  border-radius: 4px;
+  font-size: 14px; font-weight: 600;
+  text-decoration: none !important;
+  transition: background .15s ease, color .15s ease;
+}
+.tlp-btn-outline:hover { background: #F0FDF4 }
+.tlp-write-review {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 6px;
+  padding: 4px 0 0;
+  color: var(--tlp-blue) !important;
+  font-size: 13.5px; font-weight: 500;
+  text-decoration: underline !important;
+}
+
+/* Mobile: collapse to a stacked card */
+@media (max-width: 1024px) {
+  .tlp-identity-inner {
+    grid-template-columns: auto 1fr;
+    gap: 20px 24px;
+  }
+  .tlp-id-divider { display: none }
+  .tlp-id-stats {
+    grid-column: 1 / -1;
+    flex-direction: row; flex-wrap: wrap;
+    gap: 8px 24px;
+    padding-top: 14px;
+    border-top: 1px solid var(--tlp-border);
+  }
+  .tlp-id-actions {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .tlp-btn-primary, .tlp-btn-outline { flex: 1 1 200px }
+  .tlp-write-review { flex-basis: 100%; justify-content: flex-start }
+}
+@media (max-width: 540px) {
+  .tlp-identity-inner {
+    grid-template-columns: 1fr;
+    text-align: left;
+    padding: 20px 16px;
+  }
+  .tlp-id-logo {
+    width: 96px; height: 96px;
+    margin-bottom: 4px;
+  }
+  .tlp-id-name { font-size: 22px }
+  .tlp-id-stats { gap: 8px 18px }
+}
+
+/* ─── Horizontal section nav (lives inside .tlp-sticky-head; pins with it) ─── */
 .tlp-tabs {
   background: var(--tlp-bg);
   border-bottom: 1px solid var(--tlp-border);
 }
-.tlp-tabs-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; gap: 4px }
+.tlp-tabs-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  gap: 28px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  justify-content: center;
+}
+.tlp-tabs-inner::-webkit-scrollbar { display: none }
 .tlp-tab-link {
-  padding: 14px 4px;
-  font-size: 13.5px; font-weight: 600;
+  padding: 16px 2px;
+  font-size: 14px; font-weight: 500;
   color: var(--tlp-mute);
   border-bottom: 3px solid transparent;
   margin-bottom: -1px;
   text-decoration: none;
+  white-space: nowrap;
+  transition: color .12s ease, border-color .12s ease;
 }
 .tlp-tab-link.is-active {
-  color: var(--tlp-teal);
-  border-bottom-color: var(--tlp-teal);
+  color: var(--tlp-ink);
+  border-bottom-color: var(--tlp-green);
+  font-weight: 600;
 }
-.tlp-tab-link:hover { color: var(--tlp-teal); text-decoration: none }
+.tlp-tab-link:hover { color: var(--tlp-ink); text-decoration: none }
+
+@media (max-width: 768px) {
+  .tlp-tabs-inner { justify-content: flex-start; gap: 22px }
+  .tlp-tab-link { padding: 14px 2px; font-size: 13.5px }
+}
+
+/* Anchor jumps land the section title below the sticky tabs (and navbar) */
+.tlp-main section[id],
+.tlp-ovw-card[id] {
+  scroll-margin-top: 120px;
+}
 
 /* Page title block (inside content column, above the overview card) */
 .tlp-title-block { margin-bottom: 22px }
@@ -259,71 +717,12 @@ body.tlp-subheader-active .nh {
 }
 .tlp-updated { color: var(--tlp-mute); font-size: 12.5px; margin-top: 10px }
 
-/* ─── Two-column layout ─── */
+/* ─── Single-column content layout (left ToC removed in favor of top tabs) ─── */
 .tlp-layout {
-  display: grid;
-  grid-template-columns: 230px 1fr;
-  gap: 48px;
-  padding: 24px 24px 64px;
-  align-items: start;
-}
-/* Outer column wrapper — stays in grid to hold the 230px track
-   even while the inner .tlp-toc is position: fixed */
-.tlp-toc-col {
-  min-width: 0;
-  align-self: start;
-}
-@media (max-width: 1024px) {
-  .tlp-layout { grid-template-columns: 200px 1fr; gap: 32px }
-}
-@media (max-width: 860px) {
-  .tlp-layout { grid-template-columns: 1fr; gap: 24px }
-  .tlp-toc-col { display: none }
-}
-
-/* ─── Sticky ToC (plain list, no card border) ─── */
-.tlp-toc {
-  position: -webkit-sticky;
-  position: sticky;
-  top: calc(var(--nh-h, 112px) + 16px);
-  align-self: start;
-  font-size: 13.5px;
-  max-height: calc(100vh - var(--nh-h, 112px) - 32px);
-  overflow-y: auto;
-  z-index: 1;
-  transition: top .25s ease;
-}
-/* Shift ToC down when the sticky sub-header is visible so they don't overlap
-   (sub-header sits flush at top:0 so ToC only needs to clear its ~60px height) */
-.tlp-toc.tlp-toc--low {
-  top: 76px;
-  max-height: calc(100vh - 92px);
-}
-.tlp-toc-title {
-  font-size: 15px; font-weight: 700;
-  color: var(--tlp-ink);
-  margin-bottom: 14px;
-  letter-spacing: -.005em;
-}
-.tlp-toc ul { display: flex; flex-direction: column; gap: 2px }
-.tlp-toc a {
   display: block;
-  padding: 8px 12px;
-  color: var(--tlp-ink-2);
-  font-weight: 500;
-  transition: all .12s ease;
-  border-left: 3px solid transparent;
-  margin-left: -3px;
+  padding: 24px 24px 64px;
 }
-.tlp-toc a:hover {
-  color: var(--tlp-teal);
-  text-decoration: none;
-}
-.tlp-toc a.is-active {
-  color: var(--tlp-teal);
-  border-left-color: var(--tlp-teal);
-  font-weight: 600;
-}
+.tlp-content { min-width: 0 }
 
 /* ─── Sections ─── */
 .tlp-sec {
@@ -598,74 +997,274 @@ body.tlp-subheader-active .nh {
    User interface section
    ═══════════════════════════════════════════════════════ */
 
+/* Section header — title left, rating right, on one line */
+.tlp-ui-head-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.tlp-ui-head-row .tlp-sec-title { margin: 0; }
 .tlp-ui-head {
   display: flex; align-items: center; gap: 8px;
-  margin-bottom: 20px;
-  font-size: 15px;
+  font-size: 14px;
 }
 .tlp-ui-ease { font-weight: 700; color: var(--tlp-ink) }
 .tlp-ui-star { display: inline-flex; align-items: center; margin-left: 2px }
-.tlp-ui-rating-num { font-weight: 700; color: var(--tlp-ink); font-size: 15px }
-.tlp-ui-rating-count { color: var(--tlp-mute); font-size: 13.5px }
-
-/* Grid: main screenshot + thumb column */
-.tlp-ui-grid {
-  display: grid;
-  grid-template-columns: 1fr 128px;
-  gap: 14px;
-  align-items: start;
-}
-@media (max-width: 700px) {
-  .tlp-ui-grid { grid-template-columns: 1fr }
-  .tlp-ui-thumbs { flex-direction: row; overflow-x: auto; max-height: none }
-}
-
-.tlp-ui-main-wrap {
-  position: relative;
-  border: 1px solid var(--tlp-border);
-  border-radius: 8px;
-  overflow: hidden;
-  background: #fff;
-}
-
-/* Thumbnails column */
-.tlp-ui-thumbs {
-  display: flex; flex-direction: column;
-  gap: 8px;
-  position: relative;
-}
-.tlp-ui-thumb {
-  width: 128px; height: 70px;
-  padding: 0;
-  border: 1px solid var(--tlp-border);
-  border-radius: 6px;
-  overflow: hidden;
-  background: #fff;
-  cursor: pointer;
-  display: block;
-  transition: border-color .15s ease, transform .15s ease;
-}
-.tlp-ui-thumb:hover {
-  border-color: var(--tlp-teal);
-  transform: translateY(-1px);
-}
-.tlp-ui-thumb--dim { opacity: .55 }
+.tlp-ui-rating-num { font-weight: 700; color: var(--tlp-ink); font-size: 14.5px }
+.tlp-ui-rating-count { color: var(--tlp-mute); font-size: 13px }
 .tlp-tb-svg { display: block; width: 100%; height: 100% }
 
-.tlp-ui-more {
-  margin: -8px auto 0;
-  width: 34px; height: 34px;
+/* ═══════════════════════════════════════════════════════
+   Carousel
+   ═══════════════════════════════════════════════════════ */
+.tlp-car {
+  display: flex; flex-direction: column;
+  gap: 10px;
+  outline: none;
+}
+.tlp-car:focus-visible .tlp-car-stage {
+  box-shadow: 0 0 0 3px rgba(12, 154, 154, .25);
+}
+
+/* Stage — split slide frame, no fixed aspect ratio (content drives height) */
+.tlp-car-stage {
+  position: relative;
+  border: 1px solid var(--tlp-border);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+  width: 100%;
+}
+
+/* Sliding track — translates by N * 100% to show the active slide */
+.tlp-car-track {
+  display: flex;
+  width: 100%;
+  transition: transform .4s cubic-bezier(.4, 0, .2, 1);
+}
+.tlp-car-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+/* Image slide — 50% width so two screenshots are always visible at once */
+.tlp-car-slide--img {
+  flex: 0 0 50%;
+  padding: 10px;
+  display: flex;
+}
+.tlp-car-slide--img .tlp-car-img {
+  width: 100%;
+  height: auto;
+  max-height: 280px;
+  object-fit: cover;
+  display: block;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, .08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .06);
+  background: #F3F4F6;
+}
+/* Pitch panel (left half of each slide) */
+.tlp-car-pitch {
+  display: flex; flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: clamp(1rem, 2.2vw, 1.5rem);
+  min-width: 0;
+}
+.tlp-car-title {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(1rem, 1.9vw, 1.3rem);
+  font-weight: 700;
+  color: var(--tlp-ink);
+  letter-spacing: -.015em;
+  line-height: 1.2;
+  margin: 0;
+}
+.tlp-car-desc {
+  font-size: 12.5px;
+  color: var(--tlp-body);
+  line-height: 1.5;
+  margin: 0;
+  max-width: 40ch;
+}
+.tlp-car-steps {
+  list-style: none;
+  margin: 2px 0 4px;
+  padding: 0;
+  display: flex; flex-direction: column;
+  gap: 5px;
+}
+.tlp-car-step {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12.5px;
+  color: var(--tlp-ink-2);
+  line-height: 1.35;
+}
+.tlp-car-step-num {
+  flex-shrink: 0;
+  width: 18px; height: 18px;
   border-radius: 50%;
-  background: #111827;
+  background: rgba(0, 0, 0, .06);
+  color: var(--tlp-ink);
+  font-size: 10.5px;
+  font-weight: 700;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-variant-numeric: tabular-nums;
+}
+.tlp-car-cta {
+  align-self: flex-start;
+  display: inline-flex; align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  padding: 7px 14px;
+  background: linear-gradient(180deg, #16A34A 0%, #15803D 100%);
   color: #fff;
-  border: 3px solid #fff;
+  border: 1px solid #15803D;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, .25);
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.tlp-car-cta:hover {
+  background: linear-gradient(180deg, #15803D 0%, #14532D 100%);
+  box-shadow: 0 4px 14px rgba(22, 163, 74, .35);
+  transform: translateY(-1px);
+}
+.tlp-car-cta:active { transform: translateY(0) scale(.97) }
+
+/* Visual panel (right half) — 2-column grid holding 2 real screenshots */
+.tlp-car-visual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: clamp(.75rem, 1.5vw, 1.1rem);
+  min-width: 0;
+  align-items: stretch;
+}
+.tlp-car-img {
+  width: 100%;
+  height: 100%;
+  max-height: 230px;
+  object-fit: cover;
+  display: block;
+  border: 1px solid rgba(0, 0, 0, .08);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .06);
+  background: #F3F4F6; /* placeholder while loading */
+}
+
+/* Per-slide pastel themes — pitch + visual panels each get a tint */
+.tlp-car-theme--cream    .tlp-car-pitch  { background: #FFF6E6; }
+.tlp-car-theme--cream    .tlp-car-visual { background: #FFFCF4; }
+.tlp-car-theme--sky      .tlp-car-pitch  { background: #EFF6FF; }
+.tlp-car-theme--sky      .tlp-car-visual { background: #F8FAFC; }
+.tlp-car-theme--mint     .tlp-car-pitch  { background: #ECFDF5; }
+.tlp-car-theme--mint     .tlp-car-visual { background: #F4FAF7; }
+.tlp-car-theme--lavender .tlp-car-pitch  { background: #F5F3FF; }
+.tlp-car-theme--lavender .tlp-car-visual { background: #FAF8FF; }
+.tlp-car-theme--rose     .tlp-car-pitch  { background: #FDF2F8; }
+.tlp-car-theme--rose     .tlp-car-visual { background: #FEF6F9; }
+
+/* Thumb-derived screens: wrap in browser-chrome so the SVG reads as a screenshot */
+.tlp-car-screen {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  background: #F9FAFB;
+  border: 1px solid rgba(0, 0, 0, .08);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .06);
+  max-height: 230px;
+}
+.tlp-car-screen::before {
+  content: ''; display: block; flex: 0 0 22px;
+  background:
+    radial-gradient(circle at 11px 11px, #FF5F57 0 4.5px, transparent 5px),
+    radial-gradient(circle at 27px 11px, #FEBC2E 0 4.5px, transparent 5px),
+    radial-gradient(circle at 43px 11px, #28C840 0 4.5px, transparent 5px),
+    linear-gradient(#F3F4F6, #F3F4F6);
+  border-bottom: 1px solid #E5E7EB;
+}
+.tlp-car-screen .tlp-tb-svg {
+  flex: 1;
+  width: 100%;
+  height: auto;
+}
+
+/* Arrows — overlay on left/right edge */
+.tlp-car-arrow {
+  position: absolute;
+  top: 50%; transform: translateY(-50%);
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .92);
+  border: 1px solid var(--tlp-border);
+  color: var(--tlp-ink);
   display: grid; place-items: center;
   cursor: pointer;
-  position: relative;
   z-index: 2;
-  box-shadow: 0 2px 6px rgba(0,0,0,.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+  transition: background .15s ease, transform .15s ease, box-shadow .15s ease;
 }
-.tlp-ui-more svg { width: 16px; height: 16px }
+.tlp-car-arrow:hover {
+  background: #fff;
+  transform: translateY(-50%) scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .12);
+}
+.tlp-car-arrow:active { transform: translateY(-50%) scale(.95) }
+.tlp-car-arrow--prev { left: 12px; }
+.tlp-car-arrow--next { right: 12px; }
+
+/* Dot indicators — gray dots, active = filled coral with slight scale-up */
+.tlp-car-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 4px 0 2px;
+}
+.tlp-car-dot {
+  width: 9px; height: 9px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: #D1D5DB;
+  cursor: pointer;
+  transition: background .2s ease, transform .2s ease, width .25s ease;
+}
+.tlp-car-dot:hover { background: #9CA3AF; }
+.tlp-car-dot.is-active {
+  background: var(--tlp-teal);
+  width: 24px;
+  border-radius: 999px;
+}
+
+/* Mobile tweaks */
+@media (max-width: 540px) {
+  .tlp-car-slide--img { padding: 6px; }
+  .tlp-car-slide--img .tlp-car-img { max-height: 180px; border-radius: 8px; }
+}
+@media (max-width: 540px) {
+  .tlp-car-arrow { width: 32px; height: 32px; }
+  .tlp-car-arrow svg { width: 16px; height: 16px; }
+  .tlp-car-arrow--prev { left: 8px; }
+  .tlp-car-arrow--next { right: 8px; }
+  .tlp-car-title { font-size: 1.05rem; }
+  .tlp-car-desc { font-size: 12.5px; }
+  .tlp-car-step { font-size: 12.5px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tlp-car-track { transition: none; }
+}
 
 /* ─── Main mock: "Ready to get started?" onboarding screen ─── */
 .tlp-mk-frame {
@@ -1014,6 +1613,47 @@ body.tlp-subheader-active .nh {
 .tlp-in-tag-ico--neg { background: #EF4444 }
 .tlp-in-tag-ico svg { width: 9px; height: 9px }
 
+/* Ghost "+N more" chip — visually quieter than the real chips, signals
+   there's more behind the View more toggle below */
+.tlp-in-tag--ghost {
+  background: transparent;
+  border-style: dashed;
+  border-color: #D1D5DB;
+  color: var(--tlp-mute);
+  font-style: italic;
+  cursor: default;
+}
+
+/* Consolidated View more / Show less toggle — bottom of the right column,
+   expands BOTH the topic chips and the reviewer quotes in one tap */
+.tlp-in-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 9px 16px;
+  background: #fff;
+  color: var(--tlp-teal);
+  border: 1.5px solid var(--tlp-teal);
+  border-radius: 999px;
+  font-size: 13.5px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background .18s ease, color .18s ease, transform .12s ease, box-shadow .18s ease;
+}
+.tlp-in-more:hover {
+  background: var(--tlp-teal);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(12, 154, 154, .28);
+  transform: translateY(-1px);
+}
+.tlp-in-more:active { transform: translateY(0) scale(.97) }
+.tlp-in-more-chev {
+  transition: transform .25s ease;
+}
+.tlp-in-more.is-open .tlp-in-more-chev { transform: rotate(180deg); }
+
 /* Long summary paragraph */
 .tlp-in-long {
   color: var(--tlp-ink-2);
@@ -1296,6 +1936,33 @@ body.tlp-subheader-active .nh {
   margin: 0 0 16px;
   padding: 0 28px;
 }
+
+/* View more / Show less toggle for the key features list */
+.tlp-kf-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0 4px 28px;
+  padding: 9px 16px;
+  background: #fff;
+  color: var(--tlp-teal);
+  border: 1.5px solid var(--tlp-teal);
+  border-radius: 999px;
+  font-size: 13.5px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background .18s ease, color .18s ease, transform .12s ease, box-shadow .18s ease;
+}
+.tlp-kf-more:hover {
+  background: var(--tlp-teal);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(12, 154, 154, .28);
+  transform: translateY(-1px);
+}
+.tlp-kf-more:active { transform: translateY(0) scale(.97) }
+.tlp-kf-more-chev { transition: transform .25s ease; }
+.tlp-kf-more.is-open .tlp-kf-more-chev { transform: rotate(180deg); }
 
 /* "See related user reviews" toggle */
 .tlp-kf-toggle {
@@ -2192,6 +2859,187 @@ body.tlp-subheader-active .nh {
    Related categories — folder-icon cards in 3×4 grid
    ═══════════════════════════════════════════════════════ */
 
+/* ═══════════════════════════════════════════════════════
+   Customers also viewed — cross-marketing strip
+   ═══════════════════════════════════════════════════════ */
+.tlp-cav-sec {}
+.tlp-cav-head {
+  margin-bottom: 18px;
+}
+.tlp-cav-head .tlp-sec-title { margin: 0 0 4px; }
+.tlp-cav-sub {
+  font-size: 14px;
+  color: var(--tlp-mute);
+  margin: 0;
+}
+
+.tlp-cav-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+@media (max-width: 980px) {
+  .tlp-cav-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 760px) {
+  .tlp-cav-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .tlp-cav-grid { grid-template-columns: 1fr; }
+}
+
+.tlp-cav-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid var(--tlp-border);
+  border-radius: 12px;
+  text-decoration: none !important;
+  color: var(--tlp-ink-2);
+  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+  min-height: 200px;
+}
+.tlp-cav-card:hover {
+  border-color: var(--tlp-teal);
+  box-shadow: 0 6px 18px rgba(12, 154, 154, .12);
+  transform: translateY(-2px);
+}
+.tlp-cav-card:hover .tlp-cav-cta {
+  color: var(--tlp-teal);
+}
+.tlp-cav-card:hover .tlp-cav-cta svg {
+  transform: translateX(2px);
+}
+
+.tlp-cav-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 3px 9px;
+  background: linear-gradient(180deg, #FFB347 0%, #FFA91C 100%);
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(255, 169, 28, .3);
+}
+
+.tlp-cav-card-top {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+.tlp-cav-logo {
+  width: 40px; height: 40px;
+  border-radius: 8px;
+  border: 1px solid var(--tlp-border);
+  background: #fff;
+  object-fit: contain;
+  flex-shrink: 0;
+  padding: 4px;
+}
+.tlp-cav-card-id {
+  display: flex; flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.tlp-cav-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--tlp-ink);
+  letter-spacing: -.005em;
+  line-height: 1.2;
+}
+.tlp-cav-cat {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  color: var(--tlp-mute);
+}
+
+.tlp-cav-tag {
+  font-size: 13px;
+  color: var(--tlp-body);
+  line-height: 1.45;
+  margin: 0;
+  /* clamp to 2 lines for consistent card heights */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tlp-cav-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 12.5px;
+  margin-top: auto;
+}
+.tlp-cav-rate {
+  display: inline-flex; align-items: center; gap: 4px;
+  color: var(--tlp-ink);
+}
+.tlp-cav-rate strong { font-weight: 700; }
+.tlp-cav-rate em { color: var(--tlp-mute); font-style: normal; font-weight: 500; }
+.tlp-cav-tier {
+  display: inline-flex; align-items: center;
+  padding: 2px 9px;
+  background: #ECFDF5;
+  color: #047857;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: .01em;
+}
+
+.tlp-cav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding-top: 10px;
+  border-top: 1px solid var(--tlp-border);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tlp-ink);
+  transition: color .15s ease;
+}
+.tlp-cav-cta svg { transition: transform .15s ease; }
+
+.tlp-cav-foot {
+  display: flex;
+  justify-content: center;
+  margin-top: 18px;
+}
+.tlp-cav-foot-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  background: #fff;
+  color: var(--tlp-teal);
+  border: 1.5px solid var(--tlp-teal);
+  border-radius: 999px;
+  font-size: 13.5px;
+  font-weight: 700;
+  text-decoration: none !important;
+  transition: background .18s ease, color .18s ease, transform .12s ease, box-shadow .18s ease;
+}
+.tlp-cav-foot-link:hover {
+  background: var(--tlp-teal);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(12, 154, 154, .28);
+}
+
 .tlp-rc-sec { border-bottom: 0 }
 
 .tlp-rc-title {
@@ -2385,18 +3233,7 @@ html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nh-h, 112px) + 12
 
   /* UI section */
   .tlp-ui-head         { flex-wrap: wrap; gap: 6px }
-  .tlp-ui-grid         { gap: 12px }
-  .tlp-ui-thumbs       {
-    flex-direction: row;
-    overflow-x: auto;
-    max-height: none;
-    gap: 8px;
-    padding-bottom: 4px;
-    scrollbar-width: none;
-  }
-  .tlp-ui-thumbs::-webkit-scrollbar { display: none }
-  .tlp-ui-thumb        { flex-shrink: 0; width: 120px; height: 66px }
-  .tlp-ui-more         { margin: 0; flex-shrink: 0; align-self: center }
+  .tlp-ui-head-row     { gap: 8px }
 
   /* Main mock — compact */
   .tlp-mk-frame        { grid-template-columns: 40px 8px 1fr }

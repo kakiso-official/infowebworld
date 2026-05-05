@@ -239,6 +239,66 @@ export default function Pricing() {
         </div>
         </div>
 
+        {/* ── Mobile-only stacked cards (replaces the horizontal-scroll table on phones) ── */}
+        <div className="pr-mstack" aria-label="Pricing plans">
+          {([
+            { key: 'lt', badge: 'Recommend', name: 'Elite Founding Business Plan',
+              desc: 'Recommended For Businesses',
+              price: slots.ltEx ? '999' : '239', period: 'one-time, forever',
+              slash: !slots.ltEx ? <><span className="fc-strikethrough">$999</span> after Pioneer pre-launch window</> : null,
+              btnLabel: 'Claim Lifetime Spot', btnCls: 'pr-col-btn--primary',
+              onClick: () => setModalPlan('lifetime'), has: () => true },
+            { key: 'yr', badge: null, name: 'Early Adopter Plan',
+              desc: 'Flexible Membership',
+              price: slots.yrEx ? '239' : '99', period: 'per year Locked Forever',
+              slash: !slots.yrEx ? <><span className="fc-strikethrough">$239/yr</span> after Pioneer pre-launch window</> : null,
+              btnLabel: 'Get Started', btnCls: 'pr-col-btn--secondary',
+              onClick: () => setModalPlan('yearly'), has: () => true },
+            { key: 'st', badge: null, name: 'Starter Plan',
+              desc: 'Pay Once, Yours Forever',
+              price: '49', period: 'one-time',
+              slash: 'no renewals · 14-day refund',
+              btnLabel: 'Get Starter', btnCls: 'pr-col-btn--starter',
+              onClick: () => setFlexiblePlan('starter'), has: (r: string) => STARTER_ROWS.has(r) },
+            { key: 'fr', badge: null, name: 'Free Plan',
+              desc: 'Basic Listing',
+              price: '0', period: 'forever',
+              slash: 'no card required',
+              btnLabel: 'Get Started', btnCls: 'pr-col-btn--free',
+              onClick: () => setFlexiblePlan('free'), has: (r: string) => FREE_ROWS.has(r) },
+          ] as const).map(p => (
+            <article key={p.key} className={`pr-mcard pr-mcard--${p.key}`}>
+              <header className="pr-mcard-head">
+                {p.badge && <span className="pr-mcard-badge">{p.badge}</span>}
+                <h3 className="pr-mcard-name">{p.name}</h3>
+                <p className="pr-mcard-desc">{p.desc}</p>
+                <div className="pr-mcard-price"><span>$</span>{p.price}</div>
+                <div className="pr-mcard-period">{p.period}</div>
+                {p.slash && <div className="pr-mcard-slash">{p.slash}</div>}
+                <button type="button" className={`pr-col-btn ${p.btnCls} pr-mcard-btn`} onClick={p.onClick}>
+                  {p.btnLabel}
+                </button>
+              </header>
+              <div className="pr-mcard-feats">
+                <div className="pr-mcard-feats-title">{sections[0].title}</div>
+                <ul className="pr-mcard-feats-list">
+                  {previewRows.map(row => {
+                    const yes = p.has(row)
+                    return (
+                      <li key={row} className={`pr-mcard-feat ${yes ? 'is-yes' : 'is-no'}`}>
+                        <span className="pr-mcard-feat-mark">
+                          {yes ? <Ck /> : <span className="pr-mcard-feat-dash">—</span>}
+                        </span>
+                        <span className="pr-mcard-feat-name">{row}</span>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
+            </article>
+          ))}
+        </div>
+
         {/* ── Fade + CTA ── */}
         <div className="pr-preview-fade">
           <div className="pr-preview-fade-inner">

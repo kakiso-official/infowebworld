@@ -4,8 +4,10 @@
 
 const API = '/api'
 
-export type PricingTier = { name: string; price: string; period: string }
+export type PricingTier = { name: string; price: string; period: string; features?: string[] }
 export type FaqItem = { question: string; answer: string }
+export type KeyFeature = { name: string; description: string }
+export type Award = { name: string; year?: string }
 
 export type RealSubmission = {
   id: string
@@ -47,6 +49,25 @@ export type RealSubmission = {
   status: 'pending' | 'confirmed' | 'paid' | 'active' | 'rejected' | 'suspended'
   submittedAt: string
   approvedAt: string
+  /* ── Listings V3 fields (capture every datum the live listing page renders) ── */
+  headerTags: string[]
+  pros: string[]
+  cons: string[]
+  industriesServed: string[]
+  useCases: string[]
+  targetCompanySizes: string[]
+  keyFeatures: KeyFeature[]
+  startingPrice: string
+  startingPricePeriod: string
+  hasFreeTrial: boolean
+  hasFreeVersion: boolean
+  supportChannels: string[]
+  trainingOptions: string[]
+  languages: string[]
+  hasIosApp: boolean
+  hasAndroidApp: boolean
+  compliance: string[]
+  awards: Award[]
 }
 
 function parseJson(val: unknown): unknown[] {
@@ -97,6 +118,25 @@ export function mapRow(r: Record<string, unknown>): RealSubmission {
     status: (r.status as RealSubmission['status']) || 'pending',
     submittedAt: String(r.created_at ?? ''),
     approvedAt: String(r.approved_at ?? ''),
+    /* ── Listings V3 ── */
+    headerTags: parseJson(r.header_tags) as string[],
+    pros: parseJson(r.pros) as string[],
+    cons: parseJson(r.cons) as string[],
+    industriesServed: parseJson(r.industries_served) as string[],
+    useCases: parseJson(r.use_cases) as string[],
+    targetCompanySizes: parseJson(r.target_company_sizes) as string[],
+    keyFeatures: parseJson(r.key_features) as KeyFeature[],
+    startingPrice: r.starting_price != null ? String(r.starting_price) : '',
+    startingPricePeriod: String(r.starting_price_period ?? ''),
+    hasFreeTrial: Boolean(Number(r.has_free_trial ?? 0)),
+    hasFreeVersion: Boolean(Number(r.has_free_version ?? 0)),
+    supportChannels: parseJson(r.support_channels) as string[],
+    trainingOptions: parseJson(r.training_options) as string[],
+    languages: parseJson(r.languages) as string[],
+    hasIosApp: Boolean(Number(r.has_ios_app ?? 0)),
+    hasAndroidApp: Boolean(Number(r.has_android_app ?? 0)),
+    compliance: parseJson(r.compliance) as string[],
+    awards: parseJson(r.awards) as Award[],
   }
 }
 

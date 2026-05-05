@@ -1,192 +1,488 @@
 /* ============================================================
-   Dashboard shell — Kakiso-style sidebar + main.
-   Grouped nav with stroke icons, muted text, soft coral active
-   pill, power-icon Log Out pinned to the bottom.
-   Namespace .ds-*
+   Dashboard shell — Trustpilot-style sidebar.
+   The entire sidebar is one dark-green column. Inter only.
+   Namespace .tp-*
    ============================================================ */
 
-.ds-root {
+:root {
+  --tp-green:        #003B2A;   /* sidebar background           */
+  --tp-green-promo:  #002B1F;   /* slightly darker promo card   */
+  --tp-green-hover:  #064D38;   /* hover tint on dark surfaces  */
+  --tp-cream:        #FAF8F4;   /* active pill fill             */
+  --tp-cream-hover:  #FFFFFF;
+  --tp-mint:         #34D89A;   /* sub-nav background — saturated mint */
+  --tp-mint-edge:    #1FA876;   /* sub-nav border / scrollbar          */
+  --tp-sage:         #1F7A5C;   /* darker sage rail visible on mint    */
+  --tp-line:         #E5E7EB;
+  --tp-line-strong:  #D1D5DB;
+  --tp-text:         #1A1A1A;
+  --tp-muted:        #6B7280;
+  --tp-text-on-dark: #FFFFFF;
+  --tp-muted-on-dark: rgba(255, 255, 255, .68);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Root grid
+   ─────────────────────────────────────────────────────────── */
+.tp-root {
   height: 100dvh;
-  background: var(--h-bg);
   display: grid;
-  grid-template-columns: 240px 1fr;
-  overflow: hidden;
-}
-
-/* ── Sidebar (flat, admin-style arrangement) ──
-   Typography: Inter only, inherited by all children for a crisp,
-   consistent UI feel distinct from the site's Bricolage + Nunito pairing. */
-.ds-sidebar {
-  height: 100%;
+  grid-template-columns: 260px 1fr;
   background: #FFFFFF;
-  border-right: 1px solid var(--h-border);
-  display: flex; flex-direction: column;
-  padding: 14px 10px 0;
   overflow: hidden;
-  font-family: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-feature-settings: 'cv11', 'ss01', 'ss03'; /* Inter's better digit + open-aperture variants */
+  color: var(--tp-text);
 }
-.ds-sidebar,
-.ds-sidebar button,
-.ds-sidebar a {
-  font-family: inherit;
+/* Hard override — Inter for the entire dashboard subtree.
+   `!important` is intentional: site-wide body sets Nunito, and we want
+   absolutely no element inside .tp-root to drift back to Nunito or
+   any other family, no matter what stylesheet is loaded later. */
+.tp-root,
+.tp-root *,
+.tp-root *::before,
+.tp-root *::after,
+.tp-root button,
+.tp-root a,
+.tp-root input,
+.tp-root textarea,
+.tp-root select {
+  font-family: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+}
+.tp-root--with-subnav { grid-template-columns: 260px 260px 1fr }
+
+/* ─────────────────────────────────────────────────────────────
+   Sidebar — single dark-green column.
+   Outer container hides overflow; nav flexes to absorb space; if
+   the viewport is too short, only the nav scrolls so brand and
+   promo stay visible. On normal-sized viewports nothing scrolls.
+   ─────────────────────────────────────────────────────────── */
+.tp-sidebar {
+  height: 100%;
+  background: var(--tp-green);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  color: var(--tp-text-on-dark);
 }
 
-/* ── Brand ── */
-.ds-brand {
-  display: flex; align-items: center; gap: 10px;
-  padding: 0 4px 12px;
-  flex-wrap: wrap;
+/* ── Brand wordmark (top of sidebar).
+   The logo PNG has a wide aspect ratio (~4.48:1). Letting it fill
+   the brand-zone width keeps height auto-derived and the wordmark
+   visually balanced without stretching or overflow. */
+.tp-brand {
+  display: flex; align-items: center; justify-content: flex-start;
+  padding: 22px 18px 18px;
+  margin: 0 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, .14);
+  flex-shrink: 0;
 }
-.ds-brand-logo { display: block; flex-shrink: 0 }
-.ds-brand-logo img { height: 36px; width: auto; display: block }
-
-.ds-plan-chip {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 10px; font-weight: 700;
-  letter-spacing: .08em;
-  padding: 3px 9px;
-  border-radius: 999px;
-  text-transform: uppercase;
-  background: var(--h-bg);
-  color: #000000;
-  border: 1.5px solid var(--h-border);
+.tp-brand-logo {
+  display: block;
+  width: 100%;
+  max-width: 200px;
 }
-.ds-plan-chip--lifetime { background: rgba(var(--h-accent-rgb), .1); color: var(--h-accent); border-color: rgba(var(--h-accent-rgb), .35) }
-.ds-plan-chip--yearly   { background: rgba(59, 130, 246, .1); color: #2a65d1; border-color: rgba(59, 130, 246, .35) }
-.ds-plan-chip--starter  { background: rgba(245, 158, 11, .12); color: #b76d09; border-color: rgba(245, 158, 11, .38) }
-.ds-plan-chip--free     { background: var(--h-bg); color: #000000; border-color: var(--h-border) }
-
-.ds-plan-upgrade {
-  font-size: 9.5px; font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  color: var(--h-accent);
-  text-decoration: none;
-  padding: 2px 7px;
-  border-radius: 999px;
-  background: rgba(var(--h-accent-rgb), .14);
-  transition: background .2s cubic-bezier(.16, 1, .3, 1), color .2s cubic-bezier(.16, 1, .3, 1);
+.tp-brand-logo img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
 }
-.ds-plan-upgrade:hover { background: var(--h-accent); color: #FFFFFF }
 
-/* ── Grouped nav — Overview / Features / Account ── */
-.ds-nav {
+/* ── Nav ── */
+.tp-nav {
   flex: 1;
-  display: flex; flex-direction: column;
-  padding: 0 2px;
   min-height: 0;
-  overflow: hidden;        /* strictly no scroll; compact spacing guarantees fit */
-}
-
-.ds-group {
   display: flex; flex-direction: column;
-  gap: 0;
+  gap: 4px;
+  padding: 10px 8px 0;        /* breathing room below the brand divider */
+  overflow-y: auto;          /* fallback only — usually no scroll */
+  scrollbar-width: none;     /* hidden by default; scroll appears only on tiny viewports */
 }
-.ds-group + .ds-group { margin-top: 8px }
-
-.ds-group-label {
-  padding: 2px 6px 5px;
-  margin: 0 4px 6px;
-  font-size: 10px; font-weight: 600;
-  color: #000000;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  border-bottom: 1px solid #000000;
-}
-
-.ds-nav-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 6px 10px;
-  border-radius: 8px;
-  /* Inter carries tighter tracking beautifully. */
-  font-size: 12.5px; font-weight: 500;
-  color: #000000;
+.tp-nav::-webkit-scrollbar { display: none }
+.tp-nav-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 8px 14px;          /* 8 + 16 icon + 8 = 32px pill height */
+  border-radius: 999px;
+  font-size: 15px; font-weight: 500;
+  line-height: 1.2;
+  color: var(--tp-text-on-dark);
   text-decoration: none;
-  letter-spacing: -.01em;
   background: transparent;
   border: none;
   cursor: pointer;
   width: 100%; text-align: left;
   flex-shrink: 0;
-  transition: background .2s cubic-bezier(.16, 1, .3, 1), color .2s cubic-bezier(.16, 1, .3, 1), opacity .2s cubic-bezier(.16, 1, .3, 1);
+  letter-spacing: -.005em;
+  transition:
+    background .16s cubic-bezier(.16, 1, .3, 1),
+    color .16s cubic-bezier(.16, 1, .3, 1);
 }
-.ds-nav-item:hover { background: var(--h-bg) }
-
-.ds-nav-icon {
-  width: 18px; height: 18px;
+.tp-nav-item:hover { background: rgba(255, 255, 255, .06) }
+.tp-nav-icon {
+  width: 17px; height: 16px;
   display: inline-flex; align-items: center; justify-content: center;
   color: currentColor;
   flex-shrink: 0;
 }
-.ds-nav-icon svg { width: 16px; height: 16px }
-
-.ds-nav-label {
+.tp-nav-icon svg { width: 17px; height: 16px }
+.tp-nav-label {
   flex: 1; min-width: 0;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  line-height: 1.25;
 }
-
-/* Active pill — coral tint + coral icon + coral text (mirrors admin) */
-.ds-nav-item--active {
-  background: rgba(var(--h-accent-rgb), .1);
-  color: var(--h-accent);
-  font-weight: 600;
-}
-.ds-nav-item--active:hover {
-  background: rgba(var(--h-accent-rgb), .14);
-  color: var(--h-accent);
-}
-
-/* Locked section — faded, still clickable (routes to upgrade CTA) */
-.ds-nav-item--locked { opacity: .5 }
-.ds-nav-item--locked:hover { opacity: .9 }
-.ds-nav-lock {
-  display: inline-flex;
-  color: currentColor;
+.tp-nav-arrow {
   flex-shrink: 0;
-  opacity: .8;
+  color: currentColor;
+  display: inline-flex;
+  align-items: center;
 }
 
-/* Log Out — bottom section with top border separator */
-.ds-foot {
-  padding: 6px 2px 10px;
-  margin-top: 6px;
-  border-top: 1px solid var(--h-border-light);
+/* "New" badge — small dark pill on right */
+.tp-nav-badge {
+  flex-shrink: 0;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .02em;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--tp-green-promo);
+  color: var(--tp-text-on-dark);
+  border: 1px solid rgba(255, 255, 255, .14);
+  line-height: 1.35;
 }
-.ds-nav-item--logout:hover {
-  background: rgba(var(--h-accent-rgb), .08);
-  color: var(--h-accent);
-}
-.ds-nav-item--logout:disabled { opacity: .5; cursor: wait }
 
-/* ── Main content ── */
-.ds-main {
+/* Active = filled cream pill */
+.tp-nav-item--active {
+  background: var(--tp-cream);
+  color: var(--tp-text);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .12);
+}
+.tp-nav-item--active:hover { background: var(--tp-cream-hover) }
+
+/* ── Promo card (slightly darker green) at bottom ── */
+.tp-promo {
+  display: flex; flex-direction: column;
+  gap: 6px;
+  margin: 12px 14px 14px;
+  padding: 12px 14px;
+  background: var(--tp-green-promo);
+  border: 1px solid rgba(255, 255, 255, .06);
+  border-radius: 10px;
+  color: var(--tp-text-on-dark);
+  text-decoration: none;
+  transition: background .2s cubic-bezier(.16, 1, .3, 1);
+  flex-shrink: 0;
+}
+.tp-promo:hover { background: #053926 }
+.tp-promo-row {
+  display: flex; align-items: center; gap: 10px;
+}
+.tp-promo-icon {
+  display: inline-flex;
+  color: var(--tp-text-on-dark);
+}
+.tp-promo-title {
+  font-size: 13px; font-weight: 700;
+  letter-spacing: -.005em;
+  line-height: 1.3;
+}
+.tp-promo-body {
+  font-size: 12px; font-weight: 400;
+  line-height: 1.45;
+  color: var(--tp-text-on-dark);
+  margin: 0;
+}
+.tp-promo-link {
+  font-size: 12px; font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: var(--tp-text-on-dark);
+  margin-top: 1px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Sub-nav panel — saturated mint with darker sage rail
+   ─────────────────────────────────────────────────────────── */
+.tp-subnav {
+  height: 100%;
+  background: var(--tp-mint);
+  border-right: 1px solid var(--tp-mint-edge);
+  padding: 18px 18px 18px 20px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--tp-mint-edge) transparent;
+}
+.tp-subnav::-webkit-scrollbar { width: 6px }
+.tp-subnav::-webkit-scrollbar-thumb { background: var(--tp-mint-edge); border-radius: 4px }
+
+.tp-subnav-head {
+  font-size: 11.5px; font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--tp-green);
+  padding: 0 0 14px;
+}
+
+/* ── Collapsible tier groups ── */
+.tp-subnav-group {
+  display: flex; flex-direction: column;
+}
+.tp-subnav-group + .tp-subnav-group { margin-top: 12px }
+
+.tp-subnav-group-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: var(--tp-text);
+  transition: color .12s;
+}
+.tp-subnav-group-head:hover { color: var(--tp-green) }
+.tp-subnav-group-label {
+  font-size: 14px; font-weight: 700;
+  letter-spacing: -.005em;
+  line-height: 1.2;
+}
+.tp-subnav-group-count {
+  font-weight: 500;
+  color: rgba(0, 0, 0, .55);
+  margin-left: 2px;
+}
+.tp-subnav-group-chev {
+  display: inline-flex;
+  color: var(--tp-text);
+  flex-shrink: 0;
+}
+
+/* ── Sub-items inside a group ── */
+.tp-subnav-list {
+  list-style: none; margin: 6px 0 0; padding: 2px 0 2px 14px;
+  border-left: 2px solid var(--tp-sage);
+  display: flex; flex-direction: column;
+  gap: 3px;
+}
+.tp-subnav-item {
+  display: block;
+  padding: 3px 0;
+  font-size: 13.5px; font-weight: 500;
+  color: var(--tp-text);
+  text-decoration: none;
+  line-height: 1.4;
+  letter-spacing: -.005em;
+  transition: color .12s;
+}
+.tp-subnav-item:hover { color: var(--tp-green) }
+.tp-subnav-item--active {
+  font-weight: 700;
+  color: var(--tp-green);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Main column
+   ─────────────────────────────────────────────────────────── */
+.tp-main {
   min-width: 0;
   height: 100%;
+  background: #FFFFFF;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.tp-content {
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: clamp(1rem, 2vw, 1.5rem);
+  padding: 28px clamp(1.5rem, 3.2vw, 2.75rem) 40px;
   scrollbar-width: thin;
-  scrollbar-color: var(--h-border) transparent;
+  scrollbar-color: var(--tp-line-strong) transparent;
 }
-/* Overview page is single-viewport — no scroll; detail pages scroll. */
-.ds-main:has(.dash-home) { overflow: hidden }
-.ds-main::-webkit-scrollbar { width: 10px }
-.ds-main::-webkit-scrollbar-track { background: transparent }
-.ds-main::-webkit-scrollbar-thumb { background: var(--h-border); border-radius: 10px }
-.ds-main::-webkit-scrollbar-thumb:hover { background: var(--h-muted) }
+.tp-content::-webkit-scrollbar { width: 10px }
+.tp-content::-webkit-scrollbar-thumb { background: var(--tp-line-strong); border-radius: 10px }
+.tp-content::-webkit-scrollbar-thumb:hover { background: #9CA3AF }
 
-/* ── Mobile bar + drawer ── */
-.ds-mobile-bar {
+/* When the listing form is mounted on /dashboard/new, disable the outer
+   page scroll so the form card can manage its own internal scroll. The
+   form's body scrolls inside the card; the footer naturally pins to the
+   card's bottom edge — no sticky-footer bleed possible. */
+.tp-main:has(.df-wrap) > .tp-content {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding-bottom: 18px; /* tighter bottom — card already provides spacing */
+}
+/* The .nl wrapper from NewListingClient holds DashboardHeader + the form;
+   make it flex-fill so the form (.df-wrap) absorbs remaining height. */
+.tp-content > .nl--form {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Page head — title row (with icons inline) + breadcrumb below
+   ─────────────────────────────────────────────────────────── */
+.tp-page-head {
+  display: flex; flex-direction: column;
+  gap: 8px;
+  margin: 0 0 28px;
+}
+.tp-page-head-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1.5rem;
+}
+.tp-page-title {
+  font-family: inherit;
+  font-size: clamp(1.75rem, 2.6vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -.025em;
+  color: var(--tp-text);
+  margin: 0;
+  line-height: 1.1;
+}
+.tp-page-head-actions {
+  display: flex; align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.tp-page-sub {
+  font-size: 14px;
+  color: var(--tp-muted);
+  font-weight: 500;
+  margin: 0;
+}
+
+.tp-breadcrumb {
+  display: flex; align-items: center; flex-wrap: wrap;
+  gap: 0;
+  font-size: 13px; font-weight: 500;
+  color: var(--tp-muted);
+}
+.tp-breadcrumb-seg {
+  display: inline-flex; align-items: center;
+  gap: 6px;
+}
+.tp-breadcrumb-seg + .tp-breadcrumb-seg,
+.tp-breadcrumb-seg + .tp-breadcrumb-current {
+  margin-left: 2px;
+}
+.tp-breadcrumb a {
+  color: var(--tp-muted);
+  text-decoration: none;
+  transition: color .15s;
+}
+.tp-breadcrumb a:hover { color: var(--tp-text) }
+.tp-breadcrumb-sep {
+  color: #9CA3AF;
+  font-size: 12px;
+  margin: 0 6px;
+}
+.tp-breadcrumb-current {
+  color: var(--tp-text);
+  font-weight: 600;
+}
+
+/* ── Top-right action icons (inside page-head row) ── */
+.tp-iconbtn {
+  width: 40px; height: 40px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--tp-text);
+  cursor: pointer;
+  transition: background .15s cubic-bezier(.16, 1, .3, 1), border-color .15s;
+  font-family: inherit;
+}
+.tp-iconbtn:hover {
+  background: #F4F4F4;
+  border-color: var(--tp-line);
+}
+
+.tp-userwrap { position: relative; margin-left: 8px }
+.tp-user {
+  width: 40px; height: 40px;
+  border-radius: 999px;
+  border: 1px solid var(--tp-line-strong);
+  background: var(--tp-green);
+  color: var(--tp-text-on-dark);
+  font-weight: 700; font-size: 13px;
+  letter-spacing: .04em;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  transition: box-shadow .15s, transform .15s;
+  font-family: inherit;
+}
+.tp-user:hover  { box-shadow: 0 0 0 3px rgba(0, 59, 42, .14) }
+.tp-user--open  { box-shadow: 0 0 0 3px rgba(0, 59, 42, .22) }
+.tp-user img    { width: 100%; height: 100%; object-fit: cover }
+.tp-user-initials { line-height: 1 }
+
+.tp-user-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 240px;
+  background: #FFFFFF;
+  border: 1px solid var(--tp-line);
+  border-radius: 14px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .12);
+  padding: 8px;
+  display: flex; flex-direction: column;
+  z-index: 20;
+}
+.tp-user-menu-head {
+  padding: 10px 12px 12px;
+  border-bottom: 1px solid var(--tp-line);
+  margin-bottom: 6px;
+}
+.tp-user-menu-name {
+  font-size: 14px; font-weight: 700;
+  color: var(--tp-text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.tp-user-menu-email {
+  font-size: 12.5px; font-weight: 500;
+  color: var(--tp-muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  margin-top: 2px;
+}
+.tp-user-menu-item {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 13.5px; font-weight: 600;
+  color: var(--tp-text);
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .15s cubic-bezier(.16, 1, .3, 1);
+}
+.tp-user-menu-item:hover { background: #F4F4F4 }
+.tp-user-menu-item--danger { color: #DC2626 }
+.tp-user-menu-item:disabled { opacity: .5; cursor: wait }
+
+/* ─────────────────────────────────────────────────────────────
+   Mobile drawer
+   ─────────────────────────────────────────────────────────── */
+.tp-mobile-bar {
   display: none;
   align-items: center; justify-content: space-between;
   padding: 12px 16px;
   background: #FFFFFF;
-  border-bottom: 1px solid var(--h-border);
+  border-bottom: 1px solid var(--tp-line);
   position: sticky; top: 0; z-index: 30;
 }
-.ds-mobile-logo img { height: 28px; display: block }
-.ds-burger {
+.tp-mobile-logo img { height: 28px; display: block }
+.tp-burger {
   width: 40px; height: 40px;
   border-radius: 10px;
   background: transparent;
@@ -195,64 +491,89 @@
   display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 4px;
 }
-.ds-burger span { width: 20px; height: 2px; background: #000000; border-radius: 1px }
-.ds-overlay {
+.tp-burger span { width: 20px; height: 2px; background: var(--tp-text); border-radius: 1px }
+.tp-overlay {
   position: fixed; inset: 0;
   background: rgba(26, 26, 26, .45);
   z-index: 40;
-  animation: ds-fade-in .2s ease-out;
+  animation: tp-fade-in .2s ease-out;
 }
-@keyframes ds-fade-in { from { opacity: 0 } to { opacity: 1 } }
+@keyframes tp-fade-in { from { opacity: 0 } to { opacity: 1 } }
 
+@media (max-width: 1100px) {
+  .tp-root--with-subnav { grid-template-columns: 250px 230px 1fr }
+}
 @media (max-width: 900px) {
-  .ds-root {
+  .tp-root, .tp-root--with-subnav {
     grid-template-columns: 1fr;
     height: auto;
     min-height: 100dvh;
     overflow: visible;
   }
-  .ds-mobile-bar { display: flex }
-  .ds-sidebar {
+  .tp-mobile-bar { display: flex }
+  .tp-sidebar {
     position: fixed;
     top: 0; left: 0;
-    width: 280px; height: 100dvh;
+    width: 300px; height: 100dvh;
     transform: translateX(-100%);
     transition: transform .25s cubic-bezier(.16, 1, .3, 1);
     z-index: 50;
     box-shadow: 0 20px 60px rgba(0, 0, 0, .2);
   }
-  .ds-sidebar--open { transform: translateX(0) }
-  .ds-main {
-    padding: 1.25rem;
-    height: auto;
+  .tp-sidebar--open { transform: translateX(0) }
+  .tp-subnav {
+    border-right: none;
+    border-bottom: 1px solid var(--tp-mint-edge);
+    padding: 18px 18px;
+  }
+  .tp-main { height: auto; overflow: visible }
+  .tp-content {
+    padding: 20px 16px 28px;
     overflow: visible;
   }
+  /* Override the desktop :has() rule — on mobile the form flows with
+     the page (the rail is a horizontal strip at the top). */
+  .tp-main:has(.df-wrap) > .tp-content {
+    overflow: visible;
+    display: block;
+    padding-bottom: 28px;
+  }
+  .tp-content > .nl--form { flex: none; min-height: 0; display: block; }
+  .tp-page-title { font-size: 1.5rem }
+  .tp-iconbtn { width: 36px; height: 36px }
+  .tp-user { width: 36px; height: 36px }
 }
 
-/* ── Page header used inside dashboard pages ── */
+/* ─────────────────────────────────────────────────────────────
+   Backwards-compatible legacy styles (kept while pages migrate)
+   ─────────────────────────────────────────────────────────── */
 .ds-page-head {
   display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
   gap: 1rem;
   margin-bottom: 1.25rem;
   padding-bottom: .9rem;
-  border-bottom: 1px solid var(--h-border-light);
+  border-bottom: 1px solid var(--tp-line);
 }
 .ds-page-title {
-  font-family: var(--font-bricolage), 'Bricolage Grotesque', serif;
+  font-family: inherit;
   font-size: clamp(1.3rem, 2.6vw, 1.75rem);
   font-weight: 800;
   letter-spacing: -.02em;
-  color: #000000;
+  color: var(--tp-text);
   margin: 0;
 }
 .ds-page-sub {
-  font-size: .85rem; color: #000000; opacity: .65;
+  font-size: .85rem; color: var(--tp-muted);
   font-weight: 500;
   margin: 3px 0 0;
 }
 .ds-page-actions { display: flex; gap: 10px; flex-wrap: wrap }
 
-/* ── New listing: plan picker ── */
+.dash-toolbar {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  margin: 0 0 24px;
+}
+
 .nl { max-width: 1100px; margin: 0 auto }
 .nl-plans {
   display: grid;
@@ -263,7 +584,7 @@
   display: flex; flex-direction: column; gap: 10px;
   padding: 1.25rem;
   background: #FFFFFF;
-  border: 1.5px solid var(--h-border);
+  border: 1.5px solid var(--tp-line);
   border-radius: 14px;
   cursor: pointer;
   text-align: left;
@@ -273,23 +594,23 @@
 .nl-plan:hover {
   transform: translateY(-2px);
   border-color: rgba(var(--h-accent-rgb), .35);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-lg, 0 8px 30px rgba(0, 0, 0, .08));
 }
 .nl-plan-head { display: flex; justify-content: space-between; align-items: baseline; gap: .75rem }
 .nl-plan-label {
-  font-family: var(--font-bricolage), 'Bricolage Grotesque', serif;
+  font-family: inherit;
   font-size: 1.2rem; font-weight: 800;
-  color: #000000;
+  color: var(--tp-text);
   letter-spacing: -.02em;
 }
 .nl-plan-price {
-  font-family: var(--font-bricolage), 'Bricolage Grotesque', serif;
+  font-family: inherit;
   font-size: 1.1rem; font-weight: 800;
-  color: var(--h-accent);
+  color: var(--h-accent, #E8553D);
   letter-spacing: -.02em;
 }
 .nl-plan-desc {
-  font-size: .85rem; color: #000000; opacity: .7;
+  font-size: .85rem; color: var(--tp-text); opacity: .7;
   line-height: 1.45;
   margin: 0;
   font-weight: 500;
@@ -299,7 +620,7 @@
   display: flex; flex-direction: column; gap: 4px;
 }
 .nl-plan-feats li {
-  font-size: .8rem; color: #000000;
+  font-size: .8rem; color: var(--tp-text);
   padding-left: 1.1rem;
   position: relative;
   font-weight: 500;
@@ -308,40 +629,39 @@
   content: ''; position: absolute;
   left: 0; top: .55em;
   width: 5px; height: 5px;
-  background: var(--h-accent);
+  background: var(--h-accent, #E8553D);
   border-radius: 50%;
 }
 .nl-plan-pick {
   margin-top: auto;
   padding-top: 10px;
   font-size: .82rem; font-weight: 700;
-  color: var(--h-accent);
+  color: var(--h-accent, #E8553D);
   letter-spacing: -.01em;
-  border-top: 1px solid var(--h-border-light);
+  border-top: 1px solid var(--tp-line);
 }
 .nl-change-plan {
   background: none; border: none;
-  color: var(--h-accent);
+  color: var(--h-accent, #E8553D);
   font-weight: 700;
   cursor: pointer;
   padding: 0;
   font-family: inherit; font-size: inherit;
   text-decoration: underline; text-underline-offset: 2px;
 }
-.nl-change-plan:hover { color: var(--h-accent-hover) }
+.nl-change-plan:hover { color: var(--h-accent-hover, #D14931) }
 
-/* ── Settings card ── */
 .set-card {
   background: #FFFFFF;
-  border: 1.5px solid var(--h-border);
+  border: 1px solid var(--tp-line);
   border-radius: 16px;
   padding: clamp(1.25rem, 3vw, 1.75rem);
   max-width: 720px;
 }
 .set-card-title {
-  font-family: var(--font-bricolage), 'Bricolage Grotesque', serif;
+  font-family: inherit;
   font-size: 1.2rem; font-weight: 800;
-  color: #000000;
+  color: var(--tp-text);
   margin: 0 0 1rem;
   letter-spacing: -.02em;
 }
@@ -351,22 +671,22 @@
   grid-template-columns: 160px 1fr;
   gap: 1rem;
   padding: .85rem 0;
-  border-bottom: 1px solid var(--h-border-light);
+  border-bottom: 1px solid var(--tp-line);
   font-size: .9rem;
 }
 .set-row:last-child { border-bottom: none }
 .set-row-lbl {
   font-size: .72rem; font-weight: 700;
-  color: #000000; opacity: .65;
+  color: var(--tp-muted);
   text-transform: uppercase; letter-spacing: .07em;
 }
-.set-row-val { color: #000000; font-weight: 500 }
-.set-row-val em { color: #000000; opacity: .55; font-style: normal }
+.set-row-val { color: var(--tp-text); font-weight: 500 }
+.set-row-val em { color: var(--tp-muted); font-style: normal }
 .set-note {
   margin-top: 1.25rem;
-  font-size: .82rem; color: #000000; opacity: .6;
+  font-size: .82rem; color: var(--tp-muted);
 }
-.set-note a { color: var(--h-accent); text-decoration: underline; text-underline-offset: 2px }
+.set-note a { color: var(--h-accent, #E8553D); text-decoration: underline; text-underline-offset: 2px }
 @media (max-width: 600px) {
   .set-row { grid-template-columns: 1fr; gap: .15rem; padding: .7rem 0 }
 }

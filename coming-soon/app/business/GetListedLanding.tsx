@@ -12,7 +12,7 @@ import FinalCTA from './components/FinalCTA'
 import ScrollToTop from './components/ScrollToTop'
 import SignupModal from '../components/auth/SignupModal'
 import { useAuth } from '@/lib/use-auth'
-import type { PlanKey } from './ListingFormV2'
+import type { PlanKey } from '../dashboard/new/form/DashboardListingForm'
 
 const VALID_PLANS: PlanKey[] = ['free', 'starter', 'yearly', 'lifetime']
 

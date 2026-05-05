@@ -1,37 +1,14 @@
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
-import { queryOne } from '@/lib/db'
-import { USER_COOKIE_NAME } from '@/lib/user-auth'
+import { requireDashboardUser } from '@/lib/user-auth'
 import { getUserPlan } from '@/lib/user-plan'
-import { countryHref } from '@/app/config/countries'
 import DashboardShell from './DashboardShell'
 
 export const dynamic = 'force-dynamic'
 
-interface UserRow {
-  id: number
-  uuid: string
-  email: string
-  name: string | null
-  avatar_url: string | null
-  provider: string
-}
-
-async function getCurrentUser() {
-  const store = await cookies()
-  const token = store.get(USER_COOKIE_NAME)?.value
-  if (!token) return null
-  return await queryOne<UserRow>(
-    `SELECT u.id, u.uuid, u.email, u.name, u.avatar_url, u.provider
-     FROM business_sessions s JOIN business_users u ON u.id = s.user_id
-     WHERE s.token = ? AND s.expires_at > NOW() LIMIT 1`,
-    [token]
-  )
-}
-
 /**
  * Dashboard shell layout — sidebar + main. Intentionally skips the site
- * Navbar/Footer to give the app-like full-screen feel.
+ * Navbar/Footer to give the app-like full-screen feel. Auth is enforced
+ * here AND on every child page (defense in depth) — if either guard ever
+ * drifts the other still keeps anonymous traffic out.
  */
 export default async function DashboardLayout({
   children, params,
@@ -39,20 +16,17 @@ export default async function DashboardLayout({
   children: React.ReactNode
   params: Promise<Record<string, never>>
 }) {
-  await params; const country = ""
-  const user = await getCurrentUser()
-  if (!user) redirect(countryHref(country, '/business'))
-
+  await params
+  const user = await requireDashboardUser()
   const plan = await getUserPlan(user.id)
 
   return (
     <DashboardShell
-      country={country}
       user={{
         uuid: user.uuid,
         email: user.email,
         name: user.name,
-        avatarUrl: user.avatar_url,
+        avatarUrl: user.avatarUrl,
         provider: user.provider,
       }}
       plan={plan}

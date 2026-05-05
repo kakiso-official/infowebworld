@@ -8,22 +8,34 @@ function shouldNoindex(pathname: string): boolean {
   return !INDEXABLE_PATHS.has(pathname)
 }
 
-/* Routes that serve per-user content — must never be cached in a shared cache. */
+/* Routes that serve per-user content — must never be cached in a shared cache.
+   This includes the business dashboard and the admin panel. A previous version
+   of this file unconditionally set CDN-Cache-Control: public, s-maxage=3600 on
+   every response, which would have allowed the Vercel edge to serve one user's
+   logged-in dashboard HTML to the next visitor. Auth paths now get explicit
+   no-store on every cache layer. */
 const AUTH_PATH_RE = /(^|\/)(dashboard|iww-hq)(\/|$)/
 
-/** Apply noindex header to non-indexable pages + all vercel.app requests. Also
-    set cache headers: Vercel edge caches all responses via CDN-Cache-Control,
-    and public non-auth pages additionally get a short browser cache so back /
-    forward navigation is instant instead of a fresh 700 KB HTML re-download. */
+/** Apply noindex header to non-indexable pages + all vercel.app requests, then
+    cache headers per route class:
+    - Auth paths (/dashboard, /iww-hq): hard no-store on browser, CDN, and
+      Vercel's own CDN — never share a logged-in response.
+    - Public pages: short browser cache + Vercel edge cache for instant back /
+      forward navigation. */
 function applyHeaders(response: NextResponse, pathname: string, isVercelApp: boolean) {
   if (isVercelApp || shouldNoindex(pathname)) {
     response.headers.set('X-Robots-Tag', 'noindex, nofollow')
   }
-  response.headers.set('CDN-Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400')
 
-  if (!AUTH_PATH_RE.test(pathname)) {
-    response.headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300')
+  if (AUTH_PATH_RE.test(pathname)) {
+    response.headers.set('Cache-Control', 'private, no-store, no-cache, must-revalidate, max-age=0')
+    response.headers.set('CDN-Cache-Control', 'no-store')
+    response.headers.set('Vercel-CDN-Cache-Control', 'no-store')
+    return
   }
+
+  response.headers.set('CDN-Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400')
+  response.headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300')
 }
 
 /* Bare country prefixes — exact matches only (paths under them are handled

@@ -101,11 +101,32 @@ export async function POST(request: NextRequest) {
     const slug = slugify(body.companyName) + '-' + uuid.slice(0, 8)
 
     // Handle JSON fields
+    const arrJson = (v: unknown) => Array.isArray(v) && v.length > 0 ? JSON.stringify(v) : null
     const features = body.features ? JSON.stringify(body.features) : null
     const integrations = body.integrations ? JSON.stringify(body.integrations) : null
     const pricingTiers = body.pricingTiers ? JSON.stringify(body.pricingTiers) : null
     const screenshots = body.screenshots ? JSON.stringify(body.screenshots) : null
     const faqs = body.faqs ? JSON.stringify(body.faqs) : null
+    /* Listings V3 JSON fields */
+    const headerTags = arrJson(body.headerTags)
+    const pros = arrJson(body.pros)
+    const cons = arrJson(body.cons)
+    const industriesServed = arrJson(body.industriesServed)
+    const useCases = arrJson(body.useCases)
+    const targetCompanySizes = arrJson(body.targetCompanySizes)
+    const keyFeatures = arrJson(body.keyFeatures)
+    const supportChannels = arrJson(body.supportChannels)
+    const trainingOptions = arrJson(body.trainingOptions)
+    const languages = arrJson(body.languages)
+    const compliance = arrJson(body.compliance)
+    const awards = arrJson(body.awards)
+
+    const startingPrice = body.startingPrice != null && body.startingPrice !== ''
+      ? Number(body.startingPrice) : null
+    const hasFreeTrial = body.hasFreeTrial ? 1 : 0
+    const hasFreeVersion = body.hasFreeVersion ? 1 : 0
+    const hasIosApp = body.hasIosApp ? 1 : 0
+    const hasAndroidApp = body.hasAndroidApp ? 1 : 0
 
     const isPaid = body.paypalOrderId ? true : false
     const paymentStatus = isPaid ? 'completed' : 'pending'
@@ -119,8 +140,15 @@ export async function POST(request: NextRequest) {
         logo_url, screenshots, demo_video,
         features, integrations, pricing_model, pricing_tiers,
         funding, hq_location, linkedin, twitter, facebook, faqs,
+        header_tags, pros, cons, industries_served, use_cases, target_company_sizes,
+        key_features, starting_price, starting_price_period,
+        has_free_trial, has_free_version,
+        support_channels, training_options, languages,
+        has_ios_app, has_android_app, compliance, awards,
         paypal_order_id, payment_status, status, ip_address
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         uuid, slug,
         body.companyName.trim(),
@@ -152,6 +180,11 @@ export async function POST(request: NextRequest) {
         body.twitter || null,
         body.facebook || null,
         faqs,
+        headerTags, pros, cons, industriesServed, useCases, targetCompanySizes,
+        keyFeatures, startingPrice, body.startingPricePeriod || null,
+        hasFreeTrial, hasFreeVersion,
+        supportChannels, trainingOptions, languages,
+        hasIosApp, hasAndroidApp, compliance, awards,
         body.paypalOrderId || null,
         paymentStatus,
         status,

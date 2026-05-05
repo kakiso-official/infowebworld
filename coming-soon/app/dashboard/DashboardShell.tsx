@@ -1,12 +1,14 @@
 'use client'
-import { useMemo, useState } from 'react'
+import { createContext, useContext, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { BASE } from '../config/base-path'
-import { countryHref } from '../config/countries'
 import { I, ic, type IconKey } from '../components/icons'
-import { SECTIONS, FEATURES, unlockedBySection } from './features'
-import type { UserPlan } from '@/lib/user-plan-types'
+import { SECTIONS, FEATURES, findFeature, type Feature } from './features'
+import { TIER_LABEL, type PlanTier, type UserPlan } from '@/lib/user-plan-types'
+
+/** Order tiers cheap → expensive so groups stack predictably in the sub-nav. */
+const TIER_ORDER: PlanTier[] = ['free', 'starter', 'yearly', 'lifetime']
 
 interface ShellUser {
   uuid: string; email: string; name: string | null
@@ -14,17 +16,24 @@ interface ShellUser {
 }
 
 interface Props {
-  country: string
   user: ShellUser
   plan: UserPlan
   children: React.ReactNode
 }
 
-const PLAN_CHIP_CLASS: Record<string, string> = {
-  lifetime: 'ds-plan-chip--lifetime',
-  yearly:   'ds-plan-chip--yearly',
-  starter:  'ds-plan-chip--starter',
-  free:     'ds-plan-chip--free',
+/** Context exposed to in-page DashboardHeader so it can render the avatar inline. */
+export interface DashboardCtxValue {
+  user: ShellUser
+  plan: UserPlan
+  logout: () => Promise<void>
+  loggingOut: boolean
+}
+
+const DashboardCtx = createContext<DashboardCtxValue | null>(null)
+export function useDashboardCtx(): DashboardCtxValue {
+  const v = useContext(DashboardCtx)
+  if (!v) throw new Error('useDashboardCtx must be used inside <DashboardShell>')
+  return v
 }
 
 const SECTION_ICON: Record<string, IconKey> = {
@@ -33,7 +42,7 @@ const SECTION_ICON: Record<string, IconKey> = {
   leads:     'messageCircle',
   reviews:   'star',
   community: 'users',
-  analytics: 'barChart',
+  analytics: 'pieChart',
   support:   'helpCircle',
 }
 
@@ -42,170 +51,250 @@ type NavRow = {
   href: string
   label: string
   icon: IconKey
-  sectionKey?: string  // when set, "active" matches any feature in that section
-  locked?: boolean     // when true, render faded with a lock glyph
+  /** When set, treat this row as expandable — sub-nav panel shows on its routes. */
+  sectionKey?: string
+  /** Optional pill on the right (e.g. "New", "BETA"). */
+  badge?: string
 }
 
-type NavGroup = { label: string; rows: NavRow[] }
-
 /**
- * Dashboard sidebar — flat list modeled after the admin AdminShell:
- *   logo → single vertical nav (icon + label on each row) → logout.
- *   No grouping labels, no pills. Active row is a soft coral pill.
- *   Light theme; locked feature sections show a lock on the right.
+ * Trustpilot-style sidebar — entire sidebar is one dark green zone:
+ *
+ *   ┌──────────────────────┐
+ *   │ Account chip          │  edge-to-edge, white text
+ *   │                       │
+ *   │ Logo                  │  white wordmark on dark green
+ *   │                       │
+ *   │ Home                  │  nav, white icons + labels
+ *   │ My Listings           │
+ *   │ ▣ Section (active)    │  cream-filled pill + chevron
+ *   │ Settings              │
+ *   │                       │
+ *   │ ┌──────────────┐      │
+ *   │ │ Try free     │      │  promo card on darker green
+ *   │ └──────────────┘      │
+ *   └──────────────────────┘
+ *
+ * Sub-nav panel slides out beside it with a saturated mint background
+ * when on a /dashboard/section/<key> or /dashboard/feature/<slug> route.
  */
-export default function DashboardShell({ country, user, plan, children }: Props) {
+export default function DashboardShell({ user, plan, children }: Props) {
   const pathname = usePathname() || ''
   const router = useRouter()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [loggingOut, setLoggingOut] = useState(false)
 
-  const base = countryHref(country, '/dashboard')
-  const homeHref = countryHref(country)
-  const unlocked = useMemo(() => unlockedBySection(plan.tier), [plan.tier])
+  const base = '/dashboard'
 
-  /** Grouped nav: Overview / Features / Account, each with a header. */
-  const navGroups: NavGroup[] = useMemo(() => {
-    const overview: NavRow[] = [
-      { key: 'dashboard', href: base,              label: 'Dashboard',   icon: 'grid'   },
-      { key: 'listings',  href: `${base}/listings`, label: 'My Listings', icon: 'layers' },
-      { key: 'new',       href: `${base}/new`,      label: 'New Listing', icon: 'plus'   },
-    ]
-    const features: NavRow[] = SECTIONS.map(sec => {
-      const stat = unlocked[sec.key] || { unlocked: 0, total: 0 }
-      return {
-        key: `sec-${sec.key}`,
-        href: `${base}/section/${sec.key}`,
-        label: sec.title,
-        icon: SECTION_ICON[sec.key] || 'grid',
-        sectionKey: sec.key,
-        locked: stat.unlocked === 0 && stat.total > 0,
-      }
-    })
-    const account: NavRow[] = [
-      { key: 'settings', href: `${base}/settings`, label: 'Settings',    icon: 'sliders'      },
-      { key: 'browse',   href: homeHref,           label: 'Browse Site', icon: 'externalLink' },
-    ]
-    return [
-      { label: 'Overview', rows: overview },
-      { label: 'Features', rows: features },
-      { label: 'Account',  rows: account  },
-    ]
-  }, [base, homeHref, unlocked])
+  const topNav: NavRow[] = useMemo(() => [
+    { key: 'dashboard', href: base,              label: 'Home',         icon: 'home'   },
+    { key: 'listings',  href: `${base}/listings`, label: 'My Listings', icon: 'layers' },
+    { key: 'new',       href: `${base}/new`,      label: 'New Listing', icon: 'plus', badge: 'New' },
+  ], [])
 
-  const isActive = (row: NavRow): boolean => {
-    if (row.sectionKey) {
-      // Active on the section page itself OR on any feature detail page
-      // whose feature belongs to this section.
-      if (pathname === `${base}/section/${row.sectionKey}`) return true
-      return FEATURES.some(
-        f => f.sectionKey === row.sectionKey && pathname === `${base}/feature/${f.slug}`
-      )
+  const featureNav: NavRow[] = useMemo(() =>
+    SECTIONS.map(sec => ({
+      key: `sec-${sec.key}`,
+      href: `${base}/section/${sec.key}`,
+      label: sec.title,
+      icon: SECTION_ICON[sec.key] || 'grid',
+      sectionKey: sec.key,
+    })),
+  [])
+
+  const accountNav: NavRow[] = useMemo(() => [
+    { key: 'settings', href: `${base}/settings`, label: 'Settings',    icon: 'sliders'      },
+    { key: 'browse',   href: '/',                label: 'Browse Site', icon: 'externalLink' },
+  ], [])
+
+  // Which section's sub-nav (if any) should be visible right now
+  const activeSectionKey: string | null = useMemo(() => {
+    const m = pathname.match(/^\/dashboard\/section\/([^/]+)/)
+    if (m) return m[1]
+    const fm = pathname.match(/^\/dashboard\/feature\/([^/]+)/)
+    if (fm) {
+      const f = findFeature(fm[1])
+      if (f) return f.sectionKey
     }
+    return null
+  }, [pathname])
+
+  const activeSection = activeSectionKey
+    ? SECTIONS.find(s => s.key === activeSectionKey) || null
+    : null
+
+  // Features for the active section, grouped by required tier so the
+  // sub-nav can show collapsible "Free / Starter / Early Adopter / Lifetime"
+  // groups (mirrors the Trustpilot-style sub-nav with chevron-toggles).
+  const subNavGroups = useMemo(() => {
+    if (!activeSectionKey) return [] as Array<{ tier: PlanTier; label: string; items: Feature[] }>
+    const sectionFeats = FEATURES.filter(f => f.sectionKey === activeSectionKey)
+    return TIER_ORDER
+      .map(tier => ({
+        tier,
+        label: TIER_LABEL[tier],
+        items: sectionFeats.filter(f => f.requiredTier === tier),
+      }))
+      .filter(g => g.items.length > 0)
+  }, [activeSectionKey])
+
+  // Collapsed sub-nav groups, keyed by `${sectionKey}:${tier}`.
+  // Default = empty Set => every group is open.
+  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set())
+  const toggleGroup = (key: string) => {
+    setCollapsedGroups(prev => {
+      const next = new Set(prev)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      return next
+    })
+  }
+
+  const isPrimaryActive = (row: NavRow): boolean => {
+    if (row.sectionKey) return activeSectionKey === row.sectionKey
     if (row.href === base) return pathname === base
-    // Treat /{country} as active for Browse Site only when exactly at root,
-    // otherwise routes like /{country}/dashboard/* shouldn't light it up.
-    if (row.key === 'browse') return pathname === row.href
+    if (row.key === 'browse') return false
     return pathname === row.href || pathname.startsWith(row.href + '/')
   }
 
   const logout = async () => {
     setLoggingOut(true)
     await fetch('/api/auth/logout', { method: 'POST' })
-    router.push(homeHref)
+    router.push('/')
     router.refresh()
   }
 
+  const renderNavRow = (row: NavRow) => {
+    const active = isPrimaryActive(row)
+    return (
+      <Link
+        key={row.key}
+        href={row.href}
+        onClick={() => setDrawerOpen(false)}
+        className={'tp-nav-item' + (active ? ' tp-nav-item--active' : '')}
+        title={row.label}
+      >
+        <span className="tp-nav-icon" aria-hidden="true">
+          <I d={ic[row.icon]} size={20} sw={1.5} />
+        </span>
+        <span className="tp-nav-label">{row.label}</span>
+        {row.badge && !active && (
+          <span className="tp-nav-badge" aria-label={row.badge}>{row.badge}</span>
+        )}
+        {active && (
+          <span className="tp-nav-arrow" aria-hidden="true">
+            <I d={ic.arrow} size={16} sw={1.6} />
+          </span>
+        )}
+      </Link>
+    )
+  }
+
   return (
-    <div className="ds-root">
-      {/* Mobile top bar */}
-      <div className="ds-mobile-bar">
-        <Link href={homeHref} className="ds-mobile-logo">
-          <img src={`${BASE}/logo/infowebworldlogo-logoforlightbackgrounds.png`} alt="InfoWebWorld" />
-        </Link>
-        <button
-          className="ds-burger"
-          onClick={() => setDrawerOpen(v => !v)}
-          aria-label="Menu" aria-expanded={drawerOpen}
-        >
-          <span /><span /><span />
-        </button>
-      </div>
-
-      {drawerOpen && <div className="ds-overlay" onClick={() => setDrawerOpen(false)} />}
-
-      <aside className={`ds-sidebar${drawerOpen ? ' ds-sidebar--open' : ''}`}>
-        {/* Brand */}
-        <div className="ds-brand">
-          <Link href={homeHref} className="ds-brand-logo" onClick={() => setDrawerOpen(false)}>
+    <DashboardCtx.Provider value={{ user, plan, logout, loggingOut }}>
+      <div className={'tp-root' + (activeSection ? ' tp-root--with-subnav' : '')}>
+        {/* Mobile top bar */}
+        <div className="tp-mobile-bar">
+          <Link href="/" className="tp-mobile-logo">
             <img src={`${BASE}/logo/infowebworldlogo-logoforlightbackgrounds.png`} alt="InfoWebWorld" />
           </Link>
-          <div className={`ds-plan-chip ${PLAN_CHIP_CLASS[plan.tier] || ''}`}>
-            {plan.label}
-            {plan.tier !== 'lifetime' && (
-              <Link
-                href={countryHref(country, '/business/plans')}
-                className="ds-plan-upgrade"
-                onClick={() => setDrawerOpen(false)}
-              >
-                Upgrade
-              </Link>
-            )}
-          </div>
-        </div>
-
-        {/* Grouped nav */}
-        <nav className="ds-nav" aria-label="Dashboard navigation">
-          {navGroups.map(group => (
-            <div key={group.label} className="ds-group">
-              <div className="ds-group-label">{group.label}</div>
-              {group.rows.map(row => {
-                const active = isActive(row)
-                return (
-                  <Link
-                    key={row.key}
-                    href={row.href}
-                    onClick={() => setDrawerOpen(false)}
-                    className={
-                      'ds-nav-item' +
-                      (active ? ' ds-nav-item--active' : '') +
-                      (row.locked ? ' ds-nav-item--locked' : '')
-                    }
-                    title={row.label}
-                  >
-                    <span className="ds-nav-icon" aria-hidden="true">
-                      <I d={ic[row.icon]} size={18} sw={1.8} />
-                    </span>
-                    <span className="ds-nav-label">{row.label}</span>
-                    {row.locked && (
-                      <span className="ds-nav-lock" aria-label="Locked">
-                        <I d={ic.lock} size={11} sw={2.2} />
-                      </span>
-                    )}
-                  </Link>
-                )
-              })}
-            </div>
-          ))}
-        </nav>
-
-        {/* Log out pinned to bottom */}
-        <div className="ds-foot">
           <button
-            type="button"
-            className="ds-nav-item ds-nav-item--logout"
-            onClick={logout}
-            disabled={loggingOut}
+            className="tp-burger"
+            onClick={() => setDrawerOpen(v => !v)}
+            aria-label="Menu" aria-expanded={drawerOpen}
           >
-            <span className="ds-nav-icon" aria-hidden="true">
-              <I d={ic.power} size={18} sw={1.8} />
-            </span>
-            <span className="ds-nav-label">{loggingOut ? 'Signing out…' : 'Log Out'}</span>
+            <span /><span /><span />
           </button>
         </div>
-      </aside>
 
-      <main className="ds-main">{children}</main>
-    </div>
+        {drawerOpen && <div className="tp-overlay" onClick={() => setDrawerOpen(false)} />}
+
+        {/* ── Sidebar — single dark green zone ── */}
+        <aside className={'tp-sidebar' + (drawerOpen ? ' tp-sidebar--open' : '')}>
+          {/* Brand wordmark — sits at the top */}
+          <div className="tp-brand">
+            <Link href="/" className="tp-brand-logo" onClick={() => setDrawerOpen(false)}>
+              <img src={`${BASE}/logo/infowebworld-logofordarkbackgrounds.png`} alt="InfoWebWorld" />
+            </Link>
+          </div>
+
+          {/* Nav — flat list, no group labels */}
+          <nav className="tp-nav" aria-label="Dashboard navigation">
+            {topNav.map(renderNavRow)}
+            {featureNav.map(renderNavRow)}
+            {accountNav.map(renderNavRow)}
+          </nav>
+
+          {/* Promo card pinned to bottom (hidden on lifetime) */}
+          {plan.tier !== 'lifetime' && (
+            <Link href="/business/plans" className="tp-promo" onClick={() => setDrawerOpen(false)}>
+              <div className="tp-promo-row">
+                <span className="tp-promo-icon" aria-hidden="true">
+                  <I d={ic.gift} size={18} sw={1.6} />
+                </span>
+                <span className="tp-promo-title">Upgrade your plan</span>
+              </div>
+              <p className="tp-promo-body">
+                You&rsquo;re on the {plan.label} plan. Unlock dofollow backlinks, leads &amp; reviews.
+              </p>
+              <span className="tp-promo-link">See plans</span>
+            </Link>
+          )}
+        </aside>
+
+        {/* ── Sub-nav panel — features grouped by tier, collapsible ── */}
+        {activeSection && (
+          <aside className="tp-subnav" aria-label={`${activeSection.title} sub-navigation`}>
+            <div className="tp-subnav-head">{activeSection.title}</div>
+            {subNavGroups.map(group => {
+              const groupKey = `${activeSection.key}:${group.tier}`
+              const collapsed = collapsedGroups.has(groupKey)
+              const groupId = `tp-subnav-group-${groupKey.replace(':', '-')}`
+              return (
+                <div key={group.tier} className="tp-subnav-group">
+                  <button
+                    type="button"
+                    className="tp-subnav-group-head"
+                    onClick={() => toggleGroup(groupKey)}
+                    aria-expanded={!collapsed}
+                    aria-controls={groupId}
+                  >
+                    <span className="tp-subnav-group-label">
+                      {group.label} <span className="tp-subnav-group-count">({group.items.length})</span>
+                    </span>
+                    <span className="tp-subnav-group-chev" aria-hidden="true">
+                      <I d={collapsed ? ic.chevronDown : ic.chevronUp} size={16} sw={1.8} />
+                    </span>
+                  </button>
+                  {!collapsed && (
+                    <ul className="tp-subnav-list" id={groupId}>
+                      {group.items.map(f => {
+                        const href = `${base}/feature/${f.slug}`
+                        const active = pathname === href
+                        return (
+                          <li key={f.slug}>
+                            <Link
+                              href={href}
+                              className={'tp-subnav-item' + (active ? ' tp-subnav-item--active' : '')}
+                            >
+                              {f.label}
+                            </Link>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  )}
+                </div>
+              )
+            })}
+          </aside>
+        )}
+
+        {/* ── Main column — DashboardHeader handles the topbar ── */}
+        <main className="tp-main">
+          <div className="tp-content">{children}</div>
+        </main>
+      </div>
+    </DashboardCtx.Provider>
   )
 }

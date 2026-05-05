@@ -188,7 +188,16 @@ export default function PlansPage() {
   const [slots, setSlots] = useState({ ltEx: false, yrEx: false })
   const [authOpen, setAuthOpen] = useState(false)
   const [authPlan, setAuthPlan] = useState<AnyPlan>('free')
+  const [mobileTab, setMobileTab] = useState<AnyPlan>('lifetime')
   const { user, loading: authLoading } = useAuth()
+
+  /** True when `plan` includes feature `row`. Premium plans include everything;
+      Starter / Free are gated by the planGating sets. */
+  const planHas = (plan: AnyPlan, row: string): boolean => {
+    if (plan === 'lifetime' || plan === 'yearly') return true
+    if (plan === 'starter') return STARTER_ROWS.has(row)
+    return FREE_ROWS.has(row)
+  }
 
   useEffect(() => {
     fetchConfig().then(c => setSlots({
@@ -255,6 +264,138 @@ export default function PlansPage() {
       <section className="pr-section">
         <div className="container">
           <h2 className="pln-table-heading">Full Feature Comparison</h2>
+
+          {/* ── Mobile-only: tabs + filtered checklist (replaces the wide desktop table on phones) ── */}
+          <div className="pln-mcompare">
+            {(() => {
+              const META = {
+                lifetime: { cls: 'lt' as const, label: 'Lifetime',  short: 'LT', name: 'Elite Lifetime Founding', desc: 'Recommended For Businesses', price: slots.ltEx ? '999' : '239', period: 'one-time, forever',  badge: 'Recommend',
+                  slash: !slots.ltEx ? <><span className="fc-strikethrough">$999</span> after Pioneer pre-launch window</> : null,
+                  btnLabel: 'Claim Lifetime Spot', btnCls: 'pr-col-btn--primary', onClick: () => gate('lifetime', () => setModalPlan('lifetime')) },
+                yearly:   { cls: 'yr' as const, label: 'Yearly',    short: 'YR', name: 'Early Adopter',           desc: 'Flexible Membership',         price: slots.yrEx ? '239' : '99',  period: 'per year Locked Forever', badge: null,
+                  slash: !slots.yrEx ? <><span className="fc-strikethrough">$239/yr</span> after Pioneer pre-launch window</> : null,
+                  btnLabel: 'Get Started',          btnCls: 'pr-col-btn--secondary', onClick: () => gate('yearly', () => setModalPlan('yearly')) },
+                starter:  { cls: 'st' as const, label: 'Starter',   short: 'ST', name: 'Starter Plan',            desc: 'Pay Once, Yours Forever',     price: '49',                       period: 'one-time',                badge: null,
+                  slash: 'no renewals · 14-day refund' as React.ReactNode,
+                  btnLabel: 'Get Starter',          btnCls: 'pr-col-btn--starter',   onClick: () => gate('starter', () => setFlexiblePlan('starter')) },
+                free:     { cls: 'fr' as const, label: 'Free',      short: 'FR', name: 'Free Plan',               desc: 'Basic Listing',               price: '0',                        period: 'forever',                 badge: null,
+                  slash: 'no card required' as React.ReactNode,
+                  btnLabel: 'Get Started',          btnCls: 'pr-col-btn--free',      onClick: () => gate('free', () => setFlexiblePlan('free')) },
+              }
+              const m = META[mobileTab]
+              const isGated = mobileTab === 'starter' || mobileTab === 'free'
+              const includedCount = sections.reduce((n, s) => n + s.rows.filter(r => planHas(mobileTab, r)).length, 0)
+              const totalCount = sections.reduce((n, s) => n + s.rows.length, 0)
+              const missingCount = totalCount - includedCount
+
+              return (
+                <>
+                  {/* Sticky plan tabs */}
+                  <div className="pln-mtabs" role="tablist" aria-label="Choose a plan">
+                    {(['lifetime', 'yearly', 'starter', 'free'] as const).map(k => {
+                      const t = META[k]
+                      const active = mobileTab === k
+                      return (
+                        <button
+                          key={k}
+                          type="button"
+                          role="tab"
+                          aria-selected={active}
+                          className={`pln-mtab pln-mtab--${t.cls} ${active ? 'is-active' : ''}`}
+                          onClick={() => setMobileTab(k)}
+                        >
+                          <span className="pln-mtab-label">{t.label}</span>
+                          <span className="pln-mtab-price">${t.price}</span>
+                        </button>
+                      )
+                    })}
+                  </div>
+
+                  {/* Selected plan summary */}
+                  <article className={`pln-msel pln-msel--${m.cls}`}>
+                    {m.badge && <span className="pln-msel-badge">{m.badge}</span>}
+                    <h3 className="pln-msel-name">{m.name}</h3>
+                    <p className="pln-msel-desc">{m.desc}</p>
+                    <div className="pln-msel-price"><span>$</span>{m.price}</div>
+                    <div className="pln-msel-period">{m.period}</div>
+                    {m.slash && <div className="pln-msel-slash">{m.slash}</div>}
+                    <button type="button" className={`pr-col-btn ${m.btnCls} pln-msel-btn`} onClick={m.onClick}>
+                      {m.btnLabel}
+                    </button>
+                    <div className="pln-msel-meta">
+                      <span className="pln-msel-meta-yes">{includedCount} features included</span>
+                      {missingCount > 0 && <span className="pln-msel-meta-no">+{missingCount} more in higher plans</span>}
+                    </div>
+                  </article>
+
+                  {/* Included features, grouped by section */}
+                  <div className="pln-mlist">
+                    {sections.map(sec => {
+                      const visibleRows = sec.rows.filter(r => planHas(mobileTab, r))
+                      if (visibleRows.length === 0) return null
+                      return (
+                        <section key={sec.title} className="pln-msec">
+                          <h4 className="pln-msec-title">{sec.title}</h4>
+                          <ul className="pln-msec-list">
+                            {visibleRows.map(r => (
+                              <li key={r} className="pln-msec-row">
+                                <span className={`pln-msec-mark pln-msec-mark--${m.cls}`}><Ck /></span>
+                                <span className="pln-msec-name">{r}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </section>
+                      )
+                    })}
+                  </div>
+
+                  {/* For gated plans, show what they'd unlock by upgrading */}
+                  {isGated && missingCount > 0 && (
+                    <div className="pln-mexcl">
+                      <header className="pln-mexcl-head">
+                        <h4 className="pln-mexcl-title">Not in {m.label} — unlock with Lifetime / Yearly</h4>
+                        <p className="pln-mexcl-sub">{missingCount} more features available on premium plans.</p>
+                      </header>
+                      <div className="pln-mlist pln-mlist--dim">
+                        {sections.map(sec => {
+                          const missingRows = sec.rows.filter(r => !planHas(mobileTab, r))
+                          if (missingRows.length === 0) return null
+                          return (
+                            <section key={sec.title} className="pln-msec pln-msec--dim">
+                              <h5 className="pln-msec-title pln-msec-title--dim">{sec.title}</h5>
+                              <ul className="pln-msec-list">
+                                {missingRows.map(r => (
+                                  <li key={r} className="pln-msec-row pln-msec-row--locked">
+                                    <span className="pln-msec-lock">
+                                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <rect x="5" y="11" width="14" height="9" rx="2" />
+                                        <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+                                      </svg>
+                                    </span>
+                                    <span className="pln-msec-name">{r}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </section>
+                          )
+                        })}
+                      </div>
+                      <button
+                        type="button"
+                        className="pr-col-btn pr-col-btn--primary pln-mexcl-cta"
+                        onClick={() => { setMobileTab('lifetime') }}
+                      >
+                        See full Lifetime plan
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.4">
+                          <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
+                </>
+              )
+            })()}
+          </div>
 
           <div className="pr-cols-scroll">
           <div className="pr-cols pr-cols--4plans">

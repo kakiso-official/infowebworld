@@ -1,8 +1,5 @@
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
-import { queryOne } from '@/lib/db'
-import { USER_COOKIE_NAME } from '@/lib/user-auth'
-import { countryHref } from '@/app/config/countries'
+import { requireDashboardUser } from '@/lib/user-auth'
+import DashboardHeader from '../DashboardHeader'
 
 export const dynamic = 'force-dynamic'
 
@@ -11,30 +8,12 @@ export default async function SettingsPage({
 }: {
   params: Promise<Record<string, never>>
 }) {
-  await params; const country = ""
-  const store = await cookies()
-  const token = store.get(USER_COOKIE_NAME)?.value
-  if (!token) redirect(countryHref(country, '/business'))
-
-  const user = await queryOne<{
-    email: string; name: string | null; provider: string
-    created_at: string; email_verified: number
-  }>(
-    `SELECT u.email, u.name, u.provider, u.created_at, u.email_verified
-     FROM business_sessions s JOIN business_users u ON u.id = s.user_id
-     WHERE s.token = ? AND s.expires_at > NOW() LIMIT 1`,
-    [token]
-  )
-  if (!user) redirect(countryHref(country, '/business'))
+  await params
+  const user = await requireDashboardUser()
 
   return (
     <div className="dash">
-      <header className="ds-page-head">
-        <div>
-          <h1 className="ds-page-title">Settings</h1>
-          <p className="ds-page-sub">Account details and preferences.</p>
-        </div>
-      </header>
+      <DashboardHeader title="Settings" subtitle="Account details and preferences." />
 
       <section className="set-card">
         <h2 className="set-card-title">Profile</h2>
@@ -55,14 +34,14 @@ export default async function SettingsPage({
           </div>
           <div className="set-row">
             <span className="set-row-lbl">Email verified</span>
-            <span className="set-row-val">{user.email_verified ? 'Yes' : 'No'}</span>
+            <span className="set-row-val">{user.emailVerified ? 'Yes' : 'No'}</span>
           </div>
           <div className="set-row">
             <span className="set-row-lbl">Member since</span>
-            <span className="set-row-val">{new Date(user.created_at).toLocaleDateString()}</span>
+            <span className="set-row-val">{new Date(user.createdAt).toLocaleDateString()}</span>
           </div>
         </div>
-        <p className="set-note">Profile editing is coming soon. Need help? <a href={countryHref(country, '/contact')}>Contact us</a>.</p>
+        <p className="set-note">Profile editing is coming soon. Need help? <a href="/contact">Contact us</a>.</p>
       </section>
     </div>
   )

@@ -1,4 +1,6 @@
 import { randomBytes } from 'node:crypto'
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 import type { NextRequest } from 'next/server'
 import { queryOne, execute } from './db'
 
@@ -14,6 +16,7 @@ export interface BusinessUser {
   avatarUrl: string | null
   provider: string
   emailVerified: boolean
+  createdAt: string
 }
 
 /**
@@ -30,8 +33,10 @@ export async function getUserByToken(token: string): Promise<BusinessUser | null
   const row = await queryOne<{
     id: number; uuid: string; email: string; name: string | null
     avatar_url: string | null; provider: string; email_verified: number
+    created_at: string | Date
   }>(
-    `SELECT u.id, u.uuid, u.email, u.name, u.avatar_url, u.provider, u.email_verified
+    `SELECT u.id, u.uuid, u.email, u.name, u.avatar_url, u.provider,
+            u.email_verified, u.created_at
      FROM business_sessions s
      JOIN business_users u ON u.id = s.user_id
      WHERE s.token = ? AND s.expires_at > NOW()
@@ -47,6 +52,7 @@ export async function getUserByToken(token: string): Promise<BusinessUser | null
     avatarUrl: row.avatar_url,
     provider: row.provider,
     emailVerified: Boolean(row.email_verified),
+    createdAt: row.created_at instanceof Date ? row.created_at.toISOString() : String(row.created_at),
   }
 }
 
@@ -94,4 +100,22 @@ export function userCookieHeader(token: string): string {
 export function clearUserCookieHeader(): string {
   const secure = process.env.NODE_ENV === 'production' ? '; Secure' : ''
   return `${USER_COOKIE_NAME}=; HttpOnly${secure}; SameSite=Lax; Path=/; Max-Age=0`
+}
+
+/**
+ * Server-component / layout auth gate. Reads the cookie, validates the session
+ * against the DB, and either returns the user or `redirect()`s away (which
+ * throws and never returns). Use in every dashboard page so auth is enforced
+ * even if the parent layout's guard ever drifts — defense in depth.
+ *
+ *   const user = await requireDashboardUser()
+ *   //  user.id, user.email, etc. are guaranteed non-null past this line
+ */
+export async function requireDashboardUser(redirectTo: string = '/business'): Promise<BusinessUser> {
+  const store = await cookies()
+  const token = store.get(USER_COOKIE_NAME)?.value
+  if (!token) redirect(redirectTo)
+  const user = await getUserByToken(token)
+  if (!user) redirect(redirectTo)
+  return user
 }

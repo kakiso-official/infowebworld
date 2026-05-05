@@ -41,3 +41,6 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# Claude Code internal session state (per-machine, never commit)
+.claude/

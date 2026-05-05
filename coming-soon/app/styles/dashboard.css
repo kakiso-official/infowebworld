@@ -63,7 +63,7 @@
   box-shadow: var(--shadow-sm);
 }
 .dash-stat-num {
-  font-family: var(--font-bricolage), 'Bricolage Grotesque', serif;
+  font-family: inherit;
   font-size: 32px; font-weight: 800;
   color: var(--h-heading); line-height: 1;
   letter-spacing: -.02em;
@@ -81,7 +81,7 @@
   gap: 12px;
 }
 .dash-section-head h2 {
-  font-family: var(--font-bricolage), 'Bricolage Grotesque', serif;
+  font-family: inherit;
   font-size: clamp(1.25rem, 2.4vw, 1.5rem);
   font-weight: 800;
   margin: 0; color: var(--h-heading);
@@ -112,7 +112,7 @@
   margin-bottom: .85rem;
 }
 .dash-empty h3 {
-  font-family: var(--font-bricolage), 'Bricolage Grotesque', serif;
+  font-family: inherit;
   font-size: 20px; font-weight: 800;
   margin: 0 0 6px;
   letter-spacing: -.02em;
@@ -166,7 +166,7 @@
   background: var(--h-bg);
   border: 1px solid var(--h-border-light);
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-bricolage), 'Bricolage Grotesque', serif;
+  font-family: inherit;
   font-size: 16px; font-weight: 700; color: var(--h-accent);
 }
 .dash-list-logo img { width: 100%; height: 100%; object-fit: cover }
@@ -183,7 +183,7 @@
 .dash-status--rejected { background: rgba(220, 38, 38, .1); color: #b91c1c }
 
 .dash-list-name {
-  font-family: var(--font-bricolage), 'Bricolage Grotesque', serif;
+  font-family: inherit;
   font-size: 17px; font-weight: 800;
   margin: 0; color: var(--h-heading);
   letter-spacing: -.01em;
@@ -230,18 +230,26 @@
    Always fits viewport. No scroll, either axis.
    ══════════════════════════════════════════════════════════════ */
 .dash-home {
-  height: 100%;
   display: flex; flex-direction: column;
-  gap: 12px;
-  min-height: 0;
+  gap: 14px;
 }
 .dash-home-row {
-  display: flex;
-  gap: 12px;
-  flex: 1;
-  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
 }
-.dash-home-row > * { flex: 1 1 0; min-width: 0 }
+.dash-home-row + .dash-home-row {
+  grid-template-columns: repeat(3, 1fr);
+}
+.dash-home-row > * { min-width: 0 }
+@media (max-width: 1100px) {
+  .dash-home-row { grid-template-columns: repeat(2, 1fr) }
+  .dash-home-row + .dash-home-row { grid-template-columns: repeat(2, 1fr) }
+}
+@media (max-width: 600px) {
+  .dash-home-row { grid-template-columns: 1fr }
+  .dash-home-row + .dash-home-row { grid-template-columns: 1fr }
+}
 
 .dash-tile {
   display: flex; flex-direction: column;
@@ -296,7 +304,7 @@
   position: relative; z-index: 1;
 }
 .dash-tile-num {
-  font-family: var(--font-bricolage), 'Bricolage Grotesque', serif;
+  font-family: inherit;
   font-size: 12px;
   font-weight: 800;
   color: var(--sec-color);
@@ -305,7 +313,7 @@
 }
 .dash-tile-pill {
   display: inline-flex; align-items: center; gap: 5px;
-  font-family: var(--font-bricolage), 'Bricolage Grotesque', serif;
+  font-family: inherit;
   font-size: 11px; font-weight: 800;
   letter-spacing: .02em;
   padding: 3px 10px;
@@ -328,7 +336,7 @@
 
 /* ── Title — the hero of the tile, pure black ── */
 .dash-tile-title {
-  font-family: var(--font-bricolage), 'Bricolage Grotesque', serif;
+  font-family: inherit;
   font-size: clamp(.95rem, 1.25vw + .35vh, 1.35rem);
   font-weight: 800;
   color: #000000;
@@ -883,7 +891,7 @@
   gap: 10px;
 }
 .dash-feat-card-head h3 {
-  font-family: var(--font-bricolage), 'Bricolage Grotesque', serif;
+  font-family: inherit;
   font-size: 15px; font-weight: 800;
   color: var(--h-heading);
   margin: 0;
@@ -990,7 +998,7 @@
   justify-self: start;
 }
 .dash-feat-placeholder-title {
-  font-family: var(--font-bricolage), 'Bricolage Grotesque', serif;
+  font-family: inherit;
   font-size: clamp(1.35rem, 3vw, 1.75rem);
   font-weight: 800;
   color: var(--h-heading);
@@ -1047,7 +1055,7 @@
   box-shadow: 0 6px 16px rgba(var(--h-accent-rgb), .22);
 }
 .dash-up-title {
-  font-family: var(--font-bricolage), 'Bricolage Grotesque', serif;
+  font-family: inherit;
   font-size: clamp(1.3rem, 3vw, 1.7rem);
   font-weight: 800;
   color: var(--h-heading);
@@ -1097,14 +1105,14 @@
   text-transform: uppercase;
 }
 .dash-up-plan-name {
-  font-family: var(--font-bricolage), 'Bricolage Grotesque', serif;
+  font-family: inherit;
   font-size: 15px; font-weight: 800;
   color: var(--h-heading);
   letter-spacing: -.02em;
   text-transform: uppercase;
 }
 .dash-up-plan-price {
-  font-family: var(--font-bricolage), 'Bricolage Grotesque', serif;
+  font-family: inherit;
   font-size: 28px; font-weight: 800;
   color: var(--h-heading);
   letter-spacing: -.025em;

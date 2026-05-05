@@ -1,13 +1,11 @@
-import { cookies } from 'next/headers'
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { queryOne } from '@/lib/db'
-import { USER_COOKIE_NAME } from '@/lib/user-auth'
+import { requireDashboardUser } from '@/lib/user-auth'
 import { getUserPlan } from '@/lib/user-plan'
 import { canAccess, TIER_LABEL, type PlanTier } from '@/lib/user-plan-types'
-import { countryHref } from '@/app/config/countries'
 import { SECTIONS, FEATURES, type Feature } from '../../features'
 import { I, ic, type IconKey } from '../../../components/icons'
+import DashboardHeader from '../../DashboardHeader'
 
 export const dynamic = 'force-dynamic'
 
@@ -32,18 +30,8 @@ export default async function SectionPage({
 }: {
   params: Promise<{ key: string }>
 }) {
-  const { key  } = await params; const country = ""
-
-  const store = await cookies()
-  const token = store.get(USER_COOKIE_NAME)?.value
-  if (!token) redirect(countryHref(country, '/business'))
-
-  const user = await queryOne<{ id: number }>(
-    `SELECT u.id FROM business_sessions s JOIN business_users u ON u.id = s.user_id
-     WHERE s.token = ? AND s.expires_at > NOW() LIMIT 1`,
-    [token]
-  )
-  if (!user) redirect(countryHref(country, '/business'))
+  const { key } = await params
+  const user = await requireDashboardUser()
 
   const section = SECTIONS.find(s => s.key === key)
   if (!section) notFound()
@@ -69,25 +57,22 @@ export default async function SectionPage({
 
   return (
     <div className="sec-page" style={{ ['--sec-color' as string]: section.color }}>
-      <Link href={countryHref(country, '/dashboard')} className="sec-back">
-        <I d={ic.arrowLeft} size={12} sw={2} />
-        <span>Dashboard</span>
-      </Link>
+      <DashboardHeader
+        title={section.title}
+        subtitle={section.blurb}
+        breadcrumb={{
+          trail: [{ label: 'Dashboard', href: '/dashboard' }],
+          current: section.title,
+        }}
+      />
 
-      {/* ── Header ── */}
+      {/* ── Stats strip ── */}
       <header className="sec-head">
-        <div className="sec-hero">
-          <div className="sec-icon" aria-hidden="true">
-            <I d={ic[section.iconKey as IconKey] || ic.grid} size={22} sw={1.8} />
-          </div>
-          <div className="sec-hero-text">
-            <h1 className="sec-title">{section.title}</h1>
-            <p className="sec-blurb">{section.blurb}</p>
-          </div>
-        </div>
-
         <div className="sec-stats">
           <div className="sec-stats-row">
+            <div className="sec-hero-icon-inline" aria-hidden="true">
+              <I d={ic[section.iconKey as IconKey] || ic.grid} size={18} sw={1.8} />
+            </div>
             <div className="sec-stats-text">
               <strong>{included.length}</strong>
               <span> of {all.length} features unlocked </span>
@@ -96,7 +81,7 @@ export default async function SectionPage({
               </span>
             </div>
             {plan.tier !== 'lifetime' && (
-              <Link href={countryHref(country, '/business/plans')} className="sec-stats-upgrade">
+              <Link href="/business/plans" className="sec-stats-upgrade">
                 Upgrade
                 <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
@@ -121,7 +106,7 @@ export default async function SectionPage({
           </header>
           <div className="sec-grid">
             {included.map((f, i) => (
-              <UnlockedTile key={f.slug} country={country} feature={f} index={i + 1} />
+              <UnlockedTile key={f.slug} feature={f} index={i + 1} />
             ))}
           </div>
         </section>
@@ -139,7 +124,7 @@ export default async function SectionPage({
               </span>
               <span className={`sec-group-count sec-group-count--${tier}`}>{rows.length}</span>
               <Link
-                href={countryHref(country, '/business/plans')}
+                href={'/business/plans'}
                 className={`sec-group-cta sec-group-cta--${tier}`}
               >
                 Unlock for {TIER_PRICE_SHORT[tier]}
@@ -152,7 +137,6 @@ export default async function SectionPage({
               {rows.map((f, i) => (
                 <LockedTile
                   key={f.slug}
-                  country={country}
                   feature={f}
                   index={i + 1}
                   tier={tier}
@@ -169,11 +153,11 @@ export default async function SectionPage({
 /* ────────────────────── Unlocked tile ────────────────────── */
 
 function UnlockedTile({
-  country, feature, index,
-}: { country: string; feature: Feature; index: number }) {
+  feature, index,
+}: { feature: Feature; index: number }) {
   return (
     <Link
-      href={countryHref(country, `/dashboard/feature/${feature.slug}`)}
+      href={`/dashboard/feature/${feature.slug}`}
       className="sec-tile sec-tile--on"
     >
       <div className="sec-tile-wash" aria-hidden="true" />
@@ -210,11 +194,11 @@ function UnlockedTile({
 /* ────────────────────── Locked / upgrade tile ────────────────────── */
 
 function LockedTile({
-  country, feature, index, tier,
-}: { country: string; feature: Feature; index: number; tier: PlanTier }) {
+  feature, index, tier,
+}: { feature: Feature; index: number; tier: PlanTier }) {
   return (
     <Link
-      href={countryHref(country, `/dashboard/feature/${feature.slug}`)}
+      href={`/dashboard/feature/${feature.slug}`}
       className={`sec-tile sec-tile--off sec-tile--${tier}`}
     >
       {/* Diagonal shimmer strip — gives locked tiles a premium "gated" shine. */}
