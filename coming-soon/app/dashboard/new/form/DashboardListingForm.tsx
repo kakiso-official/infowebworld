@@ -25,7 +25,7 @@ import { validateStep } from './validation'
 
 import RailNav from './components/RailNav'
 import Footer from './components/Footer'
-import { buildDemoForm } from './demo'
+import { useDashboardCtx } from '../../DashboardShell'
 import Step1Identity from './steps/Step1Identity'
 import Step2Category from './steps/Step2Category'
 import Step3Contact from './steps/Step3Contact'
@@ -49,6 +49,7 @@ const STEPS: StepDef[] = [
 export default function DashboardListingForm({ plan = 'free' }: { plan?: PlanKey }) {
   const caps = PLAN_CAPS[plan]
   const defaultIso = URL_COUNTRY_ISO['us']
+  const { user } = useDashboardCtx()
 
   const [stepIdx, setStepIdx] = useState(0)
   const [visited, setVisited] = useState<Set<number>>(new Set([0]))
@@ -86,10 +87,15 @@ export default function DashboardListingForm({ plan = 'free' }: { plan?: PlanKey
     fetchListingTypes(form.l3Id).then(setListingTypes).catch(() => setListingTypes([]))
   }, [form.l3Id])
 
-  /* Draft autosave */
-  const draftKey = `iww_listing_draft_${plan}`
+  /* Draft autosave — keyed per user so one browser shared by multiple accounts
+     never leaks one user's draft into another's session. */
+  const draftKey = `iww_listing_draft_${user.uuid}_${plan}`
   useEffect(() => {
     try {
+      /* Sweep legacy unscoped keys that could leak across accounts. */
+      for (const p of ['free', 'starter', 'yearly', 'lifetime']) {
+        localStorage.removeItem(`iww_listing_draft_${p}`)
+      }
       const saved = localStorage.getItem(draftKey)
       if (saved) {
         const parsed = JSON.parse(saved)
@@ -97,7 +103,7 @@ export default function DashboardListingForm({ plan = 'free' }: { plan?: PlanKey
       }
     } catch {}
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [draftKey])
   useEffect(() => {
     const t = setTimeout(() => {
       try { localStorage.setItem(draftKey, JSON.stringify(form)); setDraftSavedAt(Date.now()) } catch {}
@@ -124,6 +130,9 @@ export default function DashboardListingForm({ plan = 'free' }: { plan?: PlanKey
   }, [form, caps, tagGroups])
 
   const goToIdx = (i: number) => {
+    /* Already-visited (filled) steps are always reachable via the rail. */
+    if (visited.has(i)) { setStepIdx(i); return }
+    /* For a forward jump to an UNvisited step, the current step must validate. */
     if (i > stepIdx && !check(stepIdx)) return
     setStepIdx(i)
     setVisited(v => new Set(v).add(i))
@@ -271,18 +280,6 @@ export default function DashboardListingForm({ plan = 'free' }: { plan?: PlanKey
           {draftSavedAt && (
             <span className="df-draft-status">Draft saved</span>
           )}
-          <button
-            type="button"
-            className="df-demo-btn"
-            onClick={() => setForm(prev => ({ ...prev, ...buildDemoForm(allCategories) }))}
-            title="Fill every field with sample data (skips logo + screenshots)"
-          >
-            <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true">
-              <path d="M12 2l2.39 4.84 5.34.78-3.86 3.77.91 5.32L12 14.27l-4.78 2.51.91-5.32-3.86-3.77 5.34-.78L12 2z"
-                fill="currentColor" />
-            </svg>
-            Fill demo data
-          </button>
         </div>
       </div>
 

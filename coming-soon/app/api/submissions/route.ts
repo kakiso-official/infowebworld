@@ -3,6 +3,8 @@ import { query, queryOne, execute } from '@/lib/db'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { getClientIp } from '@/lib/tracking'
 import { getUserFromRequest } from '@/lib/user-auth'
+import { getUserHighestPaidPlan } from '@/lib/user-plan'
+import { TIER_RANK, type PlanTier } from '@/lib/user-plan-types'
 
 export async function GET(request: NextRequest) {
   try {
@@ -96,6 +98,22 @@ export async function POST(request: NextRequest) {
     // Attach the authenticated business user (if any) so it shows on their dashboard
     const authedUser = await getUserFromRequest(request)
     const userId: number | null = authedUser ? authedUser.id : null
+
+    /* Paid-plan gate: a paid plan slug requires a logged-in user with at
+       least that tier already paid for. Free tier (or missing slug) is open. */
+    const requested = (typeof body.plan === 'string' ? body.plan : 'free') as PlanTier
+    if (requested && requested !== 'free') {
+      if (!authedUser) {
+        return Response.json({ error: 'Login required for paid plans' }, { status: 401 })
+      }
+      const paidTier = await getUserHighestPaidPlan(authedUser.id)
+      if (TIER_RANK[paidTier] < (TIER_RANK[requested] ?? 0)) {
+        return Response.json(
+          { error: 'Payment required for this plan tier', requiresPayment: true, plan: requested },
+          { status: 402 }
+        )
+      }
+    }
 
     const uuid = crypto.randomUUID()
     const slug = slugify(body.companyName) + '-' + uuid.slice(0, 8)

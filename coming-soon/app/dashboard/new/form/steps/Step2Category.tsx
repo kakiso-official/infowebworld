@@ -33,10 +33,9 @@ export default function Step2Category({
       </Field>
 
       <Field
-        label={`Specializations (min ${caps.minSpecializations})`}
-        required
+        label="Specializations"
         error={errors.listingTypeIds}
-        hint={form.l3Id ? `Pick the niches you serve.` : 'Pick a subcategory above to see specializations.'}
+        hint={form.l3Id ? 'Optional — pick any niches you serve.' : 'Pick a subcategory above to see specializations.'}
       >
         {form.l3Id && listingTypes.length > 0 ? (
           <PillToggle

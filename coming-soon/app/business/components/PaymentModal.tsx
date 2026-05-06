@@ -101,12 +101,22 @@ export default function PaymentModal({ isOpen, onClose, plan }: Props) {
         setError('')
         try {
           const details = await actions.order.capture()
+          const planSlug = isLifetime ? 'lifetime' : 'yearly'
           // Claim the founding slot
           try {
             await fetch('/api/slots/claim', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ plan: isLifetime ? 'lifetime' : 'yearly' }),
+              body: JSON.stringify({ plan: planSlug }),
+            })
+          } catch {}
+          /* Record the purchase against the authed user (if any) so the
+             dashboard's paid-plan gate clears. Silently no-ops for anon. */
+          try {
+            await fetch('/api/paypal/capture', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ plan: planSlug, orderId: details.id, amount: Number(amount) }),
             })
           } catch {}
           setSuccess(details.id)

@@ -26,9 +26,7 @@ export function validateStep(
       if (!form.l1Id) e.l1 = 'Pick a sector.'
       if (form.l1Id && !form.l2Id) e.l2 = 'Pick a category.'
       if (form.l2Id && !form.l3Id) e.l3 = 'Pick a subcategory.'
-      if (form.listingTypeIds.length < caps.minSpecializations) {
-        e.listingTypeIds = `Pick at least ${caps.minSpecializations} specializations.`
-      }
+      /* Specializations are optional — no minimum enforced. */
       /* Every tag group needs at least one selection */
       const missing = tagGroups
         .map(g => g.tags.some(t => form.tagIds.includes(t.id)) ? null : g.name)

@@ -48,3 +48,30 @@ export async function getUserPlan(userId: number): Promise<UserPlan> {
     planName: row?.plan_name || 'Free',
   }
 }
+
+/**
+ * Highest plan tier the user has actually paid for via PayPal — read from
+ * business_user_plan_purchases. The submission gate uses this (not
+ * getUserPlan, which derives tier from submissions and would let an
+ * unpaid submission self-grant a tier).
+ *
+ * Returns 'free' for users with no purchases.
+ */
+export async function getUserHighestPaidPlan(userId: number): Promise<PlanTier> {
+  const row = await queryOne<{ plan_slug: string | null }>(
+    `SELECT plan_slug FROM business_user_plan_purchases
+     WHERE user_id = ?
+     ORDER BY (
+       CASE plan_slug
+         WHEN 'lifetime' THEN 4
+         WHEN 'yearly'   THEN 3
+         WHEN 'starter'  THEN 2
+         ELSE 0
+       END
+     ) DESC
+     LIMIT 1`,
+    [userId]
+  )
+  const slug = row?.plan_slug || null
+  return (slug && SLUG_TO_TIER[slug]) || 'free'
+}

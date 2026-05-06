@@ -1,0 +1,265 @@
+/* ──────────────────────────────────────────────────────────────────────
+   Dashboard checkout (.dc-*)
+   Two-column payment page: plan summary (left) + payment card (right).
+   Mobile collapses to a single stacked column.
+   Scoped under .tp-root so Inter inherits via the dashboard's !important
+   rule on body fonts.
+   ────────────────────────────────────────────────────────────────────── */
+
+.dc {
+  --dc-text:    #11181C;
+  --dc-muted:   #687078;
+  --dc-border:  #E5E7EB;
+  --dc-soft:    #F5F2EF;
+  --dc-accent:  #E8553D;
+  --dc-green:   #003B2A;
+  --dc-mint:    #34D89A;
+  --dc-radius:  14px;
+  --dc-radius-pill: 999px;
+
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-bottom: 28px;
+}
+
+/* ─────────── Two-column grid ─────────── */
+.dc-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(320px, 1fr);
+  gap: 22px;
+  margin-top: 18px;
+}
+
+@media (max-width: 1100px) {
+  .dc-grid { grid-template-columns: 1fr; }
+}
+
+/* ─────────── Card shell shared between summary + pay ─────────── */
+.dc-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--dc-border);
+  border-radius: var(--dc-radius);
+  padding: 24px;
+  box-shadow: 0 1px 0 rgba(17, 24, 28, .02);
+}
+
+/* ─────────── Plan summary card (left) ─────────── */
+.dc-summary-tag {
+  display: inline-flex; align-items: center;
+  height: 24px; padding: 0 10px;
+  font: inherit;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--dc-green);
+  background: var(--dc-mint);
+  border-radius: var(--dc-radius-pill);
+}
+.dc-summary-title {
+  margin: 14px 0 8px;
+  font: inherit;
+  font-size: clamp(1.4rem, 2vw, 1.7rem);
+  font-weight: 800;
+  letter-spacing: -.01em;
+  color: var(--dc-text);
+  line-height: 1.2;
+}
+.dc-summary-desc {
+  margin: 0;
+  font-size: 14.5px; line-height: 1.55;
+  color: var(--dc-muted);
+}
+.dc-summary-divider {
+  height: 1px; background: var(--dc-border);
+  margin: 22px 0;
+}
+.dc-summary-section-label {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--dc-muted);
+  margin-bottom: 12px;
+}
+.dc-summary-bullets {
+  list-style: none;
+  margin: 0; padding: 0;
+  display: grid; gap: 10px;
+}
+.dc-summary-bullets li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 14.5px; font-weight: 500;
+  color: var(--dc-text);
+  line-height: 1.5;
+}
+.dc-summary-bullets li svg {
+  flex-shrink: 0;
+  color: var(--dc-accent);
+  margin-top: 2px;
+}
+.dc-summary-guarantee {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
+  background: var(--dc-soft);
+  border-radius: 10px;
+  font-size: 13px; font-weight: 500;
+  color: var(--dc-text);
+}
+.dc-summary-guarantee svg {
+  color: var(--dc-green);
+  flex-shrink: 0;
+}
+
+/* ─────────── Payment card (right) ─────────── */
+.dc-pay {
+  position: sticky; top: 18px;
+  align-self: flex-start;
+}
+@media (max-width: 1100px) {
+  .dc-pay { position: static; }
+}
+.dc-pay-row {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 12px;
+  font-size: 14.5px; font-weight: 600;
+  color: var(--dc-text);
+  margin-bottom: 8px;
+}
+.dc-pay-row--muted {
+  font-size: 13px; font-weight: 500;
+  color: var(--dc-muted);
+}
+.dc-pay-row--total {
+  margin-top: 4px; margin-bottom: 0;
+  align-items: baseline;
+}
+.dc-pay-label { letter-spacing: -.005em; }
+.dc-pay-amount {
+  font-size: 16px; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--dc-text);
+}
+.dc-pay-divider {
+  height: 1px; background: var(--dc-border);
+  margin: 14px 0;
+}
+.dc-pay-total-label {
+  font-size: 13px; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase;
+  color: var(--dc-muted);
+}
+.dc-pay-total-amount {
+  font-size: 28px; font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--dc-text);
+  letter-spacing: -.015em;
+}
+.dc-pay-currency {
+  font-size: 12px; font-weight: 700;
+  color: var(--dc-muted);
+  letter-spacing: .04em;
+  margin-left: 4px;
+  vertical-align: 6px;
+}
+.dc-pay-paypal { margin-top: 18px; min-height: 110px; }
+.dc-pay-loading {
+  display: flex; align-items: center; gap: 10px;
+  justify-content: center;
+  padding: 24px 0;
+  font-size: 13px; color: var(--dc-muted);
+}
+.dc-spinner {
+  animation: dc-spin .9s linear infinite;
+  color: var(--dc-accent);
+}
+@keyframes dc-spin {
+  to { transform: rotate(360deg); }
+}
+.dc-pay-error {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  font-size: 13px; font-weight: 500;
+  color: #B22A14;
+  background: #FCEEEA;
+  border-radius: 10px;
+}
+.dc-pay-secure {
+  margin-top: 16px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 500;
+  color: var(--dc-muted);
+  justify-content: center;
+}
+
+/* ─────────── Success state ─────────── */
+.dc-success {
+  margin: 32px auto 0;
+  max-width: 540px;
+  text-align: center;
+  background: #FFFFFF;
+  border: 1.5px solid var(--dc-border);
+  border-radius: var(--dc-radius);
+  padding: 36px 28px 32px;
+}
+.dc-success-icon {
+  margin: 0 auto 16px;
+  width: 56px; height: 56px;
+  display: grid; place-items: center;
+  border-radius: 999px;
+  background: rgba(52, 216, 154, .18);
+  color: var(--dc-green);
+}
+.dc-success-title {
+  margin: 0 0 6px;
+  font-size: 1.6rem; font-weight: 800;
+  letter-spacing: -.01em;
+  color: var(--dc-text);
+}
+.dc-success-desc {
+  margin: 0 0 22px;
+  font-size: 14.5px;
+  color: var(--dc-muted);
+}
+.dc-success-meta {
+  margin: 0 auto 24px;
+  max-width: 420px;
+  background: var(--dc-soft);
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: grid; gap: 8px;
+  text-align: left;
+}
+.dc-success-row {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+}
+.dc-success-label {
+  font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase;
+  color: var(--dc-muted);
+  font-size: 11px;
+}
+.dc-success-val {
+  font-weight: 600;
+  color: var(--dc-text);
+  font-variant-numeric: tabular-nums;
+  word-break: break-all;
+  text-align: right;
+}
+
+/* ─────────── Buttons ─────────── */
+.dc-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 44px; padding: 0 22px;
+  font: inherit;
+  font-size: 14px; font-weight: 700;
+  letter-spacing: -.005em;
+  border-radius: var(--dc-radius-pill);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: background .12s ease, border-color .12s ease, color .12s ease;
+}
+.dc-btn--primary {
+  background: var(--dc-accent);
+  color: #FFFFFF;
+}
+.dc-btn--primary:hover { background: #D14730; }
+.dc-btn--primary:active { transform: translateY(0.5px); }
