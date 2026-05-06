@@ -1,16 +1,15 @@
 -- ──────────────────────────────────────────────────────────────────────────
 -- Migration: engagement + reviews + inbox subsystem for /company/[slug] pages.
 -- All tables idempotent. Run in phpMyAdmin against cdbrisgy_infowebworld.
--- All foreign keys assume:
---   submissions.id  = INT UNSIGNED (or INT, both compatible)
---   business_users.id = INT(10) UNSIGNED  (verified S35)
+-- Type alignment (verified against actual prod schema):
+--   submissions.id    = BIGINT UNSIGNED   (per database/schema.sql:138)
+--   business_users.id = INT(10) UNSIGNED  (verified in S35)
 -- ──────────────────────────────────────────────────────────────────────────
 
 -- ─── 1. listing_follows ─────────────────────────────────────────────────
--- One row per (listing, user) — toggle by INSERT IGNORE / DELETE.
 CREATE TABLE IF NOT EXISTS listing_follows (
   id           INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  listing_id   INT UNSIGNED NOT NULL,
+  listing_id   BIGINT UNSIGNED NOT NULL,
   user_id      INT UNSIGNED NOT NULL,
   created_at   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
@@ -21,10 +20,9 @@ CREATE TABLE IF NOT EXISTS listing_follows (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ─── 2. listing_reactions ───────────────────────────────────────────────
--- Like / dislike. One row per (listing, user) — kind flips on UPDATE.
 CREATE TABLE IF NOT EXISTS listing_reactions (
   id           INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  listing_id   INT UNSIGNED NOT NULL,
+  listing_id   BIGINT UNSIGNED NOT NULL,
   user_id      INT UNSIGNED NOT NULL,
   kind         ENUM('like','dislike') NOT NULL,
   created_at   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -38,7 +36,7 @@ CREATE TABLE IF NOT EXISTS listing_reactions (
 -- ─── 3. listing_bookmarks ───────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS listing_bookmarks (
   id           INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  listing_id   INT UNSIGNED NOT NULL,
+  listing_id   BIGINT UNSIGNED NOT NULL,
   user_id      INT UNSIGNED NOT NULL,
   created_at   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
@@ -49,11 +47,9 @@ CREATE TABLE IF NOT EXISTS listing_bookmarks (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ─── 4. reviews ─────────────────────────────────────────────────────────
--- Visitor-submitted reviews. status='approved' is the only one that counts
--- toward aggregates and renders publicly.
 CREATE TABLE IF NOT EXISTS reviews (
   id            INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  listing_id    INT UNSIGNED NOT NULL,
+  listing_id    BIGINT UNSIGNED NOT NULL,
   user_id       INT UNSIGNED NOT NULL,
   rating        TINYINT UNSIGNED NOT NULL,
   title         VARCHAR(120) NOT NULL,
@@ -68,10 +64,9 @@ CREATE TABLE IF NOT EXISTS reviews (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ─── 5. listing_inbox_emails ───────────────────────────────────────────
--- Captures the "Send software info to my inbox" form. Anonymous-friendly.
 CREATE TABLE IF NOT EXISTS listing_inbox_emails (
   id           INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  listing_id   INT UNSIGNED NOT NULL,
+  listing_id   BIGINT UNSIGNED NOT NULL,
   email        VARCHAR(255) NOT NULL,
   ip_address   VARCHAR(45),
   created_at   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

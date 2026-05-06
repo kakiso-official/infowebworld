@@ -1,18 +1,22 @@
 import { NextRequest } from 'next/server'
-import { execute } from '@/lib/db'
+import { execute, queryOne } from '@/lib/db'
 import { requireUser } from '@/lib/user-auth'
 
-/* POST: like or dislike. Body: { kind: 'like' | 'dislike' }.
-   Switches an existing reaction kind in place. */
-export async function POST(request: NextRequest, ctx: { params: Promise<{ id: string }> }) {
+async function resolveListingId(slug: string): Promise<number | null> {
+  const row = await queryOne<{ id: number }>(
+    'SELECT id FROM submissions WHERE slug = ? LIMIT 1',
+    [slug]
+  )
+  return row ? Number(row.id) : null
+}
+
+export async function POST(request: NextRequest, ctx: { params: Promise<{ slug: string }> }) {
   const auth = await requireUser(request)
   if (auth instanceof Response) return auth
 
-  const { id } = await ctx.params
-  const listingId = Number(id)
-  if (!Number.isFinite(listingId) || listingId <= 0) {
-    return Response.json({ ok: false, error: 'Invalid listing id' }, { status: 400 })
-  }
+  const { slug } = await ctx.params
+  const listingId = await resolveListingId(slug)
+  if (!listingId) return Response.json({ ok: false, error: 'Listing not found' }, { status: 404 })
 
   let body: { kind?: string }
   try { body = await request.json() } catch {
@@ -32,21 +36,18 @@ export async function POST(request: NextRequest, ctx: { params: Promise<{ id: st
     )
     return Response.json({ ok: true })
   } catch (err) {
-    console.error('POST /api/listings/[id]/reactions error:', err)
+    console.error('POST /api/listings/[slug]/reactions error:', err)
     return Response.json({ ok: false, error: 'Server error' }, { status: 500 })
   }
 }
 
-/* DELETE: remove your reaction (clears like or dislike). */
-export async function DELETE(request: NextRequest, ctx: { params: Promise<{ id: string }> }) {
+export async function DELETE(request: NextRequest, ctx: { params: Promise<{ slug: string }> }) {
   const auth = await requireUser(request)
   if (auth instanceof Response) return auth
 
-  const { id } = await ctx.params
-  const listingId = Number(id)
-  if (!Number.isFinite(listingId) || listingId <= 0) {
-    return Response.json({ ok: false, error: 'Invalid listing id' }, { status: 400 })
-  }
+  const { slug } = await ctx.params
+  const listingId = await resolveListingId(slug)
+  if (!listingId) return Response.json({ ok: false, error: 'Listing not found' }, { status: 404 })
 
   try {
     await execute(
@@ -55,7 +56,7 @@ export async function DELETE(request: NextRequest, ctx: { params: Promise<{ id: 
     )
     return Response.json({ ok: true })
   } catch (err) {
-    console.error('DELETE /api/listings/[id]/reactions error:', err)
+    console.error('DELETE /api/listings/[slug]/reactions error:', err)
     return Response.json({ ok: false, error: 'Server error' }, { status: 500 })
   }
 }

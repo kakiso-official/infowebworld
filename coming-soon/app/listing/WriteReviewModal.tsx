@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 interface Props {
   isOpen: boolean
   onClose: () => void
-  listingId: number
+  listingSlug: string
   companyName: string
   hasExistingReview: boolean
   isAuthed: boolean
@@ -18,7 +18,7 @@ interface Props {
  * the modal mounts (parent gates this).
  */
 export default function WriteReviewModal({
-  isOpen, onClose, listingId, companyName, hasExistingReview, isAuthed, isPreview,
+  isOpen, onClose, listingSlug, companyName, hasExistingReview, isAuthed, isPreview,
 }: Props) {
   const [rating, setRating] = useState(0)
   const [hover, setHover] = useState(0)
@@ -59,7 +59,7 @@ export default function WriteReviewModal({
 
     setSubmitting(true); setError('')
     try {
-      const res = await fetch(`/api/listings/${listingId}/reviews`, {
+      const res = await fetch(`/api/listings/${listingSlug}/reviews`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rating, title: title.trim(), body: body.trim() }),

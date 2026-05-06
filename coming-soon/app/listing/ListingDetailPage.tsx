@@ -1150,6 +1150,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
     : null
   const isPreview = !initialData
   const listingId = real?.id ? Number(real.id) : 0
+  const listingSlug = real?.slug || (props.slug || '')
   const isAuthed = Boolean(initialData?.isAuthed)
 
   /* Last updated — pulled directly from the row, formatted human-friendly. */
@@ -1264,7 +1265,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
     const nextFollowing = !following
     setFollowing(nextFollowing)
     setFollowers(c => c + (nextFollowing ? 1 : -1))
-    fetch(`/api/listings/${listingId}/follow`, {
+    fetch(`/api/listings/${listingSlug}/follow`, {
       method: nextFollowing ? 'POST' : 'DELETE',
     }).catch(() => {
       /* Roll back on failure. */
@@ -1307,7 +1308,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
   /* Optimistic local update + best-effort POST/DELETE. Reverts on failure. */
   const reactRemote = (op: 'POST' | 'DELETE', kind?: 'like' | 'dislike') => {
     if (!listingId) return
-    fetch(`/api/listings/${listingId}/reactions`, {
+    fetch(`/api/listings/${listingSlug}/reactions`, {
       method: op,
       headers: { 'Content-Type': 'application/json' },
       body: op === 'POST' ? JSON.stringify({ kind }) : undefined,
@@ -1353,7 +1354,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
     if (!listingId) return
     const nextBookmarked = !bookmarked
     setBookmarked(nextBookmarked)
-    fetch(`/api/listings/${listingId}/bookmark`, {
+    fetch(`/api/listings/${listingSlug}/bookmark`, {
       method: nextBookmarked ? 'POST' : 'DELETE',
     }).catch(() => setBookmarked(!nextBookmarked))
   }
@@ -1362,7 +1363,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
     if (!listingId || !inboxEmail.trim()) return
     setInboxStatus('sending')
     try {
-      const res = await fetch(`/api/listings/${listingId}/inbox-email`, {
+      const res = await fetch(`/api/listings/${listingSlug}/inbox-email`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: inboxEmail.trim() }),
@@ -3152,7 +3153,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
       <WriteReviewModal
         isOpen={reviewOpen}
         onClose={() => setReviewOpen(false)}
-        listingId={listingId}
+        listingSlug={listingSlug}
         companyName={view.companyName}
         hasExistingReview={hasReviewed}
         isAuthed={isAuthed}

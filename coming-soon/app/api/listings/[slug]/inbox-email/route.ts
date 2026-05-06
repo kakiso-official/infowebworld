@@ -1,23 +1,28 @@
 import { NextRequest } from 'next/server'
-import { execute } from '@/lib/db'
+import { execute, queryOne } from '@/lib/db'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { getClientIp } from '@/lib/tracking'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-/* POST: capture an email subscriber for the "Send info to my inbox" form. */
-export async function POST(request: NextRequest, ctx: { params: Promise<{ id: string }> }) {
+async function resolveListingId(slug: string): Promise<number | null> {
+  const row = await queryOne<{ id: number }>(
+    'SELECT id FROM submissions WHERE slug = ? LIMIT 1',
+    [slug]
+  )
+  return row ? Number(row.id) : null
+}
+
+export async function POST(request: NextRequest, ctx: { params: Promise<{ slug: string }> }) {
   const ip = await getClientIp()
   const limited = await checkRateLimit(ip, 'inbox-email', 5, 600)
   if (!limited) {
     return Response.json({ ok: false, error: 'Too many requests.' }, { status: 429 })
   }
 
-  const { id } = await ctx.params
-  const listingId = Number(id)
-  if (!Number.isFinite(listingId) || listingId <= 0) {
-    return Response.json({ ok: false, error: 'Invalid listing id' }, { status: 400 })
-  }
+  const { slug } = await ctx.params
+  const listingId = await resolveListingId(slug)
+  if (!listingId) return Response.json({ ok: false, error: 'Listing not found' }, { status: 404 })
 
   let body: { email?: unknown }
   try { body = await request.json() } catch {
@@ -35,7 +40,7 @@ export async function POST(request: NextRequest, ctx: { params: Promise<{ id: st
     )
     return Response.json({ ok: true })
   } catch (err) {
-    console.error('POST /api/listings/[id]/inbox-email error:', err)
+    console.error('POST /api/listings/[slug]/inbox-email error:', err)
     return Response.json({ ok: false, error: 'Server error' }, { status: 500 })
   }
 }
