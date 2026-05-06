@@ -2,11 +2,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import DashboardHeader from '../../DashboardHeader'
+import { PLAN_FEATURE_SECTIONS, planIncludesRow, type PaidPlanKey } from '../../../business/components/planFeatures'
+import { STARTER_ROWS } from '../../../business/components/planGating'
 
 const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
   || 'AcVEK9s17rxgOj1JTpZ0Cp94PIA_ghK8nGnPcWXdL7wpH-cfdw5-5jETY84-Tib3QKCZbzPU1xYLH7Fx'
 
-type PaidPlan = 'starter' | 'yearly' | 'lifetime'
+type PaidPlan = PaidPlanKey
 
 interface PlanInfo {
   label: string
@@ -16,7 +18,6 @@ interface PlanInfo {
   period: string
   description: string
   paypalDescription: string
-  bullets: string[]
   guarantee: string
 }
 
@@ -27,16 +28,9 @@ const PLAN_INFO: Record<PaidPlan, PlanInfo> = {
     amount: 49,
     amountDisplay: '$49',
     period: 'one-time',
-    description: 'Everything in Free, plus pricing tiers, FAQs, rich key features and reviews.',
+    description: 'Everything in Free, plus pricing tiers, FAQs, rich key features and reviews — paid once, listing is yours forever.',
     paypalDescription: 'InfoWebWorld — Starter Plan',
-    bullets: [
-      'Up to 10 features and 12 tags',
-      'Pricing tiers + FAQ section',
-      'Rich key features with descriptions',
-      '3 product screenshots',
-      'Reviews + verified backlink',
-    ],
-    guarantee: '7-day refund if your listing is not approved.',
+    guarantee: '14-day refund if your listing is not approved.',
   },
   yearly: {
     label: 'Early Adopter',
@@ -44,32 +38,18 @@ const PLAN_INFO: Record<PaidPlan, PlanInfo> = {
     amount: 99,
     amountDisplay: '$99',
     period: '/ year',
-    description: 'The complete listing. Lead capture, analytics, compliance and awards — billed yearly, locked at $99.',
+    description: 'Complete platform access. Lead capture, analytics, compliance and awards — billed yearly, renewal locked at $99 for life.',
     paypalDescription: 'InfoWebWorld — Early Adopter Plan',
-    bullets: [
-      'Up to 30 features and 30 tags',
-      'Compliance, awards and certifications',
-      '10 screenshots + demo video',
-      'Lead capture + analytics dashboard',
-      'Priority approval review',
-    ],
-    guarantee: 'Cancel anytime. Renewal locked at $99 for life.',
+    guarantee: 'Cancel anytime. 30-day money-back guarantee.',
   },
   lifetime: {
     label: 'Lifetime Founding',
-    tagline: 'Every premium field unlocked, forever',
+    tagline: 'Every premium feature unlocked, forever',
     amount: 239,
     amountDisplay: '$239',
     period: 'one-time',
-    description: 'One payment, lifetime access. Every field, every tier, every future premium feature included.',
+    description: 'One payment, lifetime access. Every field, every section, every future premium feature included — no renewals, no price increases.',
     paypalDescription: 'InfoWebWorld — Lifetime Founding Plan',
-    bullets: [
-      'Up to 50 features and 30 tags',
-      '8 rich key features + 20 FAQs',
-      '10 screenshots + demo video',
-      'All current and future premium features',
-      'Priority support and approval queue',
-    ],
     guarantee: '30-day money-back guarantee. No questions asked.',
   },
 }
@@ -233,18 +213,30 @@ export default function CheckoutClient({ plan, userEmail }: Props) {
 
           <div className="dc-summary-divider" />
 
-          <div className="dc-summary-section-label">What&apos;s included</div>
-          <ul className="dc-summary-bullets">
-            {info.bullets.map(b => (
-              <li key={b}>
-                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
-                  <path d="M5 12l5 5 9-11" fill="none" stroke="currentColor"
-                    strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                <span>{b}</span>
-              </li>
-            ))}
-          </ul>
+          <div className="dc-summary-section-label">Everything you get</div>
+          {PLAN_FEATURE_SECTIONS.map(section => {
+            const includedRows = section.rows.filter(r => planIncludesRow(plan, r, STARTER_ROWS))
+            if (includedRows.length === 0) return null
+            return (
+              <div key={section.title} className="dc-feat-group">
+                <h3 className="dc-feat-group-title">
+                  {section.title}
+                  <span className="dc-feat-group-count">{includedRows.length}</span>
+                </h3>
+                <ul className="dc-summary-bullets">
+                  {includedRows.map(row => (
+                    <li key={row}>
+                      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                        <path d="M5 12l5 5 9-11" fill="none" stroke="currentColor"
+                          strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                      <span>{row}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )
+          })}
 
           <div className="dc-summary-divider" />
 

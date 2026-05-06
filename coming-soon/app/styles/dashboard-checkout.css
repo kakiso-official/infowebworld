@@ -94,6 +94,35 @@
   color: var(--dc-accent);
   margin-top: 2px;
 }
+
+/* Feature groups — section header + checkmark list, used to render the
+   /plans page Full Feature Comparison content per tier. */
+.dc-feat-group {
+  margin-top: 18px;
+}
+.dc-feat-group:first-of-type { margin-top: 0; }
+.dc-feat-group-title {
+  margin: 0 0 10px;
+  font: inherit;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: -.005em;
+  color: var(--dc-text);
+  display: flex; align-items: center; gap: 8px;
+}
+.dc-feat-group-count {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 22px; height: 18px;
+  padding: 0 6px;
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--dc-muted);
+  background: var(--dc-soft);
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
+}
+.dc-feat-group .dc-summary-bullets li {
+  font-size: 13.5px;
+}
 .dc-summary-guarantee {
   display: flex; align-items: center; gap: 10px;
   padding: 12px 14px;

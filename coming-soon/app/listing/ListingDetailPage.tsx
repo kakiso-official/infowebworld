@@ -1106,28 +1106,45 @@ function ThumbMixed() {
 export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
   const { initialData } = props
 
-  // Derive a view object from real DB data (or fall back to Mailchimp sample
-  // when the page is rendered without initialData — used by /test-listing-page
-  // for design-only preview).
+  /* Two render modes:
+     - Real mode (initialData present): show ONLY the data the submitter
+       provided. Empty fields and unsupported sections are hidden — no
+       Mailchimp-style sample fillers.
+     - Preview mode (no initialData): used by /test-listing-page for
+       design preview. Sample arrays + Mailchimp string fallbacks are
+       used so the layout reads as a fully populated listing. */
   const real: Partial<RealSubmission> | null = initialData
     ? mapServerRow(initialData.listing)
     : null
+  const isPreview = !initialData
 
-  const companyName = (real?.companyName && real.companyName.trim()) || 'Mailchimp'
+  const companyName = (real?.companyName && real.companyName.trim())
+    || (isPreview ? 'Mailchimp' : '')
+
+  /* Logo fallback in real mode tries the site's favicon (Google s2 service)
+     before giving up. Avoids leaking the Mailchimp logo onto a stranger's
+     listing just because they didn't upload anything. */
+  const websiteHost = (real?.website || '').replace(/^https?:\/\//, '').split('/')[0]
+  const fallbackLogo = isPreview
+    ? MAILCHIMP_LOGO
+    : (websiteHost ? clearbit(websiteHost, 256) : '')
+
   const view = {
     companyName,
-    logoUrl:     real?.logoUrl || MAILCHIMP_LOGO,
+    logoUrl:     real?.logoUrl || fallbackLogo,
     tagline:     real?.tagline || '',
     description: real?.description || '',
-    website:     real?.website || 'https://mailchimp.com',
-    founded:     real?.founded || '2001',
-    employees:   real?.employees || '1,000+',
+    website:     real?.website || (isPreview ? 'https://mailchimp.com' : ''),
+    founded:     real?.founded || (isPreview ? '2001' : ''),
+    employees:   real?.employees || (isPreview ? '1,000+' : ''),
     hqLocation:  real?.hqLocation
       || [real?.city, real?.state, real?.country].filter(Boolean).join(', ')
-      || '675 Ponce de Leon Ave NE, Atlanta, GA, USA',
-    phoneFmt:    real?.phone ? `${real.phoneCode || '+1'} ${real.phone}` : '+1 678 999 0000',
+      || (isPreview ? '675 Ponce de Leon Ave NE, Atlanta, GA, USA' : ''),
+    phoneFmt:    real?.phone
+      ? `${real.phoneCode || '+1'} ${real.phone}`
+      : (isPreview ? '+1 678 999 0000' : ''),
     email:       real?.email || '',
-    category:    real?.category || 'Email Marketing',
+    category:    real?.category || (isPreview ? 'Email Marketing' : ''),
     plan:        real?.planName || real?.plan || '',
     realFaqs:    (real?.faqs && real.faqs.length > 0) ? real.faqs : null,
     realPricing: (real?.pricingTiers && real.pricingTiers.length > 0) ? real.pricingTiers : null,
@@ -1170,14 +1187,15 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
   const KEY_FEATURES_VISIBLE = 3
   const [activeSection, setActiveSection] = useState<string>(TOC[0]?.id ?? '')
 
-  // ─── Engagement state (follow / like / dislike / bookmark) ───
+  // ─── Engagement state (follow / like / dislike / bookmark) — counts are
+  // sample-only in preview, zeroed in real mode (no engagement DB yet). ───
   const [following, setFollowing] = useState(false)
-  const [followers, setFollowers] = useState(2_481)
+  const [followers, setFollowers] = useState(isPreview ? 2_481 : 0)
   const [liked, setLiked] = useState(false)
   const [disliked, setDisliked] = useState(false)
   const [bookmarked, setBookmarked] = useState(false)
-  const [likes, setLikes] = useState(127)
-  const [dislikes, setDislikes] = useState(8)
+  const [likes, setLikes] = useState(isPreview ? 127 : 0)
+  const [dislikes, setDislikes] = useState(isPreview ? 8 : 0)
 
   const toggleFollow = () => {
     setFollowing(f => !f)
@@ -1337,9 +1355,11 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
     return INTEGRATIONS.filter(i => i.name.toLowerCase().includes(q) || i.tag.toLowerCase().includes(q))
   }, [integrationQ])
 
-  const overallRating = 4.4
-  const reviewsCount = 17248
-  const sentimentPct = 87
+  /* Aggregate review stats — sample-only until a reviews subsystem lands.
+     In real mode they read as 0 and the surrounding sections are hidden. */
+  const overallRating = isPreview ? 4.4 : 0
+  const reviewsCount  = isPreview ? 17248 : 0
+  const sentimentPct  = isPreview ? 87 : 0
 
   return (
     <>
@@ -1374,9 +1394,13 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
         <div className="tlp-sticky-head">
         <header className="tlp-identity">
           <div className="tlp-identity-inner">
-            {/* Logo */}
+            {/* Logo — letter avatar fallback when no real logo or favicon. */}
             <div className="tlp-id-logo">
-              <img src={view.logoUrl} alt={`${view.companyName} logo`} />
+              {view.logoUrl
+                ? <img src={view.logoUrl} alt={`${view.companyName} logo`} />
+                : <span className="tlp-id-logo-fallback" aria-hidden="true">
+                    {(view.companyName.trim().charAt(0) || '?').toUpperCase()}
+                  </span>}
             </div>
 
             {/* Identity column */}
@@ -1385,27 +1409,41 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 {view.companyName}
                 <span className="tlp-id-verified" aria-label="Verified company"><VerifiedBadge /></span>
               </h1>
-              <div className="tlp-id-meta">
-                <span className="tlp-id-rate-num">{overallRating.toFixed(1)}</span>
-                <Stars value={overallRating} size={15} />
-                <a href="#insights" className="tlp-id-reviews">({reviewsCount.toLocaleString()} Reviews)</a>
-                <span className="tlp-id-vpill"><CheckCircle /> Verified</span>
-              </div>
-              {/* Category tags — what this listing is, at a glance */}
-              <div className="tlp-id-tags" role="list" aria-label="Categories">
-                {(view.realHeaderTags || HEADER_TAGS).map(t => (
-                  <a key={t} href="#" role="listitem" className="tlp-id-tag">{t}</a>
-                ))}
-              </div>
+              {isPreview && (
+                <div className="tlp-id-meta">
+                  <span className="tlp-id-rate-num">{overallRating.toFixed(1)}</span>
+                  <Stars value={overallRating} size={15} />
+                  <a href="#insights" className="tlp-id-reviews">({reviewsCount.toLocaleString()} Reviews)</a>
+                  <span className="tlp-id-vpill"><CheckCircle /> Verified</span>
+                </div>
+              )}
+              {/* Category tags — only when the submitter provided them. */}
+              {(view.realHeaderTags || (isPreview ? HEADER_TAGS : null)) && (
+                <div className="tlp-id-tags" role="list" aria-label="Categories">
+                  {(view.realHeaderTags || HEADER_TAGS).map(t => (
+                    <a key={t} href="#" role="listitem" className="tlp-id-tag">{t}</a>
+                  ))}
+                </div>
+              )}
 
-              {/* Combined contact row — address + phone inline (saves vertical space) */}
-              <div className="tlp-id-line tlp-id-line--combo">
-                <span className="tlp-id-info"><span className="tlp-id-icn"><MapPinIcon /></span><span>{view.hqLocation}</span></span>
-                <span className="tlp-id-info-sep" aria-hidden="true">·</span>
-                <span className="tlp-id-info"><span className="tlp-id-icn"><PhoneIcon /></span><span>{view.phoneFmt}</span></span>
-              </div>
+              {/* Combined contact row — only renders parts the submitter provided. */}
+              {(view.hqLocation || view.phoneFmt) && (
+                <div className="tlp-id-line tlp-id-line--combo">
+                  {view.hqLocation && (
+                    <span className="tlp-id-info"><span className="tlp-id-icn"><MapPinIcon /></span><span>{view.hqLocation}</span></span>
+                  )}
+                  {view.hqLocation && view.phoneFmt && (
+                    <span className="tlp-id-info-sep" aria-hidden="true">·</span>
+                  )}
+                  {view.phoneFmt && (
+                    <span className="tlp-id-info"><span className="tlp-id-icn"><PhoneIcon /></span><span>{view.phoneFmt}</span></span>
+                  )}
+                </div>
+              )}
 
-              {/* Engagement bar — like / dislike / bookmark (Follow moved to actions column) */}
+              {/* Engagement bar — like / dislike / bookmark. Hidden in real mode
+                  until an engagement DB lands; counts would be cosmetic. */}
+              {isPreview && (
               <div className="tlp-engage" role="group" aria-label="Engagement actions">
 
                 <button
@@ -1439,6 +1477,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                   <span>{bookmarked ? 'Saved' : 'Save'}</span>
                 </button>
               </div>
+              )}
             </div>
 
             <div className="tlp-id-divider" aria-hidden="true" />
@@ -1450,7 +1489,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
               {view.realPricing && view.realPricing.length > 0 && (
                 <div className="tlp-stat-row"><span className="tlp-id-icn"><WalletIcon /></span><span>{view.realPricing.length} plan{view.realPricing.length === 1 ? '' : 's'}</span></div>
               )}
-              {!view.realPricing && (<>
+              {!view.realPricing && isPreview && (<>
                 <div className="tlp-stat-row"><span className="tlp-id-icn"><ClockIcon /></span><span>Free–$350/mo</span></div>
                 <div className="tlp-stat-row"><span className="tlp-id-icn"><WalletIcon /></span><span>4 plans</span></div>
               </>)}
@@ -1461,22 +1500,30 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             {/* Actions column — Follow lives here as a primary CTA above the
                 transactional actions, paired with a follower count */}
             <div className="tlp-id-actions">
-              <button
-                type="button"
-                className={`tlp-btn-follow ${following ? 'is-active' : ''}`}
-                onClick={toggleFollow}
-                aria-pressed={following}
-                aria-label={following ? 'Unfollow this listing' : 'Follow this listing'}
-              >
-                <span className="tlp-btn-follow-main">
-                  {following ? <CheckSm2 /> : <BellIcon />}
-                  <span>{following ? 'Following' : 'Follow'}</span>
-                </span>
-                <span className="tlp-btn-follow-count">{followers.toLocaleString()}</span>
-              </button>
-              <a href={view.website} target="_blank" rel="noopener noreferrer" className="tlp-btn-primary">Visit website <ExternalArrowIcon /></a>
-              <a href={view.email ? `mailto:${view.email}` : '#'} className="tlp-btn-outline">Get a Quote <MailIcon /></a>
-              <a href="#insights" className="tlp-write-review">Write a Review <PencilIcon /></a>
+              {isPreview && (
+                <button
+                  type="button"
+                  className={`tlp-btn-follow ${following ? 'is-active' : ''}`}
+                  onClick={toggleFollow}
+                  aria-pressed={following}
+                  aria-label={following ? 'Unfollow this listing' : 'Follow this listing'}
+                >
+                  <span className="tlp-btn-follow-main">
+                    {following ? <CheckSm2 /> : <BellIcon />}
+                    <span>{following ? 'Following' : 'Follow'}</span>
+                  </span>
+                  <span className="tlp-btn-follow-count">{followers.toLocaleString()}</span>
+                </button>
+              )}
+              {view.website && (
+                <a href={view.website} target="_blank" rel="noopener noreferrer" className="tlp-btn-primary">Visit website <ExternalArrowIcon /></a>
+              )}
+              {view.email && (
+                <a href={`mailto:${view.email}`} className="tlp-btn-outline">Get a Quote <MailIcon /></a>
+              )}
+              {isPreview && (
+                <a href="#insights" className="tlp-write-review">Write a Review <PencilIcon /></a>
+              )}
             </div>
           </div>
         </header>
@@ -1506,186 +1553,212 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             {/* ─── Page title + verification block (inside content column) ─── */}
             <div className="tlp-title-block">
               <h1 className="tlp-page-title">
-                {view.companyName} — 2026 Pricing, Features, Reviews &amp; Alternatives
+                {view.companyName}
+                {isPreview && ' — 2026 Pricing, Features, Reviews & Alternatives'}
               </h1>
-              <div className="tlp-verify">
-                <span className="tlp-verify-avatars" aria-hidden="true">
-                  <span className="tlp-va" style={{ background: '#0C9A9A' }}>MR</span>
-                  <span className="tlp-va" style={{ background: '#7C3AED' }}>KS</span>
-                </span>
-                <span>
-                  All user reviews are verified by in-house moderators and provider data by
-                  our software research team.{' '}
-                  <a href="#" className="tlp-inline-link">Learn more</a>
-                </span>
-              </div>
-              <div className="tlp-updated">Last updated: April 2026</div>
+              {view.tagline && <p className="tlp-page-tagline">{view.tagline}</p>}
+              {isPreview && (
+                <>
+                  <div className="tlp-verify">
+                    <span className="tlp-verify-avatars" aria-hidden="true">
+                      <span className="tlp-va" style={{ background: '#0C9A9A' }}>MR</span>
+                      <span className="tlp-va" style={{ background: '#7C3AED' }}>KS</span>
+                    </span>
+                    <span>
+                      All user reviews are verified by in-house moderators and provider data by
+                      our software research team.{' '}
+                      <a href="#" className="tlp-inline-link">Learn more</a>
+                    </span>
+                  </div>
+                  <div className="tlp-updated">Last updated: April 2026</div>
+                </>
+              )}
             </div>
 
             {/* ========== OVERVIEW CARD ========== */}
+            {(isPreview || view.description || view.realIntegrations) && (
             <section id="overview" className="tlp-ovw-card">
               <div className="tlp-ovw-grid">
 
                 {/* ── Left column: Q&A blocks ── */}
                 <div className="tlp-ovw-main">
                   <h2 className="tlp-ovw-title">{view.companyName} overview</h2>
-                  <div className="tlp-ovw-verify">
-                    <span className="tlp-verify-avatars" aria-hidden="true">
-                      <span className="tlp-va" style={{ background: '#0C9A9A', fontSize: 10 }}>MR</span>
-                      <span className="tlp-va" style={{ background: '#EA580C', fontSize: 10 }}>JL</span>
-                    </span>
-                    <span>Based on {reviewsCount.toLocaleString()} verified user reviews</span>
-                  </div>
-
-                  <div className="tlp-qa">
-                    <div className="tlp-qa-head">
-                      <h3>What is {view.companyName}?</h3>
-                      <a href="#key-features">See key features</a>
+                  {isPreview && (
+                    <div className="tlp-ovw-verify">
+                      <span className="tlp-verify-avatars" aria-hidden="true">
+                        <span className="tlp-va" style={{ background: '#0C9A9A', fontSize: 10 }}>MR</span>
+                        <span className="tlp-va" style={{ background: '#EA580C', fontSize: 10 }}>JL</span>
+                      </span>
+                      <span>Based on {reviewsCount.toLocaleString()} verified user reviews</span>
                     </div>
-                    <p>
-                      {view.description
-                        ? view.description
-                        : `${view.companyName} is a ${view.category.toLowerCase()} platform offering key features such as workflow automation, analytics, integrations, and team collaboration tools.`}
-                    </p>
-                  </div>
+                  )}
 
-                  <div className="tlp-qa">
-                    <div className="tlp-qa-head">
-                      <h3>Who uses {view.companyName}?</h3>
-                      <a href="#who-uses">See details</a>
+                  {(view.description || isPreview) && (
+                    <div className="tlp-qa">
+                      <div className="tlp-qa-head">
+                        <h3>What is {view.companyName}?</h3>
+                      </div>
+                      <p>
+                        {view.description
+                          ? view.description
+                          : `${view.companyName} is a ${view.category.toLowerCase()} platform offering key features such as workflow automation, analytics, integrations, and team collaboration tools.`}
+                      </p>
                     </div>
-                    <p>
-                      Reviews for {view.companyName} come from a wide variety of industries, including
-                      marketing and advertising, information technology and services, and computer
-                      software. The most frequent use cases cited by reviewers include
-                      {' '}{view.category.toLowerCase()}.
-                    </p>
-                  </div>
+                  )}
 
-                  <div className="tlp-qa">
-                    <div className="tlp-qa-head">
-                      <h3>What do users say about {view.companyName} pricing?</h3>
-                      <a href="#pricing">See details</a>
-                    </div>
-                    <p>
-                      Reviewers indicate that {view.companyName}&apos;s free or starter plan is appealing for small
-                      businesses, and they appreciate the ability to test core features without
-                      upfront costs. Some users report that pricing increases as their usage grows.
-                      Reviewers feel that essential features require paid upgrades, and some users
-                      compare it against other platforms for better value.
-                    </p>
-                  </div>
+                  {isPreview && (
+                    <>
+                      <div className="tlp-qa">
+                        <div className="tlp-qa-head">
+                          <h3>Who uses {view.companyName}?</h3>
+                          <a href="#who-uses">See details</a>
+                        </div>
+                        <p>
+                          Reviews for {view.companyName} come from a wide variety of industries, including
+                          marketing and advertising, information technology and services, and computer
+                          software. The most frequent use cases cited by reviewers include
+                          {' '}{view.category.toLowerCase()}.
+                        </p>
+                      </div>
 
-                  <div className="tlp-qa">
-                    <div className="tlp-qa-head">
-                      <h3>What are the most popular integrations for {view.companyName}?</h3>
-                      <a href="#integrations">See details</a>
+                      <div className="tlp-qa">
+                        <div className="tlp-qa-head">
+                          <h3>What do users say about {view.companyName} pricing?</h3>
+                          <a href="#pricing">See details</a>
+                        </div>
+                        <p>
+                          Reviewers indicate that {view.companyName}&apos;s free or starter plan is appealing for small
+                          businesses, and they appreciate the ability to test core features without
+                          upfront costs. Some users report that pricing increases as their usage grows.
+                          Reviewers feel that essential features require paid upgrades, and some users
+                          compare it against other platforms for better value.
+                        </p>
+                      </div>
+                    </>
+                  )}
+
+                  {(view.realIntegrations || isPreview) && (
+                    <div className="tlp-qa">
+                      <div className="tlp-qa-head">
+                        <h3>What are the most popular integrations for {view.companyName}?</h3>
+                        <a href="#integrations">See details</a>
+                      </div>
+                      <p>
+                        {view.realIntegrations && view.realIntegrations.length > 0 ? (
+                          <>The {view.companyName} integrations most frequently cited by reviewers are: {view.realIntegrations.slice(0, 5).join(', ')}.</>
+                        ) : (
+                          <>The {view.companyName} integrations most frequently cited by reviewers cover marketing,
+                          analytics, and e-commerce platforms.</>
+                        )}
+                      </p>
                     </div>
-                    <p>
-                      {view.realIntegrations && view.realIntegrations.length > 0 ? (
-                        <>The {view.companyName} integrations most frequently cited by reviewers are: {view.realIntegrations.slice(0, 5).join(', ')}.</>
-                      ) : (
-                        <>The {view.companyName} integrations most frequently cited by reviewers cover marketing,
-                        analytics, and e-commerce platforms.</>
-                      )}
-                    </p>
-                  </div>
+                  )}
                 </div>
 
                 {/* ── Right column: 3 stacked side blocks ── */}
                 <aside className="tlp-ovw-side">
 
-                  {/* Starting price */}
-                  <div className="tlp-side-block">
-                    <div className="tlp-side-head">
-                      <span className="tlp-side-title">
-                        Starting price <span className="tlp-info-ico"><InfoIcon /></span>
-                      </span>
-                      <a href="#pricing">See details</a>
-                    </div>
-                    <div className="tlp-side-price">
-                      <span className="tlp-side-price-sym">$</span>
-                      <span className="tlp-side-price-num">{view.realStartingPrice || '13'}</span>
-                      <span className="tlp-side-price-unit">{view.realStartingPeriod
-                        ? <>flat rate <br />{view.realStartingPeriod}</>
-                        : <>flat rate /<br />per month</>}</span>
-                    </div>
-                    <div className="tlp-side-trials">
-                      {view.realHasFreeTrial !== false && (
-                        <span className="tlp-side-trial">
-                          Free Trial <span className="tlp-check-sm"><CheckSm /></span>
+                  {/* Starting price — only when submitter provided one (or in preview). */}
+                  {(view.realStartingPrice || isPreview) && (
+                    <div className="tlp-side-block">
+                      <div className="tlp-side-head">
+                        <span className="tlp-side-title">
+                          Starting price <span className="tlp-info-ico"><InfoIcon /></span>
                         </span>
-                      )}
-                      {view.realHasFreeVersion !== false && (
-                        <span className="tlp-side-trial">
-                          Free Version <span className="tlp-check-sm"><CheckSm /></span>
-                        </span>
-                      )}
+                        <a href="#pricing">See details</a>
+                      </div>
+                      <div className="tlp-side-price">
+                        <span className="tlp-side-price-sym">$</span>
+                        <span className="tlp-side-price-num">{view.realStartingPrice || '13'}</span>
+                        <span className="tlp-side-price-unit">{view.realStartingPeriod
+                          ? <>flat rate <br />{view.realStartingPeriod}</>
+                          : <>flat rate /<br />per month</>}</span>
+                      </div>
+                      <div className="tlp-side-trials">
+                        {view.realHasFreeTrial && (
+                          <span className="tlp-side-trial">
+                            Free Trial <span className="tlp-check-sm"><CheckSm /></span>
+                          </span>
+                        )}
+                        {view.realHasFreeVersion && (
+                          <span className="tlp-side-trial">
+                            Free Version <span className="tlp-check-sm"><CheckSm /></span>
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
-                  {/* Alternatives with better value for money */}
-                  <div className="tlp-side-block">
-                    <div className="tlp-side-head">
-                      <span className="tlp-side-title">Alternatives</span>
-                    </div>
-                    <div className="tlp-side-sub">with better value for money</div>
-                    <a href="#alternatives" className="tlp-alt-mini">
-                      <span className="tlp-alt-mini-logo" aria-hidden="true">B</span>
-                      <span className="tlp-alt-mini-info">
-                        <span className="tlp-alt-mini-name">Brevo</span>
-                        <span className="tlp-alt-mini-rate">
-                          <Stars value={4.6} size={11} />
-                          <span>4.6</span>
-                          <em>(3.4K)</em>
+                  {/* Alternatives mini — sample-only until alternatives derivation lands. */}
+                  {isPreview && (
+                    <div className="tlp-side-block">
+                      <div className="tlp-side-head">
+                        <span className="tlp-side-title">Alternatives</span>
+                      </div>
+                      <div className="tlp-side-sub">with better value for money</div>
+                      <a href="#alternatives" className="tlp-alt-mini">
+                        <span className="tlp-alt-mini-logo" aria-hidden="true">B</span>
+                        <span className="tlp-alt-mini-info">
+                          <span className="tlp-alt-mini-name">Brevo</span>
+                          <span className="tlp-alt-mini-rate">
+                            <Stars value={4.6} size={11} />
+                            <span>4.6</span>
+                            <em>(3.4K)</em>
+                          </span>
                         </span>
-                      </span>
-                      <span className="tlp-alt-mini-chev"><ChevronRight size={18} /></span>
-                    </a>
-                  </div>
-
-                  {/* Pros & Cons */}
-                  <div className="tlp-side-block">
-                    <div className="tlp-side-head">
-                      <span className="tlp-side-title">
-                        Pros &amp; Cons <span className="tlp-info-ico"><InfoIcon /></span>
-                      </span>
+                        <span className="tlp-alt-mini-chev"><ChevronRight size={18} /></span>
+                      </a>
                     </div>
-                    <ul className="tlp-pc-list">
-                      {(view.realPros || PROS_SHORT).map(p => (
-                        <li key={p}>
-                          <span className="tlp-pc-bullet tlp-pc-bullet--pos"><CheckFilled /></span>
-                          <span>{p}</span>
-                        </li>
-                      ))}
-                      {(view.realCons || CONS_SHORT).map(c => (
-                        <li key={c}>
-                          <span className="tlp-pc-bullet tlp-pc-bullet--neg"><MinusFilled /></span>
-                          <span>{c}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <a href="#" className="tlp-pc-see">See all pros and cons</a>
-                  </div>
+                  )}
+
+                  {/* Pros & Cons — only when submitter provided either. */}
+                  {(view.realPros || view.realCons || isPreview) && (
+                    <div className="tlp-side-block">
+                      <div className="tlp-side-head">
+                        <span className="tlp-side-title">
+                          Pros &amp; Cons <span className="tlp-info-ico"><InfoIcon /></span>
+                        </span>
+                      </div>
+                      <ul className="tlp-pc-list">
+                        {(view.realPros || (isPreview ? PROS_SHORT : [])).map(p => (
+                          <li key={p}>
+                            <span className="tlp-pc-bullet tlp-pc-bullet--pos"><CheckFilled /></span>
+                            <span>{p}</span>
+                          </li>
+                        ))}
+                        {(view.realCons || (isPreview ? CONS_SHORT : [])).map(c => (
+                          <li key={c}>
+                            <span className="tlp-pc-bullet tlp-pc-bullet--neg"><MinusFilled /></span>
+                            <span>{c}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      {isPreview && <a href="#" className="tlp-pc-see">See all pros and cons</a>}
+                    </div>
+                  )}
 
                 </aside>
               </div>
             </section>
+            )}
 
             {/* ========== UI SCREENSHOTS — carousel ========== */}
+            {(view.realScreenshots || isPreview) && (
             <section id="ui" className="tlp-card">
               <div className="tlp-ui-head-row">
                 <h2 className="tlp-sec-title">{view.companyName}&apos;s user interface</h2>
-                <div className="tlp-ui-head">
-                  <span className="tlp-ui-ease">Ease of use:</span>
-                  <span className="tlp-ui-star" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" width="16" height="16">
-                      <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
-                    </svg>
-                  </span>
-                  <span className="tlp-ui-rating-num">4.5</span>
-                  <span className="tlp-ui-rating-count">(17.5K)</span>
-                </div>
+                {isPreview && (
+                  <div className="tlp-ui-head">
+                    <span className="tlp-ui-ease">Ease of use:</span>
+                    <span className="tlp-ui-star" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="16" height="16">
+                        <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
+                      </svg>
+                    </span>
+                    <span className="tlp-ui-rating-num">4.5</span>
+                    <span className="tlp-ui-rating-count">(17.5K)</span>
+                  </div>
+                )}
               </div>
 
               <div
@@ -1730,8 +1803,10 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 </div>
               </div>
             </section>
+            )}
 
-            {/* ========== INSIGHTS ========== */}
+            {/* ========== INSIGHTS — sample-only until reviews subsystem lands ========== */}
+            {isPreview && (
             <section id="insights" className="tlp-card">
               <h2 className="tlp-sec-title">{view.companyName} pros, cons and reviews insights</h2>
 
@@ -1890,8 +1965,10 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 </div>
               </div>
             </section>
+            )}
 
-            {/* ========== WHO USES ========== */}
+            {/* ========== WHO USES — sample-only until aggregations land ========== */}
+            {isPreview && (
             <section id="who-uses" className="tlp-card">
               <div className="tlp-wu-head">
                 <h2 className="tlp-sec-title">Who uses {view.companyName}?</h2>
@@ -2002,77 +2079,84 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
 
               </div>
             </section>
+            )}
 
             {/* ========== KEY FEATURES ========== */}
+            {(view.realKeyFeatures || view.realFeatures || isPreview) && (
             <section id="key-features" className="tlp-sec tlp-kf-sec">
               <h2 className="tlp-sec-title tlp-kf-title">{view.companyName}&apos;s key features</h2>
 
-              <p className="tlp-kf-intro">
-                <a href="#" className="tlp-inline-link">Based on our analysis</a>{' '}
-                of 984 verified user reviews collected between July 2021 and January 2026,
-                these are {view.companyName}&apos;s most critical features along with user sentiment
-                summarized beneath each one.{' '}
-                <a href="#" className="tlp-inline-link">Learn more about our reviews.</a>
-              </p>
+              {isPreview && (
+                <p className="tlp-kf-intro">
+                  <a href="#" className="tlp-inline-link">Based on our analysis</a>{' '}
+                  of 984 verified user reviews collected between July 2021 and January 2026,
+                  these are {view.companyName}&apos;s most critical features along with user sentiment
+                  summarized beneath each one.{' '}
+                  <a href="#" className="tlp-inline-link">Learn more about our reviews.</a>
+                </p>
+              )}
 
               {(() => {
-                /* When the submitter supplied keyFeatures, use those (they have only
-                   name + description — no rating, no quotes). Otherwise fall back to
-                   the hardcoded sample. */
+                /* Source list: realKeyFeatures (rich), else preview-only KEY_FEATURES sample. */
                 const list: Feature[] = view.realKeyFeatures
                   ? view.realKeyFeatures.map(kf => ({ name: kf.name, rating: 0, desc: kf.description || '' }))
-                  : KEY_FEATURES
+                  : (isPreview ? KEY_FEATURES : [])
                 const visible = keyFeaturesExpanded ? list : list.slice(0, KEY_FEATURES_VISIBLE)
-                return visible.map(f => (
-                  <div key={f.name} className="tlp-kf">
-                    <div className="tlp-kf-head">
-                      <span className="tlp-kf-bullet" aria-hidden="true">•</span>
-                      <span className="tlp-kf-name">{f.name}</span>
-                      {f.rating > 0 && (
-                        <span className="tlp-kf-rate">
-                          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-                            <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
-                          </svg>
-                          <span>{f.rating.toFixed(1)}</span>
+                return (
+                  <>
+                    {visible.map(f => (
+                      <div key={f.name} className="tlp-kf">
+                        <div className="tlp-kf-head">
+                          <span className="tlp-kf-bullet" aria-hidden="true">•</span>
+                          <span className="tlp-kf-name">{f.name}</span>
+                          {f.rating > 0 && (
+                            <span className="tlp-kf-rate">
+                              <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                                <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
+                              </svg>
+                              <span>{f.rating.toFixed(1)}</span>
+                            </span>
+                          )}
+                        </div>
+                        {f.desc && <p className="tlp-kf-desc">{swap(f.desc)}</p>}
+                      </div>
+                    ))}
+                    {list.length > KEY_FEATURES_VISIBLE && (
+                      <button
+                        type="button"
+                        className={`tlp-kf-more ${keyFeaturesExpanded ? 'is-open' : ''}`}
+                        onClick={() => setKeyFeaturesExpanded(e => !e)}
+                        aria-expanded={keyFeaturesExpanded}
+                      >
+                        <span>
+                          {keyFeaturesExpanded
+                            ? 'Show less'
+                            : `View ${list.length - KEY_FEATURES_VISIBLE} more features`}
                         </span>
-                      )}
-                    </div>
-                    <p className="tlp-kf-desc">{swap(f.desc)}</p>
-                  </div>
-                ))
+                        <svg viewBox="0 0 24 24" width="14" height="14" className="tlp-kf-more-chev" aria-hidden="true">
+                          <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </button>
+                    )}
+                  </>
+                )
               })()}
-
-              {KEY_FEATURES.length > KEY_FEATURES_VISIBLE && (
-                <button
-                  type="button"
-                  className={`tlp-kf-more ${keyFeaturesExpanded ? 'is-open' : ''}`}
-                  onClick={() => setKeyFeaturesExpanded(e => !e)}
-                  aria-expanded={keyFeaturesExpanded}
-                >
-                  <span>
-                    {keyFeaturesExpanded
-                      ? 'Show less'
-                      : `View ${KEY_FEATURES.length - KEY_FEATURES_VISIBLE} more features`}
-                  </span>
-                  <svg viewBox="0 0 24 24" width="14" height="14" className="tlp-kf-more-chev" aria-hidden="true">
-                    <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </button>
-              )}
 
               {/* ── All Mailchimp features (inline, same section) ── */}
               <div id="all-features" className="tlp-af">
                 <div className="tlp-af-head">
                   <div className="tlp-af-heading">
                     <h3 className="tlp-af-title">All {view.companyName} features</h3>
-                    <div className="tlp-af-meta">
-                      <span>Features rating:</span>
-                      <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-                        <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
-                      </svg>
-                      <strong>4.4</strong>
-                      <em>(17.5K)</em>
-                    </div>
+                    {isPreview && (
+                      <div className="tlp-af-meta">
+                        <span>Features rating:</span>
+                        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                          <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
+                        </svg>
+                        <strong>4.4</strong>
+                        <em>(17.5K)</em>
+                      </div>
+                    )}
                   </div>
                   <div className="tlp-af-search">
                     <input
@@ -2121,8 +2205,10 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 )}
               </div>
             </section>
+            )}
 
-            {/* ========== ALTERNATIVES ========== */}
+            {/* ========== ALTERNATIVES — sample-only until alternatives derivation lands ========== */}
+            {isPreview && (
             <section id="alternatives" className="tlp-sec">
               <h2 className="tlp-sec-title">{view.companyName} alternatives</h2>
 
@@ -2211,8 +2297,10 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 })}
               </div>
             </section>
+            )}
 
-            {/* ========== INBOX FORM ========== */}
+            {/* ========== INBOX FORM — preview-only (no backend wired) ========== */}
+            {isPreview && (
             <section className="tlp-sec tlp-inbox">
               <div className="tlp-inbox-card">
                 <h2 className="tlp-inbox-title">Send this software info to my inbox</h2>
@@ -2228,111 +2316,148 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 </form>
               </div>
             </section>
+            )}
 
             {/* ========== PRICING ========== */}
+            {(view.realPricing || isPreview) && (
             <section id="pricing" className="tlp-sec">
               <h2 className="tlp-sec-title">{view.companyName} pricing</h2>
 
-              <div className="tlp-price-meta">
-                <span>Value for money rating:</span>
-                <svg viewBox="0 0 24 24" width="14" height="14">
-                  <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
-                </svg>
-                <strong>4.4</strong>
-              </div>
+              {isPreview && (
+                <div className="tlp-price-meta">
+                  <span>Value for money rating:</span>
+                  <svg viewBox="0 0 24 24" width="14" height="14">
+                    <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
+                  </svg>
+                  <strong>4.4</strong>
+                </div>
+              )}
 
               <div className="tlp-price-sub">Pricing plans</div>
-              <div className="tlp-price-flags">
-                <span>Pricing details:</span>
-                <span className="tlp-price-flag">Free plan <CheckSm /></span>
-                <span className="tlp-price-flag">Free trial <CheckSm /></span>
-                <span className="tlp-price-flag">Subscription <CheckSm /></span>
-              </div>
+              {(view.realHasFreeTrial || view.realHasFreeVersion || isPreview) && (
+                <div className="tlp-price-flags">
+                  <span>Pricing details:</span>
+                  {view.realHasFreeVersion && <span className="tlp-price-flag">Free plan <CheckSm /></span>}
+                  {view.realHasFreeTrial && <span className="tlp-price-flag">Free trial <CheckSm /></span>}
+                  {isPreview && !view.realHasFreeVersion && <span className="tlp-price-flag">Free plan <CheckSm /></span>}
+                  {isPreview && !view.realHasFreeTrial && <span className="tlp-price-flag">Free trial <CheckSm /></span>}
+                  {isPreview && <span className="tlp-price-flag">Subscription <CheckSm /></span>}
+                </div>
+              )}
 
               <div className="tlp-pricing-grid">
-                {PRICING_PLANS.map(p => (
+                {(view.realPricing
+                    ? view.realPricing.map(p => ({
+                        name: p.name || '',
+                        price: p.price || '',
+                        period: p.period || '',
+                        features: p.features || [],
+                      }))
+                    : (isPreview ? PRICING_PLANS.map(p => ({ ...p, period: 'Per month' })) : [])
+                  ).map(p => (
                   <div key={p.name} className="tlp-plan">
                     <div className="tlp-plan-top">
                       <div className="tlp-plan-name">{p.name}</div>
                       <div className="tlp-plan-price">
-                        <span className="tlp-plan-sym">$</span>
-                        <span className="tlp-plan-amt">{p.price}</span>
+                        {p.price && <><span className="tlp-plan-sym">$</span><span className="tlp-plan-amt">{p.price}</span></>}
                       </div>
-                      <div className="tlp-plan-per">
-                        <InfoIcon /> Per month
-                      </div>
-                    </div>
-                    <div className="tlp-plan-body">
-                      <div className="tlp-plan-feat-head">Features included:</div>
-                      <ul className="tlp-plan-feat">
-                        {p.features.map(f => <li key={f}>{f}</li>)}
-                      </ul>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="tlp-price-dots" aria-hidden="true">
-                <span className="is-active" />
-                <span />
-              </div>
-
-              <h3 className="tlp-vo-title">User opinions about {view.companyName} price and value</h3>
-              <div className="tlp-price-meta">
-                <span>Value for money rating:</span>
-                <svg viewBox="0 0 24 24" width="14" height="14">
-                  <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
-                </svg>
-                <strong>4.4</strong>
-                <em>(17.5K)</em>
-              </div>
-              <p className="tlp-sec-lead">
-                To see what individual users think of {view.companyName}&apos;s price and value, check out the review snippets below.
-              </p>
-              <div className="tlp-vo-grid">
-                {VALUE_QUOTES.map(v => (
-                  <div key={v.name} className="tlp-vo">
-                    <div className="tlp-vo-badge">
-                      <span className="tlp-vo-badge-ico"><CheckSm /></span>
-                      Highly Relevant
-                    </div>
-                    <p className="tlp-vo-q">&ldquo;{swap(v.quote)}&rdquo;</p>
-                    <div className="tlp-vo-who">
-                      <span className="tlp-vo-av" style={{ background: v.color }}>{v.initials}</span>
-                      <div>
-                        <div className="tlp-vo-name">
-                          {v.name}
-                          <LinkedInBadge />
+                      {p.period && (
+                        <div className="tlp-plan-per">
+                          <InfoIcon /> {p.period}
                         </div>
-                        <div className="tlp-vo-role">{v.role}</div>
-                      </div>
+                      )}
                     </div>
+                    {p.features && p.features.length > 0 && (
+                      <div className="tlp-plan-body">
+                        <div className="tlp-plan-feat-head">Features included:</div>
+                        <ul className="tlp-plan-feat">
+                          {p.features.map((f: string) => <li key={f}>{f}</li>)}
+                        </ul>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
+
+              {isPreview && (
+                <>
+                  <div className="tlp-price-dots" aria-hidden="true">
+                    <span className="is-active" />
+                    <span />
+                  </div>
+
+                  <h3 className="tlp-vo-title">User opinions about {view.companyName} price and value</h3>
+                  <div className="tlp-price-meta">
+                    <span>Value for money rating:</span>
+                    <svg viewBox="0 0 24 24" width="14" height="14">
+                      <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
+                    </svg>
+                    <strong>4.4</strong>
+                    <em>(17.5K)</em>
+                  </div>
+                  <p className="tlp-sec-lead">
+                    To see what individual users think of {view.companyName}&apos;s price and value, check out the review snippets below.
+                  </p>
+                  <div className="tlp-vo-grid">
+                    {VALUE_QUOTES.map(v => (
+                      <div key={v.name} className="tlp-vo">
+                        <div className="tlp-vo-badge">
+                          <span className="tlp-vo-badge-ico"><CheckSm /></span>
+                          Highly Relevant
+                        </div>
+                        <p className="tlp-vo-q">&ldquo;{swap(v.quote)}&rdquo;</p>
+                        <div className="tlp-vo-who">
+                          <span className="tlp-vo-av" style={{ background: v.color }}>{v.initials}</span>
+                          <div>
+                            <div className="tlp-vo-name">
+                              {v.name}
+                              <LinkedInBadge />
+                            </div>
+                            <div className="tlp-vo-role">{v.role}</div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
             </section>
+            )}
 
             {/* ========== INTEGRATIONS ========== */}
+            {(view.realIntegrations || isPreview) && (
             <section id="integrations" className="tlp-sec">
               <div className="tlp-int-title-row">
                 <h2 className="tlp-sec-title" style={{ margin: 0 }}>
                   {view.companyName} integrations
-                  {view.realIntegrations ? ` (${view.realIntegrations.length})` : ' (2,089)'}
+                  {view.realIntegrations ? ` (${view.realIntegrations.length})` : (isPreview ? ' (2,089)' : '')}
                 </h2>
-                <div className="tlp-af-search tlp-int-search">
-                  <input
-                    type="text"
-                    placeholder="Search for an integration"
-                    value={integrationQ}
-                    onChange={e => setIntegrationQ(e.target.value)}
-                  />
-                  <svg viewBox="0 0 24 24" className="tlp-af-search-ico" aria-hidden="true">
-                    <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2" />
-                    <path d="M20 20l-3.5-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                  </svg>
-                </div>
+                {isPreview && (
+                  <div className="tlp-af-search tlp-int-search">
+                    <input
+                      type="text"
+                      placeholder="Search for an integration"
+                      value={integrationQ}
+                      onChange={e => setIntegrationQ(e.target.value)}
+                    />
+                    <svg viewBox="0 0 24 24" className="tlp-af-search-ico" aria-hidden="true">
+                      <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2" />
+                      <path d="M20 20l-3.5-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
+                  </div>
+                )}
               </div>
 
+              {/* Real-mode: simple chip grid using just submitter-supplied names. */}
+              {view.realIntegrations && !isPreview && (
+                <div className="tlp-int-chips">
+                  {view.realIntegrations.map(name => (
+                    <span key={name} className="tlp-int-chip">{name}</span>
+                  ))}
+                </div>
+              )}
+
+              {isPreview && (<>
               <h3 className="tlp-int-sub">Integrations rated by users</h3>
               <p className="tlp-int-intro">
                 We looked at user reviews to identify which products are mentioned as
@@ -2398,91 +2523,112 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
               <button type="button" className="tlp-int-expand">
                 Expand list <ChevronDown />
               </button>
+              </>)}
             </section>
+            )}
 
             {/* ========== CUSTOMER SUPPORT ========== */}
+            {(view.realSupportChannels || view.realTrainingOptions || isPreview) && (
             <section id="support" className="tlp-sec">
               <h2 className="tlp-sec-title">{view.companyName} customer support</h2>
 
               <div className="tlp-cs-grid">
-                {/* Left: heading + rating + description + bullets */}
-                <div>
-                  <h3 className="tlp-cs-q">What do users say about {view.companyName} customer support?</h3>
-                  <div className="tlp-cs-rate">
-                    <span>Customer support rating:</span>
-                    <svg viewBox="0 0 24 24" width="14" height="14">
-                      <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
-                    </svg>
-                    <strong>4.4</strong>
+                {/* Left: heading + sample-only insights (rating, narrative bullets) */}
+                {isPreview && (
+                  <div>
+                    <h3 className="tlp-cs-q">What do users say about {view.companyName} customer support?</h3>
+                    <div className="tlp-cs-rate">
+                      <span>Customer support rating:</span>
+                      <svg viewBox="0 0 24 24" width="14" height="14">
+                        <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
+                      </svg>
+                      <strong>4.4</strong>
+                    </div>
+                    <p className="tlp-cs-intro">
+                      We analyzed verified user reviews to identify positive and negative aspects of
+                      {' '}{view.companyName} customer support.{' '}
+                      <a href="#" className="tlp-inline-link">Learn more about our reviews.</a>
+                    </p>
+
+                    <ul className="tlp-cs-bullets">
+                      {SUPPORT_BULLETS.map(b => (
+                        <li key={b.text}>
+                          <span className={`tlp-cs-bullet tlp-cs-bullet--${b.kind}`}>
+                            {b.kind === 'pos' ? <PlusSm /> : <XSm />}
+                          </span>
+                          <span>{swap(b.text)}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <p className="tlp-cs-intro">
-                    We analyzed verified user reviews to identify positive and negative aspects of
-                    {' '}{view.companyName} customer support.{' '}
-                    <a href="#" className="tlp-inline-link">Learn more about our reviews.</a>
+                )}
+
+                {/* Right: Support + Training options card — driven by real data only. */}
+                {(view.realSupportChannels || view.realTrainingOptions || isPreview) && (
+                  <div className="tlp-cs-opts">
+                    {(view.realSupportChannels || isPreview) && (
+                      <>
+                        <div className="tlp-cs-opts-h">Support options</div>
+                        <ul className="tlp-cs-opts-list">
+                          {(view.realSupportChannels || (isPreview ? [
+                            'Email/help desk', 'Chat', 'Knowledge base',
+                            'FAQs/forum', '24/7 (live rep)', 'Phone support',
+                          ] : [])).map(o => (
+                            <li key={o}>
+                              <span>{o}</span>
+                              <CheckSm />
+                            </li>
+                          ))}
+                        </ul>
+                      </>
+                    )}
+                    {(view.realTrainingOptions || isPreview) && (
+                      <>
+                        <div className="tlp-cs-opts-h tlp-cs-opts-h--spaced">Training options</div>
+                        <ul className="tlp-cs-opts-list">
+                          {(view.realTrainingOptions || (isPreview ? ['Live online', 'Videos', 'Webinars', 'Documentation'] : [])).map(o => (
+                            <li key={o}>
+                              <span>{o}</span>
+                              <CheckSm />
+                            </li>
+                          ))}
+                        </ul>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {isPreview && (
+                <>
+                  <p className="tlp-cs-lead">
+                    To see what individual users say about {view.companyName}&apos;s customer support, check the review snippets below.
                   </p>
 
-                  <ul className="tlp-cs-bullets">
-                    {SUPPORT_BULLETS.map(b => (
-                      <li key={b.text}>
-                        <span className={`tlp-cs-bullet tlp-cs-bullet--${b.kind}`}>
-                          {b.kind === 'pos' ? <PlusSm /> : <XSm />}
-                        </span>
-                        <span>{swap(b.text)}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Right: Support + Training options card */}
-                <div className="tlp-cs-opts">
-                  <div className="tlp-cs-opts-h">Support options</div>
-                  <ul className="tlp-cs-opts-list">
-                    {(view.realSupportChannels || [
-                      'Email/help desk', 'Chat', 'Knowledge base',
-                      'FAQs/forum', '24/7 (live rep)', 'Phone support',
-                    ]).map(o => (
-                      <li key={o}>
-                        <span>{o}</span>
-                        <CheckSm />
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="tlp-cs-opts-h tlp-cs-opts-h--spaced">Training options</div>
-                  <ul className="tlp-cs-opts-list">
-                    {(view.realTrainingOptions || ['Live online', 'Videos', 'Webinars', 'Documentation']).map(o => (
-                      <li key={o}>
-                        <span>{o}</span>
-                        <CheckSm />
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              <p className="tlp-cs-lead">
-                To see what individual users say about {view.companyName}&apos;s customer support, check the review snippets below.
-              </p>
-
-              <div className="tlp-cs-quotes">
-                {SUPPORT_QUOTES.map(q => (
-                  <div key={q.name} className="tlp-cs-quote">
-                    <p className="tlp-cs-quote-text">&ldquo;{swap(q.quote)}&rdquo;</p>
-                    <div className="tlp-cs-quote-who">
-                      <span className="tlp-cs-quote-av" style={{ background: q.color }}>{q.initials}</span>
-                      <div>
-                        <div className="tlp-cs-quote-name">
-                          {q.name}
-                          <LinkedInBadge />
+                  <div className="tlp-cs-quotes">
+                    {SUPPORT_QUOTES.map(q => (
+                      <div key={q.name} className="tlp-cs-quote">
+                        <p className="tlp-cs-quote-text">&ldquo;{swap(q.quote)}&rdquo;</p>
+                        <div className="tlp-cs-quote-who">
+                          <span className="tlp-cs-quote-av" style={{ background: q.color }}>{q.initials}</span>
+                          <div>
+                            <div className="tlp-cs-quote-name">
+                              {q.name}
+                              <LinkedInBadge />
+                            </div>
+                            <div className="tlp-cs-quote-role">{q.role}</div>
+                          </div>
                         </div>
-                        <div className="tlp-cs-quote-role">{q.role}</div>
                       </div>
-                    </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </>
+              )}
             </section>
+            )}
 
             {/* ========== FAQS ========== */}
+            {(view.realFaqs || isPreview) && (
             <section id="faqs" className="tlp-sec">
               <h2 className="tlp-sec-title">{view.companyName} FAQs</h2>
               <p className="tlp-sec-lead">Here are some of the questions we get asked most often.</p>
@@ -2541,8 +2687,10 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 )
               })()}
             </section>
+            )}
 
-            {/* ========== POPULAR COMPARISONS ========== */}
+            {/* ========== POPULAR COMPARISONS — sample-only until derivation lands ========== */}
+            {isPreview && (
             <section id="compare" className="tlp-sec">
               <h2 className="tlp-sec-title">Popular comparisons with {view.companyName}</h2>
 
@@ -2567,8 +2715,10 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 <a href="#" className="tlp-cmp-browse">Browse Alternatives</a>
               </div>
             </section>
+            )}
 
-            {/* ========== CUSTOMERS ALSO VIEWED — cross-marketing ========== */}
+            {/* ========== CUSTOMERS ALSO VIEWED — sample-only ========== */}
+            {isPreview && (
             <section className="tlp-sec tlp-cav-sec">
               <div className="tlp-cav-head">
                 <h2 className="tlp-sec-title">Customers also viewed</h2>
@@ -2636,6 +2786,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 )
               })()}
             </section>
+            )}
 
             {/* ========== RELATED CATEGORIES ========== */}
             <section className="tlp-sec tlp-rc-sec">
