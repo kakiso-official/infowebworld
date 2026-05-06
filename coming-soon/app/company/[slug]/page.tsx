@@ -1,7 +1,9 @@
 import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
+import { cookies } from 'next/headers'
 import type { Metadata } from 'next'
 import { query, queryOne } from '@/lib/db'
+import { getUserByToken, USER_COOKIE_NAME } from '@/lib/user-auth'
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import ListingDetailPage from '../../listing/ListingDetailPage'
@@ -66,7 +68,135 @@ async function getListingBySlug(slug: string) {
     [listing.category_id, listing.id]
   )
 
-  return { listing, breadcrumb: crumbs, related: related as Record<string, unknown>[] }
+  /* Siblings — same L3 category first; if fewer than 9 results, broaden to
+     the L2 parent's children. Used to drive Alternatives, Customers Also
+     Viewed and Popular Comparisons sections in real mode. */
+  const SIBLING_COLS = `
+    s.id, s.slug, s.company_name, s.tagline, s.logo_url, s.website,
+    s.starting_price, s.starting_price_period, s.founded_year, s.team_size,
+    s.hq_location, s.city, s.country_id,
+    c.name as category_name, c.slug as category_slug, c.color as category_color`
+
+  let siblings = await query(
+    `SELECT ${SIBLING_COLS}
+       FROM submissions s
+       LEFT JOIN categories c ON c.id = s.category_id
+      WHERE s.category_id = ? AND s.id != ? AND s.status IN ('active','paid')
+      ORDER BY s.created_at DESC
+      LIMIT 16`,
+    [listing.category_id, listing.id]
+  ) as Record<string, unknown>[]
+
+  if (siblings.length < 9) {
+    const parent = await queryOne<{ parent_id: number | null }>(
+      'SELECT parent_id FROM categories WHERE id = ?',
+      [listing.category_id]
+    )
+    if (parent?.parent_id) {
+      const have = new Set(siblings.map(s => Number(s.id)))
+      have.add(listing.id)
+      const broader = await query(
+        `SELECT ${SIBLING_COLS}
+           FROM submissions s
+           LEFT JOIN categories c ON c.id = s.category_id
+          WHERE c.parent_id = ? AND s.status IN ('active','paid')
+          ORDER BY s.created_at DESC
+          LIMIT 32`,
+        [parent.parent_id]
+      ) as Record<string, unknown>[]
+      for (const r of broader) {
+        if (siblings.length >= 16) break
+        if (!have.has(Number(r.id))) { siblings.push(r); have.add(Number(r.id)) }
+      }
+    }
+  }
+
+  /* Engagement counts — three aggregate queries. Cheap. */
+  const followsRow = await queryOne<{ c: number }>(
+    'SELECT COUNT(*) AS c FROM listing_follows WHERE listing_id = ?',
+    [listing.id]
+  )
+  const likesRow = await queryOne<{ c: number }>(
+    "SELECT COUNT(*) AS c FROM listing_reactions WHERE listing_id = ? AND kind = 'like'",
+    [listing.id]
+  )
+  const dislikesRow = await queryOne<{ c: number }>(
+    "SELECT COUNT(*) AS c FROM listing_reactions WHERE listing_id = ? AND kind = 'dislike'",
+    [listing.id]
+  )
+  const bookmarksRow = await queryOne<{ c: number }>(
+    'SELECT COUNT(*) AS c FROM listing_bookmarks WHERE listing_id = ?',
+    [listing.id]
+  )
+
+  /* Reviews aggregate. */
+  const reviewAggRow = await queryOne<{ avg_rating: number | null; review_count: number }>(
+    `SELECT AVG(rating) AS avg_rating, COUNT(*) AS review_count
+       FROM reviews WHERE listing_id = ? AND status = 'approved'`,
+    [listing.id]
+  )
+
+  /* Latest 6 reviews, lazy-loaded for the insights section. */
+  const recentReviews = await query(
+    `SELECT r.id, r.rating, r.title, r.body, r.created_at,
+            u.name AS user_name, u.avatar_url AS user_avatar_url
+       FROM reviews r
+       LEFT JOIN business_users u ON u.id = r.user_id
+      WHERE r.listing_id = ? AND r.status = 'approved'
+      ORDER BY r.created_at DESC LIMIT 6`,
+    [listing.id]
+  )
+
+  /* User's own engagement state — only when a session cookie is present.
+     Single query that returns one row of booleans. */
+  const store = await cookies()
+  const token = store.get(USER_COOKIE_NAME)?.value
+  const me = token ? await getUserByToken(token) : null
+  let userState = {
+    isFollowing: false, reaction: null as 'like' | 'dislike' | null,
+    isBookmarked: false, hasReviewed: false,
+  }
+  if (me) {
+    const stateRow = await queryOne<{
+      following: number; reaction: 'like' | 'dislike' | null
+      bookmarked: number; reviewed: number
+    }>(
+      `SELECT
+         (SELECT 1 FROM listing_follows WHERE listing_id = ? AND user_id = ?)   AS following,
+         (SELECT kind FROM listing_reactions WHERE listing_id = ? AND user_id = ?) AS reaction,
+         (SELECT 1 FROM listing_bookmarks WHERE listing_id = ? AND user_id = ?) AS bookmarked,
+         (SELECT 1 FROM reviews WHERE listing_id = ? AND user_id = ?)           AS reviewed`,
+      [listing.id, me.id, listing.id, me.id, listing.id, me.id, listing.id, me.id]
+    )
+    if (stateRow) {
+      userState = {
+        isFollowing: Boolean(stateRow.following),
+        reaction: stateRow.reaction || null,
+        isBookmarked: Boolean(stateRow.bookmarked),
+        hasReviewed: Boolean(stateRow.reviewed),
+      }
+    }
+  }
+
+  return {
+    listing,
+    breadcrumb: crumbs,
+    related: related as Record<string, unknown>[],
+    siblings,
+    engagement: {
+      followers: Number(followsRow?.c || 0),
+      likes: Number(likesRow?.c || 0),
+      dislikes: Number(dislikesRow?.c || 0),
+      bookmarks: Number(bookmarksRow?.c || 0),
+    },
+    reviews: {
+      avgRating: reviewAggRow?.avg_rating ? Number(reviewAggRow.avg_rating) : 0,
+      reviewCount: Number(reviewAggRow?.review_count || 0),
+      recent: recentReviews as Record<string, unknown>[],
+    },
+    userState,
+    isAuthed: Boolean(me),
+  }
 }
 
 /* ── Safely serialize mysql2 row to plain JSON (strips Buffers etc.) ── */
@@ -352,11 +482,16 @@ export default async function CompanyPage({
 
   const jsonLd = buildJsonLd(data.listing, data.breadcrumb)
 
-  // Serialize to plain JSON to avoid mysql2 Buffer objects breaking client hydration
+  // Serialize to plain JSON to avoid mysql2 Buffer objects breaking client hydration.
   const initialData = serialize({
     listing: data.listing as unknown as Record<string, unknown>,
     breadcrumb: data.breadcrumb,
     related: data.related,
+    siblings: data.siblings,
+    engagement: data.engagement,
+    reviews: data.reviews,
+    userState: data.userState,
+    isAuthed: data.isAuthed,
   })
 
   return (

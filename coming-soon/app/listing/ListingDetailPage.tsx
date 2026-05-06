@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react'
 import type { RealSubmission, FaqItem, KeyFeature, Award } from '../iww-hq/data/submissions-storage'
+import WriteReviewModal from './WriteReviewModal'
 
 /* ═══════════════════════════════════════════
    Listing Detail Page — GetApp-style company listing.
@@ -12,10 +13,41 @@ import type { RealSubmission, FaqItem, KeyFeature, Award } from '../iww-hq/data/
    flat cards with 1px #E5E7EB borders, Inter font.
    ═══════════════════════════════════════════ */
 
+export interface SiblingRow {
+  id: number; slug: string; company_name: string; tagline: string
+  logo_url: string; website: string; starting_price: string | number | null
+  starting_price_period: string | null
+  founded_year: string | null; team_size: string | null
+  hq_location: string | null; city: string | null
+  category_name: string; category_slug: string; category_color: string
+}
+export interface EngagementCounts {
+  followers: number; likes: number; dislikes: number; bookmarks: number
+}
+export interface ReviewRow {
+  id: number; rating: number; title: string; body: string
+  created_at: string
+  user_name: string | null; user_avatar_url: string | null
+}
+export interface ReviewsAgg {
+  avgRating: number; reviewCount: number; recent: ReviewRow[]
+}
+export interface UserListingState {
+  isFollowing: boolean
+  reaction: 'like' | 'dislike' | null
+  isBookmarked: boolean
+  hasReviewed: boolean
+}
+
 interface InitialData {
   listing: Record<string, unknown>
   breadcrumb: { name: string; slug: string }[]
   related: Record<string, unknown>[]
+  siblings?: Record<string, unknown>[]
+  engagement?: EngagementCounts
+  reviews?: { avgRating: number; reviewCount: number; recent: Record<string, unknown>[] }
+  userState?: UserListingState
+  isAuthed?: boolean
 }
 
 interface ListingDetailPageProps {
@@ -1117,6 +1149,19 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
     ? mapServerRow(initialData.listing)
     : null
   const isPreview = !initialData
+  const listingId = real?.id ? Number(real.id) : 0
+  const isAuthed = Boolean(initialData?.isAuthed)
+
+  /* Last updated — pulled directly from the row, formatted human-friendly. */
+  const updatedAtRaw = initialData?.listing?.updated_at as string | undefined
+    ?? initialData?.listing?.created_at as string | undefined
+  const lastUpdated = updatedAtRaw
+    ? new Date(updatedAtRaw).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+    : ''
+
+  /* Siblings server-derived for Alternatives / Customers Also Viewed / Popular
+     Comparisons. Empty array in preview mode. */
+  const siblings = (initialData?.siblings as unknown as SiblingRow[]) || []
 
   const companyName = (real?.companyName && real.companyName.trim())
     || (isPreview ? 'Mailchimp' : '')
@@ -1187,19 +1232,45 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
   const KEY_FEATURES_VISIBLE = 3
   const [activeSection, setActiveSection] = useState<string>(TOC[0]?.id ?? '')
 
-  // ─── Engagement state (follow / like / dislike / bookmark) — counts are
-  // sample-only in preview, zeroed in real mode (no engagement DB yet). ───
-  const [following, setFollowing] = useState(false)
-  const [followers, setFollowers] = useState(isPreview ? 2_481 : 0)
-  const [liked, setLiked] = useState(false)
-  const [disliked, setDisliked] = useState(false)
-  const [bookmarked, setBookmarked] = useState(false)
-  const [likes, setLikes] = useState(isPreview ? 127 : 0)
-  const [dislikes, setDislikes] = useState(isPreview ? 8 : 0)
+  // ─── Engagement — initial state seeded from server (counts + this user's
+  // own follow/reaction/bookmark). All toggles fire to /api/listings/[id]/*
+  // optimistically. Anonymous users get redirected to /business to sign in. ───
+  const eng = initialData?.engagement
+  const myState = initialData?.userState
+  const [following, setFollowing] = useState(myState?.isFollowing ?? false)
+  const [followers, setFollowers] = useState(eng?.followers ?? (isPreview ? 2_481 : 0))
+  const [liked, setLiked] = useState(myState?.reaction === 'like')
+  const [disliked, setDisliked] = useState(myState?.reaction === 'dislike')
+  const [bookmarked, setBookmarked] = useState(myState?.isBookmarked ?? false)
+  const [likes, setLikes] = useState(eng?.likes ?? (isPreview ? 127 : 0))
+  const [dislikes, setDislikes] = useState(eng?.dislikes ?? (isPreview ? 8 : 0))
+
+  /* Modal state for "Write a Review". */
+  const [reviewOpen, setReviewOpen] = useState(false)
+  const [hasReviewed, setHasReviewed] = useState(myState?.hasReviewed ?? false)
+  /* Inbox-form state. */
+  const [inboxEmail, setInboxEmail] = useState('')
+  const [inboxStatus, setInboxStatus] = useState<'idle'|'sending'|'ok'|'err'>('idle')
+
+  /* Anon fallback — kick to login flow. */
+  const requireLogin = () => {
+    if (typeof window !== 'undefined') window.location.href = '/business'
+  }
 
   const toggleFollow = () => {
-    setFollowing(f => !f)
-    setFollowers(c => c + (following ? -1 : 1))
+    if (isPreview) { setFollowing(f => !f); setFollowers(c => c + (following ? -1 : 1)); return }
+    if (!isAuthed) { requireLogin(); return }
+    if (!listingId) return
+    const nextFollowing = !following
+    setFollowing(nextFollowing)
+    setFollowers(c => c + (nextFollowing ? 1 : -1))
+    fetch(`/api/listings/${listingId}/follow`, {
+      method: nextFollowing ? 'POST' : 'DELETE',
+    }).catch(() => {
+      /* Roll back on failure. */
+      setFollowing(!nextFollowing)
+      setFollowers(c => c + (nextFollowing ? -1 : 1))
+    })
   }
 
   // ─── Reviews insights (chips + quotes) — collapsed by default ───
@@ -1233,23 +1304,73 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
     if (e.key === 'ArrowRight') { e.preventDefault(); uiNext() }
   }
 
+  /* Optimistic local update + best-effort POST/DELETE. Reverts on failure. */
+  const reactRemote = (op: 'POST' | 'DELETE', kind?: 'like' | 'dislike') => {
+    if (!listingId) return
+    fetch(`/api/listings/${listingId}/reactions`, {
+      method: op,
+      headers: { 'Content-Type': 'application/json' },
+      body: op === 'POST' ? JSON.stringify({ kind }) : undefined,
+    }).catch(() => {})
+  }
   const toggleLike = () => {
+    if (isPreview) {
+      if (liked) { setLiked(false); setLikes(c => c - 1) }
+      else { setLiked(true); setLikes(c => c + 1)
+        if (disliked) { setDisliked(false); setDislikes(c => c - 1) } }
+      return
+    }
+    if (!isAuthed) { requireLogin(); return }
     if (liked) {
       setLiked(false); setLikes(c => c - 1)
+      reactRemote('DELETE')
     } else {
       setLiked(true); setLikes(c => c + 1)
       if (disliked) { setDisliked(false); setDislikes(c => c - 1) }
+      reactRemote('POST', 'like')
     }
   }
   const toggleDislike = () => {
+    if (isPreview) {
+      if (disliked) { setDisliked(false); setDislikes(c => c - 1) }
+      else { setDisliked(true); setDislikes(c => c + 1)
+        if (liked) { setLiked(false); setLikes(c => c - 1) } }
+      return
+    }
+    if (!isAuthed) { requireLogin(); return }
     if (disliked) {
       setDisliked(false); setDislikes(c => c - 1)
+      reactRemote('DELETE')
     } else {
       setDisliked(true); setDislikes(c => c + 1)
       if (liked) { setLiked(false); setLikes(c => c - 1) }
+      reactRemote('POST', 'dislike')
     }
   }
-  const toggleBookmark = () => setBookmarked(b => !b)
+  const toggleBookmark = () => {
+    if (isPreview) { setBookmarked(b => !b); return }
+    if (!isAuthed) { requireLogin(); return }
+    if (!listingId) return
+    const nextBookmarked = !bookmarked
+    setBookmarked(nextBookmarked)
+    fetch(`/api/listings/${listingId}/bookmark`, {
+      method: nextBookmarked ? 'POST' : 'DELETE',
+    }).catch(() => setBookmarked(!nextBookmarked))
+  }
+  const submitInboxEmail = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!listingId || !inboxEmail.trim()) return
+    setInboxStatus('sending')
+    try {
+      const res = await fetch(`/api/listings/${listingId}/inbox-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: inboxEmail.trim() }),
+      })
+      if (res.ok) { setInboxStatus('ok'); setInboxEmail('') }
+      else setInboxStatus('err')
+    } catch { setInboxStatus('err') }
+  }
 
   // Pin the identity + tabs to the top of the viewport once the user starts
   // scrolling. We can't rely on `position: sticky` because an ancestor has
@@ -1355,11 +1476,23 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
     return INTEGRATIONS.filter(i => i.name.toLowerCase().includes(q) || i.tag.toLowerCase().includes(q))
   }, [integrationQ])
 
-  /* Aggregate review stats — sample-only until a reviews subsystem lands.
-     In real mode they read as 0 and the surrounding sections are hidden. */
-  const overallRating = isPreview ? 4.4 : 0
-  const reviewsCount  = isPreview ? 17248 : 0
-  const sentimentPct  = isPreview ? 87 : 0
+  /* Aggregate review stats — read from server-side reviews aggregation when
+     a real listing has any approved reviews; fall back to sample in preview. */
+  const reviewsData = initialData?.reviews
+  const realAvgRating = reviewsData?.avgRating ?? 0
+  const realReviewCount = reviewsData?.reviewCount ?? 0
+  const overallRating = realReviewCount > 0
+    ? Number(realAvgRating.toFixed(1))
+    : (isPreview ? 4.4 : 0)
+  const reviewsCount = realReviewCount > 0
+    ? realReviewCount
+    : (isPreview ? 17248 : 0)
+  /* Approximation: anything 4★+ counts as positive sentiment. Replace with
+     a real sentiment classifier once review NLP lands. */
+  const sentimentPct = realReviewCount > 0
+    ? Math.round((realAvgRating / 5) * 100)
+    : (isPreview ? 87 : 0)
+  const hasReviews = realReviewCount > 0
 
   return (
     <>
@@ -1409,11 +1542,13 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 {view.companyName}
                 <span className="tlp-id-verified" aria-label="Verified company"><VerifiedBadge /></span>
               </h1>
-              {isPreview && (
+              {(isPreview || hasReviews) && (
                 <div className="tlp-id-meta">
                   <span className="tlp-id-rate-num">{overallRating.toFixed(1)}</span>
                   <Stars value={overallRating} size={15} />
-                  <a href="#insights" className="tlp-id-reviews">({reviewsCount.toLocaleString()} Reviews)</a>
+                  <a href="#insights" className="tlp-id-reviews">
+                    ({reviewsCount.toLocaleString()} Review{reviewsCount === 1 ? '' : 's'})
+                  </a>
                   <span className="tlp-id-vpill"><CheckCircle /> Verified</span>
                 </div>
               )}
@@ -1441,9 +1576,8 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 </div>
               )}
 
-              {/* Engagement bar — like / dislike / bookmark. Hidden in real mode
-                  until an engagement DB lands; counts would be cosmetic. */}
-              {isPreview && (
+              {/* Engagement bar — server-derived counts; toggles call the
+                  /api/listings/[id]/* endpoints with optimistic local state. */}
               <div className="tlp-engage" role="group" aria-label="Engagement actions">
 
                 <button
@@ -1477,7 +1611,6 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                   <span>{bookmarked ? 'Saved' : 'Save'}</span>
                 </button>
               </div>
-              )}
             </div>
 
             <div className="tlp-id-divider" aria-hidden="true" />
@@ -1500,30 +1633,32 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             {/* Actions column — Follow lives here as a primary CTA above the
                 transactional actions, paired with a follower count */}
             <div className="tlp-id-actions">
-              {isPreview && (
-                <button
-                  type="button"
-                  className={`tlp-btn-follow ${following ? 'is-active' : ''}`}
-                  onClick={toggleFollow}
-                  aria-pressed={following}
-                  aria-label={following ? 'Unfollow this listing' : 'Follow this listing'}
-                >
-                  <span className="tlp-btn-follow-main">
-                    {following ? <CheckSm2 /> : <BellIcon />}
-                    <span>{following ? 'Following' : 'Follow'}</span>
-                  </span>
-                  <span className="tlp-btn-follow-count">{followers.toLocaleString()}</span>
-                </button>
-              )}
+              <button
+                type="button"
+                className={`tlp-btn-follow ${following ? 'is-active' : ''}`}
+                onClick={toggleFollow}
+                aria-pressed={following}
+                aria-label={following ? 'Unfollow this listing' : 'Follow this listing'}
+              >
+                <span className="tlp-btn-follow-main">
+                  {following ? <CheckSm2 /> : <BellIcon />}
+                  <span>{following ? 'Following' : 'Follow'}</span>
+                </span>
+                <span className="tlp-btn-follow-count">{followers.toLocaleString()}</span>
+              </button>
               {view.website && (
                 <a href={view.website} target="_blank" rel="noopener noreferrer" className="tlp-btn-primary">Visit website <ExternalArrowIcon /></a>
               )}
               {view.email && (
                 <a href={`mailto:${view.email}`} className="tlp-btn-outline">Get a Quote <MailIcon /></a>
               )}
-              {isPreview && (
-                <a href="#insights" className="tlp-write-review">Write a Review <PencilIcon /></a>
-              )}
+              <button
+                type="button"
+                className="tlp-write-review"
+                onClick={() => isAuthed || isPreview ? setReviewOpen(true) : requireLogin()}
+              >
+                {hasReviewed ? 'Edit your review' : 'Write a Review'} <PencilIcon />
+              </button>
             </div>
           </div>
         </header>
@@ -1558,21 +1693,19 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
               </h1>
               {view.tagline && <p className="tlp-page-tagline">{view.tagline}</p>}
               {isPreview && (
-                <>
-                  <div className="tlp-verify">
-                    <span className="tlp-verify-avatars" aria-hidden="true">
-                      <span className="tlp-va" style={{ background: '#0C9A9A' }}>MR</span>
-                      <span className="tlp-va" style={{ background: '#7C3AED' }}>KS</span>
-                    </span>
-                    <span>
-                      All user reviews are verified by in-house moderators and provider data by
-                      our software research team.{' '}
-                      <a href="#" className="tlp-inline-link">Learn more</a>
-                    </span>
-                  </div>
-                  <div className="tlp-updated">Last updated: April 2026</div>
-                </>
+                <div className="tlp-verify">
+                  <span className="tlp-verify-avatars" aria-hidden="true">
+                    <span className="tlp-va" style={{ background: '#0C9A9A' }}>MR</span>
+                    <span className="tlp-va" style={{ background: '#7C3AED' }}>KS</span>
+                  </span>
+                  <span>
+                    All user reviews are verified by in-house moderators and provider data by
+                    our software research team.{' '}
+                    <a href="#" className="tlp-inline-link">Learn more</a>
+                  </span>
+                </div>
               )}
+              {lastUpdated && <div className="tlp-updated">Last updated: {lastUpdated}</div>}
             </div>
 
             {/* ========== OVERVIEW CARD ========== */}
@@ -1689,25 +1822,45 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                     </div>
                   )}
 
-                  {/* Alternatives mini — sample-only until alternatives derivation lands. */}
-                  {isPreview && (
+                  {/* Alternatives mini — top sibling from same category. */}
+                  {(siblings.length > 0 || isPreview) && (
                     <div className="tlp-side-block">
                       <div className="tlp-side-head">
                         <span className="tlp-side-title">Alternatives</span>
                       </div>
-                      <div className="tlp-side-sub">with better value for money</div>
-                      <a href="#alternatives" className="tlp-alt-mini">
-                        <span className="tlp-alt-mini-logo" aria-hidden="true">B</span>
-                        <span className="tlp-alt-mini-info">
-                          <span className="tlp-alt-mini-name">Brevo</span>
-                          <span className="tlp-alt-mini-rate">
-                            <Stars value={4.6} size={11} />
-                            <span>4.6</span>
-                            <em>(3.4K)</em>
+                      <div className="tlp-side-sub">in the same category</div>
+                      {!isPreview && siblings[0] ? (() => {
+                        const s = siblings[0]
+                        const sLogo = s.logo_url
+                          || (s.website ? clearbit(String(s.website).replace(/^https?:\/\//, '').split('/')[0], 64) : '')
+                        return (
+                          <a href={`/company/${s.slug}`} className="tlp-alt-mini">
+                            {sLogo
+                              ? <img src={sLogo} alt="" className="tlp-alt-mini-logo-img" />
+                              : <span className="tlp-alt-mini-logo" aria-hidden="true">{s.company_name.charAt(0).toUpperCase()}</span>}
+                            <span className="tlp-alt-mini-info">
+                              <span className="tlp-alt-mini-name">{s.company_name}</span>
+                              {s.tagline && <span className="tlp-alt-mini-rate" style={{ color: '#6B7280', fontSize: 12 }}>
+                                {s.tagline.length > 60 ? s.tagline.slice(0, 60) + '…' : s.tagline}
+                              </span>}
+                            </span>
+                            <span className="tlp-alt-mini-chev"><ChevronRight size={18} /></span>
+                          </a>
+                        )
+                      })() : (
+                        <a href="#alternatives" className="tlp-alt-mini">
+                          <span className="tlp-alt-mini-logo" aria-hidden="true">B</span>
+                          <span className="tlp-alt-mini-info">
+                            <span className="tlp-alt-mini-name">Brevo</span>
+                            <span className="tlp-alt-mini-rate">
+                              <Stars value={4.6} size={11} />
+                              <span>4.6</span>
+                              <em>(3.4K)</em>
+                            </span>
                           </span>
-                        </span>
-                        <span className="tlp-alt-mini-chev"><ChevronRight size={18} /></span>
-                      </a>
+                          <span className="tlp-alt-mini-chev"><ChevronRight size={18} /></span>
+                        </a>
+                      )}
                     </div>
                   )}
 
@@ -1805,9 +1958,53 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             </section>
             )}
 
-            {/* ========== INSIGHTS — sample-only until reviews subsystem lands ========== */}
-            {isPreview && (
-            <section id="insights" className="tlp-card">
+            {/* ========== INSIGHTS — renders real reviews when present, falls back
+                to the sample chrome (sentiment bars, topic chips, sample quotes)
+                in preview mode only. Hidden in real mode if no approved reviews yet. ========== */}
+            {(hasReviews || isPreview) && (
+              <section id="insights" className="tlp-card">
+                {!isPreview && hasReviews && reviewsData && (
+                  <>
+                    <div className="tlp-in-real-head">
+                      <h2 className="tlp-sec-title">User reviews</h2>
+                      <div className="tlp-in-real-meta">
+                        <span className="tlp-id-rate-num" style={{ fontSize: 24 }}>{overallRating.toFixed(1)}</span>
+                        <Stars value={overallRating} size={16} />
+                        <span style={{ color: '#6B7280' }}>
+                          {realReviewCount.toLocaleString()} review{realReviewCount === 1 ? '' : 's'}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="tlp-in-real-list">
+                      {reviewsData.recent.slice(0, 5).map((rev) => {
+                        const r = rev as unknown as ReviewRow
+                        const initials = (r.user_name || '?').slice(0, 2).toUpperCase()
+                        return (
+                          <article key={r.id} className="tlp-in-real-review">
+                            <header className="tlp-in-real-review-head">
+                              {r.user_avatar_url
+                                ? <img src={r.user_avatar_url} alt="" className="tlp-in-real-avatar" />
+                                : <span className="tlp-in-real-avatar tlp-in-real-avatar--initials">{initials}</span>}
+                              <div className="tlp-in-real-author">
+                                <div className="tlp-in-real-author-name">{r.user_name || 'Anonymous'}</div>
+                                <div className="tlp-in-real-author-meta">
+                                  <Stars value={Number(r.rating)} size={13} />
+                                  <span>·</span>
+                                  <span>{new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                                </div>
+                              </div>
+                            </header>
+                            {r.title && <h3 className="tlp-in-real-title">{r.title}</h3>}
+                            <p className="tlp-in-real-body">{r.body}</p>
+                          </article>
+                        )
+                      })}
+                    </div>
+                  </>
+                )}
+
+                {/* Sample-only chrome below — only renders in preview mode. */}
+                {isPreview && (<>
               <h2 className="tlp-sec-title">{view.companyName} pros, cons and reviews insights</h2>
 
               <div className="tlp-in-grid">
@@ -1964,19 +2161,56 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                   )}
                 </div>
               </div>
-            </section>
+                </>)}
+              </section>
             )}
 
-            {/* ========== WHO USES — sample-only until aggregations land ========== */}
-            {isPreview && (
+            {/* ========== WHO USES — render real submitter-supplied lists, fall back
+                to sample charts in preview only. ========== */}
+            {(view.realIndustries || view.realUseCases || view.realCompanySizes || isPreview) && (
             <section id="who-uses" className="tlp-card">
               <div className="tlp-wu-head">
                 <h2 className="tlp-sec-title">Who uses {view.companyName}?</h2>
-                <div className="tlp-wu-meta">
-                  Based on {reviewsCount.toLocaleString()} verified user reviews.{' '}
-                  <a href="#" className="tlp-inline-link">Learn more</a>
-                </div>
+                {isPreview && (
+                  <div className="tlp-wu-meta">
+                    Based on {reviewsCount.toLocaleString()} verified user reviews.{' '}
+                    <a href="#" className="tlp-inline-link">Learn more</a>
+                  </div>
+                )}
               </div>
+
+              {/* Real-mode: simple grouped lists from submitter data. */}
+              {!isPreview && (view.realIndustries || view.realUseCases || view.realCompanySizes) && (
+                <div className="tlp-wu-real-grid">
+                  {view.realCompanySizes && view.realCompanySizes.length > 0 && (
+                    <div className="tlp-wu-real-block">
+                      <h3 className="tlp-wu-real-h3">Target company sizes</h3>
+                      <ul className="tlp-wu-real-list">
+                        {view.realCompanySizes.map(s => <li key={s}>{s}</li>)}
+                      </ul>
+                    </div>
+                  )}
+                  {view.realIndustries && view.realIndustries.length > 0 && (
+                    <div className="tlp-wu-real-block">
+                      <h3 className="tlp-wu-real-h3">Industries served</h3>
+                      <ul className="tlp-wu-real-list">
+                        {view.realIndustries.map(i => <li key={i}>{i}</li>)}
+                      </ul>
+                    </div>
+                  )}
+                  {view.realUseCases && view.realUseCases.length > 0 && (
+                    <div className="tlp-wu-real-block">
+                      <h3 className="tlp-wu-real-h3">Use cases</h3>
+                      <ul className="tlp-wu-real-list">
+                        {view.realUseCases.map(u => <li key={u}>{u}</li>)}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Sample-only chrome (donut + diamond + bars). */}
+              {isPreview && (<>
 
               <div className="tlp-wu-grid">
 
@@ -2078,6 +2312,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 </div>
 
               </div>
+              </>)}
             </section>
             )}
 
@@ -2207,11 +2442,47 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             </section>
             )}
 
-            {/* ========== ALTERNATIVES — sample-only until alternatives derivation lands ========== */}
-            {isPreview && (
+            {/* ========== ALTERNATIVES — server-derived from category siblings,
+                falls back to the rich ALTERNATIVES sample in preview mode. ========== */}
+            {(siblings.length > 0 || isPreview) && (
             <section id="alternatives" className="tlp-sec">
               <h2 className="tlp-sec-title">{view.companyName} alternatives</h2>
 
+              {/* Real mode: simple sibling cards (no fake ratings or sample chrome). */}
+              {!isPreview && siblings.length > 0 && (
+                <div className="tlp-sib-grid">
+                  {siblings.slice(0, 4).map(s => {
+                    const sLogo = s.logo_url
+                      || (s.website ? clearbit(String(s.website).replace(/^https?:\/\//, '').split('/')[0], 128) : '')
+                    return (
+                      <a key={s.id} href={`/company/${s.slug}`} className="tlp-sib-card">
+                        <div className="tlp-sib-head">
+                          {sLogo
+                            ? <img src={sLogo} alt={`${s.company_name} logo`} className="tlp-sib-logo" />
+                            : <span className="tlp-sib-letter">{s.company_name.charAt(0).toUpperCase()}</span>}
+                          <div className="tlp-sib-id">
+                            <div className="tlp-sib-name">{s.company_name}</div>
+                            <div className="tlp-sib-cat">{s.category_name}</div>
+                          </div>
+                        </div>
+                        {s.tagline && <p className="tlp-sib-tagline">{s.tagline}</p>}
+                        <div className="tlp-sib-foot">
+                          {s.starting_price && (
+                            <span className="tlp-sib-price">
+                              From ${s.starting_price}
+                              {s.starting_price_period ? ` ${s.starting_price_period}` : ''}
+                            </span>
+                          )}
+                          <span className="tlp-sib-cta">View →</span>
+                        </div>
+                      </a>
+                    )
+                  })}
+                </div>
+              )}
+
+              {/* Preview mode: the original rich ALTERNATIVES sample cards. */}
+              {isPreview && (
               <div className="tlp-alt-grid">
                 {ALTERNATIVES.map(a => {
                   // The "highlighted" column represents the listing being viewed
@@ -2296,24 +2567,42 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                   )
                 })}
               </div>
+              )}
             </section>
             )}
 
-            {/* ========== INBOX FORM — preview-only (no backend wired) ========== */}
-            {isPreview && (
+            {/* ========== INBOX FORM — captures lead emails per listing.
+                Hidden in real mode if no listing id (defensive). ========== */}
+            {(listingId > 0 || isPreview) && (
             <section className="tlp-sec tlp-inbox">
               <div className="tlp-inbox-card">
-                <h2 className="tlp-inbox-title">Send this software info to my inbox</h2>
-                <form className="tlp-inbox-form" onSubmit={e => { e.preventDefault() }}>
-                  <label className="tlp-inbox-label">Email Address <span>*</span></label>
-                  <input className="tlp-inbox-input" type="email" required />
-                  <div className="tlp-inbox-foot">
-                    <p className="tlp-inbox-legal">
-                      By proceeding, you agree to our <a href="#">Terms Of Use</a> and <a href="#">Privacy Policy</a>.
-                    </p>
-                    <button type="submit" className="tlp-inbox-btn">Send me the info</button>
-                  </div>
-                </form>
+                <h2 className="tlp-inbox-title">Send this {view.companyName ? `${view.companyName} ` : ''}info to my inbox</h2>
+                {inboxStatus === 'ok' ? (
+                  <p className="tlp-inbox-success">Got it — we&apos;ll email you the listing details shortly.</p>
+                ) : (
+                  <form className="tlp-inbox-form" onSubmit={submitInboxEmail}>
+                    <label className="tlp-inbox-label">Email Address <span>*</span></label>
+                    <input
+                      className="tlp-inbox-input"
+                      type="email"
+                      required
+                      value={inboxEmail}
+                      onChange={e => setInboxEmail(e.target.value)}
+                      disabled={inboxStatus === 'sending'}
+                    />
+                    <div className="tlp-inbox-foot">
+                      <p className="tlp-inbox-legal">
+                        By proceeding, you agree to our <a href="/terms">Terms Of Use</a> and <a href="/privacy">Privacy Policy</a>.
+                      </p>
+                      <button type="submit" className="tlp-inbox-btn" disabled={inboxStatus === 'sending'}>
+                        {inboxStatus === 'sending' ? 'Sending…' : 'Send me the info'}
+                      </button>
+                    </div>
+                    {inboxStatus === 'err' && (
+                      <p className="tlp-inbox-error">Something went wrong. Please try again.</p>
+                    )}
+                  </form>
+                )}
               </div>
             </section>
             )}
@@ -2689,43 +2978,94 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             </section>
             )}
 
-            {/* ========== POPULAR COMPARISONS — sample-only until derivation lands ========== */}
-            {isPreview && (
+            {/* ========== POPULAR COMPARISONS — pair self with up to 9 siblings. ========== */}
+            {(siblings.length > 0 || isPreview) && (
             <section id="compare" className="tlp-sec">
               <h2 className="tlp-sec-title">Popular comparisons with {view.companyName}</h2>
 
               <div className="tlp-cmp-grid">
-                {COMPARISONS.map(c => (
-                  <a key={c.b} href="#" className="tlp-cmp">
-                    <div className="tlp-cmp-row">
-                      <img src={view.logoUrl} alt={view.companyName} className="tlp-cmp-logo" />
-                      <span className="tlp-cmp-bracket"><BracketIcon /></span>
-                      <img src={clearbit(c.bd)} alt={c.b} className="tlp-cmp-logo" />
-                    </div>
-                    <div className="tlp-cmp-row tlp-cmp-names">
-                      <span className="tlp-cmp-name tlp-cmp-name--muted">{view.companyName}</span>
-                      <span className="tlp-cmp-vs">vs</span>
-                      <span className="tlp-cmp-name">{c.b}</span>
-                    </div>
-                  </a>
-                ))}
+                {!isPreview && siblings.length > 0
+                  ? siblings.slice(0, 9).map(s => {
+                      const sLogo = s.logo_url
+                        || (s.website ? clearbit(String(s.website).replace(/^https?:\/\//, '').split('/')[0], 64) : '')
+                      return (
+                        <a key={s.id} href={`/company/${s.slug}`} className="tlp-cmp">
+                          <div className="tlp-cmp-row">
+                            {view.logoUrl
+                              ? <img src={view.logoUrl} alt={view.companyName} className="tlp-cmp-logo" />
+                              : <span className="tlp-cmp-logo tlp-cmp-letter">{view.companyName.charAt(0).toUpperCase()}</span>}
+                            <span className="tlp-cmp-bracket"><BracketIcon /></span>
+                            {sLogo
+                              ? <img src={sLogo} alt={s.company_name} className="tlp-cmp-logo" />
+                              : <span className="tlp-cmp-logo tlp-cmp-letter">{s.company_name.charAt(0).toUpperCase()}</span>}
+                          </div>
+                          <div className="tlp-cmp-row tlp-cmp-names">
+                            <span className="tlp-cmp-name tlp-cmp-name--muted">{view.companyName}</span>
+                            <span className="tlp-cmp-vs">vs</span>
+                            <span className="tlp-cmp-name">{s.company_name}</span>
+                          </div>
+                        </a>
+                      )
+                    })
+                  : COMPARISONS.map(c => (
+                      <a key={c.b} href="#" className="tlp-cmp">
+                        <div className="tlp-cmp-row">
+                          <img src={view.logoUrl} alt={view.companyName} className="tlp-cmp-logo" />
+                          <span className="tlp-cmp-bracket"><BracketIcon /></span>
+                          <img src={clearbit(c.bd)} alt={c.b} className="tlp-cmp-logo" />
+                        </div>
+                        <div className="tlp-cmp-row tlp-cmp-names">
+                          <span className="tlp-cmp-name tlp-cmp-name--muted">{view.companyName}</span>
+                          <span className="tlp-cmp-vs">vs</span>
+                          <span className="tlp-cmp-name">{c.b}</span>
+                        </div>
+                      </a>
+                    ))}
               </div>
 
               <div className="tlp-cmp-more-wrap">
-                <a href="#" className="tlp-cmp-browse">Browse Alternatives</a>
+                <a href="#alternatives" className="tlp-cmp-browse">Browse Alternatives</a>
               </div>
             </section>
             )}
 
-            {/* ========== CUSTOMERS ALSO VIEWED — sample-only ========== */}
-            {isPreview && (
+            {/* ========== CUSTOMERS ALSO VIEWED — siblings beyond the first 4
+                used for Alternatives, with sample-rich card layout in preview. ========== */}
+            {(siblings.length > 4 || isPreview) && (
             <section className="tlp-sec tlp-cav-sec">
               <div className="tlp-cav-head">
                 <h2 className="tlp-sec-title">Customers also viewed</h2>
                 <p className="tlp-cav-sub">Popular tools that businesses choose alongside {view.companyName}</p>
               </div>
 
-              {(() => {
+              {/* Real mode — simple sibling cards (skip first 4 used in Alternatives). */}
+              {!isPreview && siblings.length > 4 && (
+                <div className="tlp-sib-grid">
+                  {siblings.slice(4, 12).map(s => {
+                    const sLogo = s.logo_url
+                      || (s.website ? clearbit(String(s.website).replace(/^https?:\/\//, '').split('/')[0], 128) : '')
+                    return (
+                      <a key={s.id} href={`/company/${s.slug}`} className="tlp-sib-card">
+                        <div className="tlp-sib-head">
+                          {sLogo
+                            ? <img src={sLogo} alt={`${s.company_name} logo`} className="tlp-sib-logo" />
+                            : <span className="tlp-sib-letter">{s.company_name.charAt(0).toUpperCase()}</span>}
+                          <div className="tlp-sib-id">
+                            <div className="tlp-sib-name">{s.company_name}</div>
+                            <div className="tlp-sib-cat">{s.category_name}</div>
+                          </div>
+                        </div>
+                        {s.tagline && <p className="tlp-sib-tagline">{s.tagline}</p>}
+                        <div className="tlp-sib-foot">
+                          <span className="tlp-sib-cta">View →</span>
+                        </div>
+                      </a>
+                    )
+                  })}
+                </div>
+              )}
+
+              {isPreview && (() => {
                 const RELATED = [
                   { name: 'HubSpot',          domain: 'hubspot.com',        tag: 'All-in-one CRM & marketing hub',   rating: 4.5, reviews: '13.2K', cat: 'CRM',          tier: 'Free plan',     featured: true  },
                   { name: 'Klaviyo',          domain: 'klaviyo.com',        tag: 'Email & SMS for ecommerce brands',  rating: 4.6, reviews: '7.4K',  cat: 'Email',        tier: 'Free up to 250',                  },
@@ -2808,6 +3148,16 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
         </div>
 
       </main>
+
+      <WriteReviewModal
+        isOpen={reviewOpen}
+        onClose={() => setReviewOpen(false)}
+        listingId={listingId}
+        companyName={view.companyName}
+        hasExistingReview={hasReviewed}
+        isAuthed={isAuthed}
+        isPreview={isPreview}
+      />
     </>
   )
 }
