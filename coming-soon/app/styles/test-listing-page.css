@@ -949,15 +949,36 @@ body.tlp-subheader-active .tlp-write-review {
   text-decoration: none;
 }
 .tlp-alt-mini-logo {
-  width: 36px; height: 36px;
-  border-radius: 50%;
+  width: 40px; height: 40px;
+  border-radius: 10px;
   display: grid; place-items: center;
   background: #0B996E; color: #fff;
   font-weight: 800; font-size: 16px;
   flex-shrink: 0;
 }
+.tlp-alt-mini-logo-img {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  object-fit: contain;
+  background: #F9FAFB;
+  border: 1px solid rgba(0, 0, 0, .06);
+  padding: 4px;
+  flex-shrink: 0;
+}
 .tlp-alt-mini-info { flex: 1; min-width: 0 }
-.tlp-alt-mini-name { font-size: 15px; font-weight: 700; color: #2563EB }
+.tlp-alt-mini-name {
+  display: block;
+  font-size: 15px; font-weight: 700; color: #2563EB;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.tlp-alt-mini-meta {
+  display: block;
+  margin-top: 3px;
+  color: var(--tlp-mute);
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 .tlp-alt-mini-rate { display: flex; align-items: center; gap: 6px; font-size: 12.5px; margin-top: 3px }
 .tlp-alt-mini-rate span { color: var(--tlp-ink-2); font-weight: 600 }
 .tlp-alt-mini-rate em { color: var(--tlp-mute); font-style: normal; font-weight: 400 }
@@ -3682,3 +3703,227 @@ html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nh-h, 112px) + 12
   .tlp-sub-logo        { width: 28px; height: 28px }
   .tlp-sub-rate-num    { font-size: 12.5px }
 }
+
+/* ═══════════════════════════════════════════════════════
+   Real-mode empty states (Key Features, All Features,
+   Who Uses, Insights). Shared visual language.
+   ═══════════════════════════════════════════════════════ */
+
+/* Generic empty card used by Key/All Features. */
+.tlp-empty-card {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 20px;
+  border: 1px dashed #D1D5DB;
+  border-radius: 12px;
+  background: #FAFBFC;
+  margin-top: 8px;
+}
+.tlp-empty-ico {
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  color: var(--tlp-teal);
+  flex-shrink: 0;
+}
+.tlp-empty-body { flex: 1; min-width: 0 }
+.tlp-empty-title {
+  font-size: 14.5px; font-weight: 700; color: var(--tlp-ink);
+  margin-bottom: 4px;
+}
+.tlp-empty-sub { font-size: 13px; color: var(--tlp-mute); line-height: 1.55 }
+
+/* Faded company-size bar (real mode, picked vs unpicked). */
+.tlp-wu-bar.is-faded { opacity: .35 }
+
+/* Per-column "Not specified yet" placeholder inside Who Uses. */
+.tlp-wu-empty {
+  margin-top: 8px;
+  padding: 22px 16px;
+  border: 1px dashed #D1D5DB;
+  border-radius: 12px;
+  background: #FAFBFC;
+  color: var(--tlp-mute);
+  font-size: 13px;
+  text-align: center;
+}
+
+/* Insights empty state (right column when no reviews). */
+.tlp-in-empty {
+  display: flex; flex-direction: column; align-items: flex-start;
+  gap: 10px;
+  padding: 28px 24px;
+  border: 1px dashed #D1D5DB;
+  border-radius: 14px;
+  background: #FAFBFC;
+}
+.tlp-in-empty-ico {
+  display: grid; place-items: center;
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  color: var(--tlp-teal);
+}
+.tlp-in-empty-title {
+  font-size: 16px; font-weight: 700;
+  color: var(--tlp-ink);
+  margin: 4px 0 0;
+}
+.tlp-in-empty-sub {
+  font-size: 13.5px; line-height: 1.6;
+  color: var(--tlp-mute);
+  margin: 0 0 4px;
+  max-width: 480px;
+}
+.tlp-in-empty-cta {
+  display: inline-flex; align-items: center;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: var(--tlp-teal);
+  color: #fff;
+  font-size: 13.5px; font-weight: 700;
+  border: 0;
+  cursor: pointer;
+  transition: background .15s ease, transform .15s ease;
+}
+.tlp-in-empty-cta:hover { background: var(--tlp-teal-dark, #086666); transform: translateY(-1px) }
+
+/* Insights left-column tweaks for real mode. */
+.tlp-in-rate-num--muted { color: #9CA3AF !important }
+.tlp-in-coming {
+  font-size: 12.5px;
+  color: var(--tlp-mute);
+  line-height: 1.55;
+  margin: 4px 0 0;
+}
+
+/* Insights right-column quote tweaks for real reviews. */
+.tlp-in-quote-title {
+  font-size: 14px; font-weight: 700;
+  color: var(--tlp-ink);
+  margin-bottom: 6px;
+}
+.tlp-in-quote-av--img { object-fit: cover }
+.tlp-in-quote-date { margin-left: 6px; color: var(--tlp-mute); font-size: 12px }
+
+/* Real-mode Alternatives card extras (works with existing .tlp-alt-* base). */
+.tlp-alt-logo--letter {
+  display: grid; place-items: center;
+  background: #0C9A9A; color: #fff;
+  font-weight: 800; font-size: 16px;
+  line-height: 1;
+}
+.tlp-alt-sub {
+  margin-top: 2px;
+  color: var(--tlp-mute);
+  font-size: 12px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.tlp-alt-tagline {
+  font-size: 12.5px;
+  color: var(--tlp-ink-2);
+  line-height: 1.5;
+  margin: 12px 0 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* User opinions about price/value — real-mode empty state + helpers. */
+.tlp-vo-norating { color: #9CA3AF; font-weight: 600; font-size: 12.5px }
+.tlp-vo-av--img { object-fit: cover }
+.tlp-vo-empty {
+  display: flex; align-items: flex-start;
+  gap: 18px;
+  padding: 24px 22px;
+  border: 1px dashed #D1D5DB;
+  border-radius: 14px;
+  background: #FAFBFC;
+  margin-top: 14px;
+}
+.tlp-vo-empty-ico {
+  display: grid; place-items: center;
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  color: var(--tlp-teal);
+  flex-shrink: 0;
+}
+.tlp-vo-empty-body { flex: 1; min-width: 0 }
+.tlp-vo-empty-title {
+  font-size: 16px; font-weight: 700;
+  color: var(--tlp-ink);
+  margin: 4px 0 6px;
+}
+.tlp-vo-empty-sub {
+  font-size: 13.5px; line-height: 1.55;
+  color: var(--tlp-mute);
+  margin: 0 0 14px;
+  max-width: 520px;
+}
+.tlp-vo-empty-cta {
+  display: inline-flex; align-items: center;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: var(--tlp-teal);
+  color: #fff;
+  font-size: 13.5px; font-weight: 700;
+  border: 0;
+  cursor: pointer;
+  transition: background .15s ease, transform .15s ease;
+}
+.tlp-vo-empty-cta:hover { background: var(--tlp-teal-dark, #086666); transform: translateY(-1px) }
+
+/* Integrations — real-mode rich cards. Re-uses existing .tlp-int-* base. */
+.tlp-int-logo--letter {
+  display: grid; place-items: center;
+  background: #0C9A9A; color: #fff;
+  font-weight: 800; font-size: 16px;
+  line-height: 1;
+  padding: 0;
+}
+.tlp-int-link {
+  display: inline-block;
+  font-size: 12.5px;
+  color: var(--tlp-teal);
+  font-weight: 600;
+  margin-top: 3px;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.tlp-int-link:hover { text-decoration: underline }
+.tlp-int-desc {
+  font-size: 13.5px;
+  color: var(--tlp-ink-2);
+  line-height: 1.55;
+  margin: 0;
+}
+.tlp-int-also {
+  margin: 32px 0 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tlp-mute);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+/* Customer Support — real-mode helpers. */
+.tlp-cs-opts-empty {
+  padding: 18px 16px;
+  border: 1px dashed #D1D5DB;
+  border-radius: 12px;
+  background: #FAFBFC;
+  color: var(--tlp-mute);
+  font-size: 13px;
+  line-height: 1.55;
+  text-align: center;
+}
+.tlp-cs-quote-av--img { object-fit: cover }
+.tlp-cs-rate em { color: var(--tlp-mute); font-style: normal; font-weight: 400; margin-left: 2px }

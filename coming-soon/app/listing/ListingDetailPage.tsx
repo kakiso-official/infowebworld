@@ -82,7 +82,19 @@ function mapServerRow(r: Record<string, unknown>): Partial<RealSubmission> {
     logoUrl: String(r.logo_url ?? ''),
     screenshots: parseJsonArr(r.screenshots) as string[],
     features: parseJsonArr(r.features) as string[],
-    integrations: parseJsonArr(r.integrations) as string[],
+    /* Tolerate legacy string[] payloads — wrap each as { name } for the UI. */
+    integrations: parseJsonArr(r.integrations).map((it) => {
+      if (typeof it === 'string') return { name: it }
+      if (it && typeof it === 'object') {
+        const o = it as Record<string, unknown>
+        return {
+          name: String(o.name ?? ''),
+          website: typeof o.website === 'string' ? o.website : undefined,
+          description: typeof o.description === 'string' ? o.description : undefined,
+        }
+      }
+      return { name: String(it) }
+    }).filter(i => i.name) as RealSubmission['integrations'],
     pricingModel: String(r.pricing_model ?? 'contact'),
     pricingTiers: parseJsonArr(r.pricing_tiers) as RealSubmission['pricingTiers'],
     founded: String(r.founded_year ?? ''),
@@ -1461,15 +1473,16 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
   }, [])
 
   const filteredFeatures = useMemo(() => {
-    /* Use submitter-supplied features when present (rating + count display
-       collapses to bare name when zeros). Otherwise fall back to sample matrix. */
+    /* Real listings: use submitter-supplied features (rating/count zero, hidden).
+       No realFeatures + not preview → empty list (an empty-state renders below).
+       Preview mode falls back to the rich sample matrix so design preview stays full. */
     const base: [string, number, number][] = view.realFeatures
       ? view.realFeatures.map(name => [name, 0, 0] as [string, number, number])
-      : ALL_FEATURES
+      : (isPreview ? ALL_FEATURES : [])
     const q = featureQ.trim().toLowerCase()
     if (!q) return base
     return base.filter(f => String(f[0]).toLowerCase().includes(q))
-  }, [featureQ, view.realFeatures])
+  }, [featureQ, view.realFeatures, isPreview])
 
   const filteredIntegrations = useMemo(() => {
     const q = integrationQ.trim().toLowerCase()
@@ -1779,7 +1792,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                       </div>
                       <p>
                         {view.realIntegrations && view.realIntegrations.length > 0 ? (
-                          <>The {view.companyName} integrations most frequently cited by reviewers are: {view.realIntegrations.slice(0, 5).join(', ')}.</>
+                          <>The {view.companyName} integrations most frequently cited by reviewers are: {view.realIntegrations.slice(0, 5).map(i => i.name).join(', ')}.</>
                         ) : (
                           <>The {view.companyName} integrations most frequently cited by reviewers cover marketing,
                           analytics, and e-commerce platforms.</>
@@ -1833,17 +1846,25 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                       {!isPreview && siblings[0] ? (() => {
                         const s = siblings[0]
                         const sLogo = s.logo_url
-                          || (s.website ? clearbit(String(s.website).replace(/^https?:\/\//, '').split('/')[0], 64) : '')
+                          || (s.website ? clearbit(String(s.website).replace(/^https?:\/\//, '').split('/')[0], 128) : '')
+                        const metaParts: string[] = []
+                        if (s.category_name) metaParts.push(s.category_name)
+                        if (s.starting_price) {
+                          const period = s.starting_price_period ? ` ${s.starting_price_period}` : ''
+                          metaParts.push(`From $${s.starting_price}${period}`)
+                        }
+                        const fallbackTag = s.tagline
+                          ? (s.tagline.length > 48 ? s.tagline.slice(0, 48) + '…' : s.tagline)
+                          : ''
+                        const metaLine = metaParts.length > 0 ? metaParts.join(' · ') : fallbackTag
                         return (
                           <a href={`/company/${s.slug}`} className="tlp-alt-mini">
                             {sLogo
-                              ? <img src={sLogo} alt="" className="tlp-alt-mini-logo-img" />
+                              ? <img src={sLogo} alt={`${s.company_name} logo`} className="tlp-alt-mini-logo-img" />
                               : <span className="tlp-alt-mini-logo" aria-hidden="true">{s.company_name.charAt(0).toUpperCase()}</span>}
                             <span className="tlp-alt-mini-info">
                               <span className="tlp-alt-mini-name">{s.company_name}</span>
-                              {s.tagline && <span className="tlp-alt-mini-rate" style={{ color: '#6B7280', fontSize: 12 }}>
-                                {s.tagline.length > 60 ? s.tagline.slice(0, 60) + '…' : s.tagline}
-                              </span>}
+                              {metaLine && <span className="tlp-alt-mini-meta">{metaLine}</span>}
                             </span>
                             <span className="tlp-alt-mini-chev"><ChevronRight size={18} /></span>
                           </a>
@@ -1962,44 +1983,90 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             {/* ========== INSIGHTS — renders real reviews when present, falls back
                 to the sample chrome (sentiment bars, topic chips, sample quotes)
                 in preview mode only. Hidden in real mode if no approved reviews yet. ========== */}
-            {(hasReviews || isPreview) && (
+            {(
               <section id="insights" className="tlp-card">
-                {!isPreview && hasReviews && reviewsData && (
+                {!isPreview && (
                   <>
-                    <div className="tlp-in-real-head">
-                      <h2 className="tlp-sec-title">User reviews</h2>
-                      <div className="tlp-in-real-meta">
-                        <span className="tlp-id-rate-num" style={{ fontSize: 24 }}>{overallRating.toFixed(1)}</span>
-                        <Stars value={overallRating} size={16} />
-                        <span style={{ color: '#6B7280' }}>
-                          {realReviewCount.toLocaleString()} review{realReviewCount === 1 ? '' : 's'}
-                        </span>
+                    <h2 className="tlp-sec-title">{view.companyName} reviews and insights</h2>
+                    <div className="tlp-in-grid">
+                      {/* ── Left sidebar: overall rating + insights placeholder ── */}
+                      <aside className="tlp-in-left">
+                        <div className="tlp-in-block">
+                          <h3 className="tlp-in-h3">Overall rating</h3>
+                          {hasReviews ? (
+                            <div className="tlp-in-rate-row">
+                              <span className="tlp-in-rate-num">{overallRating.toFixed(1)}</span>
+                              <Stars value={overallRating} size={15} />
+                              <span className="tlp-in-rate-count">({realReviewCount.toLocaleString()})</span>
+                            </div>
+                          ) : (
+                            <div className="tlp-in-rate-row">
+                              <span className="tlp-in-rate-num tlp-in-rate-num--muted">—</span>
+                              <span className="tlp-in-rate-count">No reviews yet</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="tlp-in-block">
+                          <h3 className="tlp-in-h3">Topic insights</h3>
+                          <p className="tlp-in-coming">
+                            We&apos;ll surface trending topics and sentiment once {view.companyName} collects more reviews.
+                          </p>
+                        </div>
+                      </aside>
+
+                      {/* ── Right content: real reviews as quotes, or empty CTA ── */}
+                      <div className="tlp-in-right">
+                        {hasReviews && reviewsData && reviewsData.recent.length > 0 ? (
+                          <>
+                            <h3 className="tlp-in-q">What do users say about {view.companyName}?</h3>
+                            <div className="tlp-in-quotes">
+                              {reviewsData.recent.slice(0, 5).map((rev) => {
+                                const r = rev as unknown as ReviewRow
+                                const initials = (r.user_name || '?').slice(0, 2).toUpperCase()
+                                return (
+                                  <div key={r.id} className="tlp-in-quote">
+                                    {r.title && <div className="tlp-in-quote-title">{r.title}</div>}
+                                    <p className="tlp-in-quote-text">&ldquo;{r.body}&rdquo;</p>
+                                    <div className="tlp-in-quote-who">
+                                      {r.user_avatar_url
+                                        ? <img src={r.user_avatar_url} alt="" className="tlp-in-quote-av tlp-in-quote-av--img" />
+                                        : <span className="tlp-in-quote-av" style={{ background: '#0C9A9A' }}>{initials}</span>}
+                                      <div>
+                                        <div className="tlp-in-quote-name">{r.user_name || 'Anonymous'}</div>
+                                        <div className="tlp-in-quote-role">
+                                          <Stars value={Number(r.rating)} size={12} />
+                                          <span className="tlp-in-quote-date">
+                                            {new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )
+                              })}
+                            </div>
+                          </>
+                        ) : (
+                          <div className="tlp-in-empty">
+                            <span className="tlp-in-empty-ico" aria-hidden="true">
+                              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                              </svg>
+                            </span>
+                            <h4 className="tlp-in-empty-title">No reviews yet for {view.companyName}</h4>
+                            <p className="tlp-in-empty-sub">
+                              Be the first to share your experience — your review will appear here and help other buyers compare.
+                            </p>
+                            <button
+                              type="button"
+                              className="tlp-in-empty-cta"
+                              onClick={() => isAuthed ? setReviewOpen(true) : requireLogin()}
+                            >
+                              Write the first review
+                            </button>
+                          </div>
+                        )}
                       </div>
-                    </div>
-                    <div className="tlp-in-real-list">
-                      {reviewsData.recent.slice(0, 5).map((rev) => {
-                        const r = rev as unknown as ReviewRow
-                        const initials = (r.user_name || '?').slice(0, 2).toUpperCase()
-                        return (
-                          <article key={r.id} className="tlp-in-real-review">
-                            <header className="tlp-in-real-review-head">
-                              {r.user_avatar_url
-                                ? <img src={r.user_avatar_url} alt="" className="tlp-in-real-avatar" />
-                                : <span className="tlp-in-real-avatar tlp-in-real-avatar--initials">{initials}</span>}
-                              <div className="tlp-in-real-author">
-                                <div className="tlp-in-real-author-name">{r.user_name || 'Anonymous'}</div>
-                                <div className="tlp-in-real-author-meta">
-                                  <Stars value={Number(r.rating)} size={13} />
-                                  <span>·</span>
-                                  <span>{new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                                </div>
-                              </div>
-                            </header>
-                            {r.title && <h3 className="tlp-in-real-title">{r.title}</h3>}
-                            <p className="tlp-in-real-body">{r.body}</p>
-                          </article>
-                        )
-                      })}
                     </div>
                   </>
                 )}
@@ -2180,35 +2247,143 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 )}
               </div>
 
-              {/* Real-mode: simple grouped lists from submitter data. */}
-              {!isPreview && (view.realIndustries || view.realUseCases || view.realCompanySizes) && (
-                <div className="tlp-wu-real-grid">
-                  {view.realCompanySizes && view.realCompanySizes.length > 0 && (
-                    <div className="tlp-wu-real-block">
-                      <h3 className="tlp-wu-real-h3">Target company sizes</h3>
-                      <ul className="tlp-wu-real-list">
-                        {view.realCompanySizes.map(s => <li key={s}>{s}</li>)}
-                      </ul>
+              {/* Real-mode: render the same 3-column grid (bars + donut + diamond)
+                  using submitter-supplied data. Each column shows a clean empty card
+                  when its array is missing. No fake percentages — visual size of each
+                  slice is equal-share (the data IS "owner picked these"). */}
+              {!isPreview && (view.realIndustries || view.realUseCases || view.realCompanySizes) && (() => {
+                const TEAL_PALETTE = ['#006B6B','#0C9A9A','#4FB8B8','#7FD0D0','#A4DFDF','#B7E6E6','#CFEFEF','#DFF5F5']
+                const SIZE_BARS: { label: string; match: string }[] = [
+                  { label: 'Small Businesses',   match: 'Small' },
+                  { label: 'Midsize Businesses', match: 'Mid' },
+                  { label: 'Enterprises',        match: 'Enterprise' },
+                ]
+                const sizesPicked = view.realCompanySizes || []
+                const inds        = (view.realIndustries || []).slice(0, 8)
+                  .map((label, idx) => ({ label, color: TEAL_PALETTE[idx % TEAL_PALETTE.length] }))
+                const ucs         = (view.realUseCases || [])
+                const ucsTop5     = ucs.slice(0, 5)
+                  .map((label, idx) => ({ label, color: TEAL_PALETTE[idx] }))
+                const diamondSlots = ['tlp-wu-d--big', 'tlp-wu-d--top', 'tlp-wu-d--rt', 'tlp-wu-d--bot', 'tlp-wu-d--tr']
+                return (
+                  <div className="tlp-wu-grid">
+                    {/* ── Column 1: Company size bars ── */}
+                    <div className="tlp-wu-col">
+                      <h3 className="tlp-wu-h3">Company size</h3>
+                      {sizesPicked.length > 0 ? (
+                        <div className="tlp-wu-bars">
+                          {SIZE_BARS.map(({ label, match }) => {
+                            const picked = sizesPicked.some(s => s.startsWith(match))
+                            return (
+                              <div key={label} className={`tlp-wu-bar ${picked ? '' : 'is-faded'}`}>
+                                <div className="tlp-wu-bar-track">
+                                  <div className="tlp-wu-bar-fill" style={{ height: picked ? '100%' : '12%' }} />
+                                </div>
+                                <div className="tlp-wu-bar-label">{label}</div>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      ) : (
+                        <div className="tlp-wu-empty">Not specified yet</div>
+                      )}
                     </div>
-                  )}
-                  {view.realIndustries && view.realIndustries.length > 0 && (
-                    <div className="tlp-wu-real-block">
-                      <h3 className="tlp-wu-real-h3">Industries served</h3>
-                      <ul className="tlp-wu-real-list">
-                        {view.realIndustries.map(i => <li key={i}>{i}</li>)}
-                      </ul>
+
+                    {/* ── Column 2: Industries donut (equal-share slices) ── */}
+                    <div className="tlp-wu-col">
+                      <h3 className="tlp-wu-h3">Industries</h3>
+                      {inds.length > 0 ? (() => {
+                        const total  = inds.length
+                        const r      = 52
+                        const cx     = 70, cy = 70
+                        const baseSt = 22
+                        const circ   = 2 * Math.PI * r
+                        const frac   = 1 / total
+                        const dash   = circ * frac
+                        return (
+                          <div className="tlp-wu-donut-wrap">
+                            <div className="tlp-wu-donut-box">
+                              <svg viewBox="0 0 140 140" className="tlp-wu-donut">
+                                {inds.map((i, idx) => {
+                                  const rotate = (idx / total) * 360 - 90
+                                  const isHot  = industryHover === idx
+                                  const faded  = industryHover !== null && !isHot
+                                  return (
+                                    <circle
+                                      key={i.label}
+                                      r={r} cx={cx} cy={cy}
+                                      fill="none"
+                                      stroke={i.color}
+                                      strokeWidth={isHot ? baseSt + 4 : baseSt}
+                                      strokeDasharray={`${dash} ${circ - dash}`}
+                                      transform={`rotate(${rotate} ${cx} ${cy})`}
+                                      opacity={faded ? 0.45 : 1}
+                                      style={{ cursor: 'pointer', transition: 'stroke-width .18s ease, opacity .18s ease' }}
+                                      onMouseEnter={() => setIndustryHover(idx)}
+                                      onMouseLeave={() => setIndustryHover(null)}
+                                    />
+                                  )
+                                })}
+                              </svg>
+                              {industryHover !== null && (
+                                <div className="tlp-wu-tooltip" aria-hidden="true">
+                                  {inds[industryHover].label}
+                                </div>
+                              )}
+                            </div>
+                            <ul className="tlp-wu-legend">
+                              {inds.map((i, idx) => (
+                                <li
+                                  key={i.label}
+                                  className={industryHover === idx ? 'is-active' : ''}
+                                  onMouseEnter={() => setIndustryHover(idx)}
+                                  onMouseLeave={() => setIndustryHover(null)}
+                                >
+                                  <span className="tlp-wu-dot" style={{ background: i.color }} />
+                                  <span className="tlp-wu-lbl">{i.label}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )
+                      })() : (
+                        <div className="tlp-wu-empty">Not specified yet</div>
+                      )}
                     </div>
-                  )}
-                  {view.realUseCases && view.realUseCases.length > 0 && (
-                    <div className="tlp-wu-real-block">
-                      <h3 className="tlp-wu-real-h3">Use cases</h3>
-                      <ul className="tlp-wu-real-list">
-                        {view.realUseCases.map(u => <li key={u}>{u}</li>)}
-                      </ul>
+
+                    {/* ── Column 3: Use cases diamond cluster ── */}
+                    <div className="tlp-wu-col">
+                      <h3 className="tlp-wu-h3">Use cases</h3>
+                      {ucs.length > 0 ? (
+                        <div className="tlp-wu-uc-wrap">
+                          <div className="tlp-wu-diamonds" aria-hidden="true">
+                            {ucsTop5.map((u, idx) => (
+                              <span
+                                key={u.label}
+                                className={`tlp-wu-d ${diamondSlots[idx]}`}
+                                style={{ background: u.color }}
+                              />
+                            ))}
+                          </div>
+                          <ul className="tlp-wu-legend">
+                            {ucs.map((u, idx) => (
+                              <li key={u}>
+                                <span
+                                  className="tlp-wu-dot tlp-wu-dot--sq"
+                                  style={{ background: idx < 5 ? TEAL_PALETTE[idx] : '#9CA3AF' }}
+                                />
+                                <span className="tlp-wu-lbl">{u}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : (
+                        <div className="tlp-wu-empty">Not specified yet</div>
+                      )}
                     </div>
-                  )}
-                </div>
-              )}
+                  </div>
+                )
+              })()}
 
               {/* Sample-only chrome (donut + diamond + bars). */}
               {isPreview && (<>
@@ -2317,12 +2492,12 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             </section>
             )}
 
-            {/* ========== KEY FEATURES ========== */}
-            {(view.realKeyFeatures || view.realFeatures || isPreview) && (
+            {/* ========== KEY FEATURES — always render section (empty-state when
+                neither realKeyFeatures nor realFeatures is provided). ========== */}
             <section id="key-features" className="tlp-sec tlp-kf-sec">
               <h2 className="tlp-sec-title tlp-kf-title">{view.companyName}&apos;s key features</h2>
 
-              {isPreview && (
+              {isPreview ? (
                 <p className="tlp-kf-intro">
                   <a href="#" className="tlp-inline-link">Based on our analysis</a>{' '}
                   of 984 verified user reviews collected between July 2021 and January 2026,
@@ -2330,13 +2505,38 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                   summarized beneath each one.{' '}
                   <a href="#" className="tlp-inline-link">Learn more about our reviews.</a>
                 </p>
+              ) : (view.realKeyFeatures || view.realFeatures) && (
+                <p className="tlp-kf-intro">
+                  Top features {view.companyName} highlights about themselves — what the team considers most important about the product.
+                </p>
               )}
 
               {(() => {
-                /* Source list: realKeyFeatures (rich), else preview-only KEY_FEATURES sample. */
-                const list: Feature[] = view.realKeyFeatures
-                  ? view.realKeyFeatures.map(kf => ({ name: kf.name, rating: 0, desc: kf.description || '' }))
-                  : (isPreview ? KEY_FEATURES : [])
+                /* Source priority: realKeyFeatures (rich) → first 6 of realFeatures
+                   mapped to name-only → preview sample → empty state. */
+                let list: Feature[] = []
+                if (view.realKeyFeatures) {
+                  list = view.realKeyFeatures.map(kf => ({ name: kf.name, rating: 0, desc: kf.description || '' }))
+                } else if (view.realFeatures) {
+                  list = view.realFeatures.slice(0, 6).map(name => ({ name, rating: 0, desc: '' }))
+                } else if (isPreview) {
+                  list = KEY_FEATURES
+                }
+                if (list.length === 0) {
+                  return (
+                    <div className="tlp-empty-card">
+                      <span className="tlp-empty-ico" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
+                        </svg>
+                      </span>
+                      <div className="tlp-empty-body">
+                        <div className="tlp-empty-title">Key features coming soon</div>
+                        <div className="tlp-empty-sub">{view.companyName} hasn&apos;t highlighted their top features yet.</div>
+                      </div>
+                    </div>
+                  )
+                }
                 const visible = keyFeaturesExpanded ? list : list.slice(0, KEY_FEATURES_VISIBLE)
                 return (
                   <>
@@ -2378,7 +2578,8 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 )
               })()}
 
-              {/* ── All Mailchimp features (inline, same section) ── */}
+              {/* ── All features (inline, same section). Renders submitter list, or
+                  an empty-state card when the owner has not shared one yet. ── */}
               <div id="all-features" className="tlp-af">
                 <div className="tlp-af-head">
                   <div className="tlp-af-heading">
@@ -2394,54 +2595,71 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                       </div>
                     )}
                   </div>
-                  <div className="tlp-af-search">
-                    <input
-                      type="text"
-                      placeholder="Search for a feature"
-                      value={featureQ}
-                      onChange={e => setFeatureQ(e.target.value)}
-                    />
-                    <svg viewBox="0 0 24 24" className="tlp-af-search-ico" aria-hidden="true">
-                      <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2" />
-                      <path d="M20 20l-3.5-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                    </svg>
-                  </div>
-                </div>
-
-                <div className="tlp-af-grid">
-                  {(featuresExpanded ? filteredFeatures : filteredFeatures.slice(0, 9)).map(
-                    ([name, rating, count]) => (
-                      <div key={String(name)} className="tlp-af-row">
-                        <span className="tlp-af-name">{name}</span>
-                        {Number(rating) > 0 && (
-                          <span className="tlp-af-rate">
-                            <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true">
-                              <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
-                            </svg>
-                            <strong>{Number(rating).toFixed(1)}</strong>
-                            <em>({String(count)})</em>
-                          </span>
-                        )}
-                      </div>
-                    )
+                  {filteredFeatures.length > 9 && (
+                    <div className="tlp-af-search">
+                      <input
+                        type="text"
+                        placeholder="Search for a feature"
+                        value={featureQ}
+                        onChange={e => setFeatureQ(e.target.value)}
+                      />
+                      <svg viewBox="0 0 24 24" className="tlp-af-search-ico" aria-hidden="true">
+                        <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2" />
+                        <path d="M20 20l-3.5-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                      </svg>
+                    </div>
                   )}
                 </div>
 
-                {filteredFeatures.length > 9 && (
-                  <button
-                    type="button"
-                    className="tlp-af-expand"
-                    onClick={() => setFeaturesExpanded(!featuresExpanded)}
-                  >
-                    <span>{featuresExpanded ? 'Collapse list' : 'Expand list'}</span>
-                    <span className={`tlp-af-expand-chev ${featuresExpanded ? 'is-open' : ''}`}>
-                      <ChevronDown />
+                {filteredFeatures.length > 0 ? (
+                  <>
+                    <div className="tlp-af-grid">
+                      {(featuresExpanded ? filteredFeatures : filteredFeatures.slice(0, 9)).map(
+                        ([name, rating, count]) => (
+                          <div key={String(name)} className="tlp-af-row">
+                            <span className="tlp-af-name">{name}</span>
+                            {Number(rating) > 0 && (
+                              <span className="tlp-af-rate">
+                                <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true">
+                                  <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
+                                </svg>
+                                <strong>{Number(rating).toFixed(1)}</strong>
+                                <em>({String(count)})</em>
+                              </span>
+                            )}
+                          </div>
+                        )
+                      )}
+                    </div>
+                    {filteredFeatures.length > 9 && (
+                      <button
+                        type="button"
+                        className="tlp-af-expand"
+                        onClick={() => setFeaturesExpanded(!featuresExpanded)}
+                      >
+                        <span>{featuresExpanded ? 'Collapse list' : 'Expand list'}</span>
+                        <span className={`tlp-af-expand-chev ${featuresExpanded ? 'is-open' : ''}`}>
+                          <ChevronDown />
+                        </span>
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  <div className="tlp-empty-card">
+                    <span className="tlp-empty-ico" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="4" width="18" height="16" rx="3" />
+                        <path d="M7 9h10M7 13h7M7 17h4" />
+                      </svg>
                     </span>
-                  </button>
+                    <div className="tlp-empty-body">
+                      <div className="tlp-empty-title">Full feature list coming soon</div>
+                      <div className="tlp-empty-sub">{view.companyName} hasn&apos;t shared the complete feature breakdown yet. Check back soon.</div>
+                    </div>
+                  </div>
                 )}
               </div>
             </section>
-            )}
 
             {/* ========== ALTERNATIVES — server-derived from category siblings,
                 falls back to the rich ALTERNATIVES sample in preview mode. ========== */}
@@ -2449,34 +2667,51 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             <section id="alternatives" className="tlp-sec">
               <h2 className="tlp-sec-title">{view.companyName} alternatives</h2>
 
-              {/* Real mode: simple sibling cards (no fake ratings or sample chrome). */}
+              {/* Real mode: rich card grid matching the test-page visual. Uses
+                  ONLY submitter data — no fake ratings, no fake free-trial flags. */}
               {!isPreview && siblings.length > 0 && (
-                <div className="tlp-sib-grid">
+                <div className="tlp-alt-grid">
                   {siblings.slice(0, 4).map(s => {
-                    const sLogo = s.logo_url
-                      || (s.website ? clearbit(String(s.website).replace(/^https?:\/\//, '').split('/')[0], 128) : '')
+                    const sDomain = s.website ? String(s.website).replace(/^https?:\/\//, '').split('/')[0] : ''
+                    const sLogo = s.logo_url || (sDomain ? clearbit(sDomain, 128) : '')
+                    const priceNum = s.starting_price ? String(s.starting_price).replace(/[^\d.]/g, '') : ''
                     return (
-                      <a key={s.id} href={`/company/${s.slug}`} className="tlp-sib-card">
-                        <div className="tlp-sib-head">
+                      <div key={s.id} className="tlp-alt">
+                        <div className="tlp-alt-head">
                           {sLogo
-                            ? <img src={sLogo} alt={`${s.company_name} logo`} className="tlp-sib-logo" />
-                            : <span className="tlp-sib-letter">{s.company_name.charAt(0).toUpperCase()}</span>}
-                          <div className="tlp-sib-id">
-                            <div className="tlp-sib-name">{s.company_name}</div>
-                            <div className="tlp-sib-cat">{s.category_name}</div>
+                            ? <img src={sLogo} alt={`${s.company_name} logo`} className="tlp-alt-logo" />
+                            : <span className="tlp-alt-logo tlp-alt-logo--letter" aria-hidden="true">{s.company_name.charAt(0).toUpperCase()}</span>}
+                          <div className="tlp-alt-head-right">
+                            <div className="tlp-alt-name">{s.company_name}</div>
+                            {s.category_name && <div className="tlp-alt-sub">{s.category_name}</div>}
                           </div>
                         </div>
-                        {s.tagline && <p className="tlp-sib-tagline">{s.tagline}</p>}
-                        <div className="tlp-sib-foot">
-                          {s.starting_price && (
-                            <span className="tlp-sib-price">
-                              From ${s.starting_price}
-                              {s.starting_price_period ? ` ${s.starting_price_period}` : ''}
-                            </span>
+
+                        <a href={`/company/${s.slug}`} className="tlp-alt-cta">Learn More</a>
+
+                        <div className="tlp-alt-price-block">
+                          <div className="tlp-alt-price-head">
+                            <span>Starting from</span>
+                            <span className="tlp-info-ico"><InfoIcon /></span>
+                          </div>
+                          {priceNum ? (
+                            <div className="tlp-alt-price">
+                              <span className="tlp-alt-price-sym">$</span>
+                              <span className="tlp-alt-price-num">{priceNum}</span>
+                            </div>
+                          ) : (
+                            <div className="tlp-alt-price tlp-alt-price--none">
+                              <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                                <circle cx="12" cy="12" r="9" fill="none" stroke="#D1D5DB" strokeWidth="1.8" />
+                                <path d="M12 7v5l3 3" fill="none" stroke="#9CA3AF" strokeWidth="1.8" strokeLinecap="round" />
+                              </svg>
+                            </div>
                           )}
-                          <span className="tlp-sib-cta">View →</span>
+                          <div className="tlp-alt-period">{s.starting_price_period || (priceNum ? '' : 'Pricing not shared')}</div>
                         </div>
-                      </a>
+
+                        {s.tagline && <p className="tlp-alt-tagline">{s.tagline}</p>}
+                      </div>
                     )
                   })}
                 </div>
@@ -2711,6 +2946,84 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                   </div>
                 </>
               )}
+
+              {/* Real-mode: same User Opinions block, sourced from real reviews
+                  with a Write-a-review CTA when none exist yet. No fake quotes. */}
+              {!isPreview && (
+                <>
+                  <div className="tlp-price-dots" aria-hidden="true">
+                    <span className="is-active" />
+                    <span />
+                  </div>
+
+                  <h3 className="tlp-vo-title">User opinions about {view.companyName} price and value</h3>
+                  <div className="tlp-price-meta">
+                    <span>Value for money rating:</span>
+                    {hasReviews ? (
+                      <>
+                        <svg viewBox="0 0 24 24" width="14" height="14">
+                          <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
+                        </svg>
+                        <strong>{overallRating.toFixed(1)}</strong>
+                        <em>({realReviewCount.toLocaleString()})</em>
+                      </>
+                    ) : (
+                      <span className="tlp-vo-norating">No ratings yet</span>
+                    )}
+                  </div>
+
+                  {hasReviews && reviewsData && reviewsData.recent.length > 0 ? (
+                    <>
+                      <p className="tlp-sec-lead">
+                        Review snippets covering pricing and value from {view.companyName} customers.
+                      </p>
+                      <div className="tlp-vo-grid">
+                        {reviewsData.recent.slice(0, 4).map((rev) => {
+                          const r = rev as unknown as ReviewRow
+                          const initials = (r.user_name || '?').slice(0, 2).toUpperCase()
+                          return (
+                            <div key={r.id} className="tlp-vo">
+                              <p className="tlp-vo-q">&ldquo;{r.body}&rdquo;</p>
+                              <div className="tlp-vo-who">
+                                {r.user_avatar_url
+                                  ? <img src={r.user_avatar_url} alt="" className="tlp-vo-av tlp-vo-av--img" />
+                                  : <span className="tlp-vo-av" style={{ background: '#0C9A9A' }}>{initials}</span>}
+                                <div>
+                                  <div className="tlp-vo-name">{r.user_name || 'Anonymous'}</div>
+                                  <div className="tlp-vo-role">
+                                    <Stars value={Number(r.rating)} size={12} />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="tlp-vo-empty">
+                      <span className="tlp-vo-empty-ico" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
+                        </svg>
+                      </span>
+                      <div className="tlp-vo-empty-body">
+                        <h4 className="tlp-vo-empty-title">What do you think of {view.companyName} pricing?</h4>
+                        <p className="tlp-vo-empty-sub">
+                          Share your experience — your review will appear here and help future buyers compare value for money.
+                        </p>
+                        <button
+                          type="button"
+                          className="tlp-vo-empty-cta"
+                          onClick={() => isAuthed ? setReviewOpen(true) : requireLogin()}
+                        >
+                          Write a review
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
             </section>
             )}
 
@@ -2738,14 +3051,56 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 )}
               </div>
 
-              {/* Real-mode: simple chip grid using just submitter-supplied names. */}
-              {view.realIntegrations && !isPreview && (
-                <div className="tlp-int-chips">
-                  {view.realIntegrations.map(name => (
-                    <span key={name} className="tlp-int-chip">{name}</span>
-                  ))}
-                </div>
-              )}
+              {/* Real-mode: rich card grid. Each card uses the partner's website
+                  to pull a logo and renders the submitter's description. Items
+                  with no website fall back to a letter tile. No fake ratings,
+                  no fake reviewer quotes. */}
+              {view.realIntegrations && !isPreview && (() => {
+                const rich = view.realIntegrations.filter(i => i.website || i.description)
+                const simple = view.realIntegrations.filter(i => !i.website && !i.description)
+                return (
+                  <>
+                    {rich.length > 0 && (
+                      <div className="tlp-int-grid">
+                        {rich.map(i => {
+                          const domain = i.website ? String(i.website).replace(/^https?:\/\//, '').split('/')[0] : ''
+                          const logo = domain ? clearbit(domain, 128) : ''
+                          return (
+                            <div key={i.name} className="tlp-int-card">
+                              <div className="tlp-int-card-head">
+                                {logo
+                                  ? <img src={logo} alt={`${i.name} logo`} className="tlp-int-logo" />
+                                  : <span className="tlp-int-logo tlp-int-logo--letter" aria-hidden="true">{i.name.charAt(0).toUpperCase()}</span>}
+                                <div className="tlp-int-head-info">
+                                  <div className="tlp-int-name">{i.name}</div>
+                                  {i.website && (
+                                    <a href={i.website} target="_blank" rel="noopener noreferrer" className="tlp-int-link">
+                                      {domain || 'Visit site'}
+                                    </a>
+                                  )}
+                                </div>
+                              </div>
+                              {i.description && (
+                                <p className="tlp-int-desc">{i.description}</p>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    )}
+                    {simple.length > 0 && (
+                      <>
+                        {rich.length > 0 && <div className="tlp-int-also">Also integrates with</div>}
+                        <div className="tlp-int-chips">
+                          {simple.map(i => (
+                            <span key={i.name} className="tlp-int-chip">{i.name}</span>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </>
+                )
+              })()}
 
               {isPreview && (<>
               <h3 className="tlp-int-sub">Integrations rated by users</h3>
@@ -2817,14 +3172,17 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             </section>
             )}
 
-            {/* ========== CUSTOMER SUPPORT ========== */}
-            {(view.realSupportChannels || view.realTrainingOptions || isPreview) && (
+            {/* ========== CUSTOMER SUPPORT — always render. Real mode uses the
+                same 2-col layout as preview: left = "what users say" panel
+                (real rating + soft intro), right = Support/Training options
+                cards (or empty-state). Bottom = review quotes or write-review
+                CTA when no reviews. ========== */}
             <section id="support" className="tlp-sec">
               <h2 className="tlp-sec-title">{view.companyName} customer support</h2>
 
               <div className="tlp-cs-grid">
-                {/* Left: heading + sample-only insights (rating, narrative bullets) */}
-                {isPreview && (
+                {/* ── Left column ── */}
+                {isPreview ? (
                   <div>
                     <h3 className="tlp-cs-q">What do users say about {view.companyName} customer support?</h3>
                     <div className="tlp-cs-rate">
@@ -2851,42 +3209,68 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                       ))}
                     </ul>
                   </div>
-                )}
-
-                {/* Right: Support + Training options card — driven by real data only. */}
-                {(view.realSupportChannels || view.realTrainingOptions || isPreview) && (
-                  <div className="tlp-cs-opts">
-                    {(view.realSupportChannels || isPreview) && (
-                      <>
-                        <div className="tlp-cs-opts-h">Support options</div>
-                        <ul className="tlp-cs-opts-list">
-                          {(view.realSupportChannels || (isPreview ? [
-                            'Email/help desk', 'Chat', 'Knowledge base',
-                            'FAQs/forum', '24/7 (live rep)', 'Phone support',
-                          ] : [])).map(o => (
-                            <li key={o}>
-                              <span>{o}</span>
-                              <CheckSm />
-                            </li>
-                          ))}
-                        </ul>
-                      </>
-                    )}
-                    {(view.realTrainingOptions || isPreview) && (
-                      <>
-                        <div className="tlp-cs-opts-h tlp-cs-opts-h--spaced">Training options</div>
-                        <ul className="tlp-cs-opts-list">
-                          {(view.realTrainingOptions || (isPreview ? ['Live online', 'Videos', 'Webinars', 'Documentation'] : [])).map(o => (
-                            <li key={o}>
-                              <span>{o}</span>
-                              <CheckSm />
-                            </li>
-                          ))}
-                        </ul>
-                      </>
-                    )}
+                ) : (
+                  <div>
+                    <h3 className="tlp-cs-q">What do users say about {view.companyName} customer support?</h3>
+                    <div className="tlp-cs-rate">
+                      <span>Customer support rating:</span>
+                      {hasReviews ? (
+                        <>
+                          <svg viewBox="0 0 24 24" width="14" height="14">
+                            <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
+                          </svg>
+                          <strong>{overallRating.toFixed(1)}</strong>
+                          <em>({realReviewCount.toLocaleString()})</em>
+                        </>
+                      ) : (
+                        <span className="tlp-vo-norating">No ratings yet</span>
+                      )}
+                    </div>
+                    <p className="tlp-cs-intro">
+                      {hasReviews
+                        ? <>See review snippets below to learn what users say about {view.companyName}&apos;s support team.</>
+                        : <>{view.companyName} hasn&apos;t collected enough reviews to surface support insights yet — write the first one to share your experience.</>}
+                    </p>
                   </div>
                 )}
+
+                {/* ── Right column: Support + Training options card ── */}
+                <div className="tlp-cs-opts">
+                  {(view.realSupportChannels || isPreview) && (
+                    <>
+                      <div className="tlp-cs-opts-h">Support options</div>
+                      <ul className="tlp-cs-opts-list">
+                        {(view.realSupportChannels || (isPreview ? [
+                          'Email/help desk', 'Chat', 'Knowledge base',
+                          'FAQs/forum', '24/7 (live rep)', 'Phone support',
+                        ] : [])).map(o => (
+                          <li key={o}>
+                            <span>{o}</span>
+                            <CheckSm />
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                  {(view.realTrainingOptions || isPreview) && (
+                    <>
+                      <div className={`tlp-cs-opts-h ${(view.realSupportChannels || isPreview) ? 'tlp-cs-opts-h--spaced' : ''}`}>Training options</div>
+                      <ul className="tlp-cs-opts-list">
+                        {(view.realTrainingOptions || (isPreview ? ['Live online', 'Videos', 'Webinars', 'Documentation'] : [])).map(o => (
+                          <li key={o}>
+                            <span>{o}</span>
+                            <CheckSm />
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                  {!isPreview && !view.realSupportChannels && !view.realTrainingOptions && (
+                    <div className="tlp-cs-opts-empty">
+                      Support &amp; training options coming soon — {view.companyName} hasn&apos;t shared their channels yet.
+                    </div>
+                  )}
+                </div>
               </div>
 
               {isPreview && (
@@ -2914,21 +3298,91 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                   </div>
                 </>
               )}
-            </section>
-            )}
 
-            {/* ========== FAQS ========== */}
-            {(view.realFaqs || isPreview) && (
+              {/* Real-mode quotes + write-review CTA. */}
+              {!isPreview && (
+                hasReviews && reviewsData && reviewsData.recent.length > 0 ? (
+                  <>
+                    <p className="tlp-cs-lead">
+                      Review snippets covering {view.companyName} customer support and team responsiveness.
+                    </p>
+                    <div className="tlp-cs-quotes">
+                      {reviewsData.recent.slice(0, 3).map((rev) => {
+                        const r = rev as unknown as ReviewRow
+                        const initials = (r.user_name || '?').slice(0, 2).toUpperCase()
+                        return (
+                          <div key={r.id} className="tlp-cs-quote">
+                            <p className="tlp-cs-quote-text">&ldquo;{r.body}&rdquo;</p>
+                            <div className="tlp-cs-quote-who">
+                              {r.user_avatar_url
+                                ? <img src={r.user_avatar_url} alt="" className="tlp-cs-quote-av tlp-cs-quote-av--img" />
+                                : <span className="tlp-cs-quote-av" style={{ background: '#0C9A9A' }}>{initials}</span>}
+                              <div>
+                                <div className="tlp-cs-quote-name">{r.user_name || 'Anonymous'}</div>
+                                <div className="tlp-cs-quote-role">
+                                  <Stars value={Number(r.rating)} size={12} />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </>
+                ) : (
+                  <div className="tlp-vo-empty">
+                    <span className="tlp-vo-empty-ico" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                      </svg>
+                    </span>
+                    <div className="tlp-vo-empty-body">
+                      <h4 className="tlp-vo-empty-title">How was your experience with {view.companyName} support?</h4>
+                      <p className="tlp-vo-empty-sub">
+                        Be the first to share — your review will appear here and help future buyers gauge what to expect.
+                      </p>
+                      <button
+                        type="button"
+                        className="tlp-vo-empty-cta"
+                        onClick={() => isAuthed ? setReviewOpen(true) : requireLogin()}
+                      >
+                        Write a review
+                      </button>
+                    </div>
+                  </div>
+                )
+              )}
+            </section>
+
+            {/* ========== FAQS — always render section. Empty state when the
+                owner has not added any. ========== */}
             <section id="faqs" className="tlp-sec">
               <h2 className="tlp-sec-title">{view.companyName} FAQs</h2>
               <p className="tlp-sec-lead">Here are some of the questions we get asked most often.</p>
 
               {(() => {
-                // Use real FAQs when present; otherwise fall back to the
-                // sample FAQ set (for design preview on /test-listing-page).
+                // Use real FAQs when present; otherwise the preview-only sample
+                // (for design preview on /test-listing-page).
                 const items = view.realFaqs
                   ? view.realFaqs.map(f => ({ q: f.question, a: f.answer, showAlts: false }))
-                  : FAQS
+                  : (isPreview ? FAQS : [])
+                if (items.length === 0) {
+                  return (
+                    <div className="tlp-empty-card">
+                      <span className="tlp-empty-ico" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3" />
+                          <line x1="12" y1="17" x2="12.01" y2="17" />
+                        </svg>
+                      </span>
+                      <div className="tlp-empty-body">
+                        <div className="tlp-empty-title">FAQs coming soon</div>
+                        <div className="tlp-empty-sub">{view.companyName} hasn&apos;t added frequently asked questions yet. Check back soon — or <a href="/contact" className="tlp-inline-link">reach out</a> with your question.</div>
+                      </div>
+                    </div>
+                  )
+                }
                 return (
                   <ul className="tlp-faq-list">
                     {items.map((f, i) => (
@@ -2977,7 +3431,6 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 )
               })()}
             </section>
-            )}
 
             {/* ========== POPULAR COMPARISONS — pair self with up to 9 siblings. ========== */}
             {(siblings.length > 0 || isPreview) && (

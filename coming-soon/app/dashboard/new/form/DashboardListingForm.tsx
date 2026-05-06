@@ -191,7 +191,13 @@ export default function DashboardListingForm({ plan = 'free' }: { plan?: PlanKey
         screenshots: form.screenshots,
         demoVideo: form.demoVideo || null,
         features: form.features.filter(f => f.trim()),
-        integrations: form.integrations.filter(x => x.trim()),
+        integrations: form.integrations
+          .filter(it => it.name.trim())
+          .map(it => ({
+            name: it.name.trim(),
+            ...(it.website && it.website.trim() ? { website: it.website.trim() } : {}),
+            ...(it.description && it.description.trim() ? { description: it.description.trim() } : {}),
+          })),
         pricingModel: form.pricingModel || null,
         pricingTiers: form.pricingTiers.filter(t => t.name.trim()),
         funding: form.funding || null,

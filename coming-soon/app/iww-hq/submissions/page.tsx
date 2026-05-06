@@ -101,7 +101,7 @@ function DetailModal({ sub, onClose, onStatusChange, onFaqSave }: { sub: RealSub
               <div style={lbl}>Integrations</div>
               <div style={{ display: 'flex', gap: '.25rem', flexWrap: 'wrap', marginTop: '.3rem' }}>
                 {sub.integrations.map((t, i) => (
-                  <span key={i} style={{ fontSize: '.55rem', fontWeight: 700, padding: '.15rem .45rem', borderRadius: 999, background: 'var(--h-bg)', color: 'var(--h-body)', border: '1px solid var(--h-border-light)' }}>{t}</span>
+                  <span key={i} style={{ fontSize: '.55rem', fontWeight: 700, padding: '.15rem .45rem', borderRadius: 999, background: 'var(--h-bg)', color: 'var(--h-body)', border: '1px solid var(--h-border-light)' }}>{t.name}</span>
                 ))}
               </div>
             </div>

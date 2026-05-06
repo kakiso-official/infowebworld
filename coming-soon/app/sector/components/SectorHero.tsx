@@ -112,7 +112,7 @@ export default function SectorHero({ category, meta, sectorName, shortName, l2Ca
           l.companyName, l.tagline, l.description, l.category,
           l.listingType, l.pricingModel, l.city, l.state, l.country,
           l.hqLocation, l.website, l.founded, l.employees, l.funding,
-          ...(l.features || []), ...(l.integrations || []),
+          ...(l.features || []), ...(l.integrations || []).map(i => i.name),
           ...(l.faqs || []).map(f => f.question + ' ' + f.answer),
           ...(l.pricingTiers || []).map(t => t.name + ' ' + t.price),
         ].filter(Boolean).join(' ').toLowerCase()

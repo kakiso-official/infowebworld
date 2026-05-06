@@ -102,7 +102,7 @@ export default function Step7Review({ form, allCategories, listingTypes, tagGrou
         </div>
         <Row label="Features" value={`${form.features.length} added`} on={() => goToStep('features')} />
         <Row label="Key features" value={`${form.keyFeatures.length} added`} on={() => goToStep('features')} />
-        <Row label="Integrations" value={form.integrations.slice(0, 6).join(', ') + (form.integrations.length > 6 ? '…' : '')} on={() => goToStep('features')} />
+        <Row label="Integrations" value={form.integrations.slice(0, 6).map(i => i.name).join(', ') + (form.integrations.length > 6 ? '…' : '')} on={() => goToStep('features')} />
         <Row label="Support channels" value={form.supportChannels.join(', ')} on={() => goToStep('features')} />
       </section>
 

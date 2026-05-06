@@ -803,6 +803,33 @@
 .df-kf-desc { grid-area: desc; }
 .df-kf-rm   { grid-area: rm; align-self: start; }
 
+.df-int-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 32px;
+  grid-template-areas:
+    "name url rm"
+    "desc desc rm";
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 12px;
+  background: var(--df-bg-soft);
+  border: 1px solid var(--df-border);
+  border-radius: var(--df-radius);
+}
+.df-int-name { grid-area: name }
+.df-int-url  { grid-area: url }
+.df-int-desc { grid-area: desc }
+.df-int-rm   { grid-area: rm; align-self: start }
+@media (max-width: 600px) {
+  .df-int-row {
+    grid-template-columns: 1fr 32px;
+    grid-template-areas:
+      "name rm"
+      "url  rm"
+      "desc rm";
+  }
+}
+
 .df-tier {
   margin-bottom: 14px;
   padding: 12px;

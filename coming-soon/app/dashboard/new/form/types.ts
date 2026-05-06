@@ -14,6 +14,7 @@ export type PricingTier = {
 export type FaqItem = { question: string; answer: string }
 export type KeyFeature = { name: string; description: string }
 export type Award = { name: string; year?: string }
+export type IntegrationItem = { name: string; website: string; description: string }
 
 export type FormState = {
   /* Identity */
@@ -67,7 +68,7 @@ export type FormState = {
   /* Features & pricing */
   features: string[]
   keyFeatures: KeyFeature[]
-  integrations: string[]
+  integrations: IntegrationItem[]
   startingPrice: string
   startingPricePeriod: string
   hasFreeTrial: boolean

@@ -3,7 +3,9 @@ import Field from '../components/Field'
 import ChipInput from '../components/ChipInput'
 import PillToggle from '../components/PillToggle'
 import { SUPPORT_CHANNEL_OPTIONS, TRAINING_OPTION_OPTIONS } from '../constants'
-import type { StepProps, KeyFeature } from '../types'
+import type { StepProps, KeyFeature, IntegrationItem } from '../types'
+
+const MAX_INTEGRATIONS = 24
 
 export default function Step5Features({ form, set, errors, caps }: StepProps) {
   const updateKeyFeature = (i: number, patch: Partial<KeyFeature>) => {
@@ -17,6 +19,18 @@ export default function Step5Features({ form, set, errors, caps }: StepProps) {
   }
   const removeKeyFeature = (i: number) =>
     set('keyFeatures', form.keyFeatures.filter((_, j) => j !== i))
+
+  const updateIntegration = (i: number, patch: Partial<IntegrationItem>) => {
+    const arr = [...form.integrations]
+    arr[i] = { ...arr[i], ...patch }
+    set('integrations', arr)
+  }
+  const addIntegration = () => {
+    if (form.integrations.length >= MAX_INTEGRATIONS) return
+    set('integrations', [...form.integrations, { name: '', website: '', description: '' }])
+  }
+  const removeIntegration = (i: number) =>
+    set('integrations', form.integrations.filter((_, j) => j !== i))
 
   return (
     <>
@@ -75,12 +89,42 @@ export default function Step5Features({ form, set, errors, caps }: StepProps) {
         </Field>
       )}
 
-      <Field label="Integrations" hint="Names of products you integrate with.">
-        <ChipInput
-          values={form.integrations}
-          onChange={v => set('integrations', v)}
-          placeholder="e.g. Stripe, Slack, Zapier"
-        />
+      <Field label={`Integrations (max ${MAX_INTEGRATIONS})`}
+        hint="Each integration shows as a card on your listing — add the partner's website URL so we can pull a logo, plus a one-line note about how the integration works.">
+        {form.integrations.map((it, i) => (
+          <div key={i} className="df-int-row">
+            <input
+              type="text"
+              className="df-input df-int-name"
+              value={it.name}
+              onChange={e => updateIntegration(i, { name: e.target.value })}
+              placeholder={`Integration ${i + 1} name`}
+              maxLength={60}
+            />
+            <input
+              type="url"
+              className="df-input df-int-url"
+              value={it.website}
+              onChange={e => updateIntegration(i, { website: e.target.value })}
+              placeholder="https://stripe.com"
+              maxLength={200}
+            />
+            <textarea
+              className="df-textarea df-int-desc"
+              value={it.description}
+              onChange={e => updateIntegration(i, { description: e.target.value })}
+              placeholder="What this integration unlocks for your customers (1–2 sentences)."
+              rows={2}
+              maxLength={400}
+            />
+            <button type="button" className="df-icon-btn df-int-rm" onClick={() => removeIntegration(i)} aria-label="Remove">
+              <svg viewBox="0 0 24 24" width="14" height="14"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+            </button>
+          </div>
+        ))}
+        {form.integrations.length < MAX_INTEGRATIONS && (
+          <button type="button" className="df-add-btn" onClick={addIntegration}>+ Add integration</button>
+        )}
       </Field>
 
       <Field label="Support channels" hint="Drives the &ldquo;Support options&rdquo; checklist on your listing.">

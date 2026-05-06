@@ -8,6 +8,7 @@ export type PricingTier = { name: string; price: string; period: string; feature
 export type FaqItem = { question: string; answer: string }
 export type KeyFeature = { name: string; description: string }
 export type Award = { name: string; year?: string }
+export type IntegrationItem = { name: string; website?: string; description?: string }
 
 export type RealSubmission = {
   id: string
@@ -31,7 +32,7 @@ export type RealSubmission = {
   screenshots: string[]
   demoVideo: string
   features: string[]
-  integrations: string[]
+  integrations: IntegrationItem[]
   pricingModel: string
   pricingTiers: PricingTier[]
   founded: string
@@ -100,7 +101,20 @@ export function mapRow(r: Record<string, unknown>): RealSubmission {
     screenshots: parseJson(r.screenshots) as string[],
     demoVideo: String(r.demo_video ?? ''),
     features: parseJson(r.features) as string[],
-    integrations: parseJson(r.integrations) as string[],
+    /* Tolerate legacy string[] payloads — wrap each as { name } so the live
+       page never has to branch on shape. */
+    integrations: (parseJson(r.integrations) as unknown[]).map((it) => {
+      if (typeof it === 'string') return { name: it } as IntegrationItem
+      if (it && typeof it === 'object') {
+        const o = it as Record<string, unknown>
+        return {
+          name: String(o.name ?? ''),
+          website: typeof o.website === 'string' ? o.website : undefined,
+          description: typeof o.description === 'string' ? o.description : undefined,
+        }
+      }
+      return { name: String(it) }
+    }).filter(i => i.name) as IntegrationItem[],
     pricingModel: String(r.pricing_model ?? 'contact'),
     pricingTiers: parseJson(r.pricing_tiers) as PricingTier[],
     founded: String(r.founded_year ?? ''),
