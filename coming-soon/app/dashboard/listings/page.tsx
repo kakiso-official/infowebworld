@@ -89,6 +89,13 @@ export default async function ListingsPage({
                   {l.category_name && <span className="dash-chip dash-chip--muted">{l.category_name}</span>}
                 </div>
                 <div className="dash-list-foot">
+                  <Link href={`/dashboard/listings/${l.uuid}/edit`} className="dash-list-btn dash-list-btn--ghost">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.2">
+                      <path d="M12 20h9" />
+                      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+                    </svg>
+                    Edit
+                  </Link>
                   {isLive ? (
                     <Link href={`/company/${l.slug}`} className="dash-list-btn">
                       View listing

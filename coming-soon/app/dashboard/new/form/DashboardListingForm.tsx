@@ -11,7 +11,7 @@
  */
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { Country } from 'country-state-city'
-import { addSubmission } from '../../../iww-hq/data/submissions-storage'
+import { addSubmission, updateSubmission } from '../../../iww-hq/data/submissions-storage'
 import { fetchLaunchedCategories } from '../../../iww-hq/data/category-storage'
 import type { Category } from '../../../iww-hq/data/category-storage'
 import { fetchAllTagGroups } from '../../../iww-hq/data/tag-storage'
@@ -46,14 +46,32 @@ const STEPS: StepDef[] = [
   { id: 'review',   num: '07', label: 'Review' },
 ]
 
-export default function DashboardListingForm({ plan = 'free' }: { plan?: PlanKey }) {
+type Props = {
+  plan?: PlanKey
+  /** Edit mode props — when set, form preloads from initialFormState and submits PUT instead of POST. */
+  editMode?: boolean
+  submissionUuid?: string
+  initialFormState?: Partial<FormState>
+}
+
+export default function DashboardListingForm({
+  plan = 'free',
+  editMode = false,
+  submissionUuid,
+  initialFormState,
+}: Props) {
   const caps = PLAN_CAPS[plan]
   const defaultIso = URL_COUNTRY_ISO['us']
   const { user } = useDashboardCtx()
 
-  const [stepIdx, setStepIdx] = useState(0)
-  const [visited, setVisited] = useState<Set<number>>(new Set([0]))
+  /* In edit mode, jump straight to Review so the user sees an overview of every
+     field they're editing — they can dive into any earlier step from the rail. */
+  const [stepIdx, setStepIdx] = useState(editMode ? 6 : 0)
+  const [visited, setVisited] = useState<Set<number>>(
+    () => editMode ? new Set([0, 1, 2, 3, 4, 5, 6]) : new Set([0])
+  )
   const [form, setForm] = useState<FormState>(() => {
+    if (initialFormState) return { ...INITIAL, ...initialFormState }
     const cInfo = Country.getCountryByCode(defaultIso)
     return cInfo
       ? {
@@ -87,10 +105,11 @@ export default function DashboardListingForm({ plan = 'free' }: { plan?: PlanKey
     fetchListingTypes(form.l3Id).then(setListingTypes).catch(() => setListingTypes([]))
   }, [form.l3Id])
 
-  /* Draft autosave — keyed per user so one browser shared by multiple accounts
-     never leaks one user's draft into another's session. */
+  /* Draft autosave — only for new listings. In edit mode the source of truth is
+     the DB row; saving a draft would later overwrite the loaded values. */
   const draftKey = `iww_listing_draft_${user.uuid}_${plan}`
   useEffect(() => {
+    if (editMode) return
     try {
       /* Sweep legacy unscoped keys that could leak across accounts. */
       for (const p of ['free', 'starter', 'yearly', 'lifetime']) {
@@ -103,13 +122,14 @@ export default function DashboardListingForm({ plan = 'free' }: { plan?: PlanKey
       }
     } catch {}
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [draftKey])
+  }, [draftKey, editMode])
   useEffect(() => {
+    if (editMode) return
     const t = setTimeout(() => {
       try { localStorage.setItem(draftKey, JSON.stringify(form)); setDraftSavedAt(Date.now()) } catch {}
     }, 400)
     return () => clearTimeout(t)
-  }, [form, draftKey])
+  }, [form, draftKey, editMode])
 
   /* Scroll content panel to top on step change */
   useEffect(() => {
@@ -226,10 +246,12 @@ export default function DashboardListingForm({ plan = 'free' }: { plan?: PlanKey
         compliance: form.compliance,
         awards: form.awards.filter(a => a.name.trim()),
       }
-      const res = await addSubmission(payload)
-      if (res.ok && res.slug) {
-        localStorage.removeItem(draftKey)
-        setSubmitted({ slug: res.slug })
+      const res = editMode && submissionUuid
+        ? await updateSubmission(submissionUuid, payload)
+        : await addSubmission(payload)
+      if (res.ok) {
+        if (!editMode) localStorage.removeItem(draftKey)
+        setSubmitted({ slug: res.slug || submissionUuid || '' })
       } else {
         setSubmitError(res.error || 'Submission failed. Please try again.')
       }
@@ -251,10 +273,16 @@ export default function DashboardListingForm({ plan = 'free' }: { plan?: PlanKey
             <path d="M5 12l5 5 9-11" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
-        <h2 className="df-success-title">You&apos;re in</h2>
+        <h2 className="df-success-title">{editMode ? 'Changes saved' : "You're in"}</h2>
         <p className="df-success-desc">
-          Your <strong>{form.companyName}</strong> listing has been submitted for review.
-          We&apos;ll email <strong>{form.email}</strong> when it&apos;s approved.
+          {editMode ? (
+            <>Your <strong>{form.companyName}</strong> listing has been updated.</>
+          ) : (
+            <>
+              Your <strong>{form.companyName}</strong> listing has been submitted for review.
+              We&apos;ll email <strong>{form.email}</strong> when it&apos;s approved.
+            </>
+          )}
         </p>
         <div className="df-success-meta">
           <div className="df-success-row">
@@ -262,7 +290,7 @@ export default function DashboardListingForm({ plan = 'free' }: { plan?: PlanKey
             <span className="df-success-val">{caps.label} · {caps.price}</span>
           </div>
           <div className="df-success-row">
-            <span className="df-success-label">Future URL</span>
+            <span className="df-success-label">{editMode ? 'URL' : 'Future URL'}</span>
             <span className="df-success-val">/company/{submitted.slug}</span>
           </div>
         </div>
@@ -332,6 +360,8 @@ export default function DashboardListingForm({ plan = 'free' }: { plan?: PlanKey
             onNext={isLast ? onSubmit : next}
             isLast={isLast}
             submitting={submitting}
+            submitLabel={editMode ? 'Save changes' : 'Submit listing'}
+            submittingLabel={editMode ? 'Saving…' : 'Submitting…'}
           />
 
           {submitError && <div className="df-submit-error">{submitError}</div>}

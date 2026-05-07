@@ -197,6 +197,19 @@ export async function addSubmission(data: Record<string, unknown>) {
   return res.json()
 }
 
+/** Owner-only full update. `idOrUuid` is normally the uuid. */
+export async function updateSubmission(
+  idOrUuid: string,
+  data: Record<string, unknown>,
+) {
+  const res = await fetch(`${API}/submissions/${encodeURIComponent(idOrUuid)}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+  return res.json()
+}
+
 export async function uploadFile(file: File, type: 'logo' | 'screenshot'): Promise<string> {
   const form = new FormData()
   form.append('file', file)
