@@ -10,6 +10,17 @@ interface SubmissionRow {
   company_name: string; tagline: string; logo_url: string | null
   status: string; created_at: string
   plan_name: string | null; category_name: string | null
+  /* Engagement aggregates — scalar subqueries below.
+     N+1 isn't a concern here because user.listings is small (1–3 rows in
+     practice; even a power user has <20). Each subquery is one indexed
+     COUNT against the (listing_id, ...) index defined on each table. */
+  reviews_count: number
+  avg_rating: number | null
+  likes_count: number
+  dislikes_count: number
+  followers_count: number
+  bookmarks_count: number
+  leads_count: number
 }
 
 const STATUS_LABEL: Record<string, string> = {
@@ -28,7 +39,14 @@ export default async function ListingsPage({
 
   const listings = await query<SubmissionRow>(
     `SELECT s.uuid, s.slug, s.company_name, s.tagline, s.logo_url, s.status, s.created_at,
-            p.name AS plan_name, c.name AS category_name
+            p.name AS plan_name, c.name AS category_name,
+            (SELECT COUNT(*)   FROM reviews            r WHERE r.listing_id = s.id AND r.status = 'approved') AS reviews_count,
+            (SELECT AVG(rating) FROM reviews           r WHERE r.listing_id = s.id AND r.status = 'approved') AS avg_rating,
+            (SELECT COUNT(*)   FROM listing_reactions lr WHERE lr.listing_id = s.id AND lr.kind = 'like')     AS likes_count,
+            (SELECT COUNT(*)   FROM listing_reactions lr WHERE lr.listing_id = s.id AND lr.kind = 'dislike')  AS dislikes_count,
+            (SELECT COUNT(*)   FROM listing_follows   lf WHERE lf.listing_id = s.id) AS followers_count,
+            (SELECT COUNT(*)   FROM listing_bookmarks lb WHERE lb.listing_id = s.id) AS bookmarks_count,
+            (SELECT COUNT(*)   FROM listing_inbox_emails ie WHERE ie.listing_id = s.id) AS leads_count
      FROM submissions s
      LEFT JOIN plans p ON p.id = s.plan_id
      LEFT JOIN categories c ON c.id = s.category_id
@@ -88,6 +106,41 @@ export default async function ListingsPage({
                   {l.plan_name && <span className="dash-chip">{l.plan_name}</span>}
                   {l.category_name && <span className="dash-chip dash-chip--muted">{l.category_name}</span>}
                 </div>
+
+                {/* Engagement strip — at-a-glance counts so users can see
+                    activity without opening every listing. Click jumps to
+                    the full Engagement page for that listing. */}
+                <Link
+                  href={`/dashboard/listings/${l.uuid}/engagement`}
+                  className="dash-list-eng"
+                  aria-label={`See engagement for ${l.company_name}`}
+                >
+                  <span className="dash-list-eng-cell">
+                    <span className="dash-list-eng-num">{Number(l.reviews_count) || 0}</span>
+                    <span className="dash-list-eng-lbl">
+                      {l.avg_rating != null && Number(l.reviews_count) > 0 ? (
+                        <>★ {Number(l.avg_rating).toFixed(1)}</>
+                      ) : 'reviews'}
+                    </span>
+                  </span>
+                  <span className="dash-list-eng-cell">
+                    <span className="dash-list-eng-num dash-list-eng-num--leads">{Number(l.leads_count) || 0}</span>
+                    <span className="dash-list-eng-lbl">leads</span>
+                  </span>
+                  <span className="dash-list-eng-cell">
+                    <span className="dash-list-eng-num dash-list-eng-num--like">{Number(l.likes_count) || 0}</span>
+                    <span className="dash-list-eng-lbl">likes</span>
+                  </span>
+                  <span className="dash-list-eng-cell">
+                    <span className="dash-list-eng-num">{Number(l.followers_count) || 0}</span>
+                    <span className="dash-list-eng-lbl">followers</span>
+                  </span>
+                  <span className="dash-list-eng-cell">
+                    <span className="dash-list-eng-num dash-list-eng-num--save">{Number(l.bookmarks_count) || 0}</span>
+                    <span className="dash-list-eng-lbl">saves</span>
+                  </span>
+                </Link>
+
                 <div className="dash-list-foot">
                   <Link href={`/dashboard/listings/${l.uuid}/edit`} className="dash-list-btn dash-list-btn--ghost">
                     <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.2">
@@ -95,6 +148,13 @@ export default async function ListingsPage({
                       <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
                     </svg>
                     Edit
+                  </Link>
+                  <Link href={`/dashboard/listings/${l.uuid}/engagement`} className="dash-list-btn dash-list-btn--ghost">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 3v18h18" />
+                      <path d="M7 14l4-4 4 4 5-5" />
+                    </svg>
+                    Engagement
                   </Link>
                   {isLive ? (
                     <Link href={`/company/${l.slug}`} className="dash-list-btn">

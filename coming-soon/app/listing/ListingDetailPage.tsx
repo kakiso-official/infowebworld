@@ -37,6 +37,8 @@ export interface UserListingState {
   reaction: 'like' | 'dislike' | null
   isBookmarked: boolean
   hasReviewed: boolean
+  /** Authed reviewer identity — used for the "Reviewing as" pill in WriteReviewModal. */
+  currentUser?: { name: string | null; avatarUrl: string | null } | null
 }
 
 interface InitialData {
@@ -1246,8 +1248,10 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
   const [activeSection, setActiveSection] = useState<string>(TOC[0]?.id ?? '')
 
   // ─── Engagement — initial state seeded from server (counts + this user's
-  // own follow/reaction/bookmark). All toggles fire to /api/listings/[id]/*
-  // optimistically. Anonymous users get redirected to /business to sign in. ───
+  // own follow/reaction/bookmark). All toggles fire to /api/listings/[slug]/*
+  // optimistically with HTTP-error rollback and per-action click dedup so a
+  // mashed button can't race itself. Anonymous users get redirected to
+  // /business with a return-to URL. ───
   const eng = initialData?.engagement
   const myState = initialData?.userState
   const [following, setFollowing] = useState(myState?.isFollowing ?? false)
@@ -1258,32 +1262,64 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
   const [likes, setLikes] = useState(eng?.likes ?? (isPreview ? 127 : 0))
   const [dislikes, setDislikes] = useState(eng?.dislikes ?? (isPreview ? 8 : 0))
 
+  /* Per-action in-flight gate. Like + dislike share a single 'reaction' slot
+     so we never have two competing UPSERTs racing on the same UNIQUE row. */
+  type EngKey = 'follow' | 'reaction' | 'bookmark'
+  const [pending, setPending] = useState<Set<EngKey>>(new Set())
+  const isPending = (k: EngKey) => pending.has(k)
+  const startPending = (k: EngKey) =>
+    setPending(p => { const next = new Set(p); next.add(k); return next })
+  const endPending = (k: EngKey) =>
+    setPending(p => { const next = new Set(p); next.delete(k); return next })
+
   /* Modal state for "Write a Review". */
   const [reviewOpen, setReviewOpen] = useState(false)
   const [hasReviewed, setHasReviewed] = useState(myState?.hasReviewed ?? false)
+  /* Live mirror of the parent's review aggregate so the sticky head + insights
+     reflect a just-published review without a full page reload. */
+  const [reviewCount, setReviewCount] = useState(initialData?.reviews?.reviewCount ?? 0)
   /* Inbox-form state. */
   const [inboxEmail, setInboxEmail] = useState('')
   const [inboxStatus, setInboxStatus] = useState<'idle'|'sending'|'ok'|'err'>('idle')
 
-  /* Anon fallback — kick to login flow. */
+  /* Anon fallback — kick to login flow with a return-to URL so we can land
+     them back on this listing after the auth round-trip. */
   const requireLogin = () => {
-    if (typeof window !== 'undefined') window.location.href = '/business'
+    if (typeof window === 'undefined') return
+    const ret = listingSlug ? `/company/${listingSlug}` : window.location.pathname
+    window.location.href = `/business?return=${encodeURIComponent(ret)}`
   }
 
-  const toggleFollow = () => {
+  /* Centralised engagement fetch — returns res.ok | network error => false.
+     The optimistic local update is the caller's responsibility; this just
+     reports whether the server accepted the change so the caller can roll
+     back on a 4xx/5xx exactly the same way it does on a network error. */
+  const sendEngage = async (path: string, init?: RequestInit): Promise<boolean> => {
+    try {
+      const res = await fetch(path, init)
+      return res.ok
+    } catch {
+      return false
+    }
+  }
+
+  const toggleFollow = async () => {
     if (isPreview) { setFollowing(f => !f); setFollowers(c => c + (following ? -1 : 1)); return }
     if (!isAuthed) { requireLogin(); return }
-    if (!listingId) return
+    if (!listingId || isPending('follow')) return
+
     const nextFollowing = !following
     setFollowing(nextFollowing)
     setFollowers(c => c + (nextFollowing ? 1 : -1))
-    fetch(`/api/listings/${listingSlug}/follow`, {
+    startPending('follow')
+    const ok = await sendEngage(`/api/listings/${listingSlug}/follow`, {
       method: nextFollowing ? 'POST' : 'DELETE',
-    }).catch(() => {
-      /* Roll back on failure. */
+    })
+    if (!ok) {
       setFollowing(!nextFollowing)
       setFollowers(c => c + (nextFollowing ? -1 : 1))
-    })
+    }
+    endPending('follow')
   }
 
   // ─── Reviews insights (chips + quotes) — collapsed by default ───
@@ -1317,58 +1353,80 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
     if (e.key === 'ArrowRight') { e.preventDefault(); uiNext() }
   }
 
-  /* Optimistic local update + best-effort POST/DELETE. Reverts on failure. */
-  const reactRemote = (op: 'POST' | 'DELETE', kind?: 'like' | 'dislike') => {
-    if (!listingId) return
-    fetch(`/api/listings/${listingSlug}/reactions`, {
-      method: op,
-      headers: { 'Content-Type': 'application/json' },
-      body: op === 'POST' ? JSON.stringify({ kind }) : undefined,
-    }).catch(() => {})
-  }
-  const toggleLike = () => {
+  /* Reactions: like + dislike share one DB row (UNIQUE listing+user), so we
+     compute the next reaction state, fire one request (POST upserts, DELETE
+     clears), and roll back BOTH local flags on failure. The 'reaction' pending
+     slot blocks both buttons while a request is in flight. */
+  const toggleReaction = async (kind: 'like' | 'dislike') => {
     if (isPreview) {
-      if (liked) { setLiked(false); setLikes(c => c - 1) }
-      else { setLiked(true); setLikes(c => c + 1)
-        if (disliked) { setDisliked(false); setDislikes(c => c - 1) } }
+      if (kind === 'like') {
+        if (liked) { setLiked(false); setLikes(c => c - 1) }
+        else { setLiked(true); setLikes(c => c + 1)
+          if (disliked) { setDisliked(false); setDislikes(c => c - 1) } }
+      } else {
+        if (disliked) { setDisliked(false); setDislikes(c => c - 1) }
+        else { setDisliked(true); setDislikes(c => c + 1)
+          if (liked) { setLiked(false); setLikes(c => c - 1) } }
+      }
       return
     }
     if (!isAuthed) { requireLogin(); return }
-    if (liked) {
-      setLiked(false); setLikes(c => c - 1)
-      reactRemote('DELETE')
+    if (!listingId || isPending('reaction')) return
+
+    const wasLiked = liked, wasDisliked = disliked
+    const wasLikes = likes, wasDislikes = dislikes
+
+    let nextLiked = liked, nextDisliked = disliked
+    let nextLikes = likes, nextDislikes = dislikes
+    let action: 'POST' | 'DELETE' = 'POST'
+
+    if (kind === 'like') {
+      if (liked) {
+        nextLiked = false; nextLikes = likes - 1; action = 'DELETE'
+      } else {
+        nextLiked = true; nextLikes = likes + 1
+        if (disliked) { nextDisliked = false; nextDislikes = dislikes - 1 }
+      }
     } else {
-      setLiked(true); setLikes(c => c + 1)
-      if (disliked) { setDisliked(false); setDislikes(c => c - 1) }
-      reactRemote('POST', 'like')
+      if (disliked) {
+        nextDisliked = false; nextDislikes = dislikes - 1; action = 'DELETE'
+      } else {
+        nextDisliked = true; nextDislikes = dislikes + 1
+        if (liked) { nextLiked = false; nextLikes = likes - 1 }
+      }
     }
+
+    setLiked(nextLiked); setDisliked(nextDisliked)
+    setLikes(nextLikes); setDislikes(nextDislikes)
+    startPending('reaction')
+
+    const ok = await sendEngage(`/api/listings/${listingSlug}/reactions`, {
+      method: action,
+      headers: action === 'POST' ? { 'Content-Type': 'application/json' } : undefined,
+      body: action === 'POST' ? JSON.stringify({ kind }) : undefined,
+    })
+    if (!ok) {
+      setLiked(wasLiked); setDisliked(wasDisliked)
+      setLikes(wasLikes); setDislikes(wasDislikes)
+    }
+    endPending('reaction')
   }
-  const toggleDislike = () => {
-    if (isPreview) {
-      if (disliked) { setDisliked(false); setDislikes(c => c - 1) }
-      else { setDisliked(true); setDislikes(c => c + 1)
-        if (liked) { setLiked(false); setLikes(c => c - 1) } }
-      return
-    }
-    if (!isAuthed) { requireLogin(); return }
-    if (disliked) {
-      setDisliked(false); setDislikes(c => c - 1)
-      reactRemote('DELETE')
-    } else {
-      setDisliked(true); setDislikes(c => c + 1)
-      if (liked) { setLiked(false); setLikes(c => c - 1) }
-      reactRemote('POST', 'dislike')
-    }
-  }
-  const toggleBookmark = () => {
+  const toggleLike = () => toggleReaction('like')
+  const toggleDislike = () => toggleReaction('dislike')
+
+  const toggleBookmark = async () => {
     if (isPreview) { setBookmarked(b => !b); return }
     if (!isAuthed) { requireLogin(); return }
-    if (!listingId) return
+    if (!listingId || isPending('bookmark')) return
+
     const nextBookmarked = !bookmarked
     setBookmarked(nextBookmarked)
-    fetch(`/api/listings/${listingSlug}/bookmark`, {
+    startPending('bookmark')
+    const ok = await sendEngage(`/api/listings/${listingSlug}/bookmark`, {
       method: nextBookmarked ? 'POST' : 'DELETE',
-    }).catch(() => setBookmarked(!nextBookmarked))
+    })
+    if (!ok) setBookmarked(!nextBookmarked)
+    endPending('bookmark')
   }
   const submitInboxEmail = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -1491,10 +1549,13 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
   }, [integrationQ])
 
   /* Aggregate review stats — read from server-side reviews aggregation when
-     a real listing has any approved reviews; fall back to sample in preview. */
+     a real listing has any approved reviews; fall back to sample in preview.
+     The count source is the live `reviewCount` state so a just-published or
+     just-deleted review reflects in the sticky head + insights without a
+     full page reload. */
   const reviewsData = initialData?.reviews
   const realAvgRating = reviewsData?.avgRating ?? 0
-  const realReviewCount = reviewsData?.reviewCount ?? 0
+  const realReviewCount = reviewCount
   const overallRating = realReviewCount > 0
     ? Number(realAvgRating.toFixed(1))
     : (isPreview ? 4.4 : 0)
@@ -1596,9 +1657,11 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
 
                 <button
                   type="button"
-                  className={`tlp-eng-btn tlp-eng-btn--like ${liked ? 'is-active' : ''}`}
+                  className={`tlp-eng-btn tlp-eng-btn--like ${liked ? 'is-active' : ''} ${isPending('reaction') ? 'is-busy' : ''}`}
                   onClick={toggleLike}
+                  disabled={isPending('reaction')}
                   aria-pressed={liked}
+                  aria-busy={isPending('reaction')}
                   aria-label={liked ? 'Remove like' : 'Like this listing'}
                 >
                   <ThumbsUpIcon />
@@ -1606,9 +1669,11 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 </button>
                 <button
                   type="button"
-                  className={`tlp-eng-btn tlp-eng-btn--dislike ${disliked ? 'is-active' : ''}`}
+                  className={`tlp-eng-btn tlp-eng-btn--dislike ${disliked ? 'is-active' : ''} ${isPending('reaction') ? 'is-busy' : ''}`}
                   onClick={toggleDislike}
+                  disabled={isPending('reaction')}
                   aria-pressed={disliked}
+                  aria-busy={isPending('reaction')}
                   aria-label={disliked ? 'Remove dislike' : 'Dislike this listing'}
                 >
                   <ThumbsDownIcon />
@@ -1616,9 +1681,11 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 </button>
                 <button
                   type="button"
-                  className={`tlp-eng-btn tlp-eng-btn--bookmark ${bookmarked ? 'is-active' : ''}`}
+                  className={`tlp-eng-btn tlp-eng-btn--bookmark ${bookmarked ? 'is-active' : ''} ${isPending('bookmark') ? 'is-busy' : ''}`}
                   onClick={toggleBookmark}
+                  disabled={isPending('bookmark')}
                   aria-pressed={bookmarked}
+                  aria-busy={isPending('bookmark')}
                   aria-label={bookmarked ? 'Remove bookmark' : 'Bookmark this listing'}
                 >
                   <BookmarkIcon filled={bookmarked} />
@@ -1649,9 +1716,11 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             <div className="tlp-id-actions">
               <button
                 type="button"
-                className={`tlp-btn-follow ${following ? 'is-active' : ''}`}
+                className={`tlp-btn-follow ${following ? 'is-active' : ''} ${isPending('follow') ? 'is-busy' : ''}`}
                 onClick={toggleFollow}
+                disabled={isPending('follow')}
                 aria-pressed={following}
+                aria-busy={isPending('follow')}
                 aria-label={following ? 'Unfollow this listing' : 'Follow this listing'}
               >
                 <span className="tlp-btn-follow-main">
@@ -3608,9 +3677,20 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
         onClose={() => setReviewOpen(false)}
         listingSlug={listingSlug}
         companyName={view.companyName}
+        companyLogo={view.logoUrl}
         hasExistingReview={hasReviewed}
         isAuthed={isAuthed}
         isPreview={isPreview}
+        currentUserName={myState?.currentUser?.name ?? null}
+        currentUserAvatar={myState?.currentUser?.avatarUrl ?? null}
+        onSuccess={(review) => {
+          setHasReviewed(true)
+          if (!review.existed) setReviewCount(c => c + 1)
+        }}
+        onDelete={() => {
+          setHasReviewed(false)
+          setReviewCount(c => Math.max(0, c - 1))
+        }}
       />
     </>
   )

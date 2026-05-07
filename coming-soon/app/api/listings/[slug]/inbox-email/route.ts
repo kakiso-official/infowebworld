@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { execute, queryOne } from '@/lib/db'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { getClientIp } from '@/lib/tracking'
+import { notifyOwnerOnInboxLead } from '@/lib/notify-owner'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -38,6 +39,9 @@ export async function POST(request: NextRequest, ctx: { params: Promise<{ slug: 
       'INSERT INTO listing_inbox_emails (listing_id, email, ip_address) VALUES (?, ?, ?)',
       [listingId, email, ip]
     )
+    /* Every inbox lead is high-signal — always notify the owner so they can
+       reach out. Anonymous submitter, so there is no self-action concern. */
+    await notifyOwnerOnInboxLead({ listingId, leadEmail: email })
     return Response.json({ ok: true })
   } catch (err) {
     console.error('POST /api/listings/[slug]/inbox-email error:', err)

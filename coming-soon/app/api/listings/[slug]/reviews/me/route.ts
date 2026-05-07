@@ -1,7 +1,6 @@
 import { NextRequest } from 'next/server'
 import { execute, queryOne } from '@/lib/db'
 import { requireUser } from '@/lib/user-auth'
-import { notifyOwnerOnBookmark } from '@/lib/notify-owner'
 
 async function resolveListingId(slug: string): Promise<number | null> {
   const row = await queryOne<{ id: number }>(
@@ -11,7 +10,10 @@ async function resolveListingId(slug: string): Promise<number | null> {
   return row ? Number(row.id) : null
 }
 
-export async function POST(request: NextRequest, ctx: { params: Promise<{ slug: string }> }) {
+/* GET /api/listings/[slug]/reviews/me — return the authed user's own review
+   (or null if they haven't written one). Drives the prefill in WriteReviewModal
+   so editors don't have to retype rating/title/body. */
+export async function GET(request: NextRequest, ctx: { params: Promise<{ slug: string }> }) {
   const auth = await requireUser(request)
   if (auth instanceof Response) return auth
 
@@ -20,22 +22,21 @@ export async function POST(request: NextRequest, ctx: { params: Promise<{ slug: 
   if (!listingId) return Response.json({ ok: false, error: 'Listing not found' }, { status: 404 })
 
   try {
-    /* Only fire a notification on the FIRST bookmark from this user;
-       subsequent re-bookmarks (after un-bookmarking) don't email. */
-    const result = await execute(
-      'INSERT IGNORE INTO listing_bookmarks (listing_id, user_id) VALUES (?, ?)',
+    const row = await queryOne<{
+      id: number; rating: number; title: string; body: string; created_at: string
+    }>(
+      `SELECT id, rating, title, body, created_at
+         FROM reviews WHERE listing_id = ? AND user_id = ? LIMIT 1`,
       [listingId, auth.id]
     )
-    if (result.affectedRows > 0) {
-      await notifyOwnerOnBookmark({ listingId, actorId: auth.id })
-    }
-    return Response.json({ ok: true })
+    return Response.json({ ok: true, review: row || null })
   } catch (err) {
-    console.error('POST /api/listings/[slug]/bookmark error:', err)
+    console.error('GET /api/listings/[slug]/reviews/me error:', err)
     return Response.json({ ok: false, error: 'Server error' }, { status: 500 })
   }
 }
 
+/* DELETE /api/listings/[slug]/reviews/me — remove the authed user's review. */
 export async function DELETE(request: NextRequest, ctx: { params: Promise<{ slug: string }> }) {
   const auth = await requireUser(request)
   if (auth instanceof Response) return auth
@@ -46,12 +47,12 @@ export async function DELETE(request: NextRequest, ctx: { params: Promise<{ slug
 
   try {
     await execute(
-      'DELETE FROM listing_bookmarks WHERE listing_id = ? AND user_id = ?',
+      'DELETE FROM reviews WHERE listing_id = ? AND user_id = ?',
       [listingId, auth.id]
     )
     return Response.json({ ok: true })
   } catch (err) {
-    console.error('DELETE /api/listings/[slug]/bookmark error:', err)
+    console.error('DELETE /api/listings/[slug]/reviews/me error:', err)
     return Response.json({ ok: false, error: 'Server error' }, { status: 500 })
   }
 }

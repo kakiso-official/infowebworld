@@ -1,0 +1,263 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Dashboard engagement page — /dashboard/listings/[uuid]/engagement.
+   Scoped under .eng-page; lives inside .tp-root so Inter is enforced.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.eng-page {
+  display: flex; flex-direction: column;
+  gap: 18px;
+  padding-bottom: 24px;
+}
+.eng-page a { color: inherit; text-decoration: none }
+.eng-page a:hover { text-decoration: none }
+.eng-muted { color: var(--h-muted, #6B7280); font-style: italic }
+
+/* ─── Stat tiles ─── */
+.eng-stats {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+}
+@media (max-width: 1100px) { .eng-stats { grid-template-columns: repeat(3, 1fr) } }
+@media (max-width: 600px)  { .eng-stats { grid-template-columns: repeat(2, 1fr) } }
+
+.eng-stat {
+  display: flex; flex-direction: column; justify-content: space-between;
+  gap: 6px;
+  padding: 14px 14px 12px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+  min-height: 92px;
+}
+.eng-stat:hover {
+  border-color: #11181C;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, .06);
+}
+.eng-stat-num {
+  font-family: var(--font-inter), inherit;
+  font-size: 24px; font-weight: 800;
+  color: #11181C; letter-spacing: -.02em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.eng-stat-lbl {
+  font-size: 12px; font-weight: 700;
+  color: #6B7280;
+  letter-spacing: .04em; text-transform: uppercase;
+}
+.eng-stat-sub {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11.5px; color: #6B7280; font-weight: 500;
+}
+.eng-stat-stars {
+  color: #FFA91C; font-weight: 800; letter-spacing: .04em;
+}
+.eng-stat--reviews .eng-stat-num { color: #11181C }
+.eng-stat--likes    .eng-stat-num { color: #15803D }
+.eng-stat--dislikes .eng-stat-num { color: #B91C1C }
+.eng-stat--leads    .eng-stat-num { color: #E8553D }
+.eng-stat--followers .eng-stat-num { color: #087070 }
+.eng-stat--bookmarks .eng-stat-num { color: #6D28D9 }
+
+/* ─── Section shell ─── */
+.eng-sec {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  padding: 18px 18px 16px;
+}
+.eng-sec--small { padding: 16px 16px 14px }
+.eng-sec-head {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.eng-sec-title {
+  margin: 0;
+  font-size: 16px; font-weight: 800;
+  color: #11181C; letter-spacing: -.01em;
+}
+.eng-sec-count {
+  display: inline-flex; align-items: center;
+  height: 22px; padding: 0 9px;
+  border-radius: 999px;
+  font-size: 11.5px; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  background: #F3F4F6; color: #11181C;
+}
+.eng-sec-count--accent { background: #FFEEE9; color: #B22A14 }
+.eng-sec-count--like { background: #DCFCE7; color: #15803D }
+.eng-sec-count--dislike { background: #FEE2E2; color: #B91C1C }
+.eng-sec-count--green { background: #E6F6F5; color: #087070 }
+.eng-sec-count--purple { background: #F3E8FF; color: #6D28D9 }
+.eng-sec-meta {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-left: auto;
+  font-size: 12.5px; font-weight: 600;
+  color: #6B7280;
+}
+
+/* ─── Reviews list ─── */
+.eng-reviews { display: flex; flex-direction: column; gap: 12px }
+.eng-rev {
+  background: #FAFAF8;
+  border: 1px solid #F0EDEA;
+  border-radius: 12px;
+  padding: 16px 16px 14px;
+}
+.eng-rev-head {
+  display: flex; align-items: flex-start; gap: 12px;
+  margin-bottom: 10px;
+}
+.eng-rev-who { flex: 1; min-width: 0 }
+.eng-rev-name {
+  font-size: 14px; font-weight: 700; color: #11181C;
+}
+.eng-rev-meta {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 2px;
+  font-size: 12.5px; color: #6B7280;
+  flex-wrap: wrap;
+}
+.eng-rev-stars { color: #FFA91C; font-weight: 800; letter-spacing: .06em }
+.eng-rev-rating { font-weight: 700; color: #11181C }
+.eng-rev-dot { color: #C5C0BA }
+.eng-rev-status {
+  display: inline-flex; align-items: center; height: 18px;
+  padding: 0 7px; border-radius: 999px;
+  font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em;
+  background: #FEF3C7; color: #92400E;
+}
+.eng-rev-status--rejected { background: #FEE2E2; color: #B91C1C }
+.eng-rev-reply {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px;
+  border-radius: 999px;
+  color: #6B7280;
+  transition: background .12s ease, color .12s ease;
+  flex-shrink: 0;
+}
+.eng-rev-reply:hover { background: #F3F4F6; color: #11181C }
+.eng-rev-title {
+  margin: 0 0 6px;
+  font-size: 16px; font-weight: 800;
+  color: #11181C;
+  letter-spacing: -.01em; line-height: 1.35;
+}
+.eng-rev-body {
+  margin: 0;
+  font-size: 14px; line-height: 1.65;
+  color: #374151; white-space: pre-wrap;
+}
+
+/* ─── Lead inbox ─── */
+.eng-leads {
+  display: flex; flex-direction: column;
+  border: 1px solid #F3F4F6; border-radius: 12px;
+  overflow: hidden;
+}
+.eng-lead {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  background: #FFFFFF;
+  border-bottom: 1px solid #F3F4F6;
+}
+.eng-lead:last-child { border-bottom: none }
+.eng-lead:hover { background: #FFF8F6 }
+.eng-lead-main { min-width: 0; flex: 1 }
+.eng-lead-email {
+  display: inline-block;
+  font-size: 14px; font-weight: 700; color: #11181C;
+  letter-spacing: -.005em;
+  word-break: break-all;
+}
+.eng-lead-email:hover { color: #E8553D }
+.eng-lead-meta {
+  margin-top: 2px;
+  font-size: 12px; color: #6B7280;
+}
+.eng-lead-reply {
+  display: inline-flex; align-items: center; gap: 5px;
+  height: 30px; padding: 0 12px;
+  background: #1A1A1A; color: #FFFFFF !important;
+  border-radius: 999px;
+  font-size: 12.5px; font-weight: 700;
+  flex-shrink: 0;
+  transition: background .12s ease;
+}
+.eng-lead-reply:hover { background: #E8553D }
+
+/* ─── Reactions split (likes / dislikes) ─── */
+.eng-react-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 900px) { .eng-react-grid { grid-template-columns: 1fr } }
+
+/* ─── People list (followers / bookmarks / reactions) ─── */
+.eng-people {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.eng-people--grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+}
+.eng-person {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px;
+  background: #FAFAF8;
+  border: 1px solid #F0EDEA;
+  border-radius: 10px;
+}
+.eng-person-text { min-width: 0 }
+.eng-person-name {
+  font-size: 13.5px; font-weight: 700; color: #11181C;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.eng-person-meta {
+  font-size: 11.5px; color: #6B7280; margin-top: 1px;
+}
+
+/* ─── Avatar ─── */
+.eng-avatar {
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 999px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border: 1px solid #E8E4DF;
+}
+.eng-avatar--initials {
+  color: #FFFFFF;
+  font-weight: 800;
+  letter-spacing: .03em;
+  border: none;
+}
+
+/* ─── Empty states ─── */
+.eng-empty {
+  padding: 28px 18px;
+  background: #FAFAF8;
+  border: 1px dashed #E5E7EB;
+  border-radius: 12px;
+  text-align: center;
+}
+.eng-empty--subtle { padding: 18px 14px }
+.eng-empty-title {
+  font-size: 14px; font-weight: 800; color: #11181C;
+  margin-bottom: 4px;
+}
+.eng-empty-body {
+  margin: 0 auto;
+  max-width: 460px;
+  font-size: 13px; color: #6B7280;
+  line-height: 1.55;
+}

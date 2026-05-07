@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { execute, queryOne } from '@/lib/db'
 import { requireUser } from '@/lib/user-auth'
+import { notifyOwnerOnReaction } from '@/lib/notify-owner'
 
 async function resolveListingId(slug: string): Promise<number | null> {
   const row = await queryOne<{ id: number }>(
@@ -28,12 +29,28 @@ export async function POST(request: NextRequest, ctx: { params: Promise<{ slug: 
   }
 
   try {
+    /* Pre-check the existing reaction so we can decide the notify path:
+         no row    → first reaction → notify
+         same kind → no-op          → don't write, don't notify
+         diff kind → switch         → upsert, but no email (already notified once
+                                       when they first reacted; switches would be
+                                       noisy and the dashboard surfaces them). */
+    const existing = await queryOne<{ kind: 'like' | 'dislike' }>(
+      'SELECT kind FROM listing_reactions WHERE listing_id = ? AND user_id = ? LIMIT 1',
+      [listingId, auth.id]
+    )
+    if (existing && existing.kind === kind) {
+      return Response.json({ ok: true, unchanged: true })
+    }
     await execute(
       `INSERT INTO listing_reactions (listing_id, user_id, kind)
        VALUES (?, ?, ?)
        ON DUPLICATE KEY UPDATE kind = VALUES(kind)`,
       [listingId, auth.id, kind]
     )
+    if (!existing) {
+      await notifyOwnerOnReaction({ listingId, actorId: auth.id, kind })
+    }
     return Response.json({ ok: true })
   } catch (err) {
     console.error('POST /api/listings/[slug]/reactions error:', err)

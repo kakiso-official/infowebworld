@@ -331,6 +331,14 @@ body.tlp-subheader-active .tlp-write-review {
 }
 .tlp-eng-btn:active { transform: scale(.96) }
 .tlp-eng-btn svg { flex-shrink: 0 }
+/* In-flight gate — applied while the request is pending so the user can't
+   mash the button into a race. The cursor + opacity make the disabled state
+   visible without changing the optimistic colour state. */
+.tlp-eng-btn.is-busy,
+.tlp-eng-btn:disabled { cursor: progress; opacity: .85 }
+.tlp-eng-btn:disabled:active { transform: none }
+.tlp-btn-follow.is-busy,
+.tlp-btn-follow:disabled { cursor: progress; opacity: .92 }
 
 /* Subtle pop on icons when the button toggles to active — feedback that
    confirms the click registered without being noisy. */
@@ -2662,105 +2670,304 @@ body.tlp-subheader-active .tlp-write-review {
 .tlp-in-real-title { margin: 0 0 6px; font-size: 15px; font-weight: 700; color: #11181C; }
 .tlp-in-real-body  { margin: 0; font-size: 14px; line-height: 1.55; color: #374151; white-space: pre-wrap; }
 
-/* Write Review modal */
+/* ─────────────────────────────────────────────────────────────────────────
+   Write Review modal — listing-page design language. Inter is enforced
+   on .wrm-card because the modal mounts at the document body, outside
+   the .tlp-main scope, so it can't ride the section's font cascade.
+   ───────────────────────────────────────────────────────────────────────── */
 .wrm-overlay {
-  position: fixed; inset: 0;
+  position: fixed; inset: 0; z-index: 100;
   background: rgba(15, 23, 42, .55);
   display: flex; align-items: center; justify-content: center;
-  padding: 16px; z-index: 100;
+  padding: 16px;
   animation: wrm-fade .15s ease-out;
+  backdrop-filter: blur(2px);
 }
 @keyframes wrm-fade { from { opacity: 0 } to { opacity: 1 } }
+
 .wrm-card {
   position: relative;
-  width: min(560px, 100%);
-  max-height: 90vh; overflow-y: auto;
+  width: min(620px, 100%);
+  max-height: 92vh; overflow-y: auto;
   background: #FFFFFF;
-  border-radius: 14px;
-  padding: 28px 28px 24px;
-  box-shadow: 0 20px 50px rgba(15, 23, 42, .25);
-  animation: wrm-pop .18s ease-out;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, .28);
+  animation: wrm-pop .22s cubic-bezier(.2, .8, .2, 1);
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+  color: #11181C;
+  font-size: 15px; line-height: 1.55;
 }
-@keyframes wrm-pop { from { transform: translateY(8px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
+.wrm-card * { font-family: inherit !important }
+@keyframes wrm-pop {
+  from { transform: translateY(12px) scale(.98); opacity: 0 }
+  to   { transform: translateY(0) scale(1); opacity: 1 }
+}
+
+/* Header strip — branded, with logo + company name */
+.wrm-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+  padding: 18px 22px 16px;
+  border-bottom: 1px solid #F3F4F6;
+  background: linear-gradient(180deg, #F5FAFA 0%, #FFFFFF 100%);
+  border-radius: 16px 16px 0 0;
+}
+.wrm-head-id { display: flex; align-items: center; gap: 12px; min-width: 0 }
+.wrm-head-logo {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  object-fit: contain;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  padding: 4px;
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.wrm-head-logo--ph {
+  background: linear-gradient(135deg, #0FAEAE, #087070);
+  color: #FFFFFF;
+  font-size: 14px; font-weight: 800; letter-spacing: .03em;
+  border: none; padding: 0;
+}
+.wrm-head-text { min-width: 0 }
+.wrm-head-eyebrow {
+  font-size: 11px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: #0C9A9A;
+  line-height: 1.2;
+  margin-bottom: 3px;
+}
+.wrm-head-name {
+  font-size: 16px; font-weight: 800; color: #11181C;
+  letter-spacing: -.01em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: 380px;
+}
+
 .wrm-close {
-  position: absolute; top: 14px; right: 14px;
   width: 36px; height: 36px;
   display: inline-flex; align-items: center; justify-content: center;
   border: none; background: transparent;
   border-radius: 999px; cursor: pointer;
   color: #6B7280;
-  transition: background .12s ease;
+  transition: background .12s ease, color .12s ease;
+  flex-shrink: 0;
 }
-.wrm-close:hover { background: #F3F4F6; color: #11181C; }
-.wrm-title { margin: 0 0 6px; font-size: 22px; font-weight: 800; letter-spacing: -.015em; color: #11181C; }
-.wrm-sub   { margin: 0 0 18px; font-size: 14px; color: #6B7280; }
+.wrm-close:hover { background: #F3F4F6; color: #11181C }
+.wrm-close:disabled { opacity: .5; cursor: not-allowed }
 
-.wrm-form { display: flex; flex-direction: column; gap: 14px; }
-.wrm-stars { display: flex; align-items: center; gap: 4px; padding: 4px 0; }
+/* Body */
+.wrm-title {
+  margin: 18px 22px 4px;
+  font-size: 22px; font-weight: 800; letter-spacing: -.015em;
+  color: #11181C; line-height: 1.25;
+}
+.wrm-sub { margin: 0 22px 14px; font-size: 14px; color: #6B7280 }
+
+.wrm-reviewer {
+  margin: 0 22px 16px;
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid #E5E7EB; border-radius: 12px;
+  background: #F9FAFB;
+}
+.wrm-reviewer-avatar {
+  width: 36px; height: 36px;
+  border-radius: 999px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.wrm-reviewer-avatar--initials {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #0FAEAE, #087070);
+  color: #FFFFFF;
+  font-size: 13px; font-weight: 800; letter-spacing: .03em;
+}
+.wrm-reviewer-eyebrow {
+  font-size: 11px; font-weight: 600; color: #6B7280;
+  text-transform: uppercase; letter-spacing: .08em;
+  line-height: 1.2;
+}
+.wrm-reviewer-name {
+  font-size: 14px; font-weight: 700; color: #11181C;
+  margin-top: 2px;
+}
+
+.wrm-form {
+  display: flex; flex-direction: column;
+  padding: 0 22px 18px;
+  gap: 14px;
+}
+
+.wrm-stars {
+  display: flex; align-items: center;
+  gap: 2px;
+  padding: 6px 0 2px;
+  flex-wrap: wrap;
+}
 .wrm-star {
   background: transparent; border: none; padding: 4px;
   cursor: pointer; line-height: 0;
+  transition: transform .12s ease;
+  border-radius: 8px;
 }
-.wrm-star:hover svg path { transform-origin: center; transform: scale(1.05); }
+.wrm-star:hover:not(:disabled) { transform: scale(1.06) }
+.wrm-star:active:not(:disabled) { transform: scale(.94) }
+.wrm-star:focus-visible { outline: 2px solid #0C9A9A; outline-offset: 2px }
+.wrm-star:disabled { cursor: not-allowed; opacity: .55 }
 .wrm-stars-label {
-  margin-left: 12px;
+  margin-left: 14px;
   font-size: 13px; font-weight: 600; color: #6B7280;
+  letter-spacing: .01em;
 }
 
+.wrm-field { display: flex; flex-direction: column; position: relative }
 .wrm-label {
   font-size: 11px; font-weight: 700; letter-spacing: .08em;
   text-transform: uppercase; color: #6B7280;
-  margin-top: 4px;
+  margin-bottom: 6px;
 }
 .wrm-input, .wrm-textarea {
   font: inherit;
-  padding: 10px 12px;
+  padding: 11px 13px;
   border: 1.5px solid #E5E7EB;
   border-radius: 10px;
   background: #FFFFFF;
   font-size: 14px; color: #11181C;
-  transition: border-color .12s ease;
+  transition: border-color .12s ease, box-shadow .12s ease;
 }
 .wrm-input:focus, .wrm-textarea:focus {
   outline: none;
-  border-color: #E8553D;
+  border-color: #0C9A9A;
+  box-shadow: 0 0 0 3px rgba(12, 154, 154, .14);
 }
-.wrm-textarea { resize: vertical; min-height: 120px; line-height: 1.55; }
+.wrm-input:disabled, .wrm-textarea:disabled {
+  background: #F9FAFB; color: #9CA3AF; cursor: not-allowed;
+}
+.wrm-textarea { resize: vertical; min-height: 130px; line-height: 1.55 }
+.wrm-counter {
+  align-self: flex-end;
+  font-size: 11.5px; color: #9CA3AF;
+  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
+}
 
 .wrm-error {
-  margin: 4px 0 0;
+  margin: 0;
   padding: 10px 12px;
   font-size: 13px; color: #B22A14;
   background: #FCEEEA;
-  border-radius: 8px;
+  border: 1px solid #F8D5CD;
+  border-radius: 10px;
+  line-height: 1.45;
 }
 
-.wrm-foot { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; }
+.wrm-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px;
+  margin-top: 6px;
+  padding-top: 14px;
+  border-top: 1px solid #F3F4F6;
+}
+.wrm-foot-end { display: inline-flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: flex-end }
+
 .wrm-btn {
   display: inline-flex; align-items: center; justify-content: center;
-  height: 40px; padding: 0 20px;
+  gap: 6px;
+  height: 40px; padding: 0 18px;
   font: inherit; font-size: 14px; font-weight: 700;
   border-radius: 999px; border: 1.5px solid transparent;
   cursor: pointer;
-  transition: background .12s ease, border-color .12s ease, color .12s ease;
+  transition: background .12s ease, border-color .12s ease, color .12s ease, box-shadow .12s ease, transform .12s ease;
+  white-space: nowrap;
 }
-.wrm-btn--primary { background: #E8553D; color: #FFFFFF; }
-.wrm-btn--primary:hover { background: #D14730; }
-.wrm-btn--primary:disabled { opacity: .6; cursor: not-allowed; }
-.wrm-btn--ghost { background: transparent; color: #6B7280; border-color: #E5E7EB; }
-.wrm-btn--ghost:hover { background: #F3F4F6; color: #11181C; }
+.wrm-btn:disabled { opacity: .55; cursor: not-allowed }
+.wrm-btn:active:not(:disabled) { transform: translateY(1px) }
 
-.wrm-success { text-align: center; padding: 12px 0 4px; }
-.wrm-success-icon {
-  margin: 0 auto 12px;
-  width: 56px; height: 56px;
-  display: grid; place-items: center;
-  border-radius: 999px;
-  background: rgba(52, 216, 154, .18);
-  color: #003B2A;
+.wrm-btn--primary {
+  background: linear-gradient(180deg, #0FAEAE 0%, #0C9A9A 100%);
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(12, 154, 154, .25);
 }
-.wrm-success-title { margin: 0 0 6px; font-size: 20px; font-weight: 800; color: #11181C; }
-.wrm-success-desc  { margin: 0 0 18px; font-size: 14px; color: #6B7280; }
+.wrm-btn--primary:hover:not(:disabled) {
+  background: linear-gradient(180deg, #0C9A9A 0%, #087070 100%);
+  box-shadow: 0 4px 14px rgba(12, 154, 154, .35);
+}
+.wrm-btn--ghost {
+  background: transparent; color: #6B7280;
+  border-color: #E5E7EB;
+}
+.wrm-btn--ghost:hover:not(:disabled) {
+  background: #F3F4F6; color: #11181C;
+}
+.wrm-btn--danger {
+  background: #DC2626; color: #FFFFFF;
+}
+.wrm-btn--danger:hover:not(:disabled) { background: #B91C1C }
+.wrm-btn--danger-ghost {
+  background: transparent; color: #B22A14;
+  border-color: #F8D5CD;
+}
+.wrm-btn--danger-ghost:hover:not(:disabled) {
+  background: #FCEEEA; border-color: #F1B7AA;
+}
+
+/* Confirm-delete step */
+.wrm-confirm {
+  padding: 18px 22px 18px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.wrm-confirm-body {
+  margin: 0;
+  padding: 14px 16px;
+  background: #FCEEEA;
+  border: 1px solid #F8D5CD;
+  border-radius: 12px;
+  color: #B22A14;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* Success state */
+.wrm-success {
+  text-align: center;
+  padding: 28px 22px 26px;
+}
+.wrm-success-icon {
+  margin: 0 auto 14px;
+  width: 56px; height: 56px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 999px;
+  background: rgba(34, 197, 94, .14);
+  color: #16A34A;
+}
+.wrm-success-icon--neutral {
+  background: rgba(107, 114, 128, .14);
+  color: #6B7280;
+}
+.wrm-success-title {
+  margin: 0 0 6px;
+  font-size: 20px; font-weight: 800; color: #11181C; letter-spacing: -.015em;
+}
+.wrm-success-desc {
+  margin: 0 0 18px;
+  font-size: 14px; color: #6B7280;
+}
+
+/* Mobile */
+@media (max-width: 540px) {
+  .wrm-card { max-height: 96vh }
+  .wrm-head { padding: 16px 16px 14px }
+  .wrm-form, .wrm-confirm, .wrm-success { padding-left: 16px; padding-right: 16px }
+  .wrm-title, .wrm-sub, .wrm-reviewer { margin-left: 16px; margin-right: 16px }
+  .wrm-title { font-size: 20px }
+  .wrm-foot { flex-wrap: wrap; gap: 8px }
+  .wrm-foot-end { flex: 1; justify-content: flex-end }
+  .wrm-stars { gap: 0 }
+  .wrm-star svg { width: 30px; height: 30px }
+  .wrm-stars-label { margin-left: 8px; flex-basis: 100%; padding-top: 4px }
+  .wrm-head-name { max-width: 220px }
+}
 
 /* Inbox form — success / error states */
 .tlp-inbox-success {

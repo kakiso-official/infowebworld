@@ -3,6 +3,7 @@ import { execute, query, queryOne } from '@/lib/db'
 import { requireUser } from '@/lib/user-auth'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { getClientIp } from '@/lib/tracking'
+import { notifyOwnerOnReview } from '@/lib/notify-owner'
 
 async function resolveListingId(slug: string): Promise<number | null> {
   const row = await queryOne<{ id: number }>(
@@ -72,6 +73,13 @@ export async function POST(request: NextRequest, ctx: { params: Promise<{ slug: 
   }
 
   try {
+    /* Detect first-time vs edit. The owner is only emailed for NEW reviews;
+       editing a review (rating/title/body change) doesn't re-email — the
+       dashboard's review list reflects the latest text. */
+    const existing = await queryOne<{ id: number }>(
+      'SELECT id FROM reviews WHERE listing_id = ? AND user_id = ? LIMIT 1',
+      [listingId, auth.id]
+    )
     await execute(
       `INSERT INTO reviews (listing_id, user_id, rating, title, body, status)
        VALUES (?, ?, ?, ?, ?, 'approved')
@@ -79,6 +87,11 @@ export async function POST(request: NextRequest, ctx: { params: Promise<{ slug: 
                                body = VALUES(body), status = 'approved'`,
       [listingId, auth.id, rating, title, text]
     )
+    if (!existing) {
+      await notifyOwnerOnReview({
+        listingId, reviewerId: auth.id, rating, title, body: text,
+      })
+    }
     return Response.json({ ok: true })
   } catch (err) {
     console.error('POST /api/listings/[slug]/reviews error:', err)

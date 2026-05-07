@@ -212,10 +212,52 @@
   font-weight: 600;
 }
 
+/* Engagement strip on each listings card — clickable surface that
+   summarises reviews/leads/reactions/etc. and opens the engagement page. */
+.dash-list-eng {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 4px;
+  padding: 10px 6px;
+  margin: 4px 0;
+  border-radius: 10px;
+  background: #FAFAF8;
+  border: 1px solid #F0EDEA;
+  text-decoration: none !important;
+  transition: background .12s ease, border-color .12s ease;
+}
+.dash-list-eng:hover {
+  background: #FFF8F6;
+  border-color: #F8D5CD;
+}
+.dash-list-eng-cell {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 1px;
+  min-width: 0;
+}
+.dash-list-eng-num {
+  font-family: var(--font-inter), inherit;
+  font-size: 15px; font-weight: 800;
+  color: #11181C;
+  letter-spacing: -.01em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.dash-list-eng-num--like { color: #15803D }
+.dash-list-eng-num--save { color: #6D28D9 }
+.dash-list-eng-num--leads { color: #E8553D }
+.dash-list-eng-lbl {
+  font-size: 10.5px; font-weight: 600; color: #6B7280;
+  text-transform: uppercase; letter-spacing: .04em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: 100%;
+}
+
 .dash-list-foot {
   display: flex; align-items: center; justify-content: space-between; gap: 10px;
   padding-top: 8px;
   border-top: 1px solid var(--h-border-light);
+  flex-wrap: wrap;
 }
 .dash-list-btn {
   display: inline-flex; align-items: center; gap: 5px;

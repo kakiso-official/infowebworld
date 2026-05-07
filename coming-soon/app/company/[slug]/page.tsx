@@ -152,9 +152,17 @@ async function getListingBySlug(slug: string) {
   const store = await cookies()
   const token = store.get(USER_COOKIE_NAME)?.value
   const me = token ? await getUserByToken(token) : null
-  let userState = {
-    isFollowing: false, reaction: null as 'like' | 'dislike' | null,
+  type CurrentUser = { name: string | null; avatarUrl: string | null } | null
+  let userState: {
+    isFollowing: boolean
+    reaction: 'like' | 'dislike' | null
+    isBookmarked: boolean
+    hasReviewed: boolean
+    currentUser: CurrentUser
+  } = {
+    isFollowing: false, reaction: null,
     isBookmarked: false, hasReviewed: false,
+    currentUser: null,
   }
   if (me) {
     const stateRow = await queryOne<{
@@ -168,13 +176,12 @@ async function getListingBySlug(slug: string) {
          (SELECT 1 FROM reviews WHERE listing_id = ? AND user_id = ?)           AS reviewed`,
       [listing.id, me.id, listing.id, me.id, listing.id, me.id, listing.id, me.id]
     )
-    if (stateRow) {
-      userState = {
-        isFollowing: Boolean(stateRow.following),
-        reaction: stateRow.reaction || null,
-        isBookmarked: Boolean(stateRow.bookmarked),
-        hasReviewed: Boolean(stateRow.reviewed),
-      }
+    userState = {
+      isFollowing: Boolean(stateRow?.following),
+      reaction: stateRow?.reaction || null,
+      isBookmarked: Boolean(stateRow?.bookmarked),
+      hasReviewed: Boolean(stateRow?.reviewed),
+      currentUser: { name: me.name, avatarUrl: me.avatarUrl },
     }
   }
 
