@@ -1,12 +1,56 @@
 import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
-import { cookies } from 'next/headers'
 import type { Metadata } from 'next'
 import { query, queryOne } from '@/lib/db'
-import { getUserByToken, USER_COOKIE_NAME } from '@/lib/user-auth'
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import ListingDetailPage from '../../listing/ListingDetailPage'
+
+/* ─── Static-only config ──────────────────────────────────────────────
+   Fully pre-built at deploy time, exactly like /categories. Every
+   active/paid listing at deploy time gets baked to static HTML and
+   served from the CDN. Slugs not in the build return 404 — newly
+   approved listings need a redeploy to go public.
+
+   Tradeoff (deliberate):
+   - Pro: every visit is instant, including first-ever. Zero SSR cost.
+          No DB calls at request time, ever.
+   - Con: an admin approval doesn't make the listing publicly visible
+          until the next Vercel deploy. Workflow: approve → deploy.
+
+   Refreshing already-deployed listings:
+   - Auto: every 48h the next visitor triggers a background revalidate
+           with current DB data (stale-while-revalidate; visitor sees
+           old page instantly, fresh one builds in the background).
+   - Manual: admin "Rebuild static page" button on /iww-hq/submissions
+             calls revalidatePath() to force-refresh that one listing.
+
+   Per-user state (isFollowing / liked / bookmarked / reviewed / current
+   user identity) is fetched client-side from /api/listings/[slug]/me on
+   mount, so the same cached HTML works for every visitor.
+   ──────────────────────────────────────────────────────────────────── */
+export const revalidate = 172800        // 48h auto-revalidate of deployed slugs
+export const dynamicParams = false       // slugs not in the build → 404 until next deploy
+
+/* Pre-render every active/paid listing at build time. This is the only
+   way a listing becomes publicly visible — admin approval alone isn't
+   enough; a deploy must happen after approval. */
+export async function generateStaticParams() {
+  try {
+    const rows = await query<{ slug: string }>(
+      `SELECT slug FROM submissions
+        WHERE status IN ('active','paid') AND slug IS NOT NULL AND slug != ''`
+    )
+    return rows.map(r => ({ slug: r.slug }))
+  } catch (err) {
+    /* If the DB is unreachable at build time (local dev without creds,
+       network blip), bail with an empty list. The build still succeeds;
+       /company/[slug] just returns 404 for everything until the next
+       successful build with DB connectivity. */
+    console.error('generateStaticParams: DB unreachable, no slugs pre-rendered', err)
+    return []
+  }
+}
 
 /* ── Types ── */
 interface ListingRow {
@@ -147,44 +191,9 @@ async function getListingBySlug(slug: string) {
     [listing.id]
   )
 
-  /* User's own engagement state — only when a session cookie is present.
-     Single query that returns one row of booleans. */
-  const store = await cookies()
-  const token = store.get(USER_COOKIE_NAME)?.value
-  const me = token ? await getUserByToken(token) : null
-  type CurrentUser = { name: string | null; avatarUrl: string | null; email: string | null } | null
-  let userState: {
-    isFollowing: boolean
-    reaction: 'like' | 'dislike' | null
-    isBookmarked: boolean
-    hasReviewed: boolean
-    currentUser: CurrentUser
-  } = {
-    isFollowing: false, reaction: null,
-    isBookmarked: false, hasReviewed: false,
-    currentUser: null,
-  }
-  if (me) {
-    const stateRow = await queryOne<{
-      following: number; reaction: 'like' | 'dislike' | null
-      bookmarked: number; reviewed: number
-    }>(
-      `SELECT
-         (SELECT 1 FROM listing_follows WHERE listing_id = ? AND user_id = ?)   AS following,
-         (SELECT kind FROM listing_reactions WHERE listing_id = ? AND user_id = ?) AS reaction,
-         (SELECT 1 FROM listing_bookmarks WHERE listing_id = ? AND user_id = ?) AS bookmarked,
-         (SELECT 1 FROM reviews WHERE listing_id = ? AND user_id = ?)           AS reviewed`,
-      [listing.id, me.id, listing.id, me.id, listing.id, me.id, listing.id, me.id]
-    )
-    userState = {
-      isFollowing: Boolean(stateRow?.following),
-      reaction: stateRow?.reaction || null,
-      isBookmarked: Boolean(stateRow?.bookmarked),
-      hasReviewed: Boolean(stateRow?.reviewed),
-      currentUser: { name: me.name, avatarUrl: me.avatarUrl, email: me.email },
-    }
-  }
-
+  /* No cookies() / per-user fetch here — that would force the page out of
+     the static cache. The client hydrates per-user state via
+     GET /api/listings/[slug]/me right after mount. Default to anon shape. */
   return {
     listing,
     breadcrumb: crumbs,
@@ -201,8 +210,16 @@ async function getListingBySlug(slug: string) {
       reviewCount: Number(reviewAggRow?.review_count || 0),
       recent: recentReviews as Record<string, unknown>[],
     },
-    userState,
-    isAuthed: Boolean(me),
+    /* These two are intentionally anon-defaulted on the server. Client
+       hydrates the real values from /api/listings/[slug]/me. */
+    userState: {
+      isFollowing: false,
+      reaction: null as 'like' | 'dislike' | null,
+      isBookmarked: false,
+      hasReviewed: false,
+      currentUser: null as { name: string | null; avatarUrl: string | null; email: string | null } | null,
+    },
+    isAuthed: false,
   }
 }
 

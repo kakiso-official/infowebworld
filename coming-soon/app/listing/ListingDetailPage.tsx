@@ -1186,7 +1186,11 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
   const isPreview = !initialData
   const listingId = real?.id ? Number(real.id) : 0
   const listingSlug = real?.slug || (props.slug || '')
-  const isAuthed = Boolean(initialData?.isAuthed)
+  /* Auth state is hydrated client-side from /api/listings/[slug]/me — the
+     page itself is statically cached and identical for every visitor, so
+     we can't trust any "authed" hint baked into the HTML. Defaults to
+     anon; flips to true after the me-fetch resolves. */
+  const [isAuthed, setIsAuthed] = useState(false)
 
   /* Last updated — pulled directly from the row, formatted human-friendly. */
   const updatedAtRaw = initialData?.listing?.updated_at as string | undefined
@@ -1274,14 +1278,23 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
   // mashed button can't race itself. Anonymous users get redirected to
   // /business with a return-to URL. ───
   const eng = initialData?.engagement
-  const myState = initialData?.userState
-  const [following, setFollowing] = useState(myState?.isFollowing ?? false)
+  /* Engagement counts come from the static snapshot at last revalidate.
+     They're frozen between rebuilds — clicking still updates the DB and
+     the local optimistic UI, but the public counter only refreshes on
+     /company/[slug]'s 48h auto-revalidate or admin manual rebuild. */
+  const [following, setFollowing] = useState(false)
   const [followers, setFollowers] = useState(eng?.followers ?? (isPreview ? 2_481 : 0))
-  const [liked, setLiked] = useState(myState?.reaction === 'like')
-  const [disliked, setDisliked] = useState(myState?.reaction === 'dislike')
-  const [bookmarked, setBookmarked] = useState(myState?.isBookmarked ?? false)
+  const [liked, setLiked] = useState(false)
+  const [disliked, setDisliked] = useState(false)
+  const [bookmarked, setBookmarked] = useState(false)
   const [likes, setLikes] = useState(eng?.likes ?? (isPreview ? 127 : 0))
   const [dislikes, setDislikes] = useState(eng?.dislikes ?? (isPreview ? 8 : 0))
+  /* Reviewer identity (name + avatar) — hydrated client-side from
+     /api/listings/[slug]/me. Used by the "Reviewing as" pill + email
+     prefill in LeadFormModal. */
+  const [currentUser, setCurrentUser] = useState<{
+    name: string | null; email: string | null; avatarUrl: string | null
+  } | null>(null)
 
   /* Per-action in-flight gate. Like + dislike share a single 'reaction' slot
      so we never have two competing UPSERTs racing on the same UNIQUE row. */
@@ -1295,7 +1308,33 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
 
   /* Modal state for "Write a Review". */
   const [reviewOpen, setReviewOpen] = useState(false)
-  const [hasReviewed, setHasReviewed] = useState(myState?.hasReviewed ?? false)
+  const [hasReviewed, setHasReviewed] = useState(false)
+
+  /* ─── Per-user hydration ───────────────────────────────────────────
+     Page is statically cached (ISR), so the HTML is identical for every
+     visitor. Right after mount we ask /api/listings/[slug]/me which
+     reads the auth cookie and returns this user's relationship to the
+     listing. Only fires for real listings (not /test-listing-page). */
+  useEffect(() => {
+    if (isPreview || !listingSlug) return
+    let cancelled = false
+    fetch(`/api/listings/${encodeURIComponent(listingSlug)}/me`, {
+      credentials: 'same-origin', cache: 'no-store',
+    })
+      .then(r => r.ok ? r.json() : null)
+      .then(j => {
+        if (cancelled || !j?.ok) return
+        setIsAuthed(Boolean(j.isAuthed))
+        setFollowing(Boolean(j.isFollowing))
+        setLiked(j.reaction === 'like')
+        setDisliked(j.reaction === 'dislike')
+        setBookmarked(Boolean(j.isBookmarked))
+        setHasReviewed(Boolean(j.hasReviewed))
+        setCurrentUser(j.currentUser ?? null)
+      })
+      .catch(() => { /* anon defaults already set */ })
+    return () => { cancelled = true }
+  }, [isPreview, listingSlug])
   /* Auth gate modal — opens whenever an anon user clicks an engagement button
      (follow / react / bookmark / write a review). Replaces the old full-page
      redirect to /business so the user keeps their context on the listing. */
@@ -3709,8 +3748,8 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
         hasExistingReview={hasReviewed}
         isAuthed={isAuthed}
         isPreview={isPreview}
-        currentUserName={myState?.currentUser?.name ?? null}
-        currentUserAvatar={myState?.currentUser?.avatarUrl ?? null}
+        currentUserName={currentUser?.name ?? null}
+        currentUserAvatar={currentUser?.avatarUrl ?? null}
         onSuccess={(review) => {
           setHasReviewed(true)
           if (!review.existed) setReviewCount(c => c + 1)
@@ -3733,8 +3772,8 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
         listingSlug={listingSlug}
         companyName={view.companyName}
         companyLogo={view.logoUrl}
-        prefillName={myState?.currentUser?.name ?? null}
-        prefillEmail={myState?.currentUser?.email ?? null}
+        prefillName={currentUser?.name ?? null}
+        prefillEmail={currentUser?.email ?? null}
         isPreview={isPreview}
       />
     </>
