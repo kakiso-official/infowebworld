@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import { Nunito, Bricolage_Grotesque, Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
+import "./styles/chat-widget.css";
 import { Suspense } from "react";
 import NavigationProgress from "./components/NavigationProgress";
 import ScrollToTop from "./components/ScrollToTop";
 import GoogleOneTap from "./components/auth/GoogleOneTap";
+import ChatWidget from "./components/chat/ChatWidget";
 
 const nunito = Nunito({
   variable: "--font-nunito",
@@ -109,6 +111,7 @@ export default function RootLayout({
         <Suspense><GoogleOneTap /></Suspense>
         {children}
         <ScrollToTop />
+        <ChatWidget />
       </body>
     </html>
   );
