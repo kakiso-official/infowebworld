@@ -4,22 +4,34 @@ import { getUserFromRequest } from '@/lib/user-auth'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { getClientIp } from '@/lib/tracking'
 
-/* Gemini 2.5 Flash — streaming endpoint. Returns SSE we forward to the client. */
-const GEMINI_STREAM_URL =
-  'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?alt=sse'
+/* Use the exact same model + endpoint format as the working SEO route
+   (app/api/admin/generate-seo-content/route.ts). Streaming was hiding
+   real upstream errors behind an opaque 502; non-streaming gives us the
+   model's full reply in one shot, with errors that bubble up plainly.
+   Thinking is disabled so the response isn't an empty string. */
+const GEMINI_API_URL =
+  'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent'
 
 const ANON_COOKIE = 'iww_chat_anon'
-const ANON_LIMIT = 3                  // free messages before signup required
-const ANON_COOKIE_DAYS = 7            // count window — fresh limit after a week
-const MESSAGE_MAX_CHARS = 2000        // input cap per message (cheap abuse guard)
-const HISTORY_MAX_TURNS = 12          // last N user+assistant turns sent to Gemini
+const ANON_LIMIT = 3
+const ANON_COOKIE_DAYS = 7
+const MESSAGE_MAX_CHARS = 2000
+const HISTORY_MAX_TURNS = 12
+
+const SERVER_FALLBACK =
+  "Hmm, I lost the thread for a sec. Quick: are you trying to **find a tool/vendor**, **list your business**, or **get help with the site**? " +
+  "Or browse all categories on [Categories](/categories)."
 
 interface ClientMsg { role: 'user' | 'assistant'; content: string }
 
 interface GeminiPart { text?: string }
 interface GeminiContent { role?: string; parts?: GeminiPart[] }
 interface GeminiCandidate { content?: GeminiContent; finishReason?: string }
-interface GeminiStreamChunk { candidates?: GeminiCandidate[] }
+interface GeminiResponse {
+  candidates?: GeminiCandidate[]
+  promptFeedback?: { blockReason?: string }
+  error?: { code?: number; message?: string; status?: string }
+}
 
 function readAnonCount(req: NextRequest): number {
   const raw = req.cookies.get(ANON_COOKIE)?.value
@@ -34,13 +46,22 @@ function setAnonCookieHeader(count: number): string {
   return `${ANON_COOKIE}=${count}; HttpOnly${secure}; SameSite=Lax; Path=/; Max-Age=${maxAge}`
 }
 
-/* Map our [{role, content}] to Gemini's contents[]. Gemini uses role
-   'user' | 'model'; the system instruction goes in a separate field. */
 function toGeminiContents(history: ClientMsg[]): GeminiContent[] {
   return history.map(m => ({
     role: m.role === 'assistant' ? 'model' : 'user',
     parts: [{ text: m.content }],
   }))
+}
+
+/* Pull every text part out of a non-streaming response. Defensive about
+   shape — Gemini occasionally splits a reply across multiple parts. */
+function extractText(json: GeminiResponse): string {
+  const parts = json.candidates?.[0]?.content?.parts
+  if (!Array.isArray(parts)) return ''
+  return parts
+    .map(p => (typeof p.text === 'string' ? p.text : ''))
+    .join('')
+    .trim()
 }
 
 export async function POST(request: NextRequest) {
@@ -49,10 +70,8 @@ export async function POST(request: NextRequest) {
     return Response.json({ ok: false, error: 'Chat is temporarily unavailable.' }, { status: 503 })
   }
 
-  /* Soft IP rate limit — caps total chat traffic from any single IP regardless
-     of auth state. Anything past this is almost certainly a script. */
   const ip = await getClientIp()
-  const ipOk = await checkRateLimit(ip, 'chat', 60, 600) // 60 messages / 10 min
+  const ipOk = await checkRateLimit(ip, 'chat', 60, 600)
   if (!ipOk) {
     return Response.json({ ok: false, error: 'Too many requests. Try again in a few minutes.' }, { status: 429 })
   }
@@ -66,8 +85,6 @@ export async function POST(request: NextRequest) {
     return Response.json({ ok: false, error: 'messages required' }, { status: 400 })
   }
 
-  /* Validate, sanitise, and trim history to the most recent N turns so the
-     context stays tight even if the client somehow forgot to truncate. */
   const cleanHistory: ClientMsg[] = []
   for (const m of body.messages as unknown[]) {
     if (!m || typeof m !== 'object') continue
@@ -85,7 +102,6 @@ export async function POST(request: NextRequest) {
 
   const trimmed = cleanHistory.slice(-HISTORY_MAX_TURNS)
 
-  /* Auth gate — anon visitors get ANON_LIMIT messages then must sign up. */
   const user = await getUserFromRequest(request)
   let anonCount = 0
   let setCookie: string | null = null
@@ -100,87 +116,95 @@ export async function POST(request: NextRequest) {
         anonUsed: anonCount,
       }, { status: 401 })
     }
-    /* Increment now (before the model call) so a flaky network can't be used
-       to drain free messages. The cookie is HttpOnly so the client can't roll it back. */
     setCookie = setAnonCookieHeader(anonCount + 1)
   }
 
-  /* Hand off to Gemini's streaming endpoint and pipe the SSE chunks straight
-     into our own ReadableStream of plain text. The client just appends each
-     chunk to the in-progress message — much better UX than waiting for the
-     full response. */
-  const upstream = await fetch(`${GEMINI_STREAM_URL}&key=${apiKey}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      systemInstruction: { parts: [{ text: CHAT_SYSTEM_PROMPT }] },
-      contents: toGeminiContents(trimmed),
-      generationConfig: {
-        temperature: 0.85,
-        topP: 0.95,
-        topK: 40,
-        maxOutputTokens: 2048,
-        /* Gemini 2.5 Flash has thinking ON by default. With a low maxOutput
-           it eats every output token on hidden thinking and the user sees
-           an empty stream. Hard-disable for chat — we want fast, direct
-           replies, not a reasoning trace we're going to throw away. */
-        thinkingConfig: { thinkingBudget: 0 },
-      },
-      safetySettings: [
-        { category: 'HARM_CATEGORY_HARASSMENT',        threshold: 'BLOCK_ONLY_HIGH' },
-        { category: 'HARM_CATEGORY_HATE_SPEECH',       threshold: 'BLOCK_ONLY_HIGH' },
-        { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_ONLY_HIGH' },
-        { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_ONLY_HIGH' },
-      ],
-    }),
-  })
-
-  if (!upstream.ok || !upstream.body) {
-    const errText = await upstream.text().catch(() => '')
-    console.error('[chat] Gemini error', upstream.status, errText)
-    return Response.json({ ok: false, error: 'Chat is having a moment — try again.' }, { status: 502 })
+  let upstream: Response
+  try {
+    upstream = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: CHAT_SYSTEM_PROMPT }] },
+        contents: toGeminiContents(trimmed),
+        generationConfig: {
+          temperature: 0.85,
+          topP: 0.95,
+          topK: 40,
+          maxOutputTokens: 1500,
+          /* Hard-disable hidden reasoning so every output token goes to the
+             actual reply. Without this, 2.5 Flash burns the budget on
+             thinking and returns an empty string. */
+          thinkingConfig: { thinkingBudget: 0 },
+        },
+        safetySettings: [
+          { category: 'HARM_CATEGORY_HARASSMENT',        threshold: 'BLOCK_ONLY_HIGH' },
+          { category: 'HARM_CATEGORY_HATE_SPEECH',       threshold: 'BLOCK_ONLY_HIGH' },
+          { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_ONLY_HIGH' },
+          { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_ONLY_HIGH' },
+        ],
+      }),
+    })
+  } catch (err) {
+    console.error('[chat] fetch failed', err)
+    return Response.json({
+      ok: false,
+      error: 'Could not reach the assistant. Check your connection and retry.',
+    }, { status: 502 })
   }
 
-  /* SSE-from-Gemini → plain-text stream-to-client. We strip the framing and
-     emit just the model's text deltas; the client appends them as they land. */
-  const decoder = new TextDecoder()
-  const encoder = new TextEncoder()
-  const reader = upstream.body.getReader()
+  /* Read the body once so we can both log it on failure AND parse on success. */
+  const rawText = await upstream.text()
 
-  const stream = new ReadableStream<Uint8Array>({
-    async start(controller) {
-      let buffer = ''
-      try {
-        while (true) {
-          const { value, done } = await reader.read()
-          if (done) break
-          buffer += decoder.decode(value, { stream: true })
+  if (!upstream.ok) {
+    /* Surface the actual upstream error so it's easy to diagnose during
+       local testing. The body usually contains a JSON {error:{message}}. */
+    let detail = rawText.slice(0, 600)
+    try {
+      const errJson = JSON.parse(rawText) as GeminiResponse
+      if (errJson.error?.message) detail = errJson.error.message
+    } catch { /* keep raw text */ }
+    console.error('[chat] Gemini error', upstream.status, detail)
+    return Response.json({
+      ok: false,
+      error: `Assistant error (${upstream.status}): ${detail}`,
+    }, { status: 502 })
+  }
 
-          /* SSE frames are delimited by blank lines. Process whole frames only. */
-          let idx: number
-          while ((idx = buffer.indexOf('\n\n')) !== -1) {
-            const frame = buffer.slice(0, idx).trim()
-            buffer = buffer.slice(idx + 2)
-            if (!frame.startsWith('data:')) continue
-            const payload = frame.slice(5).trim()
-            if (!payload || payload === '[DONE]') continue
-            try {
-              const parsed = JSON.parse(payload) as GeminiStreamChunk
-              const text = parsed.candidates?.[0]?.content?.parts?.[0]?.text
-              if (text) controller.enqueue(encoder.encode(text))
-            } catch {
-              /* Malformed SSE chunk — skip silently. */
-            }
-          }
-        }
-      } catch (err) {
-        console.error('[chat] stream error', err)
-      } finally {
-        controller.close()
-      }
-    },
-  })
+  let parsed: GeminiResponse
+  try { parsed = JSON.parse(rawText) }
+  catch (err) {
+    console.error('[chat] bad JSON from Gemini', err, rawText.slice(0, 300))
+    return Response.json({ ok: false, error: 'Assistant returned an unreadable reply.' }, { status: 502 })
+  }
 
+  /* Safety-blocked prompt → return a graceful response instead of silence. */
+  if (parsed.promptFeedback?.blockReason) {
+    const reply =
+      "That topic falls outside what I can help with here. " +
+      "Want to browse [Categories](/categories) or ask about getting [Listed](/business) instead?"
+    const headers = baseHeaders(user, anonCount, setCookie)
+    return new Response(reply, { headers })
+  }
+
+  let text = extractText(parsed)
+  if (!text) {
+    /* Empty reply (rare with 2.5-flash + thinkingBudget=0). Hand the user
+       SOMETHING they can act on rather than a blank bubble. */
+    console.warn('[chat] empty model reply, finishReason:',
+      parsed.candidates?.[0]?.finishReason)
+    text = SERVER_FALLBACK
+  }
+
+  const headers = baseHeaders(user, anonCount, setCookie)
+  return new Response(text, { headers })
+}
+
+function baseHeaders(
+  user: { id: number } | null,
+  anonCount: number,
+  setCookie: string | null,
+): Headers {
   const headers = new Headers({
     'Content-Type': 'text/plain; charset=utf-8',
     'Cache-Control': 'no-store',
@@ -189,6 +213,5 @@ export async function POST(request: NextRequest) {
     'X-Authed': user ? '1' : '0',
   })
   if (setCookie) headers.set('Set-Cookie', setCookie)
-
-  return new Response(stream, { headers })
+  return headers
 }

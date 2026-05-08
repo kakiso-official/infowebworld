@@ -165,31 +165,45 @@ export default function ChatWidget() {
         }
       }
 
-      if (!res.ok || !res.body) {
-        const j = await res.json().catch(() => ({}))
-        setError(j?.error || 'Couldn\'t reach the assistant. Try again.')
+      if (!res.ok) {
+        let errMsg = 'Couldn\'t reach the assistant. Try again.'
+        try {
+          const j = await res.json()
+          if (j?.error) errMsg = j.error
+        } catch {
+          /* Server might have returned plain text. Read it and surface it
+             so the diagnostic message reaches the user. */
+          try { const t = await res.text(); if (t) errMsg = t } catch {}
+        }
+        setError(errMsg)
         setMessages(prev => prev.filter(m => m.id !== assistantMsg.id))
         setSending(false)
         return
       }
 
-      /* Stream chunks of plain text into the assistant placeholder. */
-      const reader = res.body.getReader()
-      const decoder = new TextDecoder()
-      let acc = ''
-      while (true) {
-        const { value, done } = await reader.read()
-        if (done) break
-        acc += decoder.decode(value, { stream: true })
+      /* Non-streaming: server returns the full reply as plain text. We
+         simulate a quick typewriter so the UI still feels alive instead of
+         dumping a wall of text in one frame. */
+      const replyText = (await res.text()).trim()
+      const finalText = replyText ||
+        "Hmm, I didn't get a reply that time. Try asking about a category " +
+        "(\"AI writing tools\"), how to list your business, or browse " +
+        "[Categories](/categories) directly."
+
+      /* Reveal in ~12 chunks across ~400ms — feels live, no real streaming
+         needed. Skipped if the reply is very short. */
+      const STEPS = Math.min(12, Math.max(1, Math.ceil(finalText.length / 40)))
+      const stepLen = Math.ceil(finalText.length / STEPS)
+      for (let i = 1; i <= STEPS; i++) {
+        const slice = finalText.slice(0, i * stepLen)
         setMessages(prev => prev.map(m =>
-          m.id === assistantMsg.id ? { ...m, content: acc } : m
+          m.id === assistantMsg.id ? { ...m, content: slice } : m
         ))
+        if (i < STEPS) await new Promise(r => setTimeout(r, 32))
       }
-      if (!acc.trim()) {
-        setMessages(prev => prev.map(m =>
-          m.id === assistantMsg.id ? { ...m, content: 'Sorry — I had no answer for that. Try rephrasing?' } : m
-        ))
-      }
+      setMessages(prev => prev.map(m =>
+        m.id === assistantMsg.id ? { ...m, content: finalText } : m
+      ))
     } catch {
       setError('Network error. Please retry.')
       setMessages(prev => prev.filter(m => m.id !== assistantMsg.id))
