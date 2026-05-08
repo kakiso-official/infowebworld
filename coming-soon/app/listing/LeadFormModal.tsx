@@ -165,44 +165,45 @@ export default function LeadFormModal({
           </div>
         ) : (
           <>
-            <h3 id="lfm-title-h" className="wrm-title">Request a quote from {companyName}</h3>
-            <p className="wrm-sub">
-              We&apos;ll forward your details to {companyName} and confirm receipt by email.
-              Lead source recorded as <strong>InfoWebWorld</strong>.
+            <p className="wrm-sub" id="lfm-title-h" style={{ margin: '14px 20px 12px' }}>
+              We&apos;ll forward your details to <strong>{companyName}</strong> and confirm receipt
+              by email. Lead source recorded as <strong>InfoWebWorld</strong>.
             </p>
 
             <form className="lfm-form" onSubmit={handleSubmit} noValidate>
-              <label className="lfm-field">
-                <span className="lfm-label">Your name <span className="lfm-req">*</span></span>
-                <input
-                  ref={nameRef}
-                  className="wrm-input"
-                  type="text"
-                  value={name}
-                  onChange={e => setName(e.target.value.slice(0, NAME_MAX))}
-                  placeholder="Jane Doe"
-                  autoComplete="name"
-                  required
-                  disabled={submitting}
-                />
-              </label>
+              {/* Two-column row keeps the form short — fits without scroll on a 1366×768 laptop. */}
+              <div className="wrm-row">
+                <label className="wrm-field">
+                  <span className="wrm-label">Your name *</span>
+                  <input
+                    ref={nameRef}
+                    className="wrm-input"
+                    type="text"
+                    value={name}
+                    onChange={e => setName(e.target.value.slice(0, NAME_MAX))}
+                    placeholder="Jane Doe"
+                    autoComplete="name"
+                    required
+                    disabled={submitting}
+                  />
+                </label>
+                <label className="wrm-field">
+                  <span className="wrm-label">Email *</span>
+                  <input
+                    className="wrm-input"
+                    type="email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    placeholder="you@company.com"
+                    autoComplete="email"
+                    required
+                    disabled={submitting}
+                  />
+                </label>
+              </div>
 
-              <label className="lfm-field">
-                <span className="lfm-label">Email address <span className="lfm-req">*</span></span>
-                <input
-                  className="wrm-input"
-                  type="email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  placeholder="you@company.com"
-                  autoComplete="email"
-                  required
-                  disabled={submitting}
-                />
-              </label>
-
-              <label className="lfm-field">
-                <span className="lfm-label">Phone <span className="lfm-opt">(optional)</span></span>
+              <label className="wrm-field">
+                <span className="wrm-label">Phone <span className="lfm-opt">— optional</span></span>
                 <input
                   className="wrm-input"
                   type="tel"
@@ -214,24 +215,23 @@ export default function LeadFormModal({
                 />
               </label>
 
-              <label className="lfm-field">
-                <span className="lfm-label">Message <span className="lfm-opt">(optional)</span></span>
+              <label className="wrm-field">
+                <span className="wrm-label">Message <span className="lfm-opt">— optional</span></span>
                 <textarea
                   className="wrm-textarea"
                   value={message}
                   onChange={e => setMessage(e.target.value.slice(0, MESSAGE_MAX))}
                   placeholder={`What would you like to know about ${companyName}?`}
-                  rows={4}
+                  rows={3}
                   disabled={submitting}
                 />
-                <span className="lfm-counter">{message.length} / {MESSAGE_MAX}</span>
+                <span className="wrm-counter">{message.length} / {MESSAGE_MAX}</span>
               </label>
 
               {error && <p className="wrm-error" role="alert">{error}</p>}
 
               <p className="lfm-legal">
                 By submitting, you agree to our <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>.
-                Your details are sent to {companyName} via InfoWebWorld.
               </p>
 
               <div className="wrm-foot">
@@ -241,7 +241,7 @@ export default function LeadFormModal({
                     onClick={onClose} disabled={submitting}>Cancel</button>
                   <button type="submit" className="wrm-btn wrm-btn--primary"
                     disabled={submitting}>
-                    {submitting ? 'Sending…' : 'Send to ' + companyName}
+                    {submitting ? 'Sending…' : 'Send Request'}
                   </button>
                 </div>
               </div>
@@ -250,28 +250,17 @@ export default function LeadFormModal({
         )}
       </div>
 
-      {/* Scoped form-only styles — modal shell uses the global .wrm-* block. */}
+      {/* Lead-form-only adjustments — the rest of the layout uses the
+          shared .wrm-* block from test-listing-page.css. */}
       <style>{`
-        .lfm-form { display: flex; flex-direction: column; gap: 14px; padding: 0 24px 8px }
-        .lfm-field { display: flex; flex-direction: column; gap: 6px; position: relative }
-        .lfm-label {
-          font-family: var(--font-inter, Inter, system-ui), sans-serif;
-          font-size: 12.5px; font-weight: 600; color: #11181C; letter-spacing: -.005em;
-        }
-        .lfm-req { color: #E8553D; font-weight: 700; margin-left: 2px }
-        .lfm-opt { color: #6B7280; font-weight: 500 }
-        .lfm-counter {
-          position: absolute; right: 4px; bottom: -18px;
-          font-family: var(--font-inter, Inter, system-ui), sans-serif;
-          font-size: 11px; color: #9CA3AF; font-weight: 500;
-        }
+        .lfm-form { display: flex; flex-direction: column; gap: 11px; padding: 0 20px 16px }
+        .lfm-opt { color: #9CA3AF; font-weight: 600; text-transform: none; letter-spacing: 0 }
         .lfm-legal {
           margin: 4px 0 0;
-          font-family: var(--font-inter, Inter, system-ui), sans-serif;
-          font-size: 11.5px; color: #6B7280; line-height: 1.55;
+          font-size: 11.5px; color: #6B7280; line-height: 1.5;
         }
-        .lfm-legal a { color: #0C9A9A; text-decoration: none; font-weight: 600 }
-        .lfm-legal a:hover { text-decoration: underline }
+        .lfm-legal a { color: #E8553D; text-decoration: underline; text-underline-offset: 2px; font-weight: 600 }
+        .lfm-legal a:hover { color: #B33820 }
       `}</style>
     </div>
   )

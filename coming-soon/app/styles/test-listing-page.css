@@ -2670,85 +2670,99 @@ body.tlp-subheader-active .tlp-write-review {
 .tlp-in-real-title { margin: 0 0 6px; font-size: 15px; font-weight: 700; color: #11181C; }
 .tlp-in-real-body  { margin: 0; font-size: 14px; line-height: 1.55; color: #374151; white-space: pre-wrap; }
 
-/* ─────────────────────────────────────────────────────────────────────────
-   Write Review modal — listing-page design language. Inter is enforced
-   on .wrm-card because the modal mounts at the document body, outside
-   the .tlp-main scope, so it can't ride the section's font cascade.
-   ───────────────────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════
+   Modal shell (Write Review + Get a Quote share these classes)
+   Premium · solid colors · no gradients · no colored glows · Inter only
+   z-index pinned high so the listing's sticky sub-header (z-index:200)
+   never wins over an open modal.
+   ═══════════════════════════════════════════════════════════════════════ */
 .wrm-overlay {
-  position: fixed; inset: 0; z-index: 100;
-  background: rgba(15, 23, 42, .55);
+  position: fixed; inset: 0; z-index: 99999;
+  background: rgba(17, 24, 28, .55);
   display: flex; align-items: center; justify-content: center;
-  padding: 16px;
+  padding: 20px;
   animation: wrm-fade .15s ease-out;
-  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
 }
 @keyframes wrm-fade { from { opacity: 0 } to { opacity: 1 } }
 
 .wrm-card {
   position: relative;
-  width: min(620px, 100%);
-  max-height: 92vh; overflow-y: auto;
+  width: min(580px, 100%);
+  /* Match the listing-page card's sharp visual language — 8px radius,
+     hairline border, micro-shadow. Premium-but-restrained. */
+  max-height: calc(100vh - 40px);
   background: #FFFFFF;
   border: 1px solid #E5E7EB;
-  border-radius: 16px;
-  box-shadow: 0 24px 60px rgba(15, 23, 42, .28);
+  border-radius: 8px;
+  box-shadow:
+    0 1px 2px rgba(17, 24, 39, .04),
+    0 12px 36px rgba(17, 24, 39, .14);
   animation: wrm-pop .22s cubic-bezier(.2, .8, .2, 1);
   font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
   color: #11181C;
-  font-size: 15px; line-height: 1.55;
+  font-size: 14.5px; line-height: 1.55;
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+  /* Hide the scrollbar visually so any unavoidable fallback still looks clean.
+     Functional scroll still works (mouse wheel / keyboard / touch). */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
-.wrm-card * { font-family: inherit !important }
+.wrm-card::-webkit-scrollbar { display: none }
+.wrm-card * { font-family: inherit !important; box-sizing: border-box }
 @keyframes wrm-pop {
   from { transform: translateY(12px) scale(.98); opacity: 0 }
   to   { transform: translateY(0) scale(1); opacity: 1 }
 }
 
-/* Header strip — branded, with logo + company name */
+/* ─── Header ─── compact, mirrors the listing page's identity strip */
 .wrm-head {
   display: flex; align-items: center; justify-content: space-between;
   gap: 12px;
-  padding: 18px 22px 16px;
-  border-bottom: 1px solid #F3F4F6;
-  background: linear-gradient(180deg, #F5FAFA 0%, #FFFFFF 100%);
-  border-radius: 16px 16px 0 0;
+  padding: 16px 20px;
+  border-bottom: 1px solid #E5E7EB;
+  background: #FFFFFF;
+  flex-shrink: 0;
 }
 .wrm-head-id { display: flex; align-items: center; gap: 12px; min-width: 0 }
 .wrm-head-logo {
-  width: 44px; height: 44px;
-  border-radius: 10px;
+  width: 38px; height: 38px;
+  border-radius: 6px;
   object-fit: contain;
   background: #FFFFFF;
   border: 1px solid #E5E7EB;
-  padding: 4px;
+  padding: 3px;
   display: inline-flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
 .wrm-head-logo--ph {
-  background: linear-gradient(135deg, #0FAEAE, #087070);
+  background: #11181C;
   color: #FFFFFF;
-  font-size: 14px; font-weight: 800; letter-spacing: .03em;
-  border: none; padding: 0;
+  font-size: 13px; font-weight: 800; letter-spacing: .03em;
+  border: 1px solid #11181C;
+  padding: 0;
 }
 .wrm-head-text { min-width: 0 }
 .wrm-head-eyebrow {
-  font-size: 11px; font-weight: 700; letter-spacing: .12em;
-  text-transform: uppercase; color: #0C9A9A;
+  font-size: 10.5px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: #E8553D;
   line-height: 1.2;
   margin-bottom: 3px;
 }
 .wrm-head-name {
-  font-size: 16px; font-weight: 800; color: #11181C;
-  letter-spacing: -.01em;
+  font-size: 15.5px; font-weight: 700; color: #11181C;
+  letter-spacing: -.012em;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  max-width: 380px;
+  max-width: 360px;
 }
 
 .wrm-close {
-  width: 36px; height: 36px;
+  width: 30px; height: 30px;
   display: inline-flex; align-items: center; justify-content: center;
   border: none; background: transparent;
-  border-radius: 999px; cursor: pointer;
+  border-radius: 6px; cursor: pointer;
   color: #6B7280;
   transition: background .12s ease, color .12s ease;
   flex-shrink: 0;
@@ -2756,211 +2770,247 @@ body.tlp-subheader-active .tlp-write-review {
 .wrm-close:hover { background: #F3F4F6; color: #11181C }
 .wrm-close:disabled { opacity: .5; cursor: not-allowed }
 
-/* Body */
+/* ─── Body ─── */
 .wrm-title {
-  margin: 18px 22px 4px;
-  font-size: 22px; font-weight: 800; letter-spacing: -.015em;
+  margin: 16px 20px 4px;
+  font-size: 19px; font-weight: 700; letter-spacing: -.015em;
   color: #11181C; line-height: 1.25;
+  flex-shrink: 0;
 }
-.wrm-sub { margin: 0 22px 14px; font-size: 14px; color: #6B7280 }
+.wrm-sub {
+  margin: 0 20px 14px;
+  font-size: 13.5px; color: #6B7280; line-height: 1.55;
+  flex-shrink: 0;
+}
 
 .wrm-reviewer {
-  margin: 0 22px 16px;
+  margin: 0 20px 12px;
   display: flex; align-items: center; gap: 12px;
-  padding: 10px 12px;
-  border: 1px solid #E5E7EB; border-radius: 12px;
+  padding: 9px 12px;
+  border: 1px solid #E5E7EB; border-radius: 6px;
   background: #F9FAFB;
+  flex-shrink: 0;
 }
 .wrm-reviewer-avatar {
-  width: 36px; height: 36px;
+  width: 32px; height: 32px;
   border-radius: 999px;
   object-fit: cover;
   flex-shrink: 0;
 }
 .wrm-reviewer-avatar--initials {
   display: inline-flex; align-items: center; justify-content: center;
-  background: linear-gradient(135deg, #0FAEAE, #087070);
+  background: #11181C;
   color: #FFFFFF;
-  font-size: 13px; font-weight: 800; letter-spacing: .03em;
+  font-size: 12px; font-weight: 800; letter-spacing: .03em;
 }
 .wrm-reviewer-eyebrow {
-  font-size: 11px; font-weight: 600; color: #6B7280;
-  text-transform: uppercase; letter-spacing: .08em;
+  font-size: 10.5px; font-weight: 700; color: #9CA3AF;
+  text-transform: uppercase; letter-spacing: .1em;
   line-height: 1.2;
 }
 .wrm-reviewer-name {
-  font-size: 14px; font-weight: 700; color: #11181C;
+  font-size: 13.5px; font-weight: 700; color: #11181C;
   margin-top: 2px;
 }
 
 .wrm-form {
   display: flex; flex-direction: column;
-  padding: 0 22px 18px;
-  gap: 14px;
+  padding: 0 20px 16px;
+  gap: 11px;
+  flex: 1 1 auto;
+  min-height: 0;
 }
+/* Two-column row inside .wrm-form for short fields (name + email). */
+.wrm-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 11px;
+}
+@media (max-width: 480px) { .wrm-row { grid-template-columns: 1fr } }
 
+/* ─── Stars (review modal) ─── */
 .wrm-stars {
   display: flex; align-items: center;
   gap: 2px;
-  padding: 6px 0 2px;
+  padding: 4px 0 0;
   flex-wrap: wrap;
 }
 .wrm-star {
-  background: transparent; border: none; padding: 4px;
+  background: transparent; border: none; padding: 3px;
   cursor: pointer; line-height: 0;
   transition: transform .12s ease;
-  border-radius: 8px;
+  border-radius: 6px;
 }
-.wrm-star:hover:not(:disabled) { transform: scale(1.06) }
+.wrm-star:hover:not(:disabled) { transform: scale(1.08) }
 .wrm-star:active:not(:disabled) { transform: scale(.94) }
-.wrm-star:focus-visible { outline: 2px solid #0C9A9A; outline-offset: 2px }
+.wrm-star:focus-visible { outline: 2px solid #E8553D; outline-offset: 2px }
 .wrm-star:disabled { cursor: not-allowed; opacity: .55 }
 .wrm-stars-label {
-  margin-left: 14px;
+  margin-left: 12px;
   font-size: 13px; font-weight: 600; color: #6B7280;
-  letter-spacing: .01em;
+  letter-spacing: -.005em;
 }
 
-.wrm-field { display: flex; flex-direction: column; position: relative }
+/* ─── Form fields (shared) ─── */
+.wrm-field { display: flex; flex-direction: column; position: relative; gap: 5px; min-width: 0 }
 .wrm-label {
-  font-size: 11px; font-weight: 700; letter-spacing: .08em;
+  font-size: 10.5px; font-weight: 700; letter-spacing: .1em;
   text-transform: uppercase; color: #6B7280;
-  margin-bottom: 6px;
 }
 .wrm-input, .wrm-textarea {
   font: inherit;
-  padding: 11px 13px;
-  border: 1.5px solid #E5E7EB;
-  border-radius: 10px;
+  padding: 10px 12px;
+  border: 1px solid #D1D5DB;
+  border-radius: 6px;
   background: #FFFFFF;
   font-size: 14px; color: #11181C;
-  transition: border-color .12s ease, box-shadow .12s ease;
+  /* No glow on focus — solid border swap to ink. */
+  transition: border-color .12s ease;
+  width: 100%;
 }
 .wrm-input:focus, .wrm-textarea:focus {
   outline: none;
-  border-color: #0C9A9A;
-  box-shadow: 0 0 0 3px rgba(12, 154, 154, .14);
+  border-color: #11181C;
 }
 .wrm-input:disabled, .wrm-textarea:disabled {
   background: #F9FAFB; color: #9CA3AF; cursor: not-allowed;
 }
-.wrm-textarea { resize: vertical; min-height: 130px; line-height: 1.55 }
+.wrm-input::placeholder, .wrm-textarea::placeholder { color: #9CA3AF }
+.wrm-textarea {
+  resize: none;
+  min-height: 84px;
+  line-height: 1.55;
+}
 .wrm-counter {
-  align-self: flex-end;
-  font-size: 11.5px; color: #9CA3AF;
-  margin-top: 4px;
+  position: absolute;
+  right: 2px; bottom: -16px;
+  font-size: 11px; color: #9CA3AF;
   font-variant-numeric: tabular-nums;
 }
 
 .wrm-error {
   margin: 0;
-  padding: 10px 12px;
-  font-size: 13px; color: #B22A14;
+  padding: 9px 11px;
+  font-size: 12.5px; color: #B22A14;
   background: #FCEEEA;
-  border: 1px solid #F8D5CD;
-  border-radius: 10px;
+  border: 1px solid #F1B7AA;
+  border-radius: 6px;
   line-height: 1.45;
 }
 
+/* ─── Footer ─── matches the listing-page button row */
 .wrm-foot {
   display: flex; align-items: center; justify-content: space-between;
   gap: 10px;
-  margin-top: 6px;
-  padding-top: 14px;
-  border-top: 1px solid #F3F4F6;
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px solid #E5E7EB;
 }
-.wrm-foot-end { display: inline-flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: flex-end }
+.wrm-foot-end { display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: flex-end }
 
+/* Listing-page-style: 6px radius, uppercase, sharp. No shadows ever. */
 .wrm-btn {
   display: inline-flex; align-items: center; justify-content: center;
   gap: 6px;
-  height: 40px; padding: 0 18px;
-  font: inherit; font-size: 14px; font-weight: 700;
-  border-radius: 999px; border: 1.5px solid transparent;
+  height: 38px; padding: 0 16px;
+  font: inherit; font-size: 12.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .04em;
+  border-radius: 6px; border: 1.5px solid transparent;
   cursor: pointer;
-  transition: background .12s ease, border-color .12s ease, color .12s ease, box-shadow .12s ease, transform .12s ease;
+  transition: background .12s ease, border-color .12s ease, color .12s ease, transform .08s ease;
   white-space: nowrap;
 }
-.wrm-btn:disabled { opacity: .55; cursor: not-allowed }
+.wrm-btn:disabled { opacity: .5; cursor: not-allowed }
 .wrm-btn:active:not(:disabled) { transform: translateY(1px) }
 
 .wrm-btn--primary {
-  background: linear-gradient(180deg, #0FAEAE 0%, #0C9A9A 100%);
-  color: #FFFFFF;
-  box-shadow: 0 2px 8px rgba(12, 154, 154, .25);
+  background: #E8553D; color: #FFFFFF;
+  border-color: #E8553D;
 }
 .wrm-btn--primary:hover:not(:disabled) {
-  background: linear-gradient(180deg, #0C9A9A 0%, #087070 100%);
-  box-shadow: 0 4px 14px rgba(12, 154, 154, .35);
+  background: #B33820;
+  border-color: #B33820;
 }
 .wrm-btn--ghost {
-  background: transparent; color: #6B7280;
-  border-color: #E5E7EB;
+  background: #FFFFFF; color: #11181C;
+  border-color: #D1D5DB;
 }
 .wrm-btn--ghost:hover:not(:disabled) {
-  background: #F3F4F6; color: #11181C;
+  background: #F3F4F6;
+  border-color: #11181C;
 }
 .wrm-btn--danger {
-  background: #DC2626; color: #FFFFFF;
+  background: #B22A14; color: #FFFFFF;
+  border-color: #B22A14;
 }
-.wrm-btn--danger:hover:not(:disabled) { background: #B91C1C }
+.wrm-btn--danger:hover:not(:disabled) {
+  background: #8C2010;
+  border-color: #8C2010;
+}
 .wrm-btn--danger-ghost {
-  background: transparent; color: #B22A14;
-  border-color: #F8D5CD;
+  background: #FFFFFF; color: #B22A14;
+  border-color: #F1B7AA;
 }
 .wrm-btn--danger-ghost:hover:not(:disabled) {
-  background: #FCEEEA; border-color: #F1B7AA;
+  background: #FCEEEA; border-color: #B22A14;
 }
 
-/* Confirm-delete step */
+/* ─── Confirm-delete step ─── */
 .wrm-confirm {
-  padding: 18px 22px 18px;
-  display: flex; flex-direction: column; gap: 14px;
+  padding: 18px 20px;
+  display: flex; flex-direction: column; gap: 12px;
 }
 .wrm-confirm-body {
   margin: 0;
-  padding: 14px 16px;
+  padding: 12px 14px;
   background: #FCEEEA;
-  border: 1px solid #F8D5CD;
-  border-radius: 12px;
+  border: 1px solid #F1B7AA;
+  border-radius: 6px;
   color: #B22A14;
-  font-size: 14px;
+  font-size: 13.5px;
   line-height: 1.55;
 }
 
-/* Success state */
+/* ─── Success state ─── */
 .wrm-success {
   text-align: center;
-  padding: 28px 22px 26px;
+  padding: 28px 22px 24px;
 }
 .wrm-success-icon {
-  margin: 0 auto 14px;
-  width: 56px; height: 56px;
+  margin: 0 auto 12px;
+  width: 52px; height: 52px;
   display: inline-flex; align-items: center; justify-content: center;
   border-radius: 999px;
-  background: rgba(34, 197, 94, .14);
-  color: #16A34A;
+  background: #E8553D;
+  color: #FFFFFF;
 }
 .wrm-success-icon--neutral {
-  background: rgba(107, 114, 128, .14);
-  color: #6B7280;
+  background: #11181C;
+  color: #FFFFFF;
 }
 .wrm-success-title {
   margin: 0 0 6px;
-  font-size: 20px; font-weight: 800; color: #11181C; letter-spacing: -.015em;
+  font-size: 18px; font-weight: 700; color: #11181C; letter-spacing: -.015em;
 }
 .wrm-success-desc {
-  margin: 0 0 18px;
-  font-size: 14px; color: #6B7280;
+  margin: 0 0 16px;
+  font-size: 13.5px; color: #6B7280; line-height: 1.55;
 }
 
-/* Mobile */
+/* ─── Mobile (one breakpoint, full-bleed bottom sheet) ─── */
 @media (max-width: 540px) {
-  .wrm-card { max-height: 96vh }
-  .wrm-head { padding: 16px 16px 14px }
+  .wrm-overlay { padding: 0; align-items: flex-end }
+  .wrm-card {
+    width: 100%;
+    max-height: 92vh;
+    overflow-y: auto;            /* small screens: allow scroll only as a last resort */
+    border-radius: 18px 18px 0 0;
+    border-bottom: none;
+  }
+  .wrm-head { padding: 16px }
   .wrm-form, .wrm-confirm, .wrm-success { padding-left: 16px; padding-right: 16px }
   .wrm-title, .wrm-sub, .wrm-reviewer { margin-left: 16px; margin-right: 16px }
-  .wrm-title { font-size: 20px }
+  .wrm-title { font-size: 19px }
   .wrm-foot { flex-wrap: wrap; gap: 8px }
   .wrm-foot-end { flex: 1; justify-content: flex-end }
   .wrm-stars { gap: 0 }

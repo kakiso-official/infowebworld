@@ -116,9 +116,15 @@ export async function POST(request: NextRequest) {
       systemInstruction: { parts: [{ text: CHAT_SYSTEM_PROMPT }] },
       contents: toGeminiContents(trimmed),
       generationConfig: {
-        temperature: 0.7,
+        temperature: 0.85,
         topP: 0.95,
-        maxOutputTokens: 1024,
+        topK: 40,
+        maxOutputTokens: 2048,
+        /* Gemini 2.5 Flash has thinking ON by default. With a low maxOutput
+           it eats every output token on hidden thinking and the user sees
+           an empty stream. Hard-disable for chat — we want fast, direct
+           replies, not a reasoning trace we're going to throw away. */
+        thinkingConfig: { thinkingBudget: 0 },
       },
       safetySettings: [
         { category: 'HARM_CATEGORY_HARASSMENT',        threshold: 'BLOCK_ONLY_HIGH' },

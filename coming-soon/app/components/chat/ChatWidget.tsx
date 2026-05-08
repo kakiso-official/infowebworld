@@ -259,26 +259,27 @@ export default function ChatWidget() {
           </header>
 
           <div ref={scrollRef} className="iwc-scroll">
-            {messages.map(m => (
-              <div key={m.id} className={`iwc-msg iwc-msg--${m.role}`}>
-                {m.role === 'assistant' && (
-                  <span className="iwc-msg-avatar" aria-hidden="true"><Sparkle size={12} /></span>
-                )}
-                <div
-                  className="iwc-bubble"
-                  /* eslint-disable-next-line react/no-danger */
-                  dangerouslySetInnerHTML={{ __html: mdToHtml(m.content || '…') }}
-                />
-              </div>
-            ))}
-            {sending && messages[messages.length - 1]?.role === 'assistant' && !messages[messages.length - 1].content && (
-              <div className="iwc-msg iwc-msg--assistant">
-                <span className="iwc-msg-avatar" aria-hidden="true"><Sparkle size={12} /></span>
-                <div className="iwc-bubble iwc-bubble--typing">
-                  <span /><span /><span />
+            {messages.map(m => {
+              const isEmptyAssistant = m.role === 'assistant' && !m.content
+              return (
+                <div key={m.id} className={`iwc-msg iwc-msg--${m.role}`}>
+                  {m.role === 'assistant' && (
+                    <span className="iwc-msg-avatar" aria-hidden="true"><Sparkle size={12} /></span>
+                  )}
+                  {isEmptyAssistant ? (
+                    <div className="iwc-bubble iwc-bubble--typing" aria-label="InfoBot is typing">
+                      <span /><span /><span />
+                    </div>
+                  ) : (
+                    <div
+                      className="iwc-bubble"
+                      /* eslint-disable-next-line react/no-danger */
+                      dangerouslySetInnerHTML={{ __html: mdToHtml(m.content) }}
+                    />
+                  )}
                 </div>
-              </div>
-            )}
+              )
+            })}
             {error && <div className="iwc-error" role="alert">{error}</div>}
           </div>
 
