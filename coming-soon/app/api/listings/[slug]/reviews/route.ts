@@ -3,7 +3,8 @@ import { execute, query, queryOne } from '@/lib/db'
 import { requireUser } from '@/lib/user-auth'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { getClientIp } from '@/lib/tracking'
-import { notifyOwnerOnReview } from '@/lib/notify-owner'
+/* notifyOwnerOnReview no longer fires on submit — moved to admin approval.
+   Reviews are now moderated before going public + before the owner is told. */
 
 async function resolveListingId(slug: string): Promise<number | null> {
   const row = await queryOne<{ id: number }>(
@@ -73,26 +74,19 @@ export async function POST(request: NextRequest, ctx: { params: Promise<{ slug: 
   }
 
   try {
-    /* Detect first-time vs edit. The owner is only emailed for NEW reviews;
-       editing a review (rating/title/body change) doesn't re-email — the
-       dashboard's review list reflects the latest text. */
-    const existing = await queryOne<{ id: number }>(
-      'SELECT id FROM reviews WHERE listing_id = ? AND user_id = ? LIMIT 1',
-      [listingId, auth.id]
-    )
+    /* Reviews now go to admin moderation. New reviews land as 'pending';
+       edits to a still-pending review just update the row in place; edits
+       to an already-approved review reset it to 'pending' so the admin can
+       re-vet the new text. The owner is NOT emailed here — that fires from
+       the admin approval handler. */
     await execute(
       `INSERT INTO reviews (listing_id, user_id, rating, title, body, status)
-       VALUES (?, ?, ?, ?, ?, 'approved')
+       VALUES (?, ?, ?, ?, ?, 'pending')
        ON DUPLICATE KEY UPDATE rating = VALUES(rating), title = VALUES(title),
-                               body = VALUES(body), status = 'approved'`,
+                               body = VALUES(body), status = 'pending'`,
       [listingId, auth.id, rating, title, text]
     )
-    if (!existing) {
-      await notifyOwnerOnReview({
-        listingId, reviewerId: auth.id, rating, title, body: text,
-      })
-    }
-    return Response.json({ ok: true })
+    return Response.json({ ok: true, status: 'pending' })
   } catch (err) {
     console.error('POST /api/listings/[slug]/reviews error:', err)
     return Response.json({ ok: false, error: 'Server error' }, { status: 500 })

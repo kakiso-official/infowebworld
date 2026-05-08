@@ -216,14 +216,14 @@ export default function WriteReviewModal({
               )}
             </div>
             <h3 className="wrm-success-title">
-              {success === 'updated' ? 'Review updated'
+              {success === 'updated' ? 'Review updated — awaiting review'
                 : success === 'deleted' ? 'Review removed'
-                : 'Thanks for your review'}
+                : 'Thanks — submitted for review'}
             </h3>
             <p className="wrm-success-desc">
               {success === 'deleted'
                 ? `Your review of ${companyName} is no longer visible.`
-                : `It's live on ${companyName}'s page.`}
+                : `An admin will look it over. It'll appear on ${companyName}'s page after the next refresh.`}
             </p>
             <button type="button" className="wrm-btn wrm-btn--primary" onClick={onClose}>Done</button>
           </div>

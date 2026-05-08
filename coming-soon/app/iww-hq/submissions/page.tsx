@@ -1,310 +1,689 @@
 'use client'
-import { useState, useEffect, useMemo } from 'react'
-import { fetchAllSubmissions, updateSubmissionStatus, deleteSubmission, fetchSubmissionStats, type RealSubmission, type FaqItem } from '../data/submissions-storage'
 
-const statusColors: Record<string, string> = { paid: '#2FAE6A', confirmed: '#3B82F6', pending: '#F59E0B', rejected: '#EF4444', active: '#14B8A6', suspended: '#9CA3AF' }
-const Pill = ({ color, children }: { color: string; children: React.ReactNode }) => (
-  <span style={{ fontSize: '.56rem', fontWeight: 700, padding: '.15rem .5rem', borderRadius: 999, background: `${color}15`, color, textTransform: 'capitalize' }}>{children}</span>
-)
+import { useEffect, useMemo, useState } from 'react'
+import './submissions.css'
+import {
+  fetchAllSubmissions,
+  updateSubmissionStatus,
+  deleteSubmission,
+  fetchSubmissionStats,
+  type RealSubmission,
+  type FaqItem,
+} from '../data/submissions-storage'
 
-/* ── Detail Modal ── */
-function DetailModal({ sub, onClose, onStatusChange, onFaqSave }: { sub: RealSubmission; onClose: () => void; onStatusChange: (id: string, s: RealSubmission['status']) => void; onFaqSave: (id: string, faqs: FaqItem[]) => void }) {
-  const [editingFaqs, setEditingFaqs] = useState(false)
-  const [faqs, setFaqs] = useState<FaqItem[]>(sub.faqs.length > 0 ? sub.faqs : [{ question: '', answer: '' }])
-  const updateFaqField = (idx: number, field: keyof FaqItem, val: string) => {
-    const next = [...faqs]; next[idx] = { ...next[idx], [field]: val }; setFaqs(next)
+/* ───────────────────────────────────────────────────────────────────
+   /iww-hq/submissions
+   Two-pane moderation UI styled to match the public listing page.
+   Left: filterable list. Right: detail panel with action bar +
+   sectioned content. Top bar has the manual Vercel Deploy button.
+   ─────────────────────────────────────────────────────────────────── */
+
+type Status = RealSubmission['status']
+
+const STATUS_LABEL: Record<Status, string> = {
+  pending: 'Pending', confirmed: 'Confirmed', paid: 'Paid',
+  active: 'Active', rejected: 'Rejected', suspended: 'Suspended',
+}
+
+const STATUS_TABS: { key: Status | 'all'; label: string }[] = [
+  { key: 'pending',   label: 'Pending'   },
+  { key: 'confirmed', label: 'Confirmed' },
+  { key: 'paid',      label: 'Paid'      },
+  { key: 'active',    label: 'Active'    },
+  { key: 'rejected',  label: 'Rejected'  },
+  { key: 'all',       label: 'All'       },
+]
+
+function formatDate(iso: string): string {
+  if (!iso) return ''
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return iso
+  return d.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
+}
+
+function relativeAge(iso: string): string {
+  if (!iso) return ''
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return ''
+  const sec = Math.floor((Date.now() - d.getTime()) / 1000)
+  if (sec < 60) return `${sec}s ago`
+  const min = Math.floor(sec / 60)
+  if (min < 60) return `${min}m ago`
+  const hr = Math.floor(min / 60)
+  if (hr < 24) return `${hr}h ago`
+  const day = Math.floor(hr / 24)
+  if (day < 30) return `${day}d ago`
+  const mo = Math.floor(day / 30)
+  return `${mo}mo ago`
+}
+
+/* Plan slugs we know about → CSS modifier. Anything else falls through to
+   the neutral "free"-style chip so unknown plans still render. */
+function planClass(plan: string): string {
+  const p = (plan || '').toLowerCase()
+  if (p.includes('founding')) return 'sub-plan--founding'
+  if (p.includes('early'))    return 'sub-plan--early'
+  if (p.includes('starter'))  return 'sub-plan--starter'
+  return 'sub-plan--free'
+}
+
+function planShort(name: string, slug: string): string {
+  if (name && name.trim()) return name.trim()
+  const s = (slug || '').toLowerCase()
+  if (s.includes('founding')) return 'Elite Founding'
+  if (s.includes('early'))    return 'Early Adopter'
+  if (s.includes('starter'))  return 'Starter'
+  return 'Free'
+}
+
+export default function SubmissionsPage() {
+  const [subs, setSubs] = useState<RealSubmission[]>([])
+  const [search, setSearch] = useState('')
+  const [tab, setTab] = useState<Status | 'all'>('pending')
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [stats, setStats] = useState({ total: 0, pending: 0, confirmed: 0, paid: 0 })
+  const [busy, setBusy] = useState(false)
+  const [toast, setToast] = useState<{ kind: 'ok' | 'err'; msg: string } | null>(null)
+
+  const flash = (kind: 'ok' | 'err', msg: string) => {
+    setToast({ kind, msg })
+    window.setTimeout(() => setToast(null), 2400)
   }
-  const addFaqRow = () => { if (faqs.length < 8) setFaqs([...faqs, { question: '', answer: '' }]) }
-  const removeFaqRow = (idx: number) => { if (faqs.length > 1) setFaqs(faqs.filter((_, i) => i !== idx)) }
-  const saveFaqs = () => { onFaqSave(sub.id, faqs.filter(f => f.question.trim() && f.answer.trim())); setEditingFaqs(false) }
-  const lbl: React.CSSProperties = { fontSize: '.55rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.05em', color: 'var(--h-muted)', marginBottom: '.15rem' }
-  const val: React.CSSProperties = { fontSize: '.82rem', fontWeight: 500, color: 'var(--h-heading)', wordBreak: 'break-word' }
-  const Field = ({ label, value }: { label: string; value: string }) => value ? (
-    <div style={{ padding: '.6rem 0', borderBottom: '1px solid var(--h-border-light)' }}>
-      <div style={lbl}>{label}</div>
-      <div style={val}>{value}</div>
+
+  const reload = async () => {
+    try {
+      const [s, st] = await Promise.all([fetchAllSubmissions(), fetchSubmissionStats()])
+      setSubs(s); setStats(st)
+    } catch (err) {
+      console.error(err)
+      flash('err', 'Could not load submissions.')
+    }
+  }
+
+  useEffect(() => { reload() }, [])
+
+  /* Counts per status — drives the tab badges. */
+  const counts = useMemo(() => {
+    const out: Record<string, number> = { all: subs.length }
+    for (const s of subs) out[s.status] = (out[s.status] || 0) + 1
+    return out
+  }, [subs])
+
+  /* Filter + search. Keeps the most recent submission first. */
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    return subs
+      .filter(s => tab === 'all' ? true : s.status === tab)
+      .filter(s => !q
+        || s.companyName.toLowerCase().includes(q)
+        || s.email.toLowerCase().includes(q)
+        || s.contactName.toLowerCase().includes(q)
+        || s.category.toLowerCase().includes(q)
+        || s.slug.toLowerCase().includes(q)
+      )
+      .sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime())
+  }, [subs, tab, search])
+
+  const selected = useMemo(
+    () => filtered.find(s => s.id === selectedId) || subs.find(s => s.id === selectedId) || null,
+    [filtered, subs, selectedId]
+  )
+
+  /* When switching tabs, auto-select the first row in that bucket so the
+     detail pane never goes blank for too long. */
+  useEffect(() => {
+    if (filtered.length === 0) { setSelectedId(null); return }
+    if (!selectedId || !filtered.find(f => f.id === selectedId)) {
+      setSelectedId(filtered[0].id)
+    }
+  }, [filtered, selectedId])
+
+  const setStatus = async (id: string, status: Status) => {
+    setBusy(true)
+    try {
+      await updateSubmissionStatus(id, status)
+      flash('ok', `Marked ${STATUS_LABEL[status].toLowerCase()}.`)
+      await reload()
+    } catch {
+      flash('err', 'Status change failed.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const remove = async (id: string) => {
+    if (!confirm('Permanently delete this submission?')) return
+    setBusy(true)
+    try {
+      await deleteSubmission(id)
+      flash('ok', 'Deleted.')
+      if (selectedId === id) setSelectedId(null)
+      await reload()
+    } catch {
+      flash('err', 'Delete failed.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const saveFaqs = async (id: string, faqs: FaqItem[]) => {
+    /* PUT /api/submissions/[id] handles full updates, including FAQs. */
+    setBusy(true)
+    try {
+      const res = await fetch(`/api/submissions/${id}`, {
+        method: 'PUT',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ faqs }),
+      })
+      if (!res.ok) throw new Error()
+      flash('ok', 'FAQs saved.')
+      /* Optimistically merge into local state so the panel updates immediately. */
+      setSubs(prev => prev.map(s => s.id === id ? { ...s, faqs } : s))
+    } catch {
+      flash('err', 'Could not save FAQs.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="sub-scope">
+      <header className="sub-top">
+        <h1>Submissions</h1>
+        <div className="sub-stats">
+          <span className="sub-stat"><strong>{stats.total}</strong> total</span>
+          <span className="sub-stat"><strong>{stats.pending}</strong> pending</span>
+          <span className="sub-stat"><strong>{stats.paid}</strong> paid</span>
+        </div>
+        <div className="sub-top-spacer" />
+        <DeployButton />
+      </header>
+
+      <div className="sub-layout">
+        {/* ─── List pane ───────────────────────── */}
+        <aside className="sub-list">
+          <div className="sub-search">
+            <input
+              type="search"
+              placeholder="Search company, contact, email, slug…"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
+          </div>
+          <div className="sub-tabs">
+            {STATUS_TABS.map(t => {
+              const n = counts[t.key] ?? 0
+              const active = tab === t.key
+              return (
+                <button
+                  key={t.key}
+                  className={`sub-tab ${active ? 'is-active' : ''}`}
+                  onClick={() => setTab(t.key)}
+                >
+                  {t.label}
+                  <span className="sub-tab-count">{n}</span>
+                </button>
+              )
+            })}
+          </div>
+
+          <div className="sub-rows">
+            {filtered.length === 0 ? (
+              <div className="sub-empty">
+                {tab === 'pending'
+                  ? 'Inbox zero — no pending submissions.'
+                  : 'No matches.'}
+              </div>
+            ) : filtered.map(s => {
+              const isActive = s.id === selectedId
+              return (
+                <button
+                  key={s.id}
+                  className={`sub-row ${isActive ? 'is-active' : ''}`}
+                  onClick={() => setSelectedId(s.id)}
+                >
+                  <span className="sub-row-logo">
+                    {s.logoUrl
+                      ? <img src={s.logoUrl} alt="" />
+                      : <span>{(s.companyName || '?').slice(0, 1).toUpperCase()}</span>}
+                  </span>
+                  <span className="sub-row-text">
+                    <span className="sub-row-name">{s.companyName}</span>
+                    <span className="sub-row-meta">
+                      <span className={`sub-plan ${planClass(s.plan)}`}>
+                        {planShort(s.planName, s.plan)}
+                      </span>
+                      <span className="sub-dot">·</span>
+                      <span>{s.category || '—'}</span>
+                      <span className="sub-dot">·</span>
+                      <span>{relativeAge(s.submittedAt)}</span>
+                    </span>
+                  </span>
+                  <span className="sub-row-aside">
+                    <span className={`sub-pill sub-pill--${s.status}`}>{STATUS_LABEL[s.status]}</span>
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        </aside>
+
+        {/* ─── Detail pane ─────────────────────── */}
+        <section className="sub-detail">
+          {selected ? (
+            <SubmissionDetail
+              key={selected.id}
+              sub={selected}
+              busy={busy}
+              onSetStatus={setStatus}
+              onDelete={remove}
+              onSaveFaqs={saveFaqs}
+              flash={flash}
+            />
+          ) : (
+            <div className="sub-detail-empty">
+              <div className="sub-detail-empty-title">Select a submission</div>
+              <div>Pick one from the list to start moderating.</div>
+            </div>
+          )}
+        </section>
+      </div>
+
+      {toast && (
+        <div className={`sub-toast ${toast.kind === 'ok' ? 'is-success' : 'is-error'}`}>
+          {toast.msg}
+        </div>
+      )}
     </div>
-  ) : null
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Detail panel — hero + sticky action bar + sectioned content
+   ───────────────────────────────────────────────────────────────────── */
+
+interface DetailProps {
+  sub: RealSubmission
+  busy: boolean
+  onSetStatus: (id: string, status: Status) => void | Promise<void>
+  onDelete: (id: string) => void | Promise<void>
+  onSaveFaqs: (id: string, faqs: FaqItem[]) => void | Promise<void>
+  flash: (kind: 'ok' | 'err', msg: string) => void
+}
+
+function SubmissionDetail({ sub, busy, onSetStatus, onDelete, onSaveFaqs, flash }: DetailProps) {
+  const isLive = sub.status === 'active' || sub.status === 'paid'
+  const isPending = sub.status === 'pending'
 
   return (
     <>
-      <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.4)', zIndex: 100, backdropFilter: 'blur(4px)' }} />
-      <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '90%', maxWidth: 520, maxHeight: '85vh', overflowY: 'auto', background: '#fff', borderRadius: 24, border: '1.5px solid var(--h-border)', zIndex: 101, padding: 0 }}>
-        {/* Header */}
-        <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1.5px solid var(--h-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, background: '#fff', borderRadius: '24px 24px 0 0', zIndex: 1 }}>
-          <div>
-            <h3 style={{ fontSize: '1.05rem', fontWeight: 800, fontFamily: "var(--font-bricolage), 'Bricolage Grotesque', sans-serif", color: 'var(--h-heading)', marginBottom: '.15rem' }}>{sub.companyName}</h3>
-            <div style={{ display: 'flex', gap: '.35rem', alignItems: 'center' }}>
-              <Pill color={statusColors[sub.status]}>{sub.status}</Pill>
-              <span style={{ fontSize: '.58rem', color: 'var(--h-muted)' }}>{sub.id}</span>
-            </div>
-          </div>
-          <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: 999, border: '1.5px solid var(--h-border)', background: '#fff', cursor: 'pointer', fontSize: '.8rem', fontWeight: 700, color: 'var(--h-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>X</button>
+      {/* Hero */}
+      <div className="sub-hero">
+        <div className="sub-hero-logo">
+          {sub.logoUrl
+            ? <img src={sub.logoUrl} alt={sub.companyName} />
+            : <span>{(sub.companyName || '?').slice(0, 1).toUpperCase()}</span>}
         </div>
-
-        {/* Body */}
-        <div style={{ padding: '1rem 1.5rem' }}>
-          {/* Business Info Section */}
-          <div style={{ fontSize: '.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--h-accent)', marginBottom: '.25rem', marginTop: '.5rem' }}>Business Information</div>
-          <Field label="Company / Business Name" value={sub.companyName} />
-          <Field label="Contact Person" value={sub.contactName} />
-          <Field label="Business Email" value={sub.email} />
-          <Field label="Phone Number" value={sub.phone ? `${sub.phoneCode} ${sub.phone}` : ''} />
-          <Field label="Website URL" value={sub.website} />
-
-          {/* Details Section */}
-          <div style={{ fontSize: '.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--h-accent)', marginBottom: '.25rem', marginTop: '1.25rem' }}>Listing Details</div>
-          <Field label="Category" value={sub.category} />
-          <Field label="Country" value={sub.country} />
-          <Field label="State / Province" value={sub.state} />
-          <Field label="City" value={sub.city} />
-          <Field label="Tagline" value={sub.tagline} />
-          <Field label="Description" value={sub.description} />
-          <Field label="Slug (URL)" value={sub.slug} />
-          <Field label="Year Founded" value={sub.founded} />
-          <Field label="Team Size" value={sub.employees} />
-          <Field label="Funding" value={sub.funding} />
-          <Field label="HQ Location" value={sub.hqLocation} />
-
-          {/* Media Section */}
-          <div style={{ fontSize: '.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--h-accent)', marginBottom: '.25rem', marginTop: '1.25rem' }}>Media</div>
-          {sub.logoUrl && (
-            <div style={{ padding: '.6rem 0', borderBottom: '1px solid var(--h-border-light)' }}>
-              <div style={lbl}>Logo</div>
-              <img src={sub.logoUrl} alt="Logo" style={{ width: 48, height: 48, borderRadius: 12, objectFit: 'cover', border: '1px solid var(--h-border)' }} />
-            </div>
-          )}
-          {sub.screenshots.length > 0 && (
-            <div style={{ padding: '.6rem 0', borderBottom: '1px solid var(--h-border-light)' }}>
-              <div style={lbl}>Screenshots ({sub.screenshots.length})</div>
-              <div style={{ display: 'flex', gap: '.35rem', flexWrap: 'wrap', marginTop: '.3rem' }}>
-                {sub.screenshots.map((s, i) => (
-                  <img key={i} src={s} alt={`Screenshot ${i + 1}`} style={{ width: 80, height: 50, borderRadius: 8, objectFit: 'cover', border: '1px solid var(--h-border)' }} />
-                ))}
-              </div>
-            </div>
-          )}
-          <Field label="Demo Video" value={sub.demoVideo} />
-
-          {/* Product Section */}
-          <div style={{ fontSize: '.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--h-accent)', marginBottom: '.25rem', marginTop: '1.25rem' }}>Product Details</div>
-          {sub.features.length > 0 && (
-            <div style={{ padding: '.6rem 0', borderBottom: '1px solid var(--h-border-light)' }}>
-              <div style={lbl}>Features ({sub.features.length})</div>
-              <ul style={{ paddingLeft: '1rem', margin: '.3rem 0 0' }}>
-                {sub.features.map((f, i) => <li key={i} style={{ fontSize: '.75rem', color: 'var(--h-heading)', marginBottom: '.15rem' }}>{f}</li>)}
-              </ul>
-            </div>
-          )}
-          {sub.integrations.length > 0 && (
-            <div style={{ padding: '.6rem 0', borderBottom: '1px solid var(--h-border-light)' }}>
-              <div style={lbl}>Integrations</div>
-              <div style={{ display: 'flex', gap: '.25rem', flexWrap: 'wrap', marginTop: '.3rem' }}>
-                {sub.integrations.map((t, i) => (
-                  <span key={i} style={{ fontSize: '.55rem', fontWeight: 700, padding: '.15rem .45rem', borderRadius: 999, background: 'var(--h-bg)', color: 'var(--h-body)', border: '1px solid var(--h-border-light)' }}>{t.name}</span>
-                ))}
-              </div>
-            </div>
-          )}
-          <Field label="Pricing Model" value={sub.pricingModel} />
-          {sub.pricingTiers.length > 0 && (
-            <div style={{ padding: '.6rem 0', borderBottom: '1px solid var(--h-border-light)' }}>
-              <div style={lbl}>Pricing Tiers</div>
-              {sub.pricingTiers.map((t, i) => (
-                <div key={i} style={{ fontSize: '.75rem', color: 'var(--h-heading)', marginTop: '.2rem' }}>
-                  <strong>{t.name}</strong>: ${t.price} {t.period}
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Social Links */}
-          <div style={{ fontSize: '.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--h-accent)', marginBottom: '.25rem', marginTop: '1.25rem' }}>Social Links</div>
-          <Field label="LinkedIn" value={sub.linkedin} />
-          <Field label="Twitter / X" value={sub.twitter} />
-          <Field label="Facebook" value={sub.facebook} />
-
-          {/* FAQ Section */}
-          <div style={{ fontSize: '.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--h-accent)', marginBottom: '.25rem', marginTop: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span>FAQs ({sub.faqs.length})</span>
-            <button onClick={() => setEditingFaqs(!editingFaqs)} style={{ fontSize: '.55rem', fontWeight: 700, padding: '.15rem .5rem', borderRadius: 999, border: '1.5px solid var(--h-accent)', background: editingFaqs ? 'var(--h-accent)' : 'transparent', color: editingFaqs ? '#fff' : 'var(--h-accent)', cursor: 'pointer', fontFamily: 'var(--font-nunito)' }}>
-              {editingFaqs ? 'Cancel' : 'Edit FAQs'}
-            </button>
+        <div>
+          <h2 className="sub-hero-name">{sub.companyName}</h2>
+          {sub.tagline && <p className="sub-hero-tagline">{sub.tagline}</p>}
+          <div className="sub-hero-meta">
+            <span className={`sub-pill sub-pill--${sub.status}`}>{STATUS_LABEL[sub.status]}</span>
+            <span className={`sub-plan ${planClass(sub.plan)}`}>{planShort(sub.planName, sub.plan)}</span>
+            {sub.category && <><span className="sub-dot">·</span><span style={{ fontSize: 12, color: 'var(--mute)' }}>{sub.category}</span></>}
+            <span className="sub-dot">·</span>
+            <span style={{ fontSize: 12, color: 'var(--mute)' }}>Submitted {relativeAge(sub.submittedAt)}</span>
           </div>
-          {!editingFaqs ? (
-            sub.faqs.length > 0 ? sub.faqs.map((faq, i) => (
-              <div key={i} style={{ padding: '.5rem 0', borderBottom: '1px solid var(--h-border-light)' }}>
-                <div style={{ fontSize: '.72rem', fontWeight: 700, color: 'var(--h-heading)', marginBottom: '.1rem' }}>Q: {faq.question}</div>
-                <div style={{ fontSize: '.7rem', color: 'var(--h-body)', lineHeight: 1.5 }}>A: {faq.answer}</div>
-              </div>
-            )) : <div style={{ padding: '.5rem 0', fontSize: '.72rem', color: 'var(--h-muted)' }}>No FAQs added yet. Click &ldquo;Edit FAQs&rdquo; to add.</div>
-          ) : (
-            <div style={{ padding: '.5rem 0' }}>
-              {faqs.map((faq, i) => (
-                <div key={i} style={{ background: 'var(--h-bg)', borderRadius: 12, padding: '.6rem', marginBottom: '.5rem', border: '1px solid var(--h-border-light)', position: 'relative' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '.35rem' }}>
-                    <span style={{ fontSize: '.55rem', fontWeight: 700, color: 'var(--h-accent)', textTransform: 'uppercase' }}>Q&A {i + 1}</span>
-                    {faqs.length > 1 && <button onClick={() => removeFaqRow(i)} style={{ fontSize: '.55rem', fontWeight: 700, color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>Remove</button>}
-                  </div>
-                  <input type="text" placeholder="Question..." value={faq.question} onChange={e => updateFaqField(i, 'question', e.target.value)}
-                    style={{ width: '100%', padding: '.4rem .6rem', borderRadius: 8, border: '1.5px solid var(--h-border)', fontSize: '.72rem', fontFamily: 'var(--font-nunito)', marginBottom: '.35rem', outline: 'none', boxSizing: 'border-box' }} />
-                  <textarea placeholder="Answer..." value={faq.answer} onChange={e => updateFaqField(i, 'answer', e.target.value)} rows={2}
-                    style={{ width: '100%', padding: '.4rem .6rem', borderRadius: 8, border: '1.5px solid var(--h-border)', fontSize: '.72rem', fontFamily: 'var(--font-nunito)', resize: 'vertical', outline: 'none', boxSizing: 'border-box' }} />
-                </div>
-              ))}
-              <div style={{ display: 'flex', gap: '.4rem' }}>
-                {faqs.length < 8 && <button onClick={addFaqRow} style={{ fontSize: '.6rem', fontWeight: 700, padding: '.25rem .6rem', borderRadius: 999, border: '1.5px dashed var(--h-border)', background: 'transparent', cursor: 'pointer', color: 'var(--h-accent)', fontFamily: 'var(--font-nunito)' }}>+ Add Q&A</button>}
-                <button onClick={saveFaqs} style={{ fontSize: '.6rem', fontWeight: 700, padding: '.25rem .6rem', borderRadius: 999, border: '1.5px solid #2FAE6A', background: '#2FAE6A', color: '#fff', cursor: 'pointer', fontFamily: 'var(--font-nunito)' }}>Save FAQs</button>
-              </div>
-            </div>
-          )}
-
-          {/* Plan + Meta Section */}
-          <div style={{ fontSize: '.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--h-accent)', marginBottom: '.25rem', marginTop: '1.25rem' }}>Plan & Status</div>
-          <Field label="Selected Plan" value={sub.plan === 'founding' ? 'Founding Company — $239 Lifetime' : sub.plan === 'early-adopter' ? 'Early Adopter — $99/yr' : 'Standard — $239/yr'} />
-          <Field label="Current Status" value={sub.status} />
-          <Field label="Submitted At" value={new Date(sub.submittedAt).toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' })} />
-          {sub.approvedAt && <Field label="Approved At" value={new Date(sub.approvedAt).toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' })} />}
-        </div>
-
-        {/* Actions */}
-        <div style={{ padding: '1rem 1.5rem', borderTop: '1.5px solid var(--h-border)', display: 'flex', gap: '.4rem', flexWrap: 'wrap', position: 'sticky', bottom: 0, background: '#fff', borderRadius: '0 0 24px 24px' }}>
-          <span style={{ fontSize: '.65rem', fontWeight: 700, color: 'var(--h-muted)', alignSelf: 'center', marginRight: '.25rem' }}>Set status:</span>
-          {(['pending', 'confirmed', 'paid', 'active', 'rejected'] as const).map(s => (
-            <button key={s} onClick={() => onStatusChange(sub.id, s)}
-              style={{ padding: '.3rem .65rem', borderRadius: 999, fontSize: '.58rem', fontWeight: 700, cursor: 'pointer', border: sub.status === s ? `2px solid ${statusColors[s]}` : '1.5px solid var(--h-border)', background: sub.status === s ? `${statusColors[s]}15` : '#fff', color: sub.status === s ? statusColors[s] : 'var(--h-body)', fontFamily: "var(--font-nunito)", transition: 'all .2s', textTransform: 'capitalize' }}>
-              {s}
-            </button>
-          ))}
         </div>
       </div>
+
+      {/* Sticky action bar */}
+      <div className="sub-actions">
+        {isPending && (
+          <>
+            <button className="sub-btn sub-btn--primary" disabled={busy}
+              onClick={() => onSetStatus(sub.id, 'active')}>
+              Approve & activate
+            </button>
+            <button className="sub-btn sub-btn--ghost" disabled={busy}
+              onClick={() => onSetStatus(sub.id, 'confirmed')}>
+              Mark confirmed
+            </button>
+            <button className="sub-btn sub-btn--danger" disabled={busy}
+              onClick={() => onSetStatus(sub.id, 'rejected')}>
+              Reject
+            </button>
+          </>
+        )}
+        {!isPending && (
+          <StatusSwitcher status={sub.status} disabled={busy}
+            onChange={s => onSetStatus(sub.id, s)} />
+        )}
+
+        {isLive && sub.slug && (
+          <RebuildButton slug={sub.slug} flash={flash} />
+        )}
+
+        <div className="sub-actions-spacer" />
+
+        {isLive && sub.slug && (
+          <a className="sub-btn sub-btn--ghost" href={`/company/${sub.slug}`} target="_blank" rel="noopener noreferrer">
+            View live ↗
+          </a>
+        )}
+        <a className="sub-btn sub-btn--ghost" href={`/dashboard/listings/${sub.id}/edit`} target="_blank" rel="noopener noreferrer">
+          Edit ↗
+        </a>
+        <button className="sub-btn sub-btn--danger" disabled={busy}
+          onClick={() => onDelete(sub.id)}>
+          Delete
+        </button>
+      </div>
+
+      {/* Business info */}
+      <section className="sub-sec">
+        <header className="sub-sec-h">
+          <h3 className="sub-sec-title">Business info</h3>
+          <span className="sub-sec-sub">id {sub.id}</span>
+        </header>
+        <dl className="sub-grid">
+          <KV label="Contact"  value={sub.contactName} />
+          <KV label="Email"    value={sub.email} link={sub.email ? `mailto:${sub.email}` : ''} />
+          <KV label="Phone"    value={sub.phone ? `${sub.phoneCode || ''} ${sub.phone}`.trim() : ''} />
+          <KV label="Website"  value={sub.website} link={sub.website} external />
+          <KV label="Slug"     value={sub.slug ? `/company/${sub.slug}` : ''} />
+          <KV label="Listing type" value={sub.listingType} />
+        </dl>
+      </section>
+
+      {/* Listing details */}
+      <section className="sub-sec">
+        <header className="sub-sec-h">
+          <h3 className="sub-sec-title">Listing details</h3>
+        </header>
+        <dl className="sub-grid">
+          <KV label="Category" value={sub.category} />
+          <KV label="Country"  value={sub.country} />
+          <KV label="State"    value={sub.state} />
+          <KV label="City"     value={sub.city} />
+          <KV label="Founded"  value={sub.founded} />
+          <KV label="Team size" value={sub.employees} />
+          <KV label="Funding"  value={sub.funding} />
+          <KV label="HQ"       value={sub.hqLocation} />
+          <KV label="LinkedIn" value={sub.linkedin} link={sub.linkedin} external />
+          <KV label="Twitter"  value={sub.twitter} link={sub.twitter} external />
+          <KV label="Facebook" value={sub.facebook} link={sub.facebook} external />
+        </dl>
+        {sub.description && (
+          <>
+            <header className="sub-sec-h" style={{ marginTop: 18 }}>
+              <h3 className="sub-sec-title">Description</h3>
+            </header>
+            <p className="sub-desc">{sub.description}</p>
+          </>
+        )}
+      </section>
+
+      {/* Highlights — features + integrations */}
+      {(sub.features?.length > 0 || sub.integrations?.length > 0) && (
+        <section className="sub-sec">
+          <header className="sub-sec-h">
+            <h3 className="sub-sec-title">Features & integrations</h3>
+          </header>
+          {sub.features?.length > 0 && (
+            <div style={{ marginBottom: 14 }}>
+              <div className="sub-sec-sub" style={{ marginBottom: 8 }}>Features</div>
+              <div className="sub-chips">
+                {sub.features.map((f, i) => <span key={i} className="sub-chip">{f}</span>)}
+              </div>
+            </div>
+          )}
+          {sub.integrations?.length > 0 && (
+            <div>
+              <div className="sub-sec-sub" style={{ marginBottom: 8 }}>Integrations</div>
+              <div className="sub-chips">
+                {sub.integrations.map((it, i) => (
+                  <span key={i} className="sub-chip">{typeof it === 'string' ? it : it.name}</span>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* Plan + status */}
+      <section className="sub-sec">
+        <header className="sub-sec-h">
+          <h3 className="sub-sec-title">Plan & status</h3>
+        </header>
+        <dl className="sub-grid">
+          <KV label="Plan"   value={planShort(sub.planName, sub.plan)} />
+          <KV label="Status" value={STATUS_LABEL[sub.status]} />
+          <KV label="Submitted" value={formatDate(sub.submittedAt)} />
+          <KV label="Approved at" value={sub.approvedAt ? formatDate(sub.approvedAt) : '—'} />
+        </dl>
+      </section>
+
+      {/* FAQ editor */}
+      <FaqEditor sub={sub} onSave={onSaveFaqs} busy={busy} />
     </>
   )
 }
 
-/* ── Main Page ── */
-export default function Submissions() {
-  const [subs, setSubs] = useState<RealSubmission[]>([])
-  const [search, setSearch] = useState('')
-  const [filter, setFilter] = useState('all')
-  const [detail, setDetail] = useState<RealSubmission | null>(null)
-  const [stats, setStats] = useState({ total: 0, pending: 0, confirmed: 0, paid: 0 })
+/* ── Key-value row ─────────────────────────────────────────────────── */
+function KV({
+  label, value, link, external, full,
+}: { label: string; value: string; link?: string; external?: boolean; full?: boolean }) {
+  if (!value) return null
+  return (
+    <div className={`sub-row-kv ${full ? 'sub-row-kv--full' : ''}`}>
+      <dt>{label}</dt>
+      <dd>
+        {link
+          ? <a href={link} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{value}{external ? ' ↗' : ''}</a>
+          : value}
+      </dd>
+    </div>
+  )
+}
 
-  const reload = async () => {
-    const [s, st] = await Promise.all([fetchAllSubmissions(), fetchSubmissionStats()])
-    setSubs(s); setStats(st)
+/* ─────────────────────────────────────────────────────────────────────
+   Status switcher (used for non-pending listings to flip between states)
+   ───────────────────────────────────────────────────────────────────── */
+function StatusSwitcher({
+  status, disabled, onChange,
+}: { status: Status; disabled: boolean; onChange: (s: Status) => void }) {
+  return (
+    <div style={{ display: 'inline-flex', gap: 4, padding: 3, border: '1px solid var(--border)', borderRadius: 6, background: '#fff' }}>
+      {(['pending', 'confirmed', 'paid', 'active', 'rejected'] as Status[]).map(s => {
+        const active = s === status
+        return (
+          <button
+            key={s}
+            disabled={disabled || active}
+            onClick={() => onChange(s)}
+            style={{
+              padding: '4px 10px',
+              border: 0, borderRadius: 4,
+              background: active ? 'var(--ink)' : 'transparent',
+              color: active ? '#fff' : 'var(--body)',
+              fontSize: 11, fontWeight: 700,
+              textTransform: 'uppercase', letterSpacing: '.04em',
+              cursor: active ? 'default' : 'pointer',
+              opacity: disabled && !active ? .5 : 1,
+            }}
+          >{s}</button>
+        )
+      })}
+    </div>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Rebuild button — calls /api/admin/listings/[slug]/revalidate
+   ───────────────────────────────────────────────────────────────────── */
+function RebuildButton({ slug, flash }: { slug: string; flash: (k: 'ok' | 'err', m: string) => void }) {
+  const [busy, setBusy] = useState(false)
+  const [done, setDone] = useState(false)
+
+  const click = async () => {
+    if (busy) return
+    setBusy(true); setDone(false)
+    try {
+      const res = await fetch(`/api/admin/listings/${encodeURIComponent(slug)}/revalidate`, {
+        method: 'POST', credentials: 'same-origin',
+      })
+      const j = await res.json().catch(() => ({}))
+      if (!res.ok || !j?.ok) {
+        flash('err', j?.error || 'Rebuild failed.')
+      } else {
+        setDone(true)
+        flash('ok', 'Static page rebuilt.')
+        window.setTimeout(() => setDone(false), 2400)
+      }
+    } catch {
+      flash('err', 'Network error.')
+    } finally {
+      setBusy(false)
+    }
   }
-  useEffect(() => { reload() }, [])
-
-  const filtered = useMemo(() => subs.filter(s => {
-    const q = search.toLowerCase()
-    const matchQ = !q || s.companyName.toLowerCase().includes(q) || s.email.toLowerCase().includes(q) || s.category.toLowerCase().includes(q) || s.contactName.toLowerCase().includes(q)
-    const matchF = filter === 'all' || s.status === filter
-    return matchQ && matchF
-  }), [subs, search, filter])
-
-  const handleStatusChange = async (id: string, status: RealSubmission['status']) => {
-    await updateSubmissionStatus(id, status)
-    await reload()
-    if (detail?.id === id) setDetail({ ...detail, status })
-  }
-
-  const handleDelete = async (id: string) => {
-    if (!confirm('Delete this submission permanently?')) return
-    await deleteSubmission(id); await reload(); if (detail?.id === id) setDetail(null)
-  }
-
-  const exportCSV = () => {
-    const headers = 'ID,Company,Contact,Email,Phone,Website,Category,Country,City,Tagline,Description,Founded,TeamSize,Plan,Status,Date\n'
-    const rows = filtered.map(s => `${s.id},"${s.companyName}","${s.contactName}",${s.email},"${s.phoneCode} ${s.phone}","${s.website}","${s.category}",${s.country},"${s.city}","${s.tagline}","${(s.description || '').replace(/"/g, '""')}",${s.founded},${s.employees},${s.plan},${s.status},${s.submittedAt}`).join('\n')
-    const blob = new Blob([headers + rows], { type: 'text/csv' })
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'submissions.csv'; a.click()
-  }
-
-  const btnBase: React.CSSProperties = { padding: '.4rem .85rem', borderRadius: 999, fontSize: '.65rem', fontWeight: 700, cursor: 'pointer', border: '1.5px solid var(--h-border)', transition: 'all .25s', fontFamily: "var(--font-nunito), 'Nunito', sans-serif" }
 
   return (
-    <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-      {/* Detail Modal */}
-      {detail && <DetailModal sub={detail} onClose={() => setDetail(null)} onStatusChange={handleStatusChange} onFaqSave={async (id, faqs) => {
-        await fetch(`/api/submissions/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ faqs }) }).catch(() => {})
-        await reload()
-        if (detail?.id === id) setDetail({ ...detail, faqs })
-      }} />}
+    <button
+      className={`sub-btn sub-btn--ink ${done ? 'is-success' : ''}`}
+      onClick={click}
+      disabled={busy}
+      title="Force-rebuild this listing's static page right now (skips the 48h auto-refresh)."
+    >
+      {busy ? 'Rebuilding…' : done ? '✓ Rebuilt' : 'Rebuild static'}
+    </button>
+  )
+}
 
-      {/* Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '.65rem', marginBottom: '.85rem' }}>
-        {[
-          { l: 'Total', v: stats.total, c: '#E8553D' },
-          { l: 'Pending', v: stats.pending, c: '#F59E0B' },
-          { l: 'Confirmed', v: stats.confirmed, c: '#3B82F6' },
-          { l: 'Paid', v: stats.paid, c: '#2FAE6A' },
-        ].map(s => (
-          <div key={s.l} style={{ background: '#fff', borderRadius: 20, border: '1.5px solid var(--h-border)', padding: '.85rem 1rem', position: 'relative', overflow: 'hidden' }}>
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: s.c }} />
-            <p style={{ fontSize: '.55rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.06em', color: 'var(--h-muted)', marginBottom: '.2rem' }}>{s.l}</p>
-            <p style={{ fontSize: '1.35rem', fontWeight: 800, fontFamily: "var(--font-nunito)", color: 'var(--h-heading)', lineHeight: 1 }}>{s.v}</p>
+/* ─────────────────────────────────────────────────────────────────────
+   Deploy button — fires the Vercel deploy hook (manual, not on every approve).
+   Lets pending-approved listings go live whenever the admin decides.
+   ───────────────────────────────────────────────────────────────────── */
+function DeployButton() {
+  const [busy, setBusy] = useState(false)
+  const [done, setDone] = useState(false)
+  const [error, setError] = useState('')
+
+  const click = async () => {
+    if (busy) return
+    if (!confirm('Trigger a Vercel production deploy now? Pending-approved listings will go live after the build finishes (~1-2 min).')) return
+    setBusy(true); setError('')
+    try {
+      const res = await fetch('/api/admin/deploy', { method: 'POST', credentials: 'same-origin' })
+      const j = await res.json().catch(() => ({}))
+      if (!res.ok || !j?.ok) {
+        setError(j?.error || 'Deploy failed.')
+      } else {
+        setDone(true)
+        window.setTimeout(() => setDone(false), 4000)
+      }
+    } catch {
+      setError('Network error.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <>
+      {error && (
+        <span style={{ fontSize: 11.5, color: 'var(--red)', fontWeight: 600 }}>
+          {error}
+        </span>
+      )}
+      <button
+        className={`sub-deploy ${done ? 'is-success' : ''}`}
+        onClick={click}
+        disabled={busy}
+        title="Triggers the Vercel deploy hook. Build runs ~1-2 min; new approved listings go live after."
+      >
+        {busy ? 'Deploying…' : done ? '✓ Build queued' : 'Deploy'}
+      </button>
+    </>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   FAQ editor — inline rows of question / answer pairs.
+   ───────────────────────────────────────────────────────────────────── */
+function FaqEditor({
+  sub, busy, onSave,
+}: { sub: RealSubmission; busy: boolean; onSave: (id: string, faqs: FaqItem[]) => void | Promise<void> }) {
+  const [faqs, setFaqs] = useState<FaqItem[]>(
+    sub.faqs?.length > 0 ? sub.faqs : [{ question: '', answer: '' }]
+  )
+  const [dirty, setDirty] = useState(false)
+
+  /* Reset whenever the selected submission changes. */
+  useEffect(() => {
+    setFaqs(sub.faqs?.length > 0 ? sub.faqs : [{ question: '', answer: '' }])
+    setDirty(false)
+  }, [sub.id, sub.faqs])
+
+  const update = (idx: number, key: keyof FaqItem, val: string) => {
+    setFaqs(prev => prev.map((f, i) => i === idx ? { ...f, [key]: val } : f))
+    setDirty(true)
+  }
+  const add = () => {
+    if (faqs.length >= 12) return
+    setFaqs(prev => [...prev, { question: '', answer: '' }])
+    setDirty(true)
+  }
+  const remove = (idx: number) => {
+    setFaqs(prev => prev.length > 1 ? prev.filter((_, i) => i !== idx) : prev)
+    setDirty(true)
+  }
+  const save = () => {
+    const cleaned = faqs.filter(f => f.question.trim() && f.answer.trim())
+    onSave(sub.id, cleaned)
+    setDirty(false)
+  }
+
+  return (
+    <section className="sub-sec">
+      <header className="sub-sec-h">
+        <h3 className="sub-sec-title">FAQs</h3>
+        <span className="sub-sec-sub">{faqs.filter(f => f.question.trim() && f.answer.trim()).length} populated</span>
+      </header>
+      <div className="sub-faqs">
+        {faqs.map((f, i) => (
+          <div key={i} className="sub-faq">
+            <input
+              type="text"
+              placeholder="Question"
+              value={f.question}
+              onChange={e => update(i, 'question', e.target.value)}
+            />
+            <textarea
+              placeholder="Answer"
+              value={f.answer}
+              onChange={e => update(i, 'answer', e.target.value)}
+            />
+            <div className="sub-faq-actions">
+              <button className="sub-faq-icon-btn" title="Remove" onClick={() => remove(i)}>
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1.5 14a2 2 0 0 1-2 1.8h-7a2 2 0 0 1-2-1.8L5 6" />
+                </svg>
+              </button>
+            </div>
           </div>
         ))}
       </div>
-
-      {/* Toolbar */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.65rem', alignItems: 'center', marginBottom: '.85rem' }}>
-        <input type="text" placeholder="Search company, email, category, contact..." value={search} onChange={e => setSearch(e.target.value)}
-          style={{ flex: 1, minWidth: 200, height: 40, padding: '0 .85rem', borderRadius: 14, border: '1.5px solid var(--h-border)', background: '#fff', fontSize: '.8rem', color: 'var(--h-heading)', outline: 'none', fontFamily: "var(--font-nunito)" }} />
-        <div style={{ display: 'flex', gap: '.35rem' }}>
-          {['all', 'pending', 'confirmed', 'paid', 'rejected'].map(f => (
-            <button key={f} onClick={() => setFilter(f)} style={{ ...btnBase, background: filter === f ? '#E8553D' : '#fff', color: filter === f ? '#fff' : 'var(--h-muted)', borderColor: filter === f ? '#E8553D' : 'var(--h-border)', textTransform: 'capitalize' }}>{f}</button>
-          ))}
-        </div>
-        <button onClick={exportCSV} style={{ ...btnBase, background: '#fff', color: 'var(--h-heading)' }}>Export CSV</button>
-      </div>
-
-      {/* Table */}
-      <div style={{ background: '#fff', borderRadius: 20, border: '1.5px solid var(--h-border)', overflow: 'hidden' }}>
-        {filtered.length === 0 ? (
-          <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--h-muted)', fontSize: '.85rem' }}>
-            {subs.length === 0 ? 'No submissions yet. They will appear here when users submit the Get Listed form.' : 'No submissions match your filter.'}
-          </div>
-        ) : (
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 750 }}>
-              <thead>
-                <tr>
-                  {['#', 'Company', 'Category', 'Country', 'Plan', 'Status', 'Date', 'Actions'].map(h => (
-                    <th key={h} style={{ textAlign: 'left', fontSize: '.56rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.05em', color: 'var(--h-muted)', padding: '.7rem 1rem', borderBottom: '1.5px solid var(--h-border)', background: 'var(--h-bg)' }}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map(sub => (
-                  <tr key={sub.id} style={{ borderBottom: '1px solid var(--h-border-light)', transition: 'background .15s' }}>
-                    <td style={{ padding: '.65rem 1rem', fontSize: '.62rem', fontWeight: 700, color: 'var(--h-muted)' }}>{sub.id}</td>
-                    <td style={{ padding: '.65rem 1rem' }}>
-                      <span style={{ display: 'block', fontSize: '.78rem', fontWeight: 700, color: 'var(--h-heading)' }}>{sub.companyName}</span>
-                      <span style={{ fontSize: '.58rem', color: 'var(--h-muted)' }}>{sub.contactName} &middot; {sub.email}</span>
-                    </td>
-                    <td style={{ padding: '.65rem 1rem', fontSize: '.7rem', fontWeight: 600, color: 'var(--h-body)' }}>{sub.category}</td>
-                    <td style={{ padding: '.65rem 1rem', fontSize: '.7rem', color: 'var(--h-body)' }}>{sub.city ? `${sub.city}, ` : ''}{sub.country}</td>
-                    <td style={{ padding: '.65rem 1rem' }}><Pill color="#E8553D">{sub.plan === 'founding' ? 'Founding' : sub.plan === 'early-adopter' ? 'Early Adopter' : 'Standard'}</Pill></td>
-                    <td style={{ padding: '.65rem 1rem' }}><Pill color={statusColors[sub.status]}>{sub.status}</Pill></td>
-                    <td style={{ padding: '.65rem 1rem', fontSize: '.68rem', color: 'var(--h-muted)' }}>{sub.submittedAt.slice(0, 10)}</td>
-                    <td style={{ padding: '.65rem 1rem' }}>
-                      <div style={{ display: 'flex', gap: '.3rem' }}>
-                        <button onClick={() => setDetail(sub)} style={{ padding: '.2rem .55rem', borderRadius: 999, fontSize: '.55rem', fontWeight: 700, cursor: 'pointer', border: '1.5px solid var(--h-accent)', background: 'rgba(232,85,61,.04)', color: 'var(--h-accent)', fontFamily: "var(--font-nunito)", transition: 'all .2s' }}>Detail</button>
-                        <button onClick={() => handleDelete(sub.id)} style={{ padding: '.2rem .55rem', borderRadius: 999, fontSize: '.55rem', fontWeight: 700, cursor: 'pointer', border: '1.5px solid rgba(239,68,68,.2)', background: '#fff', color: '#EF4444', fontFamily: "var(--font-nunito)", transition: 'all .2s' }}>Delete</button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+      <div style={{ display: 'flex', gap: 8, marginTop: 10, alignItems: 'center' }}>
+        <button className="sub-faq-add" onClick={add} disabled={faqs.length >= 12}>+ Add FAQ</button>
+        <div style={{ flex: 1 }} />
+        {dirty && (
+          <button className="sub-btn sub-btn--ink" onClick={save} disabled={busy}>
+            Save FAQs
+          </button>
         )}
-        <div style={{ padding: '.75rem 1rem', fontSize: '.62rem', fontWeight: 600, color: 'var(--h-muted)', borderTop: '1px solid var(--h-border-light)' }}>
-          Showing {filtered.length} of {subs.length} submissions
-        </div>
       </div>
-    </div>
+    </section>
   )
 }
