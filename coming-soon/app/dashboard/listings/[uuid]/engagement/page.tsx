@@ -48,6 +48,10 @@ interface BookmarkRow {
 interface InboxRow {
   id: number
   email: string
+  name: string | null
+  phone: string | null
+  message: string | null
+  source: 'send_info' | 'quote_request' | string
   ip_address: string | null
   created_at: string
 }
@@ -138,7 +142,7 @@ export default async function EngagementPage({
       [listing.id]
     ),
     query<InboxRow>(
-      `SELECT id, email, ip_address, created_at
+      `SELECT id, email, name, phone, message, source, ip_address, created_at
          FROM listing_inbox_emails
         WHERE listing_id = ?
         ORDER BY created_at DESC LIMIT 200`,
@@ -254,25 +258,45 @@ export default async function EngagementPage({
           />
         ) : (
           <div className="eng-leads">
-            {inbox.map(row => (
-              <div key={row.id} className="eng-lead">
-                <div className="eng-lead-main">
-                  <a href={`mailto:${row.email}?subject=Re%3A%20${encodeURIComponent(listing.company_name)}`} className="eng-lead-email">
-                    {row.email}
-                  </a>
-                  <div className="eng-lead-meta">
-                    {formatRelative(row.created_at)} · {formatDate(row.created_at)}
+            {inbox.map(row => {
+              const isQuote = row.source === 'quote_request'
+              const replySubject = encodeURIComponent(
+                isQuote ? `Re: Your quote request for ${listing.company_name}` : `Re: ${listing.company_name}`
+              )
+              const replyBody = encodeURIComponent(
+                `Hi ${row.name || 'there'},\n\nThanks for reaching out about ${listing.company_name}.\n\n`
+              )
+              const mailto = `mailto:${row.email}?subject=${replySubject}&body=${replyBody}`
+              return (
+                <div key={row.id} className="eng-lead">
+                  <div className="eng-lead-main">
+                    <div className="eng-lead-tags">
+                      <span className={`eng-lead-tag${isQuote ? ' eng-lead-tag--quote' : ''}`}>
+                        {isQuote ? 'Quote request' : 'Send info'}
+                      </span>
+                      <span className="eng-lead-tag eng-lead-tag--source">via InfoWebWorld</span>
+                    </div>
+                    {row.name && <div className="eng-lead-name">{row.name}</div>}
+                    <a href={mailto} className="eng-lead-email">{row.email}</a>
+                    {row.phone && (
+                      <a href={`tel:${row.phone}`} className="eng-lead-phone">{row.phone}</a>
+                    )}
+                    {row.message && (
+                      <p className="eng-lead-msg">{row.message}</p>
+                    )}
+                    <div className="eng-lead-meta">
+                      {formatRelative(row.created_at)} · {formatDate(row.created_at)}
+                    </div>
                   </div>
+                  <a href={mailto} className="eng-lead-reply">
+                    Reply
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  </a>
                 </div>
-                <a href={`mailto:${row.email}?subject=Re%3A%20${encodeURIComponent(listing.company_name)}`}
-                   className="eng-lead-reply">
-                  Reply
-                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
-                  </svg>
-                </a>
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
       </section>

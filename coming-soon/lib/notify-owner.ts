@@ -236,11 +236,17 @@ export async function notifyOwnerOnBookmark(args: {
 export async function notifyOwnerOnInboxLead(args: {
   listingId: number
   leadEmail: string
+  /** Visitor's name from the "Get a Quote" form. NULL for the email-only "Send me info" form. */
+  leadName?: string | null
+  leadPhone?: string | null
+  leadMessage?: string | null
+  /** Form variant — drives the email subject + body wording. */
+  source?: 'send_info' | 'quote_request' | string | null
 }): Promise<void> {
   try {
     const owner = await loadOwner(args.listingId)
-    /* No actorId here — the visitor is anonymous. We still skip when there
-       is no owner email to notify, but we don't have a self-action concern. */
+    /* No actorId here — the visitor is usually anonymous. We still skip when
+       there is no owner email to notify, but no self-action concern. */
     if (!owner || !owner.owner_email) return
 
     const tpl = inboxLeadReceivedEmail({
@@ -250,6 +256,10 @@ export async function notifyOwnerOnInboxLead(args: {
       listingUuid: owner.uuid,
       listingLogoUrl: owner.logo_url,
       leadEmail: args.leadEmail,
+      leadName: args.leadName ?? null,
+      leadPhone: args.leadPhone ?? null,
+      leadMessage: args.leadMessage ?? null,
+      source: args.source === 'quote_request' ? 'quote_request' : 'send_info',
     })
     await sendEmail({
       to: owner.owner_email,

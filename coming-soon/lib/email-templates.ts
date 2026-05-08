@@ -333,56 +333,149 @@ Engagement dashboard: ${dashUrl(a.listingUuid)}`,
 /* ──────────────────────────── Inbox lead received ──────────────────────────── */
 
 export interface InboxLeadArgs extends BaseArgs {
-  /** The email the visitor submitted asking to be contacted. */
+  /** Email the visitor submitted asking to be contacted. */
   leadEmail: string
+  /** Optional richer fields — only present from the "Get a Quote" form. */
+  leadName?: string | null
+  leadPhone?: string | null
+  leadMessage?: string | null
+  /** Form source — drives subject + body wording. Defaults to 'send_info'. */
+  source?: 'send_info' | 'quote_request'
 }
 export function inboxLeadReceivedEmail(a: InboxLeadArgs) {
   const greet = greeting(a.ownerName)
   const safeLeadEmail = escapeHtml(a.leadEmail)
+  const isQuote = a.source === 'quote_request'
+
+  const leadName    = a.leadName?.trim() || null
+  const leadPhone   = a.leadPhone?.trim() || null
+  const leadMessage = a.leadMessage?.trim() || null
+
+  /* Display name in the lead card — falls back to the local-part of the
+     email when the visitor didn't fill the form's name field. */
+  const displayName = leadName || a.leadEmail.split('@')[0]
+  const safeDisplayName = escapeHtml(displayName)
+
+  /* "Field row" helper — only renders when value is non-empty so the email
+     stays clean for the email-only "Send me info" submissions. */
+  const row = (label: string, value: string | null, opts?: { mono?: boolean; pre?: boolean }) => {
+    if (!value) return ''
+    const safe = escapeHtml(value)
+    const valStyle = opts?.mono
+      ? `font-family:${F_BODY};font-size:14px;color:#1A1A1A;font-weight:600;word-break:break-word`
+      : `font-family:${F_BODY};font-size:14.5px;color:#1A1A1A;font-weight:600;line-height:1.55;word-break:break-word`
+    const valHtml = opts?.pre ? `<div style="white-space:pre-wrap">${safe}</div>` : safe
+    return `
+      <tr>
+        <td style="padding:10px 0;border-top:1px solid #F0E8E2">
+          <div style="font-family:${F_BODY};font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:#9A9590;margin-bottom:4px">${label}</div>
+          <div style="${valStyle}">${valHtml}</div>
+        </td>
+      </tr>`
+  }
+
+  const replySubject = encodeURIComponent(
+    isQuote ? `Re: Your quote request for ${a.companyName}` : `Re: ${a.companyName}`
+  )
+  const replyBody = encodeURIComponent(
+    `Hi ${leadName || 'there'},\n\nThanks for reaching out about ${a.companyName}.\n\n`
+  )
+
+  const headerCopy = isQuote
+    ? `Hey ${escapeHtml(greet)} — <strong style="color:#1A1A1A">${escapeHtml(displayName)}</strong> just submitted a quote request for <strong style="color:#1A1A1A">${escapeHtml(a.companyName)}</strong> via <strong style="color:#E8553D">InfoWebWorld</strong>. This is a high-intent lead — reach out fast.`
+    : `Hey ${escapeHtml(greet)} — a visitor on <strong style="color:#1A1A1A">${escapeHtml(a.companyName)}</strong> just left their email via <strong style="color:#E8553D">InfoWebWorld</strong> asking to be contacted. This is a warm lead — reach out fast.`
 
   const bodyHtml = `
     <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
       <tr>
         <td style="padding:0 48px 16px">
           <p style="margin:0;font-family:${F_BODY};font-size:15px;color:#5C5852;line-height:1.7">
-            Hey ${escapeHtml(greet)} — a visitor on <strong style="color:#1A1A1A">${escapeHtml(a.companyName)}</strong> just left their email asking to be contacted. This is a warm lead — reach out fast.
+            ${headerCopy}
           </p>
         </td>
       </tr>
     </table>
+
     <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="padding:0 48px">
       <tr>
-        <td style="background:linear-gradient(180deg,#FFF5F3 0%,#FFEEE9 100%);border:1px solid #F8D5CD;border-radius:14px;padding:22px 22px">
-          <div style="font-family:${F_BODY};font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2.5px;color:#E8553D;margin-bottom:8px">Lead email</div>
-          <a href="mailto:${a.leadEmail}" style="font-family:${F_HEAD};font-size:22px;font-weight:800;color:#1A1A1A;text-decoration:none;letter-spacing:-.1px;word-break:break-all">${safeLeadEmail}</a>
-          <div style="margin-top:14px">
-            <a href="mailto:${a.leadEmail}?subject=Re%3A%20${encodeURIComponent(a.companyName)}&body=${encodeURIComponent(`Hi there,\n\nThanks for reaching out about ${a.companyName}.\n\n`)}" style="display:inline-block;background:#1A1A1A;color:#fff;text-decoration:none;font-family:${F_BODY};font-weight:700;font-size:13.5px;padding:11px 20px;border-radius:10px">Reply now &nbsp;&#8594;</a>
+        <td style="background:linear-gradient(180deg,#FFF5F3 0%,#FFEEE9 100%);border:1px solid #F8D5CD;border-radius:14px;padding:18px 22px 22px">
+
+          <!-- Source pill -->
+          <div style="margin-bottom:14px">
+            <span style="display:inline-block;font-family:${F_BODY};font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:#fff;background:#E8553D;padding:5px 12px;border-radius:999px">
+              Lead via InfoWebWorld
+            </span>
           </div>
+
+          <!-- Headline: name + email -->
+          <div style="font-family:${F_HEAD};font-size:22px;font-weight:800;color:#1A1A1A;letter-spacing:-.1px;line-height:1.25;margin-bottom:2px">${safeDisplayName}</div>
+          <a href="mailto:${a.leadEmail}" style="font-family:${F_BODY};font-size:14px;color:#5C5852;text-decoration:none;word-break:break-all">${safeLeadEmail}</a>
+
+          <!-- Field rows -->
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:14px">
+            ${row('Phone', leadPhone, { mono: true })}
+            ${row('Message', leadMessage, { pre: true })}
+          </table>
+
+          <!-- Actions -->
+          <div style="margin-top:16px">
+            <a href="mailto:${a.leadEmail}?subject=${replySubject}&body=${replyBody}" style="display:inline-block;background:#1A1A1A;color:#fff;text-decoration:none;font-family:${F_BODY};font-weight:700;font-size:13.5px;padding:11px 20px;border-radius:10px;margin-right:8px">Reply now &nbsp;&#8594;</a>
+            ${leadPhone ? `<a href="tel:${escapeHtml(leadPhone)}" style="display:inline-block;background:#fff;color:#1A1A1A;text-decoration:none;font-family:${F_BODY};font-weight:700;font-size:13.5px;padding:11px 20px;border-radius:10px;border:1px solid #E8E3DE">Call &nbsp;&#9742;</a>` : ''}
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Proof-of-source footer note -->
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="padding:14px 48px 0">
+      <tr>
+        <td style="font-family:${F_BODY};font-size:12px;color:#9A9590;line-height:1.6">
+          This lead was captured on <a href="${publicUrl(a.listingSlug)}" style="color:#E8553D;text-decoration:none;font-weight:700">infowebworld.com/company/${escapeHtml(a.listingSlug)}</a> and forwarded to you immediately. Your full lead history lives on the engagement dashboard.
         </td>
       </tr>
     </table>
   `
 
+  const subject = isQuote
+    ? `🎯 New lead via InfoWebWorld — ${displayName} wants a quote on ${a.companyName}`
+    : `📬 New lead via InfoWebWorld — ${displayName} on ${a.companyName}`
+
+  const textParts: string[] = []
+  textParts.push(isQuote
+    ? `New quote request via InfoWebWorld for ${a.companyName}.`
+    : `New lead via InfoWebWorld on ${a.companyName}.`)
+  textParts.push('')
+  if (leadName)    textParts.push(`Name:    ${leadName}`)
+  textParts.push(`Email:   ${a.leadEmail}`)
+  if (leadPhone)   textParts.push(`Phone:   ${leadPhone}`)
+  if (leadMessage) {
+    textParts.push('')
+    textParts.push('Message:')
+    textParts.push(leadMessage)
+  }
+  textParts.push('')
+  textParts.push(`Reply: mailto:${a.leadEmail}`)
+  textParts.push(`Source listing: ${publicUrl(a.listingSlug)}`)
+  textParts.push(`Lead dashboard: ${dashUrl(a.listingUuid)}`)
+
   return {
-    subject: `📬 New lead on ${a.companyName} — ${a.leadEmail}`,
+    subject,
     html: buildEmailShell({
-      preheader: `New lead: ${a.leadEmail} asked to be contacted about ${a.companyName}.`,
-      eyebrow: 'New lead',
-      title: `${a.companyName} just got a new lead`,
+      preheader: isQuote
+        ? `${displayName} just requested a quote for ${a.companyName} via InfoWebWorld.`
+        : `${displayName} just asked to be contacted about ${a.companyName} via InfoWebWorld.`,
+      eyebrow: isQuote ? 'New quote request · via InfoWebWorld' : 'New lead · via InfoWebWorld',
+      title: isQuote
+        ? `${a.companyName} just got a new quote request`
+        : `${a.companyName} just got a new lead`,
       bodyHtml,
       ctaUrl: dashUrl(a.listingUuid),
       ctaText: 'See all leads',
       ctaSecondaryUrl: publicUrl(a.listingSlug),
       ctaSecondaryText: 'View the public listing →',
-      footerNote: 'A visitor submitted their email on your listing.',
+      footerNote: 'Lead captured and forwarded to you by InfoWebWorld.',
     }),
-    text:
-`New lead on ${a.companyName}.
-
-Visitor email: ${a.leadEmail}
-
-Reply directly: mailto:${a.leadEmail}
-All leads: ${dashUrl(a.listingUuid)}`,
+    text: textParts.join('\n'),
     replyTo: a.leadEmail,
   }
 }

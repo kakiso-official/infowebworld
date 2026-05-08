@@ -152,7 +152,7 @@ async function getListingBySlug(slug: string) {
   const store = await cookies()
   const token = store.get(USER_COOKIE_NAME)?.value
   const me = token ? await getUserByToken(token) : null
-  type CurrentUser = { name: string | null; avatarUrl: string | null } | null
+  type CurrentUser = { name: string | null; avatarUrl: string | null; email: string | null } | null
   let userState: {
     isFollowing: boolean
     reaction: 'like' | 'dislike' | null
@@ -181,7 +181,7 @@ async function getListingBySlug(slug: string) {
       reaction: stateRow?.reaction || null,
       isBookmarked: Boolean(stateRow?.bookmarked),
       hasReviewed: Boolean(stateRow?.reviewed),
-      currentUser: { name: me.name, avatarUrl: me.avatarUrl },
+      currentUser: { name: me.name, avatarUrl: me.avatarUrl, email: me.email },
     }
   }
 

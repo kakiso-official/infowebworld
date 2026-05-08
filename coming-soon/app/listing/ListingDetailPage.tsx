@@ -3,6 +3,8 @@
 import { useState, useMemo, useEffect } from 'react'
 import type { RealSubmission, FaqItem, KeyFeature, Award } from '../iww-hq/data/submissions-storage'
 import WriteReviewModal from './WriteReviewModal'
+import LeadFormModal from './LeadFormModal'
+import SignupModal from '../components/auth/SignupModal'
 
 /* ═══════════════════════════════════════════
    Listing Detail Page — GetApp-style company listing.
@@ -37,8 +39,9 @@ export interface UserListingState {
   reaction: 'like' | 'dislike' | null
   isBookmarked: boolean
   hasReviewed: boolean
-  /** Authed reviewer identity — used for the "Reviewing as" pill in WriteReviewModal. */
-  currentUser?: { name: string | null; avatarUrl: string | null } | null
+  /** Authed reviewer identity — used for the "Reviewing as" pill in WriteReviewModal
+   *  and for prefilling name/email in LeadFormModal so authed users don't retype. */
+  currentUser?: { name: string | null; avatarUrl: string | null; email: string | null } | null
 }
 
 interface InitialData {
@@ -62,6 +65,24 @@ function parseJsonArr(val: unknown): unknown[] {
   if (typeof val === 'string') { try { return JSON.parse(val) } catch { return [] } }
   if (Array.isArray(val)) return val
   return []
+}
+
+/* Tag the outbound "Visit website" URL with UTM params so the listing owner's
+   own analytics (GA, Plausible, …) independently shows InfoWebWorld as the
+   referral source. Preserves any existing query string the company already
+   has on their URL; falls back to the raw URL if it can't be parsed. */
+function withInfoWebWorldUtm(url: string, slug: string): string {
+  if (!url) return url
+  try {
+    const u = new URL(url)
+    if (!u.searchParams.has('utm_source'))   u.searchParams.set('utm_source', 'infowebworld')
+    if (!u.searchParams.has('utm_medium'))   u.searchParams.set('utm_medium', 'referral')
+    if (!u.searchParams.has('utm_campaign')) u.searchParams.set('utm_campaign', 'listing')
+    if (slug && !u.searchParams.has('utm_content')) u.searchParams.set('utm_content', slug)
+    return u.toString()
+  } catch {
+    return url
+  }
 }
 
 function mapServerRow(r: Record<string, unknown>): Partial<RealSubmission> {
@@ -1275,20 +1296,25 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
   /* Modal state for "Write a Review". */
   const [reviewOpen, setReviewOpen] = useState(false)
   const [hasReviewed, setHasReviewed] = useState(myState?.hasReviewed ?? false)
+  /* Auth gate modal — opens whenever an anon user clicks an engagement button
+     (follow / react / bookmark / write a review). Replaces the old full-page
+     redirect to /business so the user keeps their context on the listing. */
+  const [authOpen, setAuthOpen] = useState(false)
   /* Live mirror of the parent's review aggregate so the sticky head + insights
      reflect a just-published review without a full page reload. */
   const [reviewCount, setReviewCount] = useState(initialData?.reviews?.reviewCount ?? 0)
   /* Inbox-form state. */
   const [inboxEmail, setInboxEmail] = useState('')
   const [inboxStatus, setInboxStatus] = useState<'idle'|'sending'|'ok'|'err'>('idle')
+  /* "Get a Quote" lead form modal — opens from the sticky-head CTA. The lead
+     hits our DB first (listing_inbox_emails, source='quote_request') and the
+     owner gets a "via InfoWebWorld" email so the source is provable end-to-end. */
+  const [leadOpen, setLeadOpen] = useState(false)
 
-  /* Anon fallback — kick to login flow with a return-to URL so we can land
-     them back on this listing after the auth round-trip. */
-  const requireLogin = () => {
-    if (typeof window === 'undefined') return
-    const ret = listingSlug ? `/company/${listingSlug}` : window.location.pathname
-    window.location.href = `/business?return=${encodeURIComponent(ret)}`
-  }
+  /* Anon fallback — open the in-page signup modal (Google + email/OTP) so
+     the user keeps their context on the listing. The modal's nextUrl lands
+     them back on this same /company/<slug> page after a successful auth. */
+  const requireLogin = () => { setAuthOpen(true) }
 
   /* Centralised engagement fetch — returns res.ok | network error => false.
      The optimistic local update is the caller's responsibility; this just
@@ -1730,10 +1756,12 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 <span className="tlp-btn-follow-count">{followers.toLocaleString()}</span>
               </button>
               {view.website && (
-                <a href={view.website} target="_blank" rel="noopener noreferrer" className="tlp-btn-primary">Visit website <ExternalArrowIcon /></a>
+                <a href={withInfoWebWorldUtm(view.website, listingSlug)} target="_blank" rel="noopener noreferrer" className="tlp-btn-primary">Visit website <ExternalArrowIcon /></a>
               )}
-              {view.email && (
-                <a href={`mailto:${view.email}`} className="tlp-btn-outline">Get a Quote <MailIcon /></a>
+              {(view.email || isPreview) && (
+                <button type="button" className="tlp-btn-outline" onClick={() => setLeadOpen(true)}>
+                  Get a Quote <MailIcon />
+                </button>
               )}
               <button
                 type="button"
@@ -3691,6 +3719,23 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
           setHasReviewed(false)
           setReviewCount(c => Math.max(0, c - 1))
         }}
+      />
+
+      <SignupModal
+        open={authOpen}
+        onClose={() => setAuthOpen(false)}
+        nextUrl={listingSlug ? `/company/${listingSlug}` : undefined}
+      />
+
+      <LeadFormModal
+        isOpen={leadOpen}
+        onClose={() => setLeadOpen(false)}
+        listingSlug={listingSlug}
+        companyName={view.companyName}
+        companyLogo={view.logoUrl}
+        prefillName={myState?.currentUser?.name ?? null}
+        prefillEmail={myState?.currentUser?.email ?? null}
+        isPreview={isPreview}
       />
     </>
   )
