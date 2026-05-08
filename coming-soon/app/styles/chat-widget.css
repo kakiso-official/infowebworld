@@ -23,47 +23,77 @@
 .iwc-launcher *, .iwc-panel * { box-sizing: border-box }
 
 /* ─── Floating launcher (collapsed) ──────────────────────────── */
+/* Registered custom property — lets us animate the conic gradient's
+   `from` angle so the gradient flows around the pill border. Browsers
+   without @property support (very old) just see a static gradient
+   border, which is still on-brand. */
+@property --iwc-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
 .iwc-launcher {
-  bottom: 22px;
-  right: 22px;
+  bottom: 24px;
+  right: 24px;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  height: 52px;
-  padding: 4px 20px 4px 4px;
-  background: #FFFFFF;
-  border: 1.5px solid #1A1A1A;
+  gap: 14px;
+  height: 76px;
+  padding: 6px 32px 6px 6px;
+  /* Two-layer background: white inside (padding-box) + animated conic
+     gradient on the border (border-box). The 4px transparent border is
+     the canvas the gradient paints into. */
+  background:
+    linear-gradient(#FFFFFF, #FFFFFF) padding-box,
+    conic-gradient(
+      from var(--iwc-angle),
+      #E8553D,
+      #FF8E5C,
+      #FFB85C,
+      #FF7A5C,
+      #E8553D
+    ) border-box;
+  border: 4px solid transparent;
   border-radius: 999px;
   cursor: pointer;
   color: #1A1A1A;
-  /* Neutral grey shadow only — no colored glow. */
-  box-shadow: 0 6px 16px rgba(17, 24, 28, 0.10);
-  transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+  /* Neutral grey shadow only — no colored glow per design rules. */
+  box-shadow: 0 10px 24px rgba(17, 24, 28, 0.10);
+  animation: iwc-border-spin 4s linear infinite;
+  transition: transform .15s cubic-bezier(.16,1,.3,1), box-shadow .15s ease;
 }
 .iwc-launcher:hover {
-  background: #1A1A1A;
-  color: #FFFFFF;
-  transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(17, 24, 28, 0.16);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(17, 24, 28, 0.14);
+  animation-duration: 2s;             /* gradient flows faster on hover */
 }
 .iwc-launcher:active { transform: translateY(0) }
+
+@keyframes iwc-border-spin {
+  to { --iwc-angle: 360deg }
+}
 
 .iwc-launcher-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   background: #E8553D;
   color: #FFFFFF;
   flex-shrink: 0;
-  transition: background .12s ease;
+  transition: transform .15s cubic-bezier(.16,1,.3,1);
 }
-.iwc-launcher:hover .iwc-launcher-icon { background: #FFFFFF; color: #E8553D }
+/* The sparkle SVG has a small secondary star in the upper-right (around
+   coordinates 19,17 in a 24-unit viewBox), which pulls the visual center
+   off to the right. Nudge it left so the combined mass sits dead centre. */
+.iwc-launcher-icon > svg { transform: translateX(-3px) }
+.iwc-launcher:hover .iwc-launcher-icon { transform: rotate(-12deg) scale(1.04) }
 
 .iwc-launcher-label {
-  font-size: 14px;
+  font-size: 17px;
   font-weight: 600;
   letter-spacing: -0.01em;
   white-space: nowrap;
@@ -383,12 +413,13 @@
   .iwc-launcher {
     bottom: 16px;
     right: 16px;
-    height: 48px;
-    padding: 4px 18px 4px 4px;
-    gap: 9px;
+    height: 66px;
+    padding: 5px 26px 5px 5px;
+    gap: 12px;
+    border-width: 3px;             /* slightly thinner on small screens */
   }
-  .iwc-launcher-icon { width: 40px; height: 40px }
-  .iwc-launcher-label { font-size: 13px }
+  .iwc-launcher-icon { width: 56px; height: 56px }
+  .iwc-launcher-label { font-size: 15px }
 
   .iwc-panel {
     inset: auto 0 0 0;
