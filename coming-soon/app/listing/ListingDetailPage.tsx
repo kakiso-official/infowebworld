@@ -148,6 +148,8 @@ function mapServerRow(r: Record<string, unknown>): Partial<RealSubmission> {
     languages: parseJsonArr(r.languages) as string[],
     hasIosApp: Boolean(Number(r.has_ios_app ?? 0)),
     hasAndroidApp: Boolean(Number(r.has_android_app ?? 0)),
+    verified: Boolean(Number(r.verified ?? 0)),
+    verifiedAt: String(r.verified_at ?? ''),
     compliance: parseJsonArr(r.compliance) as string[],
     awards: parseJsonArr(r.awards) as Award[],
   }
@@ -1258,6 +1260,10 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
     realHasAndroidApp:     Boolean(real?.hasAndroidApp),
     realCompliance:        (real?.compliance && real.compliance.length > 0) ? real.compliance : null,
     realAwards:            (real?.awards && real.awards.length > 0) ? real.awards : null,
+    /* Listing verification — flips the prominent "Verified by InfoWebWorld"
+       badge in the hero. Preview mode shows verified to demo the visual. */
+    verified:              isPreview ? true : Boolean(real?.verified),
+    verifiedAt:            real?.verifiedAt || '',
   }
   /** Helper: replace literal "Mailchimp" inside sample-data strings so reviewer
    *  quotes, FAQ answers, etc. read with the real company name when one is set. */
@@ -1680,7 +1686,13 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             <div className="tlp-id-body">
               <h1 className="tlp-id-name">
                 {view.companyName}
-                <span className="tlp-id-verified" aria-label="Verified company"><VerifiedBadge /></span>
+                {view.verified && (
+                  <span
+                    className="tlp-id-verified"
+                    aria-label="Verified by InfoWebWorld"
+                    title="Verified by InfoWebWorld"
+                  ><VerifiedBadge /></span>
+                )}
               </h1>
               {(isPreview || hasReviews) && (
                 <div className="tlp-id-meta">
@@ -1842,6 +1854,50 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 {isPreview && ' — 2026 Pricing, Features, Reviews & Alternatives'}
               </h1>
               {view.tagline && <p className="tlp-page-tagline">{view.tagline}</p>}
+
+              {/* ── Listing verification badge ──────────────────────────────
+                  Prominent mint card when the listing has been verified by
+                  our team; muted "Unverified by InfoWebWorld" pill otherwise.
+                  Owners can apply via the dashboard's "Get Verified" flow. */}
+              {view.verified ? (
+                <div className="tlp-vbadge tlp-vbadge--ok" role="status" aria-label="Verified by InfoWebWorld">
+                  <span className="tlp-vbadge-shield" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="22" height="22">
+                      <path fill="#0E8F6E" d="M12 2 4 5.5v5c0 5.2 3.4 9.6 8 10.5 4.6-.9 8-5.3 8-10.5v-5L12 2Zm-1.2 13.7-3.5-3.5 1.5-1.5 2 2 5-5 1.5 1.5-6.5 6.5Z"/>
+                    </svg>
+                  </span>
+                  <span className="tlp-vbadge-body">
+                    <span className="tlp-vbadge-eyebrow">Authenticated</span>
+                    <span className="tlp-vbadge-title">Verified by InfoWebWorld</span>
+                    <span className="tlp-vbadge-sub">
+                      {view.companyName}'s identity has been confirmed by our review team
+                      {(() => {
+                        if (!view.verifiedAt) return '.'
+                        const d = new Date(view.verifiedAt)
+                        if (Number.isNaN(d.getTime())) return '.'
+                        return ` on ${d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}.`
+                      })()}
+                    </span>
+                  </span>
+                </div>
+              ) : (
+                <div className="tlp-vbadge tlp-vbadge--no" role="note" aria-label="Unverified by InfoWebWorld">
+                  <span className="tlp-vbadge-shield tlp-vbadge-shield--muted" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 2 4 5.5v5c0 5.2 3.4 9.6 8 10.5 4.6-.9 8-5.3 8-10.5v-5L12 2Z" />
+                      <path d="M12 8v4M12 16h.01" />
+                    </svg>
+                  </span>
+                  <span className="tlp-vbadge-body">
+                    <span className="tlp-vbadge-title tlp-vbadge-title--muted">Unverified by InfoWebWorld</span>
+                    <span className="tlp-vbadge-sub">
+                      {view.companyName} hasn't completed identity verification yet.
+                      Treat business details below as self-reported.
+                    </span>
+                  </span>
+                </div>
+              )}
+
               {isPreview && (
                 <div className="tlp-verify">
                   <span className="tlp-verify-avatars" aria-hidden="true">

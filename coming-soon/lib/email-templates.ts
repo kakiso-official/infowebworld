@@ -479,3 +479,168 @@ export function inboxLeadReceivedEmail(a: InboxLeadArgs) {
     replyTo: a.leadEmail,
   }
 }
+
+/* ──────────────────────────── Verification approved ──────────────────────────── */
+
+export interface VerificationApprovedArgs extends BaseArgs {
+  /** Free-form note from the admin who approved — typically empty. */
+  adminNotes: string | null
+}
+export function verificationApprovedEmail(a: VerificationApprovedArgs) {
+  const greet = greeting(a.ownerName)
+  const adminNote = a.adminNotes?.trim() || ''
+
+  const bodyHtml = `
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+      <tr>
+        <td style="padding:0 48px 16px">
+          <p style="margin:0;font-family:${F_BODY};font-size:15px;color:#5C5852;line-height:1.7">
+            Hey ${escapeHtml(greet)} — congratulations. <strong style="color:#1A1A1A">${escapeHtml(a.companyName)}</strong> is now <strong style="color:#0E8F6E">Verified by InfoWebWorld</strong>. The verified badge is live on your listing page now and visitors will see your business as an authenticated source.
+          </p>
+        </td>
+      </tr>
+    </table>
+
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="padding:0 48px">
+      <tr>
+        <td style="background:linear-gradient(180deg,#ECFDF5 0%,#D1FAE5 100%);border:1px solid #A7F3D0;border-radius:14px;padding:22px 22px 20px;text-align:center">
+          <div style="display:inline-block;width:64px;height:64px;border-radius:999px;background:#0E8F6E;line-height:64px;text-align:center;margin-bottom:10px">
+            <span style="display:inline-block;font-family:${F_HEAD};font-size:36px;color:#fff;font-weight:800;line-height:64px">&#10003;</span>
+          </div>
+          <div style="font-family:${F_HEAD};font-size:22px;font-weight:800;color:#0E5547;letter-spacing:-.1px">Verified by InfoWebWorld</div>
+          <div style="font-family:${F_BODY};font-size:13.5px;color:#0E8F6E;font-weight:700;margin-top:4px;letter-spacing:.04em;text-transform:uppercase">Authenticated business · Approved</div>
+        </td>
+      </tr>
+    </table>
+
+    ${adminNote ? `
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="padding:18px 48px 0">
+      <tr>
+        <td style="background:#FAFAF8;border:1px solid #F0EDEA;border-radius:12px;padding:16px 18px">
+          <div style="font-family:${F_BODY};font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:#7A756F;margin-bottom:6px">Note from our review team</div>
+          <p style="margin:0;font-family:${F_BODY};font-size:14px;color:#1A1A1A;line-height:1.55;white-space:pre-wrap">${escapeHtml(adminNote)}</p>
+        </td>
+      </tr>
+    </table>` : ''}
+
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="padding:18px 48px 0">
+      <tr>
+        <td style="font-family:${F_BODY};font-size:13px;color:#5C5852;line-height:1.6">
+          What this means for you:
+          <ul style="margin:8px 0 0;padding-left:20px;color:#5C5852">
+            <li style="margin-bottom:4px">A prominent <strong>Verified by InfoWebWorld</strong> badge appears on your public listing.</li>
+            <li style="margin-bottom:4px">Higher trust signal in search results and category pages.</li>
+            <li style="margin-bottom:0">Better conversion on outbound links and lead capture.</li>
+          </ul>
+        </td>
+      </tr>
+    </table>
+  `
+
+  return {
+    subject: `✓ ${a.companyName} is now Verified by InfoWebWorld`,
+    html: buildEmailShell({
+      preheader: `Your verification request was approved. The verified badge is live on ${a.companyName} now.`,
+      eyebrow: 'Verification approved',
+      title: `${a.companyName} is now Verified`,
+      bodyHtml,
+      ctaUrl: publicUrl(a.listingSlug),
+      ctaText: 'See the badge on your listing',
+      ctaSecondaryUrl: dashUrl(a.listingUuid),
+      ctaSecondaryText: 'Open your dashboard →',
+      footerNote: 'Sent because your verification request was approved.',
+    }),
+    text:
+`Congrats — ${a.companyName} is now Verified by InfoWebWorld.
+
+The verified badge is live on your listing now.${adminNote ? `
+
+Note from our review team:
+${adminNote}` : ''}
+
+Listing: ${publicUrl(a.listingSlug)}
+Dashboard: ${dashUrl(a.listingUuid)}`,
+  }
+}
+
+/* ──────────────────────────── Verification rejected ──────────────────────────── */
+
+export interface VerificationRejectedArgs extends BaseArgs {
+  /** Reason / feedback from the admin. May be empty if admin didn't write one. */
+  adminNotes: string | null
+}
+export function verificationRejectedEmail(a: VerificationRejectedArgs) {
+  const greet = greeting(a.ownerName)
+  const adminNote = a.adminNotes?.trim() || ''
+  const verifyUrl = `${SITE}/dashboard/listings/${a.listingUuid}/verify`
+
+  const bodyHtml = `
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+      <tr>
+        <td style="padding:0 48px 16px">
+          <p style="margin:0;font-family:${F_BODY};font-size:15px;color:#5C5852;line-height:1.7">
+            Hey ${escapeHtml(greet)} — we couldn't verify <strong style="color:#1A1A1A">${escapeHtml(a.companyName)}</strong> with what you submitted. This isn't final — you can re-apply any time once you've addressed the issue below.
+          </p>
+        </td>
+      </tr>
+    </table>
+
+    ${adminNote ? `
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="padding:0 48px">
+      <tr>
+        <td style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:14px;padding:18px 20px">
+          <div style="font-family:${F_BODY};font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:#9A3412;margin-bottom:8px">What we need</div>
+          <p style="margin:0;font-family:${F_BODY};font-size:14.5px;color:#1A1A1A;line-height:1.6;white-space:pre-wrap">${escapeHtml(adminNote)}</p>
+        </td>
+      </tr>
+    </table>` : `
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="padding:0 48px">
+      <tr>
+        <td style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:14px;padding:18px 20px">
+          <p style="margin:0;font-family:${F_BODY};font-size:14.5px;color:#1A1A1A;line-height:1.6">
+            We weren't able to confirm ownership from the evidence provided. Common fixes: use a business email matching your website's domain, add your company registration number, or attach a document showing your role.
+          </p>
+        </td>
+      </tr>
+    </table>`}
+
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="padding:18px 48px 0">
+      <tr>
+        <td style="font-family:${F_BODY};font-size:13px;color:#5C5852;line-height:1.6">
+          Strong applications usually include all of:
+          <ul style="margin:8px 0 0;padding-left:20px;color:#5C5852">
+            <li style="margin-bottom:4px">A business email matching your website domain.</li>
+            <li style="margin-bottom:4px">Company registration / EIN / VAT number.</li>
+            <li style="margin-bottom:4px">Your role at the company (founder, marketing lead, etc.).</li>
+            <li style="margin-bottom:0">Owner LinkedIn profile or a public document linking you to the company.</li>
+          </ul>
+        </td>
+      </tr>
+    </table>
+  `
+
+  return {
+    subject: `Action needed — verification update for ${a.companyName}`,
+    html: buildEmailShell({
+      preheader: `We couldn't verify ${a.companyName} this round. Re-apply once the issue is resolved.`,
+      eyebrow: 'Verification update',
+      title: `${a.companyName} — verification needs more info`,
+      bodyHtml,
+      ctaUrl: verifyUrl,
+      ctaText: 'Update and re-apply',
+      ctaSecondaryUrl: dashUrl(a.listingUuid),
+      ctaSecondaryText: 'Open your dashboard →',
+      footerNote: 'Sent because your verification request needs updates before approval.',
+    }),
+    text:
+`We couldn't verify ${a.companyName} this round.${adminNote ? `
+
+Note from our review team:
+${adminNote}` : ''}
+
+You can re-apply at any time:
+${verifyUrl}
+
+Dashboard: ${dashUrl(a.listingUuid)}`,
+  }
+}

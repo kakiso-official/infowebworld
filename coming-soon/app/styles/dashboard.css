@@ -270,7 +270,318 @@
   color: var(--h-fg-muted, #6B7280); font-weight: 600;
 }
 .dash-list-btn--ghost:hover { color: var(--h-fg, #111827) }
+/* Verify CTA in the listing-card foot row — coral so it reads as the
+   primary action when the listing isn't yet verified, and clearly
+   distinct from the muted Edit / Engagement entries. */
+.dash-list-btn--verify {
+  color: var(--h-accent, #E8553D);
+  font-weight: 800;
+}
+.dash-list-btn--verify:hover { color: var(--h-accent-hover, #D14430) }
 .dash-list-muted { font-size: 12px; color: var(--h-muted); font-style: italic }
+
+/* ── Inline verified shield next to company name on dashboard list cards ── */
+.dash-verify-inline {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* ── Verification pill (chip-row variant) ── */
+.dash-verify-pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .07em;
+  line-height: 1;
+}
+.dash-verify-pill--ok {
+  background: rgba(14, 143, 110, .12);
+  color: #0E8F6E;
+}
+.dash-verify-pill--pending {
+  background: rgba(217, 119, 6, .12);
+  color: #B45309;
+}
+.dash-verify-pill--reject {
+  background: rgba(180, 83, 9, .08);
+  color: #92400E;
+  border: 1px dashed rgba(180, 83, 9, .35);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   /dashboard/listings/[uuid]/verify — apply / status page.
+   Same .dash design tokens (white cards, hairline borders,
+   coral accent) as the rest of the dashboard. Namespace .dash-verify-*
+   ══════════════════════════════════════════════════════════════ */
+.dash-verify-shell {
+  display: grid;
+  gap: 16px;
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.dash-verify-intro {
+  background: #FFFFFF;
+  border: 1.5px solid var(--h-border);
+  border-radius: 14px;
+  padding: 22px 22px 20px;
+}
+.dash-verify-intro-title {
+  margin: 0 0 8px;
+  font-family: inherit; font-size: 22px; font-weight: 800;
+  color: var(--h-heading); letter-spacing: -.015em; line-height: 1.2;
+}
+.dash-verify-intro-accent {
+  color: #0E8F6E;
+  white-space: nowrap;
+}
+.dash-verify-intro-body {
+  margin: 0 0 12px;
+  font-size: 14px; color: var(--h-body); line-height: 1.6;
+}
+.dash-verify-intro-bullets {
+  margin: 0; padding-left: 22px;
+  font-size: 13.5px; color: var(--h-body); line-height: 1.65;
+}
+.dash-verify-intro-bullets li { margin-bottom: 4px }
+
+/* ── Status cards (verified / pending / rejected) ── */
+.dash-verify-card {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 16px;
+  padding: 22px;
+  border-radius: 14px;
+  border: 1.5px solid;
+}
+.dash-verify-card--ok {
+  background: #ECFDF5;
+  border-color: #A7F3D0;
+}
+.dash-verify-card--pending {
+  background: #FFFBEB;
+  border-color: #FDE68A;
+}
+.dash-verify-card--reject {
+  background: #FFF7ED;
+  border-color: #FED7AA;
+}
+.dash-verify-card-icon {
+  width: 56px; height: 56px;
+  border-radius: 999px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+}
+.dash-verify-card-icon--ok      { background: #0E8F6E }
+.dash-verify-card-icon--pending { background: #B45309 }
+.dash-verify-card-icon--reject  { background: #9A3412 }
+.dash-verify-card-title {
+  margin: 0 0 4px;
+  font-family: inherit; font-size: 18px; font-weight: 800;
+  color: var(--h-heading); letter-spacing: -.01em;
+}
+.dash-verify-card-sub {
+  margin: 0 0 12px;
+  font-size: 14px; color: #4B5563; line-height: 1.55;
+}
+.dash-verify-admin-note {
+  margin: 4px 0 0;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, .65);
+  border-left: 3px solid #9A3412;
+  border-radius: 6px;
+  font-size: 14px; color: #1A1A1A; line-height: 1.55;
+  white-space: pre-wrap;
+  font-family: inherit;
+  font-style: normal;
+}
+.dash-verify-card-actions {
+  display: flex; gap: 10px; flex-wrap: wrap;
+}
+
+/* ── Submitted-summary block (pending state) ── */
+.dash-verify-summary {
+  background: #FFFFFF;
+  border: 1.5px solid var(--h-border);
+  border-radius: 14px;
+  padding: 18px 20px;
+}
+.dash-verify-summary-head {
+  margin: 0 0 12px;
+  font-family: inherit; font-size: 14px; font-weight: 800;
+  color: var(--h-heading); letter-spacing: -.005em;
+}
+.dash-verify-sum-row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 12px;
+  padding: 8px 0;
+  border-top: 1px solid var(--h-border-light);
+}
+.dash-verify-sum-row:first-of-type { border-top: 0; padding-top: 0 }
+.dash-verify-sum-lbl {
+  font-size: 12px; font-weight: 700; color: #6B7280;
+  text-transform: uppercase; letter-spacing: .06em;
+}
+.dash-verify-sum-val {
+  font-size: 14px; color: #1A1A1A; word-break: break-word;
+}
+.dash-verify-sum-val a { color: var(--h-accent); text-decoration: none }
+.dash-verify-sum-val a:hover { text-decoration: underline }
+.dash-verify-sum-val--mono {
+  font-family: var(--font-inter, ui-monospace), monospace;
+  font-variant-numeric: tabular-nums;
+}
+.dash-verify-sum-val--pre { white-space: pre-wrap }
+
+@media (max-width: 600px) {
+  .dash-verify-sum-row { grid-template-columns: 1fr; gap: 4px }
+}
+
+/* ── Form ── */
+.dash-verify-form {
+  display: grid;
+  gap: 14px;
+}
+.dash-verify-fieldset {
+  background: #FFFFFF;
+  border: 1.5px solid var(--h-border);
+  border-radius: 14px;
+  padding: 18px 20px 20px;
+  margin: 0;
+  display: grid;
+  gap: 14px;
+}
+.dash-verify-legend {
+  font-family: inherit; font-size: 14px; font-weight: 800;
+  color: var(--h-heading); letter-spacing: -.005em;
+  padding: 0 6px; margin-left: -6px;
+}
+.dash-verify-help {
+  margin: -8px 0 4px;
+  font-size: 13px; color: var(--h-muted); line-height: 1.55;
+}
+.dash-verify-row {
+  display: grid; gap: 6px;
+}
+.dash-verify-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 600px) {
+  .dash-verify-grid { grid-template-columns: 1fr }
+}
+.dash-verify-lbl {
+  font-size: 12.5px; font-weight: 700; color: var(--h-heading);
+  letter-spacing: -.005em;
+}
+.dash-verify-lbl-hint {
+  font-weight: 500; color: var(--h-muted);
+}
+.dash-verify-lbl-hint code {
+  font-family: var(--font-inter, ui-monospace), monospace;
+  font-size: 12px;
+  background: var(--h-bg);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+.dash-verify-input,
+.dash-verify-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  background: #FFFFFF;
+  border: 1.5px solid var(--h-border);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px; color: var(--h-heading);
+  transition: border-color .15s, box-shadow .15s;
+}
+.dash-verify-input:focus,
+.dash-verify-textarea:focus {
+  outline: none;
+  border-color: var(--h-accent);
+  box-shadow: 0 0 0 3px rgba(var(--h-accent-rgb), .12);
+}
+.dash-verify-input--ok {
+  border-color: #0E8F6E;
+}
+.dash-verify-input--warn {
+  border-color: #B45309;
+}
+.dash-verify-textarea {
+  resize: vertical;
+  min-height: 96px;
+  line-height: 1.5;
+}
+.dash-verify-row-warn {
+  display: block;
+  font-size: 12.5px; color: #9A3412; line-height: 1.5;
+  background: #FFF7ED;
+  border: 1px solid #FED7AA;
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+.dash-verify-error {
+  background: #FCEEEA;
+  border: 1px solid #F1B7AA;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13.5px; color: #B22A14;
+}
+
+.dash-verify-submit-row {
+  display: flex; align-items: center; justify-content: flex-end;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+/* ── Buttons ── */
+.dash-verify-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 10px 18px;
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  font-family: inherit; font-weight: 700; font-size: 13.5px;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform .15s, background .15s, color .15s, border-color .15s;
+}
+.dash-verify-btn:disabled { opacity: .55; cursor: wait }
+.dash-verify-btn--primary {
+  background: var(--h-accent);
+  color: #FFFFFF;
+}
+.dash-verify-btn--primary:hover {
+  background: var(--h-accent-hover);
+  transform: translateY(-1px);
+}
+.dash-verify-btn--ghost {
+  background: transparent;
+  color: var(--h-body);
+  border-color: var(--h-border);
+}
+.dash-verify-btn--ghost:hover {
+  color: var(--h-heading);
+  border-color: var(--h-heading);
+}
+
+.dash-verify-foot-note {
+  margin: 4px 0 0;
+  font-size: 12.5px; color: var(--h-muted); line-height: 1.55;
+  text-align: center;
+}
+.dash-verify-foot-note a {
+  color: var(--h-accent);
+  text-decoration: none;
+}
+.dash-verify-foot-note a:hover { text-decoration: underline }
 
 /* ══════════════════════════════════════════════════════════════
    Overview home — 7 editorial tiles, no icons, pure-black type.

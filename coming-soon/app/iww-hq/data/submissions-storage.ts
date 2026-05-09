@@ -69,6 +69,9 @@ export type RealSubmission = {
   hasAndroidApp: boolean
   compliance: string[]
   awards: Award[]
+  /* ── Verification state (resolved from submissions.verified columns) ── */
+  verified: boolean
+  verifiedAt: string
 }
 
 function parseJson(val: unknown): unknown[] {
@@ -151,6 +154,8 @@ export function mapRow(r: Record<string, unknown>): RealSubmission {
     hasAndroidApp: Boolean(Number(r.has_android_app ?? 0)),
     compliance: parseJson(r.compliance) as string[],
     awards: parseJson(r.awards) as Award[],
+    verified: Boolean(Number(r.verified ?? 0)),
+    verifiedAt: String(r.verified_at ?? ''),
   }
 }
 

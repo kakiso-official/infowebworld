@@ -21,6 +21,18 @@ interface SubmissionRow {
   followers_count: number
   bookmarks_count: number
   leads_count: number
+  /* Verification — resolved flag on submissions + most recent request
+     status (pending/approved/rejected/null). Drives the verify pill. */
+  verified: number
+  verification_status: 'pending' | 'approved' | 'rejected' | null
+}
+
+type VerifyState = 'verified' | 'pending' | 'rejected' | 'none'
+function deriveVerifyState(verified: number, latestStatus: SubmissionRow['verification_status']): VerifyState {
+  if (Number(verified) === 1) return 'verified'
+  if (latestStatus === 'pending') return 'pending'
+  if (latestStatus === 'rejected') return 'rejected'
+  return 'none'
 }
 
 const STATUS_LABEL: Record<string, string> = {
@@ -37,8 +49,12 @@ export default async function ListingsPage({
   await params
   const user = await requireDashboardUser()
 
-  const listings = await query<SubmissionRow>(
-    `SELECT s.uuid, s.slug, s.company_name, s.tagline, s.logo_url, s.status, s.created_at,
+  /* Verification adds a new column on submissions plus a new table. The
+     migration ships in this same change-set, but the moment the code is
+     deployed users may hit the page before phpMyAdmin runs it. Try the
+     full query first; on the specific "missing table/column" errors fall
+     back to the legacy shape so the rest of the dashboard still works. */
+  const BASE_SELECT = `s.uuid, s.slug, s.company_name, s.tagline, s.logo_url, s.status, s.created_at,
             p.name AS plan_name, c.name AS category_name,
             (SELECT COUNT(*)   FROM reviews            r WHERE r.listing_id = s.id AND r.status = 'approved') AS reviews_count,
             (SELECT AVG(rating) FROM reviews           r WHERE r.listing_id = s.id AND r.status = 'approved') AS avg_rating,
@@ -46,14 +62,43 @@ export default async function ListingsPage({
             (SELECT COUNT(*)   FROM listing_reactions lr WHERE lr.listing_id = s.id AND lr.kind = 'dislike')  AS dislikes_count,
             (SELECT COUNT(*)   FROM listing_follows   lf WHERE lf.listing_id = s.id) AS followers_count,
             (SELECT COUNT(*)   FROM listing_bookmarks lb WHERE lb.listing_id = s.id) AS bookmarks_count,
-            (SELECT COUNT(*)   FROM listing_inbox_emails ie WHERE ie.listing_id = s.id) AS leads_count
-     FROM submissions s
-     LEFT JOIN plans p ON p.id = s.plan_id
-     LEFT JOIN categories c ON c.id = s.category_id
-     WHERE s.user_id = ?
-     ORDER BY s.created_at DESC`,
-    [user.id]
-  )
+            (SELECT COUNT(*)   FROM listing_inbox_emails ie WHERE ie.listing_id = s.id) AS leads_count`
+  let listings: SubmissionRow[]
+  try {
+    listings = await query<SubmissionRow>(
+      `SELECT ${BASE_SELECT},
+              COALESCE(s.verified, 0) AS verified,
+              (SELECT vr.status FROM listing_verification_requests vr
+                WHERE vr.listing_id = s.id
+                ORDER BY vr.created_at DESC LIMIT 1) AS verification_status
+       FROM submissions s
+       LEFT JOIN plans p ON p.id = s.plan_id
+       LEFT JOIN categories c ON c.id = s.category_id
+       WHERE s.user_id = ?
+       ORDER BY s.created_at DESC`,
+      [user.id]
+    )
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    if (
+      /listing_verification_requests/.test(msg) ||
+      /Unknown column.*verified/.test(msg)
+    ) {
+      console.warn('[dashboard/listings] verification migration not yet applied — falling back')
+      const fallbackRows = await query<Omit<SubmissionRow, 'verified' | 'verification_status'>>(
+        `SELECT ${BASE_SELECT}
+         FROM submissions s
+         LEFT JOIN plans p ON p.id = s.plan_id
+         LEFT JOIN categories c ON c.id = s.category_id
+         WHERE s.user_id = ?
+         ORDER BY s.created_at DESC`,
+        [user.id]
+      )
+      listings = fallbackRows.map(l => ({ ...l, verified: 0, verification_status: null }))
+    } else {
+      throw err
+    }
+  }
 
   return (
     <div className="dash">
@@ -88,6 +133,7 @@ export default async function ListingsPage({
         <div className="dash-list-grid">
           {listings.map(l => {
             const isLive = l.status === 'active' || l.status === 'paid'
+            const verifyState = deriveVerifyState(l.verified, l.verification_status)
             return (
               <article key={l.uuid} className="dash-list-card">
                 <div className="dash-list-top">
@@ -100,11 +146,42 @@ export default async function ListingsPage({
                     {STATUS_LABEL[l.status] || l.status}
                   </span>
                 </div>
-                <h3 className="dash-list-name">{l.company_name}</h3>
+                <h3 className="dash-list-name">
+                  {l.company_name}
+                  {verifyState === 'verified' && (
+                    <span className="dash-verify-inline" aria-label="Verified by InfoWebWorld" title="Verified by InfoWebWorld">
+                      <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                        <path fill="#0E8F6E" d="M12 2 4 5.5v5c0 5.2 3.4 9.6 8 10.5 4.6-.9 8-5.3 8-10.5v-5L12 2Zm-1.2 13.7-3.5-3.5 1.5-1.5 2 2 5-5 1.5 1.5-6.5 6.5Z"/>
+                      </svg>
+                    </span>
+                  )}
+                </h3>
                 <p className="dash-list-tag">{l.tagline}</p>
                 <div className="dash-list-meta">
                   {l.plan_name && <span className="dash-chip">{l.plan_name}</span>}
                   {l.category_name && <span className="dash-chip dash-chip--muted">{l.category_name}</span>}
+                  {verifyState === 'verified' && (
+                    <span className="dash-verify-pill dash-verify-pill--ok">
+                      <svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor" aria-hidden="true">
+                        <path d="M12 2 4 5.5v5c0 5.2 3.4 9.6 8 10.5 4.6-.9 8-5.3 8-10.5v-5L12 2Zm-1.2 13.7-3.5-3.5 1.5-1.5 2 2 5-5 1.5 1.5-6.5 6.5Z"/>
+                      </svg>
+                      Verified
+                    </span>
+                  )}
+                  {verifyState === 'pending' && (
+                    <span className="dash-verify-pill dash-verify-pill--pending">
+                      <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="9" />
+                        <path d="M12 7v5l3 2" />
+                      </svg>
+                      Under review
+                    </span>
+                  )}
+                  {verifyState === 'rejected' && (
+                    <span className="dash-verify-pill dash-verify-pill--reject">
+                      Not verified
+                    </span>
+                  )}
                 </div>
 
                 {/* Engagement strip — at-a-glance counts so users can see
@@ -156,6 +233,26 @@ export default async function ListingsPage({
                     </svg>
                     Engagement
                   </Link>
+                  {(verifyState === 'none' || verifyState === 'rejected') && (
+                    <Link
+                      href={`/dashboard/listings/${l.uuid}/verify`}
+                      className="dash-list-btn dash-list-btn--verify"
+                    >
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 2 4 5.5v5c0 5.2 3.4 9.6 8 10.5 4.6-.9 8-5.3 8-10.5v-5L12 2Z" />
+                        <path d="m9 12 2 2 4-4" />
+                      </svg>
+                      {verifyState === 'rejected' ? 'Re-apply' : 'Get Verified'}
+                    </Link>
+                  )}
+                  {verifyState === 'pending' && (
+                    <Link
+                      href={`/dashboard/listings/${l.uuid}/verify`}
+                      className="dash-list-btn dash-list-btn--ghost"
+                    >
+                      View application
+                    </Link>
+                  )}
                   {isLive ? (
                     <Link href={`/company/${l.slug}`} className="dash-list-btn">
                       View listing

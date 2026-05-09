@@ -4,6 +4,7 @@ import {
   reviewReceivedEmail, reactionReceivedEmail,
   followReceivedEmail, bookmarkReceivedEmail,
   inboxLeadReceivedEmail,
+  verificationApprovedEmail, verificationRejectedEmail,
 } from './email-templates'
 
 /**
@@ -270,5 +271,63 @@ export async function notifyOwnerOnInboxLead(args: {
     })
   } catch (err) {
     console.error('[notify] notifyOwnerOnInboxLead failed:', err instanceof Error ? err.message : err)
+  }
+}
+
+/* ─────────────────── Verification approved / rejected ─────────────────── */
+/**
+ * Sent when an admin moderates a listing_verification_requests row. The
+ * applicantId is used purely for logging consistency — these emails always
+ * go to the listing OWNER (submissions.user_id), not the applicant, since
+ * the listing owner is the one whose public badge changes. In practice the
+ * two are the same id (only the owner can apply via the dashboard), but
+ * this keeps the code honest if we ever add admin-applies-on-behalf-of.
+ */
+
+export async function notifyOwnerOnVerificationApproved(args: {
+  listingId: number
+  applicantId: number
+  adminNotes: string | null
+}): Promise<void> {
+  try {
+    const owner = await loadOwner(args.listingId)
+    /* No self-action skip here — verification approval IS for the owner;
+       suppressing because the actor is the owner would just lose the email. */
+    if (!owner || !owner.owner_email) return
+
+    const tpl = verificationApprovedEmail({
+      ownerName: owner.owner_name,
+      companyName: owner.company_name,
+      listingSlug: owner.slug,
+      listingUuid: owner.uuid,
+      listingLogoUrl: owner.logo_url,
+      adminNotes: args.adminNotes,
+    })
+    await sendEmail({ to: owner.owner_email, subject: tpl.subject, html: tpl.html, text: tpl.text })
+  } catch (err) {
+    console.error('[notify] notifyOwnerOnVerificationApproved failed:', err instanceof Error ? err.message : err)
+  }
+}
+
+export async function notifyOwnerOnVerificationRejected(args: {
+  listingId: number
+  applicantId: number
+  adminNotes: string | null
+}): Promise<void> {
+  try {
+    const owner = await loadOwner(args.listingId)
+    if (!owner || !owner.owner_email) return
+
+    const tpl = verificationRejectedEmail({
+      ownerName: owner.owner_name,
+      companyName: owner.company_name,
+      listingSlug: owner.slug,
+      listingUuid: owner.uuid,
+      listingLogoUrl: owner.logo_url,
+      adminNotes: args.adminNotes,
+    })
+    await sendEmail({ to: owner.owner_email, subject: tpl.subject, html: tpl.html, text: tpl.text })
+  } catch (err) {
+    console.error('[notify] notifyOwnerOnVerificationRejected failed:', err instanceof Error ? err.message : err)
   }
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { marked } from 'marked'
 import dynamic from 'next/dynamic'
 
@@ -62,6 +63,7 @@ const CloseIcon = () => (
 )
 
 export default function ChatWidget() {
+  const path = usePathname()
   const [mounted, setMounted] = useState(false)
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<Msg[]>([GREETING])
@@ -226,6 +228,10 @@ export default function ChatWidget() {
   }
 
   if (!mounted) return null
+  /* The dashboard is an app shell with its own header / sidebar / right-side
+     CTAs — a floating launcher pinned bottom-right competes with that chrome
+     and isn't where logged-in owners go to ask InfoBot questions anyway. */
+  if (path && path.startsWith('/dashboard')) return null
 
   return (
     <>
