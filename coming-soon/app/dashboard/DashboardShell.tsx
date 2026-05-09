@@ -18,6 +18,9 @@ interface ShellUser {
 interface Props {
   user: ShellUser
   plan: UserPlan
+  /** True when the user has a row with listing_mode='company' in submissions
+   *  (any status). Drives the conditional "My Company" sidebar entry. */
+  hasCompany?: boolean
   children: React.ReactNode
 }
 
@@ -78,7 +81,7 @@ type NavRow = {
  * Sub-nav panel slides out beside it with a saturated mint background
  * when on a /dashboard/section/<key> or /dashboard/feature/<slug> route.
  */
-export default function DashboardShell({ user, plan, children }: Props) {
+export default function DashboardShell({ user, plan, hasCompany = false, children }: Props) {
   const pathname = usePathname() || ''
   const router = useRouter()
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -86,21 +89,25 @@ export default function DashboardShell({ user, plan, children }: Props) {
 
   const base = '/dashboard'
 
-  const topNav: NavRow[] = useMemo(() => [
-    { key: 'dashboard', href: base,              label: 'Home',         icon: 'home'   },
-    { key: 'listings',  href: `${base}/listings`, label: 'My Listings', icon: 'layers' },
-    { key: 'new',       href: `${base}/new`,      label: 'New Listing', icon: 'plus', badge: 'New' },
-  ], [])
-
-  const featureNav: NavRow[] = useMemo(() =>
-    SECTIONS.map(sec => ({
-      key: `sec-${sec.key}`,
-      href: `${base}/section/${sec.key}`,
-      label: sec.title,
-      icon: SECTION_ICON[sec.key] || 'grid',
-      sectionKey: sec.key,
-    })),
-  [])
+  /* Sidebar nav. The 7 plan-feature section headings (Business Listing /
+     Discovery & Visibility / Lead Management / Reviews & Reputation /
+     Community / Analytics & Insights / Support & Admin) used to live
+     between topNav and accountNav, but every page they linked to was
+     placeholder content. Removed until those features are actually
+     built — sidebar now only shows links that go somewhere real.
+     SECTIONS / featureNav constants are kept (still used by the plans
+     page + admin) but no longer rendered in the sidebar nav. */
+  const topNav: NavRow[] = useMemo(() => {
+    const rows: NavRow[] = [
+      { key: 'dashboard', href: base,                 label: 'Home',        icon: 'home'   },
+      { key: 'listings',  href: `${base}/listings`,   label: 'My Listings', icon: 'layers' },
+    ]
+    if (hasCompany) {
+      rows.push({ key: 'company', href: `${base}/company`, label: 'My Company', icon: 'building' })
+    }
+    rows.push({ key: 'new', href: `${base}/new`, label: 'New Listing', icon: 'plus', badge: 'New' })
+    return rows
+  }, [hasCompany])
 
   const accountNav: NavRow[] = useMemo(() => [
     { key: 'settings', href: `${base}/settings`, label: 'Settings',    icon: 'sliders'      },
@@ -221,7 +228,6 @@ export default function DashboardShell({ user, plan, children }: Props) {
           {/* Nav — flat list, no group labels */}
           <nav className="tp-nav" aria-label="Dashboard navigation">
             {topNav.map(renderNavRow)}
-            {featureNav.map(renderNavRow)}
             {accountNav.map(renderNavRow)}
           </nav>
 

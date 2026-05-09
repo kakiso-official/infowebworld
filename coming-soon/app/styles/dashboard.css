@@ -375,6 +375,250 @@
 }
 
 /* ══════════════════════════════════════════════════════════════
+   /dashboard/company — focused detail view of the user's company.
+   Distinct from /dashboard/listings/[uuid]/edit (form) and from
+   the public /profile/[slug] (marketing). Read-only blocks +
+   stats + linked products grid.
+   Namespace: dco-*
+   ══════════════════════════════════════════════════════════════ */
+.dco-root { gap: 16px }
+
+/* Identity strip — logo + name + tagline + flags + actions */
+.dco-id {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  gap: 18px;
+  padding: 18px 20px;
+  background: #FFFFFF;
+  border: 1.5px solid var(--h-border);
+  border-radius: 14px;
+  align-items: center;
+}
+.dco-id-logo {
+  width: 80px; height: 80px;
+  border-radius: 14px;
+  background: var(--h-bg);
+  border: 1px solid var(--h-border-light);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  font-size: 22px; font-weight: 800; color: var(--h-accent);
+}
+.dco-id-logo img { width: 100%; height: 100%; object-fit: cover }
+.dco-id-body { min-width: 0 }
+.dco-id-name {
+  margin: 0 0 4px;
+  font-family: inherit;
+  font-size: 22px; font-weight: 800;
+  letter-spacing: -.018em;
+  color: var(--h-heading);
+}
+.dco-id-tag {
+  margin: 0 0 10px;
+  font-size: 14px; color: var(--h-body);
+  line-height: 1.45;
+}
+.dco-id-flags {
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+}
+.dco-flag {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  letter-spacing: .03em;
+}
+.dco-flag--ok      { background: rgba(14, 143, 110, .12); color: #0E8F6E; }
+.dco-flag--pending { background: rgba(217, 119, 6,  .12); color: #B45309; }
+.dco-flag--muted   { background: var(--h-bg);              color: var(--h-muted); border: 1px solid var(--h-border); }
+.dco-flag--hire    { background: rgba(232, 85, 61, .12);  color: var(--h-accent); }
+
+.dco-id-actions { display: flex; gap: 8px; flex-shrink: 0; align-self: start; }
+.dco-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 36px; padding: 0 14px;
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  font: inherit; font-size: 13px; font-weight: 700;
+  text-decoration: none; cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.dco-btn--primary { background: var(--h-accent); color: #FFFFFF; }
+.dco-btn--primary:hover { background: var(--h-accent-hover); }
+.dco-btn--ghost   { color: var(--h-body); border-color: var(--h-border); background: transparent; }
+.dco-btn--ghost:hover { color: var(--h-heading); border-color: var(--h-heading); }
+
+/* Stats strip — at-a-glance counts */
+.dco-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+@media (max-width: 760px) {
+  .dco-stats { grid-template-columns: repeat(2, 1fr) }
+  .dco-id { grid-template-columns: 64px 1fr; }
+  .dco-id-logo { width: 64px; height: 64px }
+  .dco-id-actions { grid-column: 1 / -1; justify-self: stretch }
+  .dco-id-actions .dco-btn { flex: 1 }
+}
+.dco-stat {
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 14px 16px;
+  background: #FFFFFF;
+  border: 1.5px solid var(--h-border);
+  border-radius: 12px;
+}
+.dco-stat-num {
+  font-family: inherit;
+  font-size: 22px; font-weight: 800;
+  color: var(--h-heading);
+  letter-spacing: -.015em;
+  line-height: 1.05;
+}
+.dco-stat-lbl {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase;
+  color: var(--h-muted);
+}
+.dco-stat-sub {
+  font-size: 12px; color: var(--h-muted);
+  font-weight: 500;
+}
+.dco-stat-cta {
+  margin-top: 4px;
+  font-size: 12px; font-weight: 700;
+  color: var(--h-accent);
+  text-decoration: none;
+}
+.dco-stat-cta:hover { color: var(--h-accent-hover); }
+.dco-stat--verify-verified .dco-stat-num { color: #0E8F6E }
+.dco-stat--verify-pending  .dco-stat-num { color: #B45309 }
+.dco-stat--verify-rejected .dco-stat-num { color: #9A3412 }
+
+/* Info block — all captured company fields rendered read-only */
+.dco-info, .dco-products {
+  background: #FFFFFF;
+  border: 1.5px solid var(--h-border);
+  border-radius: 14px;
+  padding: 18px 22px 22px;
+}
+.dco-info-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--h-border-light);
+}
+.dco-info-head h3 {
+  margin: 0;
+  font-family: inherit;
+  font-size: 16px; font-weight: 800;
+  letter-spacing: -.005em;
+  color: var(--h-heading);
+}
+.dco-info-edit {
+  font-size: 12.5px; font-weight: 700;
+  color: var(--h-accent);
+  text-decoration: none;
+}
+.dco-info-edit:hover { color: var(--h-accent-hover); }
+
+.dco-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px 24px;
+}
+@media (max-width: 600px) {
+  .dco-info-grid { grid-template-columns: 1fr }
+}
+.dco-field {
+  display: flex; flex-direction: column; gap: 3px;
+  min-width: 0;
+}
+.dco-field--wide { grid-column: 1 / -1 }
+.dco-field-lbl {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase;
+  color: var(--h-muted);
+}
+.dco-field-val {
+  font-size: 14px; color: var(--h-heading);
+  font-weight: 500;
+  line-height: 1.5;
+  word-break: break-word;
+}
+.dco-field-val--pre { white-space: pre-wrap; line-height: 1.6 }
+.dco-field-val--link { color: var(--h-accent); text-decoration: none }
+.dco-field-val--link:hover { text-decoration: underline }
+.dco-field-val--empty { color: var(--h-muted-2, #9CA3AF); font-style: italic; font-weight: 400 }
+
+/* Products grid */
+.dco-empty {
+  padding: 22px 18px;
+  background: var(--h-bg);
+  border: 1px dashed var(--h-border-mid, #D1D5DB);
+  border-radius: 10px;
+  font-size: 13.5px; color: var(--h-muted);
+  text-align: center;
+  line-height: 1.55;
+}
+.dco-prod-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+.dco-prod-card {
+  display: flex; gap: 12px;
+  padding: 14px;
+  background: #FFFFFF;
+  border: 1.5px solid var(--h-border);
+  border-radius: 12px;
+  transition: border-color .15s ease, transform .15s ease;
+}
+.dco-prod-card:hover { border-color: var(--h-border-mid, #D1D5DB); transform: translateY(-1px); }
+.dco-prod-logo {
+  width: 44px; height: 44px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--h-bg);
+  border: 1px solid var(--h-border-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800; color: var(--h-accent);
+}
+.dco-prod-logo img { width: 100%; height: 100%; object-fit: cover }
+.dco-prod-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px }
+.dco-prod-name {
+  margin: 0;
+  font-family: inherit;
+  font-size: 14.5px; font-weight: 800;
+  letter-spacing: -.01em;
+  color: var(--h-heading);
+}
+.dco-prod-tag {
+  margin: 0;
+  font-size: 12.5px; color: var(--h-body);
+  line-height: 1.4;
+  display: -webkit-box; -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; overflow: hidden;
+}
+.dco-prod-meta {
+  display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+  margin-top: 4px;
+  font-size: 11px;
+}
+.dco-prod-cat { color: var(--h-muted); }
+.dco-prod-actions {
+  display: flex; flex-direction: column; gap: 6px;
+  align-items: flex-end; flex-shrink: 0;
+}
+.dco-prod-link {
+  font-size: 12px; font-weight: 700;
+  color: var(--h-muted);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.dco-prod-link:hover { color: var(--h-accent); }
+
+/* ══════════════════════════════════════════════════════════════
    /dashboard/listings/[uuid]/verify — apply / status page.
    Same .dash design tokens (white cards, hairline borders,
    coral accent) as the rest of the dashboard. Namespace .dash-verify-*

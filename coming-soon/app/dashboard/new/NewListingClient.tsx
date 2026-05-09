@@ -8,9 +8,26 @@ import { TIER_RANK, type PlanTier } from '@/lib/user-plan-types'
 
 const VALID: PlanKey[] = ['free', 'starter', 'yearly', 'lifetime']
 
+interface ExistingContext {
+  /** True when the user has at least one listing in any state. Locks the sector hero. */
+  hasAny: boolean
+  /** True when the user already has a company listing (any state). Locks the mode hero. */
+  hasCompany: boolean
+  /** L1 sector id from the user's most recent listing (or null). Pre-fills the form's sector. */
+  l1Id: string | null
+  /** Company snapshot (when company exists). Used to one-time prefill the product form. */
+  companyPrefill: {
+    contactName: string; email: string; phoneCode: string; phone: string
+    countryCode: string; country: string; stateCode: string; state: string; city: string
+    hqLocation: string; linkedin: string; twitter: string; facebook: string
+    founded: string; employees: string
+  } | null
+}
+
 interface Props {
   /** Highest tier the user has already paid for. 'free' means no purchase yet. */
   paidTier: PlanTier
+  existingContext: ExistingContext
 }
 
 /**
@@ -21,7 +38,7 @@ interface Props {
  * Paid-tile clicks redirect to /dashboard/new/checkout?plan=X unless the user
  * has already paid for that tier or higher.
  */
-export default function NewListingClient({ paidTier }: Props) {
+export default function NewListingClient({ paidTier, existingContext }: Props) {
   const sp = useSearchParams()
   const router = useRouter()
   const queryPlan = sp.get('plan') as PlanKey | null
@@ -99,7 +116,7 @@ export default function NewListingClient({ paidTier }: Props) {
         }
       />
 
-      <DashboardListingForm plan={plan} />
+      <DashboardListingForm plan={plan} existingContext={existingContext} />
     </div>
   )
 }

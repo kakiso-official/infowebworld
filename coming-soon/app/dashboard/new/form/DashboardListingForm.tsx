@@ -54,6 +54,20 @@ type Props = {
   editMode?: boolean
   submissionUuid?: string
   initialFormState?: Partial<FormState>
+  /** Snapshot of the user's existing listings — drives hero gating, sector
+   *  pre-fill, and one-time prefill of reusable company fields onto a
+   *  fresh product form. */
+  existingContext?: {
+    hasAny: boolean
+    hasCompany: boolean
+    l1Id: string | null
+    companyPrefill: {
+      contactName: string; email: string; phoneCode: string; phone: string
+      countryCode: string; country: string; stateCode: string; state: string; city: string
+      hqLocation: string; linkedin: string; twitter: string; facebook: string
+      founded: string; employees: string
+    } | null
+  }
 }
 
 export default function DashboardListingForm({
@@ -61,6 +75,7 @@ export default function DashboardListingForm({
   editMode = false,
   submissionUuid,
   initialFormState,
+  existingContext,
 }: Props) {
   const caps = PLAN_CAPS[plan]
   const defaultIso = URL_COUNTRY_ISO['us']
@@ -78,16 +93,54 @@ export default function DashboardListingForm({
   )
   const [form, setForm] = useState<FormState>(() => {
     if (initialFormState) return { ...INITIAL, ...initialFormState }
-    const cInfo = Country.getCountryByCode(defaultIso)
-    return cInfo
-      ? {
-          ...INITIAL,
-          phoneIso: cInfo.isoCode,
-          phoneCode: `+${cInfo.phonecode.replace('+', '')}`,
-          countryCode: cInfo.isoCode,
-          country: cInfo.name,
-        }
-      : INITIAL
+    /* Pre-seed sector + listing-mode from the user's prior listings so
+       the entry heroes auto-skip what they've already decided:
+       - Any prior listing → l1Id is locked from the most-recent row.
+       - Prior company exists → mode is locked to 'product' (additional
+         listings are always products since company is one-per-user).
+       Company-prefill: when the user has an approved company AND the
+       implicit mode is 'product', prefill the reusable business fields
+       (contact, location, socials, founded, team size) so they don't
+       retype the same info per product. Pure one-time seed; the user
+       can edit anything. The localStorage draft restoration runs after
+       and won't touch these because the strip-list (l1Id/l2Id/l3Id/
+       listingMode) doesn't include them — once edited and autosaved,
+       the draft wins. */
+    const lockedL1   = existingContext?.l1Id || ''
+    const lockedMode = existingContext?.hasCompany ? 'product' : ''
+    const cp = existingContext?.companyPrefill
+    const usePrefill = !!cp && lockedMode === 'product'
+
+    const cInfo = Country.getCountryByCode(usePrefill && cp.countryCode ? cp.countryCode : defaultIso)
+    const seeded: FormState = {
+      ...INITIAL,
+      l1Id: lockedL1,
+      listingMode: lockedMode as FormState['listingMode'],
+      ...(cInfo ? {
+            phoneIso: cInfo.isoCode,
+            phoneCode: `+${cInfo.phonecode.replace('+', '')}`,
+            countryCode: cInfo.isoCode,
+            country: cInfo.name,
+          } : {}),
+      ...(usePrefill ? {
+            contactName: cp.contactName || INITIAL.contactName,
+            email:       cp.email       || INITIAL.email,
+            phoneCode:   cp.phoneCode   || (cInfo ? `+${cInfo.phonecode.replace('+', '')}` : INITIAL.phoneCode),
+            phone:       cp.phone       || INITIAL.phone,
+            countryCode: cp.countryCode || (cInfo?.isoCode || INITIAL.countryCode),
+            country:     cp.country     || (cInfo?.name || INITIAL.country),
+            stateCode:   cp.stateCode   || INITIAL.stateCode,
+            state:       cp.state       || INITIAL.state,
+            city:        cp.city        || INITIAL.city,
+            hqLocation:  cp.hqLocation  || INITIAL.hqLocation,
+            linkedin:    cp.linkedin    || INITIAL.linkedin,
+            twitter:     cp.twitter     || INITIAL.twitter,
+            facebook:    cp.facebook    || INITIAL.facebook,
+            founded:     cp.founded     || INITIAL.founded,
+            employees:   cp.employees   || INITIAL.employees,
+          } : {}),
+    }
+    return seeded
   })
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState<{ slug: string } | null>(null)
