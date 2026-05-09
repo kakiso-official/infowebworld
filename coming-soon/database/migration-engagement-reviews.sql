@@ -47,6 +47,10 @@ CREATE TABLE IF NOT EXISTS listing_bookmarks (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ─── 4. reviews ─────────────────────────────────────────────────────────
+-- Note: updated_at is required by the admin moderation routes
+-- (/api/admin/reviews + approve/reject). Existing installs that ran an
+-- earlier version of this file without it should run
+-- migration-reviews-updated-at.sql to backfill the column.
 CREATE TABLE IF NOT EXISTS reviews (
   id            INT UNSIGNED NOT NULL AUTO_INCREMENT,
   listing_id    BIGINT UNSIGNED NOT NULL,
@@ -56,6 +60,7 @@ CREATE TABLE IF NOT EXISTS reviews (
   body          TEXT NOT NULL,
   status        ENUM('pending','approved','rejected') NOT NULL DEFAULT 'approved',
   created_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY uniq_review (listing_id, user_id),
   KEY idx_listing_status (listing_id, status),
