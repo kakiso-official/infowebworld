@@ -302,16 +302,29 @@
 .tp-content::-webkit-scrollbar-thumb { background: var(--tp-line-strong); border-radius: 10px }
 .tp-content::-webkit-scrollbar-thumb:hover { background: #9CA3AF }
 
-/* When the listing form is mounted on /dashboard/new, disable the outer
-   page scroll so the form card can manage its own internal scroll. The
-   form's body scrolls inside the card; the footer naturally pins to the
-   card's bottom edge — no sticky-footer bleed possible. */
+/* When the listing form is mounted (/dashboard/new or
+   /dashboard/listings/[uuid]/edit), disable the outer page scroll so the
+   form card can manage its own internal scroll. The form's body scrolls
+   inside the card; the footer naturally pins to the card's bottom edge —
+   no sticky-footer bleed possible.
+
+   Also: tighten the surrounding chrome aggressively so the form card has
+   maximum room. The page header, side padding, breadcrumb, and rail all
+   shrink — only on form pages, leaving the rest of the dashboard's
+   generous spacing intact. The form internals themselves are untouched. */
 .tp-main:has(.df-wrap) > .tp-content {
   overflow: hidden;
   display: flex;
   flex-direction: column;
   min-height: 0;
-  padding-bottom: 18px; /* tighter bottom — card already provides spacing */
+  padding: 6px 6px 6px;
+}
+/* On form pages the page-head + plan strip duplicate context the sidebar
+   already provides. Hide them entirely so the form card uses the full
+   viewport. The dashboard sidebar still has avatar/account access. */
+.tp-main:has(.df-wrap) .tp-page-head,
+.tp-main:has(.df-wrap) .df-plan-strip {
+  display: none !important;
 }
 /* The .nl wrapper from NewListingClient holds DashboardHeader + the form;
    make it flex-fill so the form (.df-wrap) absorbs remaining height. */
@@ -575,6 +588,10 @@
 }
 
 .nl { max-width: 1100px; margin: 0 auto }
+/* Form pages reclaim the full viewport — the 1100px cap is for the plan-
+   picker layout on /dashboard/new (before a plan is chosen). Once the form
+   is mounted, give it every horizontal pixel available. */
+.nl--form { max-width: none; margin: 0 }
 .nl-plans {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));

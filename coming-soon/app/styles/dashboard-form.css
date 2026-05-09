@@ -36,7 +36,7 @@
    ─────────────────────────────────────────────────────────── */
 .df-wrap {
   display: flex; flex-direction: column;
-  gap: 14px;
+  gap: 10px;
   width: 100%;
   flex: 1;
   min-height: 0;
@@ -73,11 +73,16 @@
    ─────────────────────────────────────────────────────────── */
 .df-grid {
   display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 18px;
+  grid-template-columns: 188px 1fr;
+  gap: 12px;
   align-items: stretch;
   flex: 1;
   min-height: 0;
+}
+/* Hero mode — full-width form-card while the sector picker is up
+   (no rail, no plan card). */
+.df-grid--hero {
+  grid-template-columns: 1fr;
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -85,14 +90,15 @@
    ─────────────────────────────────────────────────────────── */
 .df-rail {
   background: var(--df-bg);
-  border: 1px solid var(--df-border);
+  border: 1.5px solid var(--df-border-dark);
   border-radius: var(--df-radius);
-  padding: 12px 8px;
+  padding: 10px 6px;
   display: flex; flex-direction: column;
-  gap: 16px;
-  align-self: start;
-  position: sticky;
-  top: 12px;
+  gap: 12px;
+  /* Stretch to match the form card's height — the grid's default
+     align-items:stretch handles it. No sticky needed because the page
+     itself doesn't scroll on form pages (.tp-content has overflow:hidden);
+     the form body scrolls internally. */
 }
 
 .df-rail-list {
@@ -153,6 +159,77 @@
   gap: 6px;
   padding: 0 4px;
 }
+
+/* ── "Your plan" card inside the rail — fills the empty middle space
+      with useful context. Per-tier accent passed in via --plan-accent. */
+.df-rail-plan {
+  --plan-accent: #6B7280;
+  position: relative;
+  margin: 4px 4px 0;
+  padding: 12px 12px 12px 14px;
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--plan-accent) 6%, #FFFFFF) 0%,
+      color-mix(in srgb, var(--plan-accent) 2%, #FFFFFF) 100%);
+  border: 1px solid color-mix(in srgb, var(--plan-accent) 22%, var(--df-border));
+  border-radius: 12px;
+  display: flex; flex-direction: column;
+  gap: 6px;
+  /* Sits at the bottom of the rail (above the progress strip). The empty
+     stretch space falls between the step list and this card. */
+  margin-top: auto;
+}
+/* Vertical accent stripe on the leading edge */
+.df-rail-plan::before {
+  content: '';
+  position: absolute;
+  top: 14px; bottom: 14px; left: 0;
+  width: 3px;
+  border-radius: 3px;
+  background: var(--plan-accent);
+}
+.df-rail-plan-eyebrow {
+  font-size: 9.5px; font-weight: 800;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--df-muted);
+}
+.df-rail-plan-row {
+  display: flex; align-items: center; gap: 6px;
+}
+.df-rail-plan-tag {
+  display: inline-flex; align-items: center;
+  padding: 3px 8px;
+  background: var(--plan-accent);
+  color: #FFFFFF;
+  border-radius: 999px;
+  font-size: 10px; font-weight: 800;
+  letter-spacing: .08em; text-transform: uppercase;
+  line-height: 1.2;
+}
+.df-rail-plan-price {
+  font-size: 18px; font-weight: 800;
+  letter-spacing: -.015em;
+  color: var(--df-text);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.df-rail-plan-desc {
+  margin: 0;
+  font-size: 11.5px; font-weight: 500;
+  color: var(--df-muted);
+  line-height: 1.45;
+}
+.df-rail-plan-saved {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin-top: 2px;
+  padding: 3px 8px;
+  background: rgba(14, 143, 110, .1);
+  color: #0E8F6E;
+  border-radius: 999px;
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: .04em;
+  width: fit-content;
+}
 .df-rail-progress-track {
   width: 100%; height: 4px;
   background: var(--df-border);
@@ -175,7 +252,7 @@
    ─────────────────────────────────────────────────────────── */
 .df-content {
   background: var(--df-bg);
-  border: 1px solid var(--df-border);
+  border: 1.5px solid var(--df-border-dark);
   border-radius: var(--df-radius);
   display: flex; flex-direction: column;
   min-width: 0; min-height: 0;
@@ -189,9 +266,9 @@
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 20px 24px;
+  padding: 14px 14px;
   display: flex; flex-direction: column;
-  gap: 18px;
+  gap: 16px;
 }
 .df-body::-webkit-scrollbar { width: 8px; }
 .df-body::-webkit-scrollbar-thumb { background: var(--df-border-mid); border-radius: 999px; }
@@ -225,8 +302,8 @@
 }
 .df-label {
   display: flex; align-items: center; gap: 8px;
-  font-size: 11px; font-weight: 700;
-  letter-spacing: .08em; text-transform: uppercase;
+  font-size: 14px; font-weight: 700;
+  letter-spacing: -.005em;
   color: var(--df-text);
 }
 .df-req { color: var(--df-accent); margin-left: 1px; }
@@ -490,6 +567,418 @@
   color: var(--df-text);
 }
 
+/* ═════════════════════════════════════════════════════════════
+   Sector pick — minimal in-between step before the rail/form.
+   Plain white background. Layout top → bottom: title, subhead,
+   pill row, then the mascot at the bottom. Everything sized to
+   fit the form card body without scroll.
+   Namespace: df-spk-*
+   ═════════════════════════════════════════════════════════════ */
+
+.df-spk {
+  position: relative;
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center;
+  justify-content: center;       /* vertically center the title + pills block */
+  gap: 16px;
+  padding: 32px clamp(20px, 3vw, 48px);
+  background: var(--df-bg);
+  color: var(--df-text);
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Copy block — title + sub, centered, top of the card. */
+.df-spk-copy {
+  display: flex; flex-direction: column; gap: 6px;
+  align-items: center; text-align: center;
+  max-width: 640px;
+  flex-shrink: 0;
+}
+.df-spk-title {
+  margin: 0;
+  font-size: clamp(22px, 2.4vw, 28px);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.15;
+  color: var(--df-text);
+}
+.df-spk-sub {
+  margin: 0;
+  font-size: 13.5px; font-weight: 500;
+  line-height: 1.5;
+  color: var(--df-muted);
+}
+
+/* Pill row — flex-wrap so on narrow widths long names break to a
+   second row. Stays horizontal on desktop. Pure pill shape: border,
+   name, that's it. */
+.df-spk-pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 880px;
+  flex-shrink: 0;
+}
+
+.df-spk-pill {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 40px;
+  padding: 0 18px;
+  background: var(--df-bg);
+  border: 1.5px solid var(--df-border-dark);
+  border-radius: 999px;
+  font: inherit;
+  font-size: 13.5px; font-weight: 600;
+  letter-spacing: -.005em;
+  color: var(--df-text);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s ease, color .15s ease, transform .15s ease, border-color .15s ease;
+}
+.df-spk-pill:hover:not(:disabled) {
+  background: var(--df-text);
+  color: #FFFFFF;
+  transform: translateY(-1px);
+}
+.df-spk-pill:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(26, 26, 26, .15);
+}
+.df-spk-pill:disabled { cursor: default; }
+
+/* Pick state — chosen pill goes coral, siblings fade out. */
+.df-spk-pill.is-pick {
+  background: var(--df-accent);
+  color: #FFFFFF;
+  border-color: var(--df-accent);
+}
+.df-spk-pill.is-fade {
+  opacity: .35;
+  transition: opacity .2s ease;
+}
+
+/* Skeleton pill — gentle shimmer while sectors fetch. */
+.df-spk-pill--skel {
+  pointer-events: none;
+  width: 110px;
+  border-color: var(--df-border);
+  background:
+    linear-gradient(90deg, #F5F2EF 0%, #FAFAFA 50%, #F5F2EF 100%);
+  background-size: 200% 100%;
+  animation: df-spk-shimmer 1.4s ease-in-out infinite;
+}
+@keyframes df-spk-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Mascot — pinned to the bottom-right corner of the card. Out of the
+   normal flex flow so he doesn't push the title/pills around, and free
+   to grow large without affecting layout. Sized via clamp() so he
+   scales between laptop (~420px tall) and large desktop (~620px). */
+.df-spk-mascot-wrap {
+  position: absolute;
+  right: clamp(0px, 1.5vw, 24px);
+  bottom: 0;
+  width:  clamp(460px, 52vw, 720px);
+  height: clamp(520px, 78vh, 780px);
+  display: flex; align-items: flex-end; justify-content: center;
+  pointer-events: none;     /* don't intercept clicks meant for the form */
+}
+.df-spk-mascot {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  object-position: bottom right;
+  user-select: none;
+}
+
+/* Left-anchored mascot variant — used by the listing-mode hero so
+   successive entry steps don't feel identical. Same size as the
+   right variant, just mirrored to the bottom-left corner. */
+.df-spk-mascot-wrap--left {
+  right: auto;
+  left: clamp(0px, 1.5vw, 24px);
+}
+.df-spk-mascot--left {
+  object-position: bottom left;
+}
+
+/* On narrow form-cards (mobile / tablet) the absolute mascot would
+   overlap the pills. Drop him into the flow at the bottom-center
+   under the pills, smaller. */
+@media (max-width: 760px) {
+  .df-spk { padding-top: 28px; }
+  .df-spk-mascot-wrap {
+    position: static;
+    width: 100%;
+    height: clamp(220px, 36vh, 320px);
+    margin-top: auto;
+  }
+  .df-spk-mascot {
+    object-position: bottom center;
+  }
+}
+
+/* While the hero is mounted, kill the body's normal padding/scroll so
+   the layout fits the card exactly. Hero handles its own padding. */
+.df-body:has(.df-spk) {
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+}
+
+/* ═════════════════════════════════════════════════════════════
+   Step 2 — Category & Classification (redesigned)
+   Two card blocks: category (hero) + tag groups (accordion).
+   Namespace: df-step2-*
+   ═════════════════════════════════════════════════════════════ */
+
+/* Card shell shared by both blocks */
+.df-step2-card {
+  background: var(--df-bg);
+  border: 1.5px solid var(--df-border);
+  border-radius: var(--df-radius);
+  padding: 18px 20px 20px;
+  display: flex; flex-direction: column;
+  gap: 14px;
+  transition: border-color .12s ease;
+}
+.df-step2-card--err {
+  border-color: var(--df-err);
+}
+
+/* Card header — title + sub on left, status indicator on right */
+.df-step2-card-head {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--df-border);
+}
+.df-step2-card-head-text {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.df-step2-card-title {
+  font-size: 15px; font-weight: 700;
+  letter-spacing: -.005em;
+  color: var(--df-text);
+  margin: 0;
+}
+.df-step2-card-sub {
+  font-size: 13px; font-weight: 400;
+  color: var(--df-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+.df-step2-card-body {
+  display: flex; flex-direction: column;
+  gap: 16px;
+}
+.df-step2-card-err {
+  margin-top: 4px;
+}
+
+/* 3-dot progress for the category levels (sector / category / subcategory) */
+.df-step2-progress {
+  display: inline-flex; align-items: center; gap: 4px;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.df-step2-progress-dot {
+  width: 6px; height: 6px;
+  border-radius: 999px;
+  background: var(--df-border-mid, #D1D5DB);
+  transition: background .15s ease, transform .15s ease;
+}
+.df-step2-progress-dot.is-on {
+  background: var(--df-accent);
+  transform: scale(1.2);
+}
+
+/* Breadcrumb summary — shown once user has picked at least L1 */
+.df-step2-breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 12px;
+  background: var(--df-bg-soft);
+  border: 1px solid var(--df-border);
+  border-radius: 8px;
+  color: var(--df-text);
+}
+.df-step2-breadcrumb svg { color: var(--df-accent); }
+.df-step2-bc-list {
+  list-style: none;
+  margin: 0; padding: 0;
+  display: flex; flex-wrap: wrap;
+  align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600;
+}
+.df-step2-bc-item {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--df-text);
+}
+.df-step2-bc-sep {
+  color: var(--df-muted-2, #9CA3AF);
+  font-weight: 400;
+}
+
+/* Specializations — sub-section inside the category card */
+.df-step2-spec {
+  display: flex; flex-direction: column; gap: 8px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--df-border);
+}
+.df-step2-spec-head {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+}
+.df-step2-spec-label {
+  font-size: 13px; font-weight: 700;
+  letter-spacing: -.005em;
+  color: var(--df-text);
+}
+.df-step2-spec-count {
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase;
+  padding: 2px 7px;
+  background: var(--df-bg-mute, #F3F4F6);
+  color: var(--df-muted);
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
+}
+.df-step2-spec-hint {
+  font-size: 12px; font-weight: 400;
+  color: var(--df-muted);
+  line-height: 1.4;
+  width: 100%;
+}
+
+/* Coverage indicator — "3 of 5 done" on the tag-groups card */
+.df-step2-cover {
+  display: inline-flex; align-items: baseline; gap: 4px;
+  flex-shrink: 0;
+  padding: 5px 10px;
+  background: var(--df-bg-mute, #F3F4F6);
+  border-radius: 999px;
+  font-size: 11.5px; font-weight: 600;
+  color: var(--df-muted);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.005em;
+  margin-top: 2px;
+}
+.df-step2-cover strong {
+  font-size: 13px; font-weight: 800;
+  color: var(--df-text);
+}
+.df-step2-cover.is-done {
+  background: rgba(14, 143, 110, .12);
+  color: #0E8F6E;
+}
+.df-step2-cover.is-done strong { color: #0E8F6E; }
+
+/* Tag-groups list inside the second card */
+.df-step2-tg-list {
+  display: flex; flex-direction: column;
+  gap: 8px;
+}
+
+/* One accordion row per tag group */
+.df-step2-tg {
+  background: var(--df-bg);
+  border: 1.5px solid var(--df-border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color .12s ease, background .12s ease;
+}
+.df-step2-tg.has-pick {
+  border-color: var(--df-border-mid, #D1D5DB);
+}
+.df-step2-tg.is-open {
+  background: var(--df-bg);
+  border-color: var(--df-text);
+}
+
+/* Header — clickable, full row */
+.df-step2-tg-head {
+  width: 100%;
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  color: var(--df-text);
+  transition: background .12s ease;
+}
+.df-step2-tg-head:hover { background: var(--df-bg-soft); }
+.df-step2-tg.is-open .df-step2-tg-head { border-bottom: 1px solid var(--df-border); }
+
+.df-step2-tg-dot {
+  width: 10px; height: 10px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+.df-step2-tg-name {
+  flex: 1; min-width: 0;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: -.005em;
+  color: var(--df-text);
+}
+.df-step2-tg-count {
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase;
+  padding: 3px 9px;
+  background: var(--df-bg-mute, #F3F4F6);
+  color: var(--df-muted-2, #9CA3AF);
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+.df-step2-tg-count.is-on {
+  /* Filled at runtime via inline style with the group's color. */
+}
+
+/* Selected-pills strip — visible only when row is collapsed */
+.df-step2-tg-strip {
+  display: flex; flex-wrap: wrap;
+  gap: 5px;
+  padding: 0 14px 12px;
+}
+.df-step2-tg-strip-pill {
+  display: inline-flex; align-items: center;
+  height: 22px; padding: 0 9px;
+  background: var(--df-bg);
+  border: 1px solid;
+  border-radius: 999px;
+  font-size: 11.5px; font-weight: 600;
+  letter-spacing: -.005em;
+}
+
+/* Body — visible when row is open */
+.df-step2-tg-body {
+  display: flex; flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px 14px;
+}
+.df-step2-tg-desc {
+  margin: 0;
+  font-size: 12.5px; font-weight: 400;
+  color: var(--df-muted);
+  line-height: 1.5;
+}
+
+/* Mobile tightening */
+@media (max-width: 600px) {
+  .df-step2-card { padding: 16px; }
+  .df-step2-card-head { flex-direction: column; gap: 8px; }
+  .df-step2-bc-list { font-size: 12.5px; }
+  .df-step2-tg-head { padding: 11px 12px; }
+  .df-step2-tg-strip { padding: 0 12px 10px; }
+  .df-step2-tg-body { padding: 11px 12px 12px; }
+}
+
 /* ─────────────────────────────────────────────────────────────
    Category picker
    ─────────────────────────────────────────────────────────── */
@@ -517,8 +1006,8 @@
   gap: 6px; min-width: 0;
 }
 .df-cat-title {
-  font-size: 11px; font-weight: 700;
-  letter-spacing: .08em; text-transform: uppercase;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: -.005em;
   color: var(--df-muted);
 }
 

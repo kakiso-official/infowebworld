@@ -24,6 +24,8 @@ import { INITIAL, PLAN_CAPS, URL_COUNTRY_ISO } from './constants'
 import { validateStep } from './validation'
 
 import RailNav from './components/RailNav'
+import SectorPickHero from './components/SectorPickHero'
+import ListingModePickHero from './components/ListingModePickHero'
 import Footer from './components/Footer'
 import { useDashboardCtx } from '../../DashboardShell'
 import Step1Identity from './steps/Step1Identity'
@@ -94,10 +96,18 @@ export default function DashboardListingForm({
   const [tagGroups, setTagGroups] = useState<TagGroup[]>([])
   const [listingTypes, setListingTypes] = useState<ListingType[]>([])
 
-  /* Load reference data */
+  /* Load reference data. Location tag group is intentionally hidden from
+     this form — geographic context is already captured precisely on Step 3
+     (country / state / city / HQ address), so the seeded "Location" tag
+     group would just be a duplicate ask. Filtering at load means both the
+     render and the validateStep("category") tag-coverage check skip it. */
   useEffect(() => {
     fetchLaunchedCategories().then(setAllCategories).catch(() => {})
-    fetchAllTagGroups().then(setTagGroups).catch(() => {})
+    fetchAllTagGroups()
+      .then(groups => setTagGroups(
+        groups.filter(g => g.slug !== 'location' && !/location/i.test(g.name))
+      ))
+      .catch(() => {})
   }, [])
 
   useEffect(() => {
@@ -118,7 +128,18 @@ export default function DashboardListingForm({
       const saved = localStorage.getItem(draftKey)
       if (saved) {
         const parsed = JSON.parse(saved)
-        if (parsed && typeof parsed === 'object') setForm(prev => ({ ...prev, ...parsed }))
+        if (parsed && typeof parsed === 'object') {
+          /* Strip L1/L2/L3 + listingMode from the restored draft so every
+             fresh mount of /dashboard/new starts at the sector-pick hero
+             (then the listing-mode hero). The user's prior tagline /
+             description / etc. all still come back; only the entry-step
+             picks are treated as "this session" decisions. */
+          const {
+            l1Id: _l1, l2Id: _l2, l3Id: _l3, listingMode: _lm, ...rest
+          } = parsed as Record<string, unknown>
+          void _l1; void _l2; void _l3; void _lm
+          setForm(prev => ({ ...prev, ...rest }))
+        }
       }
     } catch {}
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -302,6 +323,16 @@ export default function DashboardListingForm({
   const current = STEPS[stepIdx]
   const isLast = stepIdx === STEPS.length - 1
 
+  /* Two pre-form gates, run in order before the rail/form ever appears:
+       1. Sector pick (L1) — SectorPickHero
+       2. Listing-mode pick (company vs product) — ListingModePickHero
+     Each unmounts itself by setting the corresponding form field, so the
+     next render falls through to the next gate (or the form proper).
+     Edit mode bypasses both — the listing already has its sector and
+     mode locked in. */
+  const needsSector = !editMode && !form.l1Id
+  const needsMode   = !editMode && !!form.l1Id && !form.listingMode
+
   return (
     <div className="df-wrap" ref={wrapRef}>
       {/* Plan strip */}
@@ -317,7 +348,44 @@ export default function DashboardListingForm({
         </div>
       </div>
 
-      {/* Two-pane shell: rail + content */}
+      {/* Pre-form hero — stage + mascot + 6 sector cards. Replaces the
+          rail+content while no L1 is picked. */}
+      {needsSector ? (
+        <div className="df-grid df-grid--hero">
+          <div className="df-content">
+            <main className="df-body">
+              <SectorPickHero
+                categories={allCategories}
+                onPick={(l1Id) => {
+                  set('l1Id', l1Id)
+                  set('l2Id', '')
+                  set('l3Id', '')
+                  /* Land them on Step 2 (Category) so they immediately
+                     pick L2/L3 — Step 1 (Identity) is non-blocking and
+                     they can revisit it via the rail. */
+                  setStepIdx(1)
+                  setVisited(v => new Set(v).add(0).add(1))
+                }}
+              />
+            </main>
+          </div>
+        </div>
+      ) : needsMode ? (
+        <div className="df-grid df-grid--hero">
+          <div className="df-content">
+            <main className="df-body">
+              <ListingModePickHero
+                sector={(() => {
+                  const s = allCategories.find(c => c.id === form.l1Id && c.level === 1)
+                  return s ? { id: s.id, slug: s.slug, name: s.name } : null
+                })()}
+                onPick={(mode) => set('listingMode', mode)}
+              />
+            </main>
+          </div>
+        </div>
+      ) : (
+      /* Two-pane shell: rail + content */
       <div className="df-grid">
         <RailNav
           steps={STEPS}
@@ -325,6 +393,9 @@ export default function DashboardListingForm({
           onJump={goToIdx}
           visited={visited}
           progressPct={progressPct}
+          plan={plan}
+          caps={caps}
+          draftSavedAt={draftSavedAt}
         />
 
         <div className="df-content">
@@ -367,6 +438,7 @@ export default function DashboardListingForm({
           {submitError && <div className="df-submit-error">{submitError}</div>}
         </div>
       </div>
+      )}
     </div>
   )
 }

@@ -16,7 +16,15 @@ export type KeyFeature = { name: string; description: string }
 export type Award = { name: string; year?: string }
 export type IntegrationItem = { name: string; website: string; description: string }
 
+export type ListingMode = '' | 'company' | 'product'
+
 export type FormState = {
+  /* Listing meta — picked in the entry hero before the form proper.
+     'company' = the business itself (services, agencies, local biz);
+     'product' = a specific product/SaaS the company makes. Drives later
+     copy and which optional fields surface. */
+  listingMode: ListingMode
+
   /* Identity */
   companyName: string
   tagline: string

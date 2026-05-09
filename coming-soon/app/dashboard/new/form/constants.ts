@@ -1,6 +1,9 @@
 import type { FormState, PlanCaps, PlanKey } from './types'
 
 export const INITIAL: FormState = {
+  /* Listing meta */
+  listingMode: '',
+
   /* Identity */
   companyName: '',
   tagline: '',
