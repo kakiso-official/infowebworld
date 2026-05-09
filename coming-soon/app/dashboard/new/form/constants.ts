@@ -1,4 +1,25 @@
-import type { FormState, PlanCaps, PlanKey } from './types'
+import type { FormState, PlanCaps, PlanKey, StepDef } from './types'
+
+/* Step definitions for the two listing modes. The product flow is the
+   long 7-step form we already built. The company flow is a focused
+   3-step intake: identity -> details -> review. */
+
+export const PRODUCT_STEPS: StepDef[] = [
+  { id: 'identity', num: '01', label: 'Identity' },
+  { id: 'category', num: '02', label: 'Category' },
+  { id: 'contact',  num: '03', label: 'Contact' },
+  { id: 'story',    num: '04', label: 'Story' },
+  { id: 'features', num: '05', label: 'Features' },
+  { id: 'pricing',  num: '06', label: 'Pricing' },
+  { id: 'review',   num: '07', label: 'Review' },
+]
+
+export const COMPANY_STEPS: StepDef[] = [
+  { id: 'company_identity', num: '01', label: 'Identity' },
+  { id: 'company_details',  num: '02', label: 'Details'  },
+  { id: 'company_review',   num: '03', label: 'Review'   },
+]
+
 
 export const INITIAL: FormState = {
   /* Listing meta */
@@ -41,6 +62,7 @@ export const INITIAL: FormState = {
   linkedin: '',
   twitter: '',
   facebook: '',
+  isHiring: false,
   hasIosApp: false,
   hasAndroidApp: false,
   compliance: [],

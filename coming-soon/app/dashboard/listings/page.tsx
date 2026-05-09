@@ -25,6 +25,8 @@ interface SubmissionRow {
      status (pending/approved/rejected/null). Drives the verify pill. */
   verified: number
   verification_status: 'pending' | 'approved' | 'rejected' | null
+  /** 'product' | 'company' — splits the page into two sections. */
+  listing_mode: 'product' | 'company'
 }
 
 type VerifyState = 'verified' | 'pending' | 'rejected' | 'none'
@@ -53,7 +55,11 @@ export default async function ListingsPage({
      migration ships in this same change-set, but the moment the code is
      deployed users may hit the page before phpMyAdmin runs it. Try the
      full query first; on the specific "missing table/column" errors fall
-     back to the legacy shape so the rest of the dashboard still works. */
+     back to the legacy shape so the rest of the dashboard still works.
+
+     listing_mode is also new (added by migration-listings-company-mode.sql).
+     We try to select it but fall back to 'product' for every row so the
+     page works pre-migration too. */
   const BASE_SELECT = `s.uuid, s.slug, s.company_name, s.tagline, s.logo_url, s.status, s.created_at,
             p.name AS plan_name, c.name AS category_name,
             (SELECT COUNT(*)   FROM reviews            r WHERE r.listing_id = s.id AND r.status = 'approved') AS reviews_count,
@@ -62,8 +68,15 @@ export default async function ListingsPage({
             (SELECT COUNT(*)   FROM listing_reactions lr WHERE lr.listing_id = s.id AND lr.kind = 'dislike')  AS dislikes_count,
             (SELECT COUNT(*)   FROM listing_follows   lf WHERE lf.listing_id = s.id) AS followers_count,
             (SELECT COUNT(*)   FROM listing_bookmarks lb WHERE lb.listing_id = s.id) AS bookmarks_count,
-            (SELECT COUNT(*)   FROM listing_inbox_emails ie WHERE ie.listing_id = s.id) AS leads_count`
+            (SELECT COUNT(*)   FROM listing_inbox_emails ie WHERE ie.listing_id = s.id) AS leads_count,
+            COALESCE(s.listing_mode, 'product') AS listing_mode`
+  /* Three try levels for graceful degradation across two pending
+     migrations: full → no-verification → no-listing-mode. */
   let listings: SubmissionRow[]
+  const LEGACY_BASE = BASE_SELECT.replace(
+    "COALESCE(s.listing_mode, 'product') AS listing_mode",
+    "'product' AS listing_mode"
+  )
   try {
     listings = await query<SubmissionRow>(
       `SELECT ${BASE_SELECT},
@@ -80,13 +93,22 @@ export default async function ListingsPage({
     )
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
-    if (
+    const verifyMissing =
       /listing_verification_requests/.test(msg) ||
       /Unknown column.*verified/.test(msg)
-    ) {
-      console.warn('[dashboard/listings] verification migration not yet applied — falling back')
+    const modeMissing = /Unknown column.*listing_mode/.test(msg)
+
+    if (verifyMissing || modeMissing) {
+      console.warn(
+        '[dashboard/listings] migration(s) not yet applied — falling back',
+        { verifyMissing, modeMissing }
+      )
+      /* MySQL only reports the FIRST missing column, so even if the error
+         names `verified` we may still be missing `listing_mode` too. Always
+         drop down to LEGACY_BASE (which references neither new column) to
+         survive any combination of pending migrations. */
       const fallbackRows = await query<Omit<SubmissionRow, 'verified' | 'verification_status'>>(
-        `SELECT ${BASE_SELECT}
+        `SELECT ${LEGACY_BASE}
          FROM submissions s
          LEFT JOIN plans p ON p.id = s.plan_id
          LEFT JOIN categories c ON c.id = s.category_id
@@ -94,11 +116,22 @@ export default async function ListingsPage({
          ORDER BY s.created_at DESC`,
         [user.id]
       )
-      listings = fallbackRows.map(l => ({ ...l, verified: 0, verification_status: null }))
+      listings = fallbackRows.map(l => ({
+        ...l,
+        verified: 0,
+        verification_status: null,
+        listing_mode: l.listing_mode || 'product',
+      }))
     } else {
       throw err
     }
   }
+
+  /* Split: at most one company row (one-company-per-user), the rest are
+     products. The company gets its own card section above the products
+     grid so it's clearly separate. */
+  const companyListing = listings.find(l => l.listing_mode === 'company') || null
+  const productListings = listings.filter(l => l.listing_mode !== 'company')
 
   return (
     <div className="dash">
@@ -114,6 +147,67 @@ export default async function ListingsPage({
           New listing
         </Link>
       </div>
+
+      {/* ── Company section — at most one row per user. ── */}
+      {companyListing && (
+        <section className="dash-co-section">
+          <header className="dash-co-section-head">
+            <h2 className="dash-co-section-title">Your company profile</h2>
+            <p className="dash-co-section-sub">One per account. Lives at /profile/{companyListing.slug}.</p>
+          </header>
+          <article className="dash-co-card">
+            <div className="dash-co-card-logo">
+              {companyListing.logo_url
+                ? <img src={companyListing.logo_url} alt={companyListing.company_name} />
+                : <span>{companyListing.company_name.slice(0, 2).toUpperCase()}</span>}
+            </div>
+            <div className="dash-co-card-body">
+              <div className="dash-co-card-top">
+                <h3 className="dash-co-card-name">{companyListing.company_name}</h3>
+                <span className={`dash-status dash-status--${companyListing.status}`}>
+                  {STATUS_LABEL[companyListing.status] || companyListing.status}
+                </span>
+              </div>
+              <p className="dash-co-card-tag">{companyListing.tagline}</p>
+              <div className="dash-co-card-foot">
+                <Link
+                  href={`/dashboard/listings/${companyListing.uuid}/edit`}
+                  className="dash-list-btn dash-list-btn--ghost"
+                >
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.2">
+                    <path d="M12 20h9" />
+                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+                  </svg>
+                  Edit profile
+                </Link>
+                {(companyListing.status === 'active' || companyListing.status === 'paid') ? (
+                  <Link href={`/profile/${companyListing.slug}`} className="dash-list-btn">
+                    View profile
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M7 17L17 7M7 7h10v10" />
+                    </svg>
+                  </Link>
+                ) : (
+                  <span className="dash-list-muted">Awaiting review</span>
+                )}
+              </div>
+            </div>
+          </article>
+        </section>
+      )}
+
+      {/* Section heading for products only when a company exists too — gives
+          the eye an obvious split. Otherwise the products section reads as
+          the page itself. */}
+      {companyListing && productListings.length > 0 && (
+        <header className="dash-co-section-head">
+          <h2 className="dash-co-section-title">Your products</h2>
+          <p className="dash-co-section-sub">
+            {productListings.length === 1 ? '1 listing' : `${productListings.length} listings`}
+            {' · '}auto-linked to your company profile.
+          </p>
+        </header>
+      )}
 
       {listings.length === 0 ? (
         <div className="dash-empty">
@@ -131,7 +225,7 @@ export default async function ListingsPage({
         </div>
       ) : (
         <div className="dash-list-grid">
-          {listings.map(l => {
+          {productListings.map(l => {
             const isLive = l.status === 'active' || l.status === 'paid'
             const verifyState = deriveVerifyState(l.verified, l.verification_status)
             return (

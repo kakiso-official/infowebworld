@@ -1390,6 +1390,80 @@
 }
 
 /* ─────────────────────────────────────────────────────────────
+   Company-mode form bits
+   - .df-toggle-row : the hiring checkbox row in CompanyStep2
+   - .df-rev-row / .df-rev-lbl / .df-rev-val / .df-rev-grid /
+     .df-rev-edit / .df-rev-empty / .df-rev-foot
+     : compact key-value review used by CompanyStep3Review
+   ─────────────────────────────────────────────────────────── */
+.df-toggle-row {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 12px;
+  background: var(--df-bg);
+  border: 1.5px solid var(--df-border);
+  border-radius: var(--df-radius);
+  font-size: 14px; color: var(--df-text);
+  cursor: pointer;
+}
+.df-toggle-row input[type="checkbox"] {
+  accent-color: var(--df-accent);
+  width: 16px; height: 16px;
+}
+
+.df-rev-grid {
+  display: grid; gap: 10px 16px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+.df-rev-row {
+  display: flex; flex-direction: column; gap: 2px;
+  min-width: 0;
+}
+.df-rev-lbl {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase;
+  color: var(--df-muted);
+}
+.df-rev-val {
+  font-size: 14px; color: var(--df-text);
+  word-break: break-word; line-height: 1.45;
+}
+.df-rev-val img.df-rev-logo {
+  width: 48px; height: 48px;
+  border-radius: var(--df-radius-sm);
+  object-fit: cover;
+  background: #FFFFFF;
+  border: 1.5px solid var(--df-border);
+  margin: 0;
+}
+.df-rev-empty {
+  color: var(--df-muted-2);
+  font-style: italic;
+}
+.df-rev-edit {
+  background: transparent;
+  border: 1px solid var(--df-border);
+  border-radius: var(--df-radius-pill);
+  padding: 4px 10px;
+  font-size: 12px; font-weight: 600;
+  color: var(--df-text);
+  cursor: pointer;
+  transition: background .12s ease, border-color .12s ease;
+}
+.df-rev-edit:hover { background: var(--df-bg-mute); border-color: var(--df-text); }
+.df-rev-foot {
+  margin: 4px 0 0;
+  font-size: 12.5px; color: var(--df-muted);
+  line-height: 1.5;
+}
+.df-rev-foot code {
+  font-family: var(--font-inter, ui-monospace), monospace;
+  font-size: 12px;
+  background: var(--df-bg-mute);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+/* ─────────────────────────────────────────────────────────────
    Review step
    ─────────────────────────────────────────────────────────── */
 .df-rev-card {

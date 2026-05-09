@@ -46,6 +46,12 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
 
+    /* Listing mode — defaults to product so existing API callers keep
+       working unchanged. Company listings travel through the same POST
+       endpoint with mode='company'. */
+    const listingMode: 'product' | 'company' =
+      body.listingMode === 'company' ? 'company' : 'product'
+
     const required = ['companyName', 'contactName', 'email', 'country', 'tagline']
     for (const field of required) {
       if (!body[field] || (typeof body[field] === 'string' && !body[field].trim())) {
@@ -116,7 +122,103 @@ export async function POST(request: NextRequest) {
     }
 
     const uuid = crypto.randomUUID()
-    const slug = slugify(body.companyName) + '-' + uuid.slice(0, 8)
+
+    /* Slug rule: from this point onward, no random suffix is appended.
+       The user-typed name is slugified directly. Uniqueness is enforced
+       per-mode: a company at /profile/<slug> and a product at
+       /company/<slug> live in different URL namespaces and can share a
+       slug freely. Within the same namespace, a collision is a hard
+       reject — the user picks a more distinct name. Existing rows
+       (which kept their suffixed slugs) are out of scope here. */
+    const slug = slugify(body.companyName)
+    if (!slug) {
+      return Response.json(
+        { error: 'Name must contain at least one letter or number.' },
+        { status: 400 }
+      )
+    }
+    const collision = await queryOne<{ id: number }>(
+      `SELECT id FROM submissions
+        WHERE slug = ? AND COALESCE(listing_mode,'product') = ?
+        LIMIT 1`,
+      [slug, listingMode]
+    )
+    if (collision) {
+      return Response.json(
+        {
+          error:
+            listingMode === 'company'
+              ? 'That company name is already taken on InfoWebWorld. Try a different name.'
+              : 'That product name is already taken on InfoWebWorld. Try a different name.',
+          code: 'SLUG_TAKEN',
+        },
+        { status: 409 }
+      )
+    }
+
+    /* One-company-per-user enforcement. A user can have many product
+       listings but only a single company profile (it represents *them*
+       as a business). Edit-existing flows go through PUT, not this
+       POST, so this only blocks fresh creates. */
+    if (listingMode === 'company') {
+      if (!authedUser) {
+        return Response.json(
+          { error: 'Login required to create a company profile' },
+          { status: 401 }
+        )
+      }
+      const existing = await queryOne<{ id: number; slug: string }>(
+        `SELECT id, slug FROM submissions
+          WHERE user_id = ? AND listing_mode = 'company'
+          LIMIT 1`,
+        [authedUser.id]
+      )
+      if (existing) {
+        return Response.json(
+          {
+            error: 'You already have a company profile. Edit your existing one instead.',
+            code: 'COMPANY_EXISTS',
+            existingSlug: existing.slug,
+          },
+          { status: 409 }
+        )
+      }
+    }
+
+    /* parent_company_id linkage. Two paths:
+
+       1) Explicit pick — the form sends parentCompanyId. We validate
+          ownership so a client can't link to someone else's company.
+       2) Auto-link — when the form sends nothing AND the user is
+          authed AND they have a live company profile, auto-attach it.
+          One-company-per-user means there's at most one match.
+
+       The auto-link is the common case. New products from a company
+       owner all show "Made by {Company} ↗" on the live page without
+       any extra UI in the product form. */
+    let parentCompanyId: number | null = null
+    if (listingMode === 'product' && authedUser) {
+      if (body.parentCompanyId) {
+        const parent = await queryOne<{ id: number; user_id: number | null }>(
+          `SELECT id, user_id FROM submissions
+            WHERE id = ? AND listing_mode = 'company'
+            LIMIT 1`,
+          [Number(body.parentCompanyId)]
+        )
+        if (parent && parent.user_id === authedUser.id) {
+          parentCompanyId = parent.id
+        }
+      } else {
+        const myCompany = await queryOne<{ id: number }>(
+          `SELECT id FROM submissions
+            WHERE user_id = ? AND listing_mode = 'company'
+              AND status IN ('active','paid')
+            LIMIT 1`,
+          [authedUser.id]
+        )
+        if (myCompany) parentCompanyId = myCompany.id
+      }
+    }
 
     // Handle JSON fields
     const arrJson = (v: unknown) => Array.isArray(v) && v.length > 0 ? JSON.stringify(v) : null
@@ -152,7 +254,8 @@ export async function POST(request: NextRequest) {
 
     await execute(
       `INSERT INTO submissions (
-        uuid, slug, company_name, contact_name, email, phone_code, phone, website,
+        uuid, slug, listing_mode, parent_company_id, is_hiring,
+        company_name, contact_name, email, phone_code, phone, website,
         category_id, listing_type_id, country_id, city, state, tagline, description,
         founded_year, team_size, plan_id, user_id,
         logo_url, screenshots, demo_video,
@@ -164,11 +267,21 @@ export async function POST(request: NextRequest) {
         support_channels, training_options, languages,
         has_ios_app, has_android_app, compliance, awards,
         paypal_order_id, payment_status, status, ip_address
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?,
+                ?, ?, ?,
+                ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?,
+                ?, ?, ?,
+                ?, ?,
+                ?, ?, ?,
+                ?, ?, ?, ?,
+                ?, ?, ?, ?)`,
       [
-        uuid, slug,
+        uuid, slug, listingMode, parentCompanyId, body.isHiring ? 1 : 0,
         body.companyName.trim(),
         body.contactName.trim(),
         body.email.trim().toLowerCase(),

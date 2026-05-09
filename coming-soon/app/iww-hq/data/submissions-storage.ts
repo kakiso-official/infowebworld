@@ -72,6 +72,10 @@ export type RealSubmission = {
   /* ── Verification state (resolved from submissions.verified columns) ── */
   verified: boolean
   verifiedAt: string
+  /** 'product' | 'company' — defaults to 'product' for legacy rows. */
+  listingMode: 'product' | 'company'
+  /** Parent company FK on product rows; null on company rows / unlinked products. */
+  parentCompanyId: string
 }
 
 function parseJson(val: unknown): unknown[] {
@@ -156,6 +160,8 @@ export function mapRow(r: Record<string, unknown>): RealSubmission {
     awards: parseJson(r.awards) as Award[],
     verified: Boolean(Number(r.verified ?? 0)),
     verifiedAt: String(r.verified_at ?? ''),
+    listingMode: (r.listing_mode === 'company' ? 'company' : 'product'),
+    parentCompanyId: r.parent_company_id != null ? String(r.parent_company_id) : '',
   }
 }
 

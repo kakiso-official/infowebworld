@@ -46,6 +46,9 @@ export interface UserListingState {
 
 interface InitialData {
   listing: Record<string, unknown>
+  /** Parent company linkage — populated when this product points at a
+   *  /profile/[slug] company row. Drives the "Made by X ↗" hero badge. */
+  parentCompany?: { name: string; slug: string; logo_url: string | null } | null
   breadcrumb: { name: string; slug: string }[]
   related: Record<string, unknown>[]
   siblings?: Record<string, unknown>[]
@@ -1854,6 +1857,31 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 {isPreview && ' — 2026 Pricing, Features, Reviews & Alternatives'}
               </h1>
               {view.tagline && <p className="tlp-page-tagline">{view.tagline}</p>}
+
+              {/* ── "Made by {Company} ↗" linkage ─────────────────────────
+                  Renders a quiet inline badge linking to the parent company's
+                  /profile page when the product was submitted with a
+                  parent_company_id. */}
+              {initialData?.parentCompany && (
+                <a
+                  href={`/profile/${initialData.parentCompany.slug}`}
+                  className="tlp-made-by"
+                >
+                  {initialData.parentCompany.logo_url && (
+                    <img
+                      src={initialData.parentCompany.logo_url}
+                      alt=""
+                      className="tlp-made-by-logo"
+                    />
+                  )}
+                  <span>
+                    Made by <strong>{initialData.parentCompany.name}</strong>
+                  </span>
+                  <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true">
+                    <path d="M7 17L17 7M7 7h10v10" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </a>
+              )}
 
               {/* ── Listing verification badge ──────────────────────────────
                   Prominent mint card when the listing has been verified by

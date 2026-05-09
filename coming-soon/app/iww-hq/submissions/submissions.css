@@ -141,6 +141,39 @@
   font-size: 10px; font-weight: 800;
   font-variant-numeric: tabular-nums;
 }
+
+/* Listing-mode chip filter — second filter row below the status tabs. */
+.sub-mode-filter {
+  display: flex; gap: 4px; padding: 8px 14px;
+  border-bottom: 1px solid var(--border-2);
+}
+.sub-mode-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--mute);
+  font-size: 11px; font-weight: 700;
+  cursor: pointer; white-space: nowrap;
+  transition: all .12s ease;
+  font-family: inherit;
+}
+.sub-mode-chip:hover { border-color: var(--ink); color: var(--ink) }
+.sub-mode-chip.is-active {
+  background: var(--ink); border-color: var(--ink); color: #fff;
+}
+.sub-mode-chip-count {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 16px; height: 16px; padding: 0 4px;
+  background: rgba(0, 0, 0, .06); color: inherit;
+  border-radius: 999px;
+  font-size: 9.5px; font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.sub-mode-chip.is-active .sub-mode-chip-count {
+  background: rgba(255, 255, 255, .2);
+}
 .sub-tab.is-active .sub-tab-count {
   background: rgba(255,255,255,.18); color: #fff;
 }

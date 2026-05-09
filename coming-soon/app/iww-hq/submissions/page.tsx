@@ -80,6 +80,10 @@ export default function SubmissionsPage() {
   const [subs, setSubs] = useState<RealSubmission[]>([])
   const [search, setSearch] = useState('')
   const [tab, setTab] = useState<Status | 'all'>('pending')
+  /* Listing-mode filter — independent from the status tabs. Lets admins
+     focus the queue on Companies vs Products without losing the status
+     bucket. Defaults to 'all' so behavior matches the pre-feature page. */
+  const [modeFilter, setModeFilter] = useState<'all' | 'product' | 'company'>('all')
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [stats, setStats] = useState({ total: 0, pending: 0, confirmed: 0, paid: 0 })
   const [busy, setBusy] = useState(false)
@@ -109,11 +113,21 @@ export default function SubmissionsPage() {
     return out
   }, [subs])
 
+  const modeCounts = useMemo(() => {
+    let companies = 0, products = 0
+    for (const s of subs) {
+      if (s.listingMode === 'company') companies++
+      else products++
+    }
+    return { all: subs.length, product: products, company: companies }
+  }, [subs])
+
   /* Filter + search. Keeps the most recent submission first. */
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
     return subs
       .filter(s => tab === 'all' ? true : s.status === tab)
+      .filter(s => modeFilter === 'all' ? true : s.listingMode === modeFilter)
       .filter(s => !q
         || s.companyName.toLowerCase().includes(q)
         || s.email.toLowerCase().includes(q)
@@ -122,7 +136,7 @@ export default function SubmissionsPage() {
         || s.slug.toLowerCase().includes(q)
       )
       .sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime())
-  }, [subs, tab, search])
+  }, [subs, tab, modeFilter, search])
 
   const selected = useMemo(
     () => filtered.find(s => s.id === selectedId) || subs.find(s => s.id === selectedId) || null,
@@ -223,6 +237,25 @@ export default function SubmissionsPage() {
                 >
                   {t.label}
                   <span className="sub-tab-count">{n}</span>
+                </button>
+              )
+            })}
+          </div>
+
+          {/* Listing-mode filter — orthogonal to the status tabs above. */}
+          <div className="sub-mode-filter" role="group" aria-label="Listing mode filter">
+            {(['all', 'product', 'company'] as const).map(m => {
+              const active = modeFilter === m
+              const label = m === 'all' ? 'All' : m === 'product' ? 'Products' : 'Companies'
+              return (
+                <button
+                  key={m}
+                  type="button"
+                  className={`sub-mode-chip ${active ? 'is-active' : ''}`}
+                  onClick={() => setModeFilter(m)}
+                >
+                  {label}
+                  <span className="sub-mode-chip-count">{modeCounts[m]}</span>
                 </button>
               )
             })}

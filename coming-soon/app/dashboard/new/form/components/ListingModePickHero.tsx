@@ -28,29 +28,27 @@ type Props = {
   onPick: (mode: 'company' | 'product') => void
 }
 
-/* Per-sector wording. Keyed by L1 slug. The `value` on each pill is
-   ALWAYS 'company' or 'product' — only the label changes. Unknown
-   slugs fall back to the generic copy at the bottom. */
+/* Per-sector wording. Keyed by L1 slug exactly as it appears in the
+   live taxonomy (see app/config/categories-data.ts). The `value` on
+   each pill is ALWAYS 'company' or 'product' — only the label and
+   subhead change. Unknown slugs fall back to the generic copy. */
 type SectorCopy = {
   companyLabel: string
   productLabel: string
   subhead: string
 }
 const COPY_BY_SLUG: Record<string, SectorCopy> = {
-  'artificial-intelligence-ml': {
+  /* slug = ai-ml in prod (NOT artificial-intelligence-ml — that's the
+     pre-S25 slug; the live taxonomy was renamed). */
+  'ai-ml': {
     companyLabel: 'AI Company',
     productLabel: 'AI Tool',
     subhead: 'Are you listing an AI company, or one of the tools they\u2019ve built?',
   },
   'software-saas': {
-    companyLabel: 'Company',
+    companyLabel: 'Software Company',
     productLabel: 'Product',
-    subhead: 'Are you listing a software company, or one of their products?',
-  },
-  'industry-specific-software': {
-    companyLabel: 'Company',
-    productLabel: 'Software',
-    subhead: 'Are you listing the software company, or one of their software products?',
+    subhead: 'Are you listing the software company, or one of their products?',
   },
   'it-services-agencies': {
     companyLabel: 'Agency',
@@ -71,11 +69,6 @@ const COPY_BY_SLUG: Record<string, SectorCopy> = {
     companyLabel: 'Firm',
     productLabel: 'Service',
     subhead: 'Are you listing the firm itself, or one specific service they offer?',
-  },
-  'local-professional-services': {
-    companyLabel: 'Business',
-    productLabel: 'Service',
-    subhead: 'Are you listing the business or firm, or one specific service they offer?',
   },
 }
 

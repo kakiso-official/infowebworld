@@ -62,6 +62,8 @@ export type FormState = {
   linkedin: string
   twitter: string
   facebook: string
+  /** Company-only flag rendered as a "We're hiring" badge on /profile/[slug]. */
+  isHiring: boolean
   hasIosApp: boolean
   hasAndroidApp: boolean
   compliance: string[]

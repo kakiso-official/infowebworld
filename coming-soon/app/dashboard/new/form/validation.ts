@@ -76,6 +76,32 @@ export function validateStep(
       /* Final review re-validates by walking earlier steps in the orchestrator. */
       break
     }
+
+    /* ── Company-mode steps. The 3-step short flow only requires a small
+       subset of fields; the rest are optional or unused. ── */
+    case 'company_identity': {
+      if (!form.companyName.trim()) e.companyName = 'Company name is required.'
+      else if (form.companyName.length > 100) e.companyName = 'Max 100 characters.'
+      if (!form.tagline.trim()) e.tagline = 'Tagline is required.'
+      else if (form.tagline.length > 150) e.tagline = 'Max 150 characters.'
+      if (!form.website.trim()) e.website = 'Website is required.'
+      else if (!URL_RE.test(form.website.trim())) e.website = 'Must start with https://'
+      if (form.founded && !/^\d{4}$/.test(form.founded)) {
+        e.founded = 'Founded must be a 4-digit year.'
+      }
+      break
+    }
+    case 'company_details': {
+      if (!form.contactName.trim()) e.contactName = 'Your name is required.'
+      if (!form.email.trim()) e.email = 'Email is required.'
+      else if (!EMAIL_RE.test(form.email.trim())) e.email = 'Invalid email address.'
+      if (!form.country.trim()) e.country = 'Country is required.'
+      break
+    }
+    case 'company_review': {
+      /* No extra checks; previous steps already validated. */
+      break
+    }
   }
 
   return e

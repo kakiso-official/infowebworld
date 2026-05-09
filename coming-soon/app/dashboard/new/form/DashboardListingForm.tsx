@@ -20,13 +20,16 @@ import { fetchListingTypes } from '../../../iww-hq/data/listing-type-storage'
 import type { ListingType } from '../../../iww-hq/data/listing-type-storage'
 
 import type { FormState, PlanKey, StepDef } from './types'
-import { INITIAL, PLAN_CAPS, URL_COUNTRY_ISO } from './constants'
+import { INITIAL, PLAN_CAPS, URL_COUNTRY_ISO, PRODUCT_STEPS, COMPANY_STEPS } from './constants'
 import { validateStep } from './validation'
 
 import RailNav from './components/RailNav'
 import SectorPickHero from './components/SectorPickHero'
 import ListingModePickHero from './components/ListingModePickHero'
 import Footer from './components/Footer'
+import CompanyStep1Identity from './steps/CompanyStep1Identity'
+import CompanyStep2Details from './steps/CompanyStep2Details'
+import CompanyStep3Review from './steps/CompanyStep3Review'
 import { useDashboardCtx } from '../../DashboardShell'
 import Step1Identity from './steps/Step1Identity'
 import Step2Category from './steps/Step2Category'
@@ -38,15 +41,12 @@ import Step7Review from './steps/Step7Review'
 
 export type { PlanKey } from './types'
 
-const STEPS: StepDef[] = [
-  { id: 'identity', num: '01', label: 'Identity' },
-  { id: 'category', num: '02', label: 'Category' },
-  { id: 'contact',  num: '03', label: 'Contact' },
-  { id: 'story',    num: '04', label: 'Story' },
-  { id: 'features', num: '05', label: 'Features' },
-  { id: 'pricing',  num: '06', label: 'Pricing' },
-  { id: 'review',   num: '07', label: 'Review' },
-]
+/* STEPS is now derived per-listing-mode at render time. The product
+   flow uses the long 7-step PRODUCT_STEPS; the company flow uses the
+   short 3-step COMPANY_STEPS. We keep a typed `_STEPS` reference so
+   any leftover module-level usage still type-checks (none expected). */
+const _STEPS: StepDef[] = PRODUCT_STEPS
+void _STEPS
 
 type Props = {
   plan?: PlanKey
@@ -67,7 +67,11 @@ export default function DashboardListingForm({
   const { user } = useDashboardCtx()
 
   /* In edit mode, jump straight to Review so the user sees an overview of every
-     field they're editing — they can dive into any earlier step from the rail. */
+     field they're editing — they can dive into any earlier step from the rail.
+     The Review index depends on listing-mode: product flow has 7 steps so
+     Review is index 6; company flow has 3 steps so Review is index 2.
+     editMode for company listings isn't fully wired yet — falls through to
+     standard product-mode editing for now. */
   const [stepIdx, setStepIdx] = useState(editMode ? 6 : 0)
   const [visited, setVisited] = useState<Set<number>>(
     () => editMode ? new Set([0, 1, 2, 3, 4, 5, 6]) : new Set([0])
@@ -91,6 +95,12 @@ export default function DashboardListingForm({
   const [errors, setErrors] = useState<Record<string, string>>({})
   const wrapRef = useRef<HTMLDivElement>(null)
   const [draftSavedAt, setDraftSavedAt] = useState<number | null>(null)
+
+  /* Steps array — switches between the long product flow and the short
+     company flow based on form.listingMode. Recomputed on each render
+     so the rail/footer/validators all use the right list when the mode
+     flips (which only happens once, in the entry hero). */
+  const STEPS = form.listingMode === 'company' ? COMPANY_STEPS : PRODUCT_STEPS
 
   const [allCategories, setAllCategories] = useState<Category[]>([])
   const [tagGroups, setTagGroups] = useState<TagGroup[]>([])
@@ -208,18 +218,27 @@ export default function DashboardListingForm({
     try {
       const chosenId = form.l3Id || form.l2Id || form.l1Id
       const chosenCat = allCategories.find(c => c.id === chosenId)
+      const isCompanyMode = form.listingMode === 'company'
+
+      /* Company mode sends a slimmer payload — only fields the company
+         form actually captures. The 50+ product-specific fields stay at
+         their INITIAL defaults (empty arrays / nulls), which is what
+         the API already tolerates. listing_mode goes on the wire so the
+         server writes it to the row. */
       const payload: Record<string, unknown> = {
+        listingMode: isCompanyMode ? 'company' : 'product',
         companyName: form.companyName.trim(),
         contactName: form.contactName.trim(),
         email: form.email.trim().toLowerCase(),
         phoneCode: form.phoneCode,
         phone: form.phone || null,
         website: form.website.trim(),
+        /* Companies are filed under their L1 sector; products narrow to L3. */
         category: chosenCat?.slug || chosenId,
         categorySlug: chosenCat?.slug,
-        listingTypeId: form.listingTypeIds[0] || null,
-        listingTypeIds: form.listingTypeIds,
-        tagIds: form.tagIds,
+        listingTypeId: isCompanyMode ? null : (form.listingTypeIds[0] || null),
+        listingTypeIds: isCompanyMode ? [] : form.listingTypeIds,
+        tagIds: isCompanyMode ? [] : form.tagIds,
         country: form.country,
         city: form.city || null,
         state: form.state || null,
@@ -229,43 +248,44 @@ export default function DashboardListingForm({
         employees: form.employees || null,
         plan,
         logoUrl: form.logoUrl || null,
-        screenshots: form.screenshots,
-        demoVideo: form.demoVideo || null,
-        features: form.features.filter(f => f.trim()),
-        integrations: form.integrations
+        screenshots: isCompanyMode ? [] : form.screenshots,
+        demoVideo: isCompanyMode ? null : (form.demoVideo || null),
+        features: isCompanyMode ? [] : form.features.filter(f => f.trim()),
+        integrations: isCompanyMode ? [] : form.integrations
           .filter(it => it.name.trim())
           .map(it => ({
             name: it.name.trim(),
             ...(it.website && it.website.trim() ? { website: it.website.trim() } : {}),
             ...(it.description && it.description.trim() ? { description: it.description.trim() } : {}),
           })),
-        pricingModel: form.pricingModel || null,
-        pricingTiers: form.pricingTiers.filter(t => t.name.trim()),
+        pricingModel: isCompanyMode ? null : (form.pricingModel || null),
+        pricingTiers: isCompanyMode ? [] : form.pricingTiers.filter(t => t.name.trim()),
         funding: form.funding || null,
         hqLocation: form.hqLocation || null,
         linkedin: form.linkedin || null,
         twitter: form.twitter || null,
         facebook: form.facebook || null,
-        faqs: form.faqs.filter(f => f.question.trim() && f.answer.trim()),
-        /* ── Listings V3 fields ── */
+        isHiring: form.isHiring,
+        faqs: isCompanyMode ? [] : form.faqs.filter(f => f.question.trim() && f.answer.trim()),
+        /* ── Listings V3 fields — product-only except headerTags. ── */
         headerTags: form.headerTags,
-        pros: form.pros,
-        cons: form.cons,
-        industriesServed: form.industriesServed,
-        useCases: form.useCases,
-        targetCompanySizes: form.targetCompanySizes,
-        keyFeatures: form.keyFeatures.filter(kf => kf.name.trim()),
-        startingPrice: form.startingPrice || null,
-        startingPricePeriod: form.startingPricePeriod || null,
-        hasFreeTrial: form.hasFreeTrial,
-        hasFreeVersion: form.hasFreeVersion,
-        supportChannels: form.supportChannels,
-        trainingOptions: form.trainingOptions,
-        languages: form.languages,
-        hasIosApp: form.hasIosApp,
-        hasAndroidApp: form.hasAndroidApp,
-        compliance: form.compliance,
-        awards: form.awards.filter(a => a.name.trim()),
+        pros: isCompanyMode ? [] : form.pros,
+        cons: isCompanyMode ? [] : form.cons,
+        industriesServed: isCompanyMode ? [] : form.industriesServed,
+        useCases: isCompanyMode ? [] : form.useCases,
+        targetCompanySizes: isCompanyMode ? [] : form.targetCompanySizes,
+        keyFeatures: isCompanyMode ? [] : form.keyFeatures.filter(kf => kf.name.trim()),
+        startingPrice: isCompanyMode ? null : (form.startingPrice || null),
+        startingPricePeriod: isCompanyMode ? null : (form.startingPricePeriod || null),
+        hasFreeTrial: isCompanyMode ? false : form.hasFreeTrial,
+        hasFreeVersion: isCompanyMode ? false : form.hasFreeVersion,
+        supportChannels: isCompanyMode ? [] : form.supportChannels,
+        trainingOptions: isCompanyMode ? [] : form.trainingOptions,
+        languages: isCompanyMode ? [] : form.languages,
+        hasIosApp: isCompanyMode ? false : form.hasIosApp,
+        hasAndroidApp: isCompanyMode ? false : form.hasAndroidApp,
+        compliance: isCompanyMode ? [] : form.compliance,
+        awards: isCompanyMode ? [] : form.awards.filter(a => a.name.trim()),
       }
       const res = editMode && submissionUuid
         ? await updateSubmission(submissionUuid, payload)
@@ -360,11 +380,11 @@ export default function DashboardListingForm({
                   set('l1Id', l1Id)
                   set('l2Id', '')
                   set('l3Id', '')
-                  /* Land them on Step 2 (Category) so they immediately
-                     pick L2/L3 — Step 1 (Identity) is non-blocking and
-                     they can revisit it via the rail. */
-                  setStepIdx(1)
-                  setVisited(v => new Set(v).add(0).add(1))
+                  /* Form opens at Step 1 (Identity) — the natural start.
+                     The L1 we just captured is already pre-filled in
+                     Step 2 when the user reaches it. */
+                  setStepIdx(0)
+                  setVisited(new Set([0]))
                 }}
               />
             </main>
@@ -422,6 +442,20 @@ export default function DashboardListingForm({
                 goToStep={goToStepId}
               />
             )}
+
+            {/* ── Company-mode 3-step flow ── */}
+            {current.id === 'company_identity' && (
+              <CompanyStep1Identity form={form} set={set} errors={errors} caps={caps} plan={plan} />
+            )}
+            {current.id === 'company_details' && (
+              <CompanyStep2Details  form={form} set={set} errors={errors} caps={caps} plan={plan} />
+            )}
+            {current.id === 'company_review' && (
+              <CompanyStep3Review
+                form={form} set={set} errors={errors} caps={caps} plan={plan}
+                goToStep={i => setStepIdx(i)}
+              />
+            )}
           </main>
 
           <Footer
@@ -431,7 +465,11 @@ export default function DashboardListingForm({
             onNext={isLast ? onSubmit : next}
             isLast={isLast}
             submitting={submitting}
-            submitLabel={editMode ? 'Save changes' : 'Submit listing'}
+            submitLabel={
+              editMode ? 'Save changes'
+              : form.listingMode === 'company' ? 'Submit profile'
+              : 'Submit listing'
+            }
             submittingLabel={editMode ? 'Saving…' : 'Submitting…'}
           />
 

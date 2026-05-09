@@ -23,20 +23,40 @@ export async function POST(request: NextRequest, ctx: { params: Promise<{ slug: 
     return Response.json({ ok: false, error: 'Invalid slug' }, { status: 400 })
   }
 
-  const row = await queryOne<{ id: number; status: string }>(
-    'SELECT id, status FROM submissions WHERE slug = ? LIMIT 1',
-    [slug]
-  )
+  /* Resolve the row's listing_mode so we revalidate the right path. */
+  let row: { id: number; status: string; listing_mode: string } | null = null
+  try {
+    row = await queryOne<{ id: number; status: string; listing_mode: string }>(
+      `SELECT id, status, COALESCE(listing_mode, 'product') AS listing_mode
+         FROM submissions WHERE slug = ? LIMIT 1`,
+      [slug]
+    )
+  } catch (err) {
+    /* Pre-migration fallback — no listing_mode column yet. */
+    const msg = err instanceof Error ? err.message : String(err)
+    if (/Unknown column.*listing_mode/.test(msg)) {
+      const legacy = await queryOne<{ id: number; status: string }>(
+        'SELECT id, status FROM submissions WHERE slug = ? LIMIT 1',
+        [slug]
+      )
+      row = legacy ? { ...legacy, listing_mode: 'product' } : null
+    } else {
+      throw err
+    }
+  }
   if (!row) return Response.json({ ok: false, error: 'Listing not found' }, { status: 404 })
 
+  const path = row.listing_mode === 'company' ? `/profile/${slug}` : `/company/${slug}`
+
   try {
-    revalidatePath(`/company/${slug}`)
+    revalidatePath(path)
     return Response.json({
       ok: true,
       slug,
-      path: `/company/${slug}`,
+      path,
       listingId: row.id,
       listingStatus: row.status,
+      listingMode: row.listing_mode,
     })
   } catch (err) {
     console.error('POST /api/admin/listings/[slug]/revalidate error:', err)

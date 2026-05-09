@@ -311,6 +311,69 @@
   border: 1px dashed rgba(180, 83, 9, .35);
 }
 
+/* ── Company section on /dashboard/listings — at most one row, distinct
+      visual treatment so it doesn't read like a regular product card. */
+.dash-co-section {
+  display: flex; flex-direction: column;
+  gap: 10px;
+}
+.dash-co-section-head {
+  display: flex; flex-direction: column; gap: 2px;
+  margin: 4px 0 0;
+}
+.dash-co-section-title {
+  margin: 0;
+  font-family: inherit;
+  font-size: 14px; font-weight: 800;
+  letter-spacing: -.005em;
+  color: var(--h-heading);
+}
+.dash-co-section-sub {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--h-muted);
+}
+.dash-co-card {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 14px;
+  padding: 16px 18px;
+  background: linear-gradient(180deg, rgba(14, 143, 110, .04) 0%, transparent 100%);
+  border: 1.5px solid var(--h-border);
+  border-left: 4px solid #0E8F6E;
+  border-radius: 12px;
+}
+.dash-co-card-logo {
+  width: 64px; height: 64px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--h-bg);
+  border: 1px solid var(--h-border-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 800; color: var(--h-accent);
+}
+.dash-co-card-logo img { width: 100%; height: 100%; object-fit: cover }
+.dash-co-card-body { display: flex; flex-direction: column; gap: 6px; min-width: 0 }
+.dash-co-card-top {
+  display: flex; align-items: center; gap: 10px;
+}
+.dash-co-card-name {
+  margin: 0;
+  font-family: inherit;
+  font-size: 16px; font-weight: 800;
+  letter-spacing: -.01em;
+  color: var(--h-heading);
+}
+.dash-co-card-tag {
+  margin: 0;
+  font-size: 13px; color: var(--h-body);
+  line-height: 1.4;
+}
+.dash-co-card-foot {
+  display: flex; gap: 14px; flex-wrap: wrap;
+  margin-top: 4px;
+}
+
 /* ══════════════════════════════════════════════════════════════
    /dashboard/listings/[uuid]/verify — apply / status page.
    Same .dash design tokens (white cards, hairline borders,

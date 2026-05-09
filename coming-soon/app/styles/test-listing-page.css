@@ -725,6 +725,37 @@ body.tlp-subheader-active .tlp-write-review {
 }
 .tlp-updated { color: var(--tlp-mute); font-size: 12.5px; margin-top: 10px }
 
+/* ── "Made by {Company}" linkage badge — links the product to its
+      parent company profile at /profile/[slug]. Quiet inline pill
+      that sits between the tagline and the verified badge. */
+.tlp-made-by {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin: 10px 0 0;
+  padding: 5px 12px;
+  background: var(--tlp-bg-soft, #FAFAFA);
+  border: 1px solid var(--tlp-line, #E5E7EB);
+  border-radius: 999px;
+  font-size: 12.5px; font-weight: 500;
+  color: var(--tlp-mute, #6B7280);
+  text-decoration: none;
+  transition: border-color .12s ease, color .12s ease;
+}
+.tlp-made-by:hover {
+  border-color: var(--tlp-ink, #1A1A1A);
+  color: var(--tlp-ink, #1A1A1A);
+}
+.tlp-made-by strong {
+  font-weight: 700;
+  color: var(--tlp-ink, #1A1A1A);
+}
+.tlp-made-by-logo {
+  width: 16px; height: 16px;
+  border-radius: 4px;
+  object-fit: contain;
+  background: #FFFFFF;
+}
+.tlp-made-by svg { color: currentColor; opacity: .7; }
+
 /* ── Listing verification badge (mint card when verified, muted pill
       otherwise). Sits in the title-block between the tagline and the
       "Last updated" line. The verified variant is intentionally larger

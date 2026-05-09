@@ -87,6 +87,27 @@ async function getListingBySlug(slug: string) {
   )
   if (!listing) return null
 
+  /* Parent-company linkage — wraps in try/catch so the product page still
+     renders for sites that haven't run migration-listings-company-mode.sql
+     yet. When set, the hero shows "Made by {Company} ↗" linking to /profile. */
+  let parentCompany: { name: string; slug: string; logo_url: string | null } | null = null
+  try {
+    const row = listing as unknown as { parent_company_id?: number | null }
+    if (row.parent_company_id) {
+      parentCompany = await queryOne<{ name: string; slug: string; logo_url: string | null }>(
+        `SELECT company_name AS name, slug, logo_url
+           FROM submissions
+          WHERE id = ? AND listing_mode = 'company' AND status IN ('active','paid')
+          LIMIT 1`,
+        [row.parent_company_id]
+      )
+    }
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    if (!/Unknown column.*(?:parent_company_id|listing_mode)/.test(msg)) throw err
+    /* Pre-migration — skip the join, no badge. */
+  }
+
   // Build breadcrumb
   interface CatRow { id: number; name: string; slug: string; parent_id: number | null }
   const crumbs: BreadcrumbItem[] = []
@@ -196,6 +217,7 @@ async function getListingBySlug(slug: string) {
      GET /api/listings/[slug]/me right after mount. Default to anon shape. */
   return {
     listing,
+    parentCompany,
     breadcrumb: crumbs,
     related: related as Record<string, unknown>[],
     siblings,
@@ -509,6 +531,7 @@ export default async function CompanyPage({
   // Serialize to plain JSON to avoid mysql2 Buffer objects breaking client hydration.
   const initialData = serialize({
     listing: data.listing as unknown as Record<string, unknown>,
+    parentCompany: data.parentCompany,
     breadcrumb: data.breadcrumb,
     related: data.related,
     siblings: data.siblings,

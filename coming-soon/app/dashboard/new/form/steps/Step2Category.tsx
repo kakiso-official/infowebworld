@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import CategoryPicker from '../components/CategoryPicker'
 import PillToggle from '../components/PillToggle'
 import type { CategoryStepProps } from '../types'
-import type { TagGroup } from '../../../iww-hq/data/tag-storage'
+import type { TagGroup } from '../../../../iww-hq/data/tag-storage'
 
 /* ──────────────────────────────────────────────────────────────────────
    Step 2 — Category & Classification.
