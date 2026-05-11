@@ -4,6 +4,8 @@ import { Country, State, City } from 'country-state-city'
 import Field from '../components/Field'
 import Select from '../components/Select'
 import PhoneRow from '../components/PhoneRow'
+import PillToggle from '../components/PillToggle'
+import { COMMON_LANGUAGES, COMMON_TIMEZONES } from '../constants'
 import type { StepProps } from '../types'
 
 /**
@@ -132,6 +134,26 @@ export default function CompanyStep2Details({ form, set, errors }: StepProps) {
           onChange={e => set('hqLocation', e.target.value)}
           placeholder="675 Ponce de Leon Ave NE, Atlanta, GA, USA"
           maxLength={200}
+        />
+      </Field>
+
+      <Field label="Languages" hint="Languages your team works in. Shown in the stats grid as a count + tooltip.">
+        <PillToggle
+          options={COMMON_LANGUAGES}
+          selected={form.languages}
+          onChange={v => set('languages', v)}
+          allowCustom
+          customPlaceholder="Add another language"
+        />
+      </Field>
+
+      <Field label="Timezones" hint="Timezones your team operates in. Shown in the stats grid as a count.">
+        <PillToggle
+          options={COMMON_TIMEZONES}
+          selected={form.timezones}
+          onChange={v => set('timezones', v)}
+          allowCustom
+          customPlaceholder="Add another timezone"
         />
       </Field>
 

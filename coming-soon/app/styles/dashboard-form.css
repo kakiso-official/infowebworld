@@ -427,6 +427,24 @@
 }
 .df-add-btn:hover { border-color: var(--df-accent); color: var(--df-accent); }
 
+/* Inline running-total indicator under repeating-row groups (e.g. service
+   line percentages in CompanyStep3Services). Coral when sum != 100, mint
+   when it lands exactly on 100. */
+.df-help-row {
+  margin-top: 8px;
+  padding: 6px 10px;
+  font-size: 12px; font-weight: 600;
+  color: var(--df-accent);
+  background: rgba(232, 85, 61, .06);
+  border-radius: 6px;
+  display: inline-block;
+}
+.df-help-row strong { font-weight: 800; }
+.df-help-row.is-ok {
+  color: #0E8F6E;
+  background: rgba(14, 143, 110, .08);
+}
+
 .df-icon-btn {
   display: inline-flex; align-items: center; justify-content: center;
   width: 32px; height: 32px;

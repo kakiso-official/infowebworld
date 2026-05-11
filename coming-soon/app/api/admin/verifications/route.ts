@@ -32,7 +32,8 @@ export async function GET(request: NextRequest) {
          r.listing_id, s.slug AS listing_slug, s.uuid AS listing_uuid,
          s.company_name AS listing_name, s.tagline AS listing_tagline,
          s.logo_url AS listing_logo_url, s.website AS listing_website,
-         COALESCE(s.verified, 0) AS listing_verified
+         COALESCE(s.verified, 0) AS listing_verified,
+         COALESCE(s.listing_mode, 'product') AS listing_mode
          FROM listing_verification_requests r
          LEFT JOIN business_users u ON u.id = r.user_id
          LEFT JOIN submissions    s ON s.id = r.listing_id

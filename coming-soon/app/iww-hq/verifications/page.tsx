@@ -40,6 +40,7 @@ interface RequestRow {
   user_avatar_url: string | null
   listing_id: number
   listing_slug: string
+  listing_mode?: 'product' | 'company' | string
   listing_uuid: string
   listing_name: string
   listing_tagline: string | null
@@ -263,7 +264,7 @@ export default function AdminVerificationsPage() {
                       fontSize: '.7rem', fontWeight: 800,
                     }}>{(r.listing_name || '?').slice(0, 1).toUpperCase()}</span>
                   )}
-                  <a href={`/company/${r.listing_slug}`} target="_blank" rel="noopener noreferrer" style={{
+                  <a href={(r.listing_mode === 'company' ? '/profile/' : '/company/') + r.listing_slug} target="_blank" rel="noopener noreferrer" style={{
                     fontSize: '.92rem', fontWeight: 800, color: '#1A1A1A', textDecoration: 'none',
                   }}>{r.listing_name}</a>
                   {Number(r.listing_verified) === 1 && (

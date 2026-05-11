@@ -1,13 +1,12 @@
 /* ═════════════════════════════════════════════════════════════
-   /profile/[slug] — public company profile page.
+   /profile/[slug] — public company profile page (Clutch.co-style).
 
-   Editorial portfolio approach. Distinct from the dense product
-   detail page (.tlp-*) — generous whitespace, sector accent as a
-   quiet through-line, products grid as the visual centerpiece.
+   Layout from top: sticky head → main grid (left col + tab widget) →
+   pricing snapshot → portfolio (Products by us) → connect.
 
-   --cmp-accent / --cmp-accent-soft / --cmp-accent-border are set
-   on the root by the React component from categories.color of
-   the company's L1 sector.
+   Sector accent (--cmp-accent) drives the Visit-Website primary pill,
+   inline accent dots, and award badge fills. Set on the root by the
+   React component from categories.color of the company's L1 sector.
 
    Namespace: cmp-*
    ═════════════════════════════════════════════════════════════ */
@@ -27,6 +26,15 @@
   --cmp-accent-soft: rgba(232, 85, 61, .06);
   --cmp-accent-border: rgba(232, 85, 61, .22);
 
+  /* Clutch-ish bright stat-card colors. Independent from --cmp-accent so a
+     blue-tinted page (IT Services sector) and a red-tinted one (AI/ML)
+     show the same Pricing Snapshot palette. */
+  --cmp-stat-mint: #A8E5C8;
+  --cmp-stat-blue: #BBD4F7;
+  --cmp-stat-yellow: #F7E083;
+
+  --cmp-red: #E8423B;
+
   background: var(--cmp-bg);
   color: var(--cmp-ink);
   font-family: var(--font-inter), 'Inter', -apple-system, system-ui, sans-serif;
@@ -40,71 +48,15 @@
 }
 
 /* ═══════════════════════════════════════════════════════════
-   Section frame — every section uses .cmp-section + .cmp-section-inner
-   so vertical rhythm and max-width are consistent.
-   ═══════════════════════════════════════════════════════════ */
-.cmp-section {
-  width: 100%;
-  padding: clamp(48px, 7vw, 96px) clamp(20px, 4vw, 40px);
-}
-.cmp-section + .cmp-section { padding-top: 0 }
-.cmp-section-inner {
-  max-width: 1100px;
-  margin: 0 auto;
-  width: 100%;
-}
-.cmp-section-head {
-  display: flex; align-items: baseline; justify-content: space-between;
-  gap: 16px;
-  margin-bottom: clamp(24px, 3vw, 36px);
-}
-.cmp-section-head--portfolio {
-  flex-direction: column; align-items: flex-start;
-  gap: 8px;
-}
-.cmp-section-title {
-  margin: 0;
-  font-size: clamp(26px, 3vw, 36px);
-  font-weight: 800;
-  letter-spacing: -.025em;
-  line-height: 1.1;
-  color: var(--cmp-ink);
-  display: inline-flex; align-items: center; gap: 12px;
-}
-.cmp-section-count {
-  display: inline-flex; align-items: center; justify-content: center;
-  min-width: 30px; height: 24px;
-  padding: 0 9px;
-  background: var(--cmp-accent-soft);
-  color: var(--cmp-accent);
-  border-radius: 999px;
-  font-size: 13px; font-weight: 800;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -.005em;
-}
-.cmp-section-sub {
-  margin: 0;
-  font-size: 15px; font-weight: 500;
-  color: var(--cmp-mute);
-  line-height: 1.55;
-  max-width: 640px;
-}
-.cmp-section-meta {
-  font-size: 12.5px; color: var(--cmp-mute-2);
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   Buttons — sector-accented primary, neutral outline
+   Buttons — global pill buttons used in head + connect
    ═══════════════════════════════════════════════════════════ */
 .cmp-btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  height: 44px;
-  padding: 0 22px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  height: 38px;
+  padding: 0 16px;
   border: 1.5px solid transparent;
-  border-radius: 10px;
-  font-size: 14px; font-weight: 700;
+  border-radius: 6px;
+  font-size: 13.5px; font-weight: 700;
   letter-spacing: -.005em;
   text-decoration: none;
   cursor: pointer;
@@ -114,10 +66,15 @@
   transition: background .15s, color .15s, border-color .15s, transform .15s;
   white-space: nowrap;
 }
+.cmp-btn:focus-visible {
+  outline: 2px solid var(--cmp-red);
+  outline-offset: 2px;
+}
+/* Primary CTA — Visit Website. Solid red filled (Clutch's default). */
 .cmp-btn--primary {
-  background: var(--cmp-accent);
+  background: var(--cmp-red);
   color: #FFFFFF;
-  border-color: var(--cmp-accent);
+  border-color: var(--cmp-red);
 }
 .cmp-btn--primary:hover {
   filter: brightness(.92);
@@ -126,6 +83,7 @@
 .cmp-btn--outline {
   border-color: var(--cmp-line-mid);
   color: var(--cmp-ink);
+  background: var(--cmp-bg);
 }
 .cmp-btn--outline:hover {
   border-color: var(--cmp-line-strong);
@@ -133,265 +91,814 @@
 }
 
 /* ═══════════════════════════════════════════════════════════
-   1. HERO
+   1. STICKY HEAD — compact, Clutch-style
    ═══════════════════════════════════════════════════════════ */
-.cmp-hero {
+.cmp-head {
   position: relative;
-  padding: clamp(56px, 8vw, 110px) clamp(20px, 4vw, 40px) clamp(40px, 5vw, 64px);
-  overflow: hidden;
-  isolation: isolate;
+  background: var(--cmp-bg);
+  border-bottom: 1px solid var(--cmp-line);
+  padding: clamp(14px, 2vw, 22px) clamp(16px, 4vw, 32px) clamp(14px, 2vw, 20px);
 }
-/* Soft sector-tinted band — the hero's defining visual. Subtle, not
-   shouty. Goes from a warm sector wash at the top to white at bottom. */
-.cmp-hero-bg {
-  position: absolute; inset: 0;
-  background:
-    radial-gradient(80% 60% at 22% 0%, var(--cmp-accent-soft) 0%, transparent 70%),
-    linear-gradient(180deg, var(--cmp-accent-soft) 0%, transparent 65%);
-  pointer-events: none;
-  z-index: -1;
-}
-/* Hairline divider at the bottom of the hero so it sits cleanly above
-   the white About section without an abrupt edge. */
-.cmp-hero::after {
-  content: '';
-  position: absolute; left: 0; right: 0; bottom: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--cmp-line), transparent);
-}
-
-.cmp-hero-inner {
+.cmp-head-inner {
   position: relative;
   max-width: 1100px;
   margin: 0 auto;
+}
+
+/* "Add to Shortlist" — pinned top-right of the head. Hover/focus get a
+   visible affordance (background tint) so the silhouette stops looking
+   like accidental text. */
+.cmp-shortlist {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: transparent;
+  border: 0;
+  font-family: inherit;
+  font-size: 13px; font-weight: 600;
+  color: var(--cmp-mute);
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: color .15s, background .15s;
+}
+.cmp-shortlist svg { color: var(--cmp-mute); transition: color .15s, fill .15s; }
+.cmp-shortlist:hover {
+  color: var(--cmp-red);
+  background: rgba(232, 66, 59, .06);
+}
+.cmp-shortlist:hover svg { color: var(--cmp-red); }
+.cmp-shortlist:focus-visible {
+  outline: 2px solid var(--cmp-red);
+  outline-offset: 2px;
+}
+
+/* Logo + identity grid */
+.cmp-head-grid {
   display: grid;
-  grid-template-columns: 132px 1fr;
-  gap: 28px;
-  align-items: center;
+  grid-template-columns: 88px 1fr;
+  gap: 20px;
+  align-items: flex-start;
+  padding-right: 130px; /* Reserve space for the absolute Shortlist button. */
 }
 @media (max-width: 720px) {
-  .cmp-hero-inner { grid-template-columns: 96px 1fr; gap: 18px }
-}
-@media (max-width: 480px) {
-  .cmp-hero-inner { grid-template-columns: 1fr; gap: 16px }
-  .cmp-hero-cta   { flex-wrap: wrap }
+  .cmp-head-grid { grid-template-columns: 64px 1fr; gap: 14px; padding-right: 0; }
+  .cmp-shortlist { position: static; margin-bottom: 12px; align-self: flex-end; }
+  .cmp-head-inner { display: flex; flex-direction: column; }
 }
 
-.cmp-hero-logo {
-  width: 132px; height: 132px;
+.cmp-head-logo {
+  width: 88px; height: 88px;
   background: #FFFFFF;
   border: 1px solid var(--cmp-line);
-  border-radius: 24px;
-  box-shadow: 0 1px 0 rgba(15, 20, 25, .04), 0 8px 24px rgba(15, 20, 25, .06);
+  border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
   overflow: hidden;
+  box-shadow: 0 1px 2px rgba(15, 20, 25, .04);
+  /* Soft chequered backdrop only visible behind transparent PNGs —
+     prevents logos with transparent backgrounds from looking like a
+     blank tile. The image padding covers it on opaque logos. */
+  background-image:
+    linear-gradient(45deg, #F4F5F7 25%, transparent 25%),
+    linear-gradient(-45deg, #F4F5F7 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #F4F5F7 75%),
+    linear-gradient(-45deg, transparent 75%, #F4F5F7 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
 }
-.cmp-hero-logo img { width: 100%; height: 100%; object-fit: contain; padding: 14px; box-sizing: border-box; }
-.cmp-hero-logo span {
-  font-size: 44px; font-weight: 800;
+.cmp-head-logo img { width: 100%; height: 100%; object-fit: contain; padding: 8px; box-sizing: border-box; background: #FFFFFF; }
+.cmp-head-logo span {
+  font-size: 24px; font-weight: 800;
   color: var(--cmp-accent);
+  background: #FFFFFF;
+  width: 100%; height: 100%;
+  display: inline-flex; align-items: center; justify-content: center;
   letter-spacing: -.02em;
 }
-@media (max-width: 720px) { .cmp-hero-logo { width: 96px; height: 96px; border-radius: 18px } .cmp-hero-logo img { padding: 10px } }
+@media (max-width: 720px) { .cmp-head-logo { width: 64px; height: 64px; border-radius: 10px; } }
 
-.cmp-hero-body { min-width: 0 }
-.cmp-hero-eyebrow {
-  display: inline-block;
-  font-size: 11.5px; font-weight: 700;
-  letter-spacing: .12em; text-transform: uppercase;
-  color: var(--cmp-accent);
-  margin-bottom: 10px;
-}
-.cmp-hero-name {
+.cmp-head-body { min-width: 0 }
+
+/* Company name + Verified pill */
+.cmp-head-name {
   margin: 0 0 8px;
-  font-size: clamp(34px, 5vw, 56px);
+  font-size: clamp(20px, 2.4vw, 26px);
   font-weight: 800;
-  letter-spacing: -.03em;
-  line-height: 1.02;
+  letter-spacing: -.022em;
+  line-height: 1.18;
   color: var(--cmp-ink);
-  display: inline-flex; align-items: center; gap: 14px;
+  display: inline-flex; align-items: center; gap: 10px;
   flex-wrap: wrap;
 }
-.cmp-hero-verified {
-  display: inline-flex; align-items: center; justify-content: center;
+.cmp-head-verified {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12.5px; font-weight: 700;
+  padding: 4px 10px 4px 8px;
+  background: rgba(14, 143, 110, .10);
+  color: #0E8F6E;
+  border-radius: 999px;
+  letter-spacing: 0;
 }
-.cmp-hero-verified svg { width: 28px; height: 28px }
 
-.cmp-hero-tagline {
-  margin: 0 0 16px;
-  font-size: clamp(16px, 1.6vw, 19px);
-  font-weight: 500;
-  line-height: 1.5;
+/* Meta row — stars · award icons · network count. Items separated by
+   gap (no inline dot characters that wrap awkwardly on narrow screens). */
+.cmp-head-meta {
+  display: flex; align-items: center; flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: var(--cmp-mute);
+}
+.cmp-head-rating { display: inline-flex; align-items: center; gap: 6px; }
+.cmp-head-rating-count {
+  font-weight: 700;
+  color: var(--cmp-ink);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.cmp-head-rating-count:hover { border-bottom-color: var(--cmp-line-mid); }
+/* "Be the first to review" link — quiet but tappable. Replaces 5 dead
+   outline stars in the no-review state. */
+.cmp-head-rating-empty {
+  font-size: 12.5px; font-weight: 600;
+  color: var(--cmp-red);
+  text-decoration: none;
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 0;
+}
+.cmp-head-rating-empty:hover { text-decoration: underline; }
+
+.cmp-head-awards { display: inline-flex; align-items: center; gap: 4px; color: var(--cmp-accent); }
+.cmp-head-award { display: inline-flex; align-items: center; }
+.cmp-head-award svg { display: block; }
+.cmp-head-award-more {
+  font-size: 11px; font-weight: 800;
+  color: var(--cmp-mute);
+  margin-left: 2px;
+}
+.cmp-head-network {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 13px;
   color: var(--cmp-ink-soft);
-  max-width: 720px;
 }
-.cmp-hero-chips {
+.cmp-head-network svg { color: var(--cmp-mute-2); flex-shrink: 0; }
+.cmp-head-network strong {
+  color: var(--cmp-ink);
+  font-weight: 700;
+}
+
+/* Header tags — short descriptors row under the company name. Capped at 5
+   visible + "+N" overflow chip so wide tag lists don't push the CTAs down. */
+.cmp-head-tags {
   display: flex; flex-wrap: wrap; gap: 6px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
-.cmp-hero-chip {
+.cmp-head-tag {
   font-size: 11.5px; font-weight: 600;
-  padding: 4px 10px;
-  background: rgba(255, 255, 255, .7);
+  letter-spacing: 0;
+  padding: 3px 9px;
+  background: var(--cmp-bg-soft);
   border: 1px solid var(--cmp-line);
   border-radius: 999px;
   color: var(--cmp-ink-soft);
-  backdrop-filter: blur(4px);
+  white-space: nowrap;
+}
+.cmp-head-tag--more {
+  background: var(--cmp-bg);
+  color: var(--cmp-mute);
+  cursor: default;
 }
 
-.cmp-hero-meta {
-  display: flex; flex-wrap: wrap;
-  gap: 10px 22px;
-  margin: 0 0 24px;
-  font-size: 13.5px;
-  color: var(--cmp-mute);
+/* Stars — Clutch yellow */
+.cmp-stars { display: inline-flex; line-height: 1; letter-spacing: -1px; }
+.cmp-star { color: var(--cmp-line-mid); font-size: 14px; }
+.cmp-star.is-on { color: #F1B500; }
+
+/* CTA row — wraps on narrow viewports without breaking button widths.
+   On phones each button stretches to share the row evenly. */
+.cmp-head-cta {
+  display: flex; align-items: center; flex-wrap: wrap;
+  gap: 8px;
 }
-.cmp-hero-meta-item {
-  display: inline-flex; align-items: center; gap: 6px;
+.cmp-head-cta .cmp-btn { flex-shrink: 0; }
+@media (max-width: 480px) {
+  .cmp-head-cta { width: 100%; }
+  .cmp-head-cta .cmp-btn { flex: 1 1 auto; min-width: 130px; }
 }
-.cmp-hero-meta-item svg { color: var(--cmp-mute-2); }
-.cmp-hiring {
+.cmp-contact-wrap { position: relative; }
+.cmp-contact-btn { padding: 0 14px; }
+.cmp-contact-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 80;
+  min-width: 220px;
+  background: var(--cmp-bg);
+  border: 1px solid var(--cmp-line-mid);
+  border-radius: 8px;
+  box-shadow: 0 12px 32px rgba(15, 20, 25, .12);
+  padding: 6px;
+  display: flex; flex-direction: column;
+  gap: 2px;
+}
+.cmp-contact-menu-item {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 12px;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 13.5px; font-weight: 600;
+  color: var(--cmp-ink);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background .12s;
+}
+.cmp-contact-menu-item:hover { background: var(--cmp-bg-soft); }
+.cmp-contact-menu-item svg { color: var(--cmp-mute); flex-shrink: 0; }
+.cmp-contact-menu-item:focus-visible {
+  outline: 2px solid var(--cmp-red);
+  outline-offset: -2px;
+}
+
+.cmp-network-btn.is-on {
+  border-color: rgba(14, 143, 110, .35);
+  color: #0E8F6E;
+  background: rgba(14, 143, 110, .06);
+}
+.cmp-network-btn.is-on svg { color: #0E8F6E; stroke-width: 2.4; }
+.cmp-network-btn.is-on:hover {
   background: rgba(14, 143, 110, .1);
-  color: #0E8F6E !important;
-  font-weight: 700;
-  padding: 3px 9px;
-  border-radius: 999px;
+  border-color: rgba(14, 143, 110, .55);
 }
-.cmp-hiring svg { color: #0E8F6E; }
 
-.cmp-hero-cta {
-  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+/* Shortlist button — saved state stronger visual signal (filled red icon
+   + red text, not just a darker outline). */
+.cmp-shortlist.is-on {
+  color: var(--cmp-red);
 }
-.cmp-hero-unverified {
-  font-size: 12px;
-  color: var(--cmp-mute);
-  font-weight: 500;
-  margin-left: 4px;
+.cmp-shortlist.is-on svg {
+  color: var(--cmp-red);
+  fill: var(--cmp-red);
 }
 
 /* ═══════════════════════════════════════════════════════════
-   2. ABOUT — 65/35 split
+   2. MAIN — left (about + stats) + right (tab widget)
    ═══════════════════════════════════════════════════════════ */
-.cmp-about-grid {
+.cmp-main {
+  padding: clamp(20px, 2.5vw, 28px) clamp(16px, 4vw, 32px) clamp(16px, 2vw, 20px);
+}
+.cmp-main-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.cmp-main-grid {
   display: grid;
-  grid-template-columns: minmax(0, 65fr) minmax(0, 35fr);
-  gap: clamp(28px, 5vw, 56px);
-  align-items: start;
+  grid-template-columns: minmax(0, 60fr) minmax(0, 40fr);
+  gap: clamp(20px, 3vw, 32px);
+  align-items: flex-start;
 }
-@media (max-width: 820px) {
-  .cmp-about-grid { grid-template-columns: 1fr; gap: 28px }
+/* If the right-side tab widget didn't render (zero data across all 4
+   tabs), give the left column full width and a comfortable read width. */
+.cmp-main-grid:not(:has(.cmp-tabwidget)) {
+  grid-template-columns: 1fr;
+  max-width: 760px;
 }
-.cmp-about-prose p {
-  margin: 0 0 16px;
-  font-size: 16.5px;
-  line-height: 1.75;
+@media (max-width: 920px) {
+  .cmp-main-grid { grid-template-columns: 1fr; gap: 20px; }
+}
+
+/* Tagline as the section's H2 — what the company actually does.
+   Slightly heavier and wider letter-spacing than the hero name to read
+   as a distinct hierarchy step (theme, not title). */
+.cmp-tagline {
+  margin: 0 0 10px;
+  font-size: clamp(17px, 1.8vw, 20px);
+  font-weight: 800;
+  letter-spacing: -.018em;
+  line-height: 1.3;
+  color: var(--cmp-ink);
+}
+
+/* Description block — paragraphs + Read more affordance.
+   Collapsed state uses CSS line-clamp(3) which clips on a clean line
+   boundary instead of mid-character; the previous max-height + mask
+   variant cut text in the middle of a line and looked broken. */
+.cmp-desc {
+  position: relative;
+  font-size: 14.5px;
+  line-height: 1.65;
   color: var(--cmp-ink-soft);
 }
-.cmp-about-prose p:last-child { margin-bottom: 0 }
-.cmp-about-empty {
+.cmp-desc p { margin: 0 0 10px; }
+.cmp-desc p:last-child { margin-bottom: 0 }
+.cmp-desc.is-collapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.cmp-desc.is-collapsed p { display: inline; margin: 0; }
+.cmp-desc.is-collapsed p:not(:last-of-type)::after { content: ' '; }
+.cmp-readmore {
+  display: inline-block;
+  margin-top: 6px;
+  background: transparent;
+  border: 0;
+  font-family: inherit;
+  font-size: 13.5px; font-weight: 700;
+  color: var(--cmp-red);
+  cursor: pointer;
+  padding: 0;
+  text-decoration: none;
+}
+.cmp-readmore:hover { text-decoration: underline; }
+
+/* Watch our Video — inline accent link with play icon. */
+.cmp-watch {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 12px;
+  font-size: 13.5px; font-weight: 700;
+  color: var(--cmp-red);
+  text-decoration: none;
+  transition: color .12s;
+}
+.cmp-watch:hover { text-decoration: underline; }
+.cmp-watch:hover .cmp-watch-ico {
+  background: var(--cmp-red);
+  color: #fff;
+}
+.cmp-watch-ico {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px;
+  border: 1.5px solid var(--cmp-red);
+  border-radius: 999px;
+  color: var(--cmp-red);
+  padding-left: 2px;
+  transition: background .12s, color .12s;
+}
+
+/* Stats grid — 2 columns of compact tag-icon-value rows */
+.cmp-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 24px;
+  margin-top: clamp(18px, 2vw, 22px);
+  padding-top: clamp(14px, 1.8vw, 18px);
+  border-top: 1px solid var(--cmp-line);
+}
+@media (max-width: 540px) {
+  .cmp-stats { grid-template-columns: 1fr; gap: 14px; }
+}
+.cmp-stat { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.cmp-stat-lbl {
+  font-size: 11.5px; font-weight: 600;
   color: var(--cmp-mute);
+  letter-spacing: 0;
+}
+.cmp-stat-val {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 14px; font-weight: 700;
+  color: var(--cmp-ink);
+  /* Long location strings (city, state, country) wrap cleanly without
+     pushing the icon out of alignment. */
+  flex-wrap: wrap;
+  word-break: break-word;
+}
+.cmp-stat-val svg {
+  color: var(--cmp-mute);
+  flex-shrink: 0;
+  width: 14px; height: 14px;
+}
+.cmp-stat--hiring .cmp-stat-val { color: #0E8F6E; }
+.cmp-stat--hiring .cmp-stat-val svg { color: #0E8F6E; }
+
+/* ═══════════════════════════════════════════════════════════
+   Tab widget (right column) — Services / Focus / Industries / Clients
+   ═══════════════════════════════════════════════════════════ */
+.cmp-tabwidget {
+  border: 1px solid var(--cmp-line-mid);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--cmp-bg);
+}
+.cmp-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: var(--cmp-bg-soft);
+  border-bottom: 1px solid var(--cmp-line);
+}
+.cmp-tab {
+  height: 42px;
+  background: transparent;
+  border: 0;
+  border-right: 1px solid var(--cmp-line);
+  font-family: inherit;
+  font-size: 13px; font-weight: 600;
+  color: var(--cmp-mute);
+  cursor: pointer;
+  transition: background .12s, color .12s;
+}
+.cmp-tab:last-child { border-right: 0; }
+.cmp-tab:hover:not(:disabled) { color: var(--cmp-ink); }
+.cmp-tab.is-on {
+  background: var(--cmp-bg);
+  color: var(--cmp-ink);
+  font-weight: 700;
+  border-top: 2px solid var(--cmp-ink);
+  margin-top: -1px;
+  padding-top: 0;
+}
+/* .is-empty state retained for safety even though we now filter
+   zero-count tabs out of the rendered list. */
+.cmp-tab.is-empty { color: var(--cmp-line-mid); cursor: not-allowed; pointer-events: none; }
+
+.cmp-tabpanel {
+  padding: 18px 18px 22px;
+  min-height: 240px;
+}
+.cmp-tab-empty {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 200px;
+  color: var(--cmp-mute);
+  font-size: 13px;
   font-style: italic;
 }
 
-/* About sidebar — clean stack of supporting links */
-.cmp-about-aside {
-  display: flex; flex-direction: column;
-  gap: 16px;
+/* Pie + legend layout. Pie sized via auto-grid column so it shrinks on
+   narrow widgets without overflowing. */
+.cmp-pie-row {
+  display: grid;
+  grid-template-columns: minmax(0, 200px) 1fr;
+  gap: 18px;
+  align-items: center;
 }
-.cmp-aside-link {
-  display: flex; align-items: center; gap: 12px;
-  padding: 14px 16px;
-  background: var(--cmp-bg);
-  border: 1px solid var(--cmp-line);
-  border-radius: 12px;
-  text-decoration: none;
-  color: var(--cmp-ink);
-  transition: border-color .15s, transform .15s;
+@media (max-width: 540px) {
+  .cmp-pie-row { grid-template-columns: 1fr; justify-items: center; }
 }
-.cmp-aside-link:hover {
-  border-color: var(--cmp-line-strong);
-  transform: translateY(-1px);
-}
-.cmp-aside-link--primary {
-  background:
-    linear-gradient(180deg, var(--cmp-accent-soft) 0%, transparent 100%);
-  border-color: var(--cmp-accent-border);
-}
-.cmp-aside-link--primary:hover { border-color: var(--cmp-accent); }
-.cmp-aside-link svg { color: var(--cmp-accent); flex-shrink: 0 }
-.cmp-aside-link-lbl {
+.cmp-pie-row svg {
   display: block;
-  font-size: 11px; font-weight: 700;
-  letter-spacing: .04em; text-transform: uppercase;
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+}
+.cmp-pie-legend { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.cmp-pie-legend-title {
+  font-size: 13px; font-weight: 700;
+  color: var(--cmp-ink);
+  margin-bottom: 4px;
+}
+.cmp-pie-legend-row {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--cmp-ink-soft);
+  padding: 2px 0;
+}
+.cmp-pie-dot {
+  width: 10px; height: 10px;
+  border-radius: 999px;
+  display: inline-block;
+}
+.cmp-pie-legend-name {
+  font-weight: 600;
+  color: var(--cmp-ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  /* Hint to browsers: tooltip = full name when truncated. The actual
+     title attribute is set via JSX where the data is available. */
+}
+.cmp-pie-legend-pct {
+  font-weight: 700;
   color: var(--cmp-mute);
-}
-.cmp-aside-link-val {
-  display: block;
-  font-size: 14px; font-weight: 700;
-  color: var(--cmp-ink);
-  margin-top: 2px;
-  word-break: break-all;
+  font-variant-numeric: tabular-nums;
 }
 
-.cmp-aside-socials {
-  display: flex; gap: 8px;
-}
-.cmp-aside-socials a {
-  width: 40px; height: 40px;
-  display: inline-flex; align-items: center; justify-content: center;
-  border-radius: 10px;
-  background: var(--cmp-bg);
-  border: 1px solid var(--cmp-line);
-  color: var(--cmp-mute);
-  transition: color .15s, border-color .15s;
-}
-.cmp-aside-socials a:hover { color: var(--cmp-ink); border-color: var(--cmp-line-strong); }
-
-.cmp-aside-verify {
-  display: flex; gap: 12px;
-  padding: 14px 16px;
-  border-radius: 12px;
-  border: 1px solid;
-  font-size: 13px;
-  line-height: 1.5;
-}
-.cmp-aside-verify.is-on  { background: rgba(14, 143, 110, .06); border-color: rgba(14, 143, 110, .22); }
-.cmp-aside-verify.is-off { background: var(--cmp-bg-soft);       border-color: var(--cmp-line); }
-.cmp-aside-verify strong {
-  display: block;
-  font-size: 14px; font-weight: 800;
-  color: var(--cmp-ink);
-  margin-bottom: 2px;
-}
-.cmp-aside-verify span { color: var(--cmp-mute); }
-.cmp-aside-verify-shield { flex-shrink: 0 }
-.cmp-aside-verify-shield--muted svg { color: var(--cmp-mute-2); }
-
-.cmp-aside-fact {
-  display: flex; flex-direction: column; gap: 4px;
-  padding: 12px 16px;
+/* Industries tab — neutral chip cloud (single border color, no rainbow
+   per-chip style — too noisy). */
+.cmp-tab-list-title { font-size: 13px; font-weight: 700; margin-bottom: 12px; color: var(--cmp-ink); }
+.cmp-tab-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.cmp-tab-chip {
+  display: inline-flex; align-items: center;
+  font-size: 12.5px; font-weight: 600;
+  padding: 4px 10px;
   background: var(--cmp-bg-soft);
   border: 1px solid var(--cmp-line);
-  border-radius: 12px;
+  border-radius: 999px;
+  color: var(--cmp-ink-soft);
 }
-.cmp-aside-fact-lbl {
-  font-size: 11px; font-weight: 700;
-  letter-spacing: .04em; text-transform: uppercase;
-  color: var(--cmp-mute);
+
+/* Clients tab — logo grid. minmax(100px) gives logos enough breathing
+   room — 80px was tight and made favicons look pixelated. */
+.cmp-clients-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 8px;
 }
-.cmp-aside-fact-val {
-  font-size: 14.5px; font-weight: 700;
+.cmp-client {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 6px;
+  padding: 14px 8px;
+  background: var(--cmp-bg);
+  border: 1px solid var(--cmp-line);
+  border-radius: 8px;
+  text-decoration: none;
   color: var(--cmp-ink);
+  transition: border-color .12s, transform .12s;
+  min-height: 88px;
+}
+.cmp-client:hover { border-color: var(--cmp-line-strong); transform: translateY(-1px); }
+.cmp-client img {
+  width: 32px; height: 32px;
+  object-fit: contain;
+}
+.cmp-client span:not(.cmp-client-name) {
+  font-size: 18px; font-weight: 800;
+  color: var(--cmp-accent);
+}
+.cmp-client-name {
+  font-size: 11.5px; font-weight: 600;
+  color: var(--cmp-mute);
+  text-align: center;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 100%;
 }
 
 /* ═══════════════════════════════════════════════════════════
-   3. PORTFOLIO — the centerpiece. Rich product cards.
+   3. PRICING SNAPSHOT
+   ═══════════════════════════════════════════════════════════ */
+.cmp-snap {
+  padding: clamp(12px, 1.5vw, 18px) clamp(16px, 4vw, 32px) clamp(20px, 3vw, 32px);
+}
+.cmp-snap-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.cmp-snap-card {
+  background: var(--cmp-bg);
+  border: 1px solid var(--cmp-line-mid);
+  border-radius: 8px;
+  padding: clamp(16px, 2vw, 22px);
+}
+.cmp-snap-head { margin-bottom: 14px; }
+.cmp-snap-title {
+  margin: 0;
+  font-size: clamp(16px, 1.7vw, 20px);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  color: var(--cmp-ink);
+}
+.cmp-snap-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 44px);
+  align-items: flex-start;
+}
+@media (max-width: 920px) {
+  .cmp-snap-grid { grid-template-columns: 1fr; gap: 24px; }
+}
+
+/* Stat cards row — 3 colored corners. auto-fit so 1 stat takes full
+   width, 2 split, 3 distribute evenly — no awkward empty columns when
+   the company hasn't filled all three pricing fields. */
+.cmp-snap-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+@media (max-width: 540px) {
+  .cmp-snap-stats { grid-template-columns: 1fr; }
+}
+.cmp-snap-stat {
+  background: var(--cmp-bg);
+  border: 1px solid var(--cmp-line);
+  border-radius: 6px;
+  padding: 14px 14px 16px;
+  position: relative;
+  overflow: hidden;
+}
+/* Color stripe at the top of each card — Clutch's hallmark for pricing tiles. */
+.cmp-snap-stat::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 6px;
+  background: var(--cmp-stat-stripe, var(--cmp-line-mid));
+  border-radius: 6px 6px 0 0;
+}
+.cmp-snap-stat--min    { --cmp-stat-stripe: var(--cmp-stat-mint); }
+.cmp-snap-stat--rate   { --cmp-stat-stripe: var(--cmp-stat-blue); }
+.cmp-snap-stat--rating { --cmp-stat-stripe: var(--cmp-stat-yellow); }
+.cmp-snap-stat-lbl {
+  display: block;
+  font-size: 12px; font-weight: 600;
+  color: var(--cmp-mute);
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+.cmp-snap-stat-val {
+  display: block;
+  font-size: 16px; font-weight: 800;
+  color: var(--cmp-ink);
+  letter-spacing: -.005em;
+}
+.cmp-snap-stat-val small {
+  font-size: 13px; font-weight: 600;
+  color: var(--cmp-mute);
+  margin-left: 2px;
+}
+
+/* "What Clients Have Said" */
+.cmp-snap-says {
+  margin-top: 22px;
+}
+.cmp-snap-says-title {
+  margin: 0 0 8px;
+  font-size: 14px; font-weight: 800;
+  color: var(--cmp-ink);
+}
+.cmp-snap-says-body {
+  margin: 0;
+  font-size: 13.5px; font-weight: 500;
+  line-height: 1.6;
+  color: var(--cmp-ink-soft);
+}
+.cmp-snap-says-foot {
+  margin: 8px 0 0;
+  font-size: 11.5px; font-weight: 500;
+  color: var(--cmp-mute);
+}
+
+/* Most Common Project Size */
+.cmp-snap-common-title {
+  margin: 0 0 8px;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 14px; font-weight: 800;
+  color: var(--cmp-ink);
+}
+.cmp-snap-common-ico {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px;
+  border-radius: 999px;
+  background: var(--cmp-stat-yellow);
+  color: var(--cmp-ink);
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1;
+}
+.cmp-snap-common-val {
+  font-size: 16px; font-weight: 700;
+  color: var(--cmp-ink);
+  margin-bottom: 10px;
+}
+.cmp-snap-common-meta {
+  font-size: 12.5px; font-weight: 500;
+  color: var(--cmp-mute);
+}
+
+/* Range bar — 4 segments, highlighted segment in mint. Custom variant
+   collapses to a single full-width cell when the project size doesn't
+   fit a standard bucket (e.g. "Contact us", "Custom"). */
+.cmp-range {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  background: var(--cmp-bg);
+  border: 1px solid var(--cmp-line);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.cmp-range--custom { grid-template-columns: 1fr; }
+.cmp-range-cell {
+  position: relative;
+  height: 30px;
+  border-right: 1px solid var(--cmp-line);
+  background: var(--cmp-bg-soft);
+  font-size: 11px;
+  color: var(--cmp-mute);
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 10px;
+  text-align: center;
+}
+.cmp-range-cell:last-child { border-right: 0; }
+.cmp-range-cell.is-on {
+  background: #1F8E5C;
+  color: #fff;
+  font-weight: 700;
+}
+.cmp-range--custom .cmp-range-cell { font-size: 12px; padding: 0 14px; }
+
+/* Service pills */
+.cmp-snap-pills { margin-top: 24px; }
+.cmp-snap-pills-title {
+  font-size: 13px; font-weight: 600;
+  color: var(--cmp-ink-soft);
+  margin-bottom: 10px;
+}
+.cmp-snap-pills-hint {
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-left: 4px;
+  width: 14px; height: 14px;
+  border-radius: 999px;
+  background: var(--cmp-line);
+  color: var(--cmp-mute);
+  font-size: 10px;
+  font-weight: 700;
+  cursor: help;
+  vertical-align: middle;
+}
+.cmp-snap-pills-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.cmp-snap-pill {
+  display: inline-flex; align-items: center;
+  height: 32px;
+  padding: 0 14px;
+  background: var(--cmp-bg);
+  border: 1px solid var(--cmp-line-mid);
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 12.5px; font-weight: 600;
+  color: var(--cmp-ink-soft);
+  cursor: pointer;
+  transition: background .12s, border-color .12s, color .12s;
+}
+.cmp-snap-pill:hover { border-color: var(--cmp-line-strong); color: var(--cmp-ink); }
+.cmp-snap-pill.is-on {
+  background: var(--cmp-ink);
+  border-color: var(--cmp-ink);
+  color: #FFFFFF;
+}
+.cmp-snap-pill:focus-visible {
+  outline: 2px solid var(--cmp-red);
+  outline-offset: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Section frame (used by portfolio, similar agencies, popular
+   tools, compare alternatives, connect)
+   ═══════════════════════════════════════════════════════════ */
+.cmp-section {
+  width: 100%;
+  padding: clamp(28px, 3.5vw, 40px) clamp(20px, 4vw, 32px);
+}
+/* Sibling sections still need breathing room above their heading —
+   collapsing top padding here jammed the H2 into the previous section's
+   bottom border. Keep the full top padding. */
+.cmp-section-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+.cmp-section-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 16px;
+  margin-bottom: clamp(14px, 1.6vw, 18px);
+}
+.cmp-section-head--portfolio {
+  flex-direction: column; align-items: flex-start;
+  gap: 4px;
+}
+.cmp-section-title {
+  margin: 0;
+  font-size: clamp(18px, 1.9vw, 22px);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.2;
+  color: var(--cmp-ink);
+  display: inline-flex; align-items: center; gap: 10px;
+}
+.cmp-section-count {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 26px; height: 22px;
+  padding: 0 8px;
+  background: var(--cmp-accent-soft);
+  color: var(--cmp-accent);
+  border-radius: 999px;
+  font-size: 12px; font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.cmp-section-sub {
+  margin: 0;
+  font-size: 14px; font-weight: 500;
+  color: var(--cmp-mute);
+  line-height: 1.55;
+  max-width: 640px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   4. PORTFOLIO — Products by us. Carry-over.
    ═══════════════════════════════════════════════════════════ */
 .cmp-portfolio {
   background: var(--cmp-bg-soft);
   border-top: 1px solid var(--cmp-line);
   border-bottom: 1px solid var(--cmp-line);
-  margin-top: clamp(24px, 4vw, 48px);
+  margin-top: clamp(20px, 3vw, 32px);
 }
 .cmp-portfolio-grid {
   display: grid;
@@ -415,7 +922,6 @@
   overflow: hidden;
   transition: border-color .2s, transform .2s, box-shadow .2s;
 }
-/* Sector-accent stripe at the top of every card — the "we made this" mark */
 .cmp-portfolio-card::before {
   content: '';
   position: absolute;
@@ -427,8 +933,8 @@
 }
 .cmp-portfolio-card:hover {
   border-color: var(--cmp-accent);
-  transform: translateY(-3px);
-  box-shadow: 0 12px 32px rgba(15, 20, 25, .08);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(15, 20, 25, .06);
 }
 .cmp-portfolio-card:hover::before { opacity: 1; }
 
@@ -521,7 +1027,7 @@
 }
 
 /* ═══════════════════════════════════════════════════════════
-   4. CONNECT — single horizontal block, no card chrome
+   5. CONNECT — single horizontal block, no card chrome
    ═══════════════════════════════════════════════════════════ */
 .cmp-connect-inner {
   display: flex; flex-direction: column;
@@ -566,3 +1072,299 @@
 @media (max-width: 540px) {
   .cmp-connect-socials { margin-left: 0 }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   Bridge wrapper between cmp-* sections and the tlp-* cross-marketing
+   sections (Alternatives / Popular comparisons / Customers also viewed
+   / Related categories). The tlp-* CSS is scoped under .tlp-main, and
+   we want the same visual rhythm here as the product page.
+   ═══════════════════════════════════════════════════════════ */
+.cmp-tlp-bridge {
+  background: var(--cmp-bg);
+  border-top: 1px solid var(--cmp-line);
+  padding: 0;
+}
+/* Keep the section padding inside the wrapper consistent with the rest
+   of the page. tlp-sec already has padding:36px 0 — that gives clean
+   spacing without doubling. */
+.cmp-tlp-bridge .tlp-wrap {
+  max-width: 1100px;
+  padding: 0 clamp(20px, 4vw, 32px);
+}
+
+/* Following Connect section needs separation from the last tlp-sec. */
+.cmp-tlp-bridge + .cmp-section.cmp-connect {
+  border-top: 1px solid var(--cmp-line);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   5. SIMILAR AGENCIES — same-sector cards.
+      Reuses portfolio card silhouette but with a stat strip mid-card.
+   ═══════════════════════════════════════════════════════════ */
+.cmp-sib {
+  background: var(--cmp-bg);
+  border-top: 1px solid var(--cmp-line);
+}
+.cmp-sib-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 920px) { .cmp-sib-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+@media (max-width: 560px) { .cmp-sib-grid { grid-template-columns: 1fr } }
+
+.cmp-sib-card {
+  display: flex; flex-direction: column;
+  gap: 10px;
+  padding: 14px 14px 12px;
+  background: var(--cmp-bg);
+  border: 1px solid var(--cmp-line);
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color .15s, transform .15s, box-shadow .15s;
+  position: relative;
+}
+.cmp-sib-card:hover {
+  border-color: var(--cmp-line-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(15, 20, 25, .06);
+}
+.cmp-sib-top {
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.cmp-sib-logo {
+  flex-shrink: 0;
+  width: 44px; height: 44px;
+  background: var(--cmp-bg-soft);
+  border: 1px solid var(--cmp-line);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.cmp-sib-logo img { width: 100%; height: 100%; object-fit: contain; padding: 4px; box-sizing: border-box; }
+.cmp-sib-logo span { font-size: 18px; font-weight: 800; color: var(--cmp-accent); }
+.cmp-sib-id { min-width: 0; flex: 1; }
+.cmp-sib-name {
+  margin: 0 0 2px;
+  font-size: 14.5px; font-weight: 800;
+  letter-spacing: -.012em;
+  color: var(--cmp-ink);
+  line-height: 1.25;
+  text-overflow: ellipsis; white-space: nowrap; overflow: hidden;
+}
+.cmp-sib-tag {
+  margin: 0;
+  font-size: 12.5px; line-height: 1.45;
+  color: var(--cmp-mute);
+  display: -webkit-box; -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; overflow: hidden;
+}
+.cmp-sib-meta {
+  display: flex; flex-wrap: wrap;
+  gap: 6px 12px;
+  font-size: 11.5px;
+  color: var(--cmp-mute);
+}
+.cmp-sib-meta strong {
+  color: var(--cmp-mute-2);
+  font-weight: 700;
+  margin-right: 3px;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: .04em;
+}
+.cmp-sib-loc { display: inline-flex; align-items: center; gap: 4px; }
+.cmp-sib-loc svg { width: 11px; height: 11px; color: var(--cmp-mute-2); }
+.cmp-sib-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--cmp-line);
+  font-size: 12px;
+  margin-top: auto;
+}
+.cmp-sib-cat {
+  font-weight: 700;
+  letter-spacing: -.005em;
+}
+.cmp-sib-cta {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-weight: 700;
+  color: var(--cmp-red);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   6. POPULAR TOOLS — products by other companies
+   ═══════════════════════════════════════════════════════════ */
+.cmp-tools {
+  background: var(--cmp-bg-soft);
+  border-top: 1px solid var(--cmp-line);
+}
+.cmp-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 920px) { .cmp-tools-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+@media (max-width: 560px) { .cmp-tools-grid { grid-template-columns: 1fr } }
+
+.cmp-tools-card {
+  display: flex; flex-direction: column;
+  gap: 10px;
+  padding: 14px 14px 12px;
+  background: var(--cmp-bg);
+  border: 1px solid var(--cmp-line);
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color .15s, transform .15s, box-shadow .15s;
+}
+.cmp-tools-card:hover {
+  border-color: var(--cmp-line-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(15, 20, 25, .06);
+}
+.cmp-tools-logo {
+  width: 44px; height: 44px;
+  background: var(--cmp-bg-soft);
+  border: 1px solid var(--cmp-line);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.cmp-tools-logo img { width: 100%; height: 100%; object-fit: contain; padding: 4px; box-sizing: border-box; }
+.cmp-tools-logo span { font-size: 18px; font-weight: 800; color: var(--cmp-accent); }
+.cmp-tools-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.cmp-tools-name {
+  margin: 0;
+  font-size: 14.5px; font-weight: 800;
+  letter-spacing: -.012em;
+  color: var(--cmp-ink);
+  text-overflow: ellipsis; white-space: nowrap; overflow: hidden;
+}
+.cmp-tools-tag {
+  margin: 0;
+  font-size: 12.5px; line-height: 1.45;
+  color: var(--cmp-mute);
+  display: -webkit-box; -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; overflow: hidden;
+}
+.cmp-tools-by {
+  margin: 4px 0 0;
+  font-size: 11.5px;
+  color: var(--cmp-mute);
+}
+.cmp-tools-by span { color: var(--cmp-ink); font-weight: 700; }
+.cmp-tools-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--cmp-line);
+  font-size: 12.5px;
+  margin-top: auto;
+}
+.cmp-tools-price {
+  font-weight: 700;
+  color: var(--cmp-ink);
+}
+.cmp-tools-price--quiet {
+  font-weight: 500;
+  color: var(--cmp-mute);
+}
+.cmp-tools-price span {
+  color: var(--cmp-mute);
+  font-weight: 500;
+  margin-left: 3px;
+}
+.cmp-tools-cta {
+  display: inline-flex; align-items: center;
+  color: var(--cmp-red);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   7. COMPARE ALTERNATIVES — X vs Y card grid
+   ═══════════════════════════════════════════════════════════ */
+.cmp-vs {
+  background: var(--cmp-bg);
+  border-top: 1px solid var(--cmp-line);
+}
+.cmp-vs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 720px) { .cmp-vs-grid { grid-template-columns: 1fr } }
+
+.cmp-vs-card {
+  display: flex; flex-direction: column;
+  gap: 12px;
+  padding: 16px 16px 12px;
+  background: var(--cmp-bg);
+  border: 1px solid var(--cmp-line);
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color .15s, transform .15s, box-shadow .15s;
+}
+.cmp-vs-card:hover {
+  border-color: var(--cmp-red);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(15, 20, 25, .06);
+}
+.cmp-vs-card:hover .cmp-vs-divider {
+  border-color: var(--cmp-red);
+  color: var(--cmp-red);
+  background: rgba(232, 66, 59, .06);
+}
+.cmp-vs-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+}
+.cmp-vs-side {
+  display: flex; align-items: center; gap: 8px;
+  min-width: 0;
+}
+.cmp-vs-side:last-child { justify-content: flex-end; }
+.cmp-vs-side:last-child .cmp-vs-name { text-align: right; }
+.cmp-vs-logo {
+  flex-shrink: 0;
+  width: 40px; height: 40px;
+  background: var(--cmp-bg-soft);
+  border: 1px solid var(--cmp-line);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.cmp-vs-logo img { width: 100%; height: 100%; object-fit: contain; padding: 4px; box-sizing: border-box; }
+.cmp-vs-logo span { font-size: 16px; font-weight: 800; color: var(--cmp-accent); }
+.cmp-vs-name {
+  font-size: 13.5px; font-weight: 800;
+  letter-spacing: -.012em;
+  color: var(--cmp-ink);
+  text-overflow: ellipsis; white-space: nowrap; overflow: hidden;
+  min-width: 0; flex: 1;
+}
+.cmp-vs-divider {
+  width: 28px; height: 28px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--cmp-mute);
+  background: var(--cmp-bg);
+  border: 1.5px solid var(--cmp-line-mid);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+.cmp-vs-foot {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding-top: 8px;
+  border-top: 1px solid var(--cmp-line);
+  font-size: 12px; font-weight: 700;
+  color: var(--cmp-red);
+}
+.cmp-vs-foot svg { width: 12px; height: 12px; }

@@ -5,6 +5,7 @@ import { requireDashboardUser } from '@/lib/user-auth'
 import EditListingClient from './EditListingClient'
 import type {
   PlanKey, FormState, IntegrationItem, KeyFeature, Award, FaqItem, PricingTier,
+  ServiceShare, ClientLogo,
 } from '../../../new/form/types'
 
 export const dynamic = 'force-dynamic'
@@ -66,6 +67,19 @@ interface ListingRow {
   country_name: string | null
   country_code: string | null
   plan_slug: string | null
+  listing_mode: 'product' | 'company' | null
+  /* ── Company-mode Clutch-style fields (S37). Tolerated when missing
+     (pre-migration); the row simply comes back without them and the
+     parser treats them as null/empty. ── */
+  min_project_size: string | null
+  hourly_rate: string | null
+  common_project_size: string | null
+  intro_video_url: string | null
+  timezones: string | null
+  service_lines: string | null
+  focus_breakdown: string | null
+  client_logos: string | null
+  clients_summary: string | null
 }
 
 function parseJsonArr<T = unknown>(val: unknown): T[] {
@@ -146,6 +160,10 @@ export default async function EditListingPage({
     .filter(i => i.name)
 
   const initialFormState: Partial<FormState> = {
+    /* Critical: thread listing_mode through so the form picks the right
+       steps array (4-step company vs 7-step product) and renders the
+       Company* step components instead of falling back to product. */
+    listingMode: row.listing_mode === 'company' ? 'company' : 'product',
     companyName: row.company_name || '',
     tagline: row.tagline || '',
     website: row.website || '',
@@ -196,6 +214,16 @@ export default async function EditListingPage({
     pros: parseJsonArr<string>(row.pros),
     cons: parseJsonArr<string>(row.cons),
     faqs: parseJsonArr<FaqItem>(row.faqs),
+    /* ── Company-mode Clutch fields ── */
+    minProjectSize:    row.min_project_size || '',
+    hourlyRate:        row.hourly_rate || '',
+    commonProjectSize: row.common_project_size || '',
+    introVideoUrl:     row.intro_video_url || '',
+    timezones:         parseJsonArr<string>(row.timezones),
+    serviceLines:      parseJsonArr<ServiceShare>(row.service_lines),
+    focusBreakdown:    parseJsonArr<ServiceShare>(row.focus_breakdown),
+    clientLogos:       parseJsonArr<ClientLogo>(row.client_logos),
+    clientsSummary:    row.clients_summary || '',
   }
 
   const planSlug: PlanKey =
@@ -209,6 +237,7 @@ export default async function EditListingPage({
       slug={row.slug}
       companyName={row.company_name}
       plan={planSlug}
+      listingMode={row.listing_mode === 'company' ? 'company' : 'product'}
       initialFormState={initialFormState}
     />
   )

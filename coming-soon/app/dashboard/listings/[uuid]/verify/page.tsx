@@ -17,6 +17,7 @@ interface ListingRow {
   status: string
   verified: number
   verified_at: string | null
+  listing_mode: 'product' | 'company' | null
 }
 
 interface RequestRow {
@@ -46,6 +47,7 @@ export interface InitialVerifyState {
     listingStatus: string
     verified: boolean
     verifiedAt: string
+    listingMode: 'product' | 'company'
   }
   latest: {
     id: number
@@ -78,7 +80,8 @@ export default async function VerifyApplyPage({
   try {
     row = await queryOne<ListingRow>(
       `SELECT id, uuid, slug, company_name, tagline, logo_url, website, status,
-              COALESCE(verified, 0) AS verified, verified_at
+              COALESCE(verified, 0) AS verified, verified_at,
+              COALESCE(listing_mode, 'product') AS listing_mode
          FROM submissions
         WHERE uuid = ? AND user_id = ?
         LIMIT 1`,
@@ -86,16 +89,16 @@ export default async function VerifyApplyPage({
     )
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
-    if (/Unknown column.*verified/.test(msg)) {
-      console.warn('[verify-page] verification columns missing — falling back')
-      const base = await queryOne<Omit<ListingRow, 'verified' | 'verified_at'>>(
+    if (/Unknown column.*(?:verified|listing_mode)/.test(msg)) {
+      console.warn('[verify-page] verification or listing_mode columns missing — falling back')
+      const base = await queryOne<Omit<ListingRow, 'verified' | 'verified_at' | 'listing_mode'>>(
         `SELECT id, uuid, slug, company_name, tagline, logo_url, website, status
            FROM submissions
           WHERE uuid = ? AND user_id = ?
           LIMIT 1`,
         [uuid, user.id]
       )
-      row = base ? { ...base, verified: 0, verified_at: null } : null
+      row = base ? { ...base, verified: 0, verified_at: null, listing_mode: 'product' } : null
     } else {
       throw err
     }
@@ -143,6 +146,7 @@ export default async function VerifyApplyPage({
       listingStatus: row.status,
       verified: Number(row.verified) === 1,
       verifiedAt: row.verified_at || '',
+      listingMode: row.listing_mode === 'company' ? 'company' : 'product',
     },
     latest: latestRow ? {
       id: latestRow.id,

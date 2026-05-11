@@ -44,8 +44,21 @@ export async function PATCH(
  *
  * `id` may be the uuid (preferred — what the dashboard always sends) or the
  * numeric pk. Auth: a logged-in business user whose id matches submissions.user_id.
- * Slug, status, plan, payment, ownership, and timestamps are intentionally
- * frozen — admin still owns those via the iww-hq tooling.
+ * Slug, plan, payment, ownership, and timestamps are intentionally frozen —
+ * admin still owns those via the iww-hq tooling.
+ *
+ * EDIT-REVIEW FLOW: every owner edit flips status back to 'pending' so the
+ * change goes through admin moderation again before the public listing
+ * reflects it. Admin re-approves via /iww-hq/submissions PATCH (status →
+ * 'active') AND clicks the Rebuild button on the row to revalidate the
+ * cached page. While the listing sits in 'pending' status the public
+ * profile/company page returns 404 until re-approval — owner sees this in
+ * the dashboard as "Awaiting review". This trade is intentional: the
+ * platform's trust signal is that nothing on a public page is stale or
+ * unreviewed. If a non-content edit needs to skip review (e.g. owner
+ * updates contact email only), that's a future per-field allow-list — out
+ * of scope here. Status changes for already-pending or rejected listings
+ * are no-ops (they stay in their current state).
  */
 export async function PUT(
   request: NextRequest,
@@ -59,10 +72,15 @@ export async function PUT(
     }
 
     const isUuid = /^[0-9a-f]{8}-/i.test(pathId)
-    const row = await queryOne<{ id: number; user_id: number | null }>(
+    const row = await queryOne<{
+      id: number
+      user_id: number | null
+      status: string
+      category_id: number | null
+    }>(
       isUuid
-        ? 'SELECT id, user_id FROM submissions WHERE uuid = ? LIMIT 1'
-        : 'SELECT id, user_id FROM submissions WHERE id = ? LIMIT 1',
+        ? 'SELECT id, user_id, status, category_id FROM submissions WHERE uuid = ? LIMIT 1'
+        : 'SELECT id, user_id, status, category_id FROM submissions WHERE id = ? LIMIT 1',
       [pathId]
     )
     if (!row) return Response.json({ error: 'Not found' }, { status: 404 })
@@ -70,6 +88,7 @@ export async function PUT(
       return Response.json({ error: 'Forbidden' }, { status: 403 })
     }
     const subId = row.id
+    const wasLive = row.status === 'active' || row.status === 'paid'
 
     const body = await request.json()
 
@@ -123,6 +142,11 @@ export async function PUT(
     const languages = arrJson(body.languages)
     const compliance = arrJson(body.compliance)
     const awards = arrJson(body.awards)
+    /* ── Company-mode Clutch-style JSON fields ── */
+    const timezones = arrJson(body.timezones)
+    const serviceLines = arrJson(body.serviceLines)
+    const focusBreakdown = arrJson(body.focusBreakdown)
+    const clientLogos = arrJson(body.clientLogos)
     const startingPrice = body.startingPrice != null && body.startingPrice !== ''
       ? Number(body.startingPrice) : null
     const hasFreeTrial = body.hasFreeTrial ? 1 : 0
@@ -143,6 +167,9 @@ export async function PUT(
          has_free_trial = ?, has_free_version = ?,
          support_channels = ?, training_options = ?, languages = ?,
          has_ios_app = ?, has_android_app = ?, compliance = ?, awards = ?,
+         min_project_size = ?, hourly_rate = ?, common_project_size = ?, intro_video_url = ?,
+         timezones = ?, service_lines = ?, focus_breakdown = ?, client_logos = ?, clients_summary = ?,
+         status = 'pending',
          updated_at = NOW()
        WHERE id = ?`,
       [
@@ -178,6 +205,12 @@ export async function PUT(
         hasFreeTrial, hasFreeVersion,
         supportChannels, trainingOptions, languages,
         hasIosApp, hasAndroidApp, compliance, awards,
+        body.minProjectSize || null,
+        body.hourlyRate || null,
+        body.commonProjectSize || null,
+        body.introVideoUrl || null,
+        timezones, serviceLines, focusBreakdown, clientLogos,
+        body.clientsSummary || null,
         subId,
       ]
     )
@@ -191,6 +224,17 @@ export async function PUT(
           [subId, Number(tagId)]
         )
       }
+    }
+
+    /* If the listing was previously live (active/paid) and we just bumped
+       it back to pending, decrement the category's listing_count so the
+       public count stays accurate while the edit is in review. The status
+       PATCH will re-increment when admin re-approves. */
+    if (wasLive && row.category_id) {
+      await execute(
+        'UPDATE categories SET listing_count = GREATEST(listing_count - 1, 0) WHERE id = ?',
+        [row.category_id]
+      )
     }
 
     const updated = await queryOne<{ slug: string }>(

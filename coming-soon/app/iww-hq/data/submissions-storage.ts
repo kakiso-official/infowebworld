@@ -9,6 +9,10 @@ export type FaqItem = { question: string; answer: string }
 export type KeyFeature = { name: string; description: string }
 export type Award = { name: string; year?: string }
 export type IntegrationItem = { name: string; website?: string; description?: string }
+/** Service Lines / Focus breakdown row — drives the company-page tab pie charts. */
+export type ServiceShare = { name: string; percentage: number }
+/** Client logo entry — name + favicon-resolvable URL + optional case-study link. */
+export type ClientLogo = { name: string; logoUrl?: string; url?: string }
 
 export type RealSubmission = {
   id: string
@@ -76,6 +80,17 @@ export type RealSubmission = {
   listingMode: 'product' | 'company'
   /** Parent company FK on product rows; null on company rows / unlinked products. */
   parentCompanyId: string
+  /* ── Company-mode Clutch-style fields. Only populated on listing_mode='company';
+        empty/blank on product rows. ── */
+  minProjectSize: string
+  hourlyRate: string
+  commonProjectSize: string
+  introVideoUrl: string
+  timezones: string[]
+  serviceLines: ServiceShare[]
+  focusBreakdown: ServiceShare[]
+  clientLogos: ClientLogo[]
+  clientsSummary: string
 }
 
 function parseJson(val: unknown): unknown[] {
@@ -162,6 +177,38 @@ export function mapRow(r: Record<string, unknown>): RealSubmission {
     verifiedAt: String(r.verified_at ?? ''),
     listingMode: (r.listing_mode === 'company' ? 'company' : 'product'),
     parentCompanyId: r.parent_company_id != null ? String(r.parent_company_id) : '',
+    /* ── Company-mode Clutch-style fields ── */
+    minProjectSize: String(r.min_project_size ?? ''),
+    hourlyRate: String(r.hourly_rate ?? ''),
+    commonProjectSize: String(r.common_project_size ?? ''),
+    introVideoUrl: String(r.intro_video_url ?? ''),
+    timezones: parseJson(r.timezones) as string[],
+    serviceLines: (parseJson(r.service_lines) as unknown[])
+      .map(it => {
+        if (!it || typeof it !== 'object') return { name: '', percentage: 0 }
+        const o = it as Record<string, unknown>
+        return { name: String(o.name ?? ''), percentage: Number(o.percentage ?? 0) }
+      })
+      .filter(s => s.name) as ServiceShare[],
+    focusBreakdown: (parseJson(r.focus_breakdown) as unknown[])
+      .map(it => {
+        if (!it || typeof it !== 'object') return { name: '', percentage: 0 }
+        const o = it as Record<string, unknown>
+        return { name: String(o.name ?? ''), percentage: Number(o.percentage ?? 0) }
+      })
+      .filter(s => s.name) as ServiceShare[],
+    clientLogos: (parseJson(r.client_logos) as unknown[])
+      .map(it => {
+        if (!it || typeof it !== 'object') return { name: '' }
+        const o = it as Record<string, unknown>
+        return {
+          name: String(o.name ?? ''),
+          logoUrl: typeof o.logoUrl === 'string' ? o.logoUrl : undefined,
+          url: typeof o.url === 'string' ? o.url : undefined,
+        }
+      })
+      .filter(c => c.name) as ClientLogo[],
+    clientsSummary: String(r.clients_summary ?? ''),
   }
 }
 

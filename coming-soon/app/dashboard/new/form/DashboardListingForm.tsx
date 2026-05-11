@@ -27,9 +27,11 @@ import RailNav from './components/RailNav'
 import SectorPickHero from './components/SectorPickHero'
 import ListingModePickHero from './components/ListingModePickHero'
 import Footer from './components/Footer'
+import { publicListingUrl } from '../../../lib/listing-url'
 import CompanyStep1Identity from './steps/CompanyStep1Identity'
 import CompanyStep2Details from './steps/CompanyStep2Details'
-import CompanyStep3Review from './steps/CompanyStep3Review'
+import CompanyStep3Services from './steps/CompanyStep3Services'
+import CompanyStep4Review from './steps/CompanyStep4Review'
 import { useDashboardCtx } from '../../DashboardShell'
 import Step1Identity from './steps/Step1Identity'
 import Step2Category from './steps/Step2Category'
@@ -83,13 +85,17 @@ export default function DashboardListingForm({
 
   /* In edit mode, jump straight to Review so the user sees an overview of every
      field they're editing — they can dive into any earlier step from the rail.
-     The Review index depends on listing-mode: product flow has 7 steps so
-     Review is index 6; company flow has 3 steps so Review is index 2.
-     editMode for company listings isn't fully wired yet — falls through to
-     standard product-mode editing for now. */
-  const [stepIdx, setStepIdx] = useState(editMode ? 6 : 0)
+     Review index depends on listing-mode: product flow has 7 steps so Review
+     is index 6; company flow has 4 steps so Review is index 3. We read the
+     incoming initialFormState.listingMode to decide which to land on (since
+     `form` state isn't initialized yet when this useState runs). */
+  const editIsCompany = editMode && initialFormState?.listingMode === 'company'
+  const editReviewIdx = editIsCompany ? 3 : 6
+  const [stepIdx, setStepIdx] = useState(editMode ? editReviewIdx : 0)
   const [visited, setVisited] = useState<Set<number>>(
-    () => editMode ? new Set([0, 1, 2, 3, 4, 5, 6]) : new Set([0])
+    () => editMode
+      ? new Set(editIsCompany ? [0, 1, 2, 3] : [0, 1, 2, 3, 4, 5, 6])
+      : new Set([0])
   )
   const [form, setForm] = useState<FormState>(() => {
     if (initialFormState) return { ...INITIAL, ...initialFormState }
@@ -320,13 +326,17 @@ export default function DashboardListingForm({
         facebook: form.facebook || null,
         isHiring: form.isHiring,
         faqs: isCompanyMode ? [] : form.faqs.filter(f => f.question.trim() && f.answer.trim()),
-        /* ── Listings V3 fields — product-only except headerTags. ── */
+        /* ── Listings V3 fields — most are product-only, but a few are
+              shared with the company-mode profile page. ── */
         headerTags: form.headerTags,
         pros: isCompanyMode ? [] : form.pros,
         cons: isCompanyMode ? [] : form.cons,
-        industriesServed: isCompanyMode ? [] : form.industriesServed,
+        /* Industries / company sizes / awards / languages are wanted on the
+           Clutch-style company profile too, so they ride through in company
+           mode now. */
+        industriesServed: form.industriesServed,
         useCases: isCompanyMode ? [] : form.useCases,
-        targetCompanySizes: isCompanyMode ? [] : form.targetCompanySizes,
+        targetCompanySizes: form.targetCompanySizes,
         keyFeatures: isCompanyMode ? [] : form.keyFeatures.filter(kf => kf.name.trim()),
         startingPrice: isCompanyMode ? null : (form.startingPrice || null),
         startingPricePeriod: isCompanyMode ? null : (form.startingPricePeriod || null),
@@ -334,11 +344,42 @@ export default function DashboardListingForm({
         hasFreeVersion: isCompanyMode ? false : form.hasFreeVersion,
         supportChannels: isCompanyMode ? [] : form.supportChannels,
         trainingOptions: isCompanyMode ? [] : form.trainingOptions,
-        languages: isCompanyMode ? [] : form.languages,
+        languages: form.languages,
         hasIosApp: isCompanyMode ? false : form.hasIosApp,
         hasAndroidApp: isCompanyMode ? false : form.hasAndroidApp,
         compliance: isCompanyMode ? [] : form.compliance,
-        awards: isCompanyMode ? [] : form.awards.filter(a => a.name.trim()),
+        awards: form.awards.filter(a => a.name.trim()),
+        /* ── Company-mode Clutch-style fields. Always nulls/empty arrays
+              for product mode so the API doesn't write stray rows. ── */
+        minProjectSize:    isCompanyMode ? (form.minProjectSize || null)    : null,
+        hourlyRate:        isCompanyMode ? (form.hourlyRate || null)        : null,
+        commonProjectSize: isCompanyMode ? (form.commonProjectSize || null) : null,
+        introVideoUrl:     isCompanyMode ? (form.introVideoUrl || null)     : null,
+        timezones:         isCompanyMode ? form.timezones                   : [],
+        serviceLines:      isCompanyMode
+          ? form.serviceLines
+              .filter(s => s.name.trim() && Number(s.percentage) > 0)
+              .map(s => ({ name: s.name.trim(), percentage: Number(s.percentage) }))
+          : [],
+        focusBreakdown:    isCompanyMode
+          ? form.focusBreakdown
+              .filter(s => s.name.trim() && Number(s.percentage) > 0)
+              .map(s => ({ name: s.name.trim(), percentage: Number(s.percentage) }))
+          : [],
+        clientLogos:       isCompanyMode
+          ? form.clientLogos
+              .filter(c => c.name.trim())
+              .map(c => ({
+                name: c.name.trim(),
+                ...(c.url && c.url.trim() ? { url: c.url.trim() } : {}),
+                ...(c.logoUrl && c.logoUrl.trim() ? { logoUrl: c.logoUrl.trim() } : {}),
+              }))
+          : [],
+        clientsSummary:    isCompanyMode ? (form.clientsSummary || null) : null,
+        /* The existing demoVideo field is reused as the alternative for
+           product-mode video; for company-mode introVideoUrl is the canonical
+           source. Send demoVideo only when it has a value AND we're in product
+           mode. (Already handled above by the demoVideo line.) */
       }
       const res = editMode && submissionUuid
         ? await updateSubmission(submissionUuid, payload)
@@ -385,7 +426,7 @@ export default function DashboardListingForm({
           </div>
           <div className="df-success-row">
             <span className="df-success-label">{editMode ? 'URL' : 'Future URL'}</span>
-            <span className="df-success-val">/company/{submitted.slug}</span>
+            <span className="df-success-val">{publicListingUrl(submitted.slug, form.listingMode)}</span>
           </div>
         </div>
         <a href="/dashboard/listings" className="df-btn df-btn--primary">View my listings</a>
@@ -496,15 +537,18 @@ export default function DashboardListingForm({
               />
             )}
 
-            {/* ── Company-mode 3-step flow ── */}
+            {/* ── Company-mode 4-step flow ── */}
             {current.id === 'company_identity' && (
               <CompanyStep1Identity form={form} set={set} errors={errors} caps={caps} plan={plan} />
             )}
             {current.id === 'company_details' && (
               <CompanyStep2Details  form={form} set={set} errors={errors} caps={caps} plan={plan} />
             )}
+            {current.id === 'company_services' && (
+              <CompanyStep3Services form={form} set={set} errors={errors} caps={caps} plan={plan} />
+            )}
             {current.id === 'company_review' && (
-              <CompanyStep3Review
+              <CompanyStep4Review
                 form={form} set={set} errors={errors} caps={caps} plan={plan}
                 goToStep={i => setStepIdx(i)}
               />

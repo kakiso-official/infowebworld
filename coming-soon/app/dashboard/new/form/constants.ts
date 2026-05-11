@@ -17,7 +17,8 @@ export const PRODUCT_STEPS: StepDef[] = [
 export const COMPANY_STEPS: StepDef[] = [
   { id: 'company_identity', num: '01', label: 'Identity' },
   { id: 'company_details',  num: '02', label: 'Details'  },
-  { id: 'company_review',   num: '03', label: 'Review'   },
+  { id: 'company_services', num: '03', label: 'Services & pricing' },
+  { id: 'company_review',   num: '04', label: 'Review'   },
 ]
 
 
@@ -87,6 +88,17 @@ export const INITIAL: FormState = {
   pros: [],
   cons: [],
   faqs: [],
+
+  /* Company-mode Clutch-style fields */
+  minProjectSize: '',
+  hourlyRate: '',
+  commonProjectSize: '',
+  introVideoUrl: '',
+  timezones: [],
+  serviceLines: [],
+  focusBreakdown: [],
+  clientLogos: [],
+  clientsSummary: '',
 }
 
 /* Every plan now collects the same data — at the initial-launch stage we
@@ -216,4 +228,12 @@ export const COMMON_LANGUAGES = [
   'Italian', 'Dutch', 'Japanese', 'Chinese (Simplified)',
   'Chinese (Traditional)', 'Korean', 'Arabic', 'Hindi',
   'Russian', 'Turkish', 'Vietnamese', 'Polish', 'Swedish',
+]
+
+/** Common timezones for company-mode "Timezones" pill list. Submitter can free-add too. */
+export const COMMON_TIMEZONES = [
+  'GMT-08:00 (Pacific)', 'GMT-07:00 (Mountain)', 'GMT-06:00 (Central)', 'GMT-05:00 (Eastern)',
+  'GMT-03:00 (Brasilia)', 'GMT+00:00 (London)', 'GMT+01:00 (Berlin)', 'GMT+02:00 (Cairo)',
+  'GMT+03:00 (Moscow)', 'GMT+04:00 (Dubai)', 'GMT+05:30 (India)', 'GMT+07:00 (Bangkok)',
+  'GMT+08:00 (Singapore)', 'GMT+09:00 (Tokyo)', 'GMT+10:00 (Sydney)',
 ]

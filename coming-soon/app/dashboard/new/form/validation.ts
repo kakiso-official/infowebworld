@@ -98,6 +98,25 @@ export function validateStep(
       if (!form.country.trim()) e.country = 'Country is required.'
       break
     }
+    case 'company_services': {
+      /* All fields here are optional — a company can list with just identity +
+         contact and skip pricing/services entirely. The page renders empty
+         sections gracefully. We only enforce that pie-chart percentages sum
+         to 100 when at least one row was added (otherwise the chart is
+         broken). */
+      const sumService = form.serviceLines.reduce((s, r) => s + (Number(r.percentage) || 0), 0)
+      if (form.serviceLines.length > 0 && sumService !== 100) {
+        e.serviceLines = `Service line percentages must add up to 100% (currently ${sumService}%).`
+      }
+      const sumFocus = form.focusBreakdown.reduce((s, r) => s + (Number(r.percentage) || 0), 0)
+      if (form.focusBreakdown.length > 0 && sumFocus !== 100) {
+        e.focusBreakdown = `Focus breakdown percentages must add up to 100% (currently ${sumFocus}%).`
+      }
+      if (form.introVideoUrl.trim() && !URL_RE.test(form.introVideoUrl.trim())) {
+        e.introVideoUrl = 'Video link must start with https://'
+      }
+      break
+    }
     case 'company_review': {
       /* No extra checks; previous steps already validated. */
       break

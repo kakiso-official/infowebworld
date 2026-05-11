@@ -2,10 +2,12 @@
 import type { StepProps } from '../types'
 
 /**
- * Company form, Step 3 — Review.
+ * Company form, Step 4 — Review.
  * Read-only summary of what's about to be submitted. The Footer's
- * "Submit listing" button (rendered by DashboardListingForm) actually
+ * "Submit profile" button (rendered by DashboardListingForm) actually
  * fires the POST; this component only displays.
+ *
+ * One section per prior step so users can jump back to edit cleanly.
  */
 type Props = StepProps & {
   goToStep: (idx: number) => void
@@ -20,9 +22,17 @@ function Row({ label, value }: { label: string; value: React.ReactNode }) {
   )
 }
 
-export default function CompanyStep3Review({ form, goToStep }: Props) {
+export default function CompanyStep4Review({ form, goToStep }: Props) {
   const tags = form.headerTags.length > 0 ? form.headerTags.join(' · ') : ''
   const location = [form.city, form.state, form.country].filter(Boolean).join(', ')
+  const langs = form.languages.length > 0 ? form.languages.join(' · ') : ''
+  const tzs = form.timezones.length > 0 ? form.timezones.join(' · ') : ''
+  const industries = form.industriesServed.length > 0 ? form.industriesServed.join(', ') : ''
+  const sizes = form.targetCompanySizes.length > 0 ? form.targetCompanySizes.join(', ') : ''
+  const services = form.serviceLines.filter(s => s.name).map(s => `${s.name} ${s.percentage}%`).join(' · ')
+  const focus = form.focusBreakdown.filter(s => s.name).map(s => `${s.name} ${s.percentage}%`).join(' · ')
+  const awards = form.awards.filter(a => a.name).map(a => a.year ? `${a.name} (${a.year})` : a.name).join(' · ')
+  const clients = form.clientLogos.filter(c => c.name).map(c => c.name).join(' · ')
 
   return (
     <>
@@ -66,10 +76,32 @@ export default function CompanyStep3Review({ form, goToStep }: Props) {
           <Row label="Phone" value={form.phone ? `${form.phoneCode} ${form.phone}` : ''} />
           <Row label="Location" value={location} />
           <Row label="HQ address" value={form.hqLocation} />
+          <Row label="Languages" value={langs} />
+          <Row label="Timezones" value={tzs} />
           <Row label="LinkedIn" value={form.linkedin} />
           <Row label="Twitter / X" value={form.twitter} />
           <Row label="Facebook" value={form.facebook} />
           <Row label="Hiring" value={form.isHiring ? 'Yes — actively hiring' : ''} />
+        </div>
+      </section>
+
+      <section className="df-rev-card">
+        <header className="df-rev-card-head">
+          <h3>Services &amp; pricing</h3>
+          <button type="button" onClick={() => goToStep(2)} className="df-rev-edit">Edit</button>
+        </header>
+        <div className="df-rev-grid">
+          <Row label="Min project size" value={form.minProjectSize} />
+          <Row label="Hourly rate" value={form.hourlyRate} />
+          <Row label="Most common project size" value={form.commonProjectSize} />
+          <Row label="Watch our Video" value={form.introVideoUrl} />
+          <Row label="What clients have said" value={form.clientsSummary} />
+          <Row label="Service lines" value={services} />
+          <Row label="Focus breakdown" value={focus} />
+          <Row label="Industries served" value={industries} />
+          <Row label="Target client sizes" value={sizes} />
+          <Row label="Awards" value={awards} />
+          <Row label="Notable clients" value={clients} />
         </div>
       </section>
 

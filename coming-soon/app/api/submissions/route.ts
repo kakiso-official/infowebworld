@@ -240,6 +240,13 @@ export async function POST(request: NextRequest) {
     const languages = arrJson(body.languages)
     const compliance = arrJson(body.compliance)
     const awards = arrJson(body.awards)
+    /* Company-mode Clutch-style JSON fields. arrJson returns NULL when the
+       array is empty so old non-company rows don't get JSON "[]" written
+       in. Strings stay as plain VARCHARs. */
+    const timezones = arrJson(body.timezones)
+    const serviceLines = arrJson(body.serviceLines)
+    const focusBreakdown = arrJson(body.focusBreakdown)
+    const clientLogos = arrJson(body.clientLogos)
 
     const startingPrice = body.startingPrice != null && body.startingPrice !== ''
       ? Number(body.startingPrice) : null
@@ -266,6 +273,8 @@ export async function POST(request: NextRequest) {
         has_free_trial, has_free_version,
         support_channels, training_options, languages,
         has_ios_app, has_android_app, compliance, awards,
+        min_project_size, hourly_rate, common_project_size, intro_video_url,
+        timezones, service_lines, focus_breakdown, client_logos, clients_summary,
         paypal_order_id, payment_status, status, ip_address
       ) VALUES (?, ?, ?, ?, ?,
                 ?, ?, ?, ?, ?, ?,
@@ -279,6 +288,8 @@ export async function POST(request: NextRequest) {
                 ?, ?,
                 ?, ?, ?,
                 ?, ?, ?, ?,
+                ?, ?, ?, ?,
+                ?, ?, ?, ?, ?,
                 ?, ?, ?, ?)`,
       [
         uuid, slug, listingMode, parentCompanyId, body.isHiring ? 1 : 0,
@@ -316,6 +327,12 @@ export async function POST(request: NextRequest) {
         hasFreeTrial, hasFreeVersion,
         supportChannels, trainingOptions, languages,
         hasIosApp, hasAndroidApp, compliance, awards,
+        body.minProjectSize || null,
+        body.hourlyRate || null,
+        body.commonProjectSize || null,
+        body.introVideoUrl || null,
+        timezones, serviceLines, focusBreakdown, clientLogos,
+        body.clientsSummary || null,
         body.paypalOrderId || null,
         paymentStatus,
         status,

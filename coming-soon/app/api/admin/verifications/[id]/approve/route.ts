@@ -41,10 +41,12 @@ export async function POST(
     status: 'pending' | 'approved' | 'rejected'
     listing_slug: string
     listing_verified: number
+    listing_mode: 'product' | 'company' | string
   }>(
     `SELECT r.id, r.listing_id, r.user_id, r.status,
             s.slug AS listing_slug,
-            COALESCE(s.verified, 0) AS listing_verified
+            COALESCE(s.verified, 0) AS listing_verified,
+            COALESCE(s.listing_mode, 'product') AS listing_mode
        FROM listing_verification_requests r
        LEFT JOIN submissions s ON s.id = r.listing_id
       WHERE r.id = ? LIMIT 1`,
@@ -87,7 +89,10 @@ export async function POST(
       /* On-demand rebuild of the public listing so the badge appears now,
          not 48h from now. Best-effort — log + continue if it throws. */
       if (row.listing_slug) {
-        try { revalidatePath(`/company/${row.listing_slug}`) }
+        const path = row.listing_mode === 'company'
+          ? `/profile/${row.listing_slug}`
+          : `/company/${row.listing_slug}`
+        try { revalidatePath(path) }
         catch (e) { console.error('[verify-approve] revalidate failed:', e) }
       }
     }

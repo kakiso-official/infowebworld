@@ -21,7 +21,8 @@ export async function GET(request: NextRequest) {
          r.id, r.rating, r.title, r.body, r.status, r.created_at, r.updated_at,
          r.user_id, u.name AS user_name, u.email AS user_email, u.avatar_url AS user_avatar_url,
          r.listing_id, s.slug AS listing_slug, s.uuid AS listing_uuid,
-         s.company_name AS listing_name, s.logo_url AS listing_logo_url
+         s.company_name AS listing_name, s.logo_url AS listing_logo_url,
+         COALESCE(s.listing_mode, 'product') AS listing_mode
          FROM reviews r
          LEFT JOIN business_users u ON u.id = r.user_id
          LEFT JOIN submissions s ON s.id = r.listing_id

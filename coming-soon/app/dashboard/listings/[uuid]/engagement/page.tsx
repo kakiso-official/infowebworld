@@ -13,6 +13,7 @@ interface Listing {
   company_name: string
   logo_url: string | null
   status: string
+  listing_mode: 'product' | 'company' | null
 }
 interface ReviewRow {
   id: number
@@ -96,7 +97,8 @@ export default async function EngagementPage({
   const user = await requireDashboardUser()
 
   const listing = await queryOne<Listing>(
-    `SELECT id, uuid, slug, company_name, logo_url, status
+    `SELECT id, uuid, slug, company_name, logo_url, status,
+            COALESCE(listing_mode, 'product') AS listing_mode
        FROM submissions
       WHERE uuid = ? AND user_id = ?
       LIMIT 1`,
@@ -168,7 +170,7 @@ export default async function EngagementPage({
             Reviews, reactions, followers and inbound leads on this listing.
             {' · '}
             {isLive
-              ? <Link href={`/company/${listing.slug}`} target="_blank" rel="noopener noreferrer">View live page ↗</Link>
+              ? <Link href={listing.listing_mode === 'company' ? `/profile/${listing.slug}` : `/company/${listing.slug}`} target="_blank" rel="noopener noreferrer">View live page ↗</Link>
               : <span className="eng-muted">Awaiting review — not live yet</span>}
             {' · '}
             <Link href={`/dashboard/listings/${listing.uuid}/edit`}>Edit listing</Link>
