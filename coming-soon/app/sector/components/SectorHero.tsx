@@ -123,8 +123,8 @@ export default function SectorHero({ category, meta, sectorName, shortName, l2Ca
     ? demos.filter(d => d.name.toLowerCase().includes(q) || d.tagline.toLowerCase().includes(q) || d.category.toLowerCase().includes(q)).slice(0, Math.max(0, 5 - filteredReal.length))
     : []
   const filtered = [
-    ...filteredReal.map(l => ({ name: l.companyName, tagline: l.tagline || l.description?.slice(0, 80) || '', category: l.category || shortName, color: l.categoryColor || meta.color, score: '4.5', slug: l.slug, isReal: true, logoUrl: l.logoUrl || '' })),
-    ...filteredDemo.map(d => ({ name: d.name, tagline: d.tagline, category: d.category, color: d.color, score: d.score.toFixed(1), slug: '', isReal: false, logoUrl: '' })),
+    ...filteredReal.map(l => ({ name: l.companyName, tagline: l.tagline || l.description?.slice(0, 80) || '', category: l.category || shortName, color: l.categoryColor || meta.color, score: '4.5', slug: l.slug, isReal: true, logoUrl: l.logoUrl || '', listingMode: l.listingMode || 'product' })),
+    ...filteredDemo.map(d => ({ name: d.name, tagline: d.tagline, category: d.category, color: d.color, score: d.score.toFixed(1), slug: '', isReal: false, logoUrl: '', listingMode: 'product' as const })),
   ]
   const matchedCats = q.length > 0
     ? l2Cats.filter(c => c.name.toLowerCase().includes(q)).slice(0, 3)
@@ -135,7 +135,13 @@ export default function SectorHero({ category, meta, sectorName, shortName, l2Ca
   useEffect(() => { setActiveIdx(-1) }, [query])
 
   const handleSearch = (e: React.FormEvent) => { e.preventDefault(); setFocused(true) }
-  const goToResult = (slug: string) => { setFocused(false); router.push(slug ? `/company/${slug}` : '/business') }
+  /* Branch href on listing_mode so company-mode rows route to /profile and
+     product-mode rows to /company. Falls back to product for legacy data. */
+  const goToResult = (slug: string, mode: string = 'product') => {
+    setFocused(false)
+    if (!slug) { router.push('/business'); return }
+    router.push((mode === 'company' ? '/profile/' : '/company/') + slug)
+  }
   const goToCategory = (slug: string) => { setFocused(false); router.push(`/${sectorSlug}/${slug}`) }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -144,7 +150,7 @@ export default function SectorHero({ category, meta, sectorName, shortName, l2Ca
     else if (e.key === 'ArrowUp') { e.preventDefault(); setActiveIdx(p => Math.max(p - 1, -1)) }
     else if (e.key === 'Enter' && activeIdx >= 0) {
       e.preventDefault()
-      if (activeIdx < filtered.length) goToResult(filtered[activeIdx].slug)
+      if (activeIdx < filtered.length) goToResult(filtered[activeIdx].slug, filtered[activeIdx].listingMode)
       else goToCategory(matchedCats[activeIdx - filtered.length].slug)
     } else if (e.key === 'Escape') setFocused(false)
   }
@@ -369,7 +375,7 @@ export default function SectorHero({ category, meta, sectorName, shortName, l2Ca
                         <div className="search-dd-section">
                           <div className="search-dd-label"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v3" /></svg> Listings</div>
                           {filtered.map((d, i) => (
-                            <div key={i} className={`search-dd-item${activeIdx === i ? ' search-dd-item--active' : ''}`} onClick={() => goToResult(d.slug)} onMouseEnter={() => setActiveIdx(i)} onMouseMove={handleItemMouse} style={{ '--delay': `${i * 50}ms` } as React.CSSProperties}>
+                            <div key={i} className={`search-dd-item${activeIdx === i ? ' search-dd-item--active' : ''}`} onClick={() => goToResult(d.slug, d.listingMode)} onMouseEnter={() => setActiveIdx(i)} onMouseMove={handleItemMouse} style={{ '--delay': `${i * 50}ms` } as React.CSSProperties}>
                               <div className="search-dd-item-icon" style={{ background: d.logoUrl ? 'transparent' : `${d.color}1a` }}>
                                 {d.logoUrl ? (
                                   <img src={d.logoUrl} alt={d.name} style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 8 }} />

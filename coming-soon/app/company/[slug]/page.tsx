@@ -36,17 +36,31 @@ export const dynamicParams = false       // slugs not in the build → 404 until
    way a listing becomes publicly visible — admin approval alone isn't
    enough; a deploy must happen after approval. */
 export async function generateStaticParams() {
+  /* Pre-render PRODUCT slugs only — company-mode rows live at /profile,
+     not /company. The page query also filters product-only at request
+     time as a backup, but pre-rendering only product slugs keeps the
+     build output clean. */
   try {
     const rows = await query<{ slug: string }>(
       `SELECT slug FROM submissions
-        WHERE status IN ('active','paid') AND slug IS NOT NULL AND slug != ''`
+        WHERE status IN ('active','paid')
+          AND slug IS NOT NULL AND slug != ''
+          AND COALESCE(listing_mode, 'product') = 'product'`
     )
     return rows.map(r => ({ slug: r.slug }))
   } catch (err) {
-    /* If the DB is unreachable at build time (local dev without creds,
-       network blip), bail with an empty list. The build still succeeds;
-       /company/[slug] just returns 404 for everything until the next
-       successful build with DB connectivity. */
+    /* listing_mode missing → fall back to all-rows query so existing
+       prod sites keep building before the migration runs. */
+    const msg = err instanceof Error ? err.message : String(err)
+    if (/Unknown column.*listing_mode/.test(msg)) {
+      try {
+        const rows = await query<{ slug: string }>(
+          `SELECT slug FROM submissions
+            WHERE status IN ('active','paid') AND slug IS NOT NULL AND slug != ''`
+        )
+        return rows.map(r => ({ slug: r.slug }))
+      } catch { return [] }
+    }
     console.error('generateStaticParams: DB unreachable, no slugs pre-rendered', err)
     return []
   }
@@ -72,19 +86,48 @@ interface FaqItem { question: string; answer: string }
 
 /* ── Data fetching (server-side) ── */
 async function getListingBySlug(slug: string) {
-  const listing = await queryOne<ListingRow>(
-    `SELECT s.*, p.name as plan_name, p.slug as plan_slug,
-            c.name as category_name, c.slug as category_slug,
-            c.color as category_color, c.icon as category_icon,
-            co.name as country_name
-     FROM submissions s
-     LEFT JOIN plans p ON p.id = s.plan_id
-     LEFT JOIN categories c ON c.id = s.category_id
-     LEFT JOIN countries co ON co.id = s.country_id
-     WHERE s.slug = ? AND s.status IN ('active','paid')
-     LIMIT 1`,
-    [slug]
-  )
+  /* Strict mode filter: /company/<slug> only resolves PRODUCT listings.
+     Company-mode rows (listing_mode='company') live exclusively at
+     /profile/<slug>; if a company row happens to share a slug with a
+     product (different namespace = same slug allowed since S36), the
+     product wins here and the company is invisible at this URL. Pre-
+     migration installs without the listing_mode column fall through to
+     legacy behaviour via COALESCE. */
+  let listing: ListingRow | null = null
+  try {
+    listing = await queryOne<ListingRow>(
+      `SELECT s.*, p.name as plan_name, p.slug as plan_slug,
+              c.name as category_name, c.slug as category_slug,
+              c.color as category_color, c.icon as category_icon,
+              co.name as country_name
+       FROM submissions s
+       LEFT JOIN plans p ON p.id = s.plan_id
+       LEFT JOIN categories c ON c.id = s.category_id
+       LEFT JOIN countries co ON co.id = s.country_id
+       WHERE s.slug = ? AND s.status IN ('active','paid')
+         AND COALESCE(s.listing_mode, 'product') = 'product'
+       LIMIT 1`,
+      [slug]
+    )
+  } catch (err) {
+    /* listing_mode column not yet migrated — fall back to the
+       pre-S36 query so existing product pages still resolve. */
+    const msg = err instanceof Error ? err.message : String(err)
+    if (!/Unknown column.*listing_mode/.test(msg)) throw err
+    listing = await queryOne<ListingRow>(
+      `SELECT s.*, p.name as plan_name, p.slug as plan_slug,
+              c.name as category_name, c.slug as category_slug,
+              c.color as category_color, c.icon as category_icon,
+              co.name as country_name
+       FROM submissions s
+       LEFT JOIN plans p ON p.id = s.plan_id
+       LEFT JOIN categories c ON c.id = s.category_id
+       LEFT JOIN countries co ON co.id = s.country_id
+       WHERE s.slug = ? AND s.status IN ('active','paid')
+       LIMIT 1`,
+      [slug]
+    )
+  }
   if (!listing) return null
 
   /* Parent-company linkage — wraps in try/catch so the product page still

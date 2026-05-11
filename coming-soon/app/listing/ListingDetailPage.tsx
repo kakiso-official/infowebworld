@@ -1716,18 +1716,15 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 </div>
               )}
 
-              {/* Combined contact row — only renders parts the submitter provided. */}
-              {(view.hqLocation || view.phoneFmt) && (
+              {/* Combined contact row — phone removed from public display.
+                  Visitors get the phone number after submitting the lead form
+                  (which gates on auth) so the request is recorded as a real
+                  attributable lead. Location stays visible — it's already
+                  publishable from public sources (LinkedIn, the company
+                  website, etc.). */}
+              {view.hqLocation && (
                 <div className="tlp-id-line tlp-id-line--combo">
-                  {view.hqLocation && (
-                    <span className="tlp-id-info"><span className="tlp-id-icn"><MapPinIcon /></span><span>{view.hqLocation}</span></span>
-                  )}
-                  {view.hqLocation && view.phoneFmt && (
-                    <span className="tlp-id-info-sep" aria-hidden="true">·</span>
-                  )}
-                  {view.phoneFmt && (
-                    <span className="tlp-id-info"><span className="tlp-id-icn"><PhoneIcon /></span><span>{view.phoneFmt}</span></span>
-                  )}
+                  <span className="tlp-id-info"><span className="tlp-id-icn"><MapPinIcon /></span><span>{view.hqLocation}</span></span>
                 </div>
               )}
 
@@ -3859,6 +3856,13 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
         prefillName={currentUser?.name ?? null}
         prefillEmail={currentUser?.email ?? null}
         isPreview={isPreview}
+        requireAuth={!isPreview}
+        isAuthed={isAuthed}
+        onRequireAuth={() => setAuthOpen(true)}
+        listingContact={isPreview ? null : {
+          email: view.email || undefined,
+          phone: view.phoneFmt || undefined,
+        }}
       />
     </>
   )

@@ -14,6 +14,17 @@ interface Props {
   isPreview?: boolean
   /** Fired after a successful submit so the parent can roll up its own counters. */
   onSuccess?: () => void
+  /** Auth gate. When true and isAuthed=false, the modal renders a sign-in prompt
+   *  instead of the form and calls onRequireAuth on click. Parent opens SignupModal. */
+  requireAuth?: boolean
+  isAuthed?: boolean
+  onRequireAuth?: () => void
+  /** Listing's contact info (email, phone). When provided, the success state shows
+   *  the requested contact details inline as proof the platform sourced the lead.
+   *  This is the swap for the previously-public mailto/tel links — visitors must
+   *  identify themselves first, then the platform reveals the contact info to
+   *  them while logging the request as an attributable lead. */
+  listingContact?: { email?: string; phone?: string; phoneCode?: string } | null
 }
 
 const NAME_MAX = 120
@@ -33,6 +44,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 export default function LeadFormModal({
   isOpen, onClose, listingSlug, companyName, companyLogo,
   prefillName, prefillEmail, isPreview, onSuccess,
+  requireAuth, isAuthed, onRequireAuth, listingContact,
 }: Props) {
   const [name, setName]       = useState('')
   const [email, setEmail]     = useState('')
@@ -161,7 +173,49 @@ export default function LeadFormModal({
               We&apos;ve forwarded your details — they&apos;ll reach out via email shortly.
               You&apos;ll also get a copy at <strong>{email}</strong>.
             </p>
+            {listingContact && (listingContact.email || listingContact.phone) && (
+              <div className="lfm-reveal">
+                <div className="lfm-reveal-title">You can also reach {companyName} directly:</div>
+                {listingContact.email && (
+                  <a href={`mailto:${listingContact.email}`} className="lfm-reveal-row">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zM22 6l-10 7L2 6"/></svg>
+                    <span>{listingContact.email}</span>
+                  </a>
+                )}
+                {listingContact.phone && (
+                  <a href={`tel:${listingContact.phone}`} className="lfm-reveal-row">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+                    <span>{listingContact.phoneCode ? `${listingContact.phoneCode} ` : ''}{listingContact.phone}</span>
+                  </a>
+                )}
+                <p className="lfm-reveal-foot">
+                  This lead is attributed to InfoWebWorld so {companyName} knows where the inquiry came from.
+                </p>
+              </div>
+            )}
             <button type="button" className="wrm-btn wrm-btn--primary" onClick={onClose}>Done</button>
+          </div>
+        ) : requireAuth && !isAuthed ? (
+          /* Auth-gate view — same modal chrome, simpler body. Parent listens to
+             onRequireAuth to open the site-wide SignupModal. */
+          <div className="wrm-success" style={{ paddingBottom: 24 }}>
+            <div className="wrm-success-icon" aria-hidden="true" style={{ background: '#FFF7ED', color: '#EA580C' }}>
+              <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="5" y="11" width="14" height="9" rx="2" />
+                <path d="M8 11V8a4 4 0 018 0v3" />
+              </svg>
+            </div>
+            <h3 className="wrm-success-title">Sign in to request {companyName}&rsquo;s contact</h3>
+            <p className="wrm-success-desc">
+              We attribute every contact request to a real account so {companyName} knows
+              the lead is genuine. It only takes 30 seconds — Google sign-in or email + password.
+            </p>
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
+              <button type="button" className="wrm-btn wrm-btn--ghost" onClick={onClose}>Cancel</button>
+              <button type="button" className="wrm-btn wrm-btn--primary" onClick={() => { onClose(); onRequireAuth?.() }}>
+                Sign in to continue →
+              </button>
+            </div>
           </div>
         ) : (
           <>
@@ -261,6 +315,40 @@ export default function LeadFormModal({
         }
         .lfm-legal a { color: #E8553D; text-decoration: underline; text-underline-offset: 2px; font-weight: 600 }
         .lfm-legal a:hover { color: #B33820 }
+        .lfm-reveal {
+          margin: 4px 0 18px;
+          padding: 12px 14px;
+          background: #F0FDF4;
+          border: 1px solid #BBF7D0;
+          border-radius: 8px;
+          text-align: left;
+        }
+        .lfm-reveal-title {
+          font-size: 12px;
+          font-weight: 700;
+          color: #166534;
+          margin-bottom: 8px;
+          text-transform: uppercase;
+          letter-spacing: .03em;
+        }
+        .lfm-reveal-row {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 6px 0;
+          font-size: 14px;
+          font-weight: 600;
+          color: #14532D;
+          text-decoration: none;
+        }
+        .lfm-reveal-row:hover { text-decoration: underline; }
+        .lfm-reveal-row svg { color: #14532D; flex-shrink: 0; }
+        .lfm-reveal-foot {
+          margin: 8px 0 0;
+          font-size: 11.5px;
+          color: #166534;
+          line-height: 1.45;
+        }
       `}</style>
     </div>
   )

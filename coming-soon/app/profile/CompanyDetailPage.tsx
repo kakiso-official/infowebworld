@@ -413,7 +413,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
      pending so we can re-fire it on the user's behalf right after the
      /me re-fetch resolves authed state — no need for them to click twice. */
   const [signupOpen, setSignupOpen] = useState(false)
-  const [pendingAction, setPendingAction] = useState<null | 'follow' | 'bookmark'>(null)
+  const [pendingAction, setPendingAction] = useState<null | 'follow' | 'bookmark' | 'contact'>(null)
 
   useEffect(() => {
     if (!slug) return
@@ -605,33 +605,19 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                   </a>
                 )}
 
-                <div className="cmp-contact-wrap">
-                  <button
-                    type="button"
-                    className="cmp-btn cmp-btn--outline cmp-contact-btn"
-                    onClick={() => setContactOpen(o => !o)}
-                    aria-expanded={contactOpen}
-                  >
-                    Contact <ChevDown />
-                  </button>
-                  {contactOpen && (
-                    <div className="cmp-contact-menu" role="menu">
-                      <button type="button" onClick={() => { setContactOpen(false); setLeadOpen(true) }} className="cmp-contact-menu-item">
-                        <Mail /> Get a quote
-                      </button>
-                      {c.email && (
-                        <a href={`mailto:${c.email}`} className="cmp-contact-menu-item" onClick={() => setContactOpen(false)}>
-                          <Mail /> Email directly
-                        </a>
-                      )}
-                      {c.phone && (
-                        <a href={`tel:${c.phone}`} className="cmp-contact-menu-item" onClick={() => setContactOpen(false)}>
-                          <Phone /> {c.phone_code || ''} {c.phone}
-                        </a>
-                      )}
-                    </div>
-                  )}
-                </div>
+                {/* Contact CTA — single button. Opens LeadFormModal which
+                    requires login (anon → SignupModal first via the modal's
+                    requireAuth gate). The previous mailto/tel links exposed
+                    raw contact info to anyone; gating it captures the lead
+                    request as an attributable record before revealing the
+                    contact details. */}
+                <button
+                  type="button"
+                  className="cmp-btn cmp-btn--outline"
+                  onClick={() => setLeadOpen(true)}
+                >
+                  <Mail /> Contact
+                </button>
 
                 <button
                   type="button"
@@ -1172,15 +1158,15 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
             )}
           </div>
           <div className="cmp-connect-meta">
-            {c.email && (
-              <a href={`mailto:${c.email}`} className="cmp-connect-meta-link">
-                <Mail /> {c.email}
-              </a>
-            )}
-            {c.phone && (
-              <a href={`tel:${c.phone}`} className="cmp-connect-meta-link">
-                <Phone /> {c.phone_code || ''} {c.phone}
-              </a>
+            {/* Direct mailto/tel removed — contact info is gated behind the
+                lead form which requires login. Visitors get the email and
+                phone after submitting a request, attributed to InfoWebWorld
+                as the lead source. Socials stay public — they're already
+                public on the company's own site. */}
+            {(c.email || c.phone) && (
+              <button type="button" className="cmp-connect-meta-link" onClick={() => setLeadOpen(true)} style={{ background: 'transparent', border: 0, cursor: 'pointer' }}>
+                <Mail /> Request email &amp; phone
+              </button>
             )}
             <div className="cmp-connect-socials">
               {c.linkedin && <a href={c.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><Linkedin /></a>}
@@ -1199,6 +1185,14 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
         companyLogo={c.logo_url || ''}
         prefillName={null}
         prefillEmail={null}
+        requireAuth
+        isAuthed={me.isAuthed}
+        onRequireAuth={() => { setPendingAction('contact'); setSignupOpen(true) }}
+        listingContact={{
+          email: c.email || undefined,
+          phone: c.phone || undefined,
+          phoneCode: c.phone_code || undefined,
+        }}
       />
 
       {/* Auth gate when an anon user clicks Follow / Bookmark — site-wide
@@ -1237,6 +1231,11 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                 setBookmarkCount(c => c + 1)
                 fetch(`/api/listings/${slug}/bookmark`, { method: 'POST', credentials: 'same-origin' })
                   .catch(() => { setMe(p => ({ ...p, isBookmarked: false })); setBookmarkCount(c => c - 1) })
+              } else if (nextMe.isAuthed && pendingAction === 'contact') {
+                /* Re-open the lead form now that the user is authed —
+                   they came in via the auth gate and we don't want them
+                   to re-find the Contact button. */
+                setLeadOpen(true)
               }
             }
           } catch { /* ignore — modal already closed */ }

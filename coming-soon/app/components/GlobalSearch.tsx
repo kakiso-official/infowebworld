@@ -11,6 +11,9 @@ type CategoryResult = {
 type ListingResult = {
   id: number; slug: string; company_name: string; tagline: string;
   logo_url: string; category_name: string; category_slug: string; category_color: string
+  /** S37: present when the search API includes it; absent on legacy responses
+   *  → falls back to /company prefix (the original behaviour). */
+  listing_mode?: 'product' | 'company' | string
 }
 type BlogResult = {
   id: number; slug: string; title: string; excerpt: string;
@@ -142,7 +145,7 @@ export default function GlobalSearch({ placeholder = 'Search businesses, tools, 
             <div className="gs-section">
               <div className="gs-section-label">Companies</div>
               {results!.listings.map(l => (
-                <Link key={l.id} href={`/company/${l.slug}`} className="gs-row" onClick={close}>
+                <Link key={l.id} href={(l.listing_mode === 'company' ? '/profile/' : '/company/') + l.slug} className="gs-row" onClick={close}>
                   {l.logo_url ? (
                     <img src={l.logo_url} alt="" className="gs-row-logo" />
                   ) : (

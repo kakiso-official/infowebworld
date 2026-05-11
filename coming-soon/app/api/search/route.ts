@@ -35,14 +35,20 @@ export async function GET(req: Request) {
       [like, like, `${q}%`]
     ),
 
-    /* Listings — search company name, tagline, description */
+    /* Listings — search company name, tagline, description.
+       listing_mode is returned so client links can branch
+       /profile/<slug> for companies vs /company/<slug> for products
+       (the URL namespace split set up in S36). Tolerated when missing
+       (pre-migration installs) by COALESCE → 'product'. */
     query<{
       id: number; slug: string; company_name: string; tagline: string;
       logo_url: string; website: string;
-      category_name: string; category_slug: string; category_color: string
+      category_name: string; category_slug: string; category_color: string;
+      listing_mode: 'product' | 'company' | string
     }>(
       `SELECT s.id, s.slug, s.company_name, s.tagline, s.logo_url, s.website,
-              c.name AS category_name, c.slug AS category_slug, c.color AS category_color
+              c.name AS category_name, c.slug AS category_slug, c.color AS category_color,
+              COALESCE(s.listing_mode, 'product') AS listing_mode
        FROM submissions s
        LEFT JOIN categories c ON c.id = s.category_id
        WHERE s.status IN ('active', 'paid')
