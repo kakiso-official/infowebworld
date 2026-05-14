@@ -15,7 +15,7 @@ type NavItem = { label: string; href: string; cta?: boolean; comingSoon?: boolea
 const NAV_ITEMS: NavItem[] = [
   { label: 'Categories', href: '/categories', dropdown: true },
   { label: 'Reviews',    href: '#', comingSoon: true, dropdown: true },
-  { label: 'Compare',    href: '#', comingSoon: true, dropdown: true },
+  { label: 'Compare',    href: '/compare' },
   { label: 'News',       href: '#', comingSoon: true, dropdown: true },
   { label: 'Get Listed', href: '/business', cta: true },
 ]

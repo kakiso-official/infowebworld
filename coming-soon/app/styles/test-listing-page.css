@@ -4283,3 +4283,26 @@ html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nh-h, 112px) + 12
 }
 .tlp-cs-quote-av--img { object-fit: cover }
 .tlp-cs-rate em { color: var(--tlp-mute); font-style: normal; font-weight: 400; margin-left: 2px }
+
+/* ── Add to Compare button (sticky head) + Alternatives Compare pill ── */
+.tlp-add-compare {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #fff; color: var(--h-accent, #E8553D);
+  border: 1.5px solid rgba(232,85,61,.3);
+}
+.tlp-add-compare:hover {
+  background: var(--h-accent, #E8553D); color: #fff;
+  border-color: var(--h-accent, #E8553D);
+}
+.tlp-alt-cta-row {
+  display: flex; gap: 6px; margin: 4px 0;
+}
+.tlp-alt-cta-row .tlp-alt-cta { flex: 1; min-width: 0; text-align: center; }
+.tlp-alt-cta--outline {
+  background: #fff !important; color: #1A1A1A !important;
+  border: 1.5px solid #E5E7EB !important;
+}
+.tlp-alt-cta--outline:hover {
+  background: var(--h-accent, #E8553D) !important; color: #fff !important;
+  border-color: var(--h-accent, #E8553D) !important;
+}

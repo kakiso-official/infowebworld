@@ -1821,6 +1821,18 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
               >
                 {hasReviewed ? 'Edit your review' : 'Write a Review'} <PencilIcon />
               </button>
+              {!isPreview && (
+                <a
+                  href={`/compare/${listingSlug}`}
+                  className="tlp-write-review tlp-add-compare"
+                  aria-label={`Add ${view.companyName} to compare`}
+                >
+                  Add to Compare
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M9 3v18M3 9h12M19 9v12M15 15h12"/>
+                  </svg>
+                </a>
+              )}
             </div>
           </div>
         </header>
@@ -2904,7 +2916,16 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                           </div>
                         </div>
 
-                        <a href={`/company/${s.slug}`} className="tlp-alt-cta">Learn More</a>
+                        <div className="tlp-alt-cta-row">
+                          <a href={`/company/${s.slug}`} className="tlp-alt-cta">Learn More</a>
+                          <a
+                            href={`/compare/${listingSlug}-vs-${s.slug}`}
+                            className="tlp-alt-cta tlp-alt-cta--outline"
+                            aria-label={`Compare ${view.companyName} with ${s.company_name}`}
+                          >
+                            Compare
+                          </a>
+                        </div>
 
                         <div className="tlp-alt-price-block">
                           <div className="tlp-alt-price-head">
@@ -3660,7 +3681,12 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                       const sLogo = s.logo_url
                         || (s.website ? clearbit(String(s.website).replace(/^https?:\/\//, '').split('/')[0], 64) : '')
                       return (
-                        <a key={s.id} href={`/company/${s.slug}`} className="tlp-cmp">
+                        <a
+                          key={s.id}
+                          href={`/compare/${listingSlug}-vs-${s.slug}`}
+                          className="tlp-cmp"
+                          aria-label={`Compare ${view.companyName} with ${s.company_name}`}
+                        >
                           <div className="tlp-cmp-row">
                             {view.logoUrl
                               ? <img src={view.logoUrl} alt={view.companyName} className="tlp-cmp-logo" />
@@ -3678,20 +3704,28 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                         </a>
                       )
                     })
-                  : COMPARISONS.map(c => (
-                      <a key={c.b} href="#" className="tlp-cmp">
-                        <div className="tlp-cmp-row">
-                          <img src={view.logoUrl} alt={view.companyName} className="tlp-cmp-logo" />
-                          <span className="tlp-cmp-bracket"><BracketIcon /></span>
-                          <img src={clearbit(c.bd)} alt={c.b} className="tlp-cmp-logo" />
-                        </div>
-                        <div className="tlp-cmp-row tlp-cmp-names">
-                          <span className="tlp-cmp-name tlp-cmp-name--muted">{view.companyName}</span>
-                          <span className="tlp-cmp-vs">vs</span>
-                          <span className="tlp-cmp-name">{c.b}</span>
-                        </div>
-                      </a>
-                    ))}
+                  : COMPARISONS.map(c => {
+                      const otherSlug = c.b.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+                      return (
+                        <a
+                          key={c.b}
+                          href={`/compare/${listingSlug}-vs-${otherSlug}`}
+                          className="tlp-cmp"
+                          aria-label={`Compare ${view.companyName} with ${c.b}`}
+                        >
+                          <div className="tlp-cmp-row">
+                            <img src={view.logoUrl} alt={view.companyName} className="tlp-cmp-logo" />
+                            <span className="tlp-cmp-bracket"><BracketIcon /></span>
+                            <img src={clearbit(c.bd)} alt={c.b} className="tlp-cmp-logo" />
+                          </div>
+                          <div className="tlp-cmp-row tlp-cmp-names">
+                            <span className="tlp-cmp-name tlp-cmp-name--muted">{view.companyName}</span>
+                            <span className="tlp-cmp-vs">vs</span>
+                            <span className="tlp-cmp-name">{c.b}</span>
+                          </div>
+                        </a>
+                      )
+                    })}
               </div>
 
               <div className="tlp-cmp-more-wrap">
