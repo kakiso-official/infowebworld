@@ -11,6 +11,11 @@
 html, body { overflow-x: clip !important; overflow-y: visible !important }
 .cpr-page, .cpr-body { overflow: visible !important }
 
+/* On any compare-page route, paint the body cream too so the area
+   outside the 1380px content cap matches the page bg edge-to-edge —
+   kills the visible "color shift" band on wider monitors. */
+body:has(.cpr-page) { background-color: #FBFAF8 !important; }
+
 /* INTER ONLY — site-wide vars (Bricolage/Nunito) overridden inside the
    compare page so every glyph is Inter. */
 .cpr-page,
@@ -42,14 +47,76 @@ html, body { overflow-x: clip !important; overflow-y: visible !important }
 
 /* ── Empty state — full landing page ──────────────────────── */
 
-.cpr-page--landing { padding: clamp(28px, 6vh, 60px) clamp(14px, 3vw, 32px) 80px; }
+/* Fit exactly one viewport below the navbar so the footer sits below
+   the fold and the first paint shows just navbar + search section.
+   max-width: none + 100vw width so the cream bg extends edge-to-edge
+   on ultra-wide screens — the inner .cpr-land caps content at 640px. */
+.cpr-page--landing {
+  position: relative;
+  max-width: none;
+  width: 100%;
+  padding: 16px clamp(14px, 3vw, 32px);
+  min-height: calc(100dvh - 116px);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  background: #FBFAF8;
+}
 
 .cpr-land {
-  max-width: 1080px;
+  position: relative;
+  width: 100%;
+  max-width: 640px;
   margin: 0 auto;
   display: flex; flex-direction: column;
-  gap: clamp(40px, 8vh, 80px);
+  align-items: center; justify-content: center;
+  z-index: 2;
 }
+
+/* Back-view Builder — centered BELOW the search bar, looking up at it.
+   Sized with viewport-height clamps so the heading + search + mascot
+   together never push the footer above the fold. */
+.cpr-land-mascot {
+  display: block;
+  margin: 18px auto 0;
+  width: auto;
+  height: auto;
+  max-width: 280px;
+  max-height: clamp(140px, 28vh, 280px);
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (max-width: 900px) {
+  .cpr-land-mascot { max-width: 220px; max-height: clamp(120px, 24vh, 220px); margin-top: 14px; }
+}
+@media (max-width: 640px) {
+  .cpr-page--landing { min-height: calc(100dvh - 100px); padding: 12px 14px; }
+  .cpr-land-mascot { max-width: 170px; max-height: clamp(110px, 22vh, 180px); margin-top: 10px; }
+}
+
+/* Centered search-only empty state — mirrors the dashboard form
+   intro hero typography (df-spk-title / df-spk-sub) for visual
+   continuity with the company / product selection pages. */
+.cpr-land-copy {
+  text-align: center;
+  margin: 0 0 20px;
+}
+.cpr-land-h1 {
+  margin: 0 0 8px;
+  font-size: clamp(22px, 2.4vw, 28px);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.15;
+  color: var(--h-heading, #1A1A1A);
+}
+.cpr-land-p {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: #5C5852;
+}
+.cpr-land-search-only { width: 100%; }
 
 /* Hero */
 .cpr-land-hero {
@@ -182,35 +249,34 @@ html, body { overflow-x: clip !important; overflow-y: visible !important }
 
 /* ── 1-product Pick-Second view ───────────────────────────── */
 
-.cpr-page--single { padding: clamp(24px, 5vh, 48px) clamp(14px, 3vw, 32px) 80px; }
+/* Single-product (pick-second) state — title + 2-column grid centered
+   vertically in the viewport. Cream bg edge-to-edge (same overrides
+   as the landing variant). */
+.cpr-page--single {
+  position: relative;
+  max-width: none;
+  width: 100%;
+  padding: 24px clamp(14px, 3vw, 32px);
+  min-height: calc(100dvh - 116px);
+  display: flex; align-items: center; justify-content: center;
+  background: #FBFAF8;
+}
 
 .cpr-pick2 {
   max-width: 980px;
+  width: 100%;
   margin: 0 auto;
-  display: flex; flex-direction: column; gap: 32px;
+  display: flex; flex-direction: column; gap: 24px;
 }
 
-.cpr-pick2-head { text-align: center; max-width: 700px; margin: 0 auto; }
-.cpr-pick2-eyebrow {
-  display: inline-block;
-  font-weight: 800; font-size: 11px;
-  letter-spacing: .18em; text-transform: uppercase;
-  color: var(--h-accent, #E8553D);
-  background: rgba(232,85,61,.08);
-  padding: 5px 12px; border-radius: 999px;
-  margin-bottom: 14px;
-}
 .cpr-pick2-title {
+  text-align: center;
   font-weight: 900; font-size: clamp(1.6rem, 3.6vw, 2.4rem);
-  line-height: 1.15; letter-spacing: -.025em;
-  margin: 0 0 12px; color: var(--h-heading, #1A1A1A);
+  line-height: 1.2; letter-spacing: -.025em;
+  margin: 0; color: var(--h-heading, #1A1A1A);
 }
 .cpr-pick2-title em {
   font-style: normal; color: var(--h-accent, #E8553D);
-}
-.cpr-pick2-sub {
-  font-weight: 500; font-size: 14.5px; line-height: 1.55;
-  color: #5C5852; margin: 0;
 }
 
 /* 2-column grid: picked card | search slot */
@@ -371,33 +437,70 @@ html, body { overflow-x: clip !important; overflow-y: visible !important }
 /* ── Search input ─────────────────────────────────────────── */
 
 .cpr-srch {
-  position: relative; display: flex; align-items: center; gap: 10px;
-  padding: 0 16px; border: 1.5px solid var(--h-border, #E8E4DF);
+  position: relative; display: flex; align-items: center; gap: 12px;
+  padding: 0 8px 0 22px;
+  border: 1.5px solid var(--h-border, #E8E4DF);
   background: #fff; border-radius: 999px;
-  transition: border-color .15s, box-shadow .15s;
+  transition: border-color .15s, box-shadow .15s, transform .15s;
 }
 .cpr-srch:focus-within {
   border-color: var(--h-accent, #E8553D);
-  box-shadow: 0 0 0 4px rgba(232,85,61,.10);
+  box-shadow: 0 0 0 5px rgba(232,85,61,.10), 0 4px 18px rgba(0,0,0,.06);
 }
-.cpr-srch--hero { padding: 0 22px; height: 60px; box-shadow: 0 1px 2px rgba(0,0,0,.03), 0 8px 30px rgba(0,0,0,.06); }
-.cpr-srch--panel { height: 42px; }
-.cpr-srch-ico { display: inline-flex; color: #8B847C; flex-shrink: 0; }
+.cpr-srch--hero {
+  padding: 0 8px 0 26px;
+  height: 68px;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.04),
+    0 12px 36px rgba(0,0,0,.07);
+}
+.cpr-srch--hero:hover { border-color: #D5D0CA; }
+.cpr-srch--panel { height: 42px; padding: 0 6px 0 16px; }
+
+.cpr-srch-ico {
+  display: inline-flex; align-items: center; justify-content: center;
+  color: #8B847C; flex-shrink: 0;
+}
+.cpr-srch--hero .cpr-srch-ico svg { width: 22px; height: 22px; }
 .cpr-srch:focus-within .cpr-srch-ico { color: var(--h-accent, #E8553D); }
+
 .cpr-srch-input {
   flex: 1; border: 0; outline: 0; background: transparent;
   font-weight: 600; font-size: 14px; line-height: 1;
   color: var(--h-heading, #1A1A1A); min-width: 0;
 }
-.cpr-srch--hero .cpr-srch-input { font-size: 17px; }
+.cpr-srch--hero .cpr-srch-input {
+  font-size: 17.5px; font-weight: 600; letter-spacing: -.005em;
+}
 .cpr-srch-input::placeholder { color: #B5AFA8; font-weight: 500; }
+
 .cpr-srch-clear {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 24px; height: 24px; border: 0; border-radius: 999px;
+  width: 28px; height: 28px; border: 0; border-radius: 999px;
   background: #F2EEEA; color: #8B847C; cursor: pointer; flex-shrink: 0;
   transition: background .15s, color .15s;
 }
+.cpr-srch--hero .cpr-srch-clear { width: 32px; height: 32px; }
 .cpr-srch-clear:hover { background: #1A1A1A; color: #fff; }
+
+/* Inline coral "Search" pill at the right end of the hero variant —
+   decorative submit hint that pairs with the dropdown pick. */
+.cpr-srch-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 52px; padding: 0 22px;
+  background: var(--h-accent, #E8553D); color: #fff !important;
+  font-weight: 800; font-size: 13.5px; line-height: 1;
+  letter-spacing: .04em; text-transform: uppercase;
+  border: 0; border-radius: 999px;
+  cursor: pointer; flex-shrink: 0;
+  box-shadow: 0 2px 10px rgba(232,85,61,.25);
+  transition: background .15s, transform .15s, box-shadow .15s;
+}
+.cpr-srch--panel .cpr-srch-btn { height: 32px; padding: 0 14px; font-size: 11px; }
+.cpr-srch-btn:hover {
+  background: #C9432E; transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(232,85,61,.32);
+}
 
 .cpr-srch-drop {
   position: absolute; top: calc(100% + 8px); left: 0; right: 0;
@@ -515,16 +618,8 @@ html, body { overflow-x: clip !important; overflow-y: visible !important }
   grid-template-columns: repeat(var(--cpr-n, 1), minmax(0, 1fr));
   gap: 12px;
 }
-@media (max-width: 768px) {
-  .cpr-cols {
-    grid-template-columns: repeat(var(--cpr-n, 1), 280px);
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 8px;
-  }
-  .cpr-cols > * { scroll-snap-align: start; }
-}
+/* Mobile: 2-column side-by-side handled in the dedicated mobile block
+   later in this file. No horizontal scroll. */
 
 /* ── Column header strip ─────────────────────────────────── */
 
@@ -689,6 +784,33 @@ html, body { overflow-x: clip !important; overflow-y: visible !important }
 }
 .cpr-cell--empty { align-items: center; justify-content: center; min-height: 90px; padding: 20px; }
 .cpr-empty-mute { color: #B5AFA8; font-size: 13px; font-style: italic; text-align: center; }
+
+/* ── Navigation progress bar (shown during useTransition pending) ──
+   Animated coral strip at the very top of the viewport so a click is
+   acknowledged INSTANTLY, even before the server data arrives. */
+.cpr-nav-bar {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--h-accent, #E8553D) 30%,
+    var(--h-accent, #E8553D) 70%,
+    transparent 100%);
+  background-size: 200% 100%;
+  animation: cprNavSlide 1.1s linear infinite;
+  z-index: 9999;
+  pointer-events: none;
+  will-change: background-position;
+}
+@keyframes cprNavSlide {
+  0%   { background-position: -100% 0; }
+  100% { background-position: 100% 0; }
+}
+.cpr-page[data-loading='true'] {
+  opacity: .6;
+  pointer-events: none;
+  transition: opacity .15s;
+}
 
 .cpr-desc { color: var(--h-heading, #1A1A1A); font-size: 13.5px; line-height: 1.6; font-weight: 500; }
 .cpr-mute-line { color: #B5AFA8; font-style: italic; font-size: 13px; }
@@ -1613,13 +1735,236 @@ html, body { overflow-x: clip !important; overflow-y: visible !important }
 .cpr-stars { display: inline-flex; align-items: center; gap: 1px; }
 .cpr-star { display: inline-flex; align-items: center; }
 
-/* ── Mobile tweaks ────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   MOBILE OVERHAUL — exactly 2 columns side-by-side, no scroll
+   ══════════════════════════════════════════════════════════════ */
 
 @media (max-width: 768px) {
-  .cpr-cols--head { position: static; padding: 0; border-bottom: 0; }
-  .cpr-mail { flex-direction: column; padding: 18px; }
-  .cpr-mail-actions { flex-direction: column; align-items: stretch; }
-  .cpr-mail-submit { width: 100%; }
-  .cpr-titlebar-inner { padding: 0 4px; }
-  .cpr-disclose { font-size: 11.5px; flex-wrap: wrap; }
+  .cpr-page { padding: 12px 12px 60px; }
+  .cpr-disclose { font-size: 11px; padding: 8px 12px; margin: -4px -12px 12px; }
+  .cpr-disclose-link { display: none; }
+  .cpr-titlebar { margin-bottom: 14px; }
+  .cpr-titlebar-inner { padding: 0; }
+  .cpr-crumb { font-size: 11.5px; gap: 4px; margin-bottom: 8px; }
+  .cpr-title { font-size: clamp(1.2rem, 5vw, 1.6rem); }
+
+  /* Two columns side-by-side, NO horizontal scroll */
+  .cpr-cols {
+    grid-template-columns: 1fr 1fr;
+    overflow: visible;
+    gap: 8px;
+    padding: 0;
+  }
+  .cpr-cols > * { scroll-snap-align: none; }
+  .cpr-cols--head { position: static; padding: 6px 0 10px; margin-bottom: 2px; border-bottom: 0; }
+
+  /* Body grid stacks — main on top, rail BELOW */
+  .cpr-body { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .cpr-rail { position: static; display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+  .cpr-rail > * { flex: 1; }
+
+  /* Cell base — tighter */
+  .cpr-cell { padding: 12px 10px; gap: 10px; font-size: 12.5px; border-radius: 10px; }
+
+  /* Column header */
+  .cpr-col-head { padding: 10px 8px 8px; gap: 6px; border-radius: 10px; }
+  .cpr-col-x { width: 22px; height: 22px; top: 4px; right: 4px; }
+  .cpr-col-x svg { width: 12px; height: 12px; }
+  .cpr-col-logo, .cpr-col-logo-link .cpr-letter {
+    width: 38px; height: 38px; border-radius: 8px;
+  }
+  .cpr-col-logo-link .cpr-letter { font-size: 15px; }
+  .cpr-col-name-row { flex-wrap: wrap; }
+  .cpr-col-name { font-size: 12.5px; gap: 3px; }
+  .cpr-col-chev { display: none; }
+  .cpr-col-rate { font-size: 11px; }
+  .cpr-col-rate-num { font-size: 12px; }
+  .cpr-col-cta-row { flex-direction: column; gap: 5px; margin-top: 4px; }
+  .cpr-col-visit { padding: 9px 6px; font-size: 10.5px; gap: 4px; }
+  .cpr-col-visit svg { width: 11px; height: 11px; }
+  .cpr-col-save { display: none; }
+
+  /* Section header */
+  .cpr-sec { margin-top: 22px; }
+  .cpr-sec-head { margin-bottom: 10px; }
+  .cpr-sec-head-row { gap: 8px; }
+  .cpr-sec-icon svg { width: 20px !important; height: 20px !important; }
+  .cpr-sec-title { font-size: 15px; }
+  .cpr-sec-sub { font-size: 12px; margin-left: 28px; }
+
+  /* Overview */
+  .cpr-desc { font-size: 12.5px; line-height: 1.55; }
+  .cpr-kv-label { font-size: 10px; margin-bottom: 6px; }
+  .cpr-checklist li { font-size: 12px; gap: 6px; }
+  .cpr-cb { width: 18px; height: 18px; }
+  .cpr-cb svg { width: 11px; height: 11px; }
+  .cpr-pill-link { padding: 8px 12px; font-size: 10.5px; gap: 5px; }
+
+  /* Company Info */
+  .cpr-info-row { padding: 6px 0; gap: 8px; }
+  .cpr-info-label { font-size: 10px; }
+  .cpr-info-value { font-size: 12px; }
+
+  /* Screenshots */
+  .cpr-cell--shots { gap: 6px; padding: 10px 8px; }
+  .cpr-shot-hero { aspect-ratio: 16/10; border-radius: 8px; }
+  .cpr-shot-badge { padding: 3px 7px; font-size: 9.5px; bottom: 5px; left: 5px; }
+  .cpr-shot-thumbs { grid-template-columns: repeat(3, 1fr); gap: 4px; }
+  .cpr-shot-thumb { border-radius: 4px; }
+  .cpr-shot-empty { padding: 18px 8px; min-height: 130px; }
+
+  /* Pricing */
+  .cpr-cell--pricing { padding: 18px 10px 14px; gap: 14px; }
+  .cpr-pricing-from { font-size: 13px; }
+  .cpr-pricing-num { font-size: 38px; }
+  .cpr-pricing-cur { font-size: 20px; }
+  .cpr-pricing-unit { font-size: 13px; margin-left: 2px; }
+  .cpr-pricing-amount--custom .cpr-pricing-num { font-size: 24px; }
+  .cpr-pricing-period { font-size: 12px; }
+  .cpr-pricing-rows { gap: 8px; }
+  .cpr-pricing-rows li { font-size: 12px; gap: 6px; }
+  .cpr-pricing-mark { width: 18px; height: 18px; }
+  .cpr-pricing-mark svg { width: 12px; height: 12px; }
+  .cpr-app-info { font-size: 12px; }
+
+  /* Reviews — stack the top row vertically so each col has space */
+  .cpr-cell--reviews { padding: 14px 10px 12px; gap: 14px; }
+  .cpr-rev-top { grid-template-columns: 1fr; gap: 10px; }
+  .cpr-rev-top-left { gap: 4px; }
+  .cpr-rev-rate { gap: 5px; }
+  .cpr-rev-rate-star svg { width: 18px; height: 18px; }
+  .cpr-rev-rate-num { font-size: 30px; }
+  .cpr-rev-count-row { gap: 4px; }
+  .cpr-rev-count-num { font-size: 12.5px; }
+  .cpr-rev-bar { grid-template-columns: 10px 1fr 28px; gap: 6px; font-size: 10.5px; }
+  .cpr-rev-rec { gap: 6px; padding: 4px 0; }
+  .cpr-rev-rec-num { font-size: 30px; }
+  .cpr-rev-rec-num small { font-size: 14px; }
+  .cpr-rev-rec-text { font-size: 12px; }
+  .cpr-rev-pc { gap: 12px; }
+  .cpr-rev-pc-title { font-size: 14px; }
+  .cpr-quote { gap: 7px; }
+  .cpr-quote-pill { font-size: 9.5px; padding: 3px 7px; }
+  .cpr-quote-text { font-size: 12px; line-height: 1.55; }
+  .cpr-quote-av { width: 26px; height: 26px; }
+  .cpr-quote-av--letter { font-size: 10.5px; }
+  .cpr-quote-name { font-size: 11.5px; }
+  .cpr-rev-foot { font-size: 11.5px; padding-top: 8px; }
+
+  /* Union list (Key features / Integrations) */
+  .cpr-cell--union { gap: 0; }
+  .cpr-total-row { padding: 12px 12px; }
+  .cpr-total-label { font-size: 12.5px; }
+  .cpr-total-num { font-size: 16px; gap: 5px; }
+  .cpr-crown svg { width: 13px; height: 13px; }
+  .cpr-union-list li { padding: 7px 12px; gap: 6px; }
+  .cpr-union-name { font-size: 12px; }
+  .cpr-union-mark { width: 18px; height: 18px; }
+  .cpr-union-mark svg { width: 12px; height: 12px; }
+  .cpr-expand { padding: 12px; font-size: 12.5px; }
+
+  /* Pills (industries, use cases, languages, compliance) */
+  .cpr-pill { padding: 5px 9px; font-size: 11.5px; }
+
+  /* Awards */
+  .cpr-award { padding: 8px 10px; gap: 8px; grid-template-columns: 28px 1fr; }
+  .cpr-award-ico { width: 26px; height: 26px; }
+  .cpr-award-name { font-size: 11.5px; }
+  .cpr-award-year { font-size: 10px; }
+
+  /* FAQ */
+  .cpr-cell--faqs { gap: 7px; padding: 10px 8px; }
+  .cpr-faq { border-radius: 10px; }
+  .cpr-faq-q { grid-template-columns: 26px 1fr 22px; gap: 8px; padding: 11px 10px; }
+  .cpr-faq-num { font-size: 19px; }
+  .cpr-faq-text { font-size: 12px; line-height: 1.4; }
+  .cpr-faq-toggle { width: 22px; height: 22px; }
+  .cpr-faq-toggle svg { width: 11px; height: 11px; }
+  .cpr-faq-a { padding: 2px 10px 12px 44px; font-size: 12px; }
+
+  /* Alternatives */
+  .cpr-cell--alts { gap: 16px; padding: 16px 12px; }
+  .cpr-alt2 + .cpr-alt2 { padding-top: 16px; }
+  .cpr-alt2-head { gap: 10px; grid-template-columns: 34px 1fr; }
+  .cpr-alt2-logo, .cpr-alt2 .cpr-letter { width: 34px; height: 34px; }
+  .cpr-alt2 .cpr-letter { font-size: 14px; }
+  .cpr-alt2-name { font-size: 13.5px; }
+  .cpr-alt2-rate { font-size: 11px; }
+  .cpr-alt2-rate-num { font-size: 12px; }
+  .cpr-alt2-cmp { padding: 8px 18px; font-size: 11px; gap: 7px; }
+  .cpr-alt-more { font-size: 11.5px; padding: 8px 0 2px; }
+
+  /* Email capture */
+  .cpr-mail { flex-direction: column; padding: 16px; gap: 12px; }
+  .cpr-mail-actions { flex-direction: column; align-items: stretch; gap: 10px; }
+  .cpr-mail-legal { font-size: 10.5px; min-width: 0; }
+  .cpr-mail-submit { width: 100%; padding: 12px; }
+  .cpr-mail-title { font-size: 15px; margin-bottom: 12px; }
+  .cpr-mail-input { padding: 10px 12px; font-size: 13px; }
+
+  /* Right rail at bottom — compact horizontal */
+  .cpr-rail-card { padding: 12px; }
+  .cpr-rail-label { font-size: 10px; margin-bottom: 8px; }
+  .cpr-rail-counter { font-size: 11px; }
+
+  /* Encourage block */
+  .cpr-encourage { padding: 12px 14px; gap: 10px; }
+  .cpr-encourage-ico { width: 32px; height: 32px; }
+  .cpr-encourage-ico svg { width: 14px; height: 14px; }
+  .cpr-encourage-body strong { font-size: 13px; }
+  .cpr-encourage-body span { font-size: 11.5px; }
+
+  /* Landing page */
+  .cpr-page--landing { padding: 22px 14px 60px; }
+  .cpr-land { gap: 36px; }
+  .cpr-land-hero { padding: 14px 4px 0; }
+  .cpr-land-eyebrow { font-size: 10px; padding: 5px 12px; margin-bottom: 14px; }
+  .cpr-land-title { font-size: clamp(1.7rem, 8vw, 2.4rem); margin-bottom: 12px; }
+  .cpr-land-sub { font-size: 14px; margin-bottom: 22px; }
+  .cpr-land-features { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .cpr-land-feat { padding: 16px 14px; }
+  .cpr-land-feat-ico { width: 38px; height: 38px; margin-bottom: 10px; }
+  .cpr-land-feat-ico svg { width: 18px !important; height: 18px !important; }
+  .cpr-land-feat-title { font-size: 14px; }
+  .cpr-land-feat-body { font-size: 12px; }
+  .cpr-land-cats-grid { grid-template-columns: 1fr; gap: 8px; }
+  .cpr-land-cat { padding: 13px 14px; }
+  .cpr-land-cat-name { font-size: 13.5px; }
+
+  /* Pick-second view */
+  .cpr-page--single { padding: 18px 12px 60px; }
+  .cpr-pick2 { gap: 22px; }
+  .cpr-pick2-title { font-size: clamp(1.3rem, 5.5vw, 1.7rem); margin-bottom: 8px; }
+  .cpr-pick2-sub { font-size: 13px; }
+  .cpr-pick2-grid { grid-template-columns: 1fr; gap: 14px; }
+  .cpr-pick2-picked, .cpr-pick2-add { padding: 18px 16px; border-radius: 14px; }
+  .cpr-pick2-id { grid-template-columns: 48px 1fr; gap: 12px; }
+  .cpr-pick2-logo, .cpr-pick2-picked .cpr-letter { width: 48px; height: 48px; }
+  .cpr-pick2-name { font-size: 15px; }
+  .cpr-pick2-tag { font-size: 12.5px; margin-top: 10px; }
+  .cpr-pick2-add-label { font-size: 11px; }
+  .cpr-pick2-suggest-title { font-size: 16px; line-height: 1.35; }
+  .cpr-pick2-suggest-grid { grid-template-columns: 1fr; }
+  .cpr-pick2-sugg { padding: 11px 12px; gap: 10px; grid-template-columns: 36px 1fr auto; }
+  .cpr-pick2-sugg-logo, .cpr-pick2-sugg .cpr-letter { width: 36px; height: 36px; }
+  .cpr-pick2-sugg-name { font-size: 13px; }
+  .cpr-pick2-sugg-cta { font-size: 10px; }
+}
+
+@media (max-width: 480px) {
+  .cpr-cols { gap: 6px; }
+  .cpr-cell { padding: 10px 8px; }
+  .cpr-col-logo, .cpr-col-logo-link .cpr-letter { width: 34px; height: 34px; }
+  .cpr-col-name { font-size: 11.5px; }
+  .cpr-col-visit { font-size: 9.5px; padding: 8px 4px; letter-spacing: .02em; }
+  .cpr-pricing-num { font-size: 32px; }
+  .cpr-pricing-cur { font-size: 17px; }
+  .cpr-rev-rate-num { font-size: 26px; }
+  .cpr-rev-rec-num { font-size: 26px; }
+  .cpr-faq-num { font-size: 17px; }
+  .cpr-faq-q { grid-template-columns: 22px 1fr 20px; padding: 10px 9px; }
+  .cpr-faq-a { padding-left: 39px; }
+  .cpr-alt2-cmp { padding: 7px 14px; }
+  .cpr-land-features { grid-template-columns: 1fr; }
+  .cpr-land-title { font-size: clamp(1.5rem, 7vw, 2rem); }
 }

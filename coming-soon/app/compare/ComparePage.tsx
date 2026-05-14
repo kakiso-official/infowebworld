@@ -23,7 +23,7 @@
        page with a strong "Pick a 2nd product" CTA in the rail.
    ───────────────────────────────────────────────────────────── */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from 'react'
 import Link from 'next/link'
 import { useRouter, usePathname } from 'next/navigation'
 import {
@@ -387,13 +387,15 @@ function CompareSearchInput({
       <span className="cpr-srch-ico">{busy ? Ico.spinner : Ico.search}</span>
       <input
         ref={inputRef}
-        type="search"
+        type="text"
         value={q}
         onChange={e => { setQ(e.target.value); setOpen(true); setActive(-1) }}
         onFocus={() => setOpen(true)}
         onKeyDown={onKey}
         placeholder={placeholder || 'Type a product name'}
         autoComplete="off"
+        autoCorrect="off"
+        spellCheck={false}
         autoFocus={autoFocus}
         className="cpr-srch-input"
       />
@@ -402,6 +404,17 @@ function CompareSearchInput({
           {Ico.close}
         </button>
       )}
+      <button
+        type="button"
+        className="cpr-srch-btn"
+        onClick={() => {
+          if (hits.length > 0) { onPick(hits[0]); setQ(''); setOpen(false); setActive(-1) }
+          else inputRef.current?.focus()
+        }}
+        aria-label="Search"
+      >
+        Search
+      </button>
       {showResults && (
         <div className="cpr-srch-drop" role="listbox">
           {hits.length === 0
@@ -438,100 +451,33 @@ function CompareSearchInput({
   )
 }
 
-/* ── Empty state — full landing page ──────────────────────── */
-
-const LAND_SECTORS = [
-  { name: 'AI & ML',                slug: 'ai-ml',                color: '#8B5CF6' },
-  { name: 'Software & SaaS',        slug: 'software-saas',        color: '#3B82F6' },
-  { name: 'IT Services & Agencies', slug: 'it-services-agencies', color: '#14B8A6' },
-  { name: 'Startups & Innovation',  slug: 'startups-innovation',  color: '#E8553D' },
-  { name: 'Local Business',         slug: 'local-business',       color: '#F59E0B' },
-  { name: 'Professional Services',  slug: 'professional-services', color: '#10B981' },
-]
-
-const LAND_FEATURES = [
-  {
-    icon: Ico.iconFeatures,
-    title: 'Features matched',
-    body: 'Every capability lined up row by row. See exactly what each product can and can\u2019t do at a glance.',
-  },
-  {
-    icon: Ico.iconPricing,
-    title: 'Pricing compared',
-    body: 'Starting prices, plans, free trials \u2014 normalized so you can compare apples to apples.',
-  },
-  {
-    icon: Ico.iconReviews,
-    title: 'Real reviews',
-    body: 'Aggregate ratings, distribution bars, and verified user quotes pulled from real customers.',
-  },
-  {
-    icon: Ico.iconIntegrations,
-    title: 'Integrations diffed',
-    body: 'Alphabetical union of every integration with a checkmark per column. Spot the gaps instantly.',
-  },
-]
+/* ── Empty state — centered search bar only ──────────────── */
 
 function EmptyLanding({ onPick }: { onPick: (hit: SearchHit) => void }) {
   return (
     <div className="cpr-land">
-      <div className="cpr-land-hero">
-        <div className="cpr-land-eyebrow">Compare</div>
-        <h1 className="cpr-land-title">
-          Compare products <em>side-by-side</em>
-        </h1>
-        <p className="cpr-land-sub">
-          Stack up features, pricing, reviews, and integrations for up to {MAX_COMPARE} products at once.
-          Make confident decisions in minutes \u2014 not days.
-        </p>
-        <div className="cpr-land-search">
-          <CompareSearchInput
-            placeholder="Search a product by name"
-            excludeSlugs={[]}
-            onPick={onPick}
-            variant="hero"
-            autoFocus
-          />
-        </div>
-        <p className="cpr-land-hint">Try Zoho CRM, ChatGPT, Mailchimp \u2014 or anything else in our directory.</p>
-      </div>
-
-      <div className="cpr-land-features">
-        {LAND_FEATURES.map(f => (
-          <div key={f.title} className="cpr-land-feat">
-            <span className="cpr-land-feat-ico" aria-hidden="true">{f.icon}</span>
-            <h3 className="cpr-land-feat-title">{f.title}</h3>
-            <p className="cpr-land-feat-body">{f.body}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="cpr-land-cats">
-        <div className="cpr-land-cats-head">
-          <h2 className="cpr-land-cats-title">Or browse by category</h2>
-          <p className="cpr-land-cats-sub">Find products to compare across our six sectors.</p>
-        </div>
-        <div className="cpr-land-cats-grid">
-          {LAND_SECTORS.map(s => (
-            <Link
-              key={s.slug}
-              href={`/${s.slug}`}
-              className="cpr-land-cat"
-              style={{ ['--cat-color' as string]: s.color }}
-            >
-              <span className="cpr-land-cat-dot" aria-hidden="true" />
-              <span className="cpr-land-cat-name">{s.name}</span>
-              <span className="cpr-land-cat-arrow" aria-hidden="true">{Ico.arrowRight}</span>
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      <div className="cpr-land-foot">
-        <p>
-          New comparisons added daily. <strong>Free forever</strong> \u2014 no signup required to compare.
+      <div className="cpr-land-copy">
+        <h1 className="cpr-land-h1">Which product would you like to compare?</h1>
+        <p className="cpr-land-p">
+          Search a product to start — you&rsquo;ll pick a second one in the next step.
         </p>
       </div>
+      <div className="cpr-land-search-only">
+        <CompareSearchInput
+          placeholder="Search a product by name"
+          excludeSlugs={[]}
+          onPick={onPick}
+          variant="hero"
+          autoFocus
+        />
+      </div>
+      <img
+        src="/illustrations/builder-back.png"
+        alt=""
+        aria-hidden="true"
+        className="cpr-land-mascot"
+        onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
+      />
     </div>
   )
 }
@@ -544,26 +490,18 @@ function EmptyLanding({ onPick }: { onPick: (hit: SearchHit) => void }) {
 
 function PickSecondView({
   col,
-  alternatives,
   onAdd,
   onRemove,
 }: {
   col: CompareCol
-  alternatives: CompareAlternative[]
   onAdd: (slug: string) => void
   onRemove: () => void
 }) {
   return (
     <div className="cpr-pick2">
-      <header className="cpr-pick2-head">
-        <div className="cpr-pick2-eyebrow">Step 1 of 2</div>
-        <h1 className="cpr-pick2-title">
-          Pick a 2nd product to compare with <em>{col.companyName}</em>
-        </h1>
-        <p className="cpr-pick2-sub">
-          We\u2019ll line up features, pricing, reviews and integrations side-by-side once you add one more.
-        </p>
-      </header>
+      <h1 className="cpr-pick2-title">
+        Pick a 2nd product to compare with <em>{col.companyName}</em>
+      </h1>
 
       <div className="cpr-pick2-grid">
         {/* Picked card */}
@@ -606,43 +544,8 @@ function PickSecondView({
             variant="hero"
             autoFocus
           />
-          <div className="cpr-pick2-hint">Pro tip: pick a product in the same category for the richest comparison.</div>
         </div>
       </div>
-
-      {alternatives.length > 0 && (
-        <div className="cpr-pick2-suggest">
-          <h2 className="cpr-pick2-suggest-title">
-            Or compare with similar apps {col.category && <span style={{ color: col.category.color }}>in {col.category.name}</span>}
-          </h2>
-          <div className="cpr-pick2-suggest-grid">
-            {alternatives.slice(0, 6).map(a => (
-              <button
-                key={a.slug}
-                type="button"
-                onClick={() => onAdd(a.slug)}
-                className="cpr-pick2-sugg"
-              >
-                <SmartLogo
-                  col={{ logoUrl: a.logoUrl, website: a.website, companyName: a.companyName }}
-                  className="cpr-pick2-sugg-logo"
-                />
-                <span className="cpr-pick2-sugg-meta">
-                  <span className="cpr-pick2-sugg-name">{a.companyName}</span>
-                  {a.ratingCount > 0 && (
-                    <span className="cpr-pick2-sugg-rate">
-                      <span className="cpr-pick2-sugg-star" aria-hidden="true">{Ico.star}</span>
-                      <span>{a.ratingAvg.toFixed(1)}</span>
-                      <span className="cpr-pick2-sugg-count">({a.ratingCount >= 1000 ? `${(a.ratingCount / 1000).toFixed(1)}K` : a.ratingCount})</span>
-                    </span>
-                  )}
-                </span>
-                <span className="cpr-pick2-sugg-cta">Compare {Ico.arrowRight}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   )
 }
@@ -1446,10 +1349,12 @@ function AlternativesCell({
   alternatives,
   currentSlugs,
   thisCol,
+  maxCap,
 }: {
   alternatives: CompareAlternative[]
   currentSlugs: string[]
   thisCol: CompareCol
+  maxCap: number
 }) {
   const show = alternatives.slice(0, 3)
   const moreHref = thisCol.category?.slug ? `/${thisCol.category.slug}` : '/categories'
@@ -1468,14 +1373,14 @@ function AlternativesCell({
   return (
     <div className="cpr-cell cpr-cell--alts">
       {show.map(a => {
-        const isFull = currentSlugs.length >= MAX_COMPARE
+        const isFull = currentSlugs.length >= maxCap
         // Build the new URL: if the alt is already in compare, navigate
         // to its company page; otherwise append (and drop the oldest if full).
         const alreadyComparing = currentSlugs.includes(a.slug)
         const newSlugs = alreadyComparing
           ? currentSlugs
           : (isFull
-              ? [...currentSlugs.slice(0, MAX_COMPARE - 1), a.slug]
+              ? [...currentSlugs.slice(0, maxCap - 1), a.slug]
               : [...currentSlugs, a.slug])
         const compareHref = alreadyComparing
           ? `/company/${a.slug}`
@@ -1587,13 +1492,15 @@ function AddRail({
   cols,
   alternatives,        // shared union list for the rail widget
   onAdd,
+  maxCap,              // mobile=2, desktop=4
 }: {
   cols: CompareCol[]
   alternatives: CompareAlternative[]
   onAdd: (slug: string) => void
+  maxCap: number
 }) {
   const excludeSlugs = cols.map(c => c.slug)
-  const canAdd = cols.length < MAX_COMPARE
+  const canAdd = cols.length < maxCap
   const [feedback, setFeedback] = useState<'up' | 'down' | null>(null)
   return (
     <aside className="cpr-rail">
@@ -1608,11 +1515,11 @@ function AddRail({
           />
         ) : (
           <div className="cpr-rail-full">
-            <strong>{MAX_COMPARE} products</strong> is the maximum. Remove one to add another.
+            <strong>{maxCap} products</strong> is the maximum. Remove one to add another.
           </div>
         )}
         <div className="cpr-rail-counter">
-          {cols.length} of {MAX_COMPARE} added
+          {cols.length} of {maxCap} added
         </div>
       </div>
 
@@ -1715,6 +1622,20 @@ function DisclosureBanner() {
 
 /* ── Main component ──────────────────────────────────────── */
 
+/** Track viewport width — capped at 2 columns on mobile per Aadil's
+    spec ("only two comparisons that is it no other thing only two"). */
+function useIsMobile(breakpoint = 768): boolean {
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${breakpoint}px)`)
+    const update = () => setIsMobile(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [breakpoint])
+  return isMobile
+}
+
 export default function ComparePage({
   initialCols,
   initialAlts,
@@ -1728,11 +1649,28 @@ export default function ComparePage({
 }) {
   const router = useRouter()
   const pathname = usePathname()
+  const isMobile = useIsMobile(768)
 
-  const cols = initialCols
+  // Mobile cap: max 2 columns. Anything beyond is trimmed both at render
+  // time AND in the URL (replace, so the back button isn't polluted).
+  const mobileMax = 2
+  const effectiveMax = isMobile ? mobileMax : maxCompare
+  const cols = useMemo(
+    () => (isMobile ? initialCols.slice(0, mobileMax) : initialCols),
+    [isMobile, initialCols]
+  )
   const altsBySlug = initialAlts
   const sharedAlts = altsBySlug._shared || []
   const currentSlugs = useMemo(() => cols.map(c => c.slug), [cols])
+
+  // If the URL has more slugs than mobile allows, normalize it once on
+  // mount so reload state is clean.
+  useEffect(() => {
+    if (isMobile && initialCols.length > mobileMax) {
+      const trimmed = initialCols.slice(0, mobileMax).map(c => c.slug)
+      router.replace(buildCompareUrl(trimmed))
+    }
+  }, [isMobile, initialCols, router])
 
   const [activeSection, setActiveSection] = useState('overview')
   const [expandFeats, setExpandFeats] = useState(false)
@@ -1789,15 +1727,25 @@ export default function ComparePage({
     }
   }, [cols.length])
 
+  // useTransition wraps navigations so React marks them as low-priority
+  // updates AND exposes `isPending` — the brief gap between click and
+  // the new server data arriving used to feel like nothing happened.
+  // Now we render a top progress bar + dim overlay while isPending is
+  // true so the click has immediate visual feedback.
+  const [isPending, startTransition] = useTransition()
+
   const addSlug = useCallback((slug: string) => {
     if (currentSlugs.includes(slug)) return
-    const next = [...currentSlugs, slug].slice(0, maxCompare)
-    router.push(buildCompareUrl(next))
-  }, [currentSlugs, maxCompare, router])
+    const cap = effectiveMax
+    const next = currentSlugs.length >= cap
+      ? [...currentSlugs.slice(0, cap - 1), slug]
+      : [...currentSlugs, slug]
+    startTransition(() => { router.push(buildCompareUrl(next)) })
+  }, [currentSlugs, effectiveMax, router])
 
   const removeSlug = useCallback((slug: string) => {
     const next = currentSlugs.filter(s => s !== slug)
-    router.push(buildCompareUrl(next))
+    startTransition(() => { router.push(buildCompareUrl(next)) })
   }, [currentSlugs, router])
 
   const toggleSave = useCallback((slug: string) => {
@@ -1816,37 +1764,38 @@ export default function ComparePage({
   /* ── Empty state ── */
   if (cols.length === 0) {
     return (
-      <main className="cpr-page cpr-page--landing">
-        {droppedSlugs.length > 0 && (
-          <div className="cpr-warn-row">
-            We couldn&rsquo;t find: <strong>{droppedSlugs.join(', ')}</strong>. Please pick from the dropdown.
-          </div>
-        )}
-        <EmptyLanding onPick={h => addSlug(h.slug)} />
-      </main>
+      <>
+        {isPending && <div className="cpr-nav-bar" aria-hidden="true" />}
+        <main className="cpr-page cpr-page--landing">
+          {droppedSlugs.length > 0 && (
+            <div className="cpr-warn-row">
+              We couldn&rsquo;t find: <strong>{droppedSlugs.join(', ')}</strong>. Please pick from the dropdown.
+            </div>
+          )}
+          <EmptyLanding onPick={h => addSlug(h.slug)} />
+        </main>
+      </>
     )
   }
 
   /* ── 1-product state — comparison locked until 2nd pick ── */
   if (cols.length === 1) {
-    const altsForThis = (altsBySlug[cols[0].slug] || []).concat(sharedAlts).filter((a, i, arr) =>
-      arr.findIndex(x => x.slug === a.slug) === i
-    )
     return (
-      <main className="cpr-page cpr-page--single" key={pathname}>
-        <DisclosureBanner />
-        {droppedSlugs.length > 0 && (
-          <div className="cpr-warn-row">
-            We couldn&rsquo;t find: <strong>{droppedSlugs.join(', ')}</strong>. They were skipped.
-          </div>
-        )}
-        <PickSecondView
-          col={cols[0]}
-          alternatives={altsForThis}
-          onAdd={addSlug}
-          onRemove={() => removeSlug(cols[0].slug)}
-        />
-      </main>
+      <>
+        {isPending && <div className="cpr-nav-bar" aria-hidden="true" />}
+        <main className="cpr-page cpr-page--single" key={pathname}>
+          {droppedSlugs.length > 0 && (
+            <div className="cpr-warn-row">
+              We couldn&rsquo;t find: <strong>{droppedSlugs.join(', ')}</strong>. They were skipped.
+            </div>
+          )}
+          <PickSecondView
+            col={cols[0]}
+            onAdd={addSlug}
+            onRemove={() => removeSlug(cols[0].slug)}
+          />
+        </main>
+      </>
     )
   }
 
@@ -1928,7 +1877,9 @@ export default function ComparePage({
   const gridStyle = { ['--cpr-n' as string]: cols.length } as React.CSSProperties
 
   return (
-    <main className="cpr-page" key={pathname}>
+    <>
+      {isPending && <div className="cpr-nav-bar" aria-hidden="true" />}
+      <main className="cpr-page" key={pathname} data-loading={isPending ? 'true' : 'false'}>
       <DisclosureBanner />
 
       <div className="cpr-titlebar">
@@ -2179,6 +2130,7 @@ export default function ComparePage({
                     alternatives={altsBySlug[col.slug] || []}
                     currentSlugs={currentSlugs}
                     thisCol={col}
+                    maxCap={effectiveMax}
                   />
                 ))}
               </div>
@@ -2186,8 +2138,9 @@ export default function ComparePage({
           )}
         </div>
 
-        <AddRail cols={cols} alternatives={sharedAlts} onAdd={addSlug} />
+        <AddRail cols={cols} alternatives={sharedAlts} onAdd={addSlug} maxCap={effectiveMax} />
       </div>
     </main>
+    </>
   )
 }
