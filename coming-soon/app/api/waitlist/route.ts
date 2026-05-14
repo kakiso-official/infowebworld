@@ -1,8 +1,53 @@
 import { NextRequest } from 'next/server'
 import nodemailer from 'nodemailer'
+import dns from 'dns/promises'
 import { query, execute, queryOne } from '@/lib/db'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { getClientIp, getUserAgent } from '@/lib/tracking'
+
+/* ── Anti-spam ──────────────────────────────────────────────
+   Three layers:
+     1. Hardcoded deny-list of domains we've already seen abuse from.
+     2. DNS MX-record check — if the domain has no mail exchanger,
+        the email is fake/dead and we drop it.
+     3. Honeypot — the frontend submits a hidden `website` field;
+        bots blindly fill every field, real users leave it empty.
+        Silent accept (return ok) so bots don't realise they're caught.
+   ─────────────────────────────────────────────────────────── */
+
+const BLOCKED_DOMAINS = new Set<string>([
+  'parallelaid.com',
+  'circuitprompt.com',
+  // Add more known-bad domains here as they show up. Disposable email
+  // domains (mailinator, tempmail, etc.) are also worth blocking later.
+])
+
+async function validateEmailDeliverable(email: string): Promise<{ ok: boolean; reason?: string }> {
+  const at = email.lastIndexOf('@')
+  if (at < 1 || at === email.length - 1) return { ok: false, reason: 'malformed' }
+  const domain = email.slice(at + 1).toLowerCase()
+
+  if (BLOCKED_DOMAINS.has(domain)) return { ok: false, reason: 'blocked-domain' }
+
+  try {
+    // resolveMx times out fast in Node (typically <500ms). Wrap in a
+    // race in case the resolver hangs on a bad domain.
+    const mxRecords = await Promise.race([
+      dns.resolveMx(domain),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('mx-timeout')), 3000)
+      ),
+    ])
+    if (!Array.isArray(mxRecords) || mxRecords.length === 0) {
+      return { ok: false, reason: 'no-mx' }
+    }
+    return { ok: true }
+  } catch (err) {
+    // ENOTFOUND, ENODATA, timeout → not deliverable
+    const msg = err instanceof Error ? err.message : String(err)
+    return { ok: false, reason: `mx-failed:${msg.slice(0, 40)}` }
+  }
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -261,12 +306,30 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: 'Email is required' }, { status: 400 })
     }
 
+    // Honeypot — bots blindly fill every form field including hidden ones.
+    // The frontend renders a hidden text input named "website"; real users
+    // never type into it. If we see anything in it, silently return success
+    // so the bot thinks it worked and doesn't switch strategies.
+    if (typeof body.website === 'string' && body.website.trim().length > 0) {
+      console.warn('Waitlist honeypot tripped — silently rejecting:', email)
+      return Response.json({ ok: true, message: 'Successfully joined the waitlist' })
+    }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email.trim())) {
       return Response.json({ error: 'Invalid email address' }, { status: 400 })
     }
 
     const cleanEmail = email.trim().toLowerCase()
+
+    // Domain deny-list + MX deliverability check. Blocks: bot domains,
+    // fake/typo domains, and anything that can't actually receive mail.
+    const deliverable = await validateEmailDeliverable(cleanEmail)
+    if (!deliverable.ok) {
+      console.warn(`Waitlist blocked (${deliverable.reason}):`, cleanEmail)
+      return Response.json({ error: 'Invalid email address' }, { status: 400 })
+    }
+
     const userAgent = await getUserAgent()
 
     // Check if already on the waitlist
