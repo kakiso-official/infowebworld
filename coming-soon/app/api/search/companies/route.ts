@@ -33,6 +33,10 @@ export async function GET(req: Request) {
   const q = (searchParams.get('q') || '').trim()
   const excludeRaw = (searchParams.get('exclude') || '').trim()
   const exclude = excludeRaw ? excludeRaw.split(',').map(s => s.trim().toLowerCase()).filter(Boolean) : []
+  // Optional L1-sector filter — when present, only products whose
+  // category walks up to this sector slug are returned. Lets /compare
+  // restrict the "Add to Compare" search to same-sector products.
+  const sectorFilter = (searchParams.get('sector') || '').trim().toLowerCase()
 
   if (!q || q.length < 1) {
     return NextResponse.json(
@@ -50,6 +54,12 @@ export async function GET(req: Request) {
   const excludeSql = exclude.length > 0
     ? `AND s.slug NOT IN (${exclude.map(() => '?').join(',')})`
     : ''
+  const sectorSql = sectorFilter
+    ? `AND (CASE WHEN c.level = 1 THEN c.slug
+                 WHEN c.level = 2 THEN cp.slug
+                 WHEN c.level = 3 THEN cgp.slug
+                 ELSE NULL END) = ?`
+    : ''
 
   let rows: CompanyHit[]
   try {
@@ -60,15 +70,18 @@ export async function GET(req: Request) {
               (SELECT COUNT(*) FROM reviews WHERE listing_id = s.id AND status = 'approved') AS rating_count
        FROM submissions s
        LEFT JOIN categories c ON c.id = s.category_id
+       LEFT JOIN categories cp ON cp.id = c.parent_id
+       LEFT JOIN categories cgp ON cgp.id = cp.parent_id
        WHERE s.status IN ('active', 'paid')
          AND COALESCE(s.listing_mode, 'product') = 'product'
          AND (s.company_name LIKE ? OR s.tagline LIKE ?)
          ${excludeSql}
+         ${sectorSql}
        ORDER BY
          CASE WHEN s.company_name LIKE ? THEN 0 ELSE 1 END,
          s.approved_at DESC
        LIMIT 8`,
-      [like, like, ...exclude, prefix]
+      [like, like, ...exclude, ...(sectorFilter ? [sectorFilter] : []), prefix]
     )
   } catch (err) {
     // Pre-migration tolerance: if listing_mode column is missing the
@@ -82,15 +95,18 @@ export async function GET(req: Request) {
                 NULL AS rating_avg, 0 AS rating_count
          FROM submissions s
          LEFT JOIN categories c ON c.id = s.category_id
+         LEFT JOIN categories cp ON cp.id = c.parent_id
+         LEFT JOIN categories cgp ON cgp.id = cp.parent_id
          WHERE s.status IN ('active', 'paid')
            AND COALESCE(s.listing_mode, 'product') = 'product'
            AND (s.company_name LIKE ? OR s.tagline LIKE ?)
            ${excludeSql}
+           ${sectorSql}
          ORDER BY
            CASE WHEN s.company_name LIKE ? THEN 0 ELSE 1 END,
            s.approved_at DESC
          LIMIT 8`,
-        [like, like, ...exclude, prefix]
+        [like, like, ...exclude, ...(sectorFilter ? [sectorFilter] : []), prefix]
       )
     } else {
       throw err

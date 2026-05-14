@@ -50,6 +50,7 @@
 @import "./styles/test-listing-page.css";
 @import "./styles/profile-page.css";
 @import "./styles/compare.css";
+@import "./styles/news.css";
 
 /* ── AI Disclaimer ── */
 .ai-disclaimer { width: 100%; padding: clamp(1.5rem, 3vw, 2.5rem) 0; border-top: 1.5px solid rgba(0,0,0,.04) }

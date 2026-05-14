@@ -321,12 +321,16 @@ function CompareSearchInput({
   onPick,
   variant = 'panel',
   autoFocus = false,
+  sectorFilter,
 }: {
   placeholder?: string
   excludeSlugs: string[]
   onPick: (hit: SearchHit) => void
   variant?: 'hero' | 'panel'
   autoFocus?: boolean
+  /** Optional L1 sector slug — when set, the search API restricts
+      results to products in this sector (same first-level category). */
+  sectorFilter?: string | null
 }) {
   const [q, setQ] = useState('')
   const [hits, setHits] = useState<SearchHit[]>([])
@@ -337,6 +341,7 @@ function CompareSearchInput({
   const wrapRef = useRef<HTMLDivElement>(null)
   const timerRef = useRef<number | null>(null)
   const excludeKey = excludeSlugs.join(',')
+  const sectorKey = sectorFilter || ''
 
   useEffect(() => {
     if (timerRef.current) window.clearTimeout(timerRef.current)
@@ -348,7 +353,8 @@ function CompareSearchInput({
     setBusy(true)
     timerRef.current = window.setTimeout(async () => {
       try {
-        const url = `/api/search/companies?q=${encodeURIComponent(q.trim())}&exclude=${encodeURIComponent(excludeKey)}`
+        const sectorPart = sectorKey ? `&sector=${encodeURIComponent(sectorKey)}` : ''
+        const url = `/api/search/companies?q=${encodeURIComponent(q.trim())}&exclude=${encodeURIComponent(excludeKey)}${sectorPart}`
         const res = await fetch(url, { credentials: 'same-origin' })
         const json = await res.json()
         setHits(json.ok ? (json.results || []) : [])
@@ -356,7 +362,7 @@ function CompareSearchInput({
       finally { setBusy(false) }
     }, 220)
     return () => { if (timerRef.current) window.clearTimeout(timerRef.current) }
-  }, [q, excludeKey])
+  }, [q, excludeKey, sectorKey])
 
   useEffect(() => {
     const onDoc = (e: MouseEvent) => {
@@ -534,7 +540,8 @@ function PickSecondView({
           {col.tagline && <p className="cpr-pick2-tag">{col.tagline}</p>}
         </div>
 
-        {/* Search slot for second */}
+        {/* Search slot for second — restricted to the picked product's
+            L1 sector so the comparison is always apples-to-apples. */}
         <div className="cpr-pick2-add">
           <div className="cpr-pick2-add-label">Search a product to compare with</div>
           <CompareSearchInput
@@ -543,6 +550,7 @@ function PickSecondView({
             onPick={h => onAdd(h.slug)}
             variant="hero"
             autoFocus
+            sectorFilter={col.sectorSlug}
           />
         </div>
       </div>
@@ -1501,6 +1509,10 @@ function AddRail({
 }) {
   const excludeSlugs = cols.map(c => c.slug)
   const canAdd = cols.length < maxCap
+  // Lock the rail search to the L1 sector of the first column so users
+  // can only add same-sector products (matches the rule applied on the
+  // pick-second view).
+  const sectorFilter = cols[0]?.sectorSlug || null
   const [feedback, setFeedback] = useState<'up' | 'down' | null>(null)
   return (
     <aside className="cpr-rail">
@@ -1512,6 +1524,7 @@ function AddRail({
             excludeSlugs={excludeSlugs}
             onPick={h => onAdd(h.slug)}
             variant="panel"
+            sectorFilter={sectorFilter}
           />
         ) : (
           <div className="cpr-rail-full">

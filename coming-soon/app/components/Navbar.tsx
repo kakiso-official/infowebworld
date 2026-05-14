@@ -16,7 +16,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Categories', href: '/categories', dropdown: true },
   { label: 'Reviews',    href: '#', comingSoon: true, dropdown: true },
   { label: 'Compare',    href: '/compare' },
-  { label: 'News',       href: '#', comingSoon: true, dropdown: true },
+  { label: 'News',       href: '/news' },
   { label: 'Get Listed', href: '/business', cta: true },
 ]
 

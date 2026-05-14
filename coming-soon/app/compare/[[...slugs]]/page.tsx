@@ -200,6 +200,7 @@ type SubRow = {
   category_name: string | null
   category_slug: string | null
   category_color: string | null
+  sector_slug: string | null
 }
 
 type ReviewAggRow = {
@@ -279,9 +280,15 @@ async function fetchCompareData(slugs: string[]): Promise<{
               COALESCE(s.has_free_version, 0) AS has_free_version,
               COALESCE(s.has_ios_app, 0) AS has_ios_app,
               COALESCE(s.has_android_app, 0) AS has_android_app,
-              c.id AS category_id, c.name AS category_name, c.slug AS category_slug, c.color AS category_color
+              c.id AS category_id, c.name AS category_name, c.slug AS category_slug, c.color AS category_color,
+              CASE WHEN c.level = 1 THEN c.slug
+                   WHEN c.level = 2 THEN cp.slug
+                   WHEN c.level = 3 THEN cgp.slug
+                   ELSE NULL END AS sector_slug
        FROM submissions s
        LEFT JOIN categories c ON c.id = s.category_id
+       LEFT JOIN categories cp ON cp.id = c.parent_id
+       LEFT JOIN categories cgp ON cgp.id = cp.parent_id
        LEFT JOIN plans p ON p.id = s.plan_id
        WHERE s.slug IN (${placeholders})
          AND s.status IN ('active','paid')
@@ -304,9 +311,15 @@ async function fetchCompareData(slugs: string[]): Promise<{
                 s.hq_location,
                 s.screenshots, s.features, s.integrations, s.pricing_tiers, s.faqs,
                 p.name AS plan,
-                c.id AS category_id, c.name AS category_name, c.slug AS category_slug, c.color AS category_color
+                c.id AS category_id, c.name AS category_name, c.slug AS category_slug, c.color AS category_color,
+                CASE WHEN c.level = 1 THEN c.slug
+                     WHEN c.level = 2 THEN cp.slug
+                     WHEN c.level = 3 THEN cgp.slug
+                     ELSE NULL END AS sector_slug
          FROM submissions s
          LEFT JOIN categories c ON c.id = s.category_id
+         LEFT JOIN categories cp ON cp.id = c.parent_id
+         LEFT JOIN categories cgp ON cgp.id = cp.parent_id
          LEFT JOIN plans p ON p.id = s.plan_id
          WHERE s.slug IN (${placeholders})
            AND s.status IN ('active','paid')`,
@@ -432,6 +445,7 @@ async function fetchCompareData(slugs: string[]): Promise<{
           slug: r.category_slug || '',
           color: r.category_color || '#E8553D',
         } : null,
+        sectorSlug: r.sector_slug || null,
         ratingAvg: agg?.avg_rating != null ? Number(agg.avg_rating) : 0,
         ratingCount: Number(agg?.review_count ?? 0),
         ratingDist: agg

@@ -3,10 +3,14 @@
    ============================================================ */
 
 .stt {
-  position: fixed;
-  bottom: clamp(1.25rem, 3vw, 2rem);
-  right: clamp(1.25rem, 3vw, 2rem);
-  z-index: 900;
+  position: fixed !important;
+  /* Clear of the InfoBot launcher (~100px tall stack from bottom).
+     8rem bottom + 44px height keeps the button visibly separated.
+     z-index forced above the chat widget's 9990 (using a much higher
+     value + !important guarantees no other rule wins the cascade). */
+  bottom: 9rem !important;
+  right: clamp(1.25rem, 3vw, 2rem) !important;
+  z-index: 2147483647 !important;
   width: 44px; height: 44px;
   display: flex; align-items: center; justify-content: center;
   border: none; border-radius: 50%;

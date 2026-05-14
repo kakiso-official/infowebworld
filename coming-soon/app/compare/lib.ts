@@ -51,6 +51,10 @@ export type CompareCol = {
   plan: string
   verified: boolean
   category: CompareCategory | null
+  /** L1 sector slug (walked up from the product's category) — used to
+      gate the "Add to Compare" search so users can only add products
+      from the same sector. Null when the product has no category. */
+  sectorSlug: string | null
 
   // Reviews aggregate
   ratingAvg: number          // 0 if none
