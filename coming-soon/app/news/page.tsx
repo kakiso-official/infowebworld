@@ -12,7 +12,7 @@ import NewsHomepage from './NewsHomepage'
    sections in a dense multi-column grid.
    ───────────────────────────────────────────────────────────── */
 
-export const revalidate = 60 * 60   // 1 hour at the route level too
+export const revalidate = 3600   // 1 hour at the route level too
 
 export const metadata: Metadata = {
   title: 'News \u2014 InfoWebWorld',
