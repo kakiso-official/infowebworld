@@ -2,9 +2,10 @@
    Free RSS-based news fetcher for /news.
 
    Zero API keys, zero paid tiers — pulls directly from the public
-   RSS feeds of major Indian publishers (Times of India, NDTV, ET,
-   Indian Express, BBC). RSS is XML; we parse with regex (avoids
-   adding a dependency).
+   RSS feeds of major international English-language publishers
+   (BBC, The Guardian, Al Jazeera, NPR, Deutsche Welle, TechCrunch,
+   The Verge, Variety, ESPN, etc.). RSS is XML; we parse with regex
+   (avoids adding a dependency).
 
    Each feed is fetched server-side with Next's revalidate-1h cache,
    so a single render uses one network call per feed and is reused
@@ -32,39 +33,45 @@ type Feed = { url: string; source: string; sourceUrl?: string }
 
 const FEEDS: Record<NewsCategory, Feed[]> = {
   general: [
-    { url: 'https://timesofindia.indiatimes.com/rssfeedstopstories.cms', source: 'Times of India', sourceUrl: 'https://timesofindia.indiatimes.com' },
-    { url: 'https://feeds.feedburner.com/ndtvnews-top-stories', source: 'NDTV', sourceUrl: 'https://www.ndtv.com' },
-    { url: 'https://indianexpress.com/section/india/feed/', source: 'Indian Express', sourceUrl: 'https://indianexpress.com' },
+    { url: 'https://feeds.bbci.co.uk/news/rss.xml', source: 'BBC News', sourceUrl: 'https://www.bbc.com/news' },
+    { url: 'https://www.theguardian.com/international/rss', source: 'The Guardian', sourceUrl: 'https://www.theguardian.com/international' },
+    { url: 'https://feeds.npr.org/1001/rss.xml', source: 'NPR', sourceUrl: 'https://www.npr.org' },
+    { url: 'https://www.aljazeera.com/xml/rss/all.xml', source: 'Al Jazeera', sourceUrl: 'https://www.aljazeera.com' },
   ],
   business: [
-    { url: 'https://timesofindia.indiatimes.com/rssfeeds/1898055.cms', source: 'Times of India', sourceUrl: 'https://timesofindia.indiatimes.com' },
-    { url: 'https://economictimes.indiatimes.com/rssfeedstopstories.cms', source: 'Economic Times', sourceUrl: 'https://economictimes.indiatimes.com' },
-    { url: 'https://feeds.feedburner.com/ndtvprofit-latest', source: 'NDTV Profit', sourceUrl: 'https://www.ndtvprofit.com' },
+    { url: 'https://feeds.bbci.co.uk/news/business/rss.xml', source: 'BBC Business', sourceUrl: 'https://www.bbc.com/news/business' },
+    { url: 'https://www.theguardian.com/uk/business/rss', source: 'The Guardian', sourceUrl: 'https://www.theguardian.com/business' },
+    { url: 'https://www.cnbc.com/id/10001147/device/rss/rss.html', source: 'CNBC', sourceUrl: 'https://www.cnbc.com' },
   ],
   technology: [
-    { url: 'https://timesofindia.indiatimes.com/rssfeeds/66949542.cms', source: 'Times of India', sourceUrl: 'https://timesofindia.indiatimes.com' },
-    { url: 'https://economictimes.indiatimes.com/tech/rssfeeds/13357270.cms', source: 'ET Tech', sourceUrl: 'https://economictimes.indiatimes.com/tech' },
-    { url: 'https://feeds.feedburner.com/gadgets360-latest', source: 'Gadgets 360', sourceUrl: 'https://www.gadgets360.com' },
+    { url: 'https://feeds.bbci.co.uk/news/technology/rss.xml', source: 'BBC Tech', sourceUrl: 'https://www.bbc.com/news/technology' },
+    { url: 'https://techcrunch.com/feed/', source: 'TechCrunch', sourceUrl: 'https://techcrunch.com' },
+    { url: 'https://www.theverge.com/rss/index.xml', source: 'The Verge', sourceUrl: 'https://www.theverge.com' },
+    { url: 'https://www.wired.com/feed/rss', source: 'Wired', sourceUrl: 'https://www.wired.com' },
   ],
   entertainment: [
-    { url: 'https://timesofindia.indiatimes.com/rssfeeds/1081479906.cms', source: 'Times of India', sourceUrl: 'https://timesofindia.indiatimes.com' },
-    { url: 'https://feeds.feedburner.com/ndtvmovies-latest', source: 'NDTV Movies', sourceUrl: 'https://www.ndtv.com/entertainment' },
+    { url: 'https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml', source: 'BBC Arts', sourceUrl: 'https://www.bbc.com/news/entertainment_and_arts' },
+    { url: 'https://variety.com/feed/', source: 'Variety', sourceUrl: 'https://variety.com' },
+    { url: 'https://www.hollywoodreporter.com/feed/', source: 'The Hollywood Reporter', sourceUrl: 'https://www.hollywoodreporter.com' },
   ],
   sports: [
-    { url: 'https://timesofindia.indiatimes.com/rssfeeds/4719148.cms', source: 'Times of India', sourceUrl: 'https://timesofindia.indiatimes.com' },
-    { url: 'https://feeds.feedburner.com/ndtvsports-latest', source: 'NDTV Sports', sourceUrl: 'https://sports.ndtv.com' },
+    { url: 'https://feeds.bbci.co.uk/sport/rss.xml', source: 'BBC Sport', sourceUrl: 'https://www.bbc.com/sport' },
+    { url: 'https://www.espn.com/espn/rss/news', source: 'ESPN', sourceUrl: 'https://www.espn.com' },
+    { url: 'https://www.theguardian.com/uk/sport/rss', source: 'The Guardian Sport', sourceUrl: 'https://www.theguardian.com/sport' },
   ],
   world: [
-    { url: 'https://timesofindia.indiatimes.com/rssfeeds/296589292.cms', source: 'Times of India', sourceUrl: 'https://timesofindia.indiatimes.com' },
-    { url: 'https://feeds.bbci.co.uk/news/world/rss.xml', source: 'BBC News', sourceUrl: 'https://www.bbc.com/news' },
+    { url: 'https://feeds.bbci.co.uk/news/world/rss.xml', source: 'BBC News', sourceUrl: 'https://www.bbc.com/news/world' },
+    { url: 'https://www.theguardian.com/world/rss', source: 'The Guardian', sourceUrl: 'https://www.theguardian.com/world' },
+    { url: 'https://www.aljazeera.com/xml/rss/all.xml', source: 'Al Jazeera', sourceUrl: 'https://www.aljazeera.com' },
+    { url: 'https://rss.dw.com/rdf/rss-en-all', source: 'Deutsche Welle', sourceUrl: 'https://www.dw.com/en' },
   ],
   science: [
-    { url: 'https://timesofindia.indiatimes.com/rssfeeds/-2128672765.cms', source: 'Times of India', sourceUrl: 'https://timesofindia.indiatimes.com' },
-    { url: 'https://feeds.bbci.co.uk/news/science_and_environment/rss.xml', source: 'BBC News', sourceUrl: 'https://www.bbc.com/news/science_and_environment' },
+    { url: 'https://feeds.bbci.co.uk/news/science_and_environment/rss.xml', source: 'BBC Science', sourceUrl: 'https://www.bbc.com/news/science_and_environment' },
+    { url: 'https://www.theguardian.com/science/rss', source: 'The Guardian', sourceUrl: 'https://www.theguardian.com/science' },
   ],
   health: [
-    { url: 'https://timesofindia.indiatimes.com/rssfeeds/3908999.cms', source: 'Times of India', sourceUrl: 'https://timesofindia.indiatimes.com' },
     { url: 'https://feeds.bbci.co.uk/news/health/rss.xml', source: 'BBC Health', sourceUrl: 'https://www.bbc.com/news/health' },
+    { url: 'https://www.theguardian.com/society/health/rss', source: 'The Guardian', sourceUrl: 'https://www.theguardian.com/society/health' },
   ],
 }
 
@@ -249,5 +256,5 @@ export function relativeNewsTime(iso: string): string {
   const day = Math.floor(hr / 24)
   if (day === 1) return 'yesterday'
   if (day < 7) return `${day}d ago`
-  return d.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }

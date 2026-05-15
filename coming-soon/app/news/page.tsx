@@ -17,7 +17,7 @@ export const revalidate = 3600   // 1 hour at the route level too
 export const metadata: Metadata = {
   title: 'News \u2014 InfoWebWorld',
   description:
-    'Latest business, technology, sports, entertainment and world headlines from across India and beyond. Updated hourly.',
+    'Latest world, business, technology, sports, entertainment, science and health headlines from leading international publishers. Updated hourly.',
   alternates: { canonical: 'https://infowebworld.com/news' },
   robots: { index: false, follow: false },
 }
