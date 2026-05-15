@@ -29,10 +29,13 @@ export const PROVIDERS: Record<ProviderKey, ProviderConfig> = {
     authorizeUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
     tokenUrl: 'https://oauth2.googleapis.com/token',
     userInfoUrl: 'https://openidconnect.googleapis.com/v1/userinfo',
-    /* Adds the People API "phonenumbers.read" scope so we can call
-       people/me?personFields=phoneNumbers after token exchange. Most Google
-       users have no phone on file; we treat the call as best-effort. */
-    scope: 'openid email profile https://www.googleapis.com/auth/user.phonenumbers.read',
+    /* Stick to the three non-sensitive scopes. Adding People API's
+       `user.phonenumbers.read` triggers Google's verification gate
+       (Error 403: access_denied for non-test-users), so phone fetch is
+       parked until we complete app verification. The People API call in
+       fetchGooglePhone() will return null without this scope, which the
+       rest of the code already handles. */
+    scope: 'openid email profile',
     usesPkce: true,
     tokenAuth: 'body',
     extraAuthParams: { access_type: 'online', prompt: 'select_account' },
