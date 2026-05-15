@@ -14,10 +14,6 @@ export interface BusinessUser {
   email: string
   name: string | null
   avatarUrl: string | null
-  /** International-format phone, when known (currently populated by Google
-   *  via the People API on sign-in). Null when the user has no phone on
-   *  file or hasn't granted the scope. */
-  phone: string | null
   provider: string
   emailVerified: boolean
   createdAt: string
@@ -36,11 +32,10 @@ export async function getUserFromRequest(request: NextRequest): Promise<Business
 export async function getUserByToken(token: string): Promise<BusinessUser | null> {
   const row = await queryOne<{
     id: number; uuid: string; email: string; name: string | null
-    avatar_url: string | null; phone: string | null
-    provider: string; email_verified: number
+    avatar_url: string | null; provider: string; email_verified: number
     created_at: string | Date
   }>(
-    `SELECT u.id, u.uuid, u.email, u.name, u.avatar_url, u.phone, u.provider,
+    `SELECT u.id, u.uuid, u.email, u.name, u.avatar_url, u.provider,
             u.email_verified, u.created_at
      FROM business_sessions s
      JOIN business_users u ON u.id = s.user_id
@@ -55,7 +50,6 @@ export async function getUserByToken(token: string): Promise<BusinessUser | null
     email: row.email,
     name: row.name,
     avatarUrl: row.avatar_url,
-    phone: row.phone,
     provider: row.provider,
     emailVerified: Boolean(row.email_verified),
     createdAt: row.created_at instanceof Date ? row.created_at.toISOString() : String(row.created_at),

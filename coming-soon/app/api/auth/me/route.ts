@@ -11,7 +11,6 @@ export async function GET(request: NextRequest) {
       email: user.email,
       name: user.name,
       avatarUrl: user.avatarUrl,
-      phone: user.phone,
       provider: user.provider,
       emailVerified: user.emailVerified,
     },

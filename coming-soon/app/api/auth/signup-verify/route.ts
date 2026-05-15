@@ -117,7 +117,7 @@ export async function POST(request: NextRequest) {
       {
         ok: true,
         user: {
-          uuid, email, name: pending.name, avatarUrl: null, phone: null,
+          uuid, email, name: pending.name, avatarUrl: null,
           provider: 'email', emailVerified: true,
         },
       },

@@ -29,12 +29,6 @@ export const PROVIDERS: Record<ProviderKey, ProviderConfig> = {
     authorizeUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
     tokenUrl: 'https://oauth2.googleapis.com/token',
     userInfoUrl: 'https://openidconnect.googleapis.com/v1/userinfo',
-    /* Stick to the three non-sensitive scopes. Adding People API's
-       `user.phonenumbers.read` triggers Google's verification gate
-       (Error 403: access_denied for non-test-users), so phone fetch is
-       parked until we complete app verification. The People API call in
-       fetchGooglePhone() will return null without this scope, which the
-       rest of the code already handles. */
     scope: 'openid email profile',
     usesPkce: true,
     tokenAuth: 'body',
@@ -191,9 +185,6 @@ export interface OAuthProfile {
   email: string | null
   name: string | null
   avatarUrl: string | null
-  /** Phone in international format when available. Only Google currently sets
-   *  this (via People API); other providers always return null. */
-  phone: string | null
   emailVerified: boolean
 }
 
@@ -214,45 +205,7 @@ export async function fetchUserProfile(
   try { json = JSON.parse(text) }
   catch { return { error: `userinfo-bad-json: ${text.slice(0, 200)}` } }
 
-  const profile = normalizeProfile(provider.key, json)
-
-  // For Google, follow up with a People API call to grab the phone number.
-  // The user may not have one on file or may have denied the scope — either
-  // way we don't fail sign-in, we just leave `phone` null.
-  if (provider.key === 'google') {
-    profile.phone = await fetchGooglePhone(accessToken)
-  }
-
-  return profile
-}
-
-/** Best-effort fetch of the user's primary phone number from Google's People
- *  API. Returns null on any error (scope not granted, People API not enabled,
- *  no phones on the account, network blip — anything). Never throws. */
-async function fetchGooglePhone(accessToken: string): Promise<string | null> {
-  try {
-    const res = await fetch(
-      'https://people.googleapis.com/v1/people/me?personFields=phoneNumbers',
-      { headers: { Authorization: `Bearer ${accessToken}`, Accept: 'application/json' } }
-    )
-    if (!res.ok) return null
-    const json = await res.json() as {
-      phoneNumbers?: Array<{
-        value?: string; canonicalForm?: string;
-        metadata?: { primary?: boolean }
-      }>
-    }
-    const phones = Array.isArray(json.phoneNumbers) ? json.phoneNumbers : []
-    if (phones.length === 0) return null
-    // Prefer the one Google flagged as primary, then fall back to the first.
-    const primary = phones.find(p => p.metadata?.primary) || phones[0]
-    const raw = primary.canonicalForm || primary.value || null
-    if (!raw) return null
-    // Trim and cap to fit our VARCHAR(40) column.
-    return raw.trim().slice(0, 40)
-  } catch {
-    return null
-  }
+  return normalizeProfile(provider.key, json)
 }
 
 function normalizeProfile(key: ProviderKey, raw: Record<string, unknown>): OAuthProfile {
@@ -263,7 +216,6 @@ function normalizeProfile(key: ProviderKey, raw: Record<string, unknown>): OAuth
         email: (raw.email as string) || null,
         name: (raw.name as string) || null,
         avatarUrl: (raw.picture as string) || null,
-        phone: null, // filled in by fetchGooglePhone after userinfo
         emailVerified: Boolean(raw.email_verified),
       }
     }
@@ -274,7 +226,6 @@ function normalizeProfile(key: ProviderKey, raw: Record<string, unknown>): OAuth
         email: (raw.email as string) || null,
         name: (raw.name as string) || null,
         avatarUrl: pic?.data?.url || null,
-        phone: null,
         emailVerified: Boolean(raw.email),
       }
     }
@@ -284,7 +235,6 @@ function normalizeProfile(key: ProviderKey, raw: Record<string, unknown>): OAuth
         email: null, // Reddit identity scope doesn't include email
         name: (raw.name as string) || null,
         avatarUrl: typeof raw.icon_img === 'string' ? raw.icon_img.split('?')[0] : null,
-        phone: null,
         emailVerified: false,
       }
     }
@@ -294,7 +244,6 @@ function normalizeProfile(key: ProviderKey, raw: Record<string, unknown>): OAuth
         email: (raw.email as string) || null,
         name: (raw.name as string) || null,
         avatarUrl: (raw.picture as string) || null,
-        phone: null,
         emailVerified: Boolean(raw.email_verified),
       }
     }
@@ -305,7 +254,6 @@ function normalizeProfile(key: ProviderKey, raw: Record<string, unknown>): OAuth
         email: null, // X OAuth2 doesn't provide email
         name: (data.name as string) || null,
         avatarUrl: (data.profile_image_url as string) || null,
-        phone: null,
         emailVerified: false,
       }
     }
@@ -326,22 +274,12 @@ export async function upsertOAuthUser(
 ): Promise<number | { error: string }> {
   if (!profile.providerId) return { error: 'missing-provider-id' }
 
-  // 1. already linked? Backfill phone via COALESCE so we fill an empty cell
-  //    on next sign-in, but never clobber a value the user may have edited
-  //    themselves later.
+  // 1. already linked?
   const byLink = await queryOne<{ id: number }>(
     `SELECT id FROM business_users WHERE provider = ? AND provider_id = ? LIMIT 1`,
     [provider, profile.providerId]
   )
-  if (byLink) {
-    if (profile.phone) {
-      await execute(
-        `UPDATE business_users SET phone = COALESCE(phone, ?) WHERE id = ?`,
-        [profile.phone, byLink.id]
-      )
-    }
-    return byLink.id
-  }
+  if (byLink) return byLink.id
 
   const email = profile.email || `${provider}_${profile.providerId}@oauth.infowebworld.local`
 
@@ -354,10 +292,9 @@ export async function upsertOAuthUser(
     await execute(
       `UPDATE business_users SET provider = ?, provider_id = ?,
          name = COALESCE(name, ?), avatar_url = COALESCE(avatar_url, ?),
-         phone = COALESCE(phone, ?),
          email_verified = GREATEST(email_verified, ?)
        WHERE id = ?`,
-      [provider, profile.providerId, profile.name, profile.avatarUrl, profile.phone, profile.emailVerified ? 1 : 0, byEmail.id]
+      [provider, profile.providerId, profile.name, profile.avatarUrl, profile.emailVerified ? 1 : 0, byEmail.id]
     )
     return byEmail.id
   }
@@ -367,9 +304,9 @@ export async function upsertOAuthUser(
     /(.{8})(.{4})(.{4})(.{4})(.{12})/, '$1-$2-$3-$4-$5'
   )
   const res = await execute(
-    `INSERT INTO business_users (uuid, email, email_verified, name, avatar_url, phone, provider, provider_id)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-    [uuid, email, profile.emailVerified ? 1 : 0, profile.name, profile.avatarUrl, profile.phone, provider, profile.providerId]
+    `INSERT INTO business_users (uuid, email, email_verified, name, avatar_url, provider, provider_id)
+     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [uuid, email, profile.emailVerified ? 1 : 0, profile.name, profile.avatarUrl, provider, profile.providerId]
   )
   return res.insertId
 }

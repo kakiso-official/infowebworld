@@ -27,12 +27,6 @@ export default async function SettingsPage({
             <span className="set-row-val">{user.email}</span>
           </div>
           <div className="set-row">
-            <span className="set-row-lbl">Phone</span>
-            <span className="set-row-val">
-              {user.phone || <em>not on file</em>}
-            </span>
-          </div>
-          <div className="set-row">
             <span className="set-row-lbl">Signed in with</span>
             <span className="set-row-val">
               {user.provider === 'email' ? 'Email & password' : capitalize(user.provider)}

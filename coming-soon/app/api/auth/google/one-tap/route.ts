@@ -55,10 +55,6 @@ export async function POST(request: NextRequest) {
       email: (payload.email as string) || null,
       name: (payload.name as string) || null,
       avatarUrl: (payload.picture as string) || null,
-      // One Tap returns only an ID token, not an access token, so we can't
-      // call the People API to fetch the phone. Users who want their phone
-      // populated need to sign in via the regular OAuth popup at least once.
-      phone: null,
       emailVerified: payload.email_verified === 'true' || payload.email_verified === true,
     }
     if (!profile.providerId) {
