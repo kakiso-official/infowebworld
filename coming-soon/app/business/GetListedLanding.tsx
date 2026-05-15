@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Hero from './components/Hero'
 import Countdown from './components/Countdown'
@@ -28,27 +28,16 @@ export default function GetListedLanding() {
   const [authPlan, setAuthPlan] = useState<PlanKey>('free')
   const { user, loading: authLoading } = useAuth()
 
-  /** Send authed users straight to the dashboard form; others into the signup modal. */
-  const goToPlan = useCallback((plan: PlanKey) => {
-    if (authLoading) return
-    if (!user) {
-      setAuthPlan(plan)
-      setAuthOpen(true)
-      return
-    }
-    router.push(`/dashboard/new?plan=${plan}`)
-  }, [user, authLoading, router])
-
   /**
-   * Auto-handle ?plan=X coming from old deep-links, PaymentModal success, etc.
-   * Route to /dashboard/new?plan=X when authed, otherwise pop the signup modal.
+   * Auto-handle ?plan=X deep links — route authed users straight to checkout,
+   * pop the signup modal for everyone else (lands on checkout post-auth).
    */
   useEffect(() => {
     if (authLoading) return
     const p = planFromUrl()
     if (!p) return
     if (user) {
-      router.replace(`/dashboard/new?plan=${p}`)
+      router.replace(`/dashboard/new/checkout?plan=${p}`)
     } else {
       setAuthPlan(p)
       setAuthOpen(true)
@@ -73,7 +62,7 @@ export default function GetListedLanding() {
       <SignupModal
         open={authOpen}
         onClose={() => setAuthOpen(false)}
-        nextUrl={`/dashboard/new?plan=${authPlan}`}
+        nextUrl={`/dashboard/new/checkout?plan=${authPlan}`}
       />
     </>
   )

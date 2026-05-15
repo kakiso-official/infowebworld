@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import Navbar from '../../components/Navbar'
+import Navbar from '../components/Navbar'
 import Footer from '../../components/Footer'
 import PlansPage from './PlansPage'
 

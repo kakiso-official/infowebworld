@@ -38,7 +38,6 @@ export default function UserMenu() {
         <SignupModal
           open={modalOpen}
           onClose={() => setModalOpen(false)}
-          nextUrl="/dashboard"
           initialMode="login"
         />
       </>
@@ -76,7 +75,7 @@ export default function UserMenu() {
             </svg>
             Dashboard
           </Link>
-          <Link href="/business" className="um-drop-item" onClick={() => setDropOpen(false)}>
+          <Link href="/dashboard/new" className="um-drop-item" onClick={() => setDropOpen(false)}>
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M12 5v14M5 12h14" />
             </svg>

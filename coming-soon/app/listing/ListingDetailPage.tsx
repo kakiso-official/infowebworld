@@ -1811,7 +1811,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
               )}
               {(view.email || isPreview) && (
                 <button type="button" className="tlp-btn-outline" onClick={() => setLeadOpen(true)}>
-                  Get a Quote <MailIcon />
+                  Contact <MailIcon />
                 </button>
               )}
               <button

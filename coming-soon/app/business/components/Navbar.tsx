@@ -2,21 +2,20 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { BASE } from '../../config/base-path'
-import GlobalSearch from '../../components/GlobalSearch'
 
 /* ═══════════════════════════════════════════
-   Header for /business — anchor links to page sections
-   Matches main header design (nh-* classes)
+   Compact single-row business header — used identically on /business and
+   /business/plans. No search bar; the four section anchors sit inline next
+   to the logo, with the "Get Listed" CTA pinned to the right.
    ═══════════════════════════════════════════ */
 
-type NavItem = { label: string; href: string; cta?: boolean; anchor?: boolean }
+type NavItem = { label: string; href: string; anchor?: boolean }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: 'Why List', href: '#benefits', anchor: true },
-  { label: 'Plans',    href: '#founding', anchor: true },
-  { label: 'Features', href: '#pricing', anchor: true },
-  { label: 'Compare',  href: '#compare', anchor: true },
-  { label: 'Get Listed', href: '/business/plans', cta: true },
+  { label: 'Why List', href: '#benefits',  anchor: true },
+  { label: 'Plans',    href: '#founding',  anchor: true },
+  { label: 'Features', href: '#pricing',   anchor: true },
+  { label: 'Compare',  href: '#compare',   anchor: true },
 ]
 
 export default function Navbar() {
@@ -53,17 +52,35 @@ export default function Navbar() {
     setMenuOpen(m => !m)
   }
 
-  /* Smooth scroll for anchor links */
+  /* Smooth scroll for anchor links. Anchors only live on /business — on
+     /business/plans they're rendered as ordinary links to /business#section. */
   const handleAnchor = (e: React.MouseEvent, href: string, isAnchor?: boolean) => {
     if (!isAnchor) return
-    e.preventDefault()
-    const el = document.querySelector(href)
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    if (menuOpen) setMenuOpen(false)
+    const el = typeof document !== 'undefined' ? document.querySelector(href) : null
+    if (el) {
+      e.preventDefault()
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      if (menuOpen) setMenuOpen(false)
+    }
+    // No matching anchor on the current page → let the browser navigate
+    // (e.g. from /business/plans → /business#founding). We rewrite the href
+    // below in renderLink so this works.
+  }
+
+  /** On /business/plans the section anchors don't exist on this page — point
+   *  them at /business#anchor instead so the browser navigates back to the
+   *  landing page and scrolls. */
+  const linkHref = (item: NavItem) => {
+    if (typeof window === 'undefined') return item.href
+    if (window.location.pathname.startsWith('/business/plans') && item.anchor) {
+      return `/business${item.href}`
+    }
+    return item.href
   }
 
   const cls = [
     'nh',
+    'nh--biz',
     scrolled && 'nh--glass',
     hidden && !menuOpen && 'nh--hidden',
   ].filter(Boolean).join(' ')
@@ -71,15 +88,20 @@ export default function Navbar() {
   return (
     <>
       <header className={cls}>
-        {/* Row 1 — Logo | Search (center) | Actions */}
-        <div className="nh-row-top">
+        {/* Single row — Logo | Inline nav links | Get Listed CTA */}
+        <div className="nh-biz-row">
           <Link href="/" className="nh-logo">
             <img src={`${BASE}/logo/infowebworldlogo-logoforlightbackgrounds.png`} alt="InfoWebWorld" />
           </Link>
 
-          <div className="nh-search-inline">
-            <GlobalSearch placeholder="Search tools, services, listings" />
-          </div>
+          <nav className="nh-biz-nav" aria-label="Main">
+            {NAV_ITEMS.map(item => (
+              <a key={item.label} href={linkHref(item)} className="nh-link"
+                onClick={e => handleAnchor(e, item.href, item.anchor)}>
+                {item.label}
+              </a>
+            ))}
+          </nav>
 
           <div className="nh-actions">
             <Link href="/business/plans" className="nh-cta">
@@ -97,20 +119,10 @@ export default function Navbar() {
             </button>
           </div>
         </div>
-
-        {/* Row 2 — Anchor nav links */}
-        <nav className="nh-row-sub" aria-label="Main">
-          {NAV_ITEMS.filter(i => !i.cta).map(item => (
-            <a key={item.label} href={item.href} className="nh-link"
-              onClick={e => handleAnchor(e, item.href, item.anchor)}>
-              {item.label}
-            </a>
-          ))}
-        </nav>
       </header>
 
-      {/* Spacer */}
-      <div className="nh-spacer" />
+      {/* Spacer — single-row business header is shorter than the default. */}
+      <div className="nh-spacer nh-spacer--biz" />
 
       {/* ═══ Mobile menu ═══ */}
       <div className={`nh-mob-bg${menuOpen ? ' nh-mob-bg--on' : ''}`} onClick={closeMenu} />
@@ -127,8 +139,8 @@ export default function Navbar() {
           </button>
         </div>
         <div className="nh-mob-body">
-          {NAV_ITEMS.filter(i => !i.cta).map((item, i) => (
-            <a key={item.label} href={item.href}
+          {NAV_ITEMS.map((item, i) => (
+            <a key={item.label} href={linkHref(item)}
               className="nh-mob-link"
               onClick={e => handleAnchor(e, item.href, item.anchor)}
               style={menuOpen ? { animationDelay: `${i * 60}ms` } : undefined}>

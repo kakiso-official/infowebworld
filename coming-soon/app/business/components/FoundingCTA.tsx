@@ -2,8 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { fetchConfig } from '../../config/site-config'
-import PaymentModal from './PaymentModal'
-import FlexibleModal from './FlexibleModal'
 import SignupModal from '../../components/auth/SignupModal'
 import { useAuth } from '@/lib/use-auth'
 
@@ -11,15 +9,12 @@ const features = ['Leads', 'Reviews', 'GEO', 'AEO', 'SEO Backlinks']
 const starterFeatures = ['Backlink', 'Reviews', 'Custom URL', 'FAQ', 'Analytics']
 const freeFeatures = ['Listing', 'Search', 'Website Link', 'Visiblity','Social','1 Category']
 
-type PlanKey = 'lifetime' | 'yearly'
-type FlexibleKey = 'free' | 'starter'
-
 type AnyPlan = 'free' | 'starter' | 'yearly' | 'lifetime'
+
+const checkoutUrl = (plan: AnyPlan) => `/dashboard/new/checkout?plan=${plan}`
 
 export default function FoundingCTA() {
   const [cfg, setCfg] = useState({ lifetimeSlotsTotal: 199, lifetimeSlotsClaimed: 0, yearlySlotsTotal: 999, yearlySlotsClaimed: 0 })
-  const [modalPlan, setModalPlan] = useState<PlanKey | null>(null)
-  const [flexiblePlan, setFlexiblePlan] = useState<FlexibleKey | null>(null)
   const [authOpen, setAuthOpen] = useState(false)
   const [authPlan, setAuthPlan] = useState<AnyPlan>('free')
   const { user, loading: authLoading } = useAuth()
@@ -29,26 +24,20 @@ export default function FoundingCTA() {
   }, [])
 
   /**
-   * Gate a plan CTA:
-   * - Not logged in → open signup modal with a plan-aware nextUrl so after
-   *   auth the user lands directly on the listing form for that plan.
-   * - Logged in → run the provided action (payment modal for paid plans,
-   *   direct navigation for the free plan).
+   * Plan CTA flow:
+   *   anon → open signup modal with nextUrl = checkout URL for the plan
+   *   authed → hard-navigate straight to the checkout URL
+   * Payment is handled on /dashboard/new/checkout (PayPal popup removed).
    */
-  const gate = useCallback((plan: AnyPlan, action: () => void) => {
+  const choosePlan = useCallback((plan: AnyPlan) => {
     if (authLoading) return
     if (!user) {
       setAuthPlan(plan)
       setAuthOpen(true)
       return
     }
-    action()
+    window.location.href = checkoutUrl(plan)
   }, [user, authLoading])
-
-  /** Free plan skips any payment — authed users go straight to the form. */
-  const goToForm = (plan: AnyPlan) => {
-    window.location.href = `/dashboard/new?plan=${plan}`
-  }
 
   const lifetimeRemaining = cfg.lifetimeSlotsTotal - cfg.lifetimeSlotsClaimed
   const yearlyRemaining = cfg.yearlySlotsTotal - cfg.yearlySlotsClaimed
@@ -106,7 +95,7 @@ export default function FoundingCTA() {
               ))}
             </div>
 
-            <button type="button" className="fc-btn" onClick={() => gate('lifetime', () => setModalPlan('lifetime'))}>
+            <button type="button" className="fc-btn" onClick={() => choosePlan('lifetime')}>
               Claim Lifetime Spot
               <svg viewBox="0 0 24 24" className="fc-btn-arrow"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
             </button>
@@ -155,7 +144,7 @@ export default function FoundingCTA() {
               ))}
             </div>
 
-            <button type="button" className="fc-btn fc-btn--yearly" onClick={() => gate('yearly', () => setModalPlan('yearly'))}>
+            <button type="button" className="fc-btn fc-btn--yearly" onClick={() => choosePlan('yearly')}>
               Get Started
               <svg viewBox="0 0 24 24" className="fc-btn-arrow"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
             </button>
@@ -202,7 +191,7 @@ export default function FoundingCTA() {
               ))}
             </div>
 
-            <button type="button" className="fc-btn fc-btn--starter" onClick={() => gate('starter', () => setFlexiblePlan('starter'))}>
+            <button type="button" className="fc-btn fc-btn--starter" onClick={() => choosePlan('starter')}>
               Get Started
               <svg viewBox="0 0 24 24" className="fc-btn-arrow"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
             </button>
@@ -249,7 +238,7 @@ export default function FoundingCTA() {
               ))}
             </div>
 
-            <button type="button" className="fc-btn fc-btn--free" onClick={() => gate('free', () => goToForm('free'))}>
+            <button type="button" className="fc-btn fc-btn--free" onClick={() => choosePlan('free')}>
               Get Started Free
               <svg viewBox="0 0 24 24" className="fc-btn-arrow"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
             </button>
@@ -267,30 +256,12 @@ export default function FoundingCTA() {
         </a>
       </div>
 
-      {/* Payment Modal — Lifetime + Early Adopter (unchanged) */}
-      {modalPlan && (
-        <PaymentModal
-          isOpen={!!modalPlan}
-          onClose={() => setModalPlan(null)}
-          plan={modalPlan}
-        />
-      )}
-
-      {/* Flexible Modal — Free + Starter */}
-      {flexiblePlan && (
-        <FlexibleModal
-          isOpen={!!flexiblePlan}
-          onClose={() => setFlexiblePlan(null)}
-          plan={flexiblePlan}
-        />
-      )}
-
-      {/* Signup gate — opens when a not-yet-signed-in user clicks any plan.
-          Lands them directly on the listing form for their chosen plan. */}
+      {/* Signup gate — opens when an anon user clicks any plan. After auth,
+          lands them straight on the checkout page for their chosen plan. */}
       <SignupModal
         open={authOpen}
         onClose={() => setAuthOpen(false)}
-        nextUrl={`/dashboard/new?plan=${authPlan}`}
+        nextUrl={checkoutUrl(authPlan)}
       />
     </section>
   )

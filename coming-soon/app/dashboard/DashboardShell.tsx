@@ -58,6 +58,8 @@ type NavRow = {
   sectionKey?: string
   /** Optional pill on the right (e.g. "New", "BETA"). */
   badge?: string
+  /** Open in a new tab — used for links that leave the dashboard shell. */
+  newTab?: boolean
 }
 
 /**
@@ -111,7 +113,7 @@ export default function DashboardShell({ user, plan, hasCompany = false, childre
 
   const accountNav: NavRow[] = useMemo(() => [
     { key: 'settings', href: `${base}/settings`, label: 'Settings',    icon: 'sliders'      },
-    { key: 'browse',   href: '/',                label: 'Browse Site', icon: 'externalLink' },
+    { key: 'browse',   href: '/',                label: 'Browse Site', icon: 'externalLink', newTab: true },
   ], [])
 
   // Which section's sub-nav (if any) should be visible right now
@@ -173,14 +175,8 @@ export default function DashboardShell({ user, plan, hasCompany = false, childre
 
   const renderNavRow = (row: NavRow) => {
     const active = isPrimaryActive(row)
-    return (
-      <Link
-        key={row.key}
-        href={row.href}
-        onClick={() => setDrawerOpen(false)}
-        className={'tp-nav-item' + (active ? ' tp-nav-item--active' : '')}
-        title={row.label}
-      >
+    const inner = (
+      <>
         <span className="tp-nav-icon" aria-hidden="true">
           <I d={ic[row.icon]} size={20} sw={1.5} />
         </span>
@@ -193,6 +189,36 @@ export default function DashboardShell({ user, plan, hasCompany = false, childre
             <I d={ic.arrow} size={16} sw={1.6} />
           </span>
         )}
+      </>
+    )
+    const className = 'tp-nav-item' + (active ? ' tp-nav-item--active' : '')
+
+    // External-style rows (e.g. "Browse Site") open in a new tab so the user
+    // keeps their dashboard session in the original window.
+    if (row.newTab) {
+      return (
+        <a
+          key={row.key}
+          href={row.href}
+          target="_blank"
+          rel="noopener"
+          onClick={() => setDrawerOpen(false)}
+          className={className}
+          title={row.label}
+        >
+          {inner}
+        </a>
+      )
+    }
+    return (
+      <Link
+        key={row.key}
+        href={row.href}
+        onClick={() => setDrawerOpen(false)}
+        className={className}
+        title={row.label}
+      >
+        {inner}
       </Link>
     )
   }

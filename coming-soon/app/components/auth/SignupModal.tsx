@@ -114,7 +114,11 @@ export default function SignupModal({ open, onClose, nextUrl, onSuccess, initial
         cleanup()
         try { popup.close() } catch {}
         if (onSuccess) onSuccess()
-        else window.location.href = data.next || nextUrl || '/dashboard'
+        else {
+          const target = data.next || nextUrl
+          if (target) window.location.href = target
+          else window.location.reload()
+        }
       } else if (data.type === 'iww-auth-error') {
         cleanup()
         try { popup.close() } catch {}
@@ -177,7 +181,8 @@ export default function SignupModal({ open, onClose, nextUrl, onSuccess, initial
       const j = await res.json()
       if (!res.ok || !j.ok) { setError(j.error || 'Something went wrong.'); setBusy(false); return }
       if (onSuccess) onSuccess()
-      else window.location.href = nextUrl || '/dashboard'
+      else if (nextUrl) window.location.href = nextUrl
+      else window.location.reload()
     } catch {
       setError('Network error. Please try again.')
       setBusy(false)
@@ -202,7 +207,8 @@ export default function SignupModal({ open, onClose, nextUrl, onSuccess, initial
       const j = await res.json()
       if (!res.ok || !j.ok) { setError(j.error || 'Verification failed.'); setBusy(false); return }
       if (onSuccess) onSuccess()
-      else window.location.href = nextUrl || '/dashboard'
+      else if (nextUrl) window.location.href = nextUrl
+      else window.location.reload()
     } catch {
       setError('Network error. Please try again.')
       setBusy(false)

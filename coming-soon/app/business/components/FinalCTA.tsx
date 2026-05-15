@@ -1,19 +1,35 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { fetchConfig } from '../../config/site-config'
-import PaymentModal from './PaymentModal'
+import SignupModal from '../../components/auth/SignupModal'
+import { useAuth } from '@/lib/use-auth'
 
 const features = ['Leads', 'Reviews', 'GEO', 'AEO', 'SEO Backlinks']
 
 type PlanKey = 'lifetime' | 'yearly'
 
+const checkoutUrl = (plan: PlanKey) => `/dashboard/new/checkout?plan=${plan}`
+
 export default function FinalCTA() {
   const [cfg, setCfg] = useState({ lifetimeSlotsTotal: 199, lifetimeSlotsClaimed: 0, yearlySlotsTotal: 999, yearlySlotsClaimed: 0 })
-  const [modalPlan, setModalPlan] = useState<PlanKey | null>(null)
+  const [authOpen, setAuthOpen] = useState(false)
+  const [authPlan, setAuthPlan] = useState<PlanKey>('lifetime')
+  const { user, loading: authLoading } = useAuth()
 
   useEffect(() => {
     fetchConfig().then(c => setCfg({ lifetimeSlotsTotal: c.lifetimeSlotsTotal, lifetimeSlotsClaimed: c.lifetimeSlotsClaimed, yearlySlotsTotal: c.yearlySlotsTotal, yearlySlotsClaimed: c.yearlySlotsClaimed }))
   }, [])
+
+  /** Anon → signup modal (lands on checkout after auth). Authed → straight to checkout. */
+  const choosePlan = useCallback((plan: PlanKey) => {
+    if (authLoading) return
+    if (!user) {
+      setAuthPlan(plan)
+      setAuthOpen(true)
+      return
+    }
+    window.location.href = checkoutUrl(plan)
+  }, [user, authLoading])
 
   const lifetimeRemaining = cfg.lifetimeSlotsTotal - cfg.lifetimeSlotsClaimed
   const yearlyRemaining = cfg.yearlySlotsTotal - cfg.yearlySlotsClaimed
@@ -94,7 +110,7 @@ export default function FinalCTA() {
                 ))}
               </div>
 
-              <button type="button" className="f2-btn f2-btn--coral" onClick={() => setModalPlan('lifetime')}>
+              <button type="button" className="f2-btn f2-btn--coral" onClick={() => choosePlan('lifetime')}>
                 Claim Lifetime Spot
                 <svg viewBox="0 0 24 24" className="f2-btn-arrow"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
               </button>
@@ -164,7 +180,7 @@ export default function FinalCTA() {
                 ))}
               </div>
 
-              <button type="button" className="f2-btn f2-btn--dark" onClick={() => setModalPlan('yearly')}>
+              <button type="button" className="f2-btn f2-btn--dark" onClick={() => choosePlan('yearly')}>
                 Get Started
                 <svg viewBox="0 0 24 24" className="f2-btn-arrow"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
               </button>
@@ -183,14 +199,12 @@ export default function FinalCTA() {
         </a>
       </div>
 
-      {/* Payment Modal */}
-      {modalPlan && (
-        <PaymentModal
-          isOpen={!!modalPlan}
-          onClose={() => setModalPlan(null)}
-          plan={modalPlan}
-        />
-      )}
+      {/* Signup gate — anon users sign in then land on /dashboard/new/checkout. */}
+      <SignupModal
+        open={authOpen}
+        onClose={() => setAuthOpen(false)}
+        nextUrl={checkoutUrl(authPlan)}
+      />
     </section>
   )
 }

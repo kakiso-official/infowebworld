@@ -2,17 +2,15 @@
 import { useState, useEffect, useCallback, Fragment } from 'react'
 import Link from 'next/link'
 import { fetchConfig } from '../../config/site-config'
-import PaymentModal from '../components/PaymentModal'
 import FoundingCTA from '../components/FoundingCTA'
-import FlexibleModal from '../components/FlexibleModal'
 import { STARTER_ROWS, FREE_ROWS } from '../components/planGating'
 import { PLAN_FEATURE_SECTIONS } from '../components/planFeatures'
 import SignupModal from '../../components/auth/SignupModal'
 import { useAuth } from '@/lib/use-auth'
 
-type PlanKey = 'lifetime' | 'yearly'
-type FlexibleKey = 'free' | 'starter'
 type AnyPlan = 'free' | 'starter' | 'yearly' | 'lifetime'
+
+const checkoutUrl = (plan: AnyPlan) => `/dashboard/new/checkout?plan=${plan}`
 
 /* ── Icons ── */
 const Ck = () => (
@@ -54,8 +52,6 @@ const faqs = [
 
 export default function PlansPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
-  const [modalPlan, setModalPlan] = useState<PlanKey | null>(null)
-  const [flexiblePlan, setFlexiblePlan] = useState<FlexibleKey | null>(null)
   const [slots, setSlots] = useState({ ltEx: false, yrEx: false })
   const [authOpen, setAuthOpen] = useState(false)
   const [authPlan, setAuthPlan] = useState<AnyPlan>('free')
@@ -77,15 +73,16 @@ export default function PlansPage() {
     }))
   }, [])
 
-  /** Anon → open signup modal with plan-aware nextUrl; authed → run action. */
-  const gate = useCallback((plan: AnyPlan, action: () => void) => {
+  /** Anon → open signup modal (lands on checkout post-auth). Authed → hard
+   *  navigate straight to the checkout page for the chosen plan. */
+  const choosePlan = useCallback((plan: AnyPlan) => {
     if (authLoading) return
     if (!user) {
       setAuthPlan(plan)
       setAuthOpen(true)
       return
     }
-    action()
+    window.location.href = checkoutUrl(plan)
   }, [user, authLoading])
 
   return (
@@ -142,16 +139,16 @@ export default function PlansPage() {
               const META = {
                 lifetime: { cls: 'lt' as const, label: 'Lifetime',  short: 'LT', name: 'Elite Lifetime Founding', desc: 'Recommended For Businesses', price: slots.ltEx ? '999' : '239', period: 'one-time, forever',  badge: 'Recommend',
                   slash: !slots.ltEx ? <><span className="fc-strikethrough">$999</span> after Pioneer pre-launch window</> : null,
-                  btnLabel: 'Claim Lifetime Spot', btnCls: 'pr-col-btn--primary', onClick: () => gate('lifetime', () => setModalPlan('lifetime')) },
+                  btnLabel: 'Claim Lifetime Spot', btnCls: 'pr-col-btn--primary', onClick: () => choosePlan('lifetime') },
                 yearly:   { cls: 'yr' as const, label: 'Yearly',    short: 'YR', name: 'Early Adopter',           desc: 'Flexible Membership',         price: slots.yrEx ? '239' : '99',  period: 'per year Locked Forever', badge: null,
                   slash: !slots.yrEx ? <><span className="fc-strikethrough">$239/yr</span> after Pioneer pre-launch window</> : null,
-                  btnLabel: 'Get Started',          btnCls: 'pr-col-btn--secondary', onClick: () => gate('yearly', () => setModalPlan('yearly')) },
+                  btnLabel: 'Get Started',          btnCls: 'pr-col-btn--secondary', onClick: () => choosePlan('yearly') },
                 starter:  { cls: 'st' as const, label: 'Starter',   short: 'ST', name: 'Starter Plan',            desc: 'Pay Once, Yours Forever',     price: '49',                       period: 'one-time',                badge: null,
                   slash: 'no renewals · 14-day refund' as React.ReactNode,
-                  btnLabel: 'Get Starter',          btnCls: 'pr-col-btn--starter',   onClick: () => gate('starter', () => setFlexiblePlan('starter')) },
+                  btnLabel: 'Get Starter',          btnCls: 'pr-col-btn--starter',   onClick: () => choosePlan('starter') },
                 free:     { cls: 'fr' as const, label: 'Free',      short: 'FR', name: 'Free Plan',               desc: 'Basic Listing',               price: '0',                        period: 'forever',                 badge: null,
                   slash: 'no card required' as React.ReactNode,
-                  btnLabel: 'Get Started',          btnCls: 'pr-col-btn--free',      onClick: () => gate('free', () => setFlexiblePlan('free')) },
+                  btnLabel: 'Get Started',          btnCls: 'pr-col-btn--free',      onClick: () => choosePlan('free') },
               }
               const m = META[mobileTab]
               const isGated = mobileTab === 'starter' || mobileTab === 'free'
@@ -279,7 +276,7 @@ export default function PlansPage() {
               <div className="pr-col-price"><span>$</span>{slots.ltEx ? '999' : '239'}</div>
               <div className="pr-col-period">one-time, forever</div>
               {!slots.ltEx && <div className="pr-col-slash"><span className="fc-strikethrough">$999</span> after Pioneer pre-launch window</div>}
-              <button type="button" className="pr-col-btn pr-col-btn--primary" onClick={() => gate('lifetime', () => setModalPlan('lifetime'))}>Claim Lifetime Spot</button>
+              <button type="button" className="pr-col-btn pr-col-btn--primary" onClick={() => choosePlan('lifetime')}>Claim Lifetime Spot</button>
             </div>
             <div className="pr-col-head pr-col-head--yr">
               <div className="pr-col-name">Early Adopter Plan</div>
@@ -287,7 +284,7 @@ export default function PlansPage() {
               <div className="pr-col-price"><span>$</span>{slots.yrEx ? '239' : '99'}</div>
               <div className="pr-col-period">per year Locked forever</div>
               {!slots.yrEx && <div className="pr-col-slash"><span className="fc-strikethrough">$239/yr</span> after Pioneer pre-launch window</div>}
-              <button type="button" className="pr-col-btn pr-col-btn--secondary" onClick={() => gate('yearly', () => setModalPlan('yearly'))}>Get Started</button>
+              <button type="button" className="pr-col-btn pr-col-btn--secondary" onClick={() => choosePlan('yearly')}>Get Started</button>
             </div>
             <div className="pr-col-head pr-col-head--st">
               <div className="pr-col-name">Starter Plan</div>
@@ -295,7 +292,7 @@ export default function PlansPage() {
               <div className="pr-col-price"><span>$</span>49</div>
               <div className="pr-col-period">one-time</div>
               <div className="pr-col-slash">no renewals · 14-day refund</div>
-              <button type="button" className="pr-col-btn pr-col-btn--starter" onClick={() => gate('starter', () => setFlexiblePlan('starter'))}>Get Starter</button>
+              <button type="button" className="pr-col-btn pr-col-btn--starter" onClick={() => choosePlan('starter')}>Get Starter</button>
             </div>
             <div className="pr-col-head pr-col-head--fr">
               <div className="pr-col-name">Free Plan</div>
@@ -303,7 +300,7 @@ export default function PlansPage() {
               <div className="pr-col-price"><span>$</span>0</div>
               <div className="pr-col-period">forever</div>
               <div className="pr-col-slash">no card required</div>
-              <button type="button" className="pr-col-btn pr-col-btn--free" onClick={() => gate('free', () => setFlexiblePlan('free'))}>Get Started</button>
+              <button type="button" className="pr-col-btn pr-col-btn--free" onClick={() => choosePlan('free')}>Get Started</button>
             </div>
 
             {/* Feature rows */}
@@ -381,35 +378,17 @@ export default function PlansPage() {
             member spot before prices increase.
           </p>
           <div className="pln-cta-btns">
-            <button type="button" className="pr-plan-btn pr-plan-btn--primary" onClick={() => gate('lifetime', () => setModalPlan('lifetime'))}>Claim Lifetime Spot</button>
+            <button type="button" className="pr-plan-btn pr-plan-btn--primary" onClick={() => choosePlan('lifetime')}>Claim Lifetime Spot</button>
             <Link href="/contact" className="pr-plan-btn pr-plan-btn--secondary">Talk to Us</Link>
           </div>
         </div>
       </section>
-      {/* Payment Modal (Lifetime + Early Adopter) — unchanged */}
-      {modalPlan && (
-        <PaymentModal
-          isOpen={!!modalPlan}
-          onClose={() => setModalPlan(null)}
-          plan={modalPlan}
-        />
-      )}
-
-      {/* Flexible Modal (Free + Starter) */}
-      {flexiblePlan && (
-        <FlexibleModal
-          isOpen={!!flexiblePlan}
-          onClose={() => setFlexiblePlan(null)}
-          plan={flexiblePlan}
-        />
-      )}
-
-      {/* Signup gate — opens when an anon user clicks any plan button.
-          Lands them on /dashboard/new?plan=X after signup/login. */}
+      {/* Signup gate — opens for anon users. Lands them on the checkout page
+          for their chosen plan after signup/login. */}
       <SignupModal
         open={authOpen}
         onClose={() => setAuthOpen(false)}
-        nextUrl={`/dashboard/new?plan=${authPlan}`}
+        nextUrl={checkoutUrl(authPlan)}
       />
     </main>
   )

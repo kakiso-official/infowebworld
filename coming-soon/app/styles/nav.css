@@ -62,6 +62,45 @@
 }
 
 /* ══════════════════════════════════
+   Business header — compact single-row variant (/business, /business/plans).
+   No search bar; section anchors sit inline next to the logo, CTA on the
+   right. Same visual language as the main header (.nh-* classes are shared)
+   but only one row tall.
+
+   Layout uses a symmetric 1fr · auto · 1fr grid so the nav cell is centered
+   on the page even when the logo and the actions don't share the same width.
+   ══════════════════════════════════ */
+.nh--biz {
+  height: 68px;
+}
+.nh-biz-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  height: 68px;
+  padding: 0 clamp(20px, 3vw, 48px);
+  gap: 18px;
+}
+.nh--biz .nh-logo { justify-self: start; }
+.nh--biz .nh-actions { justify-self: end; }
+.nh-biz-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+@media (max-width: 768px) {
+  .nh--biz { height: 60px; }
+  .nh-biz-row {
+    grid-template-columns: auto auto;
+    justify-content: space-between;
+    height: 60px;
+    gap: 12px;
+  }
+  .nh-biz-nav { display: none; }
+}
+
+/* ══════════════════════════════════
    Logo
    ══════════════════════════════════ */
 .nh-logo {
@@ -137,11 +176,8 @@
 .nh-search-inline .pn-search input {
   font-size: 15px;
 }
-.nh-search-inline .pn-search-btn {
-  height: 34px;
-  padding: 0 16px;
-  font-size: 12px;
-  border-radius: 999px;
+.nh-search-inline .pn-search-kbd {
+  margin-right: 8px;
 }
 .nh-search-inline .gs-dropdown {
   background: #ffffff;
@@ -647,6 +683,12 @@ a.nh-dd-col-head:hover { color: #000; }
 .nh-spacer {
   height: var(--nh-h);
 }
+.nh-spacer--biz {
+  height: 68px;
+}
+@media (max-width: 768px) {
+  .nh-spacer--biz { height: 60px; }
+}
 
 /* ══════════════════════════════════
    GlobalSearch restyle (gs-*, pn-search*)
@@ -696,21 +738,32 @@ a.nh-dd-col-head:hover { color: #000; }
   font-weight: 400;
 }
 
-.pn-search-btn {
+/* Beautiful keyboard shortcut hint pill — sits in the search bar where the
+   "Search" button used to be. Reads "Ctrl K" (or ⌘K on Mac). The actual
+   shortcut handler is wired up in GlobalSearch.tsx; this is purely visual. */
+.pn-search-kbd {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   flex-shrink: 0;
-  height: 34px;
-  padding: 0 16px;
-  border: none;
-  border-radius: 10px;
-  background: var(--h-accent, #E8553D);
-  color: #fff;
-  font: 600 13px/1 var(--font-inter, 'Inter', sans-serif);
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background 200ms ease;
+  height: 26px;
+  padding: 0 9px;
+  margin-right: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-bottom-width: 1.5px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #fff 0%, #f4f4f4 100%);
+  color: rgba(0, 0, 0, 0.55);
+  font: 600 11.5px/1 var(--font-inter, 'Inter', system-ui, sans-serif);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  user-select: none;
+  pointer-events: none;
+  transition: opacity 160ms ease;
 }
-.pn-search-btn:hover { background: #D44A33; }
+.pn-search:focus-within .pn-search-kbd,
+.pn-search--active .pn-search-kbd { opacity: 0; }
 
 .gs-clear {
   display: flex;
@@ -1280,12 +1333,7 @@ a.nh-dd-col-head:hover { color: #000; }
     border-radius: 12px;
   }
   .nh-mob-search .pn-search input { font-size: 15px; }
-  .nh-mob-search .pn-search-btn {
-    height: 32px;
-    border-radius: 8px;
-    font-size: 11px;
-    padding: 0 14px;
-  }
+  .nh-mob-search .pn-search-kbd { display: none; }
   .nh-mob-search .gs-dropdown {
     border-radius: 12px;
     margin-top: 4px;
@@ -1370,7 +1418,7 @@ a.nh-dd-col-head:hover { color: #000; }
   .nh-burger-bars span, .nh-mob-close,
   .gs-dropdown, .gs-row, .gs-row-arrow,
   .hd-country-dropdown, .hd-country-btn, .hd-country-chev,
-  .pn-search, .pn-search-btn, .gs-clear {
+  .pn-search, .pn-search-kbd, .gs-clear {
     transition-duration: 0ms !important;
     animation-duration: 0ms !important;
   }

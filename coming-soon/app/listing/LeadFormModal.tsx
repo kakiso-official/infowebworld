@@ -148,7 +148,7 @@ export default function LeadFormModal({
               ? <img className="wrm-head-logo" src={companyLogo} alt="" />
               : <span className="wrm-head-logo wrm-head-logo--ph">{(companyName || 'IW').slice(0, 2).toUpperCase()}</span>}
             <div className="wrm-head-text">
-              <div className="wrm-head-eyebrow">{success ? 'Lead sent' : 'Get a Quote · via InfoWebWorld'}</div>
+              <div className="wrm-head-eyebrow">{success ? 'Message sent' : 'Contact · via InfoWebWorld'}</div>
               <div className="wrm-head-name">{companyName}</div>
             </div>
           </div>

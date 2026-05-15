@@ -3,6 +3,19 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { I, ic } from './icons'
 
+/** Render the keyboard shortcut hint with the correct modifier for the user's
+ *  platform — ⌘K on macOS, Ctrl K everywhere else. Set on mount so SSR markup
+ *  stays platform-agnostic. */
+function useShortcutLabel() {
+  const [label, setLabel] = useState<'Ctrl K' | '\u2318 K'>('Ctrl K')
+  useEffect(() => {
+    if (typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform)) {
+      setLabel('\u2318 K')
+    }
+  }, [])
+  return label
+}
+
 type CategoryResult = {
   id: number; name: string; slug: string; level: number;
   color: string; icon: string; parent_name: string | null;
@@ -28,8 +41,10 @@ export default function GlobalSearch({ placeholder = 'Search businesses, tools, 
   const [results, setResults] = useState<Results | null>(null)
   const [loading, setLoading] = useState(false)
   const [open, setOpen] = useState(false)
+  const [focused, setFocused] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const debounce = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const shortcut = useShortcutLabel()
 
   /* Close on outside click */
   useEffect(() => {
@@ -109,14 +124,17 @@ export default function GlobalSearch({ placeholder = 'Search businesses, tools, 
           placeholder={placeholder}
           value={query}
           onChange={e => handleChange(e.target.value)}
-          onFocus={() => { if (results) setOpen(true) }}
+          onFocus={() => { setFocused(true); if (results) setOpen(true) }}
+          onBlur={() => setFocused(false)}
         />
         {query && (
           <button className="gs-clear" onClick={clear} aria-label="Clear" type="button">
             <I d={ic.x} size={14} color="currentColor" sw={2} />
           </button>
         )}
-        <button className="pn-search-btn" type="button" onClick={() => search(query.trim())}>Search</button>
+        {!query && !focused && (
+          <kbd className="pn-search-kbd" aria-hidden="true">{shortcut}</kbd>
+        )}
       </div>
 
       {/* Dropdown */}

@@ -1,13 +1,14 @@
 'use client'
-import { useState, useEffect, Fragment } from 'react'
+import { useState, useEffect, useCallback, Fragment } from 'react'
 import Link from 'next/link'
 import { fetchConfig } from '../../config/site-config'
-import PaymentModal from './PaymentModal'
-import FlexibleModal from './FlexibleModal'
+import SignupModal from '../../components/auth/SignupModal'
+import { useAuth } from '@/lib/use-auth'
 import { STARTER_ROWS, FREE_ROWS } from './planGating'
 
-type PlanKey = 'lifetime' | 'yearly'
-type FlexibleKey = 'free' | 'starter'
+type AnyPlan = 'free' | 'starter' | 'yearly' | 'lifetime'
+
+const checkoutUrl = (plan: AnyPlan) => `/dashboard/new/checkout?plan=${plan}`
 
 const Ck = () => (
   <svg viewBox="0 0 24 24" className="pr-ck"><path d="M20 6 9 17l-5-5" /></svg>
@@ -151,15 +152,29 @@ const previewRows = sections[0].rows.slice(0, 10)
 const hiddenCount = totalFeatures - 10
 
 export default function Pricing() {
-  const [modalPlan, setModalPlan] = useState<PlanKey | null>(null)
-  const [flexiblePlan, setFlexiblePlan] = useState<FlexibleKey | null>(null)
   const [slots, setSlots] = useState({ ltEx: false, yrEx: false })
+  const [authOpen, setAuthOpen] = useState(false)
+  const [authPlan, setAuthPlan] = useState<AnyPlan>('free')
+  const { user, loading: authLoading } = useAuth()
+
   useEffect(() => {
     fetchConfig().then(c => setSlots({
       ltEx: c.lifetimeSlotsClaimed >= c.lifetimeSlotsTotal,
       yrEx: c.yearlySlotsClaimed >= c.yearlySlotsTotal,
     }))
   }, [])
+
+  /** Anon → open signup modal with checkout-aware nextUrl. Authed → hard nav
+   *  straight to the checkout page for the chosen plan. */
+  const choosePlan = useCallback((plan: AnyPlan) => {
+    if (authLoading) return
+    if (!user) {
+      setAuthPlan(plan)
+      setAuthOpen(true)
+      return
+    }
+    window.location.href = checkoutUrl(plan)
+  }, [user, authLoading])
 
   return (
     <section className="pr-section" id="pricing">
@@ -181,7 +196,7 @@ export default function Pricing() {
             <div className="pr-col-price"><span>$</span>{slots.ltEx ? '999' : '239'}</div>
             <div className="pr-col-period">one-time, forever</div>
             {!slots.ltEx && <div className="pr-col-slash"><span className="fc-strikethrough">$999</span> after Pioneer pre-launch window</div>}
-            <button type="button" className="pr-col-btn pr-col-btn--primary" onClick={() => setModalPlan('lifetime')}>Claim Lifetime Spot</button>
+            <button type="button" className="pr-col-btn pr-col-btn--primary" onClick={() => choosePlan('lifetime')}>Claim Lifetime Spot</button>
           </div>
 
           <div className="pr-col-head pr-col-head--yr">
@@ -190,7 +205,7 @@ export default function Pricing() {
             <div className="pr-col-price"><span>$</span>{slots.yrEx ? '239' : '99'}</div>
             <div className="pr-col-period">per year Locked Forever</div>
             {!slots.yrEx && <div className="pr-col-slash"><span className="fc-strikethrough">$239/yr</span> after Pioneer pre-launch window</div>}
-            <button type="button" className="pr-col-btn pr-col-btn--secondary" onClick={() => setModalPlan('yearly')}>Get Started</button>
+            <button type="button" className="pr-col-btn pr-col-btn--secondary" onClick={() => choosePlan('yearly')}>Get Started</button>
           </div>
 
           <div className="pr-col-head pr-col-head--st">
@@ -199,7 +214,7 @@ export default function Pricing() {
             <div className="pr-col-price"><span>$</span>49</div>
             <div className="pr-col-period">one-time</div>
             <div className="pr-col-slash">no renewals · 14-day refund</div>
-            <button type="button" className="pr-col-btn pr-col-btn--starter" onClick={() => setFlexiblePlan('starter')}>Get Starter</button>
+            <button type="button" className="pr-col-btn pr-col-btn--starter" onClick={() => choosePlan('starter')}>Get Starter</button>
           </div>
 
           <div className="pr-col-head pr-col-head--fr">
@@ -208,7 +223,7 @@ export default function Pricing() {
             <div className="pr-col-price"><span>$</span>0</div>
             <div className="pr-col-period">forever</div>
             <div className="pr-col-slash">no card required</div>
-            <button type="button" className="pr-col-btn pr-col-btn--free" onClick={() => setFlexiblePlan('free')}>Get Started</button>
+            <button type="button" className="pr-col-btn pr-col-btn--free" onClick={() => choosePlan('free')}>Get Started</button>
           </div>
 
           {/* ── Feature rows — first 10 only ── */}
@@ -247,25 +262,25 @@ export default function Pricing() {
               price: slots.ltEx ? '999' : '239', period: 'one-time, forever',
               slash: !slots.ltEx ? <><span className="fc-strikethrough">$999</span> after Pioneer pre-launch window</> : null,
               btnLabel: 'Claim Lifetime Spot', btnCls: 'pr-col-btn--primary',
-              onClick: () => setModalPlan('lifetime'), has: () => true },
+              onClick: () => choosePlan('lifetime'), has: () => true },
             { key: 'yr', badge: null, name: 'Early Adopter Plan',
               desc: 'Flexible Membership',
               price: slots.yrEx ? '239' : '99', period: 'per year Locked Forever',
               slash: !slots.yrEx ? <><span className="fc-strikethrough">$239/yr</span> after Pioneer pre-launch window</> : null,
               btnLabel: 'Get Started', btnCls: 'pr-col-btn--secondary',
-              onClick: () => setModalPlan('yearly'), has: () => true },
+              onClick: () => choosePlan('yearly'), has: () => true },
             { key: 'st', badge: null, name: 'Starter Plan',
               desc: 'Pay Once, Yours Forever',
               price: '49', period: 'one-time',
               slash: 'no renewals · 14-day refund',
               btnLabel: 'Get Starter', btnCls: 'pr-col-btn--starter',
-              onClick: () => setFlexiblePlan('starter'), has: (r: string) => STARTER_ROWS.has(r) },
+              onClick: () => choosePlan('starter'), has: (r: string) => STARTER_ROWS.has(r) },
             { key: 'fr', badge: null, name: 'Free Plan',
               desc: 'Basic Listing',
               price: '0', period: 'forever',
               slash: 'no card required',
               btnLabel: 'Get Started', btnCls: 'pr-col-btn--free',
-              onClick: () => setFlexiblePlan('free'), has: (r: string) => FREE_ROWS.has(r) },
+              onClick: () => choosePlan('free'), has: (r: string) => FREE_ROWS.has(r) },
           ] as const).map(p => (
             <article key={p.key} className={`pr-mcard pr-mcard--${p.key}`}>
               <header className="pr-mcard-head">
@@ -313,23 +328,13 @@ export default function Pricing() {
         </div>
       </div>
 
-      {/* Payment Modal — Lifetime + Early Adopter */}
-      {modalPlan && (
-        <PaymentModal
-          isOpen={!!modalPlan}
-          onClose={() => setModalPlan(null)}
-          plan={modalPlan}
-        />
-      )}
-
-      {/* Flexible Modal — Free + Starter */}
-      {flexiblePlan && (
-        <FlexibleModal
-          isOpen={!!flexiblePlan}
-          onClose={() => setFlexiblePlan(null)}
-          plan={flexiblePlan}
-        />
-      )}
+      {/* Signup gate — opens for anon users. After auth, lands them directly
+          on the checkout page for their chosen plan. */}
+      <SignupModal
+        open={authOpen}
+        onClose={() => setAuthOpen(false)}
+        nextUrl={checkoutUrl(authPlan)}
+      />
     </section>
   )
 }
