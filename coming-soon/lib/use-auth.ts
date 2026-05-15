@@ -6,6 +6,7 @@ export interface AuthUser {
   email: string
   name: string | null
   avatarUrl: string | null
+  phone: string | null
   provider: string
   emailVerified: boolean
 }

@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     const token = await createUserSession(res.insertId, ip, request.headers.get('user-agent'))
 
     return Response.json(
-      { ok: true, user: { uuid, email, name, avatarUrl: null, provider: 'email', emailVerified: false } },
+      { ok: true, user: { uuid, email, name, avatarUrl: null, phone: null, provider: 'email', emailVerified: false } },
       { status: 201, headers: { 'Set-Cookie': userCookieHeader(token) } }
     )
   } catch (err) {

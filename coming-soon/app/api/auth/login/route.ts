@@ -24,10 +24,10 @@ export async function POST(request: NextRequest) {
 
     const user = await queryOne<{
       id: number; uuid: string; email: string; name: string | null
-      avatar_url: string | null; password_hash: string | null
+      avatar_url: string | null; phone: string | null; password_hash: string | null
       provider: string; email_verified: number
     }>(
-      `SELECT id, uuid, email, name, avatar_url, password_hash, provider, email_verified
+      `SELECT id, uuid, email, name, avatar_url, phone, password_hash, provider, email_verified
        FROM business_users WHERE email = ? LIMIT 1`,
       [email]
     )
@@ -47,7 +47,8 @@ export async function POST(request: NextRequest) {
         ok: true,
         user: {
           uuid: user.uuid, email: user.email, name: user.name,
-          avatarUrl: user.avatar_url, provider: user.provider,
+          avatarUrl: user.avatar_url, phone: user.phone,
+          provider: user.provider,
           emailVerified: Boolean(user.email_verified),
         },
       },
