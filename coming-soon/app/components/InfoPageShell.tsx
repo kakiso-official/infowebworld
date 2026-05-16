@@ -1,11 +1,12 @@
+import { headers } from 'next/headers'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import Link from 'next/link'
 
 /**
  * Shared page shell for informational pages (About, Legal, Help, etc.).
- * Navbar + hero + content + optional CTA + Footer, consistent dark-on-cream
- * visual language matching the rest of the site.
+ * Compact white/black Inter design matching /terms and /about.
+ * Auto-injects BreadcrumbList + WebPage JSON-LD using the current pathname.
  */
 
 interface CTAProps {
@@ -21,32 +22,112 @@ interface Props {
   updated?: string
   cta?: CTAProps
   variant?: 'default' | 'legal' | 'coming-soon'
+  /** Extra <Thing> entities for the WebPage's about[] field — boosts AEO entity binding */
+  about?: string[]
   children?: React.ReactNode
 }
 
-export default function InfoPageShell({
-  kicker, title, subtitle, updated, cta, variant = 'default', children,
+const BASE_URL = 'https://infowebworld.com'
+
+export default async function InfoPageShell({
+  kicker, title, subtitle, updated, cta, variant = 'default', about, children,
 }: Props) {
+  /* Derive the current path from request headers (set by Next.js / middleware).
+     Falls back to '/' if unavailable so JSON-LD still renders. */
+  const h = await headers()
+  const pathname =
+    h.get('x-invoke-path') ??
+    h.get('x-pathname') ??
+    h.get('next-url') ??
+    '/'
+  const pageUrl = `${BASE_URL}${pathname}`
+
+  const ID_BREADCRUMB = `${pageUrl}#breadcrumb`
+  const ID_WEBPAGE    = `${pageUrl}#webpage`
+  const ID_WEBSITE    = `${BASE_URL}/#website`
+  const ID_ORG        = `${BASE_URL}/#organization`
+
+  const breadcrumbItems = [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
+    ...(kicker ? [{ '@type': 'ListItem', position: 2, name: kicker, item: pageUrl }] : []),
+    { '@type': 'ListItem', position: kicker ? 3 : 2, name: title, item: pageUrl },
+  ]
+
+  const jsonLdGraph = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'BreadcrumbList',
+        '@id': ID_BREADCRUMB,
+        itemListElement: breadcrumbItems,
+      },
+      {
+        '@type': 'WebPage',
+        '@id': ID_WEBPAGE,
+        url: pageUrl,
+        name: `${title} — InfoWebWorld`,
+        headline: title,
+        description: subtitle,
+        inLanguage: 'en-US',
+        isPartOf: { '@id': ID_WEBSITE, '@type': 'WebSite', name: 'InfoWebWorld', url: BASE_URL },
+        breadcrumb: { '@id': ID_BREADCRUMB },
+        primaryImageOfPage: {
+          '@type': 'ImageObject',
+          url: `${BASE_URL}/og-image.png`,
+          width: 1200, height: 630,
+        },
+        publisher: {
+          '@type': 'Organization',
+          '@id': ID_ORG,
+          name: 'InfoWebWorld',
+          legalName: 'Brain Stream Australia Pty Ltd',
+          url: BASE_URL,
+          logo: `${BASE_URL}/logo/infowebworldlogo-logoforlightbackgrounds.png`,
+        },
+        about: (about ?? []).map(name => ({ '@type': 'Thing', name })),
+        speakable: {
+          '@type': 'SpeakableSpecification',
+          cssSelector: ['.ip-title', '.ip-sub', '.ip-h2'],
+        },
+      },
+    ],
+  }
+
   return (
     <>
-      <Navbar />
-      <main className={`ip ip--${variant}`}>
-        <section className="ip-hero">
-          <div className="ip-hero-inner">
-            {kicker && <span className="ip-kicker">{kicker}</span>}
-            <h1 className="ip-title">{title}</h1>
-            {subtitle && <p className="ip-sub">{subtitle}</p>}
-            {updated && <span className="ip-updated">Last updated: {updated}</span>}
-            {variant === 'coming-soon' && (
-              <span className="ip-soon-badge">
-                <span className="ip-soon-dot" aria-hidden="true" />
-                Coming Soon
-              </span>
-            )}
-          </div>
-        </section>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdGraph) }}
+      />
 
-        {children && <section className="ip-body"><div className="ip-body-inner">{children}</div></section>}
+      <Navbar />
+
+      <main className={`ip ip--${variant}`} id="top">
+        <header className="ip-hero">
+          <nav className="ip-crumb" aria-label="Breadcrumb">
+            <a href="/">Home</a>
+            <span className="ip-crumb-sep" aria-hidden="true">/</span>
+            {kicker && (
+              <>
+                <span>{kicker}</span>
+                <span className="ip-crumb-sep" aria-hidden="true">/</span>
+              </>
+            )}
+            <span className="ip-crumb-current">{title}</span>
+          </nav>
+          {kicker && <span className="ip-kicker">{kicker}</span>}
+          <h1 className="ip-title">{title}</h1>
+          {subtitle && <p className="ip-sub">{subtitle}</p>}
+          {updated && <span className="ip-updated">Last updated {updated}</span>}
+          {variant === 'coming-soon' && (
+            <span className="ip-soon-badge">
+              <span className="ip-soon-dot" aria-hidden="true" />
+              Coming Soon
+            </span>
+          )}
+        </header>
+
+        {children && <div className="ip-body">{children}</div>}
 
         {cta && (
           <section className="ip-cta">
@@ -54,7 +135,7 @@ export default function InfoPageShell({
               {cta.description && <p className="ip-cta-desc">{cta.description}</p>}
               <Link href={cta.href} className="ip-cta-btn">
                 {cta.label}
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
                 </svg>
               </Link>
@@ -62,6 +143,7 @@ export default function InfoPageShell({
           </section>
         )}
       </main>
+
       <Footer />
     </>
   )

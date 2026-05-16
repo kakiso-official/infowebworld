@@ -8,6 +8,23 @@ const INDEXABLE_PATHS = new Set([
   '/business/plans',
   '/about',
   '/terms',
+  '/privacy',
+  '/cookies',
+  '/content-guidelines',
+  '/do-not-sell',
+  '/faqs',
+  '/help',
+  '/glossary',
+  '/category-guides',
+  '/removals',
+  '/agencies',
+  '/affiliates',
+  '/media',
+  '/investors',
+  '/team',
+  '/team/past',
+  '/insights',
+  '/write-review',
 ])
 
 function shouldNoindex(pathname: string): boolean {
@@ -62,7 +79,13 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url, 308)
   }
 
-  const response = NextResponse.next()
+  /* Forward the pathname to server components via a request header so the
+     shared InfoPageShell can auto-generate per-page JSON-LD (canonical URL,
+     breadcrumbs) without each page having to plumb it through props. */
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('x-pathname', pathname)
+
+  const response = NextResponse.next({ request: { headers: requestHeaders } })
   applyHeaders(response, pathname, isVercelApp)
   return response
 }

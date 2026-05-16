@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import FooterNewsletter from './FooterNewsletter'
+import FooterAuthLink from './FooterAuthLink'
 
 import { BASE } from '../config/base-path'
 const bp = BASE
@@ -7,6 +8,8 @@ const bp = BASE
 /* ── Footer link config — one source of truth for every column ── */
 type LinkRow = { label: string; href: string }
 type Column = { title: string; links: LinkRow[] }
+
+const AUTH_LINK_LABEL = 'Business Login'
 
 const COLUMNS: Column[] = [
   {
@@ -118,7 +121,11 @@ export default function Footer() {
               <div key={col.title} className="ft-col">
                 <h4 className="ft-col-title">{col.title}</h4>
                 {col.links.map(l => (
-                  <Link key={l.label} href={l.href} className="ft-col-link">{l.label}</Link>
+                  l.label === AUTH_LINK_LABEL ? (
+                    <FooterAuthLink key={l.label} label={l.label} nextUrl={l.href} />
+                  ) : (
+                    <Link key={l.label} href={l.href} className="ft-col-link">{l.label}</Link>
+                  )
                 ))}
               </div>
             ))}

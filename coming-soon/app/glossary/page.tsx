@@ -82,18 +82,37 @@ const glossary: Group[] = [
   },
 ]
 
+const glossaryJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'DefinedTermSet',
+  '@id': 'https://infowebworld.com/glossary#glossary',
+  name: 'InfoWebWorld glossary',
+  description: 'Directory, SEO, AEO, and business-discovery terms explained in plain English.',
+  hasDefinedTerm: glossary.flatMap(g => g.terms).map(t => ({
+    '@type': 'DefinedTerm',
+    name: t.term,
+    description: t.def,
+    inDefinedTermSet: { '@id': 'https://infowebworld.com/glossary#glossary' },
+  })),
+}
+
 export default function GlossaryPage() {
   return (
     <InfoPageShell
       kicker="Reference"
       title="Glossary"
       subtitle="Directory, SEO, and business-discovery terms explained in plain English. Bookmark for future reference."
+      about={['SEO terminology', 'AEO terminology', 'GEO terminology', 'Business directory concepts', 'Dofollow backlinks']}
       cta={{
         label: 'Ask for a Term',
         href: '/contact',
         description: "Missing a definition? Email us and we'll add it.",
       }}
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(glossaryJsonLd) }}
+      />
       {glossary.map(group => (
         <IPSection key={group.letter} title={group.letter}>
           <dl className="ip-dl">

@@ -52,17 +52,33 @@ const faqs = [
   },
 ]
 
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  '@id': 'https://infowebworld.com/faqs#faq',
+  mainEntity: faqs.flatMap(g => g.items).map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a, inLanguage: 'en-US' },
+  })),
+}
+
 export default function FAQsPage() {
   return (
     <InfoPageShell
       kicker="Support"
       title="Frequently Asked Questions"
       subtitle="The questions we hear most — answered directly. If you can't find what you're looking for, drop us a line."
+      about={['Business listings', 'Plans and pricing', 'Verified reviews', 'SEO and backlinks', 'Account management']}
       cta={{
         label: 'Ask a Question',
         href: '/contact',
       }}
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       {faqs.map(group => (
         <IPSection key={group.section} title={group.section}>
           {group.items.map(item => (
