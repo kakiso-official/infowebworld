@@ -2,6 +2,8 @@ User-agent: *
 Allow: /$
 Allow: /business$
 Allow: /business/plans$
+Allow: /about$
+Allow: /terms$
 Disallow: /contact
 Disallow: /iww-hq/
 Disallow: /api/

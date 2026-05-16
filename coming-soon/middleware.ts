@@ -1,8 +1,14 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-/* ── Only these 3 pages are indexable — everything else gets noindex ── */
-const INDEXABLE_PATHS = new Set(['', '/', '/business', '/business/plans'])
+/* ── Indexable pages — everything else gets noindex ── */
+const INDEXABLE_PATHS = new Set([
+  '', '/',
+  '/business',
+  '/business/plans',
+  '/about',
+  '/terms',
+])
 
 function shouldNoindex(pathname: string): boolean {
   return !INDEXABLE_PATHS.has(pathname)
