@@ -1,0 +1,57 @@
+# InfoWebWorld
+
+> InfoWebWorld is the global business discovery platform for verified listings, real reviews, dofollow backlinks, and AI-era visibility — built by Brain Stream Australia Pty Ltd (Parramatta, NSW 2150, Australia), covering 80+ industries across 13,000+ categories and 12+ countries.
+
+InfoWebWorld is a human-curated directory and discovery engine. Every listing is reviewed before publication. Reviews come from verified users only. Ranking is based on merit, engagement, and trust signals — never ad spend. Paid listings include permanent dofollow backlinks. The platform is structured for AI answer engines (Google, Perplexity, ChatGPT, Gemini, Claude) via schema.org markup, semantic HTML, and AEO/GEO best practices.
+
+## About
+
+- [About InfoWebWorld](https://infowebworld.com/about): Mission, principles, company info, and why businesses trust InfoWebWorld.
+- [Contact](https://infowebworld.com/contact): Get in touch with the team.
+
+## For businesses
+
+- [Get listed](https://infowebworld.com/business): How to submit a business for verified listing on the global discovery platform.
+- [Plans & pricing](https://infowebworld.com/business/plans): Free, Starter ($49 one-time), Yearly ($99/yr), and Lifetime ($239 one-time) plans. Founding member pricing during pre-launch.
+
+## Legal
+
+- [Terms of Use](https://infowebworld.com/terms): Account rules, 14-day refund window, intellectual property, prohibited conduct, governing law (NSW, Australia).
+- [Privacy Policy](https://infowebworld.com/privacy): Data practices and user rights.
+
+## Quick facts
+
+- **Founded**: 2026
+- **Parent company**: Brain Stream Australia Pty Ltd
+- **Headquarters**: Parramatta, NSW 2150, Australia
+- **Geographic coordinates**: -33.8136° S, 151.0034° E
+- **Coverage**: 80+ industries, 13,000+ categories, 12+ countries
+- **Refund window**: 14 days from initial purchase
+- **Governing law**: New South Wales, Australia
+- **Languages**: English
+- **Track record**: 20+ years building SEO, content, and directory products
+
+## Why trust InfoWebWorld
+
+1. **Leads Generation** — Listings function as lead generation engines, not vanity badges.
+2. **Customer-First Approach** — Product decisions prioritize the customer's discovery and growth goals.
+3. **Verified Reviews — Build Trust That Converts** — Customer feedback becomes the strongest growth asset.
+4. **Search & AI Visibility** — SEO-optimized assets that rank across both classical search engines AND AI answer engines.
+
+## What makes InfoWebWorld different
+
+1. **Verified listings only** — Human-curated; spam and duplicates rejected before reaching buyers.
+2. **Real reviews, no pay-to-play** — Ranking is merit-based; never ad spend.
+3. **Global and local at once** — Listings surface at both country and city level.
+4. **Permanent dofollow backlinks** — Real, lasting SEO value (not rented rankings).
+5. **AI-powered discovery** — AI-assisted search surfaces alternatives and compares features in seconds.
+6. **Built for the AI era** — Structured, crawlable, citation-friendly for Google, Perplexity, ChatGPT, Gemini, and Claude.
+
+## Industries covered
+
+AI & Machine Learning · Software & SaaS · IT Services & Agencies · Startups & Innovation · Local Businesses · Professional Services · Healthcare & Biotech · Fintech & Banking · E-commerce & Retail · Education & EdTech · Marketing & Advertising · Cybersecurity · and 70+ more.
+
+## Optional
+
+- [Sitemap](https://infowebworld.com/sitemap.xml): Crawl index.
+- [Robots](https://infowebworld.com/robots.txt): Crawler policies (AI training bots blocked; AI search bots allowed).

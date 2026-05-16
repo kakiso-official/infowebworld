@@ -1,13 +1,25 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import CurvedLoop from './CurvedLoop'
+import SignupModal from '../../components/auth/SignupModal'
+import { useAuth } from '@/lib/use-auth'
 
 const categories = ['AI & ML', 'Software & SaaS', 'IT Services & Agencies', 'Startups & Innovations', 'Local Services', 'Industry Software']
 
 export default function Hero() {
   const [displayed, setDisplayed] = useState('')
   const [jsReady, setJsReady] = useState(false)
+  const [authOpen, setAuthOpen] = useState(false)
+  const { user, loading: authLoading } = useAuth()
+
+  const handleListingClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (authLoading) { e.preventDefault(); return }
+    if (!user) {
+      e.preventDefault()
+      setAuthOpen(true)
+    }
+  }, [user, authLoading])
 
   useEffect(() => {
     setJsReady(true)
@@ -68,7 +80,7 @@ export default function Hero() {
               <path className="gcs-arrow-head-1" d="M84 50 L70 42" stroke="var(--h-accent)" strokeWidth="3" strokeLinecap="round" />
               <path className="gcs-arrow-head-2" d="M84 50 L72 60" stroke="var(--h-accent)" strokeWidth="3" strokeLinecap="round" />
             </svg>
-            <Link href="/business/plans" className="gcs-listing-btn">
+            <Link href="/business/plans" onClick={handleListingClick} className="gcs-listing-btn">
               Submit Your First Listing
               <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
             </Link>
@@ -110,6 +122,12 @@ export default function Hero() {
           <span>Launching Soon - Global Growth Platfirm - InfoWebWorld.com - Discover & Connect - Leads - Reviews - Compare - News - Thousands of Categories - 100+ Countries Traffic -&nsbp;</span>
         </div>
       </div>
+
+      <SignupModal
+        open={authOpen}
+        onClose={() => setAuthOpen(false)}
+        nextUrl="/business/plans"
+      />
     </section>
   )
 }
