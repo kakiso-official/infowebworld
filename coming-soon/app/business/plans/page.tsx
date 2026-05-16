@@ -19,10 +19,29 @@ const breadcrumbJsonLd = {
   ],
 }
 
+const APPLICABLE_COUNTRIES = [
+  'US', 'CA', 'MX', 'BR', 'AR', 'CL', 'CO', 'PE',
+  'GB', 'IE', 'DE', 'FR', 'IT', 'ES', 'NL', 'BE', 'PT', 'SE', 'NO', 'DK', 'FI', 'CH', 'AT', 'PL', 'CZ', 'GR', 'RO',
+  'AU', 'NZ', 'IN', 'SG', 'JP', 'KR', 'HK', 'TW', 'MY', 'TH', 'ID', 'PH', 'VN', 'CN', 'BD', 'PK',
+  'AE', 'SA', 'IL', 'QA', 'KW', 'TR',
+  'ZA', 'NG', 'EG', 'KE',
+]
+
+const merchantReturnPolicy = {
+  '@type': 'MerchantReturnPolicy',
+  applicableCountry: APPLICABLE_COUNTRIES,
+  returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+  merchantReturnDays: 14,
+  returnMethod: 'https://schema.org/ReturnByMail',
+  returnFees: 'https://schema.org/FreeReturn',
+  merchantReturnLink: 'https://infowebworld.com/terms#payments',
+}
+
 const productJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Product',
   name: 'InfoWebWorld Business Listing',
+  image: 'https://infowebworld.com/og-image.png',
   description: 'Premium business listing on the global discovery platform with verified reviews, dofollow backlinks, analytics, and lead generation.',
   brand: { '@type': 'Brand', name: 'InfoWebWorld' },
   offers: [
@@ -34,6 +53,7 @@ const productJsonLd = {
       availability: 'https://schema.org/InStock',
       url: 'https://infowebworld.com/business/plans',
       description: 'One-time payment for permanent access to all features. No renewals, no price increases.',
+      hasMerchantReturnPolicy: merchantReturnPolicy,
     },
     {
       '@type': 'Offer',
@@ -49,6 +69,7 @@ const productJsonLd = {
         billingDuration: { '@type': 'QuantitativeValue', value: 1, unitCode: 'ANN' },
       },
       description: 'Annual subscription with the same full feature set, renewed yearly.',
+      hasMerchantReturnPolicy: merchantReturnPolicy,
     },
   ],
 }
