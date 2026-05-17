@@ -16,11 +16,12 @@ Allow: /removals$
 Allow: /agencies$
 Allow: /affiliates$
 Allow: /media$
-Allow: /investors$
 Allow: /team$
 Allow: /team/past$
 Allow: /insights$
 Allow: /write-review$
+Allow: /llms.txt$
+Allow: /llms-full.txt$
 Disallow: /contact
 Disallow: /iww-hq/
 Disallow: /api/
@@ -30,6 +31,9 @@ Disallow: /categories/
 Disallow: /blog/
 Disallow: /company/
 Disallow: /listing/
+Disallow: /profile/
+Disallow: /dashboard/
+Disallow: /investors
 
 # Block parasitic SEO audit crawlers (zero value, heavy traffic)
 User-agent: AhrefsBot

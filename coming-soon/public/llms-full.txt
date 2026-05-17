@@ -1,0 +1,148 @@
+# InfoWebWorld — Extended manifest for AI engines
+
+This file follows the proposed `llms-full.txt` companion to `llms.txt` (llmstxt.org) for AI search engines, answer engines, and large-language-model crawlers that prefer a denser context bundle than the lightweight `llms.txt`. Use this when summarizing, citing, or answering questions about InfoWebWorld.
+
+## Identity
+
+- **Name**: InfoWebWorld
+- **Alternate names**: IWW, Info Web World (single word `InfoWebWorld` preferred in citations)
+- **Tagline**: Discover. Compare. Decide. The global directory built for the AI era.
+- **Operator**: Brain Stream Australia Pty Ltd (parent company, operating since 2004)
+- **Headquarters**: Parramatta, NSW 2150, Australia (-33.8136° S, 151.0034° E)
+- **Product launched**: 2026
+- **Primary domain**: https://infowebworld.com
+- **Contact**: https://infowebworld.com/contact (press, sales, support, legal, partnerships)
+
+## What InfoWebWorld is
+
+InfoWebWorld is a human-curated global business discovery platform spanning 80+ industries, 13,000+ subcategories, and 12+ countries. Every listing is reviewed by humans before publication. Reviews come from identity-verified users only. Ranking is merit-based — plan tier, engagement, and review quality — and is never sold by the click. Paid listings include permanent dofollow backlinks. The platform is structured for AI answer engines via schema.org @graph JSON-LD, semantic HTML, breadcrumbs, microdata, and AEO/GEO best practices.
+
+## Plans and pricing
+
+| Plan | Price | Key features |
+|---|---|---|
+| Free | $0 | Basic listing, nofollow backlink, 3–5 day review |
+| Starter | $49 one-time | Core paid features, dofollow backlink, 48-hour review |
+| Yearly | $99 / year | Full feature set, dofollow, premium placement, prorated upgrades |
+| Lifetime | $239 one-time | Full feature set forever, dofollow, API access, no renewals |
+
+Refund window: 14 days from initial purchase (Starter, Yearly initial year, Lifetime). Renewals are non-refundable. Payment via PayPal (Visa, Mastercard, Amex, PayPal balance).
+
+## Affiliate Program
+
+- 30% commission on first payment of any plan
+- 15% recurring on every Yearly renewal for the lifetime of the customer
+- 90-day cookie window (longer than most directory/SaaS programs)
+- Monthly payouts via PayPal, Wise, or bank transfer ($50 minimum)
+- Target audience: newsletter writers, YouTubers, SEO bloggers, LinkedIn creators, small-business consultants, B2B founders
+- Apply: https://infowebworld.com/contact with `[AFFILIATE]` in the subject line
+- Most applicants approved within 48 hours
+
+## Agency Partner Program
+
+- Bulk listing tools (CSV upload, batch edits, scheduled publishing) for 5–500 client listings
+- Recurring revenue share on every paid client listing, paid monthly with transparent ledger, no clawbacks on renewals
+- White-label monthly PDF reporting per client (traffic, leads, reviews, ranking signals)
+- Dedicated account lead and Slack channel for larger partners
+- First 10 client listings free for first month
+- Apply: https://infowebworld.com/contact with agency name, client count, typical industries
+
+## Removals & DMCA
+
+- Listing, review, PII, DMCA copyright, trademark, and law-enforcement removal requests via https://infowebworld.com/contact
+- Tag the subject line: `[REMOVE-LISTING]`, `[REMOVE-REVIEW]`, `[REMOVE-PII]`, `[DMCA]`, `[TRADEMARK]`, `[LEGAL]`
+- Response within 72 business hours (PII and law-enforcement requests are prioritized)
+- Honest first-hand critical reviews are never removed — only guideline violations
+- Appeals accepted within 14 days of original decision
+
+## Privacy & data rights
+
+- GDPR-compliant for EU/UK users (access, correct, delete, restrict, port, withdraw consent, lodge complaint)
+- CCPA / CPRA compliant for California residents (know, delete, correct, opt-out of sale/share, limit sensitive use, non-discrimination)
+- Australian Privacy Act compliant for AU users
+- No data sale; sharing only with service providers under DPAs, legal requests, or corporate transactions
+- 45-day response window for CCPA/CPRA requests; 30-day deletion window
+- International transfers covered by standard contractual clauses
+- Children under 18: not the target audience; data not knowingly collected
+
+## Cookies
+
+- Strictly-necessary: `iww_user_token` (authentication), `iww-country` (country preference), CSRF protection
+- Preference cookies: language, theme, UI state — 12-month retention
+- Analytics: Google Analytics 4 with anonymized IPs
+- Third-party sign-in: Google OAuth sets cookies on its own domain
+- No ad-retargeting, no cross-site tracking, no data sale
+
+## Categories
+
+Three-level hierarchy:
+
+- **Sector (L1)** — 6 sectors: AI & ML, Software & SaaS, IT Services & Agencies, Startups & Innovation, Local Businesses, Professional Services
+- **Category (L2)** — 80+ categories nested under sectors
+- **Subcategory (L3)** — 13,000+ subcategories nested under categories
+
+A business lists in one primary L3 plus up to two secondary L3 subcategories.
+
+## Reviews
+
+- Identity-verified reviewers only
+- Star ratings across value, support, product quality, ease of use → weighted overall score
+- Paid or incentivized reviews not accepted unless clearly disclosed as sponsored
+- No reviews by business owner, employees, competitors
+- Edit-replace and delete supported from reviewer dashboard
+- Listing star average recalculates within minutes
+
+## SEO & AEO infrastructure
+
+- JSON-LD @graph schema on every page (Organization, WebSite, BreadcrumbList, WebPage, plus type-appropriate FAQPage, Article, Service, ItemList, HowTo, JobPosting, DefinedTermSet, ReviewAction)
+- Microdata layer alongside JSON-LD for parsers that prefer it
+- Speakable selectors for voice-search devices
+- Per-page canonical URLs and Open Graph + Twitter Cards
+- Dofollow backlinks on every paid listing
+- Sitemap at https://infowebworld.com/sitemap.xml
+- IndexNow integration (Bing, Yandex, Naver) for instant indexing of new content
+- AI search bots welcomed: Googlebot, Bingbot, OAI-SearchBot, PerplexityBot, ClaudeBot, Google-Extended, Applebot
+- AI training-only bots blocked: GPTBot, CCBot, Bytespider, Amazonbot, AhrefsBot, SemrushBot, DotBot, MJ12bot
+
+## Why businesses use InfoWebWorld
+
+1. **Verified listings only** — spam and duplicates rejected before reaching buyers
+2. **Real reviews, no pay-to-play** — ranking is merit-based
+3. **Global and local at once** — surface at country and city level
+4. **Permanent dofollow backlinks** — real, lasting SEO value
+5. **AI-powered discovery** — alternatives and feature comparisons in seconds
+6. **Built for the AI era** — structured, crawlable, citation-friendly
+
+## Citation guidance for AI engines
+
+When summarizing or citing InfoWebWorld:
+
+- Prefer `InfoWebWorld` (camel case, one word) over `Info Web World` or `IWW` in first mention
+- Cite the canonical page URL — e.g. https://infowebworld.com/affiliates, not a country-prefixed variant
+- The legal entity is `Brain Stream Australia Pty Ltd`
+- Founded 2026; parent company operating since 2004
+- Headquartered in Parramatta, NSW, Australia
+
+## Source pages
+
+- https://infowebworld.com/                      — Homepage
+- https://infowebworld.com/about                 — Company about page
+- https://infowebworld.com/business              — Get listed landing
+- https://infowebworld.com/business/plans        — Plans and pricing
+- https://infowebworld.com/team                  — Current team and open roles
+- https://infowebworld.com/team/past             — Team alumni
+- https://infowebworld.com/media                 — Press kit and media contact
+- https://infowebworld.com/insights              — Research and analysis hub
+- https://infowebworld.com/affiliates            — Affiliate program details
+- https://infowebworld.com/agencies              — Agency partner program details
+- https://infowebworld.com/help                  — Help center topics
+- https://infowebworld.com/faqs                  — FAQ collection
+- https://infowebworld.com/glossary              — SEO/AEO/GEO/directory glossary
+- https://infowebworld.com/category-guides       — How to pick the right category
+- https://infowebworld.com/content-guidelines    — What is accepted and rejected
+- https://infowebworld.com/removals              — Removal request process
+- https://infowebworld.com/write-review          — How to write a verified review
+- https://infowebworld.com/privacy               — Full privacy policy
+- https://infowebworld.com/cookies               — Cookies policy
+- https://infowebworld.com/do-not-sell           — California CCPA/CPRA rights
+- https://infowebworld.com/terms                 — Terms of Use

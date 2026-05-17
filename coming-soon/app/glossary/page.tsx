@@ -1,11 +1,8 @@
 import type { Metadata } from 'next'
 import InfoPageShell, { IPSection } from '../components/InfoPageShell'
+import { BASE_URL } from '../components/seo-schema'
 
-export const metadata: Metadata = {
-  title: 'Glossary — InfoWebWorld',
-  description: 'Directory, SEO, and business-discovery terms explained in plain English. A quick reference for everyone using InfoWebWorld.',
-  alternates: { canonical: 'https://infowebworld.com/glossary' },
-}
+const URL = `${BASE_URL}/glossary`
 
 type Term = { term: string; def: string }
 type Group = { letter: string; terms: Term[] }
@@ -29,7 +26,7 @@ const glossary: Group[] = [
     letter: 'C',
     terms: [
       { term: 'Category', def: 'A classification of businesses by industry. InfoWebWorld has three levels: sector (L1, e.g. AI & ML), category (L2, e.g. AI Chatbots), subcategory (L3, e.g. Customer Support Chatbots).' },
-      { term: 'Claim Listing', def: "Take ownership of an existing business listing. Typically requires verifying your affiliation via domain email or DNS record." },
+      { term: 'Claim Listing', def: 'Take ownership of an existing business listing. Typically requires verifying your affiliation via domain email or DNS record.' },
       { term: 'CTR (Click-Through Rate)', def: 'The percentage of people who see your listing in search results or category pages and click it. A key engagement metric.' },
     ],
   },
@@ -71,7 +68,7 @@ const glossary: Group[] = [
     terms: [
       { term: 'Schema Markup', def: 'Structured data (JSON-LD) that helps search engines understand your content. InfoWebWorld adds rich schema to every listing automatically.' },
       { term: 'SEO (Search Engine Optimization)', def: 'The discipline of earning organic search traffic. InfoWebWorld gives you a dofollow backlink, rich snippets, and high-authority exposure.' },
-      { term: 'Sector', def: "The top-level category on InfoWebWorld — AI & ML, Software & SaaS, IT Services & Agencies, Startups & Innovation, Local Businesses, Professional Services." },
+      { term: 'Sector', def: 'The top-level category on InfoWebWorld — AI & ML, Software & SaaS, IT Services & Agencies, Startups & Innovation, Local Businesses, Professional Services.' },
     ],
   },
   {
@@ -82,18 +79,65 @@ const glossary: Group[] = [
   },
 ]
 
+const allTerms = glossary.flatMap(g => g.terms)
+
 const glossaryJsonLd = {
-  '@context': 'https://schema.org',
   '@type': 'DefinedTermSet',
-  '@id': 'https://infowebworld.com/glossary#glossary',
+  '@id': `${URL}#glossary`,
   name: 'InfoWebWorld glossary',
-  description: 'Directory, SEO, AEO, and business-discovery terms explained in plain English.',
-  hasDefinedTerm: glossary.flatMap(g => g.terms).map(t => ({
+  description: 'Directory, SEO, AEO, GEO, and business-discovery terms explained in plain English.',
+  inLanguage: 'en-US',
+  hasDefinedTerm: allTerms.map(t => ({
     '@type': 'DefinedTerm',
+    '@id': `${URL}#${t.term.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}`,
     name: t.term,
     description: t.def,
-    inDefinedTermSet: { '@id': 'https://infowebworld.com/glossary#glossary' },
+    inDefinedTermSet: { '@id': `${URL}#glossary` },
   })),
+}
+
+export const metadata: Metadata = {
+  title: 'Glossary — SEO · AEO · GEO · Directory Terms Explained | InfoWebWorld',
+  description:
+    'Plain-English glossary of directory, SEO, AEO (Answer Engine Optimization), GEO (Generative Engine Optimization), and business-discovery terminology — backlinks, dofollow vs nofollow, schema markup, NAP, CTR, RFQ, and more.',
+  keywords: [
+    'SEO glossary',
+    'AEO glossary',
+    'GEO glossary',
+    'directory terms glossary',
+    'business discovery terminology',
+    'dofollow vs nofollow explained',
+    'what is schema markup',
+    'what is NAP name address phone',
+    'what is domain authority',
+    'what is click through rate',
+    'what is generative engine optimization',
+    'what is answer engine optimization',
+    'B2B directory glossary 2026',
+    'verified review meaning',
+    'backlink meaning SEO',
+    'badge meaning directory listing',
+  ],
+  alternates: { canonical: URL },
+  openGraph: {
+    title: 'Glossary — InfoWebWorld',
+    description: 'SEO, AEO, GEO, and directory terms in plain English.',
+    url: URL,
+    siteName: 'InfoWebWorld',
+    type: 'article',
+    locale: 'en_US',
+    images: [{ url: `${BASE_URL}/og-image.png`, width: 1200, height: 630, alt: 'InfoWebWorld Glossary' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Glossary — InfoWebWorld',
+    description: 'SEO, AEO, GEO, and directory terms in plain English.',
+    images: [`${BASE_URL}/og-image.png`],
+  },
+  robots: {
+    index: true, follow: true,
+    googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1, 'max-video-preview': -1 },
+  },
 }
 
 export default function GlossaryPage() {
@@ -102,24 +146,25 @@ export default function GlossaryPage() {
       kicker="Reference"
       title="Glossary"
       subtitle="Directory, SEO, and business-discovery terms explained in plain English. Bookmark for future reference."
-      about={['SEO terminology', 'AEO terminology', 'GEO terminology', 'Business directory concepts', 'Dofollow backlinks']}
+      webPageType={['WebPage', 'CollectionPage']}
+      about={['SEO terminology', 'AEO terminology', 'GEO terminology', 'Business directory concepts', 'Dofollow backlinks', 'Schema markup']}
+      mentions={['Perplexity', 'ChatGPT Search', 'Google AI Overviews', 'Moz', 'Ahrefs', 'JSON-LD']}
+      schemaKeywords={['glossary', 'SEO', 'AEO', 'GEO', 'directory', 'backlink', 'dofollow']}
+      extraGraph={[glossaryJsonLd]}
       cta={{
         label: 'Ask for a Term',
         href: '/contact',
         description: "Missing a definition? Email us and we'll add it.",
       }}
     >
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(glossaryJsonLd) }}
-      />
       {glossary.map(group => (
         <IPSection key={group.letter} title={group.letter}>
           <dl className="ip-dl">
             {group.terms.map(t => (
-              <div key={t.term}>
-                <dt>{t.term}</dt>
-                <dd>{t.def}</dd>
+              <div key={t.term} itemScope itemType="https://schema.org/DefinedTerm">
+                <dt itemProp="name">{t.term}</dt>
+                <dd itemProp="description">{t.def}</dd>
+                <meta itemProp="inDefinedTermSet" content={`${URL}#glossary`} />
               </div>
             ))}
           </dl>

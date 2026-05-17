@@ -1,11 +1,8 @@
 import type { Metadata } from 'next'
 import InfoPageShell, { IPSection } from '../components/InfoPageShell'
+import { faqNode, BASE_URL } from '../components/seo-schema'
 
-export const metadata: Metadata = {
-  title: 'FAQs — InfoWebWorld',
-  description: 'Frequently asked questions about InfoWebWorld — listings, plans, reviews, SEO backlinks, analytics, and more.',
-  alternates: { canonical: 'https://infowebworld.com/faqs' },
-}
+const URL = `${BASE_URL}/faqs`
 
 const faqs = [
   {
@@ -52,15 +49,50 @@ const faqs = [
   },
 ]
 
-const faqJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  '@id': 'https://infowebworld.com/faqs#faq',
-  mainEntity: faqs.flatMap(g => g.items).map(({ q, a }) => ({
-    '@type': 'Question',
-    name: q,
-    acceptedAnswer: { '@type': 'Answer', text: a, inLanguage: 'en-US' },
-  })),
+const flatFaqs = faqs.flatMap(g => g.items)
+const faqJsonLd = faqNode(flatFaqs, `${URL}#faq`, `${URL}#webpage`)
+
+export const metadata: Metadata = {
+  title: 'FAQs — Listings · Plans · Reviews · SEO · Account | InfoWebWorld',
+  description:
+    'Frequently asked questions about InfoWebWorld — submitting listings, plans and pricing, verified reviews, dofollow backlinks, refund policy, Google sign-in, account deletion, and more.',
+  keywords: [
+    'InfoWebWorld FAQ',
+    'business directory FAQ',
+    'how to submit business listing',
+    'directory plans pricing FAQ',
+    'verified review FAQ',
+    'dofollow backlink FAQ',
+    'directory refund policy',
+    'how to delete directory account',
+    'Google sign in directory',
+    'business listing dashboard',
+    'remove bad review directory',
+    'best business directory 2026',
+    'how to rank on business directory',
+    'directory upgrade plan',
+    'listing data export CSV',
+  ],
+  alternates: { canonical: URL },
+  openGraph: {
+    title: 'Frequently Asked Questions — InfoWebWorld',
+    description: 'Listings, plans, reviews, SEO backlinks, account & data — all answered.',
+    url: URL,
+    siteName: 'InfoWebWorld',
+    type: 'website',
+    locale: 'en_US',
+    images: [{ url: `${BASE_URL}/og-image.png`, width: 1200, height: 630, alt: 'InfoWebWorld FAQs' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FAQs — InfoWebWorld',
+    description: 'Listings, plans, reviews, SEO backlinks, account & data — answered.',
+    images: [`${BASE_URL}/og-image.png`],
+  },
+  robots: {
+    index: true, follow: true,
+    googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1, 'max-video-preview': -1 },
+  },
 }
 
 export default function FAQsPage() {
@@ -69,16 +101,16 @@ export default function FAQsPage() {
       kicker="Support"
       title="Frequently Asked Questions"
       subtitle="The questions we hear most — answered directly. If you can't find what you're looking for, drop us a line."
-      about={['Business listings', 'Plans and pricing', 'Verified reviews', 'SEO and backlinks', 'Account management']}
+      webPageType={['WebPage', 'FAQPage']}
+      about={['Business listings', 'Plans and pricing', 'Verified reviews', 'SEO and backlinks', 'Account management', 'Refund policy']}
+      mentions={['PayPal', 'Google OAuth', 'Dofollow backlink', 'Nofollow link', 'Domain authority', '14-day refund window']}
+      schemaKeywords={['FAQ', 'listings', 'plans', 'reviews', 'SEO', 'backlinks', 'account']}
+      extraGraph={[faqJsonLd]}
       cta={{
         label: 'Ask a Question',
         href: '/contact',
       }}
     >
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
       {faqs.map(group => (
         <IPSection key={group.section} title={group.section}>
           {group.items.map(item => (

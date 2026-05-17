@@ -2,11 +2,18 @@ import { headers } from 'next/headers'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import Link from 'next/link'
+import {
+  BASE_URL, ID_ORG, ID_WEBSITE, ID_LOGO,
+  organizationNode, brandNode, websiteNode,
+  breadcrumbNode, toISO,
+} from './seo-schema'
 
 /**
  * Shared page shell for informational pages (About, Legal, Help, etc.).
  * Compact white/black Inter design matching /terms and /about.
- * Auto-injects BreadcrumbList + WebPage JSON-LD using the current pathname.
+ * Emits a single JSON-LD @graph with Organization + WebSite + WebPage
+ * + BreadcrumbList. Page-specific entities (FAQPage, Service, Article,
+ * ItemList, HowTo, Person[]) merge in via the `extraGraph` prop.
  */
 
 interface CTAProps {
@@ -24,15 +31,25 @@ interface Props {
   variant?: 'default' | 'legal' | 'coming-soon'
   /** Extra <Thing> entities for the WebPage's about[] field — boosts AEO entity binding */
   about?: string[]
+  /** Additional entities the page mentions (sparser semantic signal vs about[]) */
+  mentions?: string[]
+  /** Multi-type WebPage — e.g. ['WebPage','FAQPage'] or ['WebPage','AboutPage']. */
+  webPageType?: string | string[]
+  /** Extra graph nodes (Service, Article, FAQPage, ItemList, etc.) merged into the same @graph. */
+  extraGraph?: Array<Record<string, unknown>>
+  /** Long-tail + short-tail keywords attached to WebPage.keywords. */
+  schemaKeywords?: string[]
+  /** Override the page's primary image (defaults to og-image.png). */
+  primaryImage?: { url: string; width?: number; height?: number; caption?: string }
   children?: React.ReactNode
 }
 
-const BASE_URL = 'https://infowebworld.com'
-
 export default async function InfoPageShell({
-  kicker, title, subtitle, updated, cta, variant = 'default', about, children,
+  kicker, title, subtitle, updated, cta, variant = 'default',
+  about, mentions, webPageType = 'WebPage', extraGraph,
+  schemaKeywords, primaryImage, children,
 }: Props) {
-  /* Derive the current path from request headers (set by Next.js / middleware).
+  /* Derive the current path from request headers (set by middleware).
      Falls back to '/' if unavailable so JSON-LD still renders. */
   const h = await headers()
   const pathname =
@@ -44,52 +61,75 @@ export default async function InfoPageShell({
 
   const ID_BREADCRUMB = `${pageUrl}#breadcrumb`
   const ID_WEBPAGE    = `${pageUrl}#webpage`
-  const ID_WEBSITE    = `${BASE_URL}/#website`
-  const ID_ORG        = `${BASE_URL}/#organization`
+  const ID_PRIMARY    = `${pageUrl}#primaryimage`
+
+  const dateModified = toISO(updated)
 
   const breadcrumbItems = [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
-    ...(kicker ? [{ '@type': 'ListItem', position: 2, name: kicker, item: pageUrl }] : []),
-    { '@type': 'ListItem', position: kicker ? 3 : 2, name: title, item: pageUrl },
+    { name: 'Home', url: BASE_URL },
+    ...(kicker ? [{ name: kicker, url: pageUrl }] : []),
+    { name: title, url: pageUrl },
   ]
+
+  const img = primaryImage ?? {
+    url: `${BASE_URL}/og-image.png`,
+    width: 1200,
+    height: 630,
+    caption: `${title} — InfoWebWorld`,
+  }
+
+  const webPageNode: Record<string, unknown> = {
+    '@type': webPageType,
+    '@id': ID_WEBPAGE,
+    url: pageUrl,
+    name: `${title} — InfoWebWorld`,
+    headline: title,
+    description: subtitle,
+    inLanguage: 'en-US',
+    isPartOf: { '@id': ID_WEBSITE },
+    breadcrumb: { '@id': ID_BREADCRUMB },
+    primaryImageOfPage: {
+      '@type': 'ImageObject',
+      '@id': ID_PRIMARY,
+      url: img.url,
+      ...(img.width ? { width: img.width } : {}),
+      ...(img.height ? { height: img.height } : {}),
+      ...(img.caption ? { caption: img.caption } : {}),
+    },
+    publisher: { '@id': ID_ORG },
+    about: (about ?? []).map(name => ({ '@type': 'Thing', name })),
+    ...(mentions && mentions.length
+      ? { mentions: mentions.map(name => ({ '@type': 'Thing', name })) }
+      : {}),
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['.ip-title', '.ip-sub', '.ip-h2'],
+    },
+    ...(dateModified ? { dateModified, datePublished: dateModified } : {}),
+    ...(schemaKeywords && schemaKeywords.length
+      ? { keywords: schemaKeywords.join(', ') }
+      : {}),
+    ...(cta
+      ? {
+          significantLink: cta.href.startsWith('http') ? cta.href : `${BASE_URL}${cta.href}`,
+          potentialAction: {
+            '@type': cta.href === '/contact' ? 'ContactAction' : 'ConsumeAction',
+            name: cta.label,
+            target: cta.href.startsWith('http') ? cta.href : `${BASE_URL}${cta.href}`,
+          },
+        }
+      : {}),
+  }
 
   const jsonLdGraph = {
     '@context': 'https://schema.org',
     '@graph': [
-      {
-        '@type': 'BreadcrumbList',
-        '@id': ID_BREADCRUMB,
-        itemListElement: breadcrumbItems,
-      },
-      {
-        '@type': 'WebPage',
-        '@id': ID_WEBPAGE,
-        url: pageUrl,
-        name: `${title} — InfoWebWorld`,
-        headline: title,
-        description: subtitle,
-        inLanguage: 'en-US',
-        isPartOf: { '@id': ID_WEBSITE, '@type': 'WebSite', name: 'InfoWebWorld', url: BASE_URL },
-        breadcrumb: { '@id': ID_BREADCRUMB },
-        primaryImageOfPage: {
-          '@type': 'ImageObject',
-          url: `${BASE_URL}/og-image.png`,
-          width: 1200, height: 630,
-        },
-        publisher: {
-          '@type': 'Organization',
-          '@id': ID_ORG,
-          name: 'InfoWebWorld',
-          legalName: 'Brain Stream Australia Pty Ltd',
-          url: BASE_URL,
-          logo: `${BASE_URL}/logo/infowebworldlogo-logoforlightbackgrounds.png`,
-        },
-        about: (about ?? []).map(name => ({ '@type': 'Thing', name })),
-        speakable: {
-          '@type': 'SpeakableSpecification',
-          cssSelector: ['.ip-title', '.ip-sub', '.ip-h2'],
-        },
-      },
+      organizationNode,
+      brandNode,
+      websiteNode,
+      breadcrumbNode(breadcrumbItems, ID_BREADCRUMB),
+      webPageNode,
+      ...(extraGraph ?? []),
     ],
   }
 
@@ -102,23 +142,41 @@ export default async function InfoPageShell({
 
       <Navbar />
 
-      <main className={`ip ip--${variant}`} id="top">
+      <main className={`ip ip--${variant}`} id="top" itemScope itemType="https://schema.org/WebPage">
+        <meta itemProp="inLanguage" content="en-US" />
+        <link itemProp="primaryImageOfPage" href={img.url} />
         <header className="ip-hero">
-          <nav className="ip-crumb" aria-label="Breadcrumb">
-            <a href="/">Home</a>
+          <nav className="ip-crumb" aria-label="Breadcrumb" itemScope itemType="https://schema.org/BreadcrumbList">
+            <a href="/" itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+              <span itemProp="name">Home</span>
+              <meta itemProp="position" content="1" />
+              <meta itemProp="item" content={BASE_URL} />
+            </a>
             <span className="ip-crumb-sep" aria-hidden="true">/</span>
             {kicker && (
               <>
-                <span>{kicker}</span>
+                <span itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+                  <span itemProp="name">{kicker}</span>
+                  <meta itemProp="position" content="2" />
+                  <meta itemProp="item" content={pageUrl} />
+                </span>
                 <span className="ip-crumb-sep" aria-hidden="true">/</span>
               </>
             )}
-            <span className="ip-crumb-current">{title}</span>
+            <span className="ip-crumb-current" itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+              <span itemProp="name">{title}</span>
+              <meta itemProp="position" content={String(kicker ? 3 : 2)} />
+              <meta itemProp="item" content={pageUrl} />
+            </span>
           </nav>
           {kicker && <span className="ip-kicker">{kicker}</span>}
-          <h1 className="ip-title">{title}</h1>
-          {subtitle && <p className="ip-sub">{subtitle}</p>}
-          {updated && <span className="ip-updated">Last updated {updated}</span>}
+          <h1 className="ip-title" itemProp="headline">{title}</h1>
+          {subtitle && <p className="ip-sub" itemProp="description">{subtitle}</p>}
+          {updated && (
+            <span className="ip-updated">
+              Last updated <time dateTime={dateModified} itemProp="dateModified">{updated}</time>
+            </span>
+          )}
           {variant === 'coming-soon' && (
             <span className="ip-soon-badge">
               <span className="ip-soon-dot" aria-hidden="true" />

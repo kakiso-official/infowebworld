@@ -1,11 +1,8 @@
 import type { Metadata } from 'next'
 import InfoPageShell, { IPSection, IPTOC } from '../components/InfoPageShell'
+import { faqNode, articleNode, BASE_URL } from '../components/seo-schema'
 
-export const metadata: Metadata = {
-  title: 'Privacy Policy — InfoWebWorld',
-  description: 'How InfoWebWorld collects, uses, stores, and protects your personal data. Our commitment to privacy and your rights under GDPR, CCPA, and the Australian Privacy Act.',
-  alternates: { canonical: 'https://infowebworld.com/privacy' },
-}
+const URL = `${BASE_URL}/privacy`
 
 const toc = [
   { id: 'scope',        label: 'Scope' },
@@ -22,6 +19,109 @@ const toc = [
   { id: 'contact',      label: 'Contact' },
 ]
 
+const faqs = [
+  {
+    q: 'Does InfoWebWorld sell my personal data?',
+    a: 'No. InfoWebWorld does not sell personal data. We share it only with service providers (hosting, email delivery, payments, analytics) under strict data-processing agreements, when required by law, or during a corporate transaction with continuity of privacy commitments.',
+  },
+  {
+    q: 'What rights do I have under GDPR over my InfoWebWorld data?',
+    a: 'Depending on your jurisdiction, you may have the right to access, correct, delete, restrict or object to processing, port your data, withdraw consent for marketing, and lodge a complaint with your local data protection authority.',
+  },
+  {
+    q: 'How long does InfoWebWorld retain my personal data?',
+    a: 'We retain personal data for as long as your account is active, or as needed to provide the Service, comply with legal obligations, resolve disputes, and enforce agreements. You may request deletion at any time except where we are legally required to retain data.',
+  },
+  {
+    q: 'Where does InfoWebWorld store my data?',
+    a: 'InfoWebWorld is operated from Australia, with infrastructure in the US, EU, and Asia-Pacific. We apply standard contractual clauses and equivalent safeguards for cross-border transfers of EU and UK personal data.',
+  },
+  {
+    q: 'How do I delete my InfoWebWorld account and all data?',
+    a: 'Contact support via the contact page with [DELETE] in the subject line. We confirm identity, delete personal data within 30 days, and retain only what is legally required.',
+  },
+  {
+    q: 'Does InfoWebWorld collect data from children under 18?',
+    a: 'No. InfoWebWorld is not intended for users under 18 and we do not knowingly collect data from children. If you believe we have, contact support and we will delete it promptly.',
+  },
+]
+
+const articleJsonLd = articleNode({
+  id: `${URL}#article`,
+  headline: 'Privacy Policy — How InfoWebWorld Collects, Uses, and Protects Your Data',
+  description:
+    'InfoWebWorld Privacy Policy covering data collection, use, sharing, cookies, security, retention, GDPR/CCPA/Australian Privacy Act rights, international transfers, and children.',
+  pageUrl: URL,
+  datePublished: '2026-04-21',
+  dateModified: '2026-05-17',
+  articleSection: 'Legal',
+  wordCount: 1100,
+  about: ['Privacy policy', 'Data protection', 'GDPR', 'CCPA', 'Australian Privacy Act', 'Personal data'],
+  keywords: ['privacy policy', 'GDPR rights', 'data deletion', 'data security', 'international transfer'],
+})
+
+const privacyPolicyJsonLd = {
+  '@type': ['WebPage', 'PrivacyPolicy'],
+  '@id': `${URL}#policy`,
+  name: 'InfoWebWorld Privacy Policy',
+  description:
+    'Full privacy policy covering data collection, use, sharing, cookies, security, retention, rights, international transfers, children, and contact information.',
+  inLanguage: 'en-US',
+  url: URL,
+  dateModified: '2026-05-17',
+  hasPart: toc.map(t => ({
+    '@type': 'WebPageElement',
+    name: t.label,
+    url: `${URL}#${t.id}`,
+    cssSelector: `#${t.id}`,
+  })),
+}
+
+const faqJsonLd = faqNode(faqs, `${URL}#faq`, `${URL}#webpage`)
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy — GDPR · CCPA · Australian Privacy Act | InfoWebWorld',
+  description:
+    'How InfoWebWorld collects, uses, stores, and protects your personal data. Compliant with GDPR, CCPA / CPRA, and the Australian Privacy Act. We do not sell your data.',
+  keywords: [
+    'privacy policy',
+    'business directory privacy policy',
+    'GDPR compliant privacy policy',
+    'CCPA privacy policy',
+    'CPRA privacy policy',
+    'Australian Privacy Act compliance',
+    'data subject rights',
+    'data deletion request',
+    'right to be forgotten',
+    'cross-border data transfer',
+    'data retention policy',
+    'do not sell personal data',
+    'cookies and tracking privacy',
+    'OAuth privacy policy',
+    'PayPal data sharing privacy',
+  ],
+  alternates: { canonical: URL },
+  openGraph: {
+    title: 'Privacy Policy — InfoWebWorld',
+    description: 'GDPR · CCPA · Australian Privacy Act compliant. We do not sell your data.',
+    url: URL,
+    siteName: 'InfoWebWorld',
+    type: 'article',
+    locale: 'en_US',
+    images: [{ url: `${BASE_URL}/og-image.png`, width: 1200, height: 630, alt: 'InfoWebWorld Privacy Policy' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Privacy Policy — InfoWebWorld',
+    description: 'GDPR · CCPA · Australian Privacy Act compliant.',
+    images: [`${BASE_URL}/og-image.png`],
+  },
+  robots: {
+    index: true, follow: true,
+    googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1, 'max-video-preview': -1 },
+  },
+}
+
 export default function PrivacyPage() {
   return (
     <InfoPageShell
@@ -30,13 +130,25 @@ export default function PrivacyPage() {
       subtitle="We respect your privacy. This policy describes what data we collect, how we use it, and the rights you have over it."
       updated="April 21, 2026"
       variant="legal"
+      webPageType={['WebPage', 'FAQPage']}
+      about={[
+        'Privacy policy',
+        'GDPR compliance',
+        'CCPA compliance',
+        'Australian Privacy Act',
+        'Data subject rights',
+        'Data security',
+      ]}
+      mentions={['GDPR', 'CCPA', 'CPRA', 'Australian Privacy Act', 'Standard contractual clauses', 'Google Analytics', 'PayPal']}
+      schemaKeywords={['privacy policy', 'GDPR', 'CCPA', 'data deletion', 'data security']}
+      extraGraph={[articleJsonLd, privacyPolicyJsonLd, faqJsonLd]}
     >
       <IPTOC items={toc} />
 
       <IPSection id="scope" title="1. Scope">
         <p>
           This Privacy Policy applies to <strong>InfoWebWorld.com</strong>, operated by
-          Brain Stream Australia Pty Ltd ("we", "us", "our"). It covers personal data
+          Brain Stream Australia Pty Ltd (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;). It covers personal data
           we process in connection with the Site and Services.
         </p>
       </IPSection>
@@ -56,7 +168,7 @@ export default function PrivacyPage() {
           </li>
           <li>
             <strong>Information from third parties:</strong> OAuth profiles (Google and
-            others you've authorized), payment processors (PayPal), and analytics
+            others you&apos;ve authorized), payment processors (PayPal), and analytics
             providers (Google Analytics).
           </li>
         </ul>
@@ -70,7 +182,7 @@ export default function PrivacyPage() {
           <li>Improve search, discovery, and recommendations.</li>
           <li>Detect fraud, spam, and abuse.</li>
           <li>Send service emails (verification codes, receipts, notifications).</li>
-          <li>Send marketing emails — only if you've opted in; you can unsubscribe at any time.</li>
+          <li>Send marketing emails — only if you&apos;ve opted in; you can unsubscribe at any time.</li>
           <li>Comply with legal obligations.</li>
         </ul>
       </IPSection>
@@ -104,8 +216,8 @@ export default function PrivacyPage() {
         <p>
           We retain personal data for as long as your account is active, or as needed to
           provide the Service, comply with legal obligations, resolve disputes, and
-          enforce agreements. You may request deletion at any time (see "Your Rights"
-          below) except where we're legally required to retain data.
+          enforce agreements. You may request deletion at any time (see &quot;Your Rights&quot;
+          below) except where we&apos;re legally required to retain data.
         </p>
       </IPSection>
 
@@ -157,6 +269,15 @@ export default function PrivacyPage() {
           write to the Privacy Officer, Brain Stream Australia Pty Ltd, Parramatta,
           NSW 2150, Australia.
         </p>
+      </IPSection>
+
+      <IPSection title="Privacy FAQ">
+        {faqs.map(({ q, a }) => (
+          <details key={q} className="ip-faq">
+            <summary>{q}</summary>
+            <div className="ip-faq-body">{a}</div>
+          </details>
+        ))}
       </IPSection>
     </InfoPageShell>
   )
