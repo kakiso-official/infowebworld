@@ -13,6 +13,10 @@ InfoWebWorld is a human-curated directory and discovery engine. Every listing is
 - [Insights](https://infowebworld.com/insights): Research on AI search trends, quarterly category reports, listing playbooks.
 - [Contact](https://infowebworld.com/contact): Get in touch with the team.
 
+## Browse the directory
+
+- [All Categories](https://infowebworld.com/categories): The complete InfoWebWorld taxonomy — 6 sectors, 211 categories, 13,843 subcategories. Search by keyword, browse by sector, drill into any subcategory to find verified businesses.
+
 ## For businesses
 
 - [Get listed](https://infowebworld.com/business): How to submit a business for verified listing on the global discovery platform.

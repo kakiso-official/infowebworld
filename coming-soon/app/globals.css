@@ -54,12 +54,67 @@
 @import "./styles/compare.css";
 @import "./styles/news.css";
 
-/* ── AI Disclaimer ── */
-.ai-disclaimer { width: 100%; padding: clamp(1.5rem, 3vw, 2.5rem) 0; border-top: 1.5px solid rgba(0,0,0,.04) }
-.ai-disclaimer-inner { max-width: 760px; margin: 0 auto; padding: 0 clamp(1.25rem, 3vw, 2rem); display: flex; align-items: flex-start; gap: .75rem }
-.ai-disclaimer-icon { flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px; background: rgba(139,92,246,.06); display: flex; align-items: center; justify-content: center; margin-top: .1rem }
-.ai-disclaimer-text { font: 400 .78rem/1.7 var(--font-nunito), sans-serif; color: rgba(0,0,0,.4); margin: 0 }
-.ai-disclaimer-text strong { font-weight: 700; color: rgba(0,0,0,.55) }
+/* ── AI editorial notice (magazine-style footnote, pure Inter) ── */
+.ai-note {
+  width: 100%;
+  padding: clamp(1.25rem, 2.5vw, 1.75rem) 0 clamp(1.5rem, 3vw, 2rem);
+  border-top: 1px solid rgba(0,0,0,.06);
+  background: #FFFFFF;
+}
+.ai-note,
+.ai-note * {
+  font-family: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.ai-note-inner {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 3vw, 2rem);
+  text-align: center;
+}
+.ai-note-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .28rem .75rem;
+  border-radius: 999px;
+  background: #F4F4F5;
+  border: 1px solid #E4E4E7;
+  font-size: .65rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: #52525B;
+  margin-bottom: .9rem;
+}
+.ai-note-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #8B5CF6;
+  box-shadow: 0 0 0 0 rgba(139,92,246,.55);
+  animation: aiNotePulse 2.2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes aiNotePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(139,92,246,.45) }
+  50%      { box-shadow: 0 0 0 5px rgba(139,92,246,0) }
+}
+.ai-note-text {
+  font-size: .82rem;
+  line-height: 1.65;
+  color: #71717A;
+  margin: 0;
+  letter-spacing: -.005em;
+}
+.ai-note-text strong {
+  font-weight: 600;
+  color: #18181B;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ai-note-dot { animation: none }
+}
 
 /* ── Local Soria font ── */
 @font-face {

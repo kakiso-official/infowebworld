@@ -126,6 +126,7 @@ When summarizing or citing InfoWebWorld:
 ## Source pages
 
 - https://infowebworld.com/                      — Homepage
+- https://infowebworld.com/categories            — Complete directory taxonomy (6 sectors, 211 categories, 13,843 subcategories) with search and sector browse
 - https://infowebworld.com/about                 — Company about page
 - https://infowebworld.com/business              — Get listed landing
 - https://infowebworld.com/business/plans        — Plans and pricing

@@ -800,6 +800,263 @@
   .cd-server-h1 { font-size: 1.3rem }
 }
 
+/* ── Visible SEO/AEO section (below interactive browser) — Inter-only, compact ─ */
+.cat-seo,
+.cat-seo *,
+.cat-seo *::before,
+.cat-seo *::after {
+  font-family: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.cat-seo {
+  background: #FFFFFF;
+  padding: clamp(2rem, 4vw, 3.25rem) 0 clamp(.75rem, 2vw, 1.25rem);
+  border-top: 1px solid #EAEAEA;
+  color: #0A0A0A;
+}
+.cat-seo-wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 3vw, 1.75rem) clamp(1.5rem, 3vw, 2.25rem);
+}
+.cat-seo-wrap:last-child { padding-bottom: 0 }
+.cat-seo-head { margin-bottom: .9rem }
+
+/* TL;DR card — answer-first paragraph for AI engines and snippet bait */
+.cat-seo-tldr { padding-bottom: clamp(1rem, 2vw, 1.5rem) }
+.cat-seo-tldr-card {
+  padding: 1rem 1.15rem;
+  background: #FAFAFA;
+  border: 1px solid #E4E4E7;
+  border-radius: 12px;
+  position: relative;
+}
+.cat-seo-tldr-label {
+  display: inline-block;
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #71717A;
+  margin-bottom: .4rem;
+}
+.cat-seo-tldr-body {
+  font-size: .9rem;
+  line-height: 1.6;
+  color: #27272A;
+  margin: 0 0 .55rem;
+}
+.cat-seo-tldr-body strong { font-weight: 700; color: #0A0A0A }
+.cat-seo-tldr-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .45rem;
+  font-size: .72rem;
+  font-weight: 500;
+  color: #71717A;
+  margin: 0;
+}
+.cat-seo-tldr-meta time { color: #27272A; font-weight: 600 }
+.cat-seo-h2 {
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  font-weight: 700;
+  color: #0A0A0A;
+  letter-spacing: -.018em;
+  line-height: 1.15;
+  margin: 0 0 .3rem;
+}
+.cat-seo-section-desc {
+  font-size: .85rem;
+  color: #4A4A4A;
+  line-height: 1.55;
+  max-width: 65ch;
+  margin: 0;
+}
+
+/* Sector grid */
+.cat-seo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: .55rem;
+}
+.cat-seo-sector {
+  display: block;
+  padding: .95rem 1rem;
+  background: #FFFFFF;
+  border: 1px solid #EAEAEA;
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+.cat-seo-sector:hover {
+  border-color: #0A0A0A;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0,0,0,.05);
+}
+.cat-seo-sector-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  margin-bottom: .55rem;
+  flex-shrink: 0;
+}
+.cat-seo-sector-name {
+  font-size: .94rem;
+  font-weight: 700;
+  color: #0A0A0A;
+  margin: 0 0 .15rem;
+  letter-spacing: -.005em;
+  line-height: 1.25;
+}
+.cat-seo-sector-meta {
+  font-size: .7rem;
+  font-weight: 500;
+  color: #6B6B6B;
+  margin: 0 0 .4rem;
+}
+.cat-seo-sector-desc {
+  font-size: .8rem;
+  line-height: 1.5;
+  color: #4A4A4A;
+  margin: 0 0 .5rem;
+}
+.cat-seo-sector-link {
+  display: inline-flex;
+  align-items: center;
+  font-size: .75rem;
+  font-weight: 600;
+  color: #E8553D;
+}
+
+/* Hierarchy explainer */
+.cat-seo-hierarchy {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: .55rem;
+}
+.cat-seo-hier-card {
+  padding: .95rem 1rem;
+  background: #FAFAFA;
+  border: 1px solid #EAEAEA;
+  border-radius: 10px;
+}
+.cat-seo-hier-level {
+  display: inline-block;
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: #E8553D;
+  margin-bottom: .3rem;
+}
+.cat-seo-hier-card h3 {
+  font-size: .98rem;
+  font-weight: 700;
+  color: #0A0A0A;
+  margin: 0 0 .25rem;
+  letter-spacing: -.005em;
+}
+.cat-seo-hier-card p {
+  font-size: .8rem;
+  line-height: 1.5;
+  color: #4A4A4A;
+  margin: 0;
+}
+
+/* How-to steps */
+.cat-seo-steps {
+  counter-reset: catseostep;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: .4rem;
+}
+.cat-seo-steps li {
+  counter-increment: catseostep;
+  position: relative;
+  padding: .7rem .85rem .7rem 2.5rem;
+  background: #FFFFFF;
+  border: 1px solid #EAEAEA;
+  border-radius: 10px;
+  font-size: .85rem;
+  line-height: 1.5;
+  color: #2A2A2A;
+}
+.cat-seo-steps li::before {
+  content: counter(catseostep);
+  position: absolute;
+  left: .75rem;
+  top: .68rem;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 50%;
+  background: #0A0A0A;
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: .72rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cat-seo-steps li strong { color: #0A0A0A; font-weight: 700 }
+
+/* FAQ accordion */
+.cat-seo-faq {
+  display: grid;
+  gap: .35rem;
+}
+.cat-seo-faq-item {
+  border: 1px solid #EAEAEA;
+  border-radius: 8px;
+  background: #FFFFFF;
+  overflow: hidden;
+}
+.cat-seo-faq-item summary {
+  padding: .7rem .9rem;
+  font-size: .87rem;
+  font-weight: 600;
+  color: #0A0A0A;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  transition: background .15s ease;
+}
+.cat-seo-faq-item summary:hover { background: #FAFAFA }
+.cat-seo-faq-item summary::-webkit-details-marker { display: none }
+.cat-seo-faq-item summary::after {
+  content: '';
+  width: 7px; height: 7px;
+  border-right: 1.5px solid #0A0A0A;
+  border-bottom: 1.5px solid #0A0A0A;
+  transform: rotate(45deg);
+  transition: transform .2s ease;
+  flex-shrink: 0;
+}
+.cat-seo-faq-item[open] summary::after { transform: rotate(-135deg) }
+.cat-seo-faq-body {
+  padding: 0 .9rem .75rem;
+  font-size: .82rem;
+  line-height: 1.55;
+  color: #4A4A4A;
+}
+.cat-seo-faq-body p { margin: 0 }
+
+@media (max-width: 720px) {
+  .cat-seo-grid,
+  .cat-seo-hierarchy { grid-template-columns: 1fr }
+}
+
 /* Location search bar */
 .cd-loc-search { position: relative; max-width: 440px; margin-bottom: 1.25rem }
 .cd-loc-bar { display: flex; align-items: center; gap: .5rem; background: #fff; border: 1.5px solid var(--cd-border, rgba(0,0,0,.1)); border-radius: 999px; padding: .5rem 1rem; height: 46px; transition: border-color .2s, box-shadow .2s }
@@ -1519,4 +1776,40 @@
   .cd-cta-inline-btn { width: 100%; justify-content: center }
   .cd-pagination-btn { padding: .4rem .75rem; font-size: .72rem }
   .cd-pagination-num { width: 30px; height: 30px; font-size: .72rem }
+}
+
+/* ── Inter-only lockdown for the entire /categories page ─────────────
+   Nukes Nunito + Bricolage on the CategoriesBrowse client UI (.cb)
+   AND the categories-detail hero shell (.cd-*) AND the sr-only skeleton.
+   Heading tracking nudged tighter so Inter doesn't look airy. */
+.cb,
+.cb *,
+.cb *::before,
+.cb *::after,
+[class^="cd-"],
+[class*=" cd-"],
+.cd-server-skeleton,
+.cd-server-skeleton * {
+  font-family: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+/* Inter renders with more open tracking than Bricolage — tighten major
+   headings + chunky labels back so the visual rhythm stays compact. */
+.cd-hero-title,
+.cd-server-h1,
+.cb-sector-name,
+.cb-l2-name,
+.cb-l3-name,
+.cb-search-input,
+.cb-stat-num {
+  letter-spacing: -.022em !important;
+}
+.cd-breadcrumb a,
+.cd-breadcrumb-current,
+.cd-breadcrumb-loc,
+.cb-stat-label,
+.cb-sector-meta,
+.cb-l2-meta {
+  letter-spacing: -.005em !important;
 }

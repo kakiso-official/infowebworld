@@ -20,6 +20,7 @@ Allow: /team$
 Allow: /team/past$
 Allow: /insights$
 Allow: /write-review$
+Allow: /categories$
 Allow: /llms.txt$
 Allow: /llms-full.txt$
 Disallow: /contact
@@ -27,7 +28,7 @@ Disallow: /iww-hq/
 Disallow: /api/
 Disallow: /payment-test/
 Disallow: /category/
-Disallow: /categories/
+Disallow: /categories/*
 Disallow: /blog/
 Disallow: /company/
 Disallow: /listing/

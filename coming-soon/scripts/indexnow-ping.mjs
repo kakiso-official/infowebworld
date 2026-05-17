@@ -19,7 +19,7 @@ const KEY_LOCATION = `https://${HOST}/${KEY}.txt`
 const ENDPOINT = 'https://api.indexnow.org/indexnow'
 
 const DEFAULT_PATHS = [
-  '/', '/business', '/business/plans',
+  '/', '/business', '/business/plans', '/categories',
   '/about', '/terms', '/privacy', '/cookies', '/content-guidelines', '/do-not-sell',
   '/faqs', '/help', '/glossary', '/category-guides', '/removals',
   '/agencies', '/affiliates', '/media', '/team', '/team/past', '/insights', '/write-review',

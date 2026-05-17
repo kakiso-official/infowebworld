@@ -6,6 +6,7 @@ const INDEXABLE_PATHS = new Set([
   '', '/',
   '/business',
   '/business/plans',
+  '/categories',
   '/about',
   '/terms',
   '/privacy',
