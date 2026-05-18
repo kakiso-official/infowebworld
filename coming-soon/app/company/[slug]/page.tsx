@@ -5,6 +5,7 @@ import { query, queryOne } from '@/lib/db'
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import ListingDetailPage from '../../listing/ListingDetailPage'
+import { CATEGORIES } from '../../config/categories-data'
 
 /* ─── Static-only config ──────────────────────────────────────────────
    Fully pre-built at deploy time, exactly like /categories. Every
@@ -219,6 +220,58 @@ async function getListingBySlug(slug: string) {
     }
   }
 
+  /* Related categories — derived from the static taxonomy, zero DB cost.
+     Strategy:
+       1) Same parent_id (true siblings of the listing's L3 category).
+       2) If <12, broaden to "cousins": L3s whose parent is a sibling of the
+          listing's parent — i.e. share a grandparent.
+       3) Sorted by listing_count desc so populated categories surface first.
+     Returns [{ name, slug, sectorSlug, color }] with sectorSlug used to build
+     the canonical /{sector}/{slug} URL on the listing page. */
+  type RelatedCat = { name: string; slug: string; sectorSlug: string; color: string }
+  let relatedCategories: RelatedCat[] = []
+  if (listing.category_id) {
+    const myCat = CATEGORIES.find(c => c.id === listing.category_id)
+    if (myCat) {
+      const candidates = CATEGORIES.filter(c =>
+        c.parent_id === myCat.parent_id &&
+        c.id !== myCat.id &&
+        c.level === myCat.level
+      )
+      if (candidates.length < 12 && myCat.parent_id != null) {
+        const myParent = CATEGORIES.find(c => c.id === myCat.parent_id)
+        if (myParent?.parent_id != null) {
+          const auntsAndUncles = new Set(
+            CATEGORIES
+              .filter(c => c.parent_id === myParent.parent_id && c.id !== myParent.id)
+              .map(c => c.id)
+          )
+          const have = new Set(candidates.map(c => c.id))
+          const cousins = CATEGORIES.filter(c =>
+            c.parent_id != null && auntsAndUncles.has(c.parent_id) &&
+            c.level === myCat.level &&
+            !have.has(c.id)
+          )
+          for (const c of cousins) {
+            if (candidates.length >= 12) break
+            candidates.push(c)
+            have.add(c.id)
+          }
+        }
+      }
+      candidates.sort((a, b) => {
+        if (b.listing_count !== a.listing_count) return b.listing_count - a.listing_count
+        return a.name.localeCompare(b.name)
+      })
+      relatedCategories = candidates.slice(0, 12).map(c => ({
+        name: c.name,
+        slug: c.slug,
+        sectorSlug: c.sector_slug || '',
+        color: c.color,
+      }))
+    }
+  }
+
   /* Engagement counts — three aggregate queries. Cheap. */
   const followsRow = await queryOne<{ c: number }>(
     'SELECT COUNT(*) AS c FROM listing_follows WHERE listing_id = ?',
@@ -263,6 +316,7 @@ async function getListingBySlug(slug: string) {
     parentCompany,
     breadcrumb: crumbs,
     related: related as Record<string, unknown>[],
+    relatedCategories,
     siblings,
     engagement: {
       followers: Number(followsRow?.c || 0),
@@ -577,6 +631,7 @@ export default async function CompanyPage({
     parentCompany: data.parentCompany,
     breadcrumb: data.breadcrumb,
     related: data.related,
+    relatedCategories: data.relatedCategories,
     siblings: data.siblings,
     engagement: data.engagement,
     reviews: data.reviews,

@@ -27,7 +27,7 @@ const FOUNDED_ISO      = '2026-01-01'
    ──────────────────────────────────────────── */
 export const metadata: Metadata = {
   metadataBase: new URL('https://infowebworld.com'),
-  title: 'About InfoWebWorld — Global Business Discovery Platform | Verified Listings · Reviews · AI Visibility',
+  title: 'About InfoWebWorld — Our Story, Mission & Global Business Discovery Platform',
   description:
     'InfoWebWorld is the global business discovery platform for verified listings, real reviews, dofollow backlinks, and AI-era visibility — built by Brain Stream Australia (Parramatta, NSW), covering 80+ industries across 12+ countries.',
   keywords: [
@@ -260,8 +260,9 @@ const jsonLdGraph = {
       '@id': ID_WEBPAGE,
       url: URL_PAGE,
       name: 'About InfoWebWorld — Global Business Discovery Platform',
+      alternateName: 'About InfoWebWorld',
       headline: 'About InfoWebWorld — Built for the AI era of business discovery',
-      alternativeHeadline: 'Verified listings, real reviews, AI-era visibility',
+      alternativeHeadline: 'About InfoWebWorld — our story, mission, and the team behind the platform',
       description: 'InfoWebWorld is the global growth platform for verified business discovery, built by Brain Stream Australia for the AI era of search.',
       inLanguage: 'en-US',
       isPartOf: { '@id': ID_WEBSITE },

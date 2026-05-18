@@ -51,6 +51,10 @@ interface InitialData {
   parentCompany?: { name: string; slug: string; logo_url: string | null } | null
   breadcrumb: { name: string; slug: string }[]
   related: Record<string, unknown>[]
+  /** Sibling/cousin categories derived from the static taxonomy on the
+   *  server. Each entry resolves to a /{sectorSlug}/{slug} URL. Falls back
+   *  to the hardcoded RELATED_CATS sample in preview mode only. */
+  relatedCategories?: { name: string; slug: string; sectorSlug: string; color: string }[]
   siblings?: Record<string, unknown>[]
   engagement?: EngagementCounts
   reviews?: { avgRating: number; reviewCount: number; recent: Record<string, unknown>[] }
@@ -933,6 +937,7 @@ function UserSilhouette() {
   )
 }
 
+
 function FolderIcon() {
   return (
     <svg viewBox="0 0 48 48" width="28" height="28" aria-hidden="true">
@@ -1272,6 +1277,21 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
    *  quotes, FAQ answers, etc. read with the real company name when one is set. */
   const swap = (s: string): string => s.split('Mailchimp').join(companyName)
 
+  /** Helper: render `text` with substrings matching `query` wrapped in <mark>
+   *  for visible highlight. Case-insensitive. Returns the plain string when
+   *  the query is empty so no-op renders stay cheap. */
+  const highlightMatch = (text: string, query: string): React.ReactNode => {
+    const q = query.trim()
+    if (!q) return text
+    const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const parts = String(text).split(new RegExp(`(${escaped})`, 'gi'))
+    return parts.map((part, i) =>
+      i % 2 === 1
+        ? <mark key={i} className="tlp-af-hl">{part}</mark>
+        : <span key={i}>{part}</span>
+    )
+  }
+
   const [featureQ, setFeatureQ] = useState('')
   const [integrationQ, setIntegrationQ] = useState('')
   const [openFaq, setOpenFaq] = useState<number | null>(0)
@@ -1604,17 +1624,20 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
     return () => observer.disconnect()
   }, [])
 
-  const filteredFeatures = useMemo(() => {
-    /* Real listings: use submitter-supplied features (rating/count zero, hidden).
-       No realFeatures + not preview → empty list (an empty-state renders below).
-       Preview mode falls back to the rich sample matrix so design preview stays full. */
-    const base: [string, number, number][] = view.realFeatures
+  /* Base list of every feature for this listing — exposed separately from the
+     filtered view so the title can show "X of Y" + the search bar stays
+     visible even when the active query reduces matches to 0. */
+  const allFeatures = useMemo<[string, number, number][]>(() => {
+    return view.realFeatures
       ? view.realFeatures.map(name => [name, 0, 0] as [string, number, number])
       : (isPreview ? ALL_FEATURES : [])
+  }, [view.realFeatures, isPreview])
+
+  const filteredFeatures = useMemo(() => {
     const q = featureQ.trim().toLowerCase()
-    if (!q) return base
-    return base.filter(f => String(f[0]).toLowerCase().includes(q))
-  }, [featureQ, view.realFeatures, isPreview])
+    if (!q) return allFeatures
+    return allFeatures.filter(f => String(f[0]).toLowerCase().includes(q))
+  }, [featureQ, allFeatures])
 
   const filteredIntegrations = useMemo(() => {
     const q = integrationQ.trim().toLowerCase()
@@ -2757,23 +2780,24 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 const visible = keyFeaturesExpanded ? list : list.slice(0, KEY_FEATURES_VISIBLE)
                 return (
                   <>
-                    {visible.map(f => (
-                      <div key={f.name} className="tlp-kf">
-                        <div className="tlp-kf-head">
-                          <span className="tlp-kf-bullet" aria-hidden="true">•</span>
-                          <span className="tlp-kf-name">{f.name}</span>
-                          {f.rating > 0 && (
-                            <span className="tlp-kf-rate">
-                              <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-                                <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
-                              </svg>
-                              <span>{f.rating.toFixed(1)}</span>
-                            </span>
-                          )}
+                    <dl className="tlp-kf-list">
+                      {visible.map(f => (
+                        <div key={f.name} className="tlp-kf-row">
+                          <dt className="tlp-kf-name">{f.name}</dt>
+                          <dd className="tlp-kf-body">
+                            {f.desc && <p className="tlp-kf-desc">{swap(f.desc)}</p>}
+                            {f.rating > 0 && (
+                              <span className="tlp-kf-rate">
+                                <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true">
+                                  <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
+                                </svg>
+                                <span>{f.rating.toFixed(1)}</span>
+                              </span>
+                            )}
+                          </dd>
                         </div>
-                        {f.desc && <p className="tlp-kf-desc">{swap(f.desc)}</p>}
-                      </div>
-                    ))}
+                      ))}
+                    </dl>
                     {list.length > KEY_FEATURES_VISIBLE && (
                       <button
                         type="button"
@@ -2800,7 +2824,16 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
               <div id="all-features" className="tlp-af">
                 <div className="tlp-af-head">
                   <div className="tlp-af-heading">
-                    <h3 className="tlp-af-title">All {view.companyName} features</h3>
+                    <h3 className="tlp-af-title">
+                      All {view.companyName} features
+                      {allFeatures.length > 0 && (
+                        <span className="tlp-af-count" aria-hidden="true">
+                          {featureQ.trim()
+                            ? `· ${filteredFeatures.length} of ${allFeatures.length}`
+                            : `· ${allFeatures.length}`}
+                        </span>
+                      )}
+                    </h3>
                     {isPreview && (
                       <div className="tlp-af-meta">
                         <span>Features rating:</span>
@@ -2812,7 +2845,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                       </div>
                     )}
                   </div>
-                  {filteredFeatures.length > 9 && (
+                  {allFeatures.length > 9 && (
                     <div className="tlp-af-search">
                       <input
                         type="text"
@@ -2834,10 +2867,15 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                       {(featuresExpanded ? filteredFeatures : filteredFeatures.slice(0, 9)).map(
                         ([name, rating, count]) => (
                           <div key={String(name)} className="tlp-af-row">
-                            <span className="tlp-af-name">{name}</span>
+                            <span className="tlp-af-check" aria-hidden="true">
+                              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M5 13l4 4L19 7" />
+                              </svg>
+                            </span>
+                            <span className="tlp-af-name">{highlightMatch(String(name), featureQ)}</span>
                             {Number(rating) > 0 && (
                               <span className="tlp-af-rate">
-                                <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true">
                                   <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
                                 </svg>
                                 <strong>{Number(rating).toFixed(1)}</strong>
@@ -2861,6 +2899,30 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                       </button>
                     )}
                   </>
+                ) : featureQ.trim() ? (
+                  <div className="tlp-af-empty-search" role="status" aria-live="polite">
+                    <span className="tlp-af-empty-search-ico" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="11" cy="11" r="7" />
+                        <path d="M20 20l-3.5-3.5" />
+                      </svg>
+                    </span>
+                    <div className="tlp-af-empty-search-body">
+                      <div className="tlp-af-empty-search-title">
+                        No features match &ldquo;<strong>{featureQ.trim()}</strong>&rdquo;
+                      </div>
+                      <div className="tlp-af-empty-search-sub">
+                        Try a different search term or clear the search to see all {allFeatures.length} features.
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      className="tlp-af-empty-search-clear"
+                      onClick={() => setFeatureQ('')}
+                    >
+                      Clear search
+                    </button>
+                  </div>
                 ) : (
                   <div className="tlp-empty-card">
                     <span className="tlp-empty-ico" aria-hidden="true">
@@ -3096,47 +3158,101 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 </div>
               )}
 
-              <div className="tlp-pricing-grid">
-                {(view.realPricing
-                    ? view.realPricing.map(p => ({
-                        name: p.name || '',
-                        price: p.price || '',
-                        period: p.period || '',
-                        features: p.features || [],
-                      }))
-                    : (isPreview ? PRICING_PLANS.map(p => ({ ...p, period: 'Per month' })) : [])
-                  ).map(p => (
-                  <div key={p.name} className="tlp-plan">
-                    <div className="tlp-plan-top">
-                      <div className="tlp-plan-name">{p.name}</div>
-                      <div className="tlp-plan-price">
-                        {p.price && <><span className="tlp-plan-sym">$</span><span className="tlp-plan-amt">{p.price}</span></>}
-                      </div>
-                      {p.period && (
-                        <div className="tlp-plan-per">
-                          <InfoIcon /> {p.period}
-                        </div>
-                      )}
-                    </div>
-                    {p.features && p.features.length > 0 && (
-                      <div className="tlp-plan-body">
-                        <div className="tlp-plan-feat-head">Features included:</div>
-                        <ul className="tlp-plan-feat">
-                          {p.features.map((f: string) => <li key={f}>{f}</li>)}
-                        </ul>
-                      </div>
-                    )}
+              {(() => {
+                const plans = view.realPricing
+                  ? view.realPricing.map(p => ({
+                      name: p.name || '',
+                      price: p.price || '',
+                      period: p.period || '',
+                      features: p.features || [],
+                    }))
+                  : (isPreview ? PRICING_PLANS.map(p => ({ ...p, period: 'Per month' })) : [])
+                if (plans.length === 0) return null
+                return (
+                  <div className="tlp-pricing-grid" data-count={plans.length}>
+                    {plans.map((p, idx) => {
+                      const priceStr = String(p.price || '').trim()
+                      const priceNum = priceStr.replace(/[^\d.]/g, '')
+                      const isFree   = !priceStr || /^(free|0(?:\.0+)?)$/i.test(priceStr) || priceNum === '0' || priceNum === ''
+                      const isCustom = /^(custom|contact(?: sales)?|enterprise|let'?s talk)$/i.test(priceStr)
+                      // Parse price into integer + decimal parts for premium
+                      // Apple-style typography (small decimal trailing the big digits).
+                      let intPart = priceStr
+                      let decPart: string | null = null
+                      if (!isFree && !isCustom) {
+                        const m = priceStr.match(/^(\d{1,3}(?:,\d{3})+|\d+)(?:\.(\d+))?/)
+                        if (m) {
+                          intPart = m[1]
+                          if (m[2] && parseInt(m[2], 10) > 0) decPart = m[2]
+                        }
+                      }
+                      // Normalize the period string so the inline render is always
+                      // "/ <unit>" — strip a leading "/" (so user-supplied "/ month"
+                      // doesn't double-slash) AND a leading "Per " prefix.
+                      const periodInline = p.period
+                        ? p.period.replace(/^\s*\/\s*/, '').replace(/^per\s+/i, '').trim()
+                        : ''
+                      // Cycle through 5 pastel color variants by index
+                      const COLOR_PALETTE = ['peach', 'lavender', 'mint', 'pink', 'sky']
+                      const colorVariant = COLOR_PALETTE[idx % COLOR_PALETTE.length]
+                      return (
+                        <article
+                          key={p.name || `plan-${idx}`}
+                          className="tlp-plan"
+                          data-color={colorVariant}
+                        >
+                          <div className="tlp-plan-top">
+                            <div className="tlp-plan-price">
+                              {isFree ? (
+                                <span className="tlp-plan-amt">Free</span>
+                              ) : isCustom ? (
+                                <span className="tlp-plan-amt">Custom</span>
+                              ) : (
+                                <>
+                                  <span className="tlp-plan-sym">$</span>
+                                  <span className="tlp-plan-amt">{intPart}</span>
+                                  {decPart && <span className="tlp-plan-dec">.{decPart}</span>}
+                                </>
+                              )}
+                              {!isFree && !isCustom && periodInline && (
+                                <span className="tlp-plan-per-inline">/ {periodInline}</span>
+                              )}
+                            </div>
+                            {p.name && <div className="tlp-plan-name">{p.name}</div>}
+                            {view.website && (
+                              <a
+                                href={withInfoWebWorldUtm(view.website, listingSlug)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="tlp-plan-cta"
+                              >
+                                Get Started
+                              </a>
+                            )}
+                          </div>
+                          {p.features && p.features.length > 0 && (
+                            <ul className="tlp-plan-feat">
+                              {p.features.map((f: string) => (
+                                <li key={f}>
+                                  <span className="tlp-plan-feat-check" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                      <path d="M5 13l4 4L19 7" />
+                                    </svg>
+                                  </span>
+                                  <span>{f}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </article>
+                      )
+                    })}
                   </div>
-                ))}
-              </div>
+                )
+              })()}
 
               {isPreview && (
                 <>
-                  <div className="tlp-price-dots" aria-hidden="true">
-                    <span className="is-active" />
-                    <span />
-                  </div>
-
                   <h3 className="tlp-vo-title">User opinions about {view.companyName} price and value</h3>
                   <div className="tlp-price-meta">
                     <span>Value for money rating:</span>
@@ -3177,11 +3293,6 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                   with a Write-a-review CTA when none exist yet. No fake quotes. */}
               {!isPreview && (
                 <>
-                  <div className="tlp-price-dots" aria-hidden="true">
-                    <span className="is-active" />
-                    <span />
-                  </div>
-
                   <h3 className="tlp-vo-title">User opinions about {view.companyName} price and value</h3>
                   <div className="tlp-price-meta">
                     <span>Value for money rating:</span>
@@ -3398,116 +3509,131 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             </section>
             )}
 
-            {/* ========== CUSTOMER SUPPORT — always render. Real mode uses the
-                same 2-col layout as preview: left = "what users say" panel
-                (real rating + soft intro), right = Support/Training options
-                cards (or empty-state). Bottom = review quotes or write-review
-                CTA when no reviews. ========== */}
+            {/* ========== CUSTOMER SUPPORT — Trustpilot-style 2-col layout.
+                LEFT: question → inline rating → intro → mixed pros/cons bullets
+                RIGHT: bordered card containing Support + Training option lists
+                BELOW: review-snippet quote cards with "Highly Relevant" tag
+                ============================================================ */}
             <section id="support" className="tlp-sec">
               <h2 className="tlp-sec-title">{view.companyName} customer support</h2>
 
               <div className="tlp-cs-grid">
-                {/* ── Left column ── */}
-                {isPreview ? (
-                  <div>
-                    <h3 className="tlp-cs-q">What do users say about {view.companyName} customer support?</h3>
-                    <div className="tlp-cs-rate">
-                      <span>Customer support rating:</span>
-                      <svg viewBox="0 0 24 24" width="14" height="14">
-                        <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
-                      </svg>
-                      <strong>4.4</strong>
-                    </div>
-                    <p className="tlp-cs-intro">
-                      We analyzed verified user reviews to identify positive and negative aspects of
-                      {' '}{view.companyName} customer support.{' '}
-                      <a href="#" className="tlp-inline-link">Learn more about our reviews.</a>
-                    </p>
+                {/* ── LEFT column ── */}
+                <div className="tlp-cs-main">
+                  <h3 className="tlp-cs-q">What do users say about {view.companyName} customer support?</h3>
 
+                  <div className="tlp-cs-rate">
+                    <span className="tlp-cs-rate-lbl">Customer support rating:</span>
+                    {isPreview ? (
+                      <>
+                        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                          <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
+                        </svg>
+                        <strong>4.4</strong>
+                      </>
+                    ) : hasReviews ? (
+                      <>
+                        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                          <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
+                        </svg>
+                        <strong>{overallRating.toFixed(1)}</strong>
+                        <em>({realReviewCount.toLocaleString()})</em>
+                      </>
+                    ) : (
+                      <span className="tlp-cs-rate-norating">No ratings yet</span>
+                    )}
+                  </div>
+
+                  <p className="tlp-cs-intro">
+                    {isPreview ? (
+                      <>
+                        We analyzed verified user reviews to identify positive and negative aspects of
+                        {' '}{view.companyName} customer support.{' '}
+                        <a href="#" className="tlp-inline-link">Learn more about our reviews.</a>
+                      </>
+                    ) : hasReviews ? (
+                      <>See review snippets below to learn what users say about {view.companyName}&apos;s support team.</>
+                    ) : (
+                      <>{view.companyName} hasn&apos;t collected enough reviews to surface support insights yet — write the first one to share your experience.</>
+                    )}
+                  </p>
+
+                  {/* Mixed pros/cons bullet list (preview only) — single list,
+                      ordered as data-provided. Each item rendered with a green
+                      circle (pos) or red circle (neg). */}
+                  {isPreview && (
                     <ul className="tlp-cs-bullets">
                       {SUPPORT_BULLETS.map(b => (
                         <li key={b.text}>
-                          <span className={`tlp-cs-bullet tlp-cs-bullet--${b.kind}`}>
-                            {b.kind === 'pos' ? <PlusSm /> : <XSm />}
+                          <span className={`tlp-cs-bullet tlp-cs-bullet--${b.kind}`} aria-hidden="true">
+                            {b.kind === 'pos' ? <CheckSm /> : <XSm />}
                           </span>
                           <span>{swap(b.text)}</span>
                         </li>
                       ))}
                     </ul>
-                  </div>
-                ) : (
-                  <div>
-                    <h3 className="tlp-cs-q">What do users say about {view.companyName} customer support?</h3>
-                    <div className="tlp-cs-rate">
-                      <span>Customer support rating:</span>
-                      {hasReviews ? (
-                        <>
-                          <svg viewBox="0 0 24 24" width="14" height="14">
-                            <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
-                          </svg>
-                          <strong>{overallRating.toFixed(1)}</strong>
-                          <em>({realReviewCount.toLocaleString()})</em>
-                        </>
-                      ) : (
-                        <span className="tlp-vo-norating">No ratings yet</span>
-                      )}
-                    </div>
-                    <p className="tlp-cs-intro">
-                      {hasReviews
-                        ? <>See review snippets below to learn what users say about {view.companyName}&apos;s support team.</>
-                        : <>{view.companyName} hasn&apos;t collected enough reviews to surface support insights yet — write the first one to share your experience.</>}
-                    </p>
-                  </div>
-                )}
-
-                {/* ── Right column: Support + Training options card ── */}
-                <div className="tlp-cs-opts">
-                  {(view.realSupportChannels || isPreview) && (
-                    <>
-                      <div className="tlp-cs-opts-h">Support options</div>
-                      <ul className="tlp-cs-opts-list">
-                        {(view.realSupportChannels || (isPreview ? [
-                          'Email/help desk', 'Chat', 'Knowledge base',
-                          'FAQs/forum', '24/7 (live rep)', 'Phone support',
-                        ] : [])).map(o => (
-                          <li key={o}>
-                            <span>{o}</span>
-                            <CheckSm />
-                          </li>
-                        ))}
-                      </ul>
-                    </>
-                  )}
-                  {(view.realTrainingOptions || isPreview) && (
-                    <>
-                      <div className={`tlp-cs-opts-h ${(view.realSupportChannels || isPreview) ? 'tlp-cs-opts-h--spaced' : ''}`}>Training options</div>
-                      <ul className="tlp-cs-opts-list">
-                        {(view.realTrainingOptions || (isPreview ? ['Live online', 'Videos', 'Webinars', 'Documentation'] : [])).map(o => (
-                          <li key={o}>
-                            <span>{o}</span>
-                            <CheckSm />
-                          </li>
-                        ))}
-                      </ul>
-                    </>
-                  )}
-                  {!isPreview && !view.realSupportChannels && !view.realTrainingOptions && (
-                    <div className="tlp-cs-opts-empty">
-                      Support &amp; training options coming soon — {view.companyName} hasn&apos;t shared their channels yet.
-                    </div>
                   )}
                 </div>
+
+                {/* ── RIGHT sidebar: Support + Training options card ── */}
+                {(() => {
+                  const supportList = view.realSupportChannels
+                    || (isPreview ? ['24/7 (live rep)', 'FAQs/forum', 'Phone support', 'Email/help desk', 'Chat', 'Knowledge base'] : null)
+                  const trainingList = view.realTrainingOptions
+                    || (isPreview ? ['In person', 'Documentation', 'Webinars', 'Live online', 'Videos'] : null)
+                  if (!supportList && !trainingList) {
+                    return (
+                      <aside className="tlp-cs-opts tlp-cs-opts--empty">
+                        Support &amp; training options coming soon — {view.companyName} hasn&apos;t shared their channels yet.
+                      </aside>
+                    )
+                  }
+                  return (
+                    <aside className="tlp-cs-opts">
+                      {supportList && (
+                        <>
+                          <div className="tlp-cs-opts-h">Support options</div>
+                          <ul className="tlp-cs-opts-list">
+                            {supportList.map(o => (
+                              <li key={o}>
+                                <span>{o}</span>
+                                <CheckSm />
+                              </li>
+                            ))}
+                          </ul>
+                        </>
+                      )}
+                      {trainingList && (
+                        <>
+                          <div className={`tlp-cs-opts-h ${supportList ? 'tlp-cs-opts-h--spaced' : ''}`}>Training options</div>
+                          <ul className="tlp-cs-opts-list">
+                            {trainingList.map(o => (
+                              <li key={o}>
+                                <span>{o}</span>
+                                <CheckSm />
+                              </li>
+                            ))}
+                          </ul>
+                        </>
+                      )}
+                    </aside>
+                  )
+                })()}
               </div>
 
+              {/* (3) ───── Voices ───── */}
               {isPreview && (
                 <>
                   <p className="tlp-cs-lead">
                     To see what individual users say about {view.companyName}&apos;s customer support, check the review snippets below.
                   </p>
-
                   <div className="tlp-cs-quotes">
                     {SUPPORT_QUOTES.map(q => (
                       <div key={q.name} className="tlp-cs-quote">
+                        <div className="tlp-cs-quote-tag" aria-hidden="true">
+                          <span className="tlp-cs-quote-tag-ico"><CheckSm /></span>
+                          <span className="tlp-cs-quote-tag-text">Highly Relevant</span>
+                        </div>
                         <p className="tlp-cs-quote-text">&ldquo;{swap(q.quote)}&rdquo;</p>
                         <div className="tlp-cs-quote-who">
                           <span className="tlp-cs-quote-av" style={{ background: q.color }}>{q.initials}</span>
@@ -3525,7 +3651,6 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 </>
               )}
 
-              {/* Real-mode quotes + write-review CTA. */}
               {!isPreview && (
                 hasReviews && reviewsData && reviewsData.recent.length > 0 ? (
                   <>
@@ -3538,6 +3663,10 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                         const initials = (r.user_name || '?').slice(0, 2).toUpperCase()
                         return (
                           <div key={r.id} className="tlp-cs-quote">
+                            <div className="tlp-cs-quote-tag" aria-hidden="true">
+                              <span className="tlp-cs-quote-tag-ico"><CheckSm /></span>
+                              <span className="tlp-cs-quote-tag-text">Verified Review</span>
+                            </div>
                             <p className="tlp-cs-quote-text">&ldquo;{r.body}&rdquo;</p>
                             <div className="tlp-cs-quote-who">
                               {r.user_avatar_url
@@ -3821,21 +3950,41 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             </section>
             )}
 
-            {/* ========== RELATED CATEGORIES ========== */}
-            <section className="tlp-sec tlp-rc-sec">
-              <h2 className="tlp-sec-title tlp-rc-title">
-                <span className="tlp-rc-accent" aria-hidden="true" />
-                Related categories
-              </h2>
-              <div className="tlp-rc-grid">
-                {RELATED_CATS.map(c => (
-                  <a key={c} href="#" className="tlp-rc">
-                    <span className="tlp-rc-icon"><FolderIcon /></span>
-                    <span className="tlp-rc-lbl">{c}</span>
-                  </a>
-                ))}
-              </div>
-            </section>
+            {/* ========== RELATED CATEGORIES — server-derived siblings of the
+                listing's L3 category. Broadens to cousins when sparse. Each
+                link routes to /{sectorSlug}/{slug}. Falls back to the
+                hardcoded sample only in preview mode. ========== */}
+            {(() => {
+              const rc = initialData?.relatedCategories
+              const cats: { name: string; slug: string; sectorSlug: string }[] =
+                rc && rc.length > 0
+                  ? rc
+                  : (isPreview
+                      ? RELATED_CATS.map(name => ({ name, slug: '', sectorSlug: '' }))
+                      : [])
+              if (cats.length === 0) return null
+              return (
+                <section className="tlp-sec tlp-rc-sec">
+                  <h2 className="tlp-sec-title tlp-rc-title">
+                    <span className="tlp-rc-accent" aria-hidden="true" />
+                    Related categories
+                  </h2>
+                  <div className="tlp-rc-grid">
+                    {cats.map(c => {
+                      const href = c.sectorSlug && c.slug
+                        ? `/${c.sectorSlug}/${c.slug}`
+                        : '#'
+                      return (
+                        <a key={c.slug || c.name} href={href} className="tlp-rc">
+                          <span className="tlp-rc-icon"><FolderIcon /></span>
+                          <span className="tlp-rc-lbl">{c.name}</span>
+                        </a>
+                      )
+                    })}
+                  </div>
+                </section>
+              )
+            })()}
 
           </div>
         </div>

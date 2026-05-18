@@ -2003,8 +2003,9 @@ body.tlp-subheader-active .tlp-write-review {
 }
 
 /* ═══════════════════════════════════════════════════════
-   Key features — centered column, bullet-dot items,
-   toggle-able reviewer quote cards
+   Key features — editorial spec sheet:
+   name col + description col, hairline rules between rows.
+   No cards, no markers; precision via typography + restrained hover.
    ═══════════════════════════════════════════════════════ */
 
 .tlp-kf-sec { }
@@ -2017,52 +2018,82 @@ body.tlp-subheader-active .tlp-write-review {
   color: var(--tlp-ink-2);
   font-size: 14.5px;
   line-height: 1.6;
-  margin: 0 0 36px;
+  margin: 0 0 24px;
 }
 .tlp-kf-intro a { color: var(--tlp-teal); font-weight: 500 }
 
-/* Per-feature block */
-.tlp-kf {
-  padding: 22px 0;
+/* Spec-sheet layout — name | description, hairline rules between rows.
+   No cards, no markers; precision via typography + restrained hover. */
+.tlp-kf-list {
+  margin: 0 0 8px;
+  border-top: 1px solid var(--tlp-border);
+  font-feature-settings: "ss01", "cv11", "cv05";
 }
-.tlp-kf + .tlp-kf { border-top: 1px solid var(--tlp-border) }
+.tlp-kf-row {
+  display: grid;
+  grid-template-columns: minmax(160px, 26%) 1fr;
+  column-gap: 36px;
+  padding: 13px 14px 14px;
+  margin: 0 -14px;
+  border-bottom: 1px solid var(--tlp-border);
+  align-items: baseline;
+  border-radius: 6px;
+  transition: background-color .18s ease;
+}
+/* Drop the divider on the last row for a clean termination. */
+.tlp-kf-row:last-child { border-bottom: 0 }
+/* Subtle row hover — barely-there teal tint, no transform. */
+.tlp-kf-row:hover {
+  background-color: rgba(12, 154, 154, .025);
+}
+.tlp-kf-row:hover .tlp-kf-name {
+  color: var(--tlp-teal);
+}
 
-.tlp-kf-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
-  padding-left: 28px;
-}
-.tlp-kf-bullet {
-  color: var(--tlp-ink);
-  font-size: 14px;
-  line-height: 1;
-  margin-left: -20px;
-  margin-right: 6px;
-}
+/* Feature name — left column */
 .tlp-kf-name {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--tlp-ink);
-  letter-spacing: -.005em;
-}
-.tlp-kf-rate {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-left: 12px;
   font-size: 14px;
   font-weight: 600;
   color: var(--tlp-ink);
+  letter-spacing: -.012em;
+  line-height: 1.4;
+  margin: 0;
+  transition: color .18s ease;
+  font-variant-numeric: lining-nums tabular-nums;
 }
 
+/* Body cell wraps description + optional rating chip */
+.tlp-kf-body {
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+/* Feature description */
 .tlp-kf-desc {
   color: var(--tlp-ink-2);
-  font-size: 14px;
-  line-height: 1.7;
-  margin: 0 0 16px;
-  padding: 0 28px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  letter-spacing: -.003em;
+  margin: 0;
+  padding: 0;
+}
+
+/* Rating chip — sits beneath the description, only when a rating exists */
+.tlp-kf-rate {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  margin-top: 6px;
+  background: #FFF8E6;
+  border: 1px solid rgba(252, 211, 77, .45);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--tlp-ink);
+  line-height: 1;
+  width: max-content;
 }
 
 /* View more / Show less toggle for the key features list */
@@ -2070,7 +2101,7 @@ body.tlp-subheader-active .tlp-write-review {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin: 8px 0 4px 28px;
+  margin: 16px 0 4px;
   padding: 9px 16px;
   background: #fff;
   color: var(--tlp-teal);
@@ -2175,39 +2206,51 @@ body.tlp-subheader-active .tlp-write-review {
    ═══════════════════════════════════════════════════════ */
 
 .tlp-af {
-  margin-top: 32px;
-  padding-top: 24px;
+  margin-top: 28px;
+  padding-top: 22px;
   border-top: 1px solid var(--tlp-border);
+  font-feature-settings: "ss01", "cv11", "cv05";
 }
 
 .tlp-af-head {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: flex-end;
   gap: 24px;
-  margin-bottom: 28px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
 }
-.tlp-af-heading { display: flex; flex-direction: column; gap: 8px }
+.tlp-af-heading { display: flex; flex-direction: column; gap: 6px }
 .tlp-af-title {
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 700;
   color: var(--tlp-ink);
   margin: 0;
-  letter-spacing: -.01em;
+  letter-spacing: -.014em;
+  line-height: 1.3;
 }
 .tlp-af-meta {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 14px;
-  color: var(--tlp-ink);
-  font-weight: 600;
+  font-size: 12.5px;
+  color: var(--tlp-mute);
+  font-weight: 400;
+  letter-spacing: -.003em;
 }
-.tlp-af-meta strong { font-weight: 700 }
-.tlp-af-meta em { color: var(--tlp-mute); font-style: normal; font-weight: 400 }
+.tlp-af-meta strong {
+  font-weight: 700;
+  color: var(--tlp-ink);
+  margin-left: 2px;
+}
+.tlp-af-meta em {
+  color: var(--tlp-mute);
+  font-style: normal;
+  font-weight: 400;
+  margin-left: 2px;
+}
 
-/* Search bar with teal border + icon on the right */
+/* Search bar — teal pill (original treatment, restored per request) */
 .tlp-af-search {
   position: relative;
   width: 320px;
@@ -2223,59 +2266,180 @@ body.tlp-subheader-active .tlp-write-review {
   color: var(--tlp-ink);
   background: var(--tlp-bg);
   outline: none;
+  transition: box-shadow .15s ease;
 }
 .tlp-af-search input::placeholder { color: var(--tlp-mute) }
+.tlp-af-search input:focus {
+  box-shadow: 0 0 0 4px rgba(12, 154, 154, .15);
+}
 .tlp-af-search-ico {
   position: absolute;
   right: 14px; top: 50%;
   transform: translateY(-50%);
   width: 18px; height: 18px;
   color: var(--tlp-teal);
+  pointer-events: none;
+}
+
+/* Live count suffix in the title — switches between "· 47" and "· 5 of 47" */
+.tlp-af-count {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--tlp-mute);
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Search-match highlight — wraps matched substrings in <mark> as the user
+   types. Teal-50 background + teal text + 700 weight = clearly visible
+   without overwhelming the row. */
+.tlp-af-hl {
+  background: var(--tlp-teal-50);
+  color: var(--tlp-teal);
+  font-weight: 700;
+  font-style: normal;
+  padding: 1px 3px;
+  margin: 0 -1px;
+  border-radius: 3px;
+}
+
+/* Empty state when the active search has zero matches — distinct from
+   the listing-has-no-features card. Shows the query, a hint, and a clear
+   action so the user is never stuck. */
+.tlp-af-empty-search {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 22px;
+  border: 1px dashed var(--tlp-border);
+  border-radius: 12px;
+  background: var(--tlp-bg-soft);
+}
+.tlp-af-empty-search-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--tlp-teal-50);
+  color: var(--tlp-teal);
+  flex-shrink: 0;
+}
+.tlp-af-empty-search-body {
+  flex: 1;
+  min-width: 0;
+}
+.tlp-af-empty-search-title {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--tlp-ink);
+  margin: 0 0 2px;
+  letter-spacing: -.008em;
+}
+.tlp-af-empty-search-title strong {
+  color: var(--tlp-teal);
+  font-weight: 700;
+}
+.tlp-af-empty-search-sub {
+  font-size: 13px;
+  color: var(--tlp-mute);
+  line-height: 1.5;
+}
+.tlp-af-empty-search-clear {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  background: var(--tlp-bg);
+  border: 1.5px solid var(--tlp-teal);
+  border-radius: 999px;
+  color: var(--tlp-teal);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: -.003em;
+  transition: background-color .15s ease, color .15s ease, box-shadow .15s ease;
+}
+.tlp-af-empty-search-clear:hover {
+  background: var(--tlp-teal);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(12, 154, 154, .25);
+}
+@media (max-width: 540px) {
+  .tlp-af-empty-search { flex-direction: column; align-items: flex-start; gap: 14px; text-align: left }
+  .tlp-af-empty-search-clear { align-self: stretch; text-align: center }
 }
 
 /* 3-column grid of feature rows */
 .tlp-af-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  column-gap: 40px;
-  row-gap: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 32px;
+  row-gap: 4px;
 }
-@media (max-width: 820px) { .tlp-af-grid { grid-template-columns: 1fr 1fr } }
+@media (max-width: 820px) { .tlp-af-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
 @media (max-width: 540px) { .tlp-af-grid { grid-template-columns: 1fr } }
 
 .tlp-af-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  gap: 10px;
   font-size: 13.5px;
+  padding: 6px 0;
+  transition: color .15s ease;
 }
-.tlp-af-name { color: var(--tlp-ink-2) }
+.tlp-af-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  color: var(--tlp-teal);
+  flex-shrink: 0;
+  transition: color .15s ease;
+}
+.tlp-af-name {
+  color: var(--tlp-ink-2);
+  flex: 1;
+  min-width: 0;
+  letter-spacing: -.003em;
+  transition: color .15s ease;
+}
+.tlp-af-row:hover .tlp-af-name  { color: var(--tlp-ink) }
+.tlp-af-row:hover .tlp-af-check { color: var(--tlp-teal-600) }
+
 .tlp-af-rate {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
 }
-.tlp-af-rate strong { font-weight: 700; color: var(--tlp-ink) }
-.tlp-af-rate em { color: var(--tlp-mute); font-style: normal }
+.tlp-af-rate strong { font-weight: 700; color: var(--tlp-ink); font-size: 13px }
+.tlp-af-rate em     { color: var(--tlp-mute); font-style: normal; font-size: 12.5px }
 
-/* Expand / collapse list button — centered */
+/* Expand / collapse list button — centered, restrained */
 .tlp-af-expand {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin: 32px auto 0;
-  padding: 8px 16px;
+  gap: 5px;
+  margin: 22px auto 0;
+  padding: 7px 14px;
   background: none;
   border: 0;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 13.5px;
   font-weight: 600;
   color: var(--tlp-teal);
+  letter-spacing: -.005em;
   cursor: pointer;
+  border-radius: 6px;
+  transition: background-color .15s ease;
 }
-.tlp-af-expand:hover span:first-child { text-decoration: underline }
+.tlp-af-expand:hover { background-color: rgba(12, 154, 154, .06) }
+.tlp-af-expand:hover span:first-child { text-decoration: none }
 .tlp-af-expand-chev {
   display: inline-flex;
   transition: transform .2s ease;
@@ -2471,81 +2635,217 @@ body.tlp-subheader-active .tlp-write-review {
 .tlp-price-flag { display: inline-flex; align-items: center; gap: 6px; font-weight: 500 }
 .tlp-price-flag svg { color: var(--tlp-teal); width: 14px; height: 14px }
 
+/* Pricing grid — dynamically adapts via data-count attribute on the wrapper.
+   1 plan → single centered card.  2 plans → constrained 2-col.
+   3 plans → 3-col.  4+ → auto-fit so cards never feel cramped or orphaned. */
 .tlp-pricing-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2px;
-  background: var(--tlp-border);
-  border: 1px solid var(--tlp-border);
-  border-radius: 4px;
-  overflow: hidden;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin: 0 0 8px;
+  font-feature-settings: "ss01", "cv11", "cv05";
 }
-@media (max-width: 860px) {
-  .tlp-pricing-grid { grid-template-columns: 1fr }
+.tlp-pricing-grid[data-count="1"] {
+  grid-template-columns: minmax(280px, 420px);
+  justify-content: center;
+}
+.tlp-pricing-grid[data-count="2"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.tlp-pricing-grid[data-count="3"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+/* Plan card — vibrant pastel gradient design.
+   Each card gets a different pastel via [data-color] cycled by index.
+   Layered shadows give the card a "floating on a soft cloud" feel.
+   Left-aligned content (price hero → plan name → CTA → features). */
 .tlp-plan {
-  display: flex; flex-direction: column;
-  background: var(--tlp-bg);
-}
-.tlp-plan-top {
-  background: #F3F4F6;
-  padding: 18px 20px 14px;
-  text-align: center;
-  border-bottom: 1px solid var(--tlp-border);
-}
-.tlp-plan-name {
-  font-size: 15px; font-weight: 700;
-  color: var(--tlp-ink);
-  margin-bottom: 8px;
-  text-transform: none;
-  letter-spacing: 0;
-}
-.tlp-plan-price {
-  display: inline-flex; align-items: baseline; gap: 4px;
-  margin-bottom: 4px;
-}
-.tlp-plan-sym { font-size: 16px; font-weight: 700; color: var(--tlp-ink) }
-.tlp-plan-amt { font-size: 30px; font-weight: 800; color: var(--tlp-ink); letter-spacing: -.02em }
-.tlp-plan-per {
-  display: inline-flex; align-items: center; justify-content: center; gap: 4px;
-  color: var(--tlp-mute); font-size: 12px;
-}
-.tlp-plan-per svg { color: var(--tlp-mute) }
-.tlp-plan-body { padding: 18px 22px 22px; flex: 1 }
-.tlp-plan-feat-head {
-  font-size: 13px; font-weight: 700;
-  color: var(--tlp-ink);
-  margin-bottom: 12px;
-  letter-spacing: 0;
-  text-transform: none;
-  padding: 0;
-  border: 0;
-}
-.tlp-plan-feat { display: flex; flex-direction: column; gap: 8px }
-.tlp-plan-feat li {
   position: relative;
-  padding-left: 14px;
-  font-size: 13px; color: var(--tlp-ink-2);
-  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(0, 0, 0, .04);
+  border-radius: 18px;
+  overflow: hidden;
+  padding: 28px 26px 26px;
+  background: var(--tlp-bg);
+  box-shadow:
+    0 1px 3px   rgba(17, 24, 39, .05),
+    0 8px 20px  rgba(17, 24, 39, .05),
+    0 28px 56px rgba(17, 24, 39, .04);
+  transition:
+    box-shadow   .25s ease,
+    transform    .25s cubic-bezier(.2, .8, .2, 1);
 }
-.tlp-plan-feat li::before {
-  content: "\2022";
-  position: absolute; left: 2px; top: -1px;
-  color: var(--tlp-ink-2);
-  font-size: 14px;
+.tlp-plan:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 4px 8px   rgba(17, 24, 39, .07),
+    0 16px 32px rgba(17, 24, 39, .07),
+    0 36px 64px rgba(17, 24, 39, .05);
 }
 
-.tlp-price-dots {
-  display: flex; justify-content: center; gap: 8px;
-  margin-top: 18px;
+/* Color variants — soft pastel base + two soft radial blobs for depth.
+   The radial gradients sit at top-right + bottom-left of each card to
+   create the abstract "morning light through a window" feel of the ref. */
+.tlp-plan[data-color="peach"] {
+  background:
+    radial-gradient(60% 60% at 95% 5%,  rgba(255, 165,  95, .35) 0%, transparent 60%),
+    radial-gradient(55% 55% at  5% 95%, rgba(255, 200, 160, .30) 0%, transparent 65%),
+    linear-gradient(135deg, #FFE5D0 0%, #FFD0B2 100%);
 }
-.tlp-price-dots span {
-  width: 8px; height: 8px;
+.tlp-plan[data-color="lavender"] {
+  background:
+    radial-gradient(60% 60% at 95% 5%,  rgba(150, 120, 240, .35) 0%, transparent 60%),
+    radial-gradient(55% 55% at  5% 95%, rgba(180, 155, 250, .30) 0%, transparent 65%),
+    linear-gradient(135deg, #DDD4FF 0%, #B8AAFF 100%);
+}
+.tlp-plan[data-color="mint"] {
+  background:
+    radial-gradient(60% 60% at 95% 5%,  rgba(100, 200, 220, .35) 0%, transparent 60%),
+    radial-gradient(55% 55% at  5% 95%, rgba(135, 230, 220, .30) 0%, transparent 65%),
+    linear-gradient(135deg, #C8F3ED 0%, #9CDCDA 100%);
+}
+.tlp-plan[data-color="pink"] {
+  background:
+    radial-gradient(60% 60% at 95% 5%,  rgba(255, 130, 175, .35) 0%, transparent 60%),
+    radial-gradient(55% 55% at  5% 95%, rgba(255, 175, 200, .30) 0%, transparent 65%),
+    linear-gradient(135deg, #FFD4E5 0%, #FFB0CC 100%);
+}
+.tlp-plan[data-color="sky"] {
+  background:
+    radial-gradient(60% 60% at 95% 5%,  rgba(100, 170, 240, .35) 0%, transparent 60%),
+    radial-gradient(55% 55% at  5% 95%, rgba(150, 200, 255, .30) 0%, transparent 65%),
+    linear-gradient(135deg, #D0E5FF 0%, #A8CCFF 100%);
+}
+
+/* Top section — no separator, left-aligned, transparent over the gradient */
+.tlp-plan-top {
+  padding: 0;
+  text-align: left;
+  background: none;
+  border: 0;
+  margin-bottom: 22px;
+}
+
+/* Hero price block — inline price + period, baseline-aligned.
+   "$15" big + "/ month" small inline = matches the ref design. */
+.tlp-plan-price {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0;
+  margin-bottom: 14px;
+  font-variant-numeric: tabular-nums lining-nums;
+  line-height: 1;
+  color: var(--tlp-ink);
+}
+.tlp-plan-sym {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -.012em;
+  color: var(--tlp-ink);
+}
+.tlp-plan-amt {
+  font-size: 58px;
+  font-weight: 800;
+  letter-spacing: -.04em;
+  line-height: 1;
+  color: var(--tlp-ink);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.tlp-plan-dec {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -.008em;
+  color: var(--tlp-ink);
+  font-variant-numeric: tabular-nums lining-nums;
+  margin-left: 1px;
+}
+/* "/ month" inline after the integer — smaller, mid-weight, slight opacity */
+.tlp-plan-per-inline {
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -.005em;
+  color: rgba(17, 24, 39, .68);
+  margin-left: 5px;
+  align-self: baseline;
+}
+
+/* Plan name — small subordinate label under the hero price.
+   Sentence case, no tracking, slight opacity (lets the colorful bg
+   carry the visual weight). */
+.tlp-plan-name {
+  font-size: 14.5px;
+  font-weight: 500;
+  color: rgba(17, 24, 39, .72);
+  letter-spacing: -.005em;
+  line-height: 1.4;
+  margin-bottom: 18px;
+}
+
+/* "Get Started" CTA pill — high-contrast against the pastel bg */
+.tlp-plan-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 24px;
+  background: rgba(255, 255, 255, .92);
+  border: 1px solid rgba(17, 24, 39, .14);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--tlp-ink);
+  letter-spacing: -.005em;
+  text-decoration: none;
+  cursor: pointer;
+  width: max-content;
+  transition: background-color .15s ease, border-color .15s ease, transform .15s ease;
+}
+.tlp-plan-cta:hover {
+  background: #fff;
+  border-color: rgba(17, 24, 39, .25);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+.tlp-plan-cta:active { transform: translateY(0) }
+
+/* Features — black filled circle checkmark, larger, premium feel */
+.tlp-plan-feat {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.tlp-plan-feat li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14.5px;
+  color: var(--tlp-ink);
+  line-height: 1.3;
+  padding: 0;
+  letter-spacing: -.005em;
+  font-weight: 500;
+}
+.tlp-plan-feat li::before { content: none }
+.tlp-plan-feat-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background: var(--tlp-ink);
+  color: #fff;
   border-radius: 50%;
-  background: #D1D5DB;
+  flex-shrink: 0;
 }
-.tlp-price-dots span.is-active { background: var(--tlp-teal) }
 
 /* User opinions */
 .tlp-vo-title {
@@ -3259,109 +3559,247 @@ body.tlp-subheader-active .tlp-write-review {
 .tlp-int-expand:hover { text-decoration: underline }
 
 /* ═══════════════════════════════════════════════════════
-   Customer support — left bullets + right options card
+   Customer support — 2-col Trustpilot-style layout
+   LEFT  : question → rating row → intro → mixed pros/cons bullets
+   RIGHT : single bordered card with Support + Training option lists
+   BELOW : 3 quote cards w/ green ✓ "Highly Relevant" pills
    ═══════════════════════════════════════════════════════ */
+
+#support.tlp-sec {
+  font-feature-settings: "ss01", "cv11", "cv05";
+}
 
 .tlp-cs-grid {
   display: grid;
-  grid-template-columns: 1fr 260px;
+  grid-template-columns: 1fr 280px;
   gap: 40px;
   align-items: start;
-  margin-bottom: 30px;
+  margin-bottom: 36px;
 }
-@media (max-width: 820px) { .tlp-cs-grid { grid-template-columns: 1fr } }
+@media (max-width: 820px) {
+  .tlp-cs-grid { grid-template-columns: 1fr; gap: 24px }
+}
+
+.tlp-cs-main { min-width: 0 }
 
 .tlp-cs-q {
-  font-size: 16px; font-weight: 700;
+  font-size: 18px;
+  font-weight: 700;
   color: var(--tlp-ink);
-  margin: 0 0 12px;
-}
-.tlp-cs-rate {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 13.5px; color: var(--tlp-ink);
-  margin-bottom: 14px;
-}
-.tlp-cs-rate strong { font-weight: 700 }
-.tlp-cs-intro {
-  color: var(--tlp-ink-2);
-  font-size: 14px; line-height: 1.6;
-  margin: 0 0 18px;
+  letter-spacing: -.014em;
+  line-height: 1.3;
+  margin: 0 0 14px;
 }
 
-.tlp-cs-bullets { display: flex; flex-direction: column; gap: 12px }
-.tlp-cs-bullets li {
-  display: flex; align-items: flex-start; gap: 10px;
-  font-size: 13.5px;
+/* Inline rating row: "Customer support rating: ★ 4.4" */
+.tlp-cs-rate {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
   color: var(--tlp-ink-2);
-  line-height: 1.55;
+  margin-bottom: 18px;
+  font-variant-numeric: tabular-nums;
+}
+.tlp-cs-rate-lbl { color: var(--tlp-ink-2); font-weight: 500 }
+.tlp-cs-rate strong { color: var(--tlp-ink); font-weight: 700; margin-left: 4px }
+.tlp-cs-rate em {
+  color: var(--tlp-mute);
+  font-style: normal;
+  font-weight: 500;
+  margin-left: 2px;
+}
+.tlp-cs-rate-norating {
+  color: var(--tlp-mute);
+  font-style: italic;
+  font-weight: 500;
+  margin-left: 4px;
+}
+
+.tlp-cs-intro {
+  color: var(--tlp-ink-2);
+  font-size: 14px;
+  line-height: 1.65;
+  letter-spacing: -.003em;
+  margin: 0 0 22px;
+}
+.tlp-cs-intro a { color: var(--tlp-teal); font-weight: 500 }
+
+/* Mixed pros/cons bullet list — single list, ordered as data-provided */
+.tlp-cs-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.tlp-cs-bullets li {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--tlp-ink-2);
+  letter-spacing: -.003em;
 }
 .tlp-cs-bullet {
-  display: inline-grid; place-items: center;
-  width: 18px; height: 18px;
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   color: #fff;
   flex-shrink: 0;
-  margin-top: 2px;
+  margin-top: 1px;
 }
 .tlp-cs-bullet--pos { background: var(--tlp-green) }
 .tlp-cs-bullet--neg { background: var(--tlp-red-500) }
 .tlp-cs-bullet svg { width: 11px; height: 11px }
 
+/* Right sidebar — bordered card with Support + Training option lists */
 .tlp-cs-opts {
+  padding: 18px 20px 16px;
   border: 1px solid var(--tlp-border);
-  border-radius: 6px;
-  padding: 18px 20px;
+  border-radius: 8px;
   background: var(--tlp-bg);
+  align-self: start;
+  box-shadow:
+    0 1px 2px rgba(17, 24, 39, .03),
+    0 4px 10px rgba(17, 24, 39, .03);
 }
+
 .tlp-cs-opts-h {
-  font-size: 14px; font-weight: 700;
+  font-size: 14.5px;
+  font-weight: 700;
   color: var(--tlp-ink);
-  margin-bottom: 10px;
+  letter-spacing: -.008em;
+  margin-bottom: 12px;
 }
-.tlp-cs-opts-h--spaced { margin-top: 18px }
-.tlp-cs-opts-list { display: flex; flex-direction: column; gap: 8px }
+.tlp-cs-opts-h--spaced { margin-top: 22px }
+
+.tlp-cs-opts-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
 .tlp-cs-opts-list li {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   font-size: 13px;
   color: var(--tlp-ink-2);
+  font-weight: 500;
+  letter-spacing: -.003em;
 }
-.tlp-cs-opts-list li svg { width: 14px; height: 14px; color: var(--tlp-teal) }
+.tlp-cs-opts-list li svg {
+  width: 14px;
+  height: 14px;
+  color: var(--tlp-teal);
+  flex-shrink: 0;
+}
 
+.tlp-cs-opts--empty {
+  padding: 18px 20px;
+  border-style: dashed;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--tlp-mute);
+  font-style: italic;
+  text-align: center;
+}
+
+/* ─── Voices — 3-col quote cards with Trustpilot-style "Highly Relevant" tag ─── */
 .tlp-cs-lead {
   color: var(--tlp-ink-2);
-  font-size: 14px; line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.65;
+  letter-spacing: -.003em;
   margin: 0 0 20px;
 }
 
 .tlp-cs-quotes {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 24px;
 }
 @media (max-width: 820px) { .tlp-cs-quotes { grid-template-columns: 1fr } }
 
 .tlp-cs-quote {
-  border-left: 3px solid var(--tlp-teal);
-  padding: 2px 0 2px 18px;
+  position: relative;
+  padding: 0;
+  border: 0;
+  background: none;
+  border-radius: 0;
 }
-.tlp-cs-quote-text {
-  color: var(--tlp-ink-2);
-  font-size: 13.5px; line-height: 1.55;
-  margin: 0 0 14px;
+
+/* Green ✓ "Highly Relevant" pill at the top of every preview quote */
+.tlp-cs-quote-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 10px 4px 6px;
+  background: rgba(22, 163, 74, .08);
+  border-radius: 6px;
+  margin-bottom: 12px;
 }
-.tlp-cs-quote-who { display: flex; align-items: center; gap: 10px }
-.tlp-cs-quote-av {
-  width: 34px; height: 34px;
+.tlp-cs-quote-tag-ico {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
+  background: var(--tlp-green);
   color: #fff;
-  font-size: 11.5px; font-weight: 700;
-  display: grid; place-items: center;
   flex-shrink: 0;
 }
-.tlp-cs-quote-name {
-  font-size: 13.5px; font-weight: 700;
+.tlp-cs-quote-tag-ico svg { width: 10px; height: 10px }
+.tlp-cs-quote-tag-text {
+  font-size: 12px;
+  font-weight: 600;
   color: var(--tlp-ink);
-  display: inline-flex; align-items: center; gap: 6px;
+  letter-spacing: -.005em;
+  line-height: 1;
+}
+
+.tlp-cs-quote-text {
+  color: var(--tlp-ink-2);
+  font-size: 13.5px;
+  line-height: 1.65;
+  font-style: italic;
+  letter-spacing: -.003em;
+  margin: 0 0 16px;
+}
+
+.tlp-cs-quote-who {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tlp-cs-quote-av {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  letter-spacing: .01em;
+}
+.tlp-cs-quote-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tlp-ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: -.005em;
 }
 .tlp-cs-quote-role { font-size: 12px; color: var(--tlp-mute); margin-top: 1px }
 
@@ -3798,17 +4236,21 @@ html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nh-h, 112px) + 12
   .tlp-mk-card { grid-template-columns: 150px 1fr; min-height: auto }
   .tlp-mk-body { padding: 22px 22px 32px }
 
-  /* Key features — tighten indentation */
-  .tlp-kf-head    { padding-left: 20px }
-  .tlp-kf-desc,
+  /* Key features — stack name above description on tablet / large phone */
+  .tlp-kf-row       {
+    grid-template-columns: 1fr;
+    row-gap: 4px;
+    padding: 12px 12px 13px;
+    margin: 0 -12px;
+  }
+  /* legacy quote-card padding (still used by preview-only toggle subtree) */
   .tlp-kf-toggle,
-  .tlp-kf-quotes  { padding-left: 20px; padding-right: 0 }
-  .tlp-kf-bullet  { margin-left: -16px; margin-right: 6px }
+  .tlp-kf-quotes    { padding-left: 20px; padding-right: 0 }
 
   /* All features */
-  .tlp-af-head       { gap: 14px; flex-direction: column; align-items: stretch }
+  .tlp-af-head       { gap: 12px; flex-direction: column; align-items: stretch }
   .tlp-af-search     { width: 100% }
-  .tlp-af-grid       { column-gap: 28px }
+  .tlp-af-grid       { column-gap: 24px }
 
   /* Alternatives */
   .tlp-alt        { padding: 14px }
@@ -3818,9 +4260,19 @@ html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nh-h, 112px) + 12
 
   /* Pricing */
   .tlp-price-flags     { gap: 14px }
-  .tlp-plan-top        { padding: 16px 18px 14px }
-  .tlp-plan-body       { padding: 16px 20px 20px }
-  .tlp-pricing-grid    { border-radius: 6px }
+  .tlp-pricing-grid,
+  .tlp-pricing-grid[data-count="2"],
+  .tlp-pricing-grid[data-count="3"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: none;
+  }
+  .tlp-plan            { padding: 24px 22px 22px }
+  .tlp-plan-sym        { font-size: 26px }
+  .tlp-plan-amt        { font-size: 50px }
+  .tlp-plan-dec        { font-size: 26px }
+  .tlp-plan-per-inline { font-size: 16px }
+  .tlp-plan-feat li    { font-size: 13.5px; gap: 11px }
+  .tlp-plan-feat-check { width: 20px; height: 20px }
   .tlp-vo-title        { font-size: 17px; margin-top: 32px }
   .tlp-vo-grid         { gap: 28px }
 
@@ -3842,8 +4294,8 @@ html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nh-h, 112px) + 12
   .tlp-int-rate-lbl    { margin: 0 }
 
   /* Customer support */
-  .tlp-cs-opts         { padding: 16px 18px }
   .tlp-cs-quotes       { gap: 20px }
+  .tlp-cs-opts         { padding: 16px 18px 14px }
 
   /* Popular comparisons */
   .tlp-cmp             { padding: 16px 18px }
@@ -3929,19 +4381,22 @@ html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nh-h, 112px) + 12
   .tlp-wu-uc-wrap      { grid-template-columns: 1fr; justify-items: start; gap: 14px }
   .tlp-wu-meta         { text-align: left }
 
-  /* Key features */
-  .tlp-kf-head         { padding-left: 14px }
-  .tlp-kf-desc,
+  /* Key features — tighter typography on phone */
+  .tlp-kf-row          { padding: 11px 10px 12px; margin: 0 -10px }
+  .tlp-kf-name         { font-size: 13.5px }
+  .tlp-kf-desc         { font-size: 12.5px; line-height: 1.55 }
+  .tlp-kf-rate         { font-size: 10.5px; padding: 2px 6px }
+  /* legacy quote-card subtree */
   .tlp-kf-toggle,
   .tlp-kf-quotes       { padding-left: 14px }
-  .tlp-kf-bullet       { margin-left: -12px; margin-right: 4px }
-  .tlp-kf-name         { font-size: 14.5px }
-  .tlp-kf-desc         { font-size: 13.5px; line-height: 1.6 }
   .tlp-kf-toggle-lbl   { font-size: 14px }
 
   /* All features */
   .tlp-af-title        { font-size: 17px }
-  .tlp-af-grid         { column-gap: 20px; row-gap: 12px }
+  .tlp-af-row          { padding: 5px 0; font-size: 13px }
+  .tlp-af-name         { font-size: 13px }
+  .tlp-af-rate strong  { font-size: 12.5px }
+  .tlp-af-rate em      { font-size: 12px }
 
   /* Alternatives */
   .tlp-alt-head        { gap: 8px }
@@ -3958,8 +4413,23 @@ html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nh-h, 112px) + 12
 
   /* Pricing */
   .tlp-price-flags     { gap: 10px 16px; font-size: 12.5px }
-  .tlp-plan-amt        { font-size: 28px }
-  .tlp-plan-sym        { font-size: 14px }
+  .tlp-pricing-grid,
+  .tlp-pricing-grid[data-count="1"],
+  .tlp-pricing-grid[data-count="2"],
+  .tlp-pricing-grid[data-count="3"] {
+    grid-template-columns: 1fr;
+    max-width: none;
+  }
+  .tlp-plan            { padding: 22px 20px 20px; border-radius: 16px }
+  .tlp-plan-sym        { font-size: 22px }
+  .tlp-plan-amt        { font-size: 44px }
+  .tlp-plan-dec        { font-size: 22px }
+  .tlp-plan-per-inline { font-size: 15px }
+  .tlp-plan-name       { font-size: 14px; margin-bottom: 16px }
+  .tlp-plan-cta        { padding: 9px 22px; font-size: 13px }
+  .tlp-plan-feat       { gap: 12px }
+  .tlp-plan-feat li    { font-size: 13.5px; gap: 10px }
+  .tlp-plan-feat-check { width: 20px; height: 20px }
 
   /* User opinions */
   .tlp-vo              { padding-left: 16px }
@@ -3973,11 +4443,14 @@ html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nh-h, 112px) + 12
   .tlp-int-foot        { flex-direction: column; align-items: flex-start; gap: 10px }
 
   /* Customer support */
-  .tlp-cs-q            { font-size: 15px }
-  .tlp-cs-bullets li   { font-size: 13px }
+  .tlp-cs-q            { font-size: 17px }
   .tlp-cs-intro        { font-size: 13.5px }
-  .tlp-cs-quote        { padding-left: 16px }
+  .tlp-cs-rate         { font-size: 13.5px }
+  .tlp-cs-bullets li   { font-size: 13px }
+  .tlp-cs-opts-h       { font-size: 14px }
+  .tlp-cs-opts-list li { font-size: 12.5px }
   .tlp-cs-quote-text   { font-size: 13px }
+  .tlp-cs-quote-tag-text { font-size: 11.5px }
 
   /* FAQs */
   .tlp-faq-q           { font-size: 14px; padding: 14px 8px }
@@ -4046,12 +4519,17 @@ html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nh-h, 112px) + 12
   .tlp-int-logo        { width: 34px; height: 34px }
 
   /* Pricing */
-  .tlp-plan-top        { padding: 14px 14px 10px }
-  .tlp-plan-body       { padding: 14px 16px 18px }
-  .tlp-plan-amt        { font-size: 26px }
+  .tlp-plan            { padding: 20px 18px 18px }
+  .tlp-plan-sym        { font-size: 20px }
+  .tlp-plan-amt        { font-size: 38px }
+  .tlp-plan-dec        { font-size: 20px }
+  .tlp-plan-per-inline { font-size: 14px }
+  .tlp-plan-name       { font-size: 13.5px; margin-bottom: 14px }
+  .tlp-plan-feat li    { font-size: 13px }
+  .tlp-plan-feat-check { width: 18px; height: 18px }
 
   /* Customer support options */
-  .tlp-cs-opts         { padding: 14px 14px }
+  .tlp-cs-opts         { padding: 14px 16px }
   .tlp-cs-opts-list li { font-size: 12.5px }
 
   /* Sub-header minimal */
@@ -4270,19 +4748,8 @@ html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nh-h, 112px) + 12
   letter-spacing: .04em;
 }
 
-/* Customer Support — real-mode helpers. */
-.tlp-cs-opts-empty {
-  padding: 18px 16px;
-  border: 1px dashed #D1D5DB;
-  border-radius: 12px;
-  background: #FAFBFC;
-  color: var(--tlp-mute);
-  font-size: 13px;
-  line-height: 1.55;
-  text-align: center;
-}
+/* Customer Support — avatar image fit (used by both preview + real). */
 .tlp-cs-quote-av--img { object-fit: cover }
-.tlp-cs-rate em { color: var(--tlp-mute); font-style: normal; font-weight: 400; margin-left: 2px }
 
 /* ── Add to Compare button (sticky head) + Alternatives Compare pill ── */
 .tlp-add-compare {

@@ -15,7 +15,7 @@ const COLUMNS: Column[] = [
   {
     title: 'Company',
     links: [
-      { label: 'About Us',            href: '/about' },
+      { label: 'About InfoWebWorld',  href: '/about' },
       { label: 'Contact',             href: '/contact' },
       { label: 'Media',               href: '/media' },
       { label: 'Investor Relations',  href: '/investors' },
