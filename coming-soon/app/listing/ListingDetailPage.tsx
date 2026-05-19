@@ -3325,8 +3325,11 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                     {plans.map((p, idx) => {
                       const priceStr = String(p.price || '').trim()
                       const priceNum = priceStr.replace(/[^\d.]/g, '')
-                      const isFree   = !priceStr || /^(free|0(?:\.0+)?)$/i.test(priceStr) || priceNum === '0' || priceNum === ''
-                      const isCustom = /^(custom|contact(?: sales)?|enterprise|let'?s talk)$/i.test(priceStr)
+                      /* Explicit zero / "free" → Free. Empty/null/non-numeric
+                         → Custom (NOT Free) so an unfilled Enterprise tier
+                         doesn't accidentally read as a $0 freebie. */
+                      const isFree   = /^(free|0(?:\.0+)?)$/i.test(priceStr) || (priceNum !== '' && parseFloat(priceNum) === 0)
+                      const isCustom = !isFree && (priceStr === '' || priceNum === '' || /^(custom|contact(?: sales)?|enterprise|let'?s talk)$/i.test(priceStr))
                       // Parse price into integer + decimal parts for premium
                       // Apple-style typography (small decimal trailing the big digits).
                       let intPart = priceStr
