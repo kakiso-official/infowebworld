@@ -2026,9 +2026,10 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
 
               {/* ── Listing verification badge ──────────────────────────────
                   Prominent mint card when the listing has been verified by
-                  our team; muted "Unverified by InfoWebWorld" pill otherwise.
-                  Owners can apply via the dashboard's "Get Verified" flow. */}
-              {view.verified ? (
+                  our team. Unverified listings show NO badge (was previously
+                  a muted "Unverified" pill — removed since having both states
+                  on the page reads as a downgrade for honest unverified listings). */}
+              {view.verified && (
                 <div className="tlp-vbadge tlp-vbadge--ok" role="status" aria-label="Verified by InfoWebWorld">
                   <span className="tlp-vbadge-shield" aria-hidden="true">
                     <svg viewBox="0 0 24 24" width="22" height="22">
@@ -2046,22 +2047,6 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                         if (Number.isNaN(d.getTime())) return '.'
                         return ` on ${d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}.`
                       })()}
-                    </span>
-                  </span>
-                </div>
-              ) : (
-                <div className="tlp-vbadge tlp-vbadge--no" role="note" aria-label="Unverified by InfoWebWorld">
-                  <span className="tlp-vbadge-shield tlp-vbadge-shield--muted" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 2 4 5.5v5c0 5.2 3.4 9.6 8 10.5 4.6-.9 8-5.3 8-10.5v-5L12 2Z" />
-                      <path d="M12 8v4M12 16h.01" />
-                    </svg>
-                  </span>
-                  <span className="tlp-vbadge-body">
-                    <span className="tlp-vbadge-title tlp-vbadge-title--muted">Unverified by InfoWebWorld</span>
-                    <span className="tlp-vbadge-sub">
-                      {view.companyName} hasn't completed identity verification yet.
-                      Treat business details below as self-reported.
                     </span>
                   </span>
                 </div>
