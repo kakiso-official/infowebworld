@@ -196,10 +196,11 @@ async function getListingBySlug(slug: string) {
     [listing.category_id, listing.id]
   ) as Record<string, unknown>[]
 
-  /* Sibling broadening — walks UP the taxonomy tree:
-     L3 → all L3s under same L2 parent → all listings under same L1 sector.
-     Ensures even a lone L2 listing (no L3 siblings) finds neighbors at the
-     sector level. Stops once we have ≥ 9 siblings. */
+  /* Sibling broadening — walks UP the taxonomy tree but NEVER leaves the
+     listing's own L1 sector. A comparison between, say, "Salesforce" and
+     "Claude" makes no sense because they live in different sectors —
+     so we only ever surface listings whose root ancestor is the SAME L1.
+     L3 → L2 parent → L1 sector. No global fallback. */
   if (siblings.length < 9) {
     const have = new Set(siblings.map(s => Number(s.id)))
     have.add(listing.id)
@@ -226,26 +227,47 @@ async function getListingBySlug(slug: string) {
       }
     }
 
-    /* Step 2: still nothing — global fallback, grab the most-recent active
-       PRODUCT listings regardless of category. Guarantees the alternatives
-       section always has something to render so the sidebar never ends up
-       with just a logo+name floating in space. Sorted by created_at DESC
-       so the newest listing surfaces first as siblings[0]. */
+    /* Step 2: still thin — broaden to the entire L1 sector (all descendants
+       of the root ancestor). Walk from current category up to the L1 root,
+       then fetch every active listing whose category sits anywhere under
+       that root. Caps at 16 siblings total. Never crosses sectors. */
     if (siblings.length < 9) {
-      const anyActive = await query(
-        `SELECT ${SIBLING_COLS}
-           FROM submissions s
-           LEFT JOIN categories c ON c.id = s.category_id
-          WHERE s.id != ?
-            AND s.status IN ('active','paid')
-            AND COALESCE(s.listing_mode, 'product') = 'product'
-          ORDER BY s.created_at DESC
-          LIMIT 16`,
-        [listing.id]
-      ) as Record<string, unknown>[]
-      for (const r of anyActive) {
-        if (siblings.length >= 16) break
-        if (!have.has(Number(r.id))) { siblings.push(r); have.add(Number(r.id)) }
+      // Walk up to find L1 root id (the ancestor with parent_id IS NULL).
+      type CatRowRec = { id: number; parent_id: number | null }
+      let cursor: number | null = listing.category_id
+      let l1Id: number | null = null
+      for (let depth = 0; depth < 6 && cursor != null; depth++) {
+        const row: CatRowRec | null = await queryOne<CatRowRec>(
+          'SELECT id, parent_id FROM categories WHERE id = ?',
+          [cursor]
+        )
+        if (!row) break
+        if (row.parent_id == null) { l1Id = row.id; break }
+        cursor = row.parent_id
+      }
+      if (l1Id != null) {
+        const sectorListings = await query(
+          `WITH RECURSIVE sector_cats AS (
+             SELECT id FROM categories WHERE id = ?
+             UNION ALL
+             SELECT c.id FROM categories c
+               JOIN sector_cats sc ON sc.id = c.parent_id
+           )
+           SELECT ${SIBLING_COLS}
+             FROM submissions s
+             LEFT JOIN categories c ON c.id = s.category_id
+            WHERE s.category_id IN (SELECT id FROM sector_cats)
+              AND s.id != ?
+              AND s.status IN ('active','paid')
+              AND COALESCE(s.listing_mode, 'product') = 'product'
+            ORDER BY s.created_at DESC
+            LIMIT 32`,
+          [l1Id, listing.id]
+        ) as Record<string, unknown>[]
+        for (const r of sectorListings) {
+          if (siblings.length >= 16) break
+          if (!have.has(Number(r.id))) { siblings.push(r); have.add(Number(r.id)) }
+        }
       }
     }
   }
