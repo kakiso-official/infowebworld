@@ -4909,3 +4909,137 @@ html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nh-h, 112px) + 12
   background: var(--h-accent, #E8553D) !important; color: #fff !important;
   border-color: var(--h-accent, #E8553D) !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   POLISHED HOVER ANIMATIONS — applied across the listing flow.
+   Goal: every interactive list/card hints "alive" on hover without being
+   noisy. Subtle scale + color shift + dot lift, all 180ms ease-out for a
+   tactile feel. Honors prefers-reduced-motion (no transforms on a11y).
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Use cases (legend items + diamond cluster) ── */
+.tlp-wu-uc-wrap .tlp-wu-d {
+  transition: transform .25s cubic-bezier(.2,.7,.2,1),
+              filter .25s ease,
+              box-shadow .25s ease;
+}
+.tlp-wu-uc-wrap:hover .tlp-wu-d {
+  filter: brightness(1.05) saturate(1.1);
+}
+.tlp-wu-uc-wrap:hover .tlp-wu-d--big { transform: rotate(45deg) scale(1.06) }
+.tlp-wu-uc-wrap:hover .tlp-wu-d--rt  { transform: rotate(45deg) scale(1.10) translate(2px, -2px) }
+.tlp-wu-uc-wrap:hover .tlp-wu-d--top { transform: rotate(45deg) scale(1.12) translate(-1px, -2px) }
+.tlp-wu-uc-wrap:hover .tlp-wu-d--bot { transform: rotate(45deg) scale(1.10) translate(0, 2px) }
+.tlp-wu-uc-wrap:hover .tlp-wu-d--tr  { transform: rotate(45deg) scale(1.12) translate(2px, 1px) }
+
+.tlp-wu-legend li {
+  transition: color .18s ease, transform .18s ease;
+  border-radius: 6px;
+  padding: 2px 6px;
+  margin: 0 -6px;
+}
+.tlp-wu-legend li:hover {
+  color: var(--tlp-teal);
+  transform: translateX(3px);
+}
+.tlp-wu-legend li:hover .tlp-wu-dot {
+  transform: scale(1.35);
+  box-shadow: 0 0 0 3px rgba(12, 154, 154, .12);
+}
+.tlp-wu-dot {
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+/* ── Pros & Cons in overview side card ── */
+.tlp-pc-list li {
+  transition: transform .18s ease, color .18s ease;
+}
+.tlp-pc-list li:hover {
+  transform: translateX(2px);
+  color: var(--tlp-ink);
+}
+.tlp-pc-bullet {
+  transition: transform .25s cubic-bezier(.2,.7,.2,1);
+}
+.tlp-pc-list li:hover .tlp-pc-bullet {
+  transform: scale(1.18) rotate(-6deg);
+}
+
+/* ── Customer support pros/cons bullets (real listings) ── */
+.tlp-cs-bullets li {
+  transition: transform .18s ease, color .18s ease;
+}
+.tlp-cs-bullets li:hover {
+  transform: translateX(3px);
+  color: var(--tlp-ink);
+}
+.tlp-cs-bullet {
+  transition: transform .25s cubic-bezier(.2,.7,.2,1);
+}
+.tlp-cs-bullets li:hover .tlp-cs-bullet {
+  transform: scale(1.15) rotate(-6deg);
+}
+
+/* ── Integration cards (rich grid) ── */
+.tlp-int-card {
+  transition: border-color .2s ease, transform .2s ease;
+}
+.tlp-int-card:hover {
+  border-left-color: var(--tlp-teal-600);
+  transform: translateX(2px);
+}
+.tlp-int-logo {
+  transition: transform .25s cubic-bezier(.2,.7,.2,1);
+}
+.tlp-int-card:hover .tlp-int-logo {
+  transform: scale(1.06);
+}
+.tlp-int-link {
+  transition: color .15s ease;
+}
+.tlp-int-card:hover .tlp-int-link {
+  color: var(--tlp-teal-600);
+}
+
+/* ── Support / Training option list (sidebar in customer support) ── */
+.tlp-cs-opts-list li {
+  transition: transform .18s ease, color .18s ease;
+}
+.tlp-cs-opts-list li:hover {
+  transform: translateX(2px);
+  color: var(--tlp-ink);
+}
+.tlp-cs-opts-list li svg,
+.tlp-cs-opts-list li .tlp-icon {
+  transition: transform .2s ease;
+}
+.tlp-cs-opts-list li:hover svg,
+.tlp-cs-opts-list li:hover .tlp-icon {
+  transform: scale(1.15);
+}
+
+/* ── Plan card lift on hover (pricing) ── */
+.tlp-plan {
+  transition: transform .25s cubic-bezier(.2,.7,.2,1), box-shadow .25s ease;
+}
+.tlp-plan:hover {
+  transform: translateY(-4px);
+}
+
+/* ── Reduce motion for users who opt out ── */
+@media (prefers-reduced-motion: reduce) {
+  .tlp-wu-uc-wrap:hover .tlp-wu-d,
+  .tlp-wu-uc-wrap:hover .tlp-wu-d--big,
+  .tlp-wu-uc-wrap:hover .tlp-wu-d--rt,
+  .tlp-wu-uc-wrap:hover .tlp-wu-d--top,
+  .tlp-wu-uc-wrap:hover .tlp-wu-d--bot,
+  .tlp-wu-uc-wrap:hover .tlp-wu-d--tr,
+  .tlp-wu-legend li:hover,
+  .tlp-pc-list li:hover,
+  .tlp-cs-bullets li:hover,
+  .tlp-int-card:hover,
+  .tlp-cs-opts-list li:hover,
+  .tlp-plan:hover {
+    transform: none !important;
+  }
+}
