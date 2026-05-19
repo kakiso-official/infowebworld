@@ -2086,9 +2086,10 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             {/* ========== OVERVIEW CARD ========== */}
             {(isPreview || view.description || view.realIntegrations) && (
             <section id="overview" className="tlp-ovw-card">
-              <div className="tlp-ovw-grid">
+              <div className="tlp-ovw-grid tlp-ovw-grid--full">
 
-                {/* ── Left column: Q&A blocks ── */}
+                {/* ── Left column: Q&A blocks (now full-width — overview
+                       sidebar removed entirely per design) ── */}
                 <div className="tlp-ovw-main">
                   <h2 className="tlp-ovw-title">{view.companyName} overview</h2>
                   {isPreview && (
@@ -2163,83 +2164,6 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                   )}
                 </div>
 
-                {/* ── Right column: 3 stacked side blocks ── */}
-                <aside className="tlp-ovw-side">
-
-                  {/* Starting price — show only when submitter provided one.
-                      Free (price=0) renders as "Free" (not "$0"). Preview keeps
-                      the sample $13 visual so the layout demo still reads. */}
-                  {(() => {
-                    const priced: PriceDisplay = isPreview
-                      ? { kind: 'paid', num: '13' }
-                      : formatStartingPrice(view.realStartingPrice)
-                    if (!priced) return null
-                    return (
-                      <div className="tlp-side-block">
-                        <div className="tlp-side-head">
-                          <span className="tlp-side-title">
-                            Starting price <span className="tlp-info-ico"><InfoIcon /></span>
-                          </span>
-                          <a href="#pricing">See details</a>
-                        </div>
-                        <div className="tlp-side-price">
-                          {priced.kind === 'free' ? (
-                            <span className="tlp-side-price-num">Free</span>
-                          ) : (
-                            <>
-                              <span className="tlp-side-price-sym">$</span>
-                              <span className="tlp-side-price-num">{priced.num}</span>
-                            </>
-                          )}
-                          {priced.kind === 'paid' && (
-                            <span className="tlp-side-price-unit">{view.realStartingPeriod
-                              ? <>flat rate <br />{view.realStartingPeriod}</>
-                              : <>flat rate /<br />per month</>}</span>
-                          )}
-                        </div>
-                        <div className="tlp-side-trials">
-                          {view.realHasFreeTrial && (
-                            <span className="tlp-side-trial">
-                              Free Trial <span className="tlp-check-sm"><CheckSm /></span>
-                            </span>
-                          )}
-                          {view.realHasFreeVersion && (
-                            <span className="tlp-side-trial">
-                              Free Version <span className="tlp-check-sm"><CheckSm /></span>
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    )
-                  })()}
-
-                  {/* Pros & Cons — only when submitter provided either. */}
-                  {(view.realPros || view.realCons || isPreview) && (
-                    <div className="tlp-side-block">
-                      <div className="tlp-side-head">
-                        <span className="tlp-side-title">
-                          Pros &amp; Cons <span className="tlp-info-ico"><InfoIcon /></span>
-                        </span>
-                      </div>
-                      <ul className="tlp-pc-list">
-                        {(view.realPros || (isPreview ? PROS_SHORT : [])).map(p => (
-                          <li key={p}>
-                            <span className="tlp-pc-bullet tlp-pc-bullet--pos"><CheckFilled /></span>
-                            <span>{p}</span>
-                          </li>
-                        ))}
-                        {(view.realCons || (isPreview ? CONS_SHORT : [])).map(c => (
-                          <li key={c}>
-                            <span className="tlp-pc-bullet tlp-pc-bullet--neg"><MinusFilled /></span>
-                            <span>{c}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      {isPreview && <a href="#" className="tlp-pc-see">See all pros and cons</a>}
-                    </div>
-                  )}
-
-                </aside>
               </div>
             </section>
             )}
