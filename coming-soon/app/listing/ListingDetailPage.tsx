@@ -3443,7 +3443,12 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                                 <div className="tlp-int-head-info">
                                   <div className="tlp-int-name">{i.name}</div>
                                   {i.website && (
-                                    <a href={i.website} target="_blank" rel="noopener noreferrer" className="tlp-int-link">
+                                    <a
+                                      href={withInfoWebWorldUtm(i.website, listingSlug)}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="tlp-int-link"
+                                    >
                                       {domain || 'Visit site'}
                                     </a>
                                   )}
