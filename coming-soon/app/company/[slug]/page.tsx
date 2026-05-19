@@ -196,14 +196,21 @@ async function getListingBySlug(slug: string) {
     [listing.category_id, listing.id]
   ) as Record<string, unknown>[]
 
+  /* Sibling broadening — walks UP the taxonomy tree:
+     L3 → all L3s under same L2 parent → all listings under same L1 sector.
+     Ensures even a lone L2 listing (no L3 siblings) finds neighbors at the
+     sector level. Stops once we have ≥ 9 siblings. */
   if (siblings.length < 9) {
+    const have = new Set(siblings.map(s => Number(s.id)))
+    have.add(listing.id)
+
+    /* Step 1: walk one level up — find siblings under the same parent
+       category (e.g. same L2 when the listing is an L3). */
     const parent = await queryOne<{ parent_id: number | null }>(
       'SELECT parent_id FROM categories WHERE id = ?',
       [listing.category_id]
     )
     if (parent?.parent_id) {
-      const have = new Set(siblings.map(s => Number(s.id)))
-      have.add(listing.id)
       const broader = await query(
         `SELECT ${SIBLING_COLS}
            FROM submissions s
@@ -216,6 +223,45 @@ async function getListingBySlug(slug: string) {
       for (const r of broader) {
         if (siblings.length >= 16) break
         if (!have.has(Number(r.id))) { siblings.push(r); have.add(Number(r.id)) }
+      }
+    }
+
+    /* Step 2: still thin — walk one more level up to the L1 sector root.
+       This catches the case where the current listing sits in an L2
+       directly (no L3) and its L2 has no peer L3s with listings — but
+       there ARE listings deeper inside *other* L2s of the same L1. */
+    if (siblings.length < 9) {
+      const sectorRoot = await queryOne<{ root_id: number }>(
+        `WITH RECURSIVE chain AS (
+           SELECT id, parent_id FROM categories WHERE id = ?
+           UNION ALL
+           SELECT c.id, c.parent_id FROM categories c
+             JOIN chain ch ON ch.parent_id = c.id
+         )
+         SELECT id AS root_id FROM chain WHERE parent_id IS NULL LIMIT 1`,
+        [listing.category_id]
+      )
+      if (sectorRoot?.root_id) {
+        const sectorBroader = await query(
+          `WITH RECURSIVE descendants AS (
+             SELECT id FROM categories WHERE id = ?
+             UNION ALL
+             SELECT c.id FROM categories c
+               JOIN descendants d ON d.id = c.parent_id
+           )
+           SELECT ${SIBLING_COLS}
+             FROM submissions s
+             LEFT JOIN categories c ON c.id = s.category_id
+            WHERE s.category_id IN (SELECT id FROM descendants)
+              AND s.status IN ('active','paid')
+            ORDER BY s.created_at DESC
+            LIMIT 32`,
+          [sectorRoot.root_id]
+        ) as Record<string, unknown>[]
+        for (const r of sectorBroader) {
+          if (siblings.length >= 16) break
+          if (!have.has(Number(r.id))) { siblings.push(r); have.add(Number(r.id)) }
+        }
       }
     }
   }
