@@ -2222,19 +2222,28 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                       <div className="tlp-side-sub">in the same category</div>
                       {!isPreview && siblings[0] ? (() => {
                         const s = siblings[0]
+                        const sDomain = s.website ? String(s.website).replace(/^https?:\/\//, '').split('/')[0] : ''
                         const sLogo = s.logo_url
-                          || (s.website ? clearbit(String(s.website).replace(/^https?:\/\//, '').split('/')[0], 128) : '')
+                          || (sDomain ? clearbit(sDomain, 128) : '')
+                        /* Meta line — try category, then price, then tagline,
+                           then the bare domain. Never let it come back empty,
+                           otherwise the mini card looks broken (logo + name only). */
                         const metaParts: string[] = []
-                        if (s.category_name) metaParts.push(s.category_name)
+                        const catName = s.category_name ? String(s.category_name).trim() : ''
+                        if (catName) metaParts.push(catName)
                         const sPrice = formatStartingPrice(s.starting_price)
                         if (sPrice) {
                           const period = s.starting_price_period ? ` ${s.starting_price_period}` : ''
                           metaParts.push(sPrice.kind === 'free' ? 'Free' : `From $${sPrice.num}${period}`)
                         }
-                        const fallbackTag = s.tagline
-                          ? (s.tagline.length > 48 ? s.tagline.slice(0, 48) + '…' : s.tagline)
+                        const tag = s.tagline ? String(s.tagline).trim() : ''
+                        const fallbackTag = tag
+                          ? (tag.length > 48 ? tag.slice(0, 48) + '…' : tag)
                           : ''
-                        const metaLine = metaParts.length > 0 ? metaParts.join(' · ') : fallbackTag
+                        const metaLine =
+                          metaParts.length > 0
+                            ? metaParts.join(' · ')
+                            : (fallbackTag || sDomain || 'View listing')
                         return (
                           <a href={`/company/${s.slug}`} className="tlp-alt-mini">
                             {sLogo
