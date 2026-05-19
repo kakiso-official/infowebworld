@@ -75,6 +75,28 @@ function parseJsonArr(val: unknown): unknown[] {
   return []
 }
 
+/* Interpret a raw starting_price value (number | string | null) into the
+   shape the UI needs. Treats 0 / '0' / '0.00' as FREE (not $0), strips any
+   non-numeric chars, and returns null for missing/unparseable values so
+   callers can cleanly hide the slot. Used across overview side card,
+   alternatives grid, alternatives mini, customers-also-viewed, etc. */
+type PriceDisplay =
+  | { kind: 'paid'; num: string }
+  | { kind: 'free' }
+  | null
+function formatStartingPrice(raw: string | number | null | undefined): PriceDisplay {
+  if (raw === null || raw === undefined) return null
+  const str = String(raw).trim()
+  if (str === '') return null
+  // Strip currency symbols/letters, keep digits + decimal
+  const cleaned = str.replace(/[^\d.]/g, '')
+  if (cleaned === '' || cleaned === '.') return null
+  const num = parseFloat(cleaned)
+  if (isNaN(num)) return null
+  if (num === 0) return { kind: 'free' }
+  return { kind: 'paid', num: cleaned }
+}
+
 /* Tag the outbound "Visit website" URL with UTM params so the listing owner's
    own analytics (GA, Plausible, …) independently shows InfoWebWorld as the
    referral source. Preserves any existing query string the company already
@@ -2144,36 +2166,52 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 {/* ── Right column: 3 stacked side blocks ── */}
                 <aside className="tlp-ovw-side">
 
-                  {/* Starting price — only when submitter provided one (or in preview). */}
-                  {(view.realStartingPrice || isPreview) && (
-                    <div className="tlp-side-block">
-                      <div className="tlp-side-head">
-                        <span className="tlp-side-title">
-                          Starting price <span className="tlp-info-ico"><InfoIcon /></span>
-                        </span>
-                        <a href="#pricing">See details</a>
-                      </div>
-                      <div className="tlp-side-price">
-                        <span className="tlp-side-price-sym">$</span>
-                        <span className="tlp-side-price-num">{view.realStartingPrice || '13'}</span>
-                        <span className="tlp-side-price-unit">{view.realStartingPeriod
-                          ? <>flat rate <br />{view.realStartingPeriod}</>
-                          : <>flat rate /<br />per month</>}</span>
-                      </div>
-                      <div className="tlp-side-trials">
-                        {view.realHasFreeTrial && (
-                          <span className="tlp-side-trial">
-                            Free Trial <span className="tlp-check-sm"><CheckSm /></span>
+                  {/* Starting price — show only when submitter provided one.
+                      Free (price=0) renders as "Free" (not "$0"). Preview keeps
+                      the sample $13 visual so the layout demo still reads. */}
+                  {(() => {
+                    const priced: PriceDisplay = isPreview
+                      ? { kind: 'paid', num: '13' }
+                      : formatStartingPrice(view.realStartingPrice)
+                    if (!priced) return null
+                    return (
+                      <div className="tlp-side-block">
+                        <div className="tlp-side-head">
+                          <span className="tlp-side-title">
+                            Starting price <span className="tlp-info-ico"><InfoIcon /></span>
                           </span>
-                        )}
-                        {view.realHasFreeVersion && (
-                          <span className="tlp-side-trial">
-                            Free Version <span className="tlp-check-sm"><CheckSm /></span>
-                          </span>
-                        )}
+                          <a href="#pricing">See details</a>
+                        </div>
+                        <div className="tlp-side-price">
+                          {priced.kind === 'free' ? (
+                            <span className="tlp-side-price-num">Free</span>
+                          ) : (
+                            <>
+                              <span className="tlp-side-price-sym">$</span>
+                              <span className="tlp-side-price-num">{priced.num}</span>
+                            </>
+                          )}
+                          {priced.kind === 'paid' && (
+                            <span className="tlp-side-price-unit">{view.realStartingPeriod
+                              ? <>flat rate <br />{view.realStartingPeriod}</>
+                              : <>flat rate /<br />per month</>}</span>
+                          )}
+                        </div>
+                        <div className="tlp-side-trials">
+                          {view.realHasFreeTrial && (
+                            <span className="tlp-side-trial">
+                              Free Trial <span className="tlp-check-sm"><CheckSm /></span>
+                            </span>
+                          )}
+                          {view.realHasFreeVersion && (
+                            <span className="tlp-side-trial">
+                              Free Version <span className="tlp-check-sm"><CheckSm /></span>
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )
+                  })()}
 
                   {/* Alternatives mini — top sibling from same category. */}
                   {(siblings.length > 0 || isPreview) && (
@@ -2188,9 +2226,10 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                           || (s.website ? clearbit(String(s.website).replace(/^https?:\/\//, '').split('/')[0], 128) : '')
                         const metaParts: string[] = []
                         if (s.category_name) metaParts.push(s.category_name)
-                        if (s.starting_price) {
+                        const sPrice = formatStartingPrice(s.starting_price)
+                        if (sPrice) {
                           const period = s.starting_price_period ? ` ${s.starting_price_period}` : ''
-                          metaParts.push(`From $${s.starting_price}${period}`)
+                          metaParts.push(sPrice.kind === 'free' ? 'Free' : `From $${sPrice.num}${period}`)
                         }
                         const fallbackTag = s.tagline
                           ? (s.tagline.length > 48 ? s.tagline.slice(0, 48) + '…' : s.tagline)
@@ -3052,7 +3091,9 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                   {siblings.slice(0, 4).map(s => {
                     const sDomain = s.website ? String(s.website).replace(/^https?:\/\//, '').split('/')[0] : ''
                     const sLogo = s.logo_url || (sDomain ? clearbit(sDomain, 128) : '')
-                    const priceNum = s.starting_price ? String(s.starting_price).replace(/[^\d.]/g, '') : ''
+                    const sPrice = formatStartingPrice(s.starting_price)
+                    const priceNum = sPrice && sPrice.kind === 'paid' ? sPrice.num : ''
+                    const isFreePrice = !!sPrice && sPrice.kind === 'free'
                     return (
                       <div key={s.id} className="tlp-alt">
                         <div className="tlp-alt-head">
@@ -3081,7 +3122,11 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                             <span>Starting from</span>
                             <span className="tlp-info-ico"><InfoIcon /></span>
                           </div>
-                          {priceNum ? (
+                          {isFreePrice ? (
+                            <div className="tlp-alt-price">
+                              <span className="tlp-alt-price-num">Free</span>
+                            </div>
+                          ) : priceNum ? (
                             <div className="tlp-alt-price">
                               <span className="tlp-alt-price-sym">$</span>
                               <span className="tlp-alt-price-num">{priceNum}</span>
@@ -3094,7 +3139,11 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                               </svg>
                             </div>
                           )}
-                          <div className="tlp-alt-period">{s.starting_price_period || (priceNum ? '' : 'Pricing not shared')}</div>
+                          <div className="tlp-alt-period">{
+                            isFreePrice
+                              ? (s.starting_price_period || 'forever')
+                              : (s.starting_price_period || (priceNum ? '' : 'Pricing not shared'))
+                          }</div>
                         </div>
 
                         {s.tagline && <p className="tlp-alt-tagline">{s.tagline}</p>}
