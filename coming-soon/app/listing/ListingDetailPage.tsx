@@ -2213,58 +2213,6 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                     )
                   })()}
 
-                  {/* Alternatives mini — top sibling from same category. */}
-                  {(siblings.length > 0 || isPreview) && (
-                    <div className="tlp-side-block">
-                      <div className="tlp-side-head">
-                        <span className="tlp-side-title">Alternatives</span>
-                      </div>
-                      <div className="tlp-side-sub">in the same category</div>
-                      {!isPreview && siblings[0] ? (() => {
-                        const s = siblings[0]
-                        const sDomain = s.website ? String(s.website).replace(/^https?:\/\//, '').split('/')[0] : ''
-                        const sLogo = s.logo_url
-                          || (sDomain ? clearbit(sDomain, 128) : '')
-                        const catName = s.category_name ? String(s.category_name).trim() : ''
-                        const sPrice = formatStartingPrice(s.starting_price)
-                        const priceLabel = sPrice
-                          ? (sPrice.kind === 'free'
-                              ? 'Free'
-                              : `From $${sPrice.num}${s.starting_price_period ? ` / ${s.starting_price_period}` : ''}`)
-                          : ''
-                        const tag = s.tagline ? String(s.tagline).trim() : ''
-                        return (
-                          <a href={`/company/${s.slug}`} className="tlp-alt-mini">
-                            {sLogo
-                              ? <img src={sLogo} alt={`${s.company_name} logo`} className="tlp-alt-mini-logo-img" />
-                              : <span className="tlp-alt-mini-logo" aria-hidden="true">{s.company_name.charAt(0).toUpperCase()}</span>}
-                            <span className="tlp-alt-mini-info">
-                              <span className="tlp-alt-mini-name">{s.company_name}</span>
-                              {catName && <span className="tlp-alt-mini-meta">{catName}</span>}
-                              {priceLabel
-                                ? <span className="tlp-alt-mini-price">{priceLabel}</span>
-                                : tag && <span className="tlp-alt-mini-tag">{tag}</span>}
-                            </span>
-                            <span className="tlp-alt-mini-chev"><ChevronRight size={18} /></span>
-                          </a>
-                        )
-                      })() : (
-                        <a href="#alternatives" className="tlp-alt-mini">
-                          <span className="tlp-alt-mini-logo" aria-hidden="true">B</span>
-                          <span className="tlp-alt-mini-info">
-                            <span className="tlp-alt-mini-name">Brevo</span>
-                            <span className="tlp-alt-mini-rate">
-                              <Stars value={4.6} size={11} />
-                              <span>4.6</span>
-                              <em>(3.4K)</em>
-                            </span>
-                          </span>
-                          <span className="tlp-alt-mini-chev"><ChevronRight size={18} /></span>
-                        </a>
-                      )}
-                    </div>
-                  )}
-
                   {/* Pros & Cons — only when submitter provided either. */}
                   {(view.realPros || view.realCons || isPreview) && (
                     <div className="tlp-side-block">
