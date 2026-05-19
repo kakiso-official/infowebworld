@@ -229,8 +229,12 @@ async function getListingBySlug(slug: string) {
     /* Step 2: still thin — walk one more level up to the L1 sector root.
        This catches the case where the current listing sits in an L2
        directly (no L3) and its L2 has no peer L3s with listings — but
-       there ARE listings deeper inside *other* L2s of the same L1. */
-    if (siblings.length < 9) {
+       there ARE listings deeper inside *other* L2s of the same L1.
+
+       Implementation note: uses a recursive CTE. MariaDB 10.2.2+ and
+       MySQL 8.0+ both support these. If the engine doesn't, the query
+       throws and we silently fall through to the global fallback below. */
+    if (siblings.length < 9) try {
       const sectorRoot = await queryOne<{ root_id: number }>(
         `WITH RECURSIVE chain AS (
            SELECT id, parent_id FROM categories WHERE id = ?
@@ -262,6 +266,31 @@ async function getListingBySlug(slug: string) {
           if (siblings.length >= 16) break
           if (!have.has(Number(r.id))) { siblings.push(r); have.add(Number(r.id)) }
         }
+      }
+    } catch {
+      /* Recursive CTE not supported by this DB engine — fall through to
+         the global fallback below. */
+    }
+
+    /* Step 3: still nothing — global fallback, grab the most-recent active
+       listings regardless of category. Guarantees the alternatives section
+       always has *something* to render so the sidebar doesn't end up with
+       only a logo+name floating in space. */
+    if (siblings.length < 1) {
+      const anyActive = await query(
+        `SELECT ${SIBLING_COLS}
+           FROM submissions s
+           LEFT JOIN categories c ON c.id = s.category_id
+          WHERE s.id != ?
+            AND s.status IN ('active','paid')
+            AND COALESCE(s.listing_mode, 'product') = 'product'
+          ORDER BY s.created_at DESC
+          LIMIT 16`,
+        [listing.id]
+      ) as Record<string, unknown>[]
+      for (const r of anyActive) {
+        if (siblings.length >= 16) break
+        if (!have.has(Number(r.id))) { siblings.push(r); have.add(Number(r.id)) }
       }
     }
   }
