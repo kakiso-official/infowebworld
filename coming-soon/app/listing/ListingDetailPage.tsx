@@ -958,6 +958,38 @@ function BracketIcon() {
   )
 }
 
+/* Two-arrow zigzag "trend" icon used between the two logos in Popular
+   Comparisons. Red arrow climbs up-right, dark arrow falls down-left —
+   visually signals "stack X up against Y". */
+function TrendIcon({ size = 30 }: { size?: number }) {
+  return (
+    <svg viewBox="0 0 64 64" width={size} height={size} aria-hidden="true">
+      {/* Red up-trend (with arrowhead at top-right) */}
+      <path
+        d="M5 31 L20 18 L30 26 L43 14"
+        fill="none" stroke="#FF5A5F" strokeWidth="6.5"
+        strokeLinecap="round" strokeLinejoin="round"
+      />
+      <path
+        d="M34 12 L46 12 L46 24"
+        fill="none" stroke="#FF5A5F" strokeWidth="6.5"
+        strokeLinecap="round" strokeLinejoin="round"
+      />
+      {/* Dark down-trend (with arrowhead at bottom-left) */}
+      <path
+        d="M59 33 L44 46 L34 38 L21 50"
+        fill="none" stroke="#1F2937" strokeWidth="6.5"
+        strokeLinecap="round" strokeLinejoin="round"
+      />
+      <path
+        d="M30 52 L18 52 L18 40"
+        fill="none" stroke="#1F2937" strokeWidth="6.5"
+        strokeLinecap="round" strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
 function ArrowLeftSm() {
   return (
     <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
@@ -3558,21 +3590,33 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                     )}
                   </p>
 
-                  {/* Mixed pros/cons bullet list (preview only) — single list,
-                      ordered as data-provided. Each item rendered with a green
-                      circle (pos) or red circle (neg). */}
-                  {isPreview && (
-                    <ul className="tlp-cs-bullets">
-                      {SUPPORT_BULLETS.map(b => (
-                        <li key={b.text}>
-                          <span className={`tlp-cs-bullet tlp-cs-bullet--${b.kind}`} aria-hidden="true">
-                            {b.kind === 'pos' ? <CheckSm /> : <XSm />}
-                          </span>
-                          <span>{swap(b.text)}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+                  {/* Mixed pros/cons bullet list — single list with green check
+                      for pros and red X for cons. In preview, uses the static
+                      SUPPORT_BULLETS sample. In real mode, derives bullets from
+                      the listing's own pros/cons so the icons show up for any
+                      listing that has them populated. */}
+                  {(() => {
+                    type Bullet = { text: string; kind: 'pos' | 'neg' }
+                    const bullets: Bullet[] = isPreview
+                      ? (SUPPORT_BULLETS as Bullet[])
+                      : [
+                          ...(view.realPros || []).map(p => ({ text: p, kind: 'pos' as const })),
+                          ...(view.realCons || []).map(c => ({ text: c, kind: 'neg' as const })),
+                        ]
+                    if (bullets.length === 0) return null
+                    return (
+                      <ul className="tlp-cs-bullets">
+                        {bullets.map(b => (
+                          <li key={b.text}>
+                            <span className={`tlp-cs-bullet tlp-cs-bullet--${b.kind}`} aria-hidden="true">
+                              {b.kind === 'pos' ? <CheckSm /> : <XSm />}
+                            </span>
+                            <span>{isPreview ? swap(b.text) : b.text}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )
+                  })()}
                 </div>
 
                 {/* ── RIGHT sidebar: Support + Training options card ── */}
@@ -3787,9 +3831,10 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
               })()}
             </section>
 
-            {/* ========== POPULAR COMPARISONS — pair self with up to 9 siblings. ========== */}
+            {/* ========== POPULAR COMPARISONS — pair self with up to 9 siblings.
+                Clean two-row card: logos + TrendIcon, then names + "vs". ========== */}
             {(siblings.length > 0 || isPreview) && (
-            <section id="compare" className="tlp-sec">
+            <section id="compare" className="tlp-sec tlp-cmp-sec">
               <h2 className="tlp-sec-title">Popular comparisons with {view.companyName}</h2>
 
               <div className="tlp-cmp-grid">
@@ -3804,11 +3849,11 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                           className="tlp-cmp"
                           aria-label={`Compare ${view.companyName} with ${s.company_name}`}
                         >
-                          <div className="tlp-cmp-row">
+                          <div className="tlp-cmp-row tlp-cmp-logos">
                             {view.logoUrl
                               ? <img src={view.logoUrl} alt={view.companyName} className="tlp-cmp-logo" />
                               : <span className="tlp-cmp-logo tlp-cmp-letter">{view.companyName.charAt(0).toUpperCase()}</span>}
-                            <span className="tlp-cmp-bracket"><BracketIcon /></span>
+                            <span className="tlp-cmp-trend"><TrendIcon /></span>
                             {sLogo
                               ? <img src={sLogo} alt={s.company_name} className="tlp-cmp-logo" />
                               : <span className="tlp-cmp-logo tlp-cmp-letter">{s.company_name.charAt(0).toUpperCase()}</span>}
@@ -3830,9 +3875,9 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                           className="tlp-cmp"
                           aria-label={`Compare ${view.companyName} with ${c.b}`}
                         >
-                          <div className="tlp-cmp-row">
+                          <div className="tlp-cmp-row tlp-cmp-logos">
                             <img src={view.logoUrl} alt={view.companyName} className="tlp-cmp-logo" />
-                            <span className="tlp-cmp-bracket"><BracketIcon /></span>
+                            <span className="tlp-cmp-trend"><TrendIcon /></span>
                             <img src={clearbit(c.bd)} alt={c.b} className="tlp-cmp-logo" />
                           </div>
                           <div className="tlp-cmp-row tlp-cmp-names">
@@ -3846,7 +3891,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
               </div>
 
               <div className="tlp-cmp-more-wrap">
-                <a href="#alternatives" className="tlp-cmp-browse">Browse Alternatives</a>
+                <a href="#alternatives" className="tlp-cmp-browse">Browse all alternatives</a>
               </div>
             </section>
             )}
