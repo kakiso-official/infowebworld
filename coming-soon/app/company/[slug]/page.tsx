@@ -226,57 +226,12 @@ async function getListingBySlug(slug: string) {
       }
     }
 
-    /* Step 2: still thin — walk one more level up to the L1 sector root.
-       This catches the case where the current listing sits in an L2
-       directly (no L3) and its L2 has no peer L3s with listings — but
-       there ARE listings deeper inside *other* L2s of the same L1.
-
-       Implementation note: uses a recursive CTE. MariaDB 10.2.2+ and
-       MySQL 8.0+ both support these. If the engine doesn't, the query
-       throws and we silently fall through to the global fallback below. */
-    if (siblings.length < 9) try {
-      const sectorRoot = await queryOne<{ root_id: number }>(
-        `WITH RECURSIVE chain AS (
-           SELECT id, parent_id FROM categories WHERE id = ?
-           UNION ALL
-           SELECT c.id, c.parent_id FROM categories c
-             JOIN chain ch ON ch.parent_id = c.id
-         )
-         SELECT id AS root_id FROM chain WHERE parent_id IS NULL LIMIT 1`,
-        [listing.category_id]
-      )
-      if (sectorRoot?.root_id) {
-        const sectorBroader = await query(
-          `WITH RECURSIVE descendants AS (
-             SELECT id FROM categories WHERE id = ?
-             UNION ALL
-             SELECT c.id FROM categories c
-               JOIN descendants d ON d.id = c.parent_id
-           )
-           SELECT ${SIBLING_COLS}
-             FROM submissions s
-             LEFT JOIN categories c ON c.id = s.category_id
-            WHERE s.category_id IN (SELECT id FROM descendants)
-              AND s.status IN ('active','paid')
-            ORDER BY s.created_at DESC
-            LIMIT 32`,
-          [sectorRoot.root_id]
-        ) as Record<string, unknown>[]
-        for (const r of sectorBroader) {
-          if (siblings.length >= 16) break
-          if (!have.has(Number(r.id))) { siblings.push(r); have.add(Number(r.id)) }
-        }
-      }
-    } catch {
-      /* Recursive CTE not supported by this DB engine — fall through to
-         the global fallback below. */
-    }
-
-    /* Step 3: still nothing — global fallback, grab the most-recent active
-       listings regardless of category. Guarantees the alternatives section
-       always has *something* to render so the sidebar doesn't end up with
-       only a logo+name floating in space. */
-    if (siblings.length < 1) {
+    /* Step 2: still nothing — global fallback, grab the most-recent active
+       PRODUCT listings regardless of category. Guarantees the alternatives
+       section always has something to render so the sidebar never ends up
+       with just a logo+name floating in space. Sorted by created_at DESC
+       so the newest listing surfaces first as siblings[0]. */
+    if (siblings.length < 9) {
       const anyActive = await query(
         `SELECT ${SIBLING_COLS}
            FROM submissions s
