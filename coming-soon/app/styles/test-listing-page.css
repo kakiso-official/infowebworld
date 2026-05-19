@@ -2659,6 +2659,74 @@ body.tlp-subheader-active .tlp-write-review {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+/* ── 4+ plans → horizontal scroll-snap carousel, never wrap to row 2 ── */
+.tlp-pricing-carousel {
+  position: relative;
+  margin: 0 0 8px;
+}
+.tlp-pricing-track {
+  overflow-x: auto;
+  overflow-y: visible;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(17, 24, 39, .15) transparent;
+  padding: 4px 4px 14px;
+  margin: -4px -4px 0;          /* offset padding so card shadows aren't clipped */
+}
+.tlp-pricing-track::-webkit-scrollbar { height: 8px }
+.tlp-pricing-track::-webkit-scrollbar-thumb {
+  background: rgba(17, 24, 39, .15);
+  border-radius: 4px;
+}
+.tlp-pricing-track::-webkit-scrollbar-thumb:hover { background: rgba(17, 24, 39, .25) }
+
+.tlp-pricing-grid--carousel {
+  display: flex;
+  grid-template-columns: none !important;  /* override data-count[4]/[5] grid */
+  gap: 16px;
+  width: max-content;            /* track grows to fit all cards */
+}
+.tlp-pricing-grid--carousel > .tlp-plan {
+  flex: 0 0 320px;               /* fixed width per card; 3 visible @ ~1000px */
+  scroll-snap-align: start;
+}
+
+/* Prev / Next arrows — float over the track edges */
+.tlp-pricing-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px; height: 40px;
+  border-radius: 999px;
+  background: #FFFFFF;
+  border: 1px solid var(--tlp-border);
+  color: var(--tlp-ink);
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  box-shadow: 0 4px 12px rgba(17, 24, 39, .12);
+  transition: background-color .15s ease, transform .15s ease, opacity .15s ease;
+}
+.tlp-pricing-nav:hover {
+  background: var(--tlp-bg-soft);
+  transform: translateY(-50%) scale(1.05);
+}
+.tlp-pricing-nav:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+.tlp-pricing-nav--prev { left: -20px }
+.tlp-pricing-nav--next { right: -20px }
+
+@media (max-width: 760px) {
+  .tlp-pricing-grid--carousel > .tlp-plan { flex: 0 0 280px }
+  .tlp-pricing-nav { width: 36px; height: 36px }
+  .tlp-pricing-nav--prev { left: 4px }
+  .tlp-pricing-nav--next { right: 4px }
+}
+
 /* Plan card — vibrant pastel gradient design.
    Each card gets a different pastel via [data-color] cycled by index.
    Layered shadows give the card a "floating on a soft cloud" feel.
@@ -3888,60 +3956,121 @@ body.tlp-subheader-active .tlp-write-review {
 .tlp-faq-see:hover { background: var(--tlp-teal-600); color: #fff; text-decoration: none }
 
 /* ═══════════════════════════════════════════════════════
-   Popular comparisons — 3×5 grid of bracket-icon cards
+   Popular comparisons — clean Capterra-style 3-col grid.
+   Card: flat white, hairline border, rounded corners.
+   Row 1: [logo] [TrendIcon] [logo]
+   Row 2: [Self name] vs [Other name]
+   Hover: subtle background tint only.
    ═══════════════════════════════════════════════════════ */
+
+.tlp-cmp-sec .tlp-sec-title { margin-bottom: 22px }
 
 .tlp-cmp-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 18px;
 }
 @media (max-width: 760px) { .tlp-cmp-grid { grid-template-columns: 1fr 1fr } }
 @media (max-width: 460px) { .tlp-cmp-grid { grid-template-columns: 1fr } }
 
 .tlp-cmp {
-  display: flex; flex-direction: column;
-  gap: 10px;
-  padding: 18px 20px;
-  border: 1px solid var(--tlp-border);
-  border-radius: 6px;
+  /* 3-column grid. Each column auto-sizes to its WIDER child (usually the
+     name on row 2). The logo on row 1 is then centered above its name.
+     The whole cluster is centered horizontally in the card.
+     Result: even when names have different lengths (e.g. "Claude AI" vs
+     "ChatGPT by OpenAI"), each logo sits directly above the center of
+     its own name — never drifting. */
+  display: grid;
+  grid-template-columns: auto auto auto;
+  justify-content: center;   /* center the cluster in the card */
+  align-items: center;
+  /* per-cell alignment below — both logos converge toward the central
+     compare icon: left side end-aligned, right side start-aligned. */
+  column-gap: 10px;
+  row-gap: 6px;
+  padding: 20px 24px;
+  border: 1px solid #F1F3F5;
+  border-radius: 8px;
   background: var(--tlp-bg);
   text-decoration: none;
-  transition: all .15s ease;
+  transition: background-color .15s ease, border-color .15s ease;
 }
-.tlp-cmp:hover { background: #F9FAFB; text-decoration: none }
-.tlp-cmp-row { display: flex; align-items: center; gap: 12px }
+/* Promote each row's children to be direct grid items of .tlp-cmp,
+   so columns auto-align between the logos row and the names row. */
+.tlp-cmp-row { display: contents }
+
+/* Per-cell horizontal alignment — both logos converge toward the
+   central compare icon, so the card always reads "X  vs  Y" tightly:
+   left column → end (right-edge), middle → center, right → start. */
+.tlp-cmp-logos > :nth-child(1),
+.tlp-cmp-names > :nth-child(1) { justify-self: end; }
+
+.tlp-cmp-logos > :nth-child(2),
+.tlp-cmp-names > :nth-child(2) { justify-self: center; }
+
+.tlp-cmp-logos > :nth-child(3),
+.tlp-cmp-names > :nth-child(3) { justify-self: start; }
+/* Specificity bump: global .tlp-main a:hover adds underline, so use
+   a.tlp-cmp to beat it (0,2,1 ≥ 0,2,1) plus !important on the leaf
+   spans for total safety. */
+a.tlp-cmp,
+a.tlp-cmp:hover,
+a.tlp-cmp:focus {
+  text-decoration: none !important;
+}
+.tlp-cmp:hover {
+  background: #FAFBFC;
+  border-color: #E2E5E9;
+  /* keep the same Effect 6 base shadow on hover — let the lifted edges
+     stay consistent, no jarring shadow swap */
+}
+.tlp-cmp:focus-visible {
+  outline: 3px solid var(--tlp-teal-50);
+  outline-offset: 2px;
+  border-color: var(--tlp-teal);
+  /* keep Effect 6 box-shadow untouched on focus */
+}
+
+/* old flex-row rules removed — .tlp-cmp-row now uses display: contents
+   so its children become direct grid items of .tlp-cmp (see above). */
+
 .tlp-cmp-logo {
-  width: 30px; height: 30px;
-  border-radius: 5px;
+  width: 32px; height: 32px;
+  border-radius: 4px;
   object-fit: contain;
   flex-shrink: 0;
 }
-.tlp-cmp-bracket {
+.tlp-cmp-trend {
   display: inline-flex;
   flex-shrink: 0;
+  width: 18px; height: 18px;
+  align-items: center; justify-content: center;
 }
+.tlp-cmp-trend svg { width: 18px; height: 18px }
 
-.tlp-cmp-names { padding-left: 2px }
+.tlp-cmp-names {
+  /* gap/line-height handled by grid container now */
+  line-height: 1.3;
+}
 .tlp-cmp-name {
-  font-size: 14px; font-weight: 700;
-  color: var(--tlp-teal);
+  font-size: 14px; font-weight: 600;
+  color: var(--tlp-ink);
   min-width: 0;
+  letter-spacing: -.005em;
 }
 .tlp-cmp-name--muted {
-  color: var(--tlp-ink-2);
+  color: #9AA3AE;
   font-weight: 500;
 }
 .tlp-cmp-vs {
   font-size: 12.5px; font-weight: 500;
-  color: var(--tlp-mute);
+  color: #9AA3AE;
   text-transform: lowercase;
-  margin: 0 2px;
 }
 
 .tlp-cmp-more-wrap {
   display: flex; justify-content: center;
-  margin-top: 30px;
+  margin-top: 28px;
 }
 .tlp-cmp-browse {
   padding: 10px 24px;
@@ -3954,8 +4083,17 @@ body.tlp-subheader-active .tlp-write-review {
   text-transform: uppercase;
   text-decoration: none;
   background: transparent;
+  transition: background-color .15s ease, color .15s ease;
 }
-.tlp-cmp-browse:hover { background: var(--tlp-teal-50); color: var(--tlp-teal); text-decoration: none }
+.tlp-cmp-browse:hover {
+  background: var(--tlp-teal-50);
+  color: var(--tlp-teal);
+  text-decoration: none;
+}
+
+@media (max-width: 460px) {
+  .tlp-cmp { padding: 16px 18px }
+}
 
 /* ═══════════════════════════════════════════════════════
    Related categories — folder-icon cards in 3×4 grid
@@ -4297,8 +4435,8 @@ html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nh-h, 112px) + 12
   .tlp-cs-quotes       { gap: 20px }
   .tlp-cs-opts         { padding: 16px 18px 14px }
 
-  /* Popular comparisons */
-  .tlp-cmp             { padding: 16px 18px }
+  /* Popular comparisons — handled in the component's own media queries
+     (see .tlp-cmp-sec block earlier in the file). */
 
   /* Related categories */
   .tlp-rc              { padding: 14px 18px }
@@ -4459,11 +4597,9 @@ html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nh-h, 112px) + 12
   .tlp-faq-alts        { gap: 8px }
   .tlp-faq-alt         { padding: 10px }
 
-  /* Popular comparisons */
-  .tlp-cmp             { padding: 14px 14px; gap: 8px }
-  .tlp-cmp-logo        { width: 26px; height: 26px }
-  .tlp-cmp-name        { font-size: 13px }
-  .tlp-cmp-browse      { padding: 10px 18px; font-size: 11.5px }
+  /* Popular comparisons — small-phone CTA polish only; sizing
+     handled by the .tlp-cmp-sec block's own breakpoints above. */
+  .tlp-cmp-browse      { padding: 10px 20px; font-size: 11.5px }
 
   /* Related categories */
   .tlp-rc              { padding: 14px 16px; gap: 12px }

@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
+import type { ReactNode } from 'react'
 import type { RealSubmission, FaqItem, KeyFeature, Award } from '../iww-hq/data/submissions-storage'
 import WriteReviewModal from './WriteReviewModal'
 import LeadFormModal from './LeadFormModal'
@@ -661,6 +662,72 @@ const TOC = TOC_ITEMS
 /* ═══════════════════════════════════════════
    Small subcomponents
    ═══════════════════════════════════════════ */
+
+/* Horizontal pricing carousel for 4+ plans — keeps cards full-size and scroll-
+   snapped instead of letting the 4th wrap onto a new row. Prev/Next buttons
+   scroll by one card width; touch + trackpad swipe also work natively. */
+function PricingCarousel({ children }: { children: ReactNode }) {
+  const trackRef = useRef<HTMLDivElement>(null)
+  const [canPrev, setCanPrev] = useState(false)
+  const [canNext, setCanNext] = useState(true)
+
+  const updateNav = useCallback(() => {
+    const el = trackRef.current
+    if (!el) return
+    setCanPrev(el.scrollLeft > 4)
+    setCanNext(el.scrollLeft + el.clientWidth < el.scrollWidth - 4)
+  }, [])
+
+  useEffect(() => {
+    updateNav()
+    const el = trackRef.current
+    if (!el) return
+    el.addEventListener('scroll', updateNav, { passive: true })
+    window.addEventListener('resize', updateNav)
+    return () => {
+      el.removeEventListener('scroll', updateNav)
+      window.removeEventListener('resize', updateNav)
+    }
+  }, [updateNav])
+
+  const scrollByCard = (dir: -1 | 1) => {
+    const el = trackRef.current
+    if (!el) return
+    const first = el.querySelector<HTMLElement>('.tlp-plan')
+    const step = first ? first.offsetWidth + 16 : el.clientWidth * 0.8
+    el.scrollBy({ left: dir * step, behavior: 'smooth' })
+  }
+
+  return (
+    <div className="tlp-pricing-carousel">
+      <button
+        type="button"
+        className="tlp-pricing-nav tlp-pricing-nav--prev"
+        onClick={() => scrollByCard(-1)}
+        disabled={!canPrev}
+        aria-label="Previous plans"
+      >
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M15 6l-6 6 6 6" />
+        </svg>
+      </button>
+      <div className="tlp-pricing-track" ref={trackRef}>
+        {children}
+      </div>
+      <button
+        type="button"
+        className="tlp-pricing-nav tlp-pricing-nav--next"
+        onClick={() => scrollByCard(1)}
+        disabled={!canNext}
+        aria-label="Next plans"
+      >
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M9 6l6 6-6 6" />
+        </svg>
+      </button>
+    </div>
+  )
+}
 
 function Stars({ value, size = 14 }: { value: number; size?: number }) {
   const rounded = Math.round(value * 2) / 2
@@ -3200,8 +3267,12 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                     }))
                   : (isPreview ? PRICING_PLANS.map(p => ({ ...p, period: 'Per month' })) : [])
                 if (plans.length === 0) return null
-                return (
-                  <div className="tlp-pricing-grid" data-count={plans.length}>
+                const useCarousel = plans.length > 3
+                const grid = (
+                  <div
+                    className={`tlp-pricing-grid${useCarousel ? ' tlp-pricing-grid--carousel' : ''}`}
+                    data-count={plans.length}
+                  >
                     {plans.map((p, idx) => {
                       const priceStr = String(p.price || '').trim()
                       const priceNum = priceStr.replace(/[^\d.]/g, '')
@@ -3281,6 +3352,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                     })}
                   </div>
                 )
+                return useCarousel ? <PricingCarousel>{grid}</PricingCarousel> : grid
               })()}
 
               {isPreview && (
