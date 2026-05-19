@@ -2225,25 +2225,14 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                         const sDomain = s.website ? String(s.website).replace(/^https?:\/\//, '').split('/')[0] : ''
                         const sLogo = s.logo_url
                           || (sDomain ? clearbit(sDomain, 128) : '')
-                        /* Meta line — try category, then price, then tagline,
-                           then the bare domain. Never let it come back empty,
-                           otherwise the mini card looks broken (logo + name only). */
-                        const metaParts: string[] = []
                         const catName = s.category_name ? String(s.category_name).trim() : ''
-                        if (catName) metaParts.push(catName)
                         const sPrice = formatStartingPrice(s.starting_price)
-                        if (sPrice) {
-                          const period = s.starting_price_period ? ` ${s.starting_price_period}` : ''
-                          metaParts.push(sPrice.kind === 'free' ? 'Free' : `From $${sPrice.num}${period}`)
-                        }
-                        const tag = s.tagline ? String(s.tagline).trim() : ''
-                        const fallbackTag = tag
-                          ? (tag.length > 48 ? tag.slice(0, 48) + '…' : tag)
+                        const priceLabel = sPrice
+                          ? (sPrice.kind === 'free'
+                              ? 'Free'
+                              : `From $${sPrice.num}${s.starting_price_period ? ` / ${s.starting_price_period}` : ''}`)
                           : ''
-                        const metaLine =
-                          metaParts.length > 0
-                            ? metaParts.join(' · ')
-                            : (fallbackTag || sDomain || 'View listing')
+                        const tag = s.tagline ? String(s.tagline).trim() : ''
                         return (
                           <a href={`/company/${s.slug}`} className="tlp-alt-mini">
                             {sLogo
@@ -2251,7 +2240,10 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                               : <span className="tlp-alt-mini-logo" aria-hidden="true">{s.company_name.charAt(0).toUpperCase()}</span>}
                             <span className="tlp-alt-mini-info">
                               <span className="tlp-alt-mini-name">{s.company_name}</span>
-                              {metaLine && <span className="tlp-alt-mini-meta">{metaLine}</span>}
+                              {catName && <span className="tlp-alt-mini-meta">{catName}</span>}
+                              {priceLabel
+                                ? <span className="tlp-alt-mini-price">{priceLabel}</span>
+                                : tag && <span className="tlp-alt-mini-tag">{tag}</span>}
                             </span>
                             <span className="tlp-alt-mini-chev"><ChevronRight size={18} /></span>
                           </a>

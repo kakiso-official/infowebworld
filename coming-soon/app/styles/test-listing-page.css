@@ -1086,6 +1086,29 @@ body.tlp-subheader-active .tlp-write-review {
   font-weight: 500;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
+.tlp-alt-mini-price {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--tlp-ink);
+  background: var(--tlp-bg-soft);
+  border: 1px solid var(--tlp-border);
+  border-radius: 999px;
+  padding: 1px 8px;
+  line-height: 1.4;
+  max-width: 100%;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.tlp-alt-mini-tag {
+  display: block;
+  margin-top: 3px;
+  color: var(--tlp-mute);
+  font-size: 12px;
+  font-style: italic;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 .tlp-alt-mini-rate { display: flex; align-items: center; gap: 6px; font-size: 12.5px; margin-top: 3px }
 .tlp-alt-mini-rate span { color: var(--tlp-ink-2); font-weight: 600 }
 .tlp-alt-mini-rate em { color: var(--tlp-mute); font-style: normal; font-weight: 400 }
