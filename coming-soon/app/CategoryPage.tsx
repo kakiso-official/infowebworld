@@ -312,39 +312,42 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
         />
         {subcats.length > 0 && <SubcategoryChips subcategories={subcats} sectorSlug={sectorSlug} />}
 
-        {/* ── Table of Contents — only when Gemini content exists ── */}
+        {/* ── Section tabs — flat underline pattern.
+              "All Listings" jumps to the listings grid, "Guide" jumps to the
+              first Gemini-generated SEO section. Only render the Guide tab
+              once there's content to scroll to. ── */}
         {initialData?.seoContent && (() => {
           const sc = initialData.seoContent
           const bg = sc.buyers_guide && (typeof sc.buyers_guide === 'string' ? (() => { try { return JSON.parse(sc.buyers_guide) } catch { return null } })() : sc.buyers_guide)
-          const tocItems: { id: string; label: string; desc: string; icon: string }[] = []
-          tocItems.push({ id: 'cd-listings', label: 'Top Companies', desc: 'Browse verified listings', icon: ic.building })
-          if (sc.rich_description) tocItems.push({ id: 'seo-about', label: 'About', desc: 'Editorial overview', icon: ic.file })
-          if (bg?.features) tocItems.push({ id: 'seo-guide', label: "Buyer's Guide", desc: 'What to look for', icon: ic.search })
-          if (sc.use_cases) tocItems.push({ id: 'seo-usecases', label: 'Use Cases', desc: 'Real-world scenarios', icon: ic.grid })
-          if (sc.comparisons) tocItems.push({ id: 'seo-compare', label: 'Alternatives', desc: 'Compare approaches', icon: ic.layers })
-          if (sc.long_tail_keywords) tocItems.push({ id: 'seo-find', label: 'Find Best', desc: 'Search by need', icon: ic.tag })
-          if (sc.complementary_categories) tocItems.push({ id: 'seo-explore', label: 'Related', desc: 'Adjacent categories', icon: ic.globe })
-          if (sc.extended_faq) tocItems.push({ id: 'seo-faq', label: 'FAQ', desc: 'Common questions', icon: ic.helpCircle })
+          const guideAnchor =
+            sc.rich_description ? 'seo-about' :
+            bg?.features ? 'seo-guide' :
+            sc.use_cases ? 'seo-usecases' :
+            sc.comparisons ? 'seo-compare' :
+            sc.long_tail_keywords ? 'seo-find' :
+            sc.complementary_categories ? 'seo-explore' :
+            sc.extended_faq ? 'seo-faq' :
+            null
+          const tabs: { id: string; label: string; icon: string }[] = [
+            { id: 'cd-listings', label: 'All Listings', icon: ic.layers },
+          ]
+          if (guideAnchor) tabs.push({ id: guideAnchor, label: 'Guide', icon: ic.file })
           return (
-            <nav className="cd-toc" aria-label="Page contents" style={{ '--toc-c': color } as React.CSSProperties}>
-              <div className="cd-toc-header">
-                <h3 className="cd-toc-title">
-                  <I d={ic.layers} size={14} color={color} sw={2} />
-                  On this page
-                  <span className="cd-toc-count">{tocItems.length}</span>
-                </h3>
-              </div>
-              <div className="cd-toc-grid">
-                {tocItems.map((item, i) => (
-                  <a key={item.id} href={`#${item.id}`} className="cd-toc-item"
-                    onClick={e => { e.preventDefault(); document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }}>
-                    <span className="cd-toc-num">{String(i + 1).padStart(2, '0')}</span>
-                    <span className="cd-toc-icon"><I d={item.icon} size={15} color={color} sw={2} /></span>
-                    <span className="cd-toc-body">
-                      <span className="cd-toc-label">{item.label}</span>
-                      <span className="cd-toc-desc">{item.desc}</span>
+            <nav className="cd-toc" aria-label="Page sections" style={{ '--toc-c': color } as React.CSSProperties}>
+              <div className="cd-toc-tabs" role="tablist">
+                {tabs.map((t, i) => (
+                  <a
+                    key={t.id}
+                    href={`#${t.id}`}
+                    role="tab"
+                    aria-selected={i === 0}
+                    className={'cd-toc-tab' + (i === 0 ? ' cd-toc-tab--active' : '')}
+                    onClick={e => { e.preventDefault(); document.getElementById(t.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }}
+                  >
+                    <span className="cd-toc-tab-inner">
+                      <I d={t.icon} size={15} color="currentColor" sw={2} />
+                      <span className="cd-toc-tab-label">{t.label}</span>
                     </span>
-                    <I d={ic.arrow} size={12} color="var(--cd-color, var(--h-accent))" sw={2} />
                   </a>
                 ))}
               </div>
@@ -446,7 +449,7 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
             {/* Listing cards */}
             <div>
               {filteredReal.length > 0 ? (
-                filteredReal.map(item => <RealListingCard key={item.id} item={item} color={color} />)
+                filteredReal.map(item => <RealListingCard key={item.id} item={item} color={color} sectorSlug={sectorSlug || ''} />)
               ) : hasAnyFilter ? (
                 <div className="cd-empty">
                   <I d={ic.search} size={32} color="var(--h-muted)" sw={1.5} />

@@ -671,21 +671,21 @@
 
 /* Section container */
 .cd-page {
-  background: #fff; min-height: 60vh; padding: .75rem 0 clamp(2rem, 4vw, 3rem); position: relative; overflow: visible;
+  background: #FFFFFF; min-height: 60vh; padding: .75rem 0 clamp(2rem, 4vw, 3rem); position: relative; overflow: visible;
   --cd-border: color-mix(in srgb, var(--cd-color, #E8553D) 18%, transparent);
   --cd-border-light: color-mix(in srgb, var(--cd-color, #E8553D) 10%, transparent);
   --cd-border-strong: color-mix(in srgb, var(--cd-color, #E8553D) 30%, transparent);
 }
+/* L2+ category pages: pure white, Inter only across the whole subtree.
+   Decorative background shapes are hidden so the page reads clean. */
+.cd-page, .cd-page * {
+  font-family: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+}
 .cd-wrap { max-width: 1340px; margin: 0 auto; padding: 0 clamp(.75rem, 2vw, 1.25rem); position: relative; z-index: 1 }
 
-/* ── Decorative background shapes ── */
-.cd-shapes { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden }
-.cd-shape { position: absolute; border-radius: 50%; opacity: .08; filter: blur(2px) }
-.cd-shape--1 { width: 320px; height: 320px; top: -60px; right: -80px; opacity: .1 }
-.cd-shape--2 { width: 220px; height: 220px; top: 35%; left: -90px; background: #3B82F6 }
-.cd-shape--3 { width: 160px; height: 160px; top: 55%; right: -40px; opacity: .07 }
-.cd-shape--4 { width: 240px; height: 240px; bottom: 20%; left: -60px; background: #8B5CF6; opacity: .06 }
-.cd-shape--5 { width: 100px; height: 100px; top: 15%; left: 50%; background: #14B8A6; opacity: .06 }
+/* ── Decorative background shapes — hidden (kept for backward-compat) ── */
+.cd-shapes { display: none }
+.cd-shape { display: none }
 
 /* ── Hero ── */
 .cd-breadcrumb { display: flex; align-items: center; gap: .35rem; flex-wrap: wrap; margin-bottom: .65rem }
@@ -695,81 +695,62 @@
 .cd-breadcrumb-current { font-family: var(--font-nunito), sans-serif; font-size: .75rem; font-weight: 800; color: #000 }
 .cd-breadcrumb-loc { font-family: var(--font-nunito), sans-serif; font-size: .75rem; font-weight: 600; color: var(--h-accent, #E8553D) }
 
-/* ── Table of Contents — grid matching subcategories style ── */
-.cd-toc { margin-bottom: 1.5rem }
-.cd-toc-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: .65rem;
+/* ── Section tabs — flat underline pattern (Goodfirms-style).
+      Both tabs share the sector accent colour; only the active one
+      carries the 3px underline. Sized for clear, readable type rather
+      than shouty all-caps tracking. ── */
+.cd-toc {
+  margin: 0 0 .85rem;
 }
-.cd-toc-title {
-  display: flex; align-items: center; gap: 6px;
-  font: 800 .95rem/1 var(--font-nunito), sans-serif;
-  color: #000; margin: 0;
+.cd-toc-tabs {
+  display: flex;
+  gap: 0;
+  position: relative;
 }
-.cd-toc-count {
-  font-size: .65rem; font-weight: 800;
-  padding: 2px 8px; border-radius: 999px;
-  background: var(--toc-c, var(--h-accent)); color: #fff;
+.cd-toc-tab {
+  display: inline-flex; align-items: center;
+  padding: 10px 18px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--toc-c, var(--h-accent)) 70%, transparent);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color .18s;
 }
-.cd-toc-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  border-radius: 12px; overflow: hidden;
-  border: 1.5px solid var(--cd-border, rgba(0,0,0,.1));
+.cd-toc-tab:hover {
+  color: var(--toc-c, var(--h-accent));
 }
-.cd-toc-item {
-  display: flex; align-items: center; gap: .65rem;
-  padding: .75rem .95rem;
-  background: #fff; text-decoration: none; cursor: pointer;
-  border-right: 1px solid var(--cd-border-light, rgba(0,0,0,.08));
-  border-bottom: 1px solid var(--cd-border-light, rgba(0,0,0,.08));
-  transition: background .15s;
+/* The inner wrapper carries the underline so the active line is only as
+   wide as the icon + label, not the tab's full padded width. */
+.cd-toc-tab-inner {
+  display: inline-flex; align-items: center;
+  gap: 8px;
+  padding-bottom: 4px;
+  border-bottom: 2.5px solid transparent;
+  transition: border-color .18s;
 }
-.cd-toc-item:nth-child(4n) { border-right: none }
-.cd-toc-item:hover { background: rgba(0,0,0,.02) }
-.cd-toc-num {
-  font: 800 .68rem/1 var(--font-inter, 'Inter', sans-serif);
-  color: var(--toc-c, var(--h-accent)); opacity: .45;
-  flex-shrink: 0; width: 18px;
+.cd-toc-tab--active {
+  color: var(--toc-c, var(--h-accent));
 }
-.cd-toc-icon {
-  width: 34px; height: 34px; border-radius: 8px;
-  background: linear-gradient(135deg, rgba(0,0,0,.02), rgba(0,0,0,.04));
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+.cd-toc-tab--active .cd-toc-tab-inner {
+  border-bottom-color: var(--toc-c, var(--h-accent));
 }
-.cd-toc-body { flex: 1; min-width: 0 }
-.cd-toc-label {
-  display: block;
-  font: 800 .85rem/1.2 var(--font-nunito), sans-serif;
-  color: #111;
-}
-.cd-toc-desc {
-  display: block;
-  font: 600 .7rem/1.2 var(--font-nunito), sans-serif;
-  color: #888; margin-top: 2px;
-}
-.cd-toc-item:hover .cd-toc-label { color: var(--toc-c, var(--h-accent)) }
-.cd-toc-item > svg {
-  flex-shrink: 0; opacity: 0;
-  transition: opacity .15s, transform .15s;
-}
-.cd-toc-item:hover > svg { opacity: 1; transform: translateX(2px) }
-@media (max-width: 1024px) {
-  .cd-toc-grid { grid-template-columns: repeat(3, 1fr) }
-  .cd-toc-item:nth-child(4n) { border-right: 1px solid var(--cd-border-light, rgba(0,0,0,.08)) }
-  .cd-toc-item:nth-child(3n) { border-right: none }
-}
-@media (max-width: 768px) {
-  .cd-toc-grid { grid-template-columns: repeat(2, 1fr) }
-  .cd-toc-item { padding: .6rem .7rem }
-  .cd-toc-icon { width: 26px; height: 26px; border-radius: 6px }
-  .cd-toc-num { display: none }
-  .cd-toc-item:nth-child(3n) { border-right: 1px solid var(--cd-border-light, rgba(0,0,0,.08)) }
-  .cd-toc-item:nth-child(2n) { border-right: none }
-}
-@media (max-width: 480px) {
-  .cd-toc-grid { grid-template-columns: 1fr }
-  .cd-toc-item { border-right: none !important }
-  .cd-toc-desc { display: none }
+.cd-toc-tab-label { line-height: 1 }
+.cd-toc-tab svg { flex-shrink: 0 }
+
+@media (max-width: 720px) {
+  .cd-toc-tabs {
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-wrap: nowrap;
+  }
+  .cd-toc-tabs::-webkit-scrollbar { display: none }
+  .cd-toc-tab { padding: 12px 18px; font-size: 13px; gap: 8px }
 }
 
 .cd-hero { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1.5px solid var(--h-border-light); min-height: 160px; animation: cdFadeUp .5s cubic-bezier(.16,1,.3,1) both }
@@ -1364,87 +1345,405 @@
   .cd-first-cta { padding: 12px 24px; font-size: .84rem }
 }
 
-/* Listing card — Trustpilot horizontal style */
-/* ── Listing card — G2-style ── */
-.cd-lc { background: #fff; border: 1.5px solid var(--cd-border, rgba(0,0,0,.1)); border-radius: 14px; margin-bottom: 1rem; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.06), 0 0 0 1px rgba(0,0,0,.03); transition: box-shadow .25s cubic-bezier(.16,1,.3,1), border-color .2s, transform .25s cubic-bezier(.16,1,.3,1); animation: cdFadeUp .45s cubic-bezier(.16,1,.3,1) both }
-.cd-lc:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,.1), 0 0 0 1px rgba(0,0,0,.06) }
+/* ════════════════════════════════════════════════════════════
+   Listing card — Goodfirms-style. Pure white, Inter only, teal
+   (#0E8F6E) accent. Compare button morphs into an inline same-
+   sector search bar via the .cd-lc-swap container.
+   ════════════════════════════════════════════════════════════ */
+:root {
+  --lc-teal:        #0E8F6E;
+  --lc-teal-hover:  #0B7559;
+  --lc-teal-soft:   #ECF7F3;
+  --lc-teal-soft-2: #E3F1EC;
+  --lc-line:        #E5E7EB;
+  --lc-line-soft:   #F0F0F0;
+  --lc-text:        #1A1A1A;
+  --lc-muted:       #6B7280;
+  --lc-mute-2:      #9CA3AF;
+}
+.cd-lc, .cd-lc * {
+  font-family: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+}
+
+.cd-lc {
+  background: #FFFFFF;
+  border: 1px solid var(--lc-line);
+  border-radius: 12px;
+  margin-bottom: 14px;
+  overflow: hidden;
+  transition: box-shadow .25s cubic-bezier(.16,1,.3,1), border-color .2s;
+  animation: cdFadeUp .35s cubic-bezier(.16,1,.3,1) both;
+}
+.cd-lc:hover {
+  border-color: #D1D5DB;
+  box-shadow: 0 8px 24px rgba(16, 24, 40, .07);
+}
 .cd-lc:nth-child(1) { animation-delay: 0s }
-.cd-lc:nth-child(2) { animation-delay: .06s }
-.cd-lc:nth-child(3) { animation-delay: .12s }
-.cd-lc:nth-child(4) { animation-delay: .18s }
-.cd-lc:nth-child(5) { animation-delay: .24s }
-.cd-lc:hover { border-color: #d0ccc8; box-shadow: 0 4px 20px rgba(0,0,0,.06) }
+.cd-lc:nth-child(2) { animation-delay: .04s }
+.cd-lc:nth-child(3) { animation-delay: .08s }
+.cd-lc:nth-child(4) { animation-delay: .12s }
+.cd-lc:nth-child(5) { animation-delay: .16s }
 
-/* Header: logo + info + actions */
-.cd-lc-header { display: flex; gap: 1rem; padding: 1.25rem 1.5rem; align-items: flex-start }
-.cd-lc-logo { width: 60px; height: 60px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1.5px solid var(--h-border-light); overflow: hidden; background: #fff }
-.cd-lc-logo img { width: 100%; height: 100%; object-fit: contain; padding: 4px; border-radius: inherit }
-.cd-lc-logo-initial { font-family: var(--font-bricolage), sans-serif; font-weight: 800; font-size: 1.4rem }
-.cd-lc-info { flex: 1; min-width: 0 }
-.cd-lc-name-row { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: .15rem }
-.cd-lc-name { font-family: var(--font-bricolage), sans-serif; font-size: 1.05rem; font-weight: 800; color: #000; line-height: 1.25; display: inline-flex; align-items: center; gap: .35rem }
-.cd-lc-name a { color: inherit; text-decoration: none }
-.cd-lc-name a:hover, .cd-lc-name:hover { color: var(--h-accent) }
-.cd-lc-ext-icon { color: var(--h-muted); flex-shrink: 0; opacity: .5 }
-.cd-lc-badge-preview { display: inline-flex; align-items: center; gap: .2rem; font-family: var(--font-nunito), sans-serif; font-size: .56rem; font-weight: 700; color: var(--h-muted); background: var(--h-bg); padding: .15rem .45rem; border-radius: 999px; border: 1px solid var(--h-border-light); text-transform: uppercase; letter-spacing: .04em; flex-shrink: 0 }
-.cd-lc-location { display: inline-flex; align-items: center; gap: .2rem; font-family: var(--font-nunito), sans-serif; font-size: .68rem; color: var(--h-muted); flex-shrink: 0; white-space: nowrap }
+/* Header: logo + info + actions ─ all centered vertically. */
+.cd-lc-header {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  gap: 16px;
+  padding: 18px 20px;
+  align-items: center;
+}
+.cd-lc-logo {
+  width: 56px; height: 56px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid var(--lc-line-soft);
+  overflow: hidden;
+  background: #FFFFFF;
+}
+.cd-lc-logo img { width: 100%; height: 100%; object-fit: contain; padding: 4px }
+.cd-lc-logo-initial { font-weight: 800; font-size: 1.25rem }
 
-/* Rating row */
-.cd-lc-rating-row { display: flex; align-items: center; gap: .3rem; margin: .2rem 0 .3rem }
-.cd-lc-score { font-family: var(--font-bricolage), sans-serif; font-size: .85rem; font-weight: 800; color: #000 }
-.cd-lc-reviews { font-family: var(--font-nunito), sans-serif; font-size: .72rem; color: var(--h-muted); font-weight: 600 }
+.cd-lc-info { min-width: 0 }
+.cd-lc-name-row {
+  display: flex; align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+.cd-lc-name {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--lc-teal);
+  line-height: 1.25;
+  display: inline-flex; align-items: center;
+  gap: 6px;
+  margin: 0;
+  letter-spacing: -.012em;
+}
+.cd-lc-name a {
+  color: inherit;
+  text-decoration: none;
+}
+.cd-lc-name a:hover { color: var(--lc-teal-hover) }
+.cd-lc-preview {
+  display: inline-flex; align-items: center;
+  font-size: 9px; font-weight: 700;
+  color: var(--lc-muted);
+  background: #F9FAFB;
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1px solid var(--lc-line);
+  text-transform: uppercase; letter-spacing: .05em;
+}
+.cd-lc-location {
+  font-size: 11px;
+  color: var(--lc-muted);
+  font-weight: 500;
+}
 
-/* Subtitle */
-.cd-lc-subtitle { font-family: var(--font-nunito), sans-serif; font-size: .78rem; color: #000; margin: 0; line-height: 1.4 }
+.cd-lc-rating-row {
+  display: flex; align-items: center;
+  gap: 6px;
+  margin: 2px 0 6px;
+}
+.cd-lc-score { font-size: 13px; font-weight: 700; color: var(--lc-text) }
+.cd-lc-reviews {
+  font-size: 12px;
+  color: var(--lc-muted);
+  font-weight: 500;
+}
 
-/* Actions */
-.cd-lc-actions { display: flex; flex-direction: column; gap: .5rem; flex-shrink: 0; align-items: flex-end }
-.cd-lc-visit { display: inline-flex; align-items: center; gap: .4rem; font-family: var(--font-nunito), sans-serif; font-size: .72rem; font-weight: 800; color: #fff; padding: .55rem 1.2rem; border-radius: 8px; text-decoration: none; letter-spacing: .03em; text-transform: uppercase; transition: filter .2s, transform .15s; white-space: nowrap }
-.cd-lc-visit:hover { filter: brightness(1.08); transform: translateY(-1px) }
-.cd-lc-secondary { display: flex; gap: .4rem }
-.cd-lc-btn-outline { display: inline-flex; align-items: center; gap: .3rem; font-family: var(--font-nunito), sans-serif; font-size: .68rem; font-weight: 700; color: #000; background: #fff; border: 1.5px solid var(--h-border); padding: .35rem .7rem; border-radius: 8px; cursor: pointer; transition: border-color .15s, background .15s; white-space: nowrap }
-.cd-lc-btn-outline:hover { border-color: #000; background: var(--h-bg) }
-.cd-lc-btn-save--active { border-color: #E8553D30; background: #E8553D08 }
+.cd-lc-subtitle {
+  font-size: 13px;
+  color: var(--lc-text);
+  margin: 0;
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+/* ── Actions cluster — Visit + swap row ── */
+.cd-lc-actions {
+  display: flex; flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+  min-width: 260px;
+  align-items: stretch;
+}
+.cd-lc-visit {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #FFFFFF;
+  background: var(--lc-teal);
+  border: 1.5px solid var(--lc-teal);
+  padding: 9px 18px;
+  border-radius: 6px;
+  text-decoration: none;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  transition: background .18s, border-color .18s, transform .15s;
+  white-space: nowrap;
+}
+.cd-lc-visit:hover {
+  background: var(--lc-teal-hover);
+  border-color: var(--lc-teal-hover);
+  transform: translateY(-1px);
+}
+
+/* The swap container holds Compare+Save by default and morphs into the
+   CompareSearchBar when the user clicks Compare. Fixed min-height so the
+   card doesn't jump during the swap. */
+.cd-lc-swap {
+  display: flex; gap: 8px;
+  align-items: stretch;
+  position: relative;
+}
+.cd-lc-swap--cmp { display: block }
+
+.cd-lc-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 5px;
+  flex: 1;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--lc-teal);
+  background: #FFFFFF;
+  border: 1.5px solid var(--lc-teal);
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s;
+  white-space: nowrap;
+}
+.cd-lc-btn:hover { background: var(--lc-teal-soft) }
+.cd-lc-btn:disabled { opacity: .55; cursor: not-allowed }
+.cd-lc-btn-save--on { background: var(--lc-teal-soft) }
+
+/* ── Inline compare search bar ── */
+@keyframes cdCmpIn { from { opacity: 0; transform: translateY(-4px) } to { opacity: 1; transform: translateY(0) } }
+.cd-lc-cmp { animation: cdCmpIn .18s cubic-bezier(.16,1,.3,1) both; position: relative }
+.cd-lc-cmp-bar {
+  display: flex; align-items: center;
+  gap: 8px;
+  background: #FFFFFF;
+  border: 1.5px solid var(--lc-teal);
+  border-radius: 6px;
+  padding: 7px 10px;
+  box-shadow: 0 0 0 3px rgba(14, 143, 110, .12);
+}
+.cd-lc-cmp-icon { color: var(--lc-teal); flex-shrink: 0 }
+.cd-lc-cmp-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--lc-text);
+  min-width: 0;
+}
+.cd-lc-cmp-input::placeholder { color: var(--lc-mute-2) }
+.cd-lc-cmp-close {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: var(--lc-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.cd-lc-cmp-close:hover { background: var(--lc-line-soft); color: var(--lc-text) }
+
+/* Suggestion dropdown */
+.cd-lc-cmp-drop {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0; right: 0;
+  z-index: 30;
+  background: #FFFFFF;
+  border: 1px solid var(--lc-line);
+  border-radius: 8px;
+  box-shadow: 0 12px 28px rgba(16, 24, 40, .14);
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 4px;
+}
+.cd-lc-cmp-empty {
+  padding: 14px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--lc-muted);
+}
+.cd-lc-cmp-hit {
+  display: flex; align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background .12s;
+}
+.cd-lc-cmp-hit:hover,
+.cd-lc-cmp-hit--active { background: var(--lc-teal-soft) }
+.cd-lc-cmp-hit-logo {
+  width: 32px; height: 32px;
+  border-radius: 6px;
+  background: var(--lc-teal-soft);
+  color: var(--lc-teal);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800;
+  font-size: 13px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.cd-lc-cmp-hit-logo img { width: 100%; height: 100%; object-fit: contain; padding: 2px }
+.cd-lc-cmp-hit-body { display: flex; flex-direction: column; min-width: 0 }
+.cd-lc-cmp-hit-name {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--lc-text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.cd-lc-cmp-hit-tag {
+  font-size: 11px;
+  color: var(--lc-muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 
 /* Description section */
-.cd-lc-desc-section { padding: .75rem 1.5rem 1rem; border-top: 1px solid var(--h-border-light) }
-.cd-lc-desc { font-family: var(--font-nunito), sans-serif; font-size: .78rem; color: #000; line-height: 1.65; margin: 0 0 .5rem }
-.cd-lc-readmore { font-family: var(--font-nunito), sans-serif; font-size: .75rem; font-weight: 700; color: var(--h-accent); text-decoration: none }
-.cd-lc-readmore:hover { text-decoration: underline }
+.cd-lc-desc-section {
+  padding: 14px 20px 16px;
+  border-top: 1px solid var(--lc-line-soft);
+}
+.cd-lc-desc {
+  font-size: 13px;
+  color: var(--lc-text);
+  line-height: 1.6;
+  margin: 0 0 8px;
+  font-weight: 400;
+}
+.cd-lc-readmore {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--lc-teal);
+  text-decoration: none;
+}
+.cd-lc-readmore:hover { text-decoration: underline; text-underline-offset: 3px }
 
 /* "Users also considered" expandable footer */
-.cd-lc-also { border-top: 1.5px solid var(--h-border-light) }
-.cd-lc-also-toggle { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: .75rem 1.5rem; background: #edf5f3; border: none; cursor: pointer; transition: background .15s }
-.cd-lc-also-toggle:hover { background: #e3efec }
-.cd-lc-also-left { display: flex; align-items: center; gap: .5rem }
-.cd-lc-also-label { font-family: var(--font-bricolage), sans-serif; font-size: .82rem; font-weight: 700; color: #000 }
-.cd-lc-also-chevron { transition: transform .25s ease; display: flex }
-.cd-lc-also-chevron--open { transform: rotate(180deg) }
+.cd-lc-also { border-top: 1px solid var(--lc-line-soft) }
+.cd-lc-also-toggle {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%;
+  padding: 12px 20px;
+  background: var(--lc-teal-soft);
+  border: none;
+  cursor: pointer;
+  transition: background .15s;
+}
+.cd-lc-also-toggle:hover { background: var(--lc-teal-soft-2) }
+.cd-lc-also-left { display: flex; align-items: center; gap: 10px }
+.cd-lc-also-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--lc-text);
+}
+.cd-lc-also-chev {
+  color: var(--lc-muted);
+  transition: transform .22s ease;
+  display: flex;
+}
+.cd-lc-also-chev--on { transform: rotate(180deg) }
 
-/* Expanded panel */
-.cd-lc-also-panel { background: #edf5f3; padding: 0 1.5rem 1.25rem }
+.cd-lc-also-panel {
+  background: var(--lc-teal-soft);
+  padding: 0 16px 14px;
+}
+.cd-lc-also-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
 
-/* 3-column grid */
-.cd-lc-also-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem }
+/* Mini card inside Users also considered */
+.cd-lc-mini {
+  background: #FFFFFF;
+  border-radius: 10px;
+  padding: 12px;
+  display: flex; flex-direction: column;
+  gap: 0;
+  transition: box-shadow .15s;
+}
+.cd-lc-mini:hover { box-shadow: 0 3px 12px rgba(0, 0, 0, .06) }
+.cd-lc-mini-logo {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 8px;
+}
+.cd-lc-mini-name {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--lc-text);
+  margin: 0 0 4px;
+  line-height: 1.2;
+}
+.cd-lc-mini-rating {
+  display: flex; align-items: center;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+.cd-lc-mini-score {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--lc-text);
+}
+.cd-lc-mini-reviews {
+  font-size: 10px;
+  color: var(--lc-muted);
+}
+.cd-lc-mini-desc {
+  font-size: 11.5px;
+  color: var(--lc-text);
+  line-height: 1.5;
+  margin: 0;
+  flex: 1;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-weight: 400;
+}
+.cd-lc-mini-link {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--lc-teal);
+  text-decoration: none;
+  margin-top: 8px;
+}
+.cd-lc-mini-link:hover { text-decoration: underline; text-underline-offset: 3px }
 
-/* Mini card — vertical layout like G2 */
-.cd-lc-mini { background: #fff; border-radius: 14px; padding: 1rem; display: flex; flex-direction: column; gap: 0; transition: box-shadow .15s }
-.cd-lc-mini:hover { box-shadow: 0 3px 12px rgba(0,0,0,.06) }
-.cd-lc-mini-logo { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: .55rem }
-.cd-lc-mini-name { font-family: var(--font-bricolage), sans-serif; font-size: .82rem; font-weight: 800; color: #000; margin: 0 0 .2rem; line-height: 1.2 }
-.cd-lc-mini-rating { display: flex; align-items: center; gap: .25rem; margin-bottom: .55rem }
-.cd-lc-mini-score { font-family: var(--font-bricolage), sans-serif; font-size: .72rem; font-weight: 800; color: #000 }
-.cd-lc-mini-reviews { font-family: var(--font-nunito), sans-serif; font-size: .62rem; color: var(--h-muted) }
-.cd-lc-mini-desc { font-family: var(--font-nunito), sans-serif; font-size: .72rem; color: #000; line-height: 1.55; margin: 0; flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden }
-.cd-lc-mini-link { font-family: var(--font-nunito), sans-serif; font-size: .72rem; font-weight: 800; color: var(--h-accent); text-decoration: none; margin-top: .65rem; letter-spacing: .02em }
-.cd-lc-mini-link:hover { text-decoration: underline }
-
-/* Feedback row */
-.cd-lc-also-feedback { display: flex; align-items: center; justify-content: center; gap: .5rem; padding-top: 1rem; border-top: 1px solid #dce8e4; margin-top: 1rem }
-.cd-lc-also-feedback-label { font-family: var(--font-nunito), sans-serif; font-size: .75rem; color: var(--h-muted); font-weight: 600 }
-.cd-lc-also-vote { background: none; border: none; cursor: pointer; padding: .2rem; border-radius: 4px; display: flex; transition: transform .15s }
-.cd-lc-also-vote:hover { transform: scale(1.15) }
-.cd-lc-also-vote--active { transform: scale(1.1) }
+/* Tighter responsive for narrow screens */
+@media (max-width: 760px) {
+  .cd-lc-header {
+    grid-template-columns: 48px 1fr;
+    grid-template-areas:
+      'logo info'
+      'actions actions';
+    gap: 12px;
+    padding: 14px 16px;
+  }
+  .cd-lc-logo { grid-area: logo; width: 48px; height: 48px }
+  .cd-lc-info { grid-area: info }
+  .cd-lc-actions { grid-area: actions; min-width: 0 }
+  .cd-lc-also-grid { grid-template-columns: 1fr }
+  .cd-lc-desc-section { padding: 12px 16px 14px }
+  .cd-lc-also-toggle { padding: 10px 16px }
+}
 
 /* Empty state */
 .cd-empty { text-align: center; padding: 3rem 1rem }

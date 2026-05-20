@@ -147,7 +147,7 @@ const jsonLdGraph = {
       primaryImageOfPage: { '@type': 'ImageObject', url: 'https://infowebworld.com/og-image.png', width: 1200, height: 630 },
       speakable: {
         '@type': 'SpeakableSpecification',
-        cssSelector: ['.tp-title', '.tp-sub', '.tp-glance'],
+        cssSelector: ['.tm-title', '.tm-sub', '.tm-glance'],
       },
       about: [
         { '@type': 'Thing', name: 'Refund policy' },
@@ -213,66 +213,66 @@ export default function TermsPage() {
       />
 
       <Navbar />
-      <main className="tp" id="top">
-        <header className="tp-header">
-          <nav className="tp-crumb" aria-label="Breadcrumb">
+      <main className="tm" id="top">
+        <header className="tm-header">
+          <nav className="tm-crumb" aria-label="Breadcrumb">
             <a href="/">Home</a>
-            <span className="tp-crumb-sep" aria-hidden="true">/</span>
-            <span className="tp-crumb-current">Terms of Use</span>
+            <span className="tm-crumb-sep" aria-hidden="true">/</span>
+            <span className="tm-crumb-current">Terms of Use</span>
           </nav>
-          <h1 className="tp-title">Terms of Use</h1>
-          <p className="tp-sub">
+          <h1 className="tm-title">Terms of Use</h1>
+          <p className="tm-sub">
             These terms form a binding agreement between you and InfoWebWorld. Read them carefully — by using the site, you agree to every provision below.
           </p>
-          <span className="tp-meta">
-            <span className="tp-meta-dot" aria-hidden="true" />
+          <span className="tm-meta">
+            <span className="tm-meta-dot" aria-hidden="true" />
             Last updated <time dateTime={MODIFIED_ISO}>{UPDATED_DISPLAY}</time>
           </span>
         </header>
 
-        <div className="tp-layout">
+        <div className="tm-layout">
           <TermsTOC items={SECTIONS} />
 
-          <article className="tp-content" itemScope itemType="https://schema.org/TermsOfService">
+          <article className="tm-content" itemScope itemType="https://schema.org/TermsOfService">
             <meta itemProp="datePublished" content={PUBLISHED_ISO} />
             <meta itemProp="dateModified" content={MODIFIED_ISO} />
             <meta itemProp="inLanguage" content="en-US" />
 
-            <aside className="tp-glance" aria-label="Key facts at a glance">
-              <h2 className="tp-glance-title">At a glance</h2>
-              <dl className="tp-glance-list">
-                <div className="tp-glance-row">
+            <aside className="tm-glance" aria-label="Key facts at a glance">
+              <h2 className="tm-glance-title">At a glance</h2>
+              <dl className="tm-glance-list">
+                <div className="tm-glance-row">
                   <dt>Refund window</dt>
                   <dd>14 days from purchase</dd>
                 </div>
-                <div className="tp-glance-row">
+                <div className="tm-glance-row">
                   <dt>Minimum age</dt>
                   <dd>18 years</dd>
                 </div>
-                <div className="tp-glance-row">
+                <div className="tm-glance-row">
                   <dt>Governing law</dt>
                   <dd>New South Wales, Australia</dd>
                 </div>
-                <div className="tp-glance-row">
+                <div className="tm-glance-row">
                   <dt>Content ownership</dt>
                   <dd>You retain it</dd>
                 </div>
-                <div className="tp-glance-row">
+                <div className="tm-glance-row">
                   <dt>Payment processor</dt>
                   <dd>PayPal &amp; approved third parties</dd>
                 </div>
-                <div className="tp-glance-row">
+                <div className="tm-glance-row">
                   <dt>Last reviewed</dt>
                   <dd><time dateTime={MODIFIED_ISO}>{UPDATED_DISPLAY}</time></dd>
                 </div>
               </dl>
-              <p className="tp-glance-note">
+              <p className="tm-glance-note">
                 Summary only. The binding agreement is the full text below.
               </p>
             </aside>
 
-            <section id="acceptance" className="tp-section">
-              <h2 className="tp-h2" data-num={pad(1)}>Acceptance of Terms</h2>
+            <section id="acceptance" className="tm-section">
+              <h2 className="tm-h2" data-num={pad(1)}>Acceptance of Terms</h2>
               <p>
                 By accessing or using <strong>InfoWebWorld.com</strong> (the &ldquo;Site&rdquo;), any of
                 its subdomains, or any services offered on or through the Site (collectively,
@@ -281,8 +281,8 @@ export default function TermsPage() {
               </p>
             </section>
 
-            <section id="eligibility" className="tp-section">
-              <h2 className="tp-h2" data-num={pad(2)}>Eligibility</h2>
+            <section id="eligibility" className="tm-section">
+              <h2 className="tm-h2" data-num={pad(2)}>Eligibility</h2>
               <p>
                 You must be at least 18 years old and capable of forming a binding contract
                 under the laws of your jurisdiction. If you use the Service on behalf of a
@@ -290,8 +290,8 @@ export default function TermsPage() {
               </p>
             </section>
 
-            <section id="accounts" className="tp-section">
-              <h2 className="tp-h2" data-num={pad(3)}>Accounts &amp; Security</h2>
+            <section id="accounts" className="tm-section">
+              <h2 className="tm-h2" data-num={pad(3)}>Accounts &amp; Security</h2>
               <p>
                 You are responsible for maintaining the confidentiality of your account
                 credentials and for all activity under your account. Notify us immediately of
@@ -300,8 +300,8 @@ export default function TermsPage() {
               </p>
             </section>
 
-            <section id="listings" className="tp-section">
-              <h2 className="tp-h2" data-num={pad(4)}>Business Listings</h2>
+            <section id="listings" className="tm-section">
+              <h2 className="tm-h2" data-num={pad(4)}>Business Listings</h2>
               <p>
                 Businesses may submit listings for human review. We reserve the right to reject,
                 edit, or remove any listing that is inaccurate, misleading, spam, duplicate,
@@ -310,8 +310,8 @@ export default function TermsPage() {
               </p>
             </section>
 
-            <section id="content" className="tp-section">
-              <h2 className="tp-h2" data-num={pad(5)}>User Content</h2>
+            <section id="content" className="tm-section">
+              <h2 className="tm-h2" data-num={pad(5)}>User Content</h2>
               <p>
                 You retain ownership of content you submit (reviews, business profiles, photos,
                 text). By submitting content, you grant InfoWebWorld a worldwide, non-exclusive,
@@ -324,8 +324,8 @@ export default function TermsPage() {
               </p>
             </section>
 
-            <section id="prohibited" className="tp-section">
-              <h2 className="tp-h2" data-num={pad(6)}>Prohibited Conduct</h2>
+            <section id="prohibited" className="tm-section">
+              <h2 className="tm-h2" data-num={pad(6)}>Prohibited Conduct</h2>
               <p>You agree not to:</p>
               <ul>
                 <li>Submit false, misleading, or fraudulent information.</li>
@@ -339,8 +339,8 @@ export default function TermsPage() {
               </ul>
             </section>
 
-            <section id="payments" className="tp-section">
-              <h2 className="tp-h2" data-num={pad(7)}>Payments &amp; Refunds</h2>
+            <section id="payments" className="tm-section">
+              <h2 className="tm-h2" data-num={pad(7)}>Payments &amp; Refunds</h2>
               <p>
                 Paid plans are processed via PayPal and other third-party processors. Prices
                 and features are listed on the <a href="/business/plans">Plans page</a>.
@@ -350,8 +350,8 @@ export default function TermsPage() {
               </p>
             </section>
 
-            <section id="ip" className="tp-section">
-              <h2 className="tp-h2" data-num={pad(8)}>Intellectual Property</h2>
+            <section id="ip" className="tm-section">
+              <h2 className="tm-h2" data-num={pad(8)}>Intellectual Property</h2>
               <p>
                 The Site, its branding, logos, design, and compiled database are owned by
                 InfoWebWorld / Brain Stream Australia Pty Ltd and protected by applicable
@@ -360,8 +360,8 @@ export default function TermsPage() {
               </p>
             </section>
 
-            <section id="termination" className="tp-section">
-              <h2 className="tp-h2" data-num={pad(9)}>Termination</h2>
+            <section id="termination" className="tm-section">
+              <h2 className="tm-h2" data-num={pad(9)}>Termination</h2>
               <p>
                 We may suspend or terminate your access at any time, with or without notice,
                 for any reason — including violation of these Terms. You may terminate your
@@ -369,8 +369,8 @@ export default function TermsPage() {
               </p>
             </section>
 
-            <section id="disclaimers" className="tp-section">
-              <h2 className="tp-h2" data-num={pad(10)}>Disclaimers</h2>
+            <section id="disclaimers" className="tm-section">
+              <h2 className="tm-h2" data-num={pad(10)}>Disclaimers</h2>
               <p>
                 The Service is provided <strong>&ldquo;as is&rdquo;</strong> without warranties of any
                 kind, express or implied, including merchantability, fitness for a particular
@@ -379,8 +379,8 @@ export default function TermsPage() {
               </p>
             </section>
 
-            <section id="liability" className="tp-section">
-              <h2 className="tp-h2" data-num={pad(11)}>Limitation of Liability</h2>
+            <section id="liability" className="tm-section">
+              <h2 className="tm-h2" data-num={pad(11)}>Limitation of Liability</h2>
               <p>
                 To the maximum extent permitted by law, InfoWebWorld shall not be liable for
                 any indirect, incidental, special, consequential, or punitive damages. Our
@@ -390,8 +390,8 @@ export default function TermsPage() {
               </p>
             </section>
 
-            <section id="law" className="tp-section">
-              <h2 className="tp-h2" data-num={pad(12)}>Governing Law</h2>
+            <section id="law" className="tm-section">
+              <h2 className="tm-h2" data-num={pad(12)}>Governing Law</h2>
               <p>
                 These Terms are governed by the laws of <strong>New South Wales, Australia</strong>,
                 without regard to conflict-of-laws principles. Any dispute shall be resolved
@@ -399,8 +399,8 @@ export default function TermsPage() {
               </p>
             </section>
 
-            <section id="changes" className="tp-section">
-              <h2 className="tp-h2" data-num={pad(13)}>Changes to These Terms</h2>
+            <section id="changes" className="tm-section">
+              <h2 className="tm-h2" data-num={pad(13)}>Changes to These Terms</h2>
               <p>
                 We may update these Terms from time to time. Material changes will be
                 announced on the Site or via email for registered users. Continued use after
@@ -408,8 +408,8 @@ export default function TermsPage() {
               </p>
             </section>
 
-            <section id="contact" className="tp-section">
-              <h2 className="tp-h2" data-num={pad(14)}>Contact</h2>
+            <section id="contact" className="tm-section">
+              <h2 className="tm-h2" data-num={pad(14)}>Contact</h2>
               <p>
                 Questions about these Terms? <a href="/contact">Contact us</a> or write to
                 Brain Stream Australia Pty Ltd, Parramatta, NSW 2150, Australia.
@@ -418,11 +418,11 @@ export default function TermsPage() {
           </article>
         </div>
 
-        <footer className="tp-footer">
-          <address className="tp-address">
+        <footer className="tm-footer">
+          <address className="tm-address">
             Brain Stream Australia Pty Ltd &middot; Parramatta, NSW 2150, Australia
           </address>
-          <a href="#top" className="tp-back-top">Back to top &uarr;</a>
+          <a href="#top" className="tm-back-top">Back to top &uarr;</a>
         </footer>
       </main>
       <Footer />

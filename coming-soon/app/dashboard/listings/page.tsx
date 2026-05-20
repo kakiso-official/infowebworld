@@ -212,7 +212,7 @@ export default async function ListingsPage({
       {listings.length === 0 ? (
         <div className="dash-empty">
           <div className="dash-empty-icon">
-            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.8">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="3" width="18" height="18" rx="2.5" />
               <path d="M9 9h6M9 13h6M9 17h4" />
             </svg>

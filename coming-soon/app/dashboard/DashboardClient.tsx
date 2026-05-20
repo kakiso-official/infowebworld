@@ -1,100 +1,85 @@
 'use client'
 import Link from 'next/link'
-import type { UserPlan } from '@/lib/user-plan-types'
-import DashboardHeader from './DashboardHeader'
-
-interface SectionCard {
-  key: string
-  title: string
-  blurb: string
-  iconKey: string
-  color: string
-  unlocked: number
-  total: number
-}
+import { I, ic } from '../components/icons'
 
 /**
- * Dashboard overview — 7 section tiles, no icons, pure-black type.
- * A thin color stripe identifies the section; the title carries the tile.
- * Layout locked to one viewport: 4 + 3 rows, no scroll anywhere.
+ * Dashboard overview — Goodfirms-style 3-card grow hero. Replaces the
+ * earlier 7-section feature tile grid (those pages were placeholder
+ * skeletons and the section overview added noise without action).
+ *
+ * Each card is a primary CTA into one of three flows: list a company,
+ * list a product, or write a review. The form at /dashboard/new uses
+ * smart hero gating to pick the right mode based on the user's
+ * existing listings, so both list cards point to the same destination.
+ *
+ * No DashboardHeader on this page — the hero IS the page header.
  */
-export default function DashboardClient({
-  plan, sectionCards,
-}: {
-  country?: string
-  plan: UserPlan
-  sectionCards: SectionCard[]
-}) {
-  const topRow = sectionCards.slice(0, 4)
-  const botRow = sectionCards.slice(4)
-
+export default function DashboardClient() {
   return (
     <>
-      <DashboardHeader
-        title="Home"
-        subtitle={`On the ${plan.label} plan · ${sectionCards.reduce((acc, s) => acc + s.unlocked, 0)} of ${sectionCards.reduce((acc, s) => acc + s.total, 0)} features unlocked`}
-      />
-      <div className="dash-home">
-        <div className="dash-home-row">
-          {topRow.map((s, i) => <SectionTile key={s.key} s={s} index={i + 1} />)}
+      <section className="dash-grow" aria-labelledby="dash-grow-title">
+        <div className="dash-grow-inner">
+          <h2 id="dash-grow-title" className="dash-grow-title">
+            Grow Your Business with InfoWebWorld
+          </h2>
+          <p className="dash-grow-sub">
+            Choose how you want to get started on the platform.
+          </p>
+
+          <div className="dash-grow-grid">
+            <article className="dash-grow-card dash-grow-card--orange">
+              <span className="dash-grow-icon" aria-hidden="true">
+                <I d={ic.building} size={20} sw={1.8} />
+              </span>
+              <h3 className="dash-grow-card-title">List Your Company</h3>
+              <p className="dash-grow-card-desc">
+                Create your company profile, showcase your services, and get
+                discovered by buyers worldwide.
+              </p>
+              <Link
+                href="/dashboard/new?mode=company"
+                className="dash-grow-btn dash-grow-btn--orange"
+              >
+                Get Started
+              </Link>
+            </article>
+
+            <article className="dash-grow-card dash-grow-card--blue">
+              <span className="dash-grow-icon" aria-hidden="true">
+                <I d={ic.package} size={20} sw={1.8} />
+              </span>
+              <h3 className="dash-grow-card-title">List Your Product</h3>
+              <p className="dash-grow-card-desc">
+                Add your software product to InfoWebWorld and reach thousands of
+                potential buyers every month.
+              </p>
+              <Link
+                href="/dashboard/new?mode=product"
+                className="dash-grow-btn dash-grow-btn--blue"
+              >
+                Get Started
+              </Link>
+            </article>
+
+            <article className="dash-grow-card dash-grow-card--green">
+              <span className="dash-grow-icon" aria-hidden="true">
+                <I d={ic.star} size={20} sw={1.8} />
+              </span>
+              <h3 className="dash-grow-card-title">Write a Review</h3>
+              <p className="dash-grow-card-desc">
+                Share your experience working with a company and help other
+                buyers make informed decisions.
+              </p>
+              <Link
+                href="/write-review"
+                className="dash-grow-btn dash-grow-btn--ghost"
+              >
+                Submit a Review
+              </Link>
+            </article>
+          </div>
         </div>
-        <div className="dash-home-row">
-          {botRow.map((s, i) => <SectionTile key={s.key} s={s} index={i + 5} />)}
-        </div>
-      </div>
+      </section>
     </>
-  )
-}
-
-function SectionTile({ s, index }: { s: SectionCard; index: number }) {
-  const href = `/dashboard/section/${s.key}`
-  const pct = s.total > 0 ? (s.unlocked / s.total) * 100 : 0
-  const isFull = s.unlocked === s.total
-  const allLocked = s.unlocked === 0 && s.total > 0
-
-  return (
-    <Link
-      href={href}
-      className={
-        'dash-tile' +
-        (isFull ? ' dash-tile--full' : '') +
-        (allLocked ? ' dash-tile--locked' : '')
-      }
-      style={{ ['--sec-color' as string]: s.color }}
-    >
-      <div className="dash-tile-top">
-        <span className="dash-tile-num" aria-hidden="true">
-          {String(index).padStart(2, '0')}
-        </span>
-        {allLocked ? (
-          <span className="dash-tile-pill dash-tile-pill--lock" aria-label="All locked">
-            <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor"
-              strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="4" y="11" width="16" height="10" rx="2" />
-              <path d="M8 11V7a4 4 0 0 1 8 0v4" />
-            </svg>
-            Locked
-          </span>
-        ) : (
-          <span className={`dash-tile-pill${isFull ? ' dash-tile-pill--full' : ''}`}>
-            {s.unlocked}/{s.total}
-          </span>
-        )}
-      </div>
-
-      <h2 className="dash-tile-title">{s.title}</h2>
-
-      <div className="dash-tile-bottom">
-        <div className="dash-tile-progress" aria-hidden="true">
-          <span style={{ width: `${pct}%` }} />
-        </div>
-        <span className="dash-tile-go" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
-            strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
-          </svg>
-        </span>
-      </div>
-    </Link>
   )
 }

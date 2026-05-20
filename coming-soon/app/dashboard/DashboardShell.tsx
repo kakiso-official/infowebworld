@@ -1,5 +1,5 @@
 'use client'
-import { createContext, useContext, useMemo, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { BASE } from '../config/base-path'
@@ -21,6 +21,11 @@ interface Props {
   /** True when the user has a row with listing_mode='company' in submissions
    *  (any status). Drives the conditional "My Company" sidebar entry. */
   hasCompany?: boolean
+  /** True when the user has ANY submissions row (any mode, any status).
+   *  Drives the conditional "My Listings" sidebar entry. The shell also
+   *  reveals the entry client-side once a local draft is detected, so the
+   *  link appears the moment a user starts their first listing. */
+  hasAnyListing?: boolean
   children: React.ReactNode
 }
 
@@ -60,7 +65,11 @@ type NavRow = {
   badge?: string
   /** Open in a new tab — used for links that leave the dashboard shell. */
   newTab?: boolean
+  /** When true, this row triggers logout instead of navigation. */
+  isLogout?: boolean
 }
+
+type NavGroup = { title: string; items: NavRow[] }
 
 /**
  * Trustpilot-style sidebar — entire sidebar is one dark green zone:
@@ -83,38 +92,79 @@ type NavRow = {
  * Sub-nav panel slides out beside it with a saturated mint background
  * when on a /dashboard/section/<key> or /dashboard/feature/<slug> route.
  */
-export default function DashboardShell({ user, plan, hasCompany = false, children }: Props) {
+export default function DashboardShell({ user, plan, hasCompany = false, hasAnyListing = false, children }: Props) {
   const pathname = usePathname() || ''
   const router = useRouter()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [loggingOut, setLoggingOut] = useState(false)
 
+  /* Detect a meaningful local draft so "My Listings" can appear the moment
+     the user starts filling in their first listing — drafts live in
+     localStorage, not the DB. Key shape: iww_listing_draft_{userUUID}_{plan}.
+     The form autosaves on mount even with no input, so checking for the
+     mere presence of a key would surface "My Listings" on every fresh
+     /dashboard/new visit. Instead, parse the JSON and require at least one
+     user-supplied field (sector pick, company name, tagline, description,
+     website, or listing-mode pick) to count it as a real draft. */
+  const [hasDraft, setHasDraft] = useState(false)
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const prefix = `iww_listing_draft_${user.uuid}_`
+    const meaningfulFields = ['l1Id', 'l2Id', 'l3Id', 'listingMode', 'companyName', 'tagline', 'description', 'website'] as const
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i)
+        if (!k || !k.startsWith(prefix)) continue
+        const raw = localStorage.getItem(k)
+        if (!raw) continue
+        try {
+          const parsed = JSON.parse(raw) as Record<string, unknown>
+          const filled = meaningfulFields.some(f => {
+            const v = parsed[f]
+            return typeof v === 'string' && v.trim().length > 0
+          })
+          if (filled) { setHasDraft(true); return }
+        } catch { /* malformed JSON — ignore */ }
+      }
+    } catch { /* private mode / Safari quirks — silently treat as no draft */ }
+  }, [user.uuid])
+
+  const showListings = hasAnyListing || hasDraft
+
   const base = '/dashboard'
 
-  /* Sidebar nav. The 7 plan-feature section headings (Business Listing /
-     Discovery & Visibility / Lead Management / Reviews & Reputation /
-     Community / Analytics & Insights / Support & Admin) used to live
-     between topNav and accountNav, but every page they linked to was
-     placeholder content. Removed until those features are actually
-     built — sidebar now only shows links that go somewhere real.
-     SECTIONS / featureNav constants are kept (still used by the plans
-     page + admin) but no longer rendered in the sidebar nav. */
-  const topNav: NavRow[] = useMemo(() => {
-    const rows: NavRow[] = [
+  /* Sidebar nav, grouped Goodfirms-style. The 7 plan-feature section
+     headings (Business Listing / Discovery & Visibility / Lead Management
+     / Reviews & Reputation / Community / Analytics & Insights / Support
+     & Admin) used to live between dashboard and account, but every page
+     they linked to was placeholder content — sidebar now only shows
+     links that go to a real, working page. SECTIONS / featureNav
+     constants are kept (still used by the plans page + admin) but no
+     longer rendered here. */
+  const navGroups: NavGroup[] = useMemo(() => {
+    const dashboardRows: NavRow[] = [
       { key: 'dashboard', href: base,                 label: 'Home',        icon: 'home'   },
-      { key: 'listings',  href: `${base}/listings`,   label: 'My Listings', icon: 'layers' },
     ]
-    if (hasCompany) {
-      rows.push({ key: 'company', href: `${base}/company`, label: 'My Company', icon: 'building' })
+    if (showListings) {
+      dashboardRows.push({ key: 'listings', href: `${base}/listings`, label: 'My Listings', icon: 'layers' })
     }
-    rows.push({ key: 'new', href: `${base}/new`, label: 'New Listing', icon: 'plus', badge: 'New' })
-    return rows
-  }, [hasCompany])
+    if (hasCompany) {
+      dashboardRows.push({ key: 'company', href: `${base}/company`, label: 'My Company', icon: 'building' })
+    }
+    dashboardRows.push({ key: 'activity', href: `${base}/activity`, label: 'Your Activity', icon: 'heart' })
+    dashboardRows.push({ key: 'new', href: `${base}/new`, label: 'New Listing', icon: 'plus', badge: 'New' })
 
-  const accountNav: NavRow[] = useMemo(() => [
-    { key: 'settings', href: `${base}/settings`, label: 'Settings',    icon: 'sliders'      },
-    { key: 'browse',   href: '/',                label: 'Browse Site', icon: 'externalLink', newTab: true },
-  ], [])
+    const supportRows: NavRow[] = [
+      { key: 'settings', href: `${base}/settings`, label: 'Settings',    icon: 'sliders'      },
+      { key: 'browse',   href: '/',                label: 'Browse Site', icon: 'externalLink', newTab: true },
+      { key: 'logout',   href: '#',                label: 'Log Out',     icon: 'power', isLogout: true },
+    ]
+
+    return [
+      { title: 'Dashboard', items: dashboardRows },
+      { title: 'Support',   items: supportRows },
+    ]
+  }, [hasCompany, showListings])
 
   // Which section's sub-nav (if any) should be visible right now
   const activeSectionKey: string | null = useMemo(() => {
@@ -178,20 +228,31 @@ export default function DashboardShell({ user, plan, hasCompany = false, childre
     const inner = (
       <>
         <span className="tp-nav-icon" aria-hidden="true">
-          <I d={ic[row.icon]} size={20} sw={1.5} />
+          <I d={ic[row.icon]} size={16} sw={1.6} />
         </span>
         <span className="tp-nav-label">{row.label}</span>
         {row.badge && !active && (
           <span className="tp-nav-badge" aria-label={row.badge}>{row.badge}</span>
         )}
-        {active && (
-          <span className="tp-nav-arrow" aria-hidden="true">
-            <I d={ic.arrow} size={16} sw={1.6} />
-          </span>
-        )}
       </>
     )
     const className = 'tp-nav-item' + (active ? ' tp-nav-item--active' : '')
+
+    // Logout row — button that triggers the logout flow rather than navigating.
+    if (row.isLogout) {
+      return (
+        <button
+          key={row.key}
+          type="button"
+          onClick={() => { setDrawerOpen(false); logout() }}
+          disabled={loggingOut}
+          className={className}
+          title={row.label}
+        >
+          {inner}
+        </button>
+      )
+    }
 
     // External-style rows (e.g. "Browse Site") open in a new tab so the user
     // keeps their dashboard session in the original window.
@@ -242,19 +303,23 @@ export default function DashboardShell({ user, plan, hasCompany = false, childre
 
         {drawerOpen && <div className="tp-overlay" onClick={() => setDrawerOpen(false)} />}
 
-        {/* ── Sidebar — single dark green zone ── */}
+        {/* ── Sidebar — white background, Goodfirms-style grouped nav ── */}
         <aside className={'tp-sidebar' + (drawerOpen ? ' tp-sidebar--open' : '')}>
           {/* Brand wordmark — sits at the top */}
           <div className="tp-brand">
             <Link href="/" className="tp-brand-logo" onClick={() => setDrawerOpen(false)}>
-              <img src={`${BASE}/logo/infowebworld-logofordarkbackgrounds.png`} alt="InfoWebWorld" />
+              <img src={`${BASE}/logo/infowebworldlogo-logoforlightbackgrounds.png`} alt="InfoWebWorld" />
             </Link>
           </div>
 
-          {/* Nav — flat list, no group labels */}
+          {/* Nav — grouped with section headers (Dashboard / Support) */}
           <nav className="tp-nav" aria-label="Dashboard navigation">
-            {topNav.map(renderNavRow)}
-            {accountNav.map(renderNavRow)}
+            {navGroups.map((group, gi) => (
+              <div key={group.title} className={'tp-nav-group' + (gi > 0 ? ' tp-nav-group--bordered' : '')}>
+                <div className="tp-nav-group-head">{group.title}</div>
+                {group.items.map(renderNavRow)}
+              </div>
+            ))}
           </nav>
 
           {/* Promo card pinned to bottom (hidden on lifetime) */}
@@ -262,7 +327,7 @@ export default function DashboardShell({ user, plan, hasCompany = false, childre
             <Link href="/business/plans" className="tp-promo" onClick={() => setDrawerOpen(false)}>
               <div className="tp-promo-row">
                 <span className="tp-promo-icon" aria-hidden="true">
-                  <I d={ic.gift} size={18} sw={1.6} />
+                  <I d={ic.gift} size={14} sw={1.7} />
                 </span>
                 <span className="tp-promo-title">Upgrade your plan</span>
               </div>

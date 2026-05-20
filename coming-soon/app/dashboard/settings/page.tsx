@@ -1,5 +1,8 @@
 import { requireDashboardUser } from '@/lib/user-auth'
+import { getUserPlan } from '@/lib/user-plan'
+import { queryOne } from '@/lib/db'
 import DashboardHeader from '../DashboardHeader'
+import SettingsClient from './SettingsClient'
 
 export const dynamic = 'force-dynamic'
 
@@ -10,41 +13,36 @@ export default async function SettingsPage({
 }) {
   await params
   const user = await requireDashboardUser()
+  const plan = await getUserPlan(user.id)
+
+  /* Count active sessions (this row + any other open browsers). The settings
+     page shows "X devices" + a sign-out-everywhere button. */
+  let sessionsCount = 1
+  try {
+    const row = await queryOne<{ cnt: number }>(
+      `SELECT COUNT(*) AS cnt FROM business_sessions
+        WHERE user_id = ? AND expires_at > NOW()`,
+      [user.id]
+    )
+    sessionsCount = Number(row?.cnt ?? 1)
+  } catch { /* fall back to 1 */ }
 
   return (
     <div className="dash">
-      <DashboardHeader title="Settings" subtitle="Account details and preferences." />
-
-      <section className="set-card">
-        <h2 className="set-card-title">Profile</h2>
-        <div className="set-rows">
-          <div className="set-row">
-            <span className="set-row-lbl">Name</span>
-            <span className="set-row-val">{user.name || <em>not set</em>}</span>
-          </div>
-          <div className="set-row">
-            <span className="set-row-lbl">Email</span>
-            <span className="set-row-val">{user.email}</span>
-          </div>
-          <div className="set-row">
-            <span className="set-row-lbl">Signed in with</span>
-            <span className="set-row-val">
-              {user.provider === 'email' ? 'Email & password' : capitalize(user.provider)}
-            </span>
-          </div>
-          <div className="set-row">
-            <span className="set-row-lbl">Email verified</span>
-            <span className="set-row-val">{user.emailVerified ? 'Yes' : 'No'}</span>
-          </div>
-          <div className="set-row">
-            <span className="set-row-lbl">Member since</span>
-            <span className="set-row-val">{new Date(user.createdAt).toLocaleDateString()}</span>
-          </div>
-        </div>
-        <p className="set-note">Profile editing is coming soon. Need help? <a href="/contact">Contact us</a>.</p>
-      </section>
+      <DashboardHeader title="Settings" subtitle="Manage your account and preferences." />
+      <SettingsClient
+        user={{
+          uuid: user.uuid,
+          email: user.email,
+          name: user.name,
+          avatarUrl: user.avatarUrl,
+          provider: user.provider,
+          emailVerified: user.emailVerified,
+          createdAt: user.createdAt,
+        }}
+        plan={plan}
+        sessionsCount={sessionsCount}
+      />
     </div>
   )
 }
-
-function capitalize(s: string) { return s.charAt(0).toUpperCase() + s.slice(1) }

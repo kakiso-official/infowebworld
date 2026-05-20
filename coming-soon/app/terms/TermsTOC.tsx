@@ -26,17 +26,17 @@ export default function TermsTOC({ items }: { items: TocItem[] }) {
   }, [items])
 
   return (
-    <aside className="tp-toc" aria-label="Contents">
-      <span className="tp-toc-label">On this page</span>
-      <ol className="tp-toc-list">
+    <aside className="tm-toc" aria-label="Contents">
+      <span className="tm-toc-label">On this page</span>
+      <ol className="tm-toc-list">
         {items.map(i => (
           <li
             key={i.id}
-            className={`tp-toc-item ${activeId === i.id ? 'tp-toc-item--active' : ''}`}
+            className={`tm-toc-item ${activeId === i.id ? 'tm-toc-item--active' : ''}`}
           >
             <a href={`#${i.id}`}>
-              <span className="tp-toc-num">{String(i.num).padStart(2, '0')}</span>
-              <span className="tp-toc-text">{i.label}</span>
+              <span className="tm-toc-num">{String(i.num).padStart(2, '0')}</span>
+              <span className="tm-toc-text">{i.label}</span>
             </a>
           </li>
         ))}

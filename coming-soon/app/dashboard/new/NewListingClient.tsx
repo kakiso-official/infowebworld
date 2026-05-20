@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import DashboardListingForm, { type PlanKey } from './form/DashboardListingForm'
 import { PLAN_CAPS } from './form/constants'
 import DashboardHeader from '../DashboardHeader'
+import FeatureComparison, { type AnyPlan } from '../../business/components/FeatureComparison'
 import { TIER_RANK, type PlanTier } from '@/lib/user-plan-types'
 
 const VALID: PlanKey[] = ['free', 'starter', 'yearly', 'lifetime']
@@ -61,42 +62,12 @@ export default function NewListingClient({ paidTier, existingContext }: Props) {
 
   if (!plan) {
     return (
-      <div className="nl">
+      <div className="nl nl--compare">
         <DashboardHeader
           title="Create a listing"
           subtitle="Pick a plan to start. You can change it before publishing."
         />
-
-        <div className="nl-plans">
-          {VALID.map(key => {
-            const c = PLAN_CAPS[key]
-            const owned = isOwned(key)
-            const requiresPay = key !== 'free' && !owned
-            return (
-              <button key={key} type="button" className={`nl-plan nl-plan--${key}`}
-                onClick={() => handlePick(key)}>
-                <div className="nl-plan-head">
-                  <span className="nl-plan-label">{c.label}</span>
-                  <span className="nl-plan-price">{c.price}</span>
-                </div>
-                <p className="nl-plan-desc">{c.description}</p>
-                <ul className="nl-plan-feats">
-                  <li>Up to {c.maxFeatures} features</li>
-                  <li>Up to {c.maxTags} tags</li>
-                  {c.hasFaqs && <li>FAQ section</li>}
-                  {c.hasKeyFeatures && <li>Rich key features</li>}
-                  {c.hasPricingTiers && <li>Pricing tiers</li>}
-                  {c.hasComplianceAndAwards && <li>Compliance &amp; awards</li>}
-                </ul>
-                <span className="nl-plan-pick">
-                  {owned && key !== 'free' ? `Continue with ${c.label} →`
-                    : requiresPay ? `Pay & continue →`
-                    : `Select ${c.label} →`}
-                </span>
-              </button>
-            )
-          })}
-        </div>
+        <FeatureComparison onChoosePlan={(p: AnyPlan) => handlePick(p as PlanKey)} />
       </div>
     )
   }
