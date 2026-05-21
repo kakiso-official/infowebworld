@@ -55,6 +55,7 @@
 @import "./styles/news.css";
 @import "./styles/header.css";
 @import "./styles/write-review.css";
+@import "./styles/test-landing-page.css";
 
 /* ── AI editorial notice (magazine-style footnote, pure Inter) ── */
 .ai-note {

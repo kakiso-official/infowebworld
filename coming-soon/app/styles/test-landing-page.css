@@ -1,0 +1,1667 @@
+/* ══════════════════════════════════════════════════════════════
+   /test-landing-page hero — namespace .tlp-*
+
+   Design notes (per Aadil 2026-05-21):
+     - Pure white base, NOT dark.
+     - Soft mint-green radial glow at the top (warmth without weight).
+     - Faint dotted lattice for depth.
+     - Big rounded search bar as the centerpiece — clear primary action.
+     - Trending chips + trust strip below.
+   ══════════════════════════════════════════════════════════════ */
+
+.tlp {
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #0A1B33;
+  background: #FFFFFF;
+}
+
+/* ── Hero shell — natural content-driven height with generous breathing
+   room. A subtle tinted gradient base differentiates this section from
+   the pure-white categories grid below. Soft accent orbs (mint + coral)
+   sit in opposing corners for depth without weight. ── */
+.tlp-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(56px, 9vw, 110px) clamp(18px, 4vw, 32px) clamp(60px, 9vw, 110px);
+  /* Very subtle mint tint that fades to pure white — visible enough to
+     read as a distinct section, light enough to feel professional. */
+  background: linear-gradient(180deg,
+    #F1F8F3 0%,
+    #F7FAF7 38%,
+    #FCFDFC 75%,
+    #FFFFFF 100%);
+  border-bottom: 1px solid rgba(0, 59, 42, .07);
+}
+
+/* Backdrop layer — radial top glow + dotted lattice + corner orbs.
+   The two pseudo orbs add brand-color depth without bringing in any
+   dark surfaces. All decorative, pointer-events: none. */
+.tlp-hero-bg {
+  position: absolute; inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.tlp-hero-bg::before,
+.tlp-hero-bg::after {
+  content: '';
+  position: absolute;
+  width: 520px; height: 520px;
+  border-radius: 50%;
+  filter: blur(48px);
+  pointer-events: none;
+}
+/* Mint orb — top-left */
+.tlp-hero-bg::before {
+  top: -140px; left: -180px;
+  background: radial-gradient(circle,
+    rgba(14, 143, 110, .22) 0%,
+    rgba(14, 143, 110, .06) 45%,
+    transparent 70%);
+}
+/* Coral orb — bottom-right, brand accent */
+.tlp-hero-bg::after {
+  bottom: -120px; right: -160px;
+  background: radial-gradient(circle,
+    rgba(232, 85, 61, .14) 0%,
+    rgba(232, 85, 61, .04) 45%,
+    transparent 70%);
+}
+/* Central top mint glow — adds presence behind the headline */
+.tlp-hero-glow {
+  position: absolute;
+  top: -160px; left: 50%;
+  width: min(1100px, 120vw);
+  height: 540px;
+  transform: translateX(-50%);
+  background:
+    radial-gradient(ellipse at center,
+      rgba(14, 143, 110, .16) 0%,
+      rgba(14, 143, 110, .05) 35%,
+      transparent 70%);
+  filter: blur(8px);
+  border-radius: 50%;
+}
+/* Faint dotted lattice — soft texture only behind the central column */
+.tlp-hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(10, 27, 51, .07) 1px, transparent 1.2px);
+  background-size: 24px 24px;
+  background-position: 0 0;
+  opacity: .65;
+  mask-image: radial-gradient(ellipse 65% 55% at 50% 40%, #000 0%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 65% 55% at 50% 40%, #000 0%, transparent 78%);
+}
+
+/* ── Inner — centered column ── */
+.tlp-hero-inner {
+  position: relative;
+  max-width: 920px;
+  margin: 0 auto;
+  display: flex; flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 18px;
+  width: 100%;
+}
+
+.tlp-hero-eyebrow {
+  display: inline-flex; align-items: center;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(14, 143, 110, .08);
+  border: 1px solid rgba(14, 143, 110, .18);
+  color: #003B2A;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: .01em;
+  margin-bottom: 6px;
+}
+
+.tlp-hero-title {
+  font-size: clamp(2rem, 4.4vw, 3.25rem);
+  font-weight: 800;
+  letter-spacing: -.03em;
+  line-height: 1.08;
+  color: #0A1B33;
+  margin: 0;
+  max-width: 24ch;
+}
+
+.tlp-hero-sub {
+  font-size: clamp(15px, 1.4vw, 17px);
+  color: #4B5563;
+  line-height: 1.55;
+  margin: 4px auto 18px;
+  max-width: 54ch;
+}
+
+/* ── Hero search bar (.tlp-hsr-*) ── */
+.tlp-hero-search {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  margin-top: 6px;
+}
+.tlp-hsr {
+  position: relative;
+  display: flex; align-items: center;
+  background: #FFFFFF;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 16px;
+  padding: 6px 6px 6px 0;
+  box-shadow: 0 14px 36px -18px rgba(10, 27, 51, .14),
+              0 2px 6px -2px rgba(10, 27, 51, .04);
+  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+.tlp-hsr--on {
+  border-color: #003B2A;
+  box-shadow: 0 16px 40px -16px rgba(0, 59, 42, .25),
+              0 0 0 5px rgba(0, 59, 42, .07);
+}
+.tlp-hsr-ico {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 56px; height: 56px;
+  color: #6B7280;
+  flex-shrink: 0;
+  transition: color .15s ease;
+}
+.tlp-hsr--on .tlp-hsr-ico { color: #003B2A; }
+.tlp-hsr-spin {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(0, 59, 42, .18);
+  border-top-color: #003B2A;
+  animation: tlp-hsr-spin .8s linear infinite;
+}
+@keyframes tlp-hsr-spin { to { transform: rotate(360deg); } }
+.tlp-hsr-input {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 56px;
+  background: transparent;
+  border: 0;
+  font-family: inherit;
+  font-size: clamp(15px, 1.4vw, 16.5px);
+  color: #0A1B33;
+  padding: 0 8px 0 4px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.tlp-hsr-input::placeholder { color: #9CA3AF; }
+.tlp-hsr-input:focus { outline: none; }
+.tlp-hsr-clear {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: transparent;
+  border: 0;
+  color: #6B7280;
+  cursor: pointer;
+  margin-right: 4px;
+  transition: background .12s ease, color .12s ease;
+  flex-shrink: 0;
+}
+.tlp-hsr-clear:hover { background: #F1F2F4; color: #0A1B33; }
+.tlp-hsr-go {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 6px;
+  padding: 0 22px;
+  height: 48px;
+  border-radius: 12px;
+  background: #003B2A;
+  color: #FFFFFF;
+  border: 0;
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background .12s ease, transform .15s ease;
+}
+.tlp-hsr-go:hover { background: #0C5A40; }
+.tlp-hsr-go:active { transform: translateY(1px); }
+
+/* ── Dropdown (results) ── */
+.tlp-hsr-pop {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0; right: 0;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  box-shadow: 0 24px 60px -24px rgba(10, 27, 51, .18),
+              0 4px 12px -6px rgba(10, 27, 51, .06);
+  padding: 8px;
+  max-height: 480px;
+  overflow-y: auto;
+  z-index: 30;
+  text-align: left;
+}
+.tlp-hsr-sec + .tlp-hsr-sec {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid #F1F2F4;
+}
+.tlp-hsr-sec-lbl {
+  padding: 8px 12px 4px;
+  font-size: 11.5px; font-weight: 700;
+  color: #6B7280;
+  letter-spacing: 0;
+}
+.tlp-hsr-row {
+  display: flex; align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #0A1B33;
+  font-size: 14px;
+  transition: background .12s ease;
+}
+.tlp-hsr-row:hover { background: #E6F4EC; }
+.tlp-hsr-row-logo {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid #E5E7EB;
+  background: #FAFBFC;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.tlp-hsr-row-logo--ph {
+  font-weight: 800; font-size: 12px; color: #0A1B33;
+  background: linear-gradient(180deg, #F1F2F4, #E5E7EB);
+}
+.tlp-hsr-row-dot {
+  width: 11px; height: 11px; border-radius: 3px;
+  background: #003B2A;
+  flex-shrink: 0;
+}
+.tlp-hsr-row-dot--article { background: #3B82F6; }
+.tlp-hsr-row-text {
+  display: flex; flex-direction: column;
+  gap: 1px;
+  flex: 1; min-width: 0;
+}
+.tlp-hsr-row-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: #0A1B33;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  letter-spacing: -.008em;
+}
+.tlp-hsr-row-sub {
+  font-size: 12px;
+  color: #6B7280;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.tlp-hsr-row-tag {
+  font-size: 11px;
+  color: #4B5563;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #F1F2F4;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  max-width: 160px;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.tlp-hsr-row-tag--soft { background: transparent; }
+.tlp-hl {
+  background: rgba(0, 59, 42, .14);
+  color: #003B2A;
+  border-radius: 2px;
+  padding: 0 2px;
+  font-weight: 700;
+}
+.tlp-hsr-empty {
+  padding: 26px 16px;
+  text-align: center;
+  color: #4B5563;
+  font-size: 13.5px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.tlp-hsr-empty strong { color: #0A1B33; font-weight: 700; }
+.tlp-hsr-empty span { font-size: 12.5px; color: #9CA3AF; }
+
+/* ── Trending chips ── */
+.tlp-hero-chips {
+  display: inline-flex; flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 22px;
+  max-width: 760px;
+}
+.tlp-hero-chips-label {
+  font-size: 12.5px; font-weight: 600;
+  color: #6B7280;
+  margin-right: 2px;
+}
+.tlp-hero-chip {
+  display: inline-flex; align-items: center;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  color: #1F2937;
+  font-size: 13px; font-weight: 600;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  transition: border-color .12s ease, color .12s ease, background .12s ease;
+}
+.tlp-hero-chip:hover {
+  border-color: #003B2A;
+  color: #003B2A;
+  background: rgba(0, 59, 42, .04);
+}
+
+/* ── Trust strip ── */
+.tlp-hero-stats {
+  display: inline-flex; align-items: center;
+  gap: 14px;
+  margin-top: 28px;
+  padding: 12px 22px;
+  background: #FAFBFC;
+  border: 1px solid #E5E7EB;
+  border-radius: 999px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.tlp-hero-stat {
+  display: inline-flex; align-items: baseline; gap: 5px;
+}
+.tlp-hero-stat-n {
+  font-size: 14.5px; font-weight: 800;
+  color: #0A1B33;
+  letter-spacing: -.012em;
+  font-variant-numeric: tabular-nums;
+}
+.tlp-hero-stat-l {
+  font-size: 12.5px; color: #4B5563;
+  font-weight: 500;
+}
+.tlp-hero-stat-sep {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: #D1D5DB;
+}
+
+/* ── Mobile tweaks ── */
+@media (max-width: 720px) {
+  .tlp-hero { padding: clamp(40px, 10vw, 70px) 16px 50px; }
+  .tlp-hero-glow { height: 320px; top: -80px; }
+
+  .tlp-hsr { border-radius: 14px; padding: 4px 4px 4px 0; }
+  .tlp-hsr-ico { width: 48px; height: 48px; }
+  .tlp-hsr-input { height: 48px; font-size: 15px; }
+  .tlp-hsr-go {
+    /* Compact icon-only button on small screens — text fades out, chevron stays. */
+    padding: 0; width: 44px; height: 44px;
+    border-radius: 10px;
+  }
+  .tlp-hsr-go span { display: none; }
+
+  .tlp-hero-stats {
+    border-radius: 14px;
+    padding: 12px 16px;
+    gap: 10px;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Sectors block under the hero — 3×2 grid of L1 cards.
+   Pattern adapted from the GoodFirms "Choose the right development
+   partner …" reference.
+   ══════════════════════════════════════════════════════════════ */
+.tlp-cats {
+  background: #FFFFFF;
+  padding: clamp(48px, 7vw, 84px) clamp(18px, 4vw, 32px);
+}
+.tlp-cats-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+/* Header */
+.tlp-cats-head {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto clamp(28px, 4vw, 44px);
+}
+.tlp-cats-title {
+  font-size: clamp(1.5rem, 2.6vw, 1.95rem);
+  font-weight: 800;
+  letter-spacing: -.022em;
+  color: #0A1B33;
+  margin: 0 0 8px;
+  line-height: 1.18;
+}
+.tlp-cats-sub {
+  font-size: clamp(13.5px, 1.2vw, 15px);
+  color: #4B5563;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* Grid — 3 cols on desktop, 2 on tablet, 1 on phone */
+.tlp-cats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+@media (max-width: 980px) { .tlp-cats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .tlp-cats-grid { grid-template-columns: 1fr; } }
+
+/* Card */
+.tlp-cat-card {
+  display: flex; flex-direction: column;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 22px 22px 18px;
+  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+.tlp-cat-card:hover {
+  border-color: rgba(0, 59, 42, .35);
+  box-shadow: 0 14px 32px -16px rgba(10, 27, 51, .14);
+  transform: translateY(-1px);
+}
+.tlp-cat-card-ico {
+  display: inline-flex; align-items: center;
+  color: #003B2A;
+  margin-bottom: 14px;
+}
+.tlp-cat-card-name {
+  display: inline-block;
+  font-size: 18px; font-weight: 800;
+  letter-spacing: -.014em;
+  color: #0A1B33;
+  text-decoration: none;
+  margin-bottom: 14px;
+  line-height: 1.2;
+}
+.tlp-cat-card-name:hover { color: #003B2A; }
+
+.tlp-cat-card-pill {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: #F1F2F4;
+  color: #4B5563;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0;
+  margin: 6px 0 8px;
+}
+
+.tlp-cat-card-tags {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 6px;
+  display: flex; flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 0;
+  line-height: 1.7;
+}
+.tlp-cat-card-tags li {
+  display: inline-flex; align-items: center;
+}
+.tlp-cat-card-tag {
+  display: inline-block;
+  color: #003B2A;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -.003em;
+  text-decoration: none;
+  padding: 0 6px 0 0;
+}
+.tlp-cat-card-tag:hover { color: #0C5A40; text-decoration: underline; }
+.tlp-cat-card-tag--static {
+  color: #003B2A;
+  font-weight: 500;
+  cursor: default;
+}
+.tlp-cat-card-tag--static:hover { text-decoration: none; }
+.tlp-cat-card-bar {
+  color: #D1D5DB;
+  font-size: 12px;
+  padding-right: 6px;
+  user-select: none;
+}
+
+.tlp-cat-card-foot {
+  margin-top: auto;
+  padding-top: 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #6B7280;
+}
+
+/* CTA below the grid */
+.tlp-cats-cta {
+  display: flex; justify-content: center;
+  margin-top: clamp(28px, 4vw, 40px);
+}
+.tlp-cats-cta-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 12px 26px;
+  background: #003B2A;
+  color: #FFFFFF;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  transition: background .12s ease, transform .15s ease;
+}
+.tlp-cats-cta-btn:hover { background: #0C5A40; }
+.tlp-cats-cta-btn:active { transform: translateY(1px); }
+
+/* ══════════════════════════════════════════════════════════════
+   Top-rated companies block — dark section under the categories.
+   Reference: GoodFirms "Find the top-rated companies in every
+   service category" tabbed dark hero.
+   ══════════════════════════════════════════════════════════════ */
+.tlp-firms {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  /* Rich dark navy with a slight bluish undertone — reads as sophisticated
+     "dark" rather than the flat black of #0A0E14. Layered radial glow on
+     top adds brand-mint warmth so the section feels alive. */
+  background: #0E1A2E;
+  color: #FFFFFF;
+  padding: clamp(56px, 9vw, 100px) clamp(18px, 4vw, 32px);
+}
+/* Subtle top-center mint radial — ties this section to the hero's glow
+   without bringing any heavy color into the dark surface. */
+.tlp-firms::before {
+  content: '';
+  position: absolute;
+  top: -220px; left: 50%;
+  width: min(1200px, 110vw);
+  height: 640px;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse,
+    rgba(52, 216, 154, .14) 0%,
+    rgba(14, 143, 110, .06) 35%,
+    transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(12px);
+}
+/* Faint vignette at the bottom edges so cards float on a graded
+   background instead of a flat slab. */
+.tlp-firms::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 100%,
+      rgba(0, 0, 0, .35) 0%,
+      transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+.tlp-firms-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header */
+.tlp-firms-head {
+  text-align: center;
+  max-width: 780px;
+  margin: 0 auto clamp(28px, 4vw, 44px);
+}
+.tlp-firms-title {
+  font-size: clamp(1.55rem, 2.8vw, 2.15rem);
+  font-weight: 800;
+  letter-spacing: -.024em;
+  color: #FFFFFF;
+  margin: 0 0 10px;
+  line-height: 1.15;
+}
+.tlp-firms-sub {
+  font-size: clamp(13.5px, 1.2vw, 15px);
+  color: rgba(255, 255, 255, .68);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* Tabs */
+.tlp-firms-tabs {
+  display: flex; flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: clamp(24px, 3vw, 36px);
+}
+.tlp-firms-tab {
+  padding: 10px 18px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, .85);
+  font-family: inherit;
+  font-size: 13.5px; font-weight: 600;
+  letter-spacing: -.005em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .12s ease, border-color .12s ease, color .12s ease;
+}
+.tlp-firms-tab:hover {
+  border-color: rgba(255, 255, 255, .35);
+  color: #FFFFFF;
+}
+.tlp-firms-tab.is-on {
+  background: #FFFFFF;
+  color: #0A1B33;
+  border-color: #FFFFFF;
+}
+
+/* Grid */
+.tlp-firms-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+@media (max-width: 980px) { .tlp-firms-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .tlp-firms-grid { grid-template-columns: 1fr; } }
+
+/* Card — rounded rectangle (NOT pill). Outer wrapper is a flex row
+   with two click regions:
+     · .tlp-firm-main → logo + name + stars (→ listing page)
+     · .tlp-firm-rev  → right-aligned link (→ listing reviews OR write-review)
+   Two separate <Link>s instead of one wrapper avoid nested anchors. */
+.tlp-firm {
+  display: flex; align-items: center;
+  gap: 16px;
+  padding: 14px 22px 14px 14px;
+  background: #FFFFFF;
+  border-radius: 14px;
+  transition: transform .15s ease, box-shadow .15s ease;
+  min-height: 92px;
+}
+.tlp-firm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 36px -16px rgba(0, 0, 0, .5);
+}
+.tlp-firm-main {
+  display: flex; align-items: center;
+  gap: 14px;
+  flex: 1; min-width: 0;
+  text-decoration: none;
+  color: inherit;
+}
+.tlp-firm-logo {
+  width: 64px; height: 64px;
+  border-radius: 12px;
+  background: #FAFBFC;
+  display: inline-flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.tlp-firm-logo img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.tlp-firm-logo span {
+  font-size: 18px; font-weight: 800;
+  color: #0A1B33;
+  letter-spacing: -.012em;
+}
+.tlp-firm-mid {
+  min-width: 0;
+  display: flex; flex-direction: column;
+  gap: 5px;
+}
+.tlp-firm-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: #0A1B33;
+  letter-spacing: -.014em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  line-height: 1.2;
+}
+.tlp-firm-meta {
+  display: inline-flex; align-items: center;
+  gap: 8px;
+}
+.tlp-firm-stars {
+  display: inline-flex; align-items: center;
+  gap: 3px;
+}
+.tlp-firm-star {
+  width: 18px !important;
+  height: 18px !important;
+  color: #E5E7EB;
+}
+.tlp-firm-star.is-on {
+  color: #F5A623;
+}
+.tlp-firm-rating {
+  font-weight: 700;
+  color: #0A1B33;
+  font-variant-numeric: tabular-nums;
+  font-size: 13.5px;
+}
+.tlp-firm-rev {
+  display: inline-flex; align-items: center;
+  gap: 4px;
+  color: #2563EB;
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.tlp-firm-rev:hover { text-decoration: underline; }
+/* "Be the first to review" — distinct CTA color so it reads as an
+   action, not a passive review-count link. Brand dark-green. */
+.tlp-firm-rev--new {
+  color: #003B2A;
+  font-weight: 700;
+}
+.tlp-firm-rev--new:hover { color: #0C5A40; }
+
+/* Empty state when a sector has zero listings yet */
+.tlp-firms-empty {
+  background: rgba(255, 255, 255, .04);
+  border: 1px dashed rgba(255, 255, 255, .15);
+  border-radius: 14px;
+  padding: 36px 24px;
+  text-align: center;
+  color: rgba(255, 255, 255, .72);
+  font-size: 14px;
+  line-height: 1.55;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 12px;
+}
+.tlp-firms-empty strong { color: #FFFFFF; font-weight: 700; }
+.tlp-firms-empty-cta {
+  display: inline-block;
+  padding: 9px 18px;
+  background: #FFFFFF;
+  color: #0A1B33;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  transition: background .12s ease;
+}
+.tlp-firms-empty-cta:hover { background: #F1F2F4; }
+
+/* Bottom CTA */
+.tlp-firms-cta {
+  display: flex; justify-content: center;
+  margin-top: clamp(28px, 4vw, 44px);
+}
+.tlp-firms-cta-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 13px 28px;
+  background: #34D89A;
+  color: #003B2A;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  transition: background .12s ease, transform .15s ease;
+}
+.tlp-firms-cta-btn:hover { background: #2DC78A; }
+.tlp-firms-cta-btn:active { transform: translateY(1px); }
+
+@media (max-width: 520px) {
+  .tlp-firm {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 14px;
+    min-height: 0;
+  }
+  .tlp-firm-main { flex-basis: 100%; }
+  .tlp-firm-logo { width: 52px; height: 52px; }
+  .tlp-firm-rev {
+    margin-left: auto;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   New reviews block — white section under the dark "top firms".
+   Reference: GoodFirms "New reviews from verified customers" —
+   horizontal scrollable strip of review cards + centered CTA.
+   ══════════════════════════════════════════════════════════════ */
+.tlp-revs {
+  background: #FFFFFF;
+  padding: clamp(56px, 9vw, 100px) 0;
+}
+.tlp-revs-inner {
+  display: flex; flex-direction: column;
+  gap: clamp(28px, 4vw, 44px);
+}
+.tlp-revs-title {
+  font-size: clamp(1.55rem, 2.8vw, 2.15rem);
+  font-weight: 800;
+  letter-spacing: -.024em;
+  color: #0A1B33;
+  margin: 0;
+  text-align: center;
+  padding: 0 clamp(18px, 4vw, 32px);
+  line-height: 1.15;
+}
+
+/* Marquee outer — clipped viewport; the rail inside translates left
+   continuously, with cards duplicated so the loop reads seamless.
+   Subtle fade-out masks at the edges hint at more content. */
+.tlp-revs-track {
+  position: relative;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg,
+    transparent 0%, #000 4%, #000 96%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg,
+    transparent 0%, #000 4%, #000 96%, transparent 100%);
+}
+.tlp-revs-rail {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  width: max-content;
+  /* Pace: ~55s per loop — leisurely so eyes can catch each card. */
+  animation: tlp-revs-marquee 55s linear infinite;
+  will-change: transform;
+}
+.tlp-revs-track:hover .tlp-revs-rail,
+.tlp-revs-track:focus-within .tlp-revs-rail {
+  animation-play-state: paused;
+}
+@keyframes tlp-revs-marquee {
+  from { transform: translate3d(0, 0, 0); }
+  /* -50% lands the second-copy of the first card right where the
+     first-copy started — the rail repeats invisibly. */
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tlp-revs-rail { animation: none; }
+}
+
+.tlp-rev {
+  flex: 0 0 320px;
+  /* Heights vary by content length on purpose — short reviews get short
+     cards, long ones grow. The rail's align-items:flex-start anchors
+     them all to the top edge. */
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  padding: 22px;
+  display: flex; flex-direction: column;
+  gap: 14px;
+  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+.tlp-rev:hover {
+  border-color: rgba(0, 59, 42, .35);
+  box-shadow: 0 14px 32px -16px rgba(10, 27, 51, .14);
+  transform: translateY(-1px);
+}
+.tlp-rev-head {
+  display: flex; align-items: center;
+  gap: 12px;
+}
+.tlp-rev-logo {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #FAFBFC;
+  display: inline-flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  border: 1px solid #E5E7EB;
+}
+.tlp-rev-logo--ph {
+  font-size: 13px; font-weight: 800;
+  color: #0A1B33;
+  background: linear-gradient(180deg, #F1F2F4, #E5E7EB);
+}
+.tlp-rev-cname {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: #0A1B33;
+  text-decoration: none;
+  letter-spacing: -.014em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  min-width: 0;
+  line-height: 1.25;
+}
+.tlp-rev-cname:hover { color: #003B2A; }
+
+.tlp-rev-body {
+  font-size: 14px;
+  color: #4B5563;
+  line-height: 1.55;
+  margin: 0;
+  /* No line-clamp — let the review text flow at its natural length
+     so each card sizes to its own content. */
+}
+
+.tlp-rev-foot {
+  display: flex; flex-direction: column;
+  gap: 10px;
+  padding-top: 4px;
+}
+.tlp-rev-author {
+  display: flex; align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.tlp-rev-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  object-fit: cover;
+  background: #FAFBFC;
+  border: 1px solid #E5E7EB;
+  display: inline-flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  color: #6B7280;
+}
+.tlp-rev-avatar--ph { color: #9CA3AF; }
+.tlp-rev-author-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0A1B33;
+  letter-spacing: -.008em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  min-width: 0;
+}
+.tlp-rev-rating {
+  display: inline-flex; align-items: center;
+  gap: 6px;
+}
+.tlp-rev-stars-row {
+  display: inline-flex; align-items: center;
+  gap: 2px;
+}
+.tlp-rev-star {
+  width: 14px !important; height: 14px !important;
+  color: #E5E7EB;
+}
+.tlp-rev-star.is-on { color: #F5A623; }
+.tlp-rev-rating-n {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0A1B33;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Empty state when there are no approved reviews yet */
+.tlp-revs-empty {
+  text-align: center;
+  padding: 32px clamp(18px, 4vw, 32px);
+  color: #4B5563;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 16px;
+}
+.tlp-revs-empty p {
+  font-size: 14.5px;
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* Centered mint CTA */
+.tlp-revs-cta {
+  display: flex; justify-content: center;
+  padding: 0 clamp(18px, 4vw, 32px);
+}
+.tlp-revs-cta-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 13px 28px;
+  background: #34D89A;
+  color: #003B2A;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  transition: background .12s ease, transform .15s ease;
+}
+.tlp-revs-cta-btn:hover { background: #2DC78A; }
+.tlp-revs-cta-btn:active { transform: translateY(1px); }
+
+@media (max-width: 520px) {
+  .tlp-rev { flex-basis: 280px; padding: 18px; }
+  .tlp-revs-rail { animation-duration: 45s; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Popular AI tools — dark section under the reviews marquee.
+   3×2 grid of cards each with logo + name + stars + reviews link,
+   divider, and 2-column meta (Free Trial · Entry Level Price).
+   ══════════════════════════════════════════════════════════════ */
+.tlp-pop {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: #0E1A2E;
+  color: #FFFFFF;
+  padding: clamp(56px, 9vw, 100px) clamp(18px, 4vw, 32px);
+}
+/* Same top-center mint radial as .tlp-firms — visual continuity between
+   the two dark sections. */
+.tlp-pop::before {
+  content: '';
+  position: absolute;
+  top: -220px; left: 50%;
+  width: min(1200px, 110vw);
+  height: 640px;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse,
+    rgba(52, 216, 154, .14) 0%,
+    rgba(14, 143, 110, .06) 35%,
+    transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(12px);
+}
+/* Bottom vignette so cards float on a graded surface. */
+.tlp-pop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 100%,
+      rgba(0, 0, 0, .35) 0%,
+      transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+.tlp-pop-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header */
+.tlp-pop-head {
+  text-align: center;
+  max-width: 820px;
+  margin: 0 auto clamp(28px, 4vw, 44px);
+}
+.tlp-pop-title {
+  font-size: clamp(1.55rem, 2.8vw, 2.15rem);
+  font-weight: 800;
+  letter-spacing: -.024em;
+  color: #FFFFFF;
+  margin: 0 0 10px;
+  line-height: 1.15;
+}
+.tlp-pop-sub {
+  font-size: clamp(13.5px, 1.2vw, 15px);
+  color: rgba(255, 255, 255, .68);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* Grid — 3 cols on desktop, 2 on tablet, 1 on phone */
+.tlp-pop-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+@media (max-width: 980px) { .tlp-pop-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .tlp-pop-grid { grid-template-columns: 1fr; } }
+
+/* Card — WHITE surface with DARK text on the dark section.
+   Matches image #18: the card itself is light, text is dark, labels are
+   muted gray, only the reviews link uses brand blue. */
+.tlp-pop-card {
+  display: flex; flex-direction: column;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  padding: 20px 22px;
+  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+.tlp-pop-card:hover {
+  border-color: rgba(0, 59, 42, .35);
+  box-shadow: 0 18px 36px -16px rgba(0, 0, 0, .35);
+  transform: translateY(-1px);
+}
+
+/* Top row: logo · (name + stars) · reviews link */
+.tlp-pop-card-head {
+  display: flex; align-items: center;
+  gap: 14px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #F1F2F4;
+  margin-bottom: 16px;
+}
+.tlp-pop-card-logo {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 52px; height: 52px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #FAFBFC;
+  border: 1px solid #E5E7EB;
+  text-decoration: none;
+}
+.tlp-pop-card-logo img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.tlp-pop-card-logo span {
+  font-size: 16px; font-weight: 800;
+  color: #0A1B33;
+}
+.tlp-pop-card-id {
+  display: flex; flex-direction: column;
+  gap: 5px;
+  flex: 1; min-width: 0;
+}
+.tlp-pop-card-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0A1B33;
+  letter-spacing: -.014em;
+  text-decoration: none;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  line-height: 1.2;
+}
+.tlp-pop-card-name:hover { color: #003B2A; }
+.tlp-pop-card-meta {
+  display: inline-flex; align-items: center;
+  gap: 8px;
+}
+.tlp-pop-stars {
+  display: inline-flex; align-items: center;
+  gap: 2px;
+}
+.tlp-pop-star {
+  width: 14px !important; height: 14px !important;
+  color: #E5E7EB;
+}
+.tlp-pop-star.is-on { color: #F5A623; }
+.tlp-pop-card-rating {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0A1B33;
+  font-variant-numeric: tabular-nums;
+}
+.tlp-pop-card-new {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #6B7280;
+}
+.tlp-pop-card-rev {
+  display: inline-flex; align-items: center;
+  gap: 4px;
+  color: #2563EB;
+  font-weight: 600;
+  font-size: 12.5px;
+  white-space: nowrap;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.tlp-pop-card-rev:hover { text-decoration: underline; }
+.tlp-pop-card-rev--new {
+  color: #003B2A;
+  font-weight: 700;
+}
+.tlp-pop-card-rev--new:hover { color: #0C5A40; }
+
+/* Bottom row: 2 columns (Free Trial · Entry Level Price) */
+.tlp-pop-card-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.tlp-pop-card-col {
+  display: flex; flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.tlp-pop-card-lbl {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #6B7280;
+  letter-spacing: 0;
+}
+.tlp-pop-card-val {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0A1B33;
+  letter-spacing: -.008em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* Bottom CTA — mint, matching the firms section */
+.tlp-pop-cta {
+  display: flex; justify-content: center;
+  margin-top: clamp(28px, 4vw, 44px);
+}
+.tlp-pop-cta-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 13px 28px;
+  background: #34D89A;
+  color: #003B2A;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  transition: background .12s ease, transform .15s ease;
+}
+.tlp-pop-cta-btn:hover { background: #2DC78A; }
+.tlp-pop-cta-btn:active { transform: translateY(1px); }
+
+/* Empty state */
+.tlp-pop-empty {
+  text-align: center;
+  padding: 36px 22px;
+  color: rgba(255, 255, 255, .68);
+  display: flex; flex-direction: column; align-items: center;
+  gap: 16px;
+}
+.tlp-pop-empty p {
+  font-size: 14.5px;
+  margin: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Stories of trust & success — testimonials carousel.
+   Reference: GoodFirms "Stories of trust & success" — left column
+   with title + sub + arrows; right area with 2 quote cards.
+   ══════════════════════════════════════════════════════════════ */
+.tlp-stories {
+  background: #FFFFFF;
+  padding: clamp(56px, 9vw, 100px) clamp(18px, 4vw, 32px);
+}
+.tlp-stories-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(280px, 0.8fr) 2.2fr;
+  gap: clamp(28px, 5vw, 64px);
+  /* Both columns stretch to the row height so the arrows in the left
+     column can push to its bottom edge, which lines up with the bottom
+     of the taller card on the right. */
+  align-items: stretch;
+}
+@media (max-width: 900px) {
+  .tlp-stories-inner { grid-template-columns: 1fr; gap: 28px; }
+}
+
+/* Left column — title + sub stay at top, arrows pushed to the bottom
+   via margin-top:auto so they line up with the bottom of the cards. */
+.tlp-stories-left {
+  display: flex; flex-direction: column;
+  gap: 12px;
+  height: 100%;
+}
+.tlp-stories-title {
+  font-size: clamp(1.55rem, 3vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -.026em;
+  color: #0A1B33;
+  margin: 0;
+  line-height: 1.12;
+}
+.tlp-stories-sub {
+  font-size: 14.5px;
+  color: #4B5563;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 36ch;
+}
+.tlp-stories-nav {
+  display: inline-flex; gap: 10px;
+  /* Push to the bottom of the left column (which stretches to row
+     height) so the arrows align with the bottom of the cards. */
+  margin-top: auto;
+  padding-top: 24px;
+}
+.tlp-stories-arrow {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 52px; height: 52px;
+  border-radius: 10px;
+  background: #FFFFFF;
+  border: 1.5px solid #D6D9DD;
+  color: #003B2A;
+  cursor: pointer;
+  transition: background .12s ease, border-color .12s ease, color .12s ease, transform .15s ease;
+}
+.tlp-stories-arrow:hover {
+  border-color: #003B2A;
+  background: rgba(0, 59, 42, .04);
+  color: #003B2A;
+}
+.tlp-stories-arrow:active { transform: translateY(1px); }
+
+/* Right area — sliding carousel of pages.
+   .tlp-stories-viewport clips to one page's width; .tlp-stories-track
+   contains every page side-by-side and translates -100% per page on
+   arrow click for a smooth slide animation. */
+.tlp-stories-viewport {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+.tlp-stories-track {
+  display: flex;
+  width: 100%;
+  transition: transform .42s cubic-bezier(.4, 0, .2, 1);
+  will-change: transform;
+}
+.tlp-stories-page {
+  /* Each page IS the full width of the viewport. Two cards inside,
+     stretched to the same height for the uniform big-card look the
+     reference shows. */
+  flex: 0 0 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+  gap: 18px;
+}
+@media (max-width: 720px) { .tlp-stories-page { grid-template-columns: 1fr; } }
+
+.tlp-story {
+  display: flex; flex-direction: column;
+  justify-content: space-between;
+  gap: 28px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  padding: 30px 32px;
+  /* Stretch to the row height (taller card) — keeps every card in the
+     carousel visually equal, big, and aligned. */
+  height: 100%;
+  min-height: 340px;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.tlp-story:hover {
+  border-color: rgba(0, 59, 42, .35);
+  box-shadow: 0 14px 32px -16px rgba(10, 27, 51, .14);
+}
+.tlp-story-quote {
+  font-size: 14.5px;
+  color: #1F2937;
+  line-height: 1.65;
+  margin: 0;
+  letter-spacing: -.005em;
+}
+.tlp-story-author {
+  display: flex; align-items: center;
+  gap: 14px;
+}
+.tlp-story-avatar {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid #E5E7EB;
+  background: #FAFBFC;
+}
+.tlp-story-meta {
+  min-width: 0;
+  display: flex; flex-direction: column;
+  gap: 2px;
+}
+.tlp-story-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0A1B33;
+  letter-spacing: -.012em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.tlp-story-role {
+  font-size: 12.5px;
+  color: #6B7280;
+  font-weight: 500;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   "Why trust InfoWebWorld" — light-gray banner under the stories.
+   Reference: GoodFirms "Why trust Goodfirms" — 2-col layout, big
+   heading on the left, 2×2 grid of icon + line of trust copy.
+   ══════════════════════════════════════════════════════════════ */
+.tlp-trust {
+  background: #F1F2F4;
+  padding: clamp(56px, 9vw, 96px) clamp(18px, 4vw, 32px);
+}
+.tlp-trust-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(260px, 0.8fr) 2.2fr;
+  gap: clamp(28px, 5vw, 80px);
+  align-items: center;
+}
+@media (max-width: 900px) {
+  .tlp-trust-inner { grid-template-columns: 1fr; gap: 32px; }
+}
+
+.tlp-trust-title {
+  font-size: clamp(1.55rem, 3vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -.026em;
+  color: #0A1B33;
+  margin: 0;
+  line-height: 1.12;
+}
+
+/* 2 × 2 grid of trust points */
+.tlp-trust-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(24px, 3vw, 40px) clamp(28px, 4vw, 48px);
+}
+@media (max-width: 640px) { .tlp-trust-grid { grid-template-columns: 1fr; } }
+
+.tlp-trust-item {
+  display: flex; align-items: center;
+  gap: 18px;
+}
+.tlp-trust-ico {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  flex-shrink: 0;
+  background: #FFFFFF;
+  border: 1.5px solid rgba(0, 59, 42, .14);
+  color: #003B2A;
+  box-shadow: 0 6px 14px -8px rgba(0, 59, 42, .18);
+}
+.tlp-trust-text {
+  font-size: clamp(14.5px, 1.2vw, 16px);
+  font-weight: 500;
+  color: #1F2937;
+  line-height: 1.5;
+  margin: 0;
+  letter-spacing: -.005em;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   "Compare the Top-Rated Tools & Services" — soft mint banner
+   under the trust block. Big bold heading + 3×2 grid of large
+   square cards, one per L1 sector.
+   ══════════════════════════════════════════════════════════════ */
+.tlp-comp {
+  /* Soft mint-to-white gradient — brand-aligned alternative to the
+     pink in the GoodFirms reference. */
+  background: linear-gradient(180deg, #E6F4EC 0%, #F0F8F3 55%, #FFFFFF 100%);
+  padding: clamp(72px, 11vw, 130px) clamp(18px, 4vw, 32px);
+}
+.tlp-comp-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header — big, centered, full-presence */
+.tlp-comp-head {
+  text-align: center;
+  max-width: 920px;
+  margin: 0 auto clamp(40px, 6vw, 64px);
+}
+.tlp-comp-title {
+  font-size: clamp(1.85rem, 4.4vw, 3.1rem);
+  font-weight: 800;
+  letter-spacing: -.028em;
+  color: #0A1B33;
+  margin: 0 0 16px;
+  line-height: 1.1;
+}
+.tlp-comp-sub {
+  font-size: clamp(14px, 1.3vw, 17px);
+  color: #4B5563;
+  line-height: 1.55;
+  margin: 0 auto;
+  max-width: 56ch;
+}
+
+/* 6 cards in a single row — square shape, slightly rounded. Drops
+   to 3-col on tablet and 2-col on phone so they stay scannable. */
+.tlp-comp-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(10px, 1.4vw, 18px);
+}
+@media (max-width: 980px) { .tlp-comp-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 520px) { .tlp-comp-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.tlp-comp-card {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 14px;
+  /* Square shape — width is grid-driven, height matches width via
+     aspect-ratio. Padding is tight so the icon + label sit centred. */
+  aspect-ratio: 1 / 1;
+  padding: 18px 14px;
+  background: #FFFFFF;
+  border-radius: 12px;
+  text-decoration: none;
+  color: #0A1B33;
+  box-shadow: 0 1px 0 rgba(10, 27, 51, .04),
+              0 10px 22px -14px rgba(10, 27, 51, .12);
+  transition: transform .15s ease, box-shadow .15s ease, color .15s ease;
+}
+.tlp-comp-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 0 rgba(10, 27, 51, .04),
+              0 22px 40px -18px rgba(10, 27, 51, .2);
+  color: #003B2A;
+}
+.tlp-comp-card-ico {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 48px; height: 48px;
+  color: #0A1B33;
+}
+.tlp-comp-card:hover .tlp-comp-card-ico { color: #003B2A; }
+.tlp-comp-card-name {
+  font-size: clamp(14.5px, 1.2vw, 16.5px);
+  font-weight: 700;
+  letter-spacing: -.01em;
+  line-height: 1.25;
+  text-align: center;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Final CTA — compact, lovely, mint-gradient pill card with a
+   coral corner glow + dark-green primary button.
+   ══════════════════════════════════════════════════════════════ */
+.tlp-fcta {
+  background: #FFFFFF;
+  padding: clamp(40px, 6vw, 70px) clamp(18px, 4vw, 32px) clamp(56px, 8vw, 90px);
+}
+.tlp-fcta-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.tlp-fcta-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: clamp(20px, 3vw, 40px);
+  padding: clamp(28px, 4vw, 44px) clamp(28px, 4vw, 48px);
+  background: linear-gradient(135deg, #E6F4EC 0%, #F0F8F3 55%, #FBEFE9 100%);
+  border: 1px solid rgba(0, 59, 42, .12);
+  border-radius: 20px;
+}
+/* Coral radial glow in the top-right corner — adds a subtle warm
+   accent to the otherwise mint gradient. Decorative only. */
+.tlp-fcta-card::before {
+  content: '';
+  position: absolute;
+  top: -120px; right: -100px;
+  width: 380px; height: 380px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(232, 85, 61, .18) 0%,
+    rgba(232, 85, 61, .04) 45%,
+    transparent 70%);
+  filter: blur(36px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.tlp-fcta-text {
+  flex: 1; min-width: 0;
+  position: relative; z-index: 1;
+}
+.tlp-fcta-title {
+  font-size: clamp(1.45rem, 2.6vw, 2.05rem);
+  font-weight: 800;
+  letter-spacing: -.024em;
+  color: #0A1B33;
+  margin: 0 0 8px;
+  line-height: 1.15;
+}
+.tlp-fcta-sub {
+  font-size: clamp(13.5px, 1.2vw, 15.5px);
+  color: #4B5563;
+  margin: 0;
+  line-height: 1.55;
+  max-width: 56ch;
+}
+
+.tlp-fcta-btn {
+  display: inline-flex; align-items: center;
+  gap: 8px;
+  padding: 14px 26px;
+  background: #003B2A;
+  color: #FFFFFF;
+  border-radius: 10px;
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  position: relative; z-index: 1;
+  transition: background .12s ease, transform .15s ease;
+}
+.tlp-fcta-btn:hover { background: #0C5A40; }
+.tlp-fcta-btn:active { transform: translateY(1px); }
+
+@media (max-width: 700px) {
+  .tlp-fcta-card {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    padding: 28px 24px;
+  }
+  .tlp-fcta-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
