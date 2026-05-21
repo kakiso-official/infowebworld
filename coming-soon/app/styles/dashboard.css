@@ -2076,3 +2076,542 @@
   .act-card-actions { grid-area: actions; justify-content: flex-end }
   .act-card-review-title { max-width: 140px }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   Dashboard home — analytics view (DashboardAnalytics.tsx).
+   Renders when the user has ≥1 listing; replaces the .dash-grow
+   three-card hero. Namespace .dash-an-*.
+
+   Design: white surfaces, soft borders, large numerals, sparing
+   accent (#003B2A primary, #0E8F6E for traffic data). Two
+   typographic scales — headline 14.5px / 800 for card titles,
+   12px / 700 uppercase for labels. Subtle alternation, never
+   stripes. Charts are server-rendered SVG.
+   ══════════════════════════════════════════════════════════════ */
+.dash-an {
+  display: grid; gap: 12px;
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+  padding: clamp(.9rem, 1.6vw, 1.35rem) clamp(.9rem, 2vw, 1.5rem);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #0A1B33;
+}
+
+/* ── Header ─────────────────────────────────────────────────── */
+.dash-an-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+  padding-bottom: 2px;
+}
+.dash-an-eyebrow {
+  display: inline-block;
+  font-size: 11.5px; font-weight: 600; letter-spacing: 0;
+  color: #6B7280;
+  margin-bottom: 4px;
+}
+.dash-an-title {
+  font-size: clamp(1.35rem, 2vw, 1.7rem);
+  font-weight: 800; color: #0A1B33;
+  letter-spacing: -.022em;
+  margin: 0;
+  line-height: 1.15;
+}
+.dash-an-sub {
+  color: #4B5563; font-size: 13px;
+  margin: 4px 0 0; line-height: 1.45;
+  max-width: 60ch;
+}
+.dash-an-sub strong { color: #0A1B33; font-weight: 700; }
+.dash-an-actions { display: inline-flex; gap: 8px; flex-shrink: 0; }
+.dash-an-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px; border-radius: 999px;
+  font-weight: 700; font-size: 12.5px; letter-spacing: -.005em;
+  text-decoration: none; cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: background .15s ease, border-color .15s ease,
+              color .15s ease, transform .15s ease;
+}
+.dash-an-btn:active { transform: translateY(1px); }
+.dash-an-btn--primary {
+  background: #003B2A; color: #FFFFFF; border-color: #003B2A;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, .04), 0 6px 18px -10px rgba(0, 59, 42, .55);
+}
+.dash-an-btn--primary:hover { background: #0C5A40; border-color: #0C5A40; }
+.dash-an-btn--ghost {
+  background: #FFFFFF; color: #1F2937; border-color: #D6D9DD;
+}
+.dash-an-btn--ghost:hover { border-color: #003B2A; color: #003B2A; }
+
+/* ── KPI tiles ──────────────────────────────────────────────── */
+.dash-an-kpis {
+  display: grid; gap: 10px;
+  grid-template-columns: repeat(4, 1fr);
+}
+@media (max-width: 920px) { .dash-an-kpis { grid-template-columns: repeat(2, 1fr); } }
+.dash-an-kpi {
+  position: relative;
+  display: flex; flex-direction: column; gap: 6px;
+  padding: 13px 16px 12px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  min-height: 96px;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.dash-an-kpi:hover { border-color: #D6D9DD; box-shadow: 0 1px 0 rgba(0,0,0,.02); }
+.dash-an-kpi--primary {
+  background: linear-gradient(160deg, #003B2A 0%, #0C5A40 100%);
+  border-color: transparent;
+  color: #FFFFFF;
+}
+.dash-an-kpi--primary:hover { border-color: transparent; }
+.dash-an-kpi-lbl {
+  font-size: 12px; font-weight: 600; letter-spacing: 0;
+  color: #6B7280;
+}
+.dash-an-kpi--primary .dash-an-kpi-lbl { color: rgba(255, 255, 255, .72); }
+.dash-an-kpi-val {
+  font-size: 26px; font-weight: 800; letter-spacing: -.024em;
+  color: #0A1B33;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  display: inline-flex; align-items: baseline; gap: 4px;
+}
+.dash-an-kpi--primary .dash-an-kpi-val { color: #FFFFFF; }
+.dash-an-kpi-suffix {
+  font-size: 12.5px; font-weight: 600; letter-spacing: 0;
+  color: #6B7280;
+}
+.dash-an-kpi--primary .dash-an-kpi-suffix { color: rgba(255,255,255,.75); }
+.dash-an-kpi-foot {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 11.5px; font-weight: 500; color: #6B7280;
+  margin-top: auto;
+}
+.dash-an-kpi--primary .dash-an-kpi-foot { color: rgba(255, 255, 255, .72); }
+.dash-an-kpi-hint { letter-spacing: 0; }
+
+.dash-an-delta {
+  display: inline-flex; align-items: center; gap: 2px;
+  padding: 1px 6px; border-radius: 999px;
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+.dash-an-delta--up   { background: rgba(14, 143, 110, .12); color: #0E8F6E; }
+.dash-an-delta--down { background: rgba(220, 38, 38, .10);  color: #B91C1C; }
+.dash-an-delta--flat { background: #F1F2F4; color: #6B7280; }
+.dash-an-kpi--primary .dash-an-delta--up {
+  background: rgba(255, 255, 255, .18); color: #BFF5DB;
+}
+.dash-an-kpi--primary .dash-an-delta--down {
+  background: rgba(255, 255, 255, .18); color: #FCA5A5;
+}
+
+.dash-an-kpi--side { min-height: 78px; padding: 12px 14px; gap: 3px; }
+.dash-an-kpi--side .dash-an-kpi-val { font-size: 20px; }
+
+/* ── Row layouts ────────────────────────────────────────────── */
+.dash-an-row {
+  display: grid; gap: 12px;
+}
+.dash-an-row--chart { grid-template-columns: minmax(0, 2.4fr) minmax(200px, 1fr); }
+.dash-an-row--split { grid-template-columns: 1fr 1fr; }
+@media (max-width: 980px) {
+  .dash-an-row--chart, .dash-an-row--split { grid-template-columns: 1fr; }
+}
+
+.dash-an-side-stack {
+  display: grid; grid-template-rows: 1fr 1fr 1fr; gap: 10px;
+}
+
+/* ── Card chrome ────────────────────────────────────────────── */
+.dash-an-card {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.dash-an-card-head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+  padding: 12px 16px 10px;
+  border-bottom: 1px solid #F1F2F4;
+}
+.dash-an-card-title {
+  font-size: 13.5px; font-weight: 700; color: #0A1B33;
+  letter-spacing: -.012em; margin: 0;
+}
+.dash-an-card-sub {
+  font-size: 11.5px; color: #6B7280;
+  margin: 3px 0 0;
+}
+.dash-an-legend {
+  display: inline-flex; gap: 12px;
+  font-size: 11.5px; color: #4B5563;
+}
+.dash-an-legend-item { display: inline-flex; align-items: center; gap: 5px; }
+.dash-an-legend-swatch {
+  display: inline-block; width: 12px; height: 7px; border-radius: 2px;
+}
+.dash-an-legend-swatch--bar  { background: linear-gradient(180deg, #0E8F6E, rgba(14,143,110,.55)); }
+.dash-an-legend-swatch--line {
+  height: 0; border-top: 2px solid #003B2A;
+}
+
+/* ── Traffic chart ──────────────────────────────────────────── */
+.dash-an-chart-card { display: flex; flex-direction: column; }
+.dash-an-chart {
+  padding: 6px 12px 12px;
+  flex: 1;
+}
+.dash-an-chart-svg {
+  width: 100%; height: auto;
+  display: block;
+  font-family: Inter, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.dash-an-chart-empty {
+  padding: 48px 24px; text-align: center;
+  color: #4B5563;
+}
+.dash-an-chart-empty > span {
+  font-size: 28px; display: block; margin-bottom: 8px;
+}
+.dash-an-chart-empty h3 {
+  font-size: 14px; font-weight: 700; color: #0A1B33;
+  margin: 0 0 4px;
+}
+.dash-an-chart-empty p {
+  font-size: 12.5px; color: #6B7280; margin: 0;
+  max-width: 36ch; margin-inline: auto;
+}
+
+/* ── Top performing list ────────────────────────────────────── */
+.dash-an-top {
+  list-style: none; padding: 6px 6px 10px; margin: 0;
+  display: flex; flex-direction: column;
+}
+.dash-an-top-row {
+  display: grid;
+  grid-template-columns: 24px 1fr 88px;
+  gap: 11px; align-items: center;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background .12s ease;
+}
+.dash-an-top-row:hover { background: #FAFBFC; }
+.dash-an-top-rank {
+  width: 20px; height: 20px; border-radius: 999px;
+  background: #F1F2F4; color: #0A1B33;
+  font-size: 11px; font-weight: 800;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-variant-numeric: tabular-nums;
+}
+.dash-an-top-row:nth-child(1) .dash-an-top-rank { background: #003B2A; color: #FFFFFF; }
+.dash-an-top-row:nth-child(2) .dash-an-top-rank { background: rgba(14,143,110,.18); color: #0E8F6E; }
+.dash-an-top-main { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.dash-an-top-meta {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 10px; min-width: 0;
+}
+.dash-an-top-name {
+  font-size: 13px; font-weight: 700; color: #0A1B33;
+  text-decoration: none;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  flex-shrink: 1; min-width: 0;
+  letter-spacing: -.008em;
+}
+.dash-an-top-name:hover { color: #003B2A; }
+.dash-an-top-stats {
+  font-size: 11px; color: #6B7280;
+  white-space: nowrap; flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+.dash-an-top-stats strong { color: #0A1B33; font-weight: 700; }
+.dash-an-top-bar {
+  position: relative;
+  width: 100%; height: 4px; border-radius: 2px;
+  background: #F1F2F4; overflow: hidden;
+}
+.dash-an-top-bar-fill {
+  position: absolute; top: 0; left: 0; bottom: 0;
+  background: linear-gradient(90deg, #0E8F6E, #34D89A);
+  border-radius: 2px;
+}
+.dash-an-top-spark { display: flex; justify-content: flex-end; }
+
+/* ── Mini sparkline ─────────────────────────────────────────── */
+.dash-an-mini {
+  width: 84px; height: 24px; display: block;
+}
+.dash-an-mini-empty {
+  color: #D1D5DB; font-size: 12px;
+  display: inline-block; min-width: 24px; text-align: center;
+}
+
+/* ── Country / referrer rank ────────────────────────────────── */
+.dash-an-rank {
+  list-style: none; padding: 6px 4px 10px; margin: 0;
+}
+.dash-an-rank-row {
+  display: grid;
+  grid-template-columns: minmax(140px, 1.4fr) 1fr 56px;
+  gap: 12px; align-items: center;
+  padding: 7px 12px;
+  border-radius: 7px;
+  font-size: 12.5px;
+}
+.dash-an-rank-row + .dash-an-rank-row { margin-top: 1px; }
+.dash-an-rank-row:hover { background: #FAFBFC; }
+.dash-an-rank-label {
+  display: inline-flex; align-items: center; gap: 9px;
+  color: #0A1B33; font-weight: 600;
+  min-width: 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.dash-an-rank-text {
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  min-width: 0;
+}
+.dash-an-rank-fav {
+  width: 16px; height: 16px; border-radius: 3px;
+  background: #F1F2F4; flex-shrink: 0;
+}
+/* Country-code badge — replaces the old emoji flag. Always 30×18,
+   uppercase code, subtle border so it doesn't dominate the row. */
+.dash-an-cc {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 18px;
+  border: 1px solid #E5E7EB;
+  border-radius: 4px;
+  background: #FAFBFC;
+  color: #4B5563;
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: .02em;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+.dash-an-cc--unk { color: #9CA3AF; }
+.dash-an-rank-bar {
+  position: relative; height: 5px; border-radius: 3px;
+  background: #F1F2F4; overflow: hidden;
+}
+.dash-an-rank-bar > span {
+  position: absolute; inset: 0 auto 0 0;
+  background: linear-gradient(90deg, #003B2A, #0E8F6E);
+  border-radius: 3px;
+}
+.dash-an-rank-val {
+  font-size: 12.5px; font-weight: 700; color: #0A1B33;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Listings table ─────────────────────────────────────────── */
+.dash-an-table-wrap { overflow-x: auto; }
+.dash-an-sr {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+.dash-an-tbl {
+  width: 100%; border-collapse: separate; border-spacing: 0;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  table-layout: fixed;
+}
+.dash-an-tbl-col-listing { width: auto; }
+.dash-an-tbl-col-spark   { width: 92px; }
+.dash-an-tbl-col-num     { width: 76px; }
+.dash-an-tbl-col-actions { width: 116px; }
+
+.dash-an-tbl thead th {
+  text-align: left; padding: 10px 12px;
+  font-size: 11.5px; font-weight: 600;
+  letter-spacing: 0;
+  color: #6B7280; background: #FAFBFC;
+  border-bottom: 1px solid #E5E7EB;
+  white-space: nowrap;
+}
+.dash-an-tbl th:first-child { padding-left: 16px; }
+.dash-an-tbl th:last-child  { padding-right: 14px; }
+.dash-an-tbl-h-num     { text-align: right !important; }
+.dash-an-tbl-h-spark   { text-align: left  !important; }
+.dash-an-tbl-h-actions { text-align: right !important; }
+
+.dash-an-tbl tbody td {
+  padding: 12px; border-bottom: 1px solid #F1F2F4;
+  vertical-align: middle;
+}
+.dash-an-tbl td:first-child { padding-left: 16px; }
+.dash-an-tbl td:last-child  { padding-right: 14px; }
+.dash-an-tbl tbody tr:last-child td { border-bottom: none; }
+.dash-an-tbl tbody tr { transition: background .12s ease; }
+.dash-an-tbl tbody tr:hover { background: #FAFBFC; }
+
+/* ── Listing cell ── */
+.dash-an-tbl-listing {
+  display: flex; align-items: center; gap: 12px;
+  text-decoration: none; color: inherit;
+  min-width: 0;
+}
+.dash-an-tbl-logo {
+  width: 36px; height: 36px; border-radius: 8px;
+  object-fit: cover; flex-shrink: 0;
+  border: 1px solid #E5E7EB;
+  background: #FAFBFC;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.dash-an-tbl-logo--initial {
+  font-weight: 800; font-size: 12px; color: #0A1B33;
+  background: linear-gradient(180deg, #F1F2F4, #E5E7EB);
+}
+.dash-an-tbl-listing-meta {
+  display: flex; flex-direction: column; gap: 2px;
+  min-width: 0; flex: 1;
+}
+.dash-an-tbl-listing-name {
+  font-weight: 700; color: #0A1B33; font-size: 13.5px;
+  letter-spacing: -.008em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  line-height: 1.2;
+}
+.dash-an-tbl-listing:hover .dash-an-tbl-listing-name { color: #003B2A; }
+.dash-an-tbl-listing-sub {
+  font-size: 11.5px; color: #6B7280; font-weight: 500;
+  display: inline-flex; align-items: center; gap: 6px;
+  white-space: nowrap;
+  line-height: 1.3;
+}
+.dash-an-tbl-sep { color: #D1D5DB; }
+.dash-an-tbl-status { color: #4B5563; }
+.dash-an-tbl-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  flex-shrink: 0;
+  background: #9CA3AF;
+}
+.dash-an-tbl-dot--live    { background: #10B981; box-shadow: 0 0 0 3px rgba(16, 185, 129, .14); }
+.dash-an-tbl-dot--pending { background: #F59E0B; box-shadow: 0 0 0 3px rgba(245, 158, 11, .14); }
+.dash-an-tbl-dot--rejected{ background: #DC2626; box-shadow: 0 0 0 3px rgba(220, 38, 38, .14); }
+
+/* ── Sparkline cell ── */
+.dash-an-tbl-c-spark { padding-right: 8px !important; }
+
+/* ── Number cells ── */
+.dash-an-tbl-c-num   { text-align: right; white-space: nowrap; }
+.dash-an-tbl-n {
+  font-weight: 700; color: #0A1B33;
+  font-size: 13.5px;
+  display: inline-flex; align-items: baseline; gap: 5px;
+  justify-content: flex-end;
+}
+.dash-an-tbl-n--accent { color: #0E8F6E; }
+.dash-an-tbl-n--muted  { color: #6B7280; font-weight: 600; }
+.dash-an-tbl-rating {
+  display: inline-flex; align-items: center; gap: 2px;
+  font-size: 11px; font-weight: 600; color: #F59E0B;
+  letter-spacing: 0;
+}
+.dash-an-tbl-rating svg { color: #F59E0B; fill: currentColor; stroke: none; }
+
+/* ── Action icon buttons ── */
+.dash-an-tbl-c-actions {
+  text-align: right; white-space: nowrap;
+}
+.dash-an-ibtn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px;
+  border-radius: 7px;
+  color: #4B5563;
+  background: transparent;
+  border: 1px solid transparent;
+  text-decoration: none;
+  margin-left: 2px;
+  transition: background .12s ease, color .12s ease, border-color .12s ease;
+}
+.dash-an-ibtn:hover {
+  background: #F1F2F4;
+  color: #003B2A;
+  border-color: #E5E7EB;
+}
+.dash-an-ibtn:first-child { margin-left: 0; }
+
+/* ── Compact view at narrower widths ── */
+@media (max-width: 1100px) {
+  .dash-an-tbl-col-num     { width: 68px; }
+  .dash-an-tbl-col-actions { width: 100px; }
+  .dash-an-tbl thead th    { padding: 9px 10px; }
+  .dash-an-tbl tbody td    { padding: 10px; }
+}
+@media (max-width: 860px) {
+  /* Drop the trend column, then CTR, then leads/followers as space gets tight. */
+  .dash-an-tbl-col-spark, .dash-an-tbl-h-spark, .dash-an-tbl-c-spark { display: none; }
+}
+
+/* ── Activity feed ──────────────────────────────────────────── */
+.dash-an-activity {
+  list-style: none; padding: 4px 6px 10px; margin: 0;
+}
+.dash-an-activity-row {
+  display: grid; grid-template-columns: 10px 1fr auto;
+  gap: 10px; align-items: center;
+  padding: 9px 12px;
+  border-radius: 7px;
+  font-size: 12.5px; color: #1F2937;
+  transition: background .12s ease;
+}
+.dash-an-activity-row + .dash-an-activity-row {
+  border-top: 1px solid #F4F5F7;
+}
+.dash-an-activity-row:hover { background: #FAFBFC; }
+.dash-an-activity-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #9CA3AF;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, .03);
+}
+.dash-an-activity-row--review   .dash-an-activity-dot { background: #F59E0B; box-shadow: 0 0 0 3px rgba(245, 158, 11, .14); }
+.dash-an-activity-row--follow   .dash-an-activity-dot { background: #0E8F6E; box-shadow: 0 0 0 3px rgba(14, 143, 110, .16); }
+.dash-an-activity-row--bookmark .dash-an-activity-dot { background: #6366F1; box-shadow: 0 0 0 3px rgba(99, 102, 241, .16); }
+.dash-an-activity-row--lead     .dash-an-activity-dot { background: #E8553D; box-shadow: 0 0 0 3px rgba(232, 85, 61, .16); }
+.dash-an-activity-body { line-height: 1.45; min-width: 0; }
+.dash-an-activity-body strong { font-weight: 700; color: #0A1B33; }
+.dash-an-activity-link {
+  color: #003B2A; font-weight: 700; text-decoration: none;
+}
+.dash-an-activity-link:hover { text-decoration: underline; }
+.dash-an-activity-detail { color: #6B7280; }
+.dash-an-activity-time {
+  font-size: 11px; color: #9CA3AF; white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Empty states ───────────────────────────────────────────── */
+.dash-an-empty {
+  padding: 18px 14px;
+  color: #6B7280; font-size: 12.5px;
+  text-align: center;
+}
+.dash-an-empty--card {
+  padding: 28px 20px;
+  max-width: 38ch;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* When the analytics view is showing, drop the .tp-content padding the
+   same way the .dash-grow hero does so the page can stretch edge-to-edge. */
+.tp-main:has(.dash-an) > .tp-content { padding: 0; background: #F7F8FA; }
+
+@media (max-width: 720px) {
+  .dash-an-kpi-val { font-size: 24px; }
+  .dash-an-rank-row { grid-template-columns: 1fr 70px; gap: 10px; }
+  .dash-an-rank-bar { display: none; }
+  .dash-an-top-row { grid-template-columns: 24px 1fr; }
+  .dash-an-top-spark { display: none; }
+  .dash-an-table thead th { padding: 9px 12px; }
+  .dash-an-table tbody td { padding: 12px; }
+}

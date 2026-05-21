@@ -6,6 +6,8 @@ import Stars from './Stars'
 import CompareSearchBar from './CompareSearchBar'
 import SignupModal from '../components/auth/SignupModal'
 import { useAuth } from '@/lib/use-auth'
+import { withInfoWebWorldUtm } from '../lib/utm'
+import { trackWebsiteClick } from '../lib/track-website-click'
 import type { RealSubmission } from '../iww-hq/data/submissions-storage'
 
 /* ── Demo listing type ── */
@@ -133,10 +135,11 @@ function CardActions({
   return (
     <div className="cd-lc-actions">
       <a
-        href={website || '#'}
+        href={website ? withInfoWebWorldUtm(website, fromSlug, 'category-card') : '#'}
         target="_blank"
         rel="noopener noreferrer"
         className="cd-lc-visit"
+        onClick={() => { if (website && fromSlug) trackWebsiteClick(fromSlug, 'category-card') }}
       >
         Visit website
         <ExtIcon size={12} color="#fff" />

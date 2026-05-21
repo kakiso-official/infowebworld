@@ -221,6 +221,21 @@ export default function DashboardListingForm({
     return () => clearTimeout(t)
   }, [form, draftKey, editMode])
 
+  /* Mirror the current form snapshot to a shared preview key so /preview/listing
+     can render the in-progress listing as the user types. Runs in BOTH new and
+     edit modes (the draft key above only runs for new listings). Cross-tab
+     `storage` events on this key trigger an auto-refresh in the preview tab. */
+  useEffect(() => {
+    const t = setTimeout(() => {
+      try {
+        localStorage.setItem('iww_listing_preview', JSON.stringify({
+          plan, form, savedAt: Date.now(),
+        }))
+      } catch {}
+    }, 300)
+    return () => clearTimeout(t)
+  }, [form, plan])
+
   /* Scroll content panel to top on step change */
   useEffect(() => {
     const main = wrapRef.current?.querySelector('.df-content') as HTMLElement | null
@@ -568,6 +583,8 @@ export default function DashboardListingForm({
               : 'Submit listing'
             }
             submittingLabel={editMode ? 'Saving…' : 'Submitting…'}
+            previewHref="/preview/listing"
+            previewEnabled={!!form.companyName.trim()}
           />
 
           {submitError && <div className="df-submit-error">{submitError}</div>}

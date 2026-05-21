@@ -26,6 +26,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from 'react'
 import Link from 'next/link'
 import { useRouter, usePathname } from 'next/navigation'
+import { withInfoWebWorldUtm } from '../lib/utm'
+import { trackWebsiteClick } from '../lib/track-website-click'
 import {
   buildCompareUrl,
   MAX_COMPARE,
@@ -601,7 +603,13 @@ function ColumnHead({
       </div>
       <div className="cpr-col-cta-row">
         {col.website ? (
-          <a href={col.website} target="_blank" rel="noopener noreferrer nofollow" className="cpr-col-visit">
+          <a
+            href={withInfoWebWorldUtm(col.website, col.slug, 'compare')}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="cpr-col-visit"
+            onClick={() => trackWebsiteClick(col.slug, 'compare')}
+          >
             Visit Website {Ico.external}
           </a>
         ) : (
@@ -1166,7 +1174,12 @@ function CompanyInfoCell({ col }: { col: CompareCol }) {
             <span className="cpr-info-label">{r.label}</span>
             <span className="cpr-info-value">
               {r.href
-                ? <a href={r.href} target="_blank" rel="noopener noreferrer nofollow">{r.value} {Ico.external}</a>
+                ? <a
+                    href={withInfoWebWorldUtm(r.href, col.slug, 'compare')}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => trackWebsiteClick(col.slug, 'compare')}
+                  >{r.value} {Ico.external}</a>
                 : r.value}
             </span>
           </div>

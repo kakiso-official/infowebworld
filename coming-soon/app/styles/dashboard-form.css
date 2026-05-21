@@ -1389,11 +1389,28 @@
 }
 .df-footer-back { justify-self: start; }
 .df-footer-spacer { display: block; }
+.df-footer-center {
+  display: inline-flex; align-items: center; gap: 12px;
+  justify-self: center;
+}
 .df-footer-counter {
   font-size: 12px; font-weight: 600;
   color: var(--df-muted);
   letter-spacing: .04em; text-transform: uppercase;
   text-align: center;
+}
+.df-footer-preview {
+  /* Smaller, low-key pill — secondary action in the footer. */
+  padding: 6px 12px;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: .02em;
+  gap: 6px;
+  text-decoration: none;
+}
+.df-footer-preview.is-disabled {
+  opacity: .45;
+  cursor: not-allowed;
+  pointer-events: auto; /* keep title tooltip on hover */
 }
 .df-footer-next { justify-self: end; }
 

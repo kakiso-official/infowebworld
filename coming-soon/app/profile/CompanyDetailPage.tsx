@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import LeadFormModal from '../listing/LeadFormModal'
 import SignupModal from '../components/auth/SignupModal'
+import { withInfoWebWorldUtm } from '../lib/utm'
+import { trackWebsiteClick } from '../lib/track-website-click'
 
 /* ═══════════════════════════════════════════════════════════════════════════
    /profile/[slug] — Clutch.co-style company profile.
@@ -133,17 +135,6 @@ function parseJsonArr(val: unknown): unknown[] {
   return []
 }
 
-function withInfoWebWorldUtm(url: string, slug: string): string {
-  if (!url) return url
-  try {
-    const u = new URL(url)
-    if (!u.searchParams.has('utm_source'))   u.searchParams.set('utm_source', 'infowebworld')
-    if (!u.searchParams.has('utm_medium'))   u.searchParams.set('utm_medium', 'referral')
-    if (!u.searchParams.has('utm_campaign')) u.searchParams.set('utm_campaign', 'profile')
-    if (slug && !u.searchParams.has('utm_content')) u.searchParams.set('utm_content', slug)
-    return u.toString()
-  } catch { return url }
-}
 
 const websiteHostOf = (url: string | null) => {
   if (!url) return ''
@@ -597,9 +588,10 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
               <div className="cmp-head-cta">
                 {c.website && (
                   <a
-                    href={withInfoWebWorldUtm(c.website, slug)}
+                    href={withInfoWebWorldUtm(c.website, slug, 'profile')}
                     target="_blank" rel="noopener noreferrer"
                     className="cmp-btn cmp-btn--primary"
+                    onClick={() => trackWebsiteClick(slug, 'profile')}
                   >
                     Visit Website
                   </a>
@@ -1149,9 +1141,10 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
             </button>
             {c.website && (
               <a
-                href={withInfoWebWorldUtm(c.website, slug)}
+                href={withInfoWebWorldUtm(c.website, slug, 'profile')}
                 target="_blank" rel="noopener noreferrer"
                 className="cmp-btn cmp-btn--outline"
+                onClick={() => trackWebsiteClick(slug, 'profile')}
               >
                 <Globe /> {websiteHost || 'Visit website'}
               </a>

@@ -6,6 +6,8 @@ import type { RealSubmission, FaqItem, KeyFeature, Award } from '../iww-hq/data/
 import WriteReviewModal from './WriteReviewModal'
 import LeadFormModal from './LeadFormModal'
 import SignupModal from '../components/auth/SignupModal'
+import { withInfoWebWorldUtm } from '../lib/utm'
+import { trackWebsiteClick } from '../lib/track-website-click'
 
 /* ═══════════════════════════════════════════
    Listing Detail Page — GetApp-style company listing.
@@ -95,24 +97,6 @@ function formatStartingPrice(raw: string | number | null | undefined): PriceDisp
   if (isNaN(num)) return null
   if (num === 0) return { kind: 'free' }
   return { kind: 'paid', num: cleaned }
-}
-
-/* Tag the outbound "Visit website" URL with UTM params so the listing owner's
-   own analytics (GA, Plausible, …) independently shows InfoWebWorld as the
-   referral source. Preserves any existing query string the company already
-   has on their URL; falls back to the raw URL if it can't be parsed. */
-function withInfoWebWorldUtm(url: string, slug: string): string {
-  if (!url) return url
-  try {
-    const u = new URL(url)
-    if (!u.searchParams.has('utm_source'))   u.searchParams.set('utm_source', 'infowebworld')
-    if (!u.searchParams.has('utm_medium'))   u.searchParams.set('utm_medium', 'referral')
-    if (!u.searchParams.has('utm_campaign')) u.searchParams.set('utm_campaign', 'listing')
-    if (slug && !u.searchParams.has('utm_content')) u.searchParams.set('utm_content', slug)
-    return u.toString()
-  } catch {
-    return url
-  }
 }
 
 function mapServerRow(r: Record<string, unknown>): Partial<RealSubmission> {
@@ -1953,7 +1937,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 <span className="tlp-btn-follow-count">{followers.toLocaleString()}</span>
               </button>
               {view.website && (
-                <a href={withInfoWebWorldUtm(view.website, listingSlug)} target="_blank" rel="noopener noreferrer" className="tlp-btn-primary">Visit website <ExternalArrowIcon /></a>
+                <a href={withInfoWebWorldUtm(view.website, listingSlug)} target="_blank" rel="noopener noreferrer" className="tlp-btn-primary" onClick={() => trackWebsiteClick(listingSlug, 'listing')}>Visit website <ExternalArrowIcon /></a>
               )}
               {(view.email || isPreview) && (
                 <button type="button" className="tlp-btn-outline" onClick={() => setLeadOpen(true)}>
@@ -3254,6 +3238,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="tlp-plan-cta"
+                                onClick={() => trackWebsiteClick(listingSlug, 'listing')}
                               >
                                 Get Started
                               </a>
@@ -3446,6 +3431,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                                       target="_blank"
                                       rel="noopener noreferrer"
                                       className="tlp-int-link"
+                                      onClick={() => trackWebsiteClick(listingSlug, 'integrations')}
                                     >
                                       {domain || 'Visit site'}
                                     </a>
