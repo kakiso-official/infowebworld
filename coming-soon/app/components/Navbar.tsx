@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { BASE } from '../config/base-path'
 import GlobalSearch from './GlobalSearch'
 import UserMenu from './auth/UserMenu'
+import { useAuth } from '@/lib/use-auth'
+import SignupModal from './auth/SignupModal'
 import { CATEGORIES as STATIC_CATEGORIES } from '../config/categories-data'
 
 /* ════════════════════════════════════════════════════════════════════
@@ -90,9 +92,17 @@ const IconSearch = () => (
   </svg>
 )
 const IconX = () => (
-  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
        strokeWidth="2" strokeLinecap="round" aria-hidden="true">
     <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+)
+const IconHamburger = () => (
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+       strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+    <line x1="3" y1="6"  x2="21" y2="6"  />
+    <line x1="3" y1="12" x2="21" y2="12" />
+    <line x1="3" y1="18" x2="21" y2="18" />
   </svg>
 )
 
@@ -265,9 +275,11 @@ export default function Navbar(
   const [searchOpen, setSearchOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [mobOpen, setMobOpen] = useState<'services' | 'solutions' | 'resources' | null>(null)
+  const [mobAuthOpen, setMobAuthOpen] = useState(false)
 
   const lastY = useRef(0)
   const headerRef = useRef<HTMLElement>(null)
+  const { user, logout } = useAuth()
 
   /* Scroll behaviour — RAF-throttled. */
   useEffect(() => {
@@ -334,8 +346,22 @@ export default function Navbar(
     <>
       <header className={headerCls} ref={headerRef}>
         <div className="iw-head-inner">
+          {/* ── Mobile burger / X toggle — sits before the logo on
+                 mobile (per the GoodFirms reference). Hidden via CSS on
+                 desktop. Toggles between hamburger and X when the
+                 sheet is open. */}
+          <button
+            type="button"
+            className="iw-burger"
+            onClick={() => { setMenuOpen(o => !o); setActiveDD(null); setSearchOpen(false) }}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
+          >
+            {menuOpen ? <IconX /> : <IconHamburger />}
+          </button>
+
           {/* ── Logo ── */}
-          <Link href="/" className="iw-logo" onClick={closeDD}>
+          <Link href="/" className="iw-logo" onClick={() => { closeDD(); setMenuOpen(false) }}>
             <img src={`${BASE}/logo/infowebworldlogo-logoforlightbackgrounds.png`} alt="InfoWebWorld" />
           </Link>
 
@@ -369,37 +395,38 @@ export default function Navbar(
             </nav>
           )}
 
-          {/* ── Right cluster ── */}
-          <div className="iw-right">
-            {!hideSearch && !searchOpen && (
-              <button type="button" className="iw-search-btn"
-                onClick={() => { setSearchOpen(true); setActiveDD(null) }}
-                aria-label="Open search">
-                <IconSearch />
+          {/* ── Expanded search — direct child of .iw-head-inner so its
+                 flex:1 actually wins the row (sibling of .iw-right, not
+                 buried inside it). Hidden by default; replaces .iw-nav. */}
+          {!hideSearch && searchOpen && (
+            <div className="iw-search-expanded">
+              <GlobalSearch placeholder="Search businesses, tools, categories" autoFocus />
+              <button type="button" className="iw-search-close"
+                onClick={() => setSearchOpen(false)} aria-label="Close search">
+                <IconX />
               </button>
-            )}
-            {!hideSearch && searchOpen && (
-              <div className="iw-search-expanded">
-                <GlobalSearch placeholder="Search" />
-                <button type="button" className="iw-search-close"
-                  onClick={() => setSearchOpen(false)} aria-label="Close search">
-                  <IconX />
-                </button>
-              </div>
-            )}
+            </div>
+          )}
 
+          {/* ── Right cluster ──
+              Desktop order: Write a Review · UserMenu · Get Listed · Search
+              Mobile order (via CSS `order`): Get Listed · Search
+              Write a Review + UserMenu are hidden on mobile and surface
+              inside the sheet's bottom dock instead. */}
+          <div className="iw-right">
             <Link href="/write-review" className="iw-link-text">Write a Review</Link>
             <UserMenu />
             <Link href="/business" className="iw-cta">Get Listed</Link>
-
-            {/* Mobile burger */}
-            <button type="button" className="iw-burger"
-              onClick={() => setMenuOpen(o => !o)}
-              aria-label="Open menu" aria-expanded={menuOpen}>
-              <span className={'iw-burger-bars' + (menuOpen ? ' iw-burger-bars--x' : '')}>
-                <span /><span />
-              </span>
-            </button>
+            {!hideSearch && !searchOpen && (
+              <button
+                type="button"
+                className="iw-search-btn"
+                onClick={() => { setSearchOpen(true); setActiveDD(null); setMenuOpen(false) }}
+                aria-label="Open search"
+              >
+                <IconSearch />
+              </button>
+            )}
           </div>
         </div>
 
@@ -492,83 +519,144 @@ export default function Navbar(
       {/* Spacer to offset fixed header — height matches .iw-head */}
       <div className="iw-head-spacer" />
 
-      {/* ═══════ Mobile slide-over menu ═══════ */}
-      <div className={'iw-mob' + (menuOpen ? ' iw-mob--open' : '')}>
-        <div className="iw-mob-head">
-          <Link href="/" className="iw-logo" onClick={() => setMenuOpen(false)}>
-            <img src={`${BASE}/logo/infowebworldlogo-logoforlightbackgrounds.png`} alt="InfoWebWorld" />
-          </Link>
-          <button type="button" className="iw-mob-close"
-            onClick={() => setMenuOpen(false)} aria-label="Close menu">
-            <IconX />
-          </button>
-        </div>
+      {/* ═══════ Mobile sheet — drops below the header. ═══════
+          Layout (per the GoodFirms reference):
+            - No own top bar (the main header stays put; burger toggles to X).
+            - 3 flat accordions separated by hairlines: Services, Solutions, Resources.
+            - Sub-content:
+                · Services  = 6 L1 sector nav-links
+                · Solutions = 3 tile cards (icon + name + sub-text)
+                · Resources = plain text nav-links
+            - Bottom dock: "Write a Review" link + "Sign in" outlined button
+              (or "Open dashboard" + "Sign out" when authed). */}
+      <div className={'iw-mob' + (menuOpen ? ' iw-mob--open' : '')} aria-hidden={!menuOpen}>
+        <nav className="iw-mob-nav" aria-label="Mobile navigation">
+          {/* ── Services accordion ── */}
+          <div className="iw-mob-row">
+            <button
+              type="button"
+              className={'iw-mob-acc' + (mobOpen === 'services' ? ' iw-mob-acc--on' : '')}
+              onClick={() => setMobOpen(o => o === 'services' ? null : 'services')}
+              aria-expanded={mobOpen === 'services'}
+            >
+              <span>Find by Services</span>
+              <ChevDown />
+            </button>
+            <div className={'iw-mob-sub-wrap' + (mobOpen === 'services' ? ' iw-mob-sub-wrap--on' : '')}>
+              <ul className="iw-mob-sub">
+                {SECTORS.map(s => (
+                  <li key={s.slug}>
+                    <Link href={`/${s.slug}`} onClick={() => setMenuOpen(false)}>
+                      {s.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
 
-        <div className="iw-mob-search">
-          <GlobalSearch placeholder="Search businesses, tools, categories" />
-        </div>
-
-        <nav className="iw-mob-nav">
-          {/* Services accordion */}
-          <button type="button" className="iw-mob-acc"
-            onClick={() => setMobOpen(o => o === 'services' ? null : 'services')}>
-            <span>Find by Services</span>
-            <ChevDown />
-          </button>
-          {mobOpen === 'services' && (
-            <ul className="iw-mob-sub">
-              {SECTORS.map(s => (
-                <li key={s.slug}>
-                  <Link href={`/${s.slug}`} onClick={() => setMenuOpen(false)}>{s.label}</Link>
-                </li>
-              ))}
-            </ul>
-          )}
-
-          <button type="button" className="iw-mob-acc"
-            onClick={() => setMobOpen(o => o === 'solutions' ? null : 'solutions')}>
-            <span>Find by Solutions</span>
-            <ChevDown />
-          </button>
-          {mobOpen === 'solutions' && (
-            <ul className="iw-mob-sub">
-              {SOLUTIONS.map(s => (
-                <li key={s.label}>
-                  <Link href={s.comingSoon ? '#' : s.href} onClick={() => setMenuOpen(false)}>
-                    {s.label}
-                    {s.comingSoon && <span className="iw-soln-badge">Coming soon</span>}
+          {/* ── Solutions accordion (tile cards) ── */}
+          <div className="iw-mob-row">
+            <button
+              type="button"
+              className={'iw-mob-acc' + (mobOpen === 'solutions' ? ' iw-mob-acc--on' : '')}
+              onClick={() => setMobOpen(o => o === 'solutions' ? null : 'solutions')}
+              aria-expanded={mobOpen === 'solutions'}
+            >
+              <span>Find by Solutions</span>
+              <ChevDown />
+            </button>
+            <div className={'iw-mob-sub-wrap' + (mobOpen === 'solutions' ? ' iw-mob-sub-wrap--on' : '')}>
+              <div className="iw-mob-tiles">
+                {SOLUTIONS.map(s => (
+                  <Link
+                    key={s.label}
+                    href={s.comingSoon ? '#' : s.href}
+                    className={'iw-mob-tile' + (s.comingSoon ? ' iw-mob-tile--soon' : '')}
+                    onClick={(e) => { if (s.comingSoon) e.preventDefault(); else setMenuOpen(false) }}
+                  >
+                    <span className="iw-mob-tile-ico"><SolnIcon k={s.iconKey} /></span>
+                    <span className="iw-mob-tile-text">
+                      <span className="iw-mob-tile-name">
+                        {s.label}
+                        {s.comingSoon && <span className="iw-soln-badge">Coming soon</span>}
+                      </span>
+                      <span className="iw-mob-tile-sub">{s.sub}</span>
+                    </span>
                   </Link>
-                </li>
-              ))}
-            </ul>
-          )}
+                ))}
+              </div>
+            </div>
+          </div>
 
-          <button type="button" className="iw-mob-acc"
-            onClick={() => setMobOpen(o => o === 'resources' ? null : 'resources')}>
-            <span>Resources</span>
-            <ChevDown />
-          </button>
-          {mobOpen === 'resources' && (
-            <ul className="iw-mob-sub">
-              {RESOURCES.map(r => (
-                <li key={r.href}>
-                  <Link href={r.href} onClick={() => setMenuOpen(false)}>{r.label}</Link>
-                </li>
-              ))}
-            </ul>
-          )}
-
-          <Link href="/write-review" className="iw-mob-link" onClick={() => setMenuOpen(false)}>
-            Write a Review
-          </Link>
+          {/* ── Resources accordion ── */}
+          <div className="iw-mob-row">
+            <button
+              type="button"
+              className={'iw-mob-acc' + (mobOpen === 'resources' ? ' iw-mob-acc--on' : '')}
+              onClick={() => setMobOpen(o => o === 'resources' ? null : 'resources')}
+              aria-expanded={mobOpen === 'resources'}
+            >
+              <span>Resources</span>
+              <ChevDown />
+            </button>
+            <div className={'iw-mob-sub-wrap' + (mobOpen === 'resources' ? ' iw-mob-sub-wrap--on' : '')}>
+              <ul className="iw-mob-sub">
+                {RESOURCES.map(r => (
+                  <li key={r.href}>
+                    <Link href={r.href} onClick={() => setMenuOpen(false)}>
+                      {r.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </nav>
 
+        {/* ── Bottom dock ── */}
         <div className="iw-mob-foot">
-          <Link href="/business" className="iw-cta iw-cta--mob" onClick={() => setMenuOpen(false)}>
-            Get Listed
+          <Link href="/write-review" className="iw-mob-foot-link" onClick={() => setMenuOpen(false)}>
+            Write a Review
           </Link>
+          {user ? (
+            <>
+              <Link
+                href="/dashboard"
+                className="iw-mob-foot-btn"
+                onClick={() => setMenuOpen(false)}
+              >
+                Open dashboard
+              </Link>
+              <button
+                type="button"
+                className="iw-mob-foot-signout"
+                onClick={async () => {
+                  await logout()
+                  setMenuOpen(false)
+                  window.location.href = '/'
+                }}
+              >
+                Sign out
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              className="iw-mob-foot-btn"
+              onClick={() => { setMenuOpen(false); setMobAuthOpen(true) }}
+            >
+              Sign in
+            </button>
+          )}
         </div>
       </div>
+
+      <SignupModal
+        open={mobAuthOpen}
+        onClose={() => setMobAuthOpen(false)}
+        initialMode="login"
+      />
 
     </>
   )

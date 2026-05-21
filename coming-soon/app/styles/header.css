@@ -115,27 +115,28 @@
 }
 
 .iw-search-expanded {
-  position: relative;
-  display: flex; align-items: center;
-  flex: 1 1 auto;
-  min-width: 240px;
-  max-width: 560px;
+  /* Sibling of .iw-nav inside .iw-head-inner. flex:1 1 0 forces it to
+     grow from zero and claim the row between logo and right cluster. */
+  display: flex; align-items: center; gap: 6px;
+  flex: 1 1 0;
+  min-width: 0;
 }
-.iw-search-expanded > :first-child {
-  flex: 1 1 auto;
+.iw-search-expanded > .iw-srch {
+  flex: 1 1 0;
+  min-width: 0;
 }
 .iw-search-close {
-  position: absolute; right: 4px; top: 50%;
-  transform: translateY(-50%);
   display: inline-flex; align-items: center; justify-content: center;
-  width: 32px; height: 32px;
+  width: 38px; height: 38px;
   background: transparent;
-  border: 0;
+  border: 1.5px solid var(--iw-border);
   color: var(--iw-text-muted);
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  transition: border-color .12s ease, color .12s ease;
 }
-.iw-search-close:hover { background: var(--iw-border-soft); color: var(--iw-text); }
+.iw-search-close:hover { border-color: var(--iw-text-muted); color: var(--iw-text); }
 
 .iw-link-text {
   color: var(--iw-text);
@@ -170,31 +171,25 @@
 .iw-cta:active { transform: translateY(1px); }
 .iw-cta--mega { padding: 11px 18px; }
 
-/* Burger — hidden on desktop. */
+/* Burger / X — hidden on desktop, sits LEFT of the logo on mobile.
+   Renders the actual <IconHamburger /> or <IconX /> SVG inside, so
+   we don't need pseudo-bar markup any more. */
 .iw-burger {
   display: none;
-  width: 38px; height: 38px;
+  width: 40px; height: 40px;
   background: transparent;
-  border: 1.5px solid var(--iw-border);
+  border: 0;
   border-radius: 8px;
   align-items: center; justify-content: center;
+  color: var(--iw-text);
   cursor: pointer;
+  flex-shrink: 0;
+  transition: background .12s ease, color .12s ease;
 }
-.iw-burger-bars {
-  position: relative;
-  width: 18px; height: 12px;
-  display: inline-block;
+.iw-burger:hover, .iw-burger:focus-visible {
+  background: var(--iw-bg-soft);
+  outline: none;
 }
-.iw-burger-bars > span {
-  position: absolute; left: 0; right: 0;
-  height: 2px; background: var(--iw-text);
-  border-radius: 2px;
-  transition: transform .2s ease, top .2s ease, opacity .15s ease;
-}
-.iw-burger-bars > span:nth-child(1) { top: 0; }
-.iw-burger-bars > span:nth-child(2) { top: 10px; }
-.iw-burger-bars--x > span:nth-child(1) { top: 5px; transform: rotate(45deg); }
-.iw-burger-bars--x > span:nth-child(2) { top: 5px; transform: rotate(-45deg); }
 
 /* ── Mega-menu — floating CARD (not a full-width bar). Anchored centered
    under the nav cluster with max-width caps so it never overflows. ─── */
@@ -433,108 +428,510 @@
 }
 .iw-right .um-signin:hover { color: var(--iw-accent); }
 
-/* ── GlobalSearch inside expanded search slot ────────────────
-   The component renders its own input + dropdown; we ensure the
-   input takes full width and stays slim inside the header. */
-.iw-search-expanded .gsearch-wrap { width: 100%; }
+/* ══════════════════════════════════════════════════════════════
+   Header search component (.iw-srch-*).
+   Used in two contexts: desktop header expand + mobile sheet (inline).
+   ══════════════════════════════════════════════════════════════ */
+.iw-srch {
+  position: relative;
+  width: 100%;
+}
+.iw-srch-field {
+  position: relative;
+  display: flex; align-items: center;
+  height: 38px;
+  background: #FAFBFC;
+  border: 1.5px solid var(--iw-border);
+  border-radius: 8px;
+  transition: border-color .14s ease, background .14s ease, box-shadow .14s ease;
+}
+.iw-srch-field--on {
+  background: #FFFFFF;
+  border-color: var(--iw-accent);
+  box-shadow: 0 0 0 4px rgba(0, 59, 42, .08);
+}
+.iw-srch-leading {
+  position: absolute; left: 12px; top: 50%;
+  transform: translateY(-50%);
+  width: 16px; height: 16px;
+  color: var(--iw-text-muted);
+  display: inline-flex; align-items: center; justify-content: center;
+  pointer-events: none;
+  transition: color .14s ease;
+}
+.iw-srch-field--on .iw-srch-leading { color: var(--iw-accent); }
+.iw-srch-spin {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 59, 42, .18);
+  border-top-color: var(--iw-accent);
+  animation: iw-srch-spin .8s linear infinite;
+}
+@keyframes iw-srch-spin { to { transform: rotate(360deg); } }
+
+.iw-srch-input {
+  width: 100%;
+  height: 100%;
+  padding: 0 40px 0 36px;
+  background: transparent;
+  border: 0;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--iw-text);
+  -webkit-appearance: none;
+  appearance: none;
+}
+.iw-srch-input::placeholder { color: var(--iw-text-muted); }
+.iw-srch-input:focus { outline: none; }
+
+.iw-srch-clear {
+  position: absolute; right: 6px; top: 50%;
+  transform: translateY(-50%);
+  width: 26px; height: 26px;
+  border-radius: 6px;
+  border: 0; background: transparent;
+  color: var(--iw-text-muted);
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: background .12s ease, color .12s ease;
+}
+.iw-srch-clear:hover { background: var(--iw-border-soft); color: var(--iw-text); }
+
+.iw-srch-kbd {
+  position: absolute; right: 10px; top: 50%;
+  transform: translateY(-50%);
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: var(--iw-bg-soft);
+  border: 1px solid var(--iw-border);
+  color: var(--iw-text-muted);
+  font-size: 10.5px; font-weight: 600;
+  font-family: inherit;
+  letter-spacing: 0;
+  pointer-events: none;
+}
+
+/* Dropdown card */
+.iw-srch-pop {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0; right: 0;
+  background: var(--iw-bg);
+  border: 1px solid var(--iw-border);
+  border-radius: 12px;
+  box-shadow: 0 18px 40px -16px rgba(0, 0, 0, .18),
+              0 2px 8px -4px rgba(0, 0, 0, .06);
+  max-height: 70vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 6px;
+  z-index: 70;
+}
+.iw-srch-sec + .iw-srch-sec {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid var(--iw-border-soft);
+}
+.iw-srch-sec-lbl {
+  padding: 8px 12px 4px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--iw-text-muted);
+  letter-spacing: 0;
+}
+.iw-srch-row {
+  display: flex; align-items: center;
+  gap: 12px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--iw-text);
+  font-size: 13.5px;
+  transition: background .1s ease;
+}
+.iw-srch-row:hover,
+.iw-srch-row:focus-visible { background: var(--iw-accent-soft); outline: none; }
+.iw-srch-row-logo {
+  width: 32px; height: 32px;
+  border-radius: 7px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--iw-border);
+  background: var(--iw-bg-soft);
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.iw-srch-row-logo--ph {
+  font-weight: 800; font-size: 11.5px;
+  color: var(--iw-text);
+  background: linear-gradient(180deg, #F1F2F4, #E5E7EB);
+}
+.iw-srch-row-dot {
+  width: 10px; height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  background: var(--iw-accent);
+}
+.iw-srch-row-dot--article { background: #3B82F6; }
+.iw-srch-row-text {
+  display: flex; flex-direction: column;
+  gap: 1px;
+  min-width: 0; flex: 1;
+}
+.iw-srch-row-name {
+  font-weight: 600;
+  color: var(--iw-text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-size: 13.5px;
+  letter-spacing: -.008em;
+}
+.iw-srch-row-sub {
+  font-size: 11.5px;
+  color: var(--iw-text-muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.iw-srch-row-tag {
+  font-size: 11px;
+  color: var(--iw-text-muted);
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--iw-bg-soft);
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.iw-srch-row-tag--soft { background: transparent; }
+.iw-srch-hl {
+  background: rgba(0, 59, 42, .14);
+  color: var(--iw-accent);
+  border-radius: 2px;
+  padding: 0 2px;
+  font-weight: 700;
+}
+.iw-srch-empty {
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--iw-text-soft);
+  font-size: 13px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.iw-srch-empty strong { color: var(--iw-text); font-weight: 700; }
+.iw-srch-empty-sub { font-size: 12px; color: var(--iw-text-muted); }
+
+/* ── Inline variant for the mobile sheet ─────────────────────
+   The dropdown sits below the input as part of normal flow (no shadow
+   no positioning) so it inherits the sheet's vertical scroll. */
+.iw-srch--inline .iw-srch-field {
+  height: 44px;
+}
+.iw-srch--inline .iw-srch-pop {
+  position: static;
+  margin-top: 10px;
+  box-shadow: none;
+  border-radius: 10px;
+  max-height: none;
+  padding: 4px;
+}
 .iw-search-expanded input {
   height: 38px !important;
 }
 
-/* ── Mobile slide-over ─────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   Mobile sheet — drops below the main header.
+   Main header stays put; burger toggles to X.
+   Sheet positioned `top: <header height>; inset: 0 0 0 0`, so users see:
+     [X] [Logo] ......... [Get Listed] [🔍]   ← main header (unchanged)
+     ──────────────────────────────────────
+     Find by Services      ▾  ← accordion row
+     Find by Solutions     ▾
+     Resources             ▾
+     ...
+     [Write a Review]
+     [ Sign in ]               ← outlined button
+   ══════════════════════════════════════════════════════════════ */
 .iw-mob {
-  position: fixed; inset: 0;
+  position: fixed;
+  top: 72px; left: 0; right: 0; bottom: 0;
   background: var(--iw-bg);
-  z-index: 80;
-  transform: translateX(100%);
-  transition: transform .26s cubic-bezier(.4, 0, .2, 1);
+  z-index: 70;
   display: flex; flex-direction: column;
+  /* Sheet is a sibling of <header>, not a descendant, so it does NOT
+     inherit Inter from .iw-head. Setting it explicitly keeps the type
+     consistent with the desktop nav and the rest of the new chrome. */
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--iw-text);
+  opacity: 0;
+  transform: translateY(-4px);
+  visibility: hidden;
+  transition: opacity .18s ease,
+              transform .18s ease,
+              visibility 0s linear .18s;
 }
-.iw-mob--open { transform: translateX(0); }
-
-.iw-mob-head {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 16px clamp(16px, 4vw, 24px);
-  border-bottom: 1px solid var(--iw-border);
-  flex-shrink: 0;
+.iw-mob--open {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  transition: opacity .18s ease,
+              transform .18s ease,
+              visibility 0s linear 0s;
 }
-.iw-mob-close {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 38px; height: 38px;
-  background: transparent;
-  border: 1.5px solid var(--iw-border);
-  border-radius: 8px;
-  color: var(--iw-text-soft);
-  cursor: pointer;
-}
-.iw-mob-search { padding: 14px clamp(16px, 4vw, 24px) 8px; flex-shrink: 0; }
 
 .iw-mob-nav {
-  flex: 1; overflow-y: auto;
-  padding: 6px clamp(8px, 3vw, 16px);
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.iw-mob-row {
+  border-bottom: 1px solid var(--iw-border);
 }
 .iw-mob-acc {
   width: 100%;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 14px;
+  padding: 16px clamp(16px, 4vw, 22px);
   background: transparent;
   border: 0;
-  border-radius: 8px;
   color: var(--iw-text);
   font-family: inherit;
-  font-size: 15.5px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
   letter-spacing: -.008em;
   cursor: pointer;
+  min-height: 56px;
+  text-align: left;
+  transition: color .12s ease;
 }
-.iw-mob-acc:hover { background: var(--iw-bg-soft); }
+.iw-mob-acc:hover,
+.iw-mob-acc:focus-visible { color: var(--iw-accent); outline: none; }
+.iw-mob-acc--on { color: var(--iw-accent); }
+.iw-mob-acc .iw-chev-d {
+  color: var(--iw-accent);
+  transition: transform .2s ease;
+  opacity: .8;
+}
+.iw-mob-acc--on .iw-chev-d {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+
+.iw-mob-sub-wrap {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height .28s cubic-bezier(.4, 0, .2, 1);
+}
+.iw-mob-sub-wrap--on { max-height: 1200px; }
+
+/* Plain text list inside Services / Resources accordions. */
 .iw-mob-sub {
   list-style: none;
-  padding: 4px 8px 8px 22px;
-  margin: 0 0 4px;
+  padding: 0 0 12px;
+  margin: 0;
 }
-.iw-mob-sub li + li { margin-top: 2px; }
+.iw-mob-sub li + li {
+  border-top: 1px solid var(--iw-border-soft);
+}
 .iw-mob-sub a {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 10px;
-  padding: 11px 14px;
-  border-radius: 7px;
+  display: block;
+  padding: 13px clamp(16px, 4vw, 22px) 13px clamp(28px, 6vw, 36px);
   font-size: 14px;
   font-weight: 500;
-  color: var(--iw-text-soft);
+  color: var(--iw-text);
   text-decoration: none;
+  min-height: 46px;
+  transition: background .12s ease, color .12s ease;
 }
-.iw-mob-sub a:hover { background: var(--iw-bg-soft); color: var(--iw-text); }
-.iw-mob-link {
+.iw-mob-sub a:hover,
+.iw-mob-sub a:focus-visible {
+  background: var(--iw-accent-soft);
+  color: var(--iw-accent);
+  outline: none;
+}
+
+/* Tile-card grid inside Solutions accordion. */
+.iw-mob-tiles {
+  display: flex; flex-direction: column;
+  gap: 10px;
+  padding: 4px clamp(16px, 4vw, 22px) 16px;
+}
+.iw-mob-tile {
+  display: flex; align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--iw-bg);
+  border: 1px solid var(--iw-border);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--iw-text);
+  transition: border-color .12s ease, background .12s ease;
+}
+.iw-mob-tile:hover {
+  border-color: rgba(0, 59, 42, .25);
+  background: var(--iw-bg-soft);
+}
+.iw-mob-tile--soon { background: var(--iw-bg-soft); cursor: default; }
+.iw-mob-tile--soon:hover { border-color: var(--iw-border); background: var(--iw-bg-soft); }
+.iw-mob-tile-ico {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: #0A1B33;
+  color: #FFFFFF;
+  flex-shrink: 0;
+}
+.iw-mob-tile--soon .iw-mob-tile-ico { background: #9CA3AF; }
+.iw-mob-tile-text {
+  display: flex; flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.iw-mob-tile-name {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 14.5px; font-weight: 700;
+  letter-spacing: -.012em;
+  color: var(--iw-text);
+}
+.iw-mob-tile-sub {
+  font-size: 12.5px;
+  color: var(--iw-text-muted);
+  font-weight: 500;
+  letter-spacing: -.002em;
+  line-height: 1.4;
+}
+
+/* ── Bottom dock — plain Write-a-Review link + outlined Sign in
+      button (or Open Dashboard + Sign out when authed). ── */
+.iw-mob-foot {
+  padding: 16px clamp(16px, 4vw, 22px) calc(20px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--iw-border);
+  display: flex; flex-direction: column; gap: 12px;
+  flex-shrink: 0;
+  background: var(--iw-bg);
+}
+.iw-mob-foot-link {
   display: block;
-  padding: 14px 14px;
-  border-radius: 8px;
-  font-size: 15.5px;
-  font-weight: 600;
+  padding: 8px 0;
+  font-size: 14.5px;
+  font-weight: 700;
   color: var(--iw-text);
   text-decoration: none;
   letter-spacing: -.008em;
 }
-.iw-mob-link:hover { background: var(--iw-bg-soft); }
-.iw-mob-foot {
-  padding: 14px clamp(16px, 4vw, 24px) calc(14px + env(safe-area-inset-bottom));
-  border-top: 1px solid var(--iw-border);
-  flex-shrink: 0;
+.iw-mob-foot-link:hover { color: var(--iw-accent); }
+.iw-mob-foot-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 12px 20px;
+  background: var(--iw-bg);
+  color: var(--iw-accent);
+  border: 1.5px solid var(--iw-accent);
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  cursor: pointer;
+  min-height: 48px;
+  transition: background .12s ease, color .12s ease;
 }
-.iw-cta--mob { width: 100%; justify-content: center; padding: 13px 16px; }
+.iw-mob-foot-btn:hover {
+  background: var(--iw-accent);
+  color: #FFFFFF;
+}
+.iw-mob-foot-signout {
+  padding: 6px 0;
+  background: transparent;
+  border: 0;
+  color: var(--iw-text-muted);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: color .12s ease;
+}
+.iw-mob-foot-signout:hover { color: #B91C1C; }
 
 /* ── Responsive breakpoints ────────────────────────────────── */
 @media (max-width: 980px) {
+  /* Hide desktop-only chrome */
   .iw-nav { display: none; }
   .iw-link-text { display: none; }
-  .iw-search-btn { display: none; }
-  .iw-cta { display: none; }
   .iw-right .um-wrap, .iw-right .um-signin { display: none; }
-  .iw-burger { display: inline-flex; }
   .iw-mega, .iw-rsrc { display: none; }
+
+  /* Show mobile-only chrome */
+  .iw-burger { display: inline-flex; }
+  /* Search icon + Get Listed remain visible. Reorder so Get Listed
+     comes BEFORE search-icon per the GoodFirms reference. */
+  .iw-right { gap: 6px; }
+  .iw-right .iw-cta       { order: 1; padding: 8px 14px; font-size: 13.5px; }
+  .iw-right .iw-search-btn { order: 2; width: 38px; height: 38px; }
+
+  /* Header inner padding tighter on mobile. */
+  .iw-head-inner { padding: 0 12px; gap: 4px; }
 }
+
 @media (max-width: 480px) {
-  .iw-logo img { height: 28px; }
-  .iw-head-inner { height: 64px; }
-  .iw-head-spacer { height: 64px; }
+  .iw-logo img { height: 26px; }
+  .iw-head-inner { height: 60px; gap: 2px; padding: 0 10px; }
+  .iw-head-spacer { height: 60px; }
+  .iw-mob { top: 60px; }
+  /* Hide Get Listed pill on the very smallest viewports — it moves
+     into the sheet bottom dock via the foot-btn equivalent? No: keep
+     the search icon as a high-utility action; CTA stays accessible
+     from the sheet's Sign-in / dashboard flow. The user reaches Get
+     Listed from /business directly or by tapping the logo path. */
+  .iw-right .iw-cta { padding: 7px 11px; font-size: 12.5px; }
+}
+
+/* On mobile, an open search collapses the rest of the header so the
+   input + close X get the full row width. */
+@media (max-width: 980px) {
+  .iw-head-inner:has(.iw-search-expanded) > :not(.iw-search-expanded) {
+    display: none;
+  }
+  /* Break the results dropdown out of its narrow flex parent so it
+     fills the viewport edge-to-edge under the header instead of being
+     boxed inside the search field. */
+  .iw-head-inner:has(.iw-search-expanded) .iw-srch-pop {
+    position: fixed;
+    top: 72px;
+    left: 0; right: 0;
+    margin: 0;
+    border-radius: 0;
+    border-left: 0; border-right: 0; border-bottom-width: 1px;
+    border-top: 0;
+    max-height: calc(100vh - 72px);
+    box-shadow: 0 10px 24px -10px rgba(0, 0, 0, .12);
+    padding: 8px 0;
+  }
+  /* Bigger tap targets + tighter side padding for mobile rows. */
+  .iw-head-inner:has(.iw-search-expanded) .iw-srch-row {
+    padding: 12px clamp(14px, 4vw, 20px);
+    border-radius: 0;
+    min-height: 56px;
+    font-size: 14.5px;
+  }
+  .iw-head-inner:has(.iw-search-expanded) .iw-srch-sec-lbl {
+    padding: 10px clamp(14px, 4vw, 20px) 4px;
+  }
+  .iw-head-inner:has(.iw-search-expanded) .iw-srch-sec + .iw-srch-sec {
+    margin-top: 6px;
+    padding-top: 6px;
+  }
+  .iw-head-inner:has(.iw-search-expanded) .iw-srch-empty {
+    padding: 32px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Match the smaller header height at this breakpoint. */
+  .iw-head-inner:has(.iw-search-expanded) .iw-srch-pop {
+    top: 60px;
+    max-height: calc(100vh - 60px);
+  }
+  /* Trailing category/level pill collides with the name at narrow
+     widths — drop it on the smallest screens. */
+  .iw-srch-row-tag { display: none; }
 }
