@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import type { ReactNode } from 'react'
 import type { RealSubmission, FaqItem, KeyFeature, Award } from '../iww-hq/data/submissions-storage'
 import WriteReviewModal from './WriteReviewModal'
@@ -1440,9 +1441,19 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
   const endPending = (k: EngKey) =>
     setPending(p => { const next = new Set(p); next.delete(k); return next })
 
-  /* Modal state for "Write a Review". */
+  /* Modal state for "Write a Review". Real listings navigate to the
+     dedicated /write-review page (with voice-recording flow); the modal
+     stays mounted only for /test-listing-page preview mode so the
+     demo still works without a real slug. */
   const [reviewOpen, setReviewOpen] = useState(false)
   const [hasReviewed, setHasReviewed] = useState(false)
+  const router = useRouter()
+  const openReview = useCallback(() => {
+    if (isPreview) { setReviewOpen(true); return }
+    if (!isAuthed) { requireLogin(); return }
+    router.push(`/write-review?company=${encodeURIComponent(listingSlug)}`)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPreview, listingSlug, router])
 
   /* ─── Per-user hydration ───────────────────────────────────────────
      Page is statically cached (ISR), so the HTML is identical for every
@@ -1947,7 +1958,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
               <button
                 type="button"
                 className="tlp-write-review"
-                onClick={() => isAuthed || isPreview ? setReviewOpen(true) : requireLogin()}
+                onClick={openReview}
               >
                 {hasReviewed ? 'Edit your review' : 'Write a Review'} <PencilIcon />
               </button>
@@ -2296,7 +2307,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                             <button
                               type="button"
                               className="tlp-in-empty-cta"
-                              onClick={() => isAuthed ? setReviewOpen(true) : requireLogin()}
+                              onClick={openReview}
                             >
                               Write the first review
                             </button>
@@ -3367,7 +3378,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                         <button
                           type="button"
                           className="tlp-vo-empty-cta"
-                          onClick={() => isAuthed ? setReviewOpen(true) : requireLogin()}
+                          onClick={openReview}
                         >
                           Write a review
                         </button>
@@ -3732,7 +3743,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                       <button
                         type="button"
                         className="tlp-vo-empty-cta"
-                        onClick={() => isAuthed ? setReviewOpen(true) : requireLogin()}
+                        onClick={openReview}
                       >
                         Write a review
                       </button>
