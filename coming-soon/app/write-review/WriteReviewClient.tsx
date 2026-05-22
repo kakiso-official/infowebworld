@@ -135,18 +135,29 @@ export default function WriteReviewClient() {
   }
 
   /* ── Render ─────────────────────────────────────────────────────────── */
-  return (
-    <main className="wr-page">
-      <div className="wr-wrap">
+  const isLanding = step === 'pick-company'
 
-        <header className="wr-head">
-          <span className="wr-eyebrow">Write a Review</span>
-          <h1 className="wr-title">Help the next buyer decide with confidence.</h1>
-          <p className="wr-sub">
-            Speak your review and we&apos;ll turn it into a polished English review automatically —
-            or write it yourself. Verified, moderated, and never paid for.
-          </p>
-        </header>
+  return (
+    <main className={'wr-page' + (isLanding ? ' wr-page--landing' : '')}>
+      {/* ── Step 1 landing — minimal centered hero: title + subtitle +
+              search bar. No mascot. ── */}
+      {isLanding && (
+        <div className="wr-land">
+          <div className="wr-land-copy">
+            <h1 className="wr-land-title">Which company would you like to review?</h1>
+            <p className="wr-land-sub">
+              Search to find the business you want to review — pick the right one and we&rsquo;ll
+              walk you through the rest.
+            </p>
+          </div>
+
+          <div className="wr-land-search">
+            <CompanyPicker onPick={handlePickCompany} />
+          </div>
+        </div>
+      )}
+
+      <div className={'wr-wrap' + (isLanding ? ' wr-wrap--hidden' : '')}>
 
         {company && step !== 'submitted' && (
           <div className="wr-company">
@@ -170,10 +181,8 @@ export default function WriteReviewClient() {
           </div>
         )}
 
-        {/* ── Step 1: pick company ── */}
-        {step === 'pick-company' && (
-          <CompanyPicker onPick={handlePickCompany} />
-        )}
+        {/* Step 1 (pick company) is rendered outside .wr-wrap above as the
+            full-bleed cream landing — see `isLanding` block. */}
 
         {/* ── Step 2: pick method ── */}
         {step === 'pick-method' && company && (

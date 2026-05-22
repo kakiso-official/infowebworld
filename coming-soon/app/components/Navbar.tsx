@@ -7,6 +7,18 @@ import UserMenu from './auth/UserMenu'
 import { useAuth } from '@/lib/use-auth'
 import SignupModal from './auth/SignupModal'
 import { CATEGORIES as STATIC_CATEGORIES } from '../config/categories-data'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
+import {
+  faCode, faCube, faPalette, faBullhorn, faChartColumn, faShield, faBolt,
+  faCartShopping, faDollarSign, faUsers, faHeart, faBrain, faBook,
+  faBriefcase, faBuilding, faMessage, faHeadphones, faCloud, faGlobe,
+  faMagnifyingGlass, faLayerGroup, faImage, faVideo, faMicrophone,
+  faRocket, faLeaf, faScaleBalanced, faKey, faCamera, faCalendar,
+  faMap, faTerminal, faHammer, faWrench, faCar, faMugHot, faUtensils,
+  faBed, faPen, faGraduationCap, faGamepad, faPaw, faScissors,
+  faWandMagicSparkles, faTableCellsLarge, faFlask, faBagShopping,
+} from '@fortawesome/free-solid-svg-icons'
 
 /* ════════════════════════════════════════════════════════════════════
    InfoWebWorld site header — dark utility strip + single-row main bar.
@@ -121,10 +133,11 @@ const IconHamburger = () => (
   </svg>
 )
 
-/* ── Category icon set — semantic icons mapped from L2 category names.
-   Keyword-driven so taxonomy can grow without re-mapping every entry.
-   Each icon stays minimal-stroke (1.7px) so they read well at the
-   32x32 size used in the Services tile. ── */
+/* ── Category icon set — semantic mapping from L2 category names to
+   Font Awesome Solid glyphs. Keyword-driven so the taxonomy can grow
+   without rewiring every entry. Rendered via <FontAwesomeIcon> in
+   the L2 tile; the icon inherits its colour from CSS (no background,
+   pure black via .iw-tile-ico { color: var(--iw-text) }). ── */
 type CatIconKey =
   | 'code' | 'cube' | 'palette' | 'megaphone' | 'chart' | 'shield' | 'lightning' | 'cart'
   | 'dollar' | 'users' | 'heart' | 'brain' | 'book' | 'briefcase' | 'building' | 'message'
@@ -133,60 +146,58 @@ type CatIconKey =
   | 'hammer' | 'wrench' | 'car' | 'coffee' | 'utensils' | 'bed' | 'pen' | 'graduation'
   | 'gamepad' | 'paw' | 'scissors' | 'spark' | 'grid' | 'flask' | 'shopping-bag'
 
+const CAT_FA: Record<CatIconKey, IconDefinition> = {
+  code:           faCode,
+  cube:           faCube,
+  palette:        faPalette,
+  megaphone:      faBullhorn,
+  chart:          faChartColumn,
+  shield:         faShield,
+  lightning:      faBolt,
+  cart:           faCartShopping,
+  dollar:         faDollarSign,
+  users:          faUsers,
+  heart:          faHeart,
+  brain:          faBrain,
+  book:           faBook,
+  briefcase:      faBriefcase,
+  building:       faBuilding,
+  message:        faMessage,
+  headphones:     faHeadphones,
+  cloud:          faCloud,
+  globe:          faGlobe,
+  search:         faMagnifyingGlass,
+  layers:         faLayerGroup,
+  image:          faImage,
+  video:          faVideo,
+  mic:            faMicrophone,
+  rocket:         faRocket,
+  leaf:           faLeaf,
+  scale:          faScaleBalanced,
+  key:            faKey,
+  camera:         faCamera,
+  calendar:       faCalendar,
+  map:            faMap,
+  terminal:       faTerminal,
+  hammer:         faHammer,
+  wrench:         faWrench,
+  car:            faCar,
+  coffee:         faMugHot,
+  utensils:       faUtensils,
+  bed:            faBed,
+  pen:            faPen,
+  graduation:     faGraduationCap,
+  gamepad:        faGamepad,
+  paw:            faPaw,
+  scissors:       faScissors,
+  spark:          faWandMagicSparkles,
+  grid:           faTableCellsLarge,
+  flask:          faFlask,
+  'shopping-bag': faBagShopping,
+}
+
 function CatIcon({ k }: { k: CatIconKey }) {
-  const p = { viewBox: '0 0 24 24', width: 18, height: 18, fill: 'none',
-              stroke: 'currentColor', strokeWidth: 1.7,
-              strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const,
-              'aria-hidden': true }
-  switch (k) {
-    case 'code':       return <svg {...p}><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-    case 'cube':       return <svg {...p}><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-    case 'palette':    return <svg {...p}><circle cx="13.5" cy="6.5" r="1"/><circle cx="17.5" cy="10.5" r="1"/><circle cx="8.5" cy="7.5" r="1"/><circle cx="6.5" cy="12.5" r="1"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c3.31 0 6-2.69 6-6 0-5.5-4.5-9-10-9z"/></svg>
-    case 'megaphone':  return <svg {...p}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-    case 'chart':      return <svg {...p}><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-    case 'shield':     return <svg {...p}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-    case 'lightning':  return <svg {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-    case 'cart':       return <svg {...p}><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-    case 'dollar':     return <svg {...p}><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-    case 'users':      return <svg {...p}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-    case 'heart':      return <svg {...p}><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-    case 'brain':      return <svg {...p}><path d="M12 5a3 3 0 1 0-5.997.142 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18zM12 5a3 3 0 1 1 5.997.142 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18z"/></svg>
-    case 'book':       return <svg {...p}><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-    case 'briefcase':  return <svg {...p}><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-    case 'building':   return <svg {...p}><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M12 14h.01M16 10h.01M16 14h.01M8 10h.01M8 14h.01"/></svg>
-    case 'message':    return <svg {...p}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    case 'headphones': return <svg {...p}><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
-    case 'cloud':      return <svg {...p}><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
-    case 'globe':      return <svg {...p}><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15 15 0 0 1 4 10 15 15 0 0 1-4 10 15 15 0 0 1-4-10 15 15 0 0 1 4-10z"/></svg>
-    case 'search':     return <svg {...p}><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-    case 'layers':     return <svg {...p}><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-    case 'image':      return <svg {...p}><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-    case 'video':      return <svg {...p}><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-    case 'mic':        return <svg {...p}><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-    case 'rocket':     return <svg {...p}><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09zM12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2zM9 12l-3-3"/></svg>
-    case 'leaf':       return <svg {...p}><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19.2 2.96c1 7.95.13 11.27-3.7 14.7C13 19.36 11 20 11 20zM2 21c0-3 1.85-5.36 5.08-6"/></svg>
-    case 'scale':      return <svg {...p}><path d="M16 16l3-8 3 8c-2 1-4 1-6 0M2 16l3-8 3 8c-2 1-4 1-6 0M7 21h10M12 3v18M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
-    case 'key':        return <svg {...p}><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-    case 'camera':     return <svg {...p}><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-    case 'calendar':   return <svg {...p}><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-    case 'map':        return <svg {...p}><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
-    case 'terminal':   return <svg {...p}><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-    case 'hammer':     return <svg {...p}><path d="M14 8l-7 7-3-3 7-7 3 3zm0 0l5 5-3 3-5-5 3-3zm0 0l5-5h4v4l-5 5"/></svg>
-    case 'wrench':     return <svg {...p}><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-    case 'car':        return <svg {...p}><path d="M5 17h14v-5l-2-5H7l-2 5v5z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
-    case 'coffee':     return <svg {...p}><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>
-    case 'utensils':   return <svg {...p}><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>
-    case 'bed':        return <svg {...p}><path d="M2 22V12h20v10M2 18h20M2 12v-2a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2M6 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
-    case 'pen':        return <svg {...p}><path d="M12 19l7-7 3 3-7 7-3-3zM18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>
-    case 'graduation': return <svg {...p}><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-    case 'gamepad':    return <svg {...p}><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><line x1="15" y1="13" x2="15" y2="13"/><line x1="18" y1="11" x2="18" y2="11"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
-    case 'paw':        return <svg {...p}><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="4" cy="8" r="2"/><circle cx="7" cy="14" r="2"/><path d="M11 22a7 7 0 0 1-6.5-9.5L7 9c.8-1.4 2.2-2 4-2s3.2.6 4 2l2.5 3.5a7 7 0 0 1-6.5 9.5z"/></svg>
-    case 'scissors':   return <svg {...p}><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
-    case 'spark':      return <svg {...p}><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg>
-    case 'grid':       return <svg {...p}><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-    case 'flask':      return <svg {...p}><path d="M10 2v6L4 18a2 2 0 0 0 2 3h12a2 2 0 0 0 2-3l-6-10V2M8 2h8"/></svg>
-    case 'shopping-bag': return <svg {...p}><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
-  }
+  return <FontAwesomeIcon icon={CAT_FA[k]} />
 }
 
 /* Map an L2 category name → icon key. Keyword-driven, ordered by

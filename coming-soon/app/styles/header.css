@@ -28,7 +28,7 @@
   top: 0; left: 0; right: 0;
   z-index: 60;
   background: var(--iw-bg);
-  border-bottom: 1px solid var(--iw-border);
+  border-bottom: 2px solid var(--iw-border);
   font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: var(--iw-text);
   transition: transform .25s cubic-bezier(.4, 0, .2, 1),
@@ -51,6 +51,10 @@
   color: var(--iw-text);
   font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   border-bottom: 1px solid rgba(0, 59, 42, .08);
+  /* Sit above the mega for the same reason as .iw-head-inner — keeps
+     the strip clean when the mega slides down from behind the header. */
+  position: relative;
+  z-index: 2;
 }
 .iw-util-inner {
   display: flex;
@@ -123,10 +127,11 @@
 }
 
 /* Spacer matches the rendered .iw-head height: main row alone on
-   mobile, util strip (32px) + main row (76px) on desktop. */
-.iw-head-spacer { height: 72px; }
+   mobile, util strip (32px) + main row (76px) on desktop.
+   +1 on each value compensates for the 2px header border-bottom. */
+.iw-head-spacer { height: 73px; }
 @media (min-width: 980px) {
-  .iw-head-spacer { height: 108px; }
+  .iw-head-spacer { height: 109px; }
 }
 
 .iw-head-inner {
@@ -139,6 +144,12 @@
   margin: 0 auto;
   padding: 0 clamp(16px, 2.4vw, 28px);
   height: 72px;
+  /* Establish a stacking context above .iw-mega (z-index:1) so the
+     mega's closed-state Y offset slides up *behind* this row. The
+     header's white bg + border-bottom then cover the hidden edge. */
+  position: relative;
+  z-index: 2;
+  background: var(--iw-bg);
 }
 @media (min-width: 980px) {
   .iw-head-inner { height: 76px; }
@@ -188,7 +199,7 @@
   color: var(--iw-text);
   font-family: inherit;
   font-size: 14.5px;
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: -.005em;
   cursor: pointer;
   border-radius: 8px;
@@ -270,7 +281,8 @@
    sector's brand colour (c4) so the "Explore all categories" button
    matches the right-panel tiles. Falls back to the global accent. */
 .iw-cta--mega {
-  padding: 11px 18px;
+  padding: 9px 14px;
+  font-size: 13px;
   background: var(--sector-c4, var(--iw-cta-bg));
   border-color: var(--sector-c4, var(--iw-cta-bg));
 }
@@ -299,25 +311,34 @@
   outline: none;
 }
 
-/* ── Mega-menu — floating CARD (not a full-width bar). Anchored centered
-   under the nav cluster with max-width caps so it never overflows. ─── */
+/* ── Mega-menu — anchored flush with the header's bottom edge so it
+   reads as a continuation of the header chrome (not a floating card).
+   Z-order is BELOW the header's main row so the closed-state vertical
+   offset slides up behind the bar — opening animates the card down
+   from behind the header. The header's own border-bottom serves as
+   the divider between the two; the mega kills its own top border +
+   top corners + top shadow so the join is seamless. ─── */
 .iw-mega {
   position: absolute;
-  top: calc(100% - 4px);
+  top: 100%;
   left: 50%;
-  transform: translate(-50%, -6px);
+  transform: translate(-50%, -10px);
   background: var(--iw-bg);
   border: 1px solid var(--iw-border);
-  border-radius: 14px;
-  box-shadow: 0 24px 48px -20px rgba(0, 0, 0, .18),
-              0 2px 8px -4px rgba(0, 0, 0, .08);
+  /* Replicate the header's 2px border-bottom across the mega's width
+     so the header divider line stays unbroken when the dropdown is
+     open (the mega's white bg would otherwise hide the header's
+     border in the overlap area). */
+  border-top: 2px solid var(--iw-border);
+  border-radius: 0 0 14px 14px;
+  box-shadow: 0 24px 48px -20px rgba(0, 0, 0, .14);
   opacity: 0;
   visibility: hidden;
   transition: opacity .14s ease, transform .14s ease, visibility 0s linear .14s;
   pointer-events: none;
-  /* Caps stop the card from ever overflowing the viewport. The natural
-     content width (sector list + tile grid) keeps it ~1080px on desktop. */
-  width: min(1100px, calc(100vw - 24px));
+  z-index: 1;             /* sits behind .iw-head-inner (z-index:2) */
+  /* Caps stop the card from ever overflowing the viewport. */
+  width: min(960px, calc(100vw - 24px));
   max-height: calc(100vh - 96px);
   overflow: hidden;
 }
@@ -329,23 +350,42 @@
   transition: opacity .14s ease, transform .14s ease, visibility 0s linear 0s;
 }
 .iw-mega-inner {
-  padding: 16px;
+  padding: 14px;
 }
 
 /* ── Services mega-menu ─────────────────────────────────────── */
 .iw-mega-inner--svc {
+  position: relative;
   display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 14px;
+  grid-template-columns: 220px 1fr;
+  gap: 12px;
   align-items: start;
+}
+/* Hairline divider between sector rail and L2 tile grid. The grid
+   container has padding:14px from .iw-mega-inner — to escape that
+   padding and span the FULL height of the dropdown (top edge to
+   bottom edge), the pseudo-element uses negative top/bottom offsets
+   equal to the padding. Soft border colour keeps the line subtle. */
+.iw-mega-inner--svc::before {
+  content: '';
+  position: absolute;
+  /* Visual centre: left rail ends at x=220 (after its -14 negative
+     margin pulls it flush with the mega's left edge); right rail
+     starts at x=246 — midpoint x=233. */
+  left: 233px;
+  top: -14px;
+  bottom: -14px;
+  width: 1px;
+  background: var(--iw-border);
+  pointer-events: none;
 }
 .iw-svc-left {
   display: flex; flex-direction: column;
-  gap: 6px;
-  /* Pull the rail back through the .iw-mega-inner 16px left padding
+  gap: 3px;
+  /* Pull the rail back through the .iw-mega-inner 14px left padding
      so each row's coloured fill + left stripe go flush against the
      dropdown card's left edge (no gap between strip and edge). */
-  margin-left: -16px;
+  margin-left: -14px;
 }
 /* Sector rows carry per-row CSS variables (--row-c1/c2/c4) set inline
    by Navbar.tsx from each sector's palette. At rest the row is plain
@@ -358,25 +398,25 @@
    shift horizontally when the stripe appears. */
 .iw-svc-row {
   display: flex; align-items: center;
-  gap: 10px;
-  padding: 16px 18px 16px 12px;
-  border-left: 6px solid transparent;
+  gap: 8px;
+  padding: 11px 14px 11px 10px;
+  border-left: 5px solid transparent;
   background: transparent;
   /* Square the flush left edge so the hover fill butts straight into
      the dropdown card; keep the right corners rounded. */
   border-radius: 0 6px 6px 0;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--iw-text);
   text-decoration: none;
-  letter-spacing: -.008em;
+  letter-spacing: -.005em;
   transition: background .12s ease, border-left-color .12s ease;
 }
 .iw-svc-row > .iw-chev-r {
   margin-left: auto;
   opacity: .55;
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
 }
 .iw-svc-row:hover {
   background: var(--row-c1, var(--iw-bg-soft));
@@ -396,37 +436,38 @@
 .iw-svc-row--all {
   font-weight: 600;
   color: var(--iw-accent);
-  margin-bottom: 6px;
-  padding-bottom: 13px;
+  margin-bottom: 4px;
+  padding-bottom: 10px;
   border-bottom: 1px solid var(--iw-border-soft);
   /* Match the sector rows: flush left edge, rounded only on the right. */
-  border-radius: 0 8px 0 0;
+  border-radius: 0 6px 0 0;
 }
 .iw-svc-row--all .iw-chev-r { opacity: .8; }
 
 .iw-svc-right {
   display: flex; flex-direction: column;
-  gap: 14px;
+  gap: 10px;
   min-width: 0;
 }
 .iw-svc-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  gap: 12px;
 }
 .iw-svc-foot {
   display: flex; justify-content: flex-end;
+  margin-top: 12px;
 }
 
 /* ── Tile — used in Services mega ── */
 .iw-tile {
   display: flex; align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
+  gap: 8px;
+  padding: 7px 10px;
   background: var(--iw-bg);
   border: 1px solid var(--iw-border);
-  border-radius: 10px;
-  font-size: 14px;
+  border-radius: 7px;
+  font-size: 13.5px;
   font-weight: 500;
   color: var(--iw-text);
   text-decoration: none;
@@ -444,18 +485,16 @@
 }
 .iw-tile-ico {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 30px; height: 30px;
-  border-radius: 8px;
-  background: var(--sector-c4, #111827);
-  color: #FFFFFF;
+  width: 28px; height: 28px;
+  background: transparent;
+  color: var(--iw-text);
   flex-shrink: 0;
-  transition: background .12s ease;
 }
-.iw-tile:hover .iw-tile-ico { background: var(--sector-c3, #1F2937); }
+.iw-tile-ico svg { width: 22px; height: 22px; }
 .iw-tile-name {
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   min-width: 0;
-  font-size: 14px; font-weight: 500;
+  font-size: 13.5px; font-weight: 500;
   color: var(--iw-text);
 }
 
@@ -469,7 +508,7 @@
   padding: 8px 4px;
   color: var(--iw-text);
   font-size: 14.5px;
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: -.005em;
   cursor: pointer;
   font-family: inherit;
@@ -930,7 +969,7 @@
   .iw-logo { height: 28px; }
   .iw-logo img { height: 38px; }
   .iw-head-inner { height: 60px; gap: 2px; padding: 0 10px; }
-  .iw-head-spacer { height: 60px; }
+  .iw-head-spacer { height: 61px; }
   .iw-mob { top: 60px; }
   /* Hide Get Listed pill on the very smallest viewports — it moves
      into the sheet bottom dock via the foot-btn equivalent? No: keep

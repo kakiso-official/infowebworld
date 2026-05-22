@@ -50,16 +50,13 @@ export default function UserMenu() {
     <div className="um-wrap" ref={wrapRef}>
       <button type="button" className="um-trigger"
         onClick={() => setDropOpen(o => !o)}
-        aria-haspopup="true" aria-expanded={dropOpen}>
+        aria-haspopup="true" aria-expanded={dropOpen}
+        aria-label="Account menu">
         <span className="um-avatar">
           {user.avatarUrl
             ? <img src={user.avatarUrl} alt="" />
             : <span>{initials}</span>}
         </span>
-        <svg className="um-chev" viewBox="0 0 24 24" width="12" height="12" fill="none"
-          stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
       </button>
 
       {dropOpen && (

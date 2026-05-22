@@ -421,7 +421,7 @@ function CompareSearchInput({
         }}
         aria-label="Search"
       >
-        Search
+        {Ico.search}
       </button>
       {showResults && (
         <div className="cpr-srch-drop" role="listbox">

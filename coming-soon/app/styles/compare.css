@@ -436,71 +436,68 @@ body:has(.cpr-page) { background-color: #FBFAF8 !important; }
 
 /* ── Search input ─────────────────────────────────────────── */
 
+/* Search bar — matches the /write-review pick-company input style:
+   dark 1.5px pill, neutral focus (no coral). The right "Search" pill
+   is now a compact icon-only button. */
 .cpr-srch {
-  position: relative; display: flex; align-items: center; gap: 12px;
-  padding: 0 8px 0 22px;
-  border: 1.5px solid var(--h-border, #E8E4DF);
+  position: relative; display: flex; align-items: center; gap: 8px;
+  padding: 0 6px 0 18px;
+  border: 1.5px solid #1A1A1A;
   background: #fff; border-radius: 999px;
-  transition: border-color .15s, box-shadow .15s, transform .15s;
+  transition: border-color .15s, box-shadow .15s;
 }
 .cpr-srch:focus-within {
-  border-color: var(--h-accent, #E8553D);
-  box-shadow: 0 0 0 5px rgba(232,85,61,.10), 0 4px 18px rgba(0,0,0,.06);
+  border-color: #1A1A1A;
+  box-shadow: 0 0 0 4px rgba(26, 26, 26, .08);
 }
 .cpr-srch--hero {
-  padding: 0 8px 0 26px;
-  height: 68px;
-  box-shadow:
-    0 1px 2px rgba(0,0,0,.04),
-    0 12px 36px rgba(0,0,0,.07);
+  padding: 0 6px 0 22px;
+  height: 56px;
 }
-.cpr-srch--hero:hover { border-color: #D5D0CA; }
+.cpr-srch--hero:hover { border-color: #1A1A1A; }
 .cpr-srch--panel { height: 42px; padding: 0 6px 0 16px; }
 
 .cpr-srch-ico {
   display: inline-flex; align-items: center; justify-content: center;
-  color: #8B847C; flex-shrink: 0;
+  color: #1A1A1A; flex-shrink: 0;
 }
-.cpr-srch--hero .cpr-srch-ico svg { width: 22px; height: 22px; }
-.cpr-srch:focus-within .cpr-srch-ico { color: var(--h-accent, #E8553D); }
+.cpr-srch--hero .cpr-srch-ico svg { width: 20px; height: 20px; }
+.cpr-srch:focus-within .cpr-srch-ico { color: #1A1A1A; }
 
 .cpr-srch-input {
   flex: 1; border: 0; outline: 0; background: transparent;
-  font-weight: 600; font-size: 14px; line-height: 1;
-  color: var(--h-heading, #1A1A1A); min-width: 0;
+  font-weight: 500; font-size: 16px; line-height: 1;
+  color: #1A1A1A; min-width: 0;
 }
 .cpr-srch--hero .cpr-srch-input {
-  font-size: 17.5px; font-weight: 600; letter-spacing: -.005em;
+  font-size: 16px; font-weight: 500; letter-spacing: -.005em;
 }
-.cpr-srch-input::placeholder { color: #B5AFA8; font-weight: 500; }
+.cpr-srch-input::placeholder { color: #8B847C; font-weight: 500; }
 
 .cpr-srch-clear {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 28px; height: 28px; border: 0; border-radius: 999px;
-  background: #F2EEEA; color: #8B847C; cursor: pointer; flex-shrink: 0;
+  width: 30px; height: 30px; border: 0; border-radius: 999px;
+  background: transparent; color: #6B7280; cursor: pointer; flex-shrink: 0;
   transition: background .15s, color .15s;
 }
-.cpr-srch--hero .cpr-srch-clear { width: 32px; height: 32px; }
-.cpr-srch-clear:hover { background: #1A1A1A; color: #fff; }
+.cpr-srch--hero .cpr-srch-clear { width: 30px; height: 30px; }
+.cpr-srch-clear:hover { background: #F1F2F4; color: #1A1A1A; }
 
-/* Inline coral "Search" pill at the right end of the hero variant —
-   decorative submit hint that pairs with the dropdown pick. */
+/* Submit button — icon-only circular pill on the right end. Picks
+   the top result on click (or focuses the input if empty). Matches
+   the leading-icon style; same dark colour, no coral. */
 .cpr-srch-btn {
   display: inline-flex; align-items: center; justify-content: center;
-  height: 52px; padding: 0 22px;
-  background: var(--h-accent, #E8553D); color: #fff !important;
-  font-weight: 800; font-size: 13.5px; line-height: 1;
-  letter-spacing: .04em; text-transform: uppercase;
+  width: 40px; height: 40px; padding: 0;
+  background: #1A1A1A; color: #FFFFFF !important;
   border: 0; border-radius: 999px;
   cursor: pointer; flex-shrink: 0;
-  box-shadow: 0 2px 10px rgba(232,85,61,.25);
-  transition: background .15s, transform .15s, box-shadow .15s;
+  transition: background .15s, transform .12s;
 }
-.cpr-srch--panel .cpr-srch-btn { height: 32px; padding: 0 14px; font-size: 11px; }
-.cpr-srch-btn:hover {
-  background: #C9432E; transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(232,85,61,.32);
-}
+.cpr-srch--panel .cpr-srch-btn { width: 32px; height: 32px; }
+.cpr-srch-btn:hover { background: #000000; }
+.cpr-srch-btn:active { transform: translateY(1px); }
+.cpr-srch-btn svg { width: 18px; height: 18px; }
 
 .cpr-srch-drop {
   position: absolute; top: calc(100% + 8px); left: 0; right: 0;

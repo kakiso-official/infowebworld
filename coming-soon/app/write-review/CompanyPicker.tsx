@@ -109,11 +109,21 @@ export default function CompanyPicker({ onPick }: { onPick: (c: CompanyHit) => v
       )}
 
       {!q.trim() && (
-        <p className="wr-cp-hint">
-          Start typing to find a company. Only listed companies can be reviewed —
-          if the company you want is missing, you can{' '}
-          <a href="/business" className="wr-cp-link">list it for them</a>.
-        </p>
+        <>
+          <p className="wr-cp-hint">
+            Start typing to find a company. Only listed companies can be reviewed —
+            if the company you want is missing, you can{' '}
+            <a href="/business" className="wr-cp-link">list it for them</a>.
+          </p>
+          <img
+            src="/illustrations/builder-sign.png"
+            alt=""
+            aria-hidden="true"
+            className="wr-cp-mascot"
+            draggable={false}
+            onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
+          />
+        </>
       )}
     </div>
   )
