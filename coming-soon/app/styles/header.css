@@ -37,14 +37,104 @@
 .iw-head--scrolled { box-shadow: 0 1px 0 rgba(0, 0, 0, .04), 0 4px 16px -8px rgba(0, 0, 0, .06); }
 .iw-head--hidden   { transform: translateY(-100%); }
 
+/* ── Brand utility strip — desktop-only secondary nav ────────────
+   Lives inside .iw-head as a sibling of .iw-head-inner so the
+   scroll-hide transform on .iw-head applies to strip + main row
+   together. Hidden under 980px (its items resurface in the mobile
+   sheet as a flat "More" list).
+   Background uses the mint accent (--iw-accent-soft, #E6F4EC) — a
+   light, on-brand band that lets the white main row breathe and
+   keeps the dark-green CTA pill as the only saturated brand mark
+   in the header. */
+.iw-util {
+  background: var(--iw-accent-soft);
+  color: var(--iw-text);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  border-bottom: 1px solid rgba(0, 59, 42, .08);
+}
+.iw-util-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 2.4vw, 28px);
+  height: 32px;
+}
+
+/* Left tagline phrase — "Best Global Growth Platform · #Discover
+   #Compare #Review Companies". Base text is soft black; the hashtags
+   and "Companies" object pop to full near-black + heavier weight. */
+.iw-util-tag {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;            /* gracefully wrap if a narrow desktop crowds it */
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: -.002em;
+  color: rgba(17, 24, 39, .78);
+  white-space: nowrap;
+  min-width: 0;
+}
+.iw-util-tag-sep {
+  opacity: .4;
+  padding: 0 2px;
+}
+.iw-util-hash {
+  color: var(--iw-text);
+  font-weight: 700;
+  letter-spacing: .005em;
+}
+.iw-util-tag-obj {
+  color: var(--iw-text);
+  font-weight: 600;
+}
+
+/* Right links cluster — uppercase utility row. */
+.iw-util-links {
+  display: inline-flex;
+  align-items: center;
+  gap: 22px;
+  flex-shrink: 0;
+}
+.iw-util-link {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: .045em;
+  text-transform: uppercase;
+  color: rgba(17, 24, 39, .72);
+  text-decoration: none;
+  transition: color .12s ease;
+  white-space: nowrap;
+}
+.iw-util-link:hover,
+.iw-util-link:focus-visible {
+  color: var(--iw-text);
+  outline: none;
+}
+
+/* At narrower desktop widths (980–1100px) the tagline crowds the
+   links — hide the tagline below 1100px so the links remain readable. */
+@media (max-width: 1100px) {
+  .iw-util-tag { display: none; }
+  .iw-util-inner { justify-content: flex-end; }
+}
+
+/* Spacer matches the rendered .iw-head height: main row alone on
+   mobile, util strip (32px) + main row (76px) on desktop. */
 .iw-head-spacer { height: 72px; }
 @media (min-width: 980px) {
-  .iw-head-spacer { height: 76px; }
+  .iw-head-spacer { height: 108px; }
 }
 
 .iw-head-inner {
   display: flex; align-items: center;
-  gap: 22px;
+  /* Only the logo↔nav gap is visible on desktop — the right cluster is
+     pushed via margin-left:auto, so this value effectively controls
+     how close "Categories" sits to the logo. */
+  gap: 12px;
   max-width: 1320px;
   margin: 0 auto;
   padding: 0 clamp(16px, 2.4vw, 28px);
@@ -54,14 +144,34 @@
   .iw-head-inner { height: 76px; }
 }
 
-/* ── Logo ─────────────────────────────────────────────────────── */
+/* ── Logo ───────────────────────────────────────────────────────
+   Source PNG is 998×223. The iWW mark + "InfoWebWorld" wordmark live
+   in the top ~74% of the source; the tagline "Global Growth Platform"
+   is baked into the bottom ~26%. In a header at 40px tall, the tagline
+   crushes the wordmark down to ~23px and itself becomes a fuzzy smudge
+   — neither element wins. Headers should show a confident brand mark,
+   not a shrunken banner.
+
+   Fix without re-cutting the asset: render the <img> taller than its
+   container, anchor it to the top, and clip the bottom (tagline) via
+   overflow:hidden. The wordmark now fills the full header logo height.
+   OG/schema references still point at the un-cropped PNG so social
+   shares keep the tagline intact — only the header visually crops it. */
 .iw-logo {
-  display: inline-flex; align-items: center;
+  display: inline-flex;
+  align-items: flex-start;      /* top of <img> aligns with top of logo box */
   text-decoration: none;
   flex-shrink: 0;
+  height: 40px;
+  overflow: hidden;             /* clip the tagline strip */
 }
 .iw-logo img {
-  height: 32px; width: auto; display: block;
+  /* img_height = container_height / crop_ratio.
+     0.74 ≈ 40 / 54 → shows source pixels 0–165 out of 223 (red block
+     + a few px of breathing room, no tagline). */
+  height: 54px;
+  width: auto;
+  display: block;
 }
 
 /* ── Center nav ───────────────────────────────────────────────── */
@@ -138,19 +248,6 @@
 }
 .iw-search-close:hover { border-color: var(--iw-text-muted); color: var(--iw-text); }
 
-.iw-link-text {
-  color: var(--iw-text);
-  font-size: 14.5px;
-  font-weight: 500;
-  letter-spacing: -.005em;
-  text-decoration: none;
-  white-space: nowrap;
-  padding: 8px 4px;
-  border-radius: 6px;
-  transition: color .12s ease;
-}
-.iw-link-text:hover { color: var(--iw-accent); }
-
 .iw-cta {
   display: inline-flex; align-items: center;
   padding: 10px 18px;
@@ -169,7 +266,18 @@
 }
 .iw-cta:hover { background: var(--iw-cta-bg-hov); }
 .iw-cta:active { transform: translateY(1px); }
-.iw-cta--mega { padding: 11px 18px; }
+/* Sector-tinted CTA inside the Categories mega — pulls the active
+   sector's brand colour (c4) so the "Explore all categories" button
+   matches the right-panel tiles. Falls back to the global accent. */
+.iw-cta--mega {
+  padding: 11px 18px;
+  background: var(--sector-c4, var(--iw-cta-bg));
+  border-color: var(--sector-c4, var(--iw-cta-bg));
+}
+.iw-cta--mega:hover {
+  background: var(--sector-c3, var(--iw-cta-bg-hov));
+  border-color: var(--sector-c3, var(--iw-cta-bg-hov));
+}
 
 /* Burger / X — hidden on desktop, sits LEFT of the logo on mobile.
    Renders the actual <IconHamburger /> or <IconX /> SVG inside, so
@@ -233,23 +341,68 @@
 }
 .iw-svc-left {
   display: flex; flex-direction: column;
-  gap: 2px;
+  gap: 6px;
+  /* Pull the rail back through the .iw-mega-inner 16px left padding
+     so each row's coloured fill + left stripe go flush against the
+     dropdown card's left edge (no gap between strip and edge). */
+  margin-left: -16px;
 }
+/* Sector rows carry per-row CSS variables (--row-c1/c2/c4) set inline
+   by Navbar.tsx from each sector's palette. At rest the row is plain
+   — no fill, no stripe, no colour — matching the simple menu look.
+   On hover/active the row fills in c1/c2 and a 4px c4 stripe slides
+   in on the left edge. Text stays dark in every state — the fill +
+   stripe alone communicate identity; no text-colour or weight change
+   so the row doesn't feel busy.
+   A 4px transparent border-left sits at rest so the label doesn't
+   shift horizontally when the stripe appears. */
 .iw-svc-row {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 11px 14px;
-  border-radius: 8px;
-  font-size: 14px;
+  display: flex; align-items: center;
+  gap: 10px;
+  padding: 16px 18px 16px 12px;
+  border-left: 6px solid transparent;
+  background: transparent;
+  /* Square the flush left edge so the hover fill butts straight into
+     the dropdown card; keep the right corners rounded. */
+  border-radius: 0 6px 6px 0;
+  font-size: 15px;
   font-weight: 500;
   color: var(--iw-text);
   text-decoration: none;
-  letter-spacing: -.005em;
-  transition: background .1s ease, color .1s ease;
+  letter-spacing: -.008em;
+  transition: background .12s ease, border-left-color .12s ease;
 }
-.iw-svc-row:hover { background: var(--iw-bg-soft); }
-.iw-svc-row--on  { background: var(--iw-accent-soft); color: var(--iw-accent); }
-.iw-svc-row .iw-chev-r { opacity: .55; }
+.iw-svc-row > .iw-chev-r {
+  margin-left: auto;
+  opacity: .55;
+  width: 14px;
+  height: 14px;
+}
+.iw-svc-row:hover {
+  background: var(--row-c1, var(--iw-bg-soft));
+  border-left-color: var(--row-c4, transparent);
+}
+.iw-svc-row--on {
+  background: var(--row-c2, var(--iw-accent-soft));
+  border-left-color: var(--row-c4, transparent);
+}
 .iw-svc-row--on .iw-chev-r { opacity: 1; }
+/* All Categories row has no --row-* vars, so its hover falls back to
+   the brand accent-soft for a clearly "global" green hover. */
+.iw-svc-row--all:hover { background: var(--iw-accent-soft); color: var(--iw-accent); }
+/* Global "All Categories" entry — sits above the sector list, separated
+   by a hairline so it reads as a distinct escape hatch rather than a 7th
+   sector. Slightly heavier weight to reinforce the hierarchy. */
+.iw-svc-row--all {
+  font-weight: 600;
+  color: var(--iw-accent);
+  margin-bottom: 6px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid var(--iw-border-soft);
+  /* Match the sector rows: flush left edge, rounded only on the right. */
+  border-radius: 0 8px 0 0;
+}
+.iw-svc-row--all .iw-chev-r { opacity: .8; }
 
 .iw-svc-right {
   display: flex; flex-direction: column;
@@ -281,132 +434,29 @@
   transition: border-color .12s ease, background .12s ease;
   min-width: 0;
 }
+/* Tiles inherit the active sector's palette via CSS variables set
+   on .iw-mega-inner--svc by Navbar.tsx. Fallbacks keep the tile
+   sensible if a sector slug is somehow missing or the strip is
+   rendered standalone. */
 .iw-tile:hover {
-  border-color: #D1D5DB;
-  background: var(--iw-bg-soft);
+  border-color: var(--sector-c3, #D1D5DB);
+  background: var(--sector-c1, var(--iw-bg-soft));
 }
 .iw-tile-ico {
   display: inline-flex; align-items: center; justify-content: center;
   width: 30px; height: 30px;
   border-radius: 8px;
-  background: #111827;
+  background: var(--sector-c4, #111827);
   color: #FFFFFF;
   flex-shrink: 0;
+  transition: background .12s ease;
 }
-.iw-tile:hover .iw-tile-ico { background: #1F2937; }
+.iw-tile:hover .iw-tile-ico { background: var(--sector-c3, #1F2937); }
 .iw-tile-name {
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   min-width: 0;
   font-size: 14px; font-weight: 500;
   color: var(--iw-text);
-}
-
-/* ── Solutions mega ─────────────────────────────────────────── */
-.iw-soln-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-@media (max-width: 760px) {
-  .iw-soln-grid { grid-template-columns: 1fr; }
-}
-.iw-soln {
-  display: flex; align-items: flex-start;
-  gap: 14px;
-  padding: 16px 18px;
-  background: var(--iw-bg);
-  border: 1px solid var(--iw-border);
-  border-radius: 12px;
-  text-decoration: none;
-  color: var(--iw-text);
-  transition: border-color .12s ease, background .12s ease;
-}
-.iw-soln:hover {
-  border-color: #D1D5DB;
-  background: var(--iw-bg-soft);
-}
-.iw-soln--soon { background: var(--iw-bg-soft); cursor: default; }
-.iw-soln--soon:hover { border-color: var(--iw-border); }
-.iw-soln-ico {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 36px; height: 36px;
-  border-radius: 9px;
-  background: #0A1B33;
-  color: #FFFFFF;
-  flex-shrink: 0;
-}
-.iw-soln--soon .iw-soln-ico { background: #9CA3AF; }
-.iw-soln-text {
-  display: flex; flex-direction: column;
-  gap: 3px;
-  min-width: 0;
-}
-.iw-soln-name {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: 14.5px; font-weight: 700;
-  letter-spacing: -.012em;
-  color: var(--iw-text);
-}
-.iw-soln-sub {
-  font-size: 12.5px;
-  color: var(--iw-text-muted);
-  font-weight: 500;
-  letter-spacing: -.002em;
-}
-.iw-soln-badge {
-  display: inline-block;
-  padding: 2px 7px;
-  border-radius: 5px;
-  background: #FFF;
-  border: 1px solid var(--iw-border);
-  color: var(--iw-text-soft);
-  font-size: 10.5px; font-weight: 600;
-  letter-spacing: 0;
-}
-
-/* ── Resources narrow dropdown ─────────────────────────────── */
-.iw-rsrc {
-  position: absolute;
-  top: calc(100% - 6px);
-  /* Anchored under the third nav button; offset from page center.
-     The grid breaks symmetrically so we use a left:auto / right:auto
-     centered-ish anchor that hugs the nav cluster. */
-  left: 50%;
-  transform: translate(-50%, -4px);
-  min-width: 280px;
-  background: var(--iw-bg);
-  border: 1px solid var(--iw-border);
-  border-radius: 12px;
-  box-shadow: 0 12px 30px -12px rgba(0, 0, 0, .15);
-  padding: 8px;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity .14s ease, transform .14s ease, visibility 0s linear .14s;
-  pointer-events: none;
-}
-.iw-rsrc--open {
-  opacity: 1;
-  visibility: visible;
-  transform: translate(-50%, 0);
-  pointer-events: auto;
-  transition: opacity .14s ease, transform .14s ease, visibility 0s linear 0s;
-}
-.iw-rsrc-list { list-style: none; padding: 0; margin: 0; }
-.iw-rsrc-list li + li { margin-top: 2px; }
-.iw-rsrc-item {
-  display: block;
-  padding: 11px 14px;
-  border-radius: 7px;
-  font-size: 14.5px;
-  font-weight: 500;
-  color: var(--iw-text);
-  text-decoration: none;
-  letter-spacing: -.005em;
-  transition: background .1s ease, color .1s ease;
-}
-.iw-rsrc-item:hover {
-  background: var(--iw-accent-soft);
-  color: var(--iw-accent);
 }
 
 /* ── UserMenu compact tweaks for header context ──────────────
@@ -642,7 +692,7 @@
    Mobile sheet — drops below the main header.
    Main header stays put; burger toggles to X.
    Sheet positioned `top: <header height>; inset: 0 0 0 0`, so users see:
-     [X] [Logo] ......... [Get Listed] [🔍]   ← main header (unchanged)
+     [X] [Logo] ......... [🔍] [Get Listed]   ← main header (unchanged)
      ──────────────────────────────────────
      Find by Services      ▾  ← accordion row
      Find by Solutions     ▾
@@ -715,6 +765,24 @@
   opacity: 1;
 }
 
+/* Direct-link row in the sheet — same heavy weight as .iw-mob-acc so
+   "Write a Review" / "Compare Tools" read as siblings of the
+   Categories accordion, not as utility links. No chevron, no toggle. */
+.iw-mob-link {
+  display: block;
+  width: 100%;
+  padding: 16px clamp(16px, 4vw, 22px);
+  color: var(--iw-text);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -.008em;
+  text-decoration: none;
+  min-height: 56px;
+  transition: color .12s ease;
+}
+.iw-mob-link:hover,
+.iw-mob-link:focus-visible { color: var(--iw-accent); outline: none; }
+
 .iw-mob-sub-wrap {
   overflow: hidden;
   max-height: 0;
@@ -747,56 +815,39 @@
   color: var(--iw-accent);
   outline: none;
 }
+/* "All Categories" row in the mobile accordion — heavier weight + accent
+   colour mark it as the global escape hatch above the sector list. */
+.iw-mob-sub-all a {
+  font-weight: 700;
+  color: var(--iw-accent);
+}
 
-/* Tile-card grid inside Solutions accordion. */
-.iw-mob-tiles {
-  display: flex; flex-direction: column;
-  gap: 10px;
-  padding: 4px clamp(16px, 4vw, 22px) 16px;
+/* ── Flat "More" list in the mobile sheet — utility links that live
+   in the dark strip on desktop. Plain rows, no accordion. ── */
+.iw-mob-util {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
-.iw-mob-tile {
-  display: flex; align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
-  background: var(--iw-bg);
-  border: 1px solid var(--iw-border);
-  border-radius: 12px;
+.iw-mob-util li + li {
+  border-top: 1px solid var(--iw-border-soft);
+}
+.iw-mob-util a {
+  display: block;
+  padding: 14px clamp(16px, 4vw, 22px);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--iw-text);
   text-decoration: none;
-  color: var(--iw-text);
-  transition: border-color .12s ease, background .12s ease;
+  letter-spacing: -.005em;
+  min-height: 48px;
+  transition: background .12s ease, color .12s ease;
 }
-.iw-mob-tile:hover {
-  border-color: rgba(0, 59, 42, .25);
-  background: var(--iw-bg-soft);
-}
-.iw-mob-tile--soon { background: var(--iw-bg-soft); cursor: default; }
-.iw-mob-tile--soon:hover { border-color: var(--iw-border); background: var(--iw-bg-soft); }
-.iw-mob-tile-ico {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 40px; height: 40px;
-  border-radius: 10px;
-  background: #0A1B33;
-  color: #FFFFFF;
-  flex-shrink: 0;
-}
-.iw-mob-tile--soon .iw-mob-tile-ico { background: #9CA3AF; }
-.iw-mob-tile-text {
-  display: flex; flex-direction: column;
-  gap: 3px;
-  min-width: 0;
-}
-.iw-mob-tile-name {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: 14.5px; font-weight: 700;
-  letter-spacing: -.012em;
-  color: var(--iw-text);
-}
-.iw-mob-tile-sub {
-  font-size: 12.5px;
-  color: var(--iw-text-muted);
-  font-weight: 500;
-  letter-spacing: -.002em;
-  line-height: 1.4;
+.iw-mob-util a:hover,
+.iw-mob-util a:focus-visible {
+  background: var(--iw-accent-soft);
+  color: var(--iw-accent);
+  outline: none;
 }
 
 /* ── Bottom dock — plain Write-a-Review link + outlined Sign in
@@ -855,25 +906,29 @@
 /* ── Responsive breakpoints ────────────────────────────────── */
 @media (max-width: 980px) {
   /* Hide desktop-only chrome */
+  .iw-util { display: none; }
   .iw-nav { display: none; }
-  .iw-link-text { display: none; }
   .iw-right .um-wrap, .iw-right .um-signin { display: none; }
-  .iw-mega, .iw-rsrc { display: none; }
+  .iw-mega { display: none; }
 
   /* Show mobile-only chrome */
   .iw-burger { display: inline-flex; }
-  /* Search icon + Get Listed remain visible. Reorder so Get Listed
-     comes BEFORE search-icon per the GoodFirms reference. */
+  /* Search icon + Get Listed remain visible. DOM order puts Search
+     before Get Listed (matches the leading-search desktop layout). */
   .iw-right { gap: 6px; }
-  .iw-right .iw-cta       { order: 1; padding: 8px 14px; font-size: 13.5px; }
-  .iw-right .iw-search-btn { order: 2; width: 38px; height: 38px; }
+  .iw-right .iw-cta       { padding: 8px 14px; font-size: 13.5px; }
+  .iw-right .iw-search-btn { width: 38px; height: 38px; }
 
   /* Header inner padding tighter on mobile. */
   .iw-head-inner { padding: 0 12px; gap: 4px; }
 }
 
 @media (max-width: 480px) {
-  .iw-logo img { height: 26px; }
+  /* Smaller slot + same 0.74 crop ratio: 28 / 38 ≈ 0.74.
+     Keeps the logo's visible width ~170px so the burger + search +
+     Get Listed cluster still fits in a 360-wide viewport. */
+  .iw-logo { height: 28px; }
+  .iw-logo img { height: 38px; }
   .iw-head-inner { height: 60px; gap: 2px; padding: 0 10px; }
   .iw-head-spacer { height: 60px; }
   .iw-mob { top: 60px; }

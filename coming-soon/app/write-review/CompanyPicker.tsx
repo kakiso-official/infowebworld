@@ -53,12 +53,17 @@ export default function CompanyPicker({ onPick }: { onPick: (c: CompanyHit) => v
         </svg>
         <input
           ref={inputRef}
-          type="text"
+          type="search"
           className="wr-cp-input"
           placeholder="Type a company name…"
           value={q}
           onChange={e => setQ(e.target.value)}
           autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="words"
+          spellCheck={false}
+          inputMode="search"
+          enterKeyHint="search"
         />
         {q && (
           <button type="button" className="wr-cp-clear" onClick={() => setQ('')} aria-label="Clear">

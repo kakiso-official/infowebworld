@@ -228,6 +228,11 @@ export default function WriteReviewClient() {
             companyName={company.companyName}
             onDraftReady={handleDraftReady}
             onCancel={() => setStep('pick-method')}
+            onSwitchToManual={() => {
+              setMethod('manual')
+              setDraft({ rating: 0, title: '', body: '' })
+              setStep('review-editor')
+            }}
           />
         )}
 

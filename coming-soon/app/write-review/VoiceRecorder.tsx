@@ -8,6 +8,10 @@ interface Props {
   companyName: string
   onDraftReady: (draft: Draft) => void
   onCancel: () => void
+  /** Bail out of the voice flow into the manual editor with an empty
+   *  draft. Primary action on error so users have a clear escape hatch
+   *  if their device/browser can't record. */
+  onSwitchToManual: () => void
 }
 
 type Phase = 'idle' | 'requesting' | 'recording' | 'processing' | 'error'
@@ -16,15 +20,23 @@ const MAX_SECONDS = 180  // 3-minute cap matches the server-side size limit
 const MIN_SECONDS = 3
 
 function pickMime(): string {
-  /* Prefer Opus in WebM (best Chrome/Firefox default + great compression),
-     fall back to whatever the browser supports. Safari typically lands on
-     audio/mp4. */
+  /* Priority is ordered by what /api/review/transcribe can hand to
+     Gemini cleanly. Gemini's documented audio formats are WAV/MP3/AIFF/
+     AAC/OGG/FLAC, so we try those-or-equivalents first:
+       - audio/mp4 — Safari's native default, holds AAC
+       - audio/ogg;codecs=opus — Firefox's native default, holds Opus
+       - audio/webm;codecs=opus — Chrome's only native option; the
+         server relabels it as audio/ogg for Gemini.
+     Chrome desktop has no native mp4/ogg recorder support, so it
+     gracefully falls through to webm. */
   if (typeof MediaRecorder === 'undefined') return ''
   const candidates = [
+    'audio/mp4;codecs=mp4a.40.2',
+    'audio/mp4',
+    'audio/ogg;codecs=opus',
+    'audio/ogg',
     'audio/webm;codecs=opus',
     'audio/webm',
-    'audio/ogg;codecs=opus',
-    'audio/mp4',
     'audio/wav',
   ]
   for (const m of candidates) {
@@ -44,7 +56,7 @@ function pickMime(): string {
  *      locally, and the server discards it after Gemini returns the draft.
  *   5. Draft bubbles up to the parent (-> ReviewEditor for confirm/edit).
  */
-export default function VoiceRecorder({ companyName, onDraftReady, onCancel }: Props) {
+export default function VoiceRecorder({ companyName, onDraftReady, onCancel, onSwitchToManual }: Props) {
   const [phase, setPhase] = useState<Phase>('idle')
   const [error, setError] = useState('')
   const [seconds, setSeconds] = useState(0)
@@ -81,14 +93,22 @@ export default function VoiceRecorder({ companyName, onDraftReady, onCancel }: P
   }
 
   const startRecording = async () => {
+    /* getUserMedia only works in secure contexts (https or localhost).
+       Catch that early so the user sees an explanation instead of an
+       opaque permission failure. */
+    if (typeof window !== 'undefined' && window.isSecureContext === false) {
+      setError('Voice recording requires a secure (https) connection. Open this page over https, or use the manual flow.')
+      setPhase('error')
+      return
+    }
     if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
-      setError('Your browser does not support audio recording.')
+      setError('Your browser does not support audio recording. Try the manual flow.')
       setPhase('error')
       return
     }
     const mime = pickMime()
     if (!mime) {
-      setError('No supported audio format on this browser.')
+      setError('No supported audio format on this browser. Try the manual flow.')
       setPhase('error')
       return
     }
@@ -100,10 +120,16 @@ export default function VoiceRecorder({ companyName, onDraftReady, onCancel }: P
       streamRef.current = stream
 
       /* Audio-level meter via WebAudio AnalyserNode — feeds the pulsing
-         halo so the user knows we're actually hearing them. */
+         halo so the user knows we're actually hearing them.
+         iOS Safari constructs AudioContext in 'suspended' state until a
+         resume() call inside a user gesture — without this the analyser
+         never produces frames and the halo stays static. */
       const Ctx = (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext || AudioContext
       const ac = new Ctx()
       audioCtxRef.current = ac
+      if (ac.state === 'suspended') {
+        try { await ac.resume() } catch {}
+      }
       const src = ac.createMediaStreamSource(stream)
       const analyser = ac.createAnalyser()
       analyser.fftSize = 256
@@ -242,11 +268,18 @@ export default function VoiceRecorder({ companyName, onDraftReady, onCancel }: P
             <line x1="12" y1="16" x2="12.01" y2="16" />
           </svg>
         </div>
-        <h3 className="wr-rec-title">Recording didn&apos;t work</h3>
+        <h3 className="wr-rec-title">Voice didn&apos;t work this time</h3>
         <p className="wr-rec-sub">{error}</p>
-        <div className="wr-rec-actions">
-          <button type="button" className="wr-btn wr-btn--ghost" onClick={onCancel}>Back</button>
-          <button type="button" className="wr-btn wr-btn--primary" onClick={retry}>Try again</button>
+        <div className="wr-rec-actions wr-rec-actions--error">
+          <button type="button" className="wr-btn wr-btn--primary wr-btn--block" onClick={onSwitchToManual}>
+            Write it manually instead
+          </button>
+          <button type="button" className="wr-btn wr-btn--ghost wr-btn--block" onClick={retry}>
+            Try recording again
+          </button>
+          <button type="button" className="wr-rec-back-link" onClick={onCancel}>
+            Back to options
+          </button>
         </div>
       </div>
     )

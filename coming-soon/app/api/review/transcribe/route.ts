@@ -134,6 +134,15 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  /* What the browser produced vs. what we tell Gemini.
+     Gemini's documented audio mimes are WAV/MP3/AIFF/AAC/OGG/FLAC.
+     Chrome's default MediaRecorder output (audio/webm;codecs=opus) is
+     a WebM container holding an Opus stream — the same Opus stream OGG
+     can hold. Relabeling as audio/ogg lets Gemini accept the inlineData
+     while we keep the original bytes intact. */
+  const browserMime = mime
+  const geminiMime = browserMime === 'audio/webm' ? 'audio/ogg' : browserMime
+
   /* Base64 encode for inline transmission to Gemini. */
   const buf = Buffer.from(await file.arrayBuffer())
   const b64 = buf.toString('base64')
@@ -147,7 +156,7 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         contents: [{
           parts: [
-            { inlineData: { mimeType: mime, data: b64 } },
+            { inlineData: { mimeType: geminiMime, data: b64 } },
             { text: prompt },
           ],
         }],
@@ -161,7 +170,9 @@ export async function POST(request: NextRequest) {
 
     if (!res.ok) {
       const errText = await res.text().catch(() => '')
-      console.error('[review/transcribe] Gemini error', res.status, errText.slice(0, 500))
+      console.error('[review/transcribe] Gemini error', res.status, {
+        browserMime, geminiMime, bytes: file.size, body: errText.slice(0, 500),
+      })
       const friendly = res.status === 429
         ? 'Transcription service is busy — try again in a moment.'
         : 'Transcription failed. You can still write your review manually.'

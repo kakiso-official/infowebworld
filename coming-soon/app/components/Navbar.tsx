@@ -9,54 +9,69 @@ import SignupModal from './auth/SignupModal'
 import { CATEGORIES as STATIC_CATEGORIES } from '../config/categories-data'
 
 /* ════════════════════════════════════════════════════════════════════
-   InfoWebWorld site header — single-row, GoodFirms-style.
+   InfoWebWorld site header — dark utility strip + single-row main bar.
 
-   Layout:
-     Logo  ─  Find by Services ▾  Find by Solutions ▾  Resources ▾  ─  🔍  Write a Review  Sign in  [Get Listed]
+   Layout (desktop):
+     ┌────────────────────────────────────────────────────────────────────┐
+     │                       Blog · Insights · News · Help · About         │  ← utility strip (#0F1419)
+     ├────────────────────────────────────────────────────────────────────┤
+     │ Logo · Categories ▾ · Write a Review · Compare Tools ── 🔍 [Get]   │  ← main row
+     └────────────────────────────────────────────────────────────────────┘
 
-   Mega-menus:
-     Services  →  full-width: left list of 6 sectors + right 2-col tile grid of L2 categories
-     Solutions →  full-width: single 2-col tile grid of curated outcomes
-     Resources →  narrow dropdown anchored under the link
+   The utility strip is right-aligned, small uppercase white, hidden on
+   mobile. Its items resurface inside the mobile sheet as a flat "More"
+   list below the Categories accordion + primary direct-link rows.
 
-   Search icon expands inline (replacing the nav cluster) when clicked; X to close.
+   The Categories mega is the only mega remaining:
+     full-width — left list of 6 sectors (with "All Categories" pinned
+     above) + right 2-col tile grid of L2 categories for the active sector.
+
+   Search icon expands inline (replacing the nav cluster) when clicked.
 
    Props (kept for back-compat with existing pages):
      sectorSlug — accepted but unused in this redesign
      hideSearch — when true, the search icon is removed
    ════════════════════════════════════════════════════════════════════ */
 
-/* ── L1 sectors with their human header. Slugs match app/config/categories-data.ts. ── */
-const SECTORS: { slug: string; label: string; color: string }[] = [
-  { slug: 'software-saas',            label: 'Software & SaaS',       color: '#3B82F6' },
-  { slug: 'ai-ml',                    label: 'AI & ML',               color: '#8B5CF6' },
-  { slug: 'it-services-agencies',     label: 'IT Services & Agencies', color: '#14B8A6' },
-  { slug: 'startups-innovation',      label: 'Startups & Innovation', color: '#E8553D' },
-  { slug: 'local-businesses',         label: 'Local Businesses',      color: '#F59E0B' },
-  { slug: 'professional-services',    label: 'Professional Services', color: '#2FAE6A' },
+/* ── L1 sectors with their per-sector palette + human header.
+   Slugs match app/config/categories-data.ts. Each palette has 4
+   shades from lightest (c1) to darkest (c4):
+     c1  light tint   — active-row background, tile hover background
+     c2  mid-light    — soft borders / surfaces
+     c3  mid-dark     — hover accents
+     c4  brand accent — tile-icon background, sector CTA
+   Used by the Categories mega to retint the right panel and the
+   active row in the left rail as the user hovers sectors. */
+type SectorPalette = { c1: string; c2: string; c3: string; c4: string; name: string }
+const SECTORS: { slug: string; label: string; palette: SectorPalette }[] = [
+  { slug: 'software-saas',            label: 'Software & SaaS',        palette: { c1: '#DDF0FB', c2: '#B5D9F4', c3: '#7DBDE9', c4: '#3F8FD4', name: 'Sky Interface' } },
+  { slug: 'ai-ml',                    label: 'AI & ML',                palette: { c1: '#E8E4F8', c2: '#CBBFF2', c3: '#A899E8', c4: '#7C6DD4', name: 'Lavender Neural' } },
+  { slug: 'it-services-agencies',     label: 'IT Services & Agencies', palette: { c1: '#D8F5EE', c2: '#9EE1CF', c3: '#5DC9AB', c4: '#1D9E75', name: 'Mint Circuit' } },
+  { slug: 'startups-innovation',      label: 'Startups & Innovation',  palette: { c1: '#FAEEE3', c2: '#F5C4A8', c3: '#F09A72', c4: '#D98236', name: 'Peach Ignite' } },
+  { slug: 'local-businesses',         label: 'Local Businesses',       palette: { c1: '#EEF7DE', c2: '#C9E49A', c3: '#9ACE5D', c4: '#659A22', name: 'Sage Community' } },
+  { slug: 'professional-services',    label: 'Professional Services',  palette: { c1: '#FAEEF4', c2: '#F2C1D3', c3: '#E694B4', c4: '#C85580', name: 'Blush Authority' } },
 ]
 
-/* Solutions = curated outcomes (not categories). Each tile points at a
-   meaningful destination in our app, with a short subtitle for context. */
-type Soln = {
-  label: string; href: string; sub: string; iconKey: SolnIconKey
-  comingSoon?: boolean
-}
-type SolnIconKey = 'saas' | 'ai' | 'agency' | 'local' | 'compare' | 'news' | 'review' | 'startup'
-const SOLUTIONS: Soln[] = [
-  { label: 'Write a Review', href: '/write-review', sub: 'Share your experience with a company',   iconKey: 'review' },
-  { label: 'Compare Tools',  href: '/compare',      sub: 'Side-by-side product comparisons',       iconKey: 'compare' },
-  { label: 'Industry News',  href: '/news',         sub: 'Daily headlines from global publishers', iconKey: 'news' },
+/* Utility-strip links — the dark bar above the main header.
+   Curated high-signal picks from the old Resources dropdown.
+   "Write a Review" and "Compare Tools" (originally in Find-by-Solutions)
+   live as direct items in the main nav beside Categories — see PRIMARY_*
+   below. "Industry News" merged into "News". FAQs / Glossary stay
+   reachable from the footer and direct URL but are too long-tail
+   for the header chrome. */
+const UTILITY_LINKS: { label: string; href: string }[] = [
+  { label: 'Blog',     href: '/blog'     },
+  { label: 'Insights', href: '/insights' },
+  { label: 'News',     href: '/news'     },
+  { label: 'Help',     href: '/help'     },
+  { label: 'About',    href: '/about'    },
 ]
 
-const RESOURCES: { label: string; href: string }[] = [
-  { label: 'Insights',  href: '/insights'  },
-  { label: 'Blog',      href: '/blog'      },
-  { label: 'News',      href: '/news'      },
-  { label: 'FAQs',      href: '/faqs'      },
-  { label: 'Glossary',  href: '/glossary'  },
-  { label: 'Help',      href: '/help'      },
-  { label: 'About',     href: '/about'     },
+/* Primary nav direct links — sit beside Categories in the main row.
+   Sub-text feeds the `title` attribute (tooltip + a11y description). */
+const PRIMARY_LINKS: { label: string; href: string; sub: string }[] = [
+  { label: 'Write a Review', href: '/write-review', sub: 'Share your experience with a company' },
+  { label: 'Compare Tools',  href: '/compare',      sub: 'Side-by-side product comparisons'      },
 ]
 
 /* ── L2 children of a sector, drawn synchronously from the static taxonomy.
@@ -105,24 +120,6 @@ const IconHamburger = () => (
     <line x1="3" y1="18" x2="21" y2="18" />
   </svg>
 )
-
-/* Solution-tile icons — kept tiny and inline so this file stays single. */
-function SolnIcon({ k }: { k: SolnIconKey }) {
-  const props = { viewBox: '0 0 24 24', width: 18, height: 18, fill: 'none',
-                  stroke: 'currentColor', strokeWidth: 1.8,
-                  strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const,
-                  'aria-hidden': true }
-  switch (k) {
-    case 'saas':   return <svg {...props}><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>
-    case 'ai':     return <svg {...props}><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M2 12h3M19 12h3M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12"/></svg>
-    case 'agency': return <svg {...props}><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg>
-    case 'local':  return <svg {...props}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-    case 'compare':return <svg {...props}><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-    case 'news':   return <svg {...props}><path d="M4 22h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3v3l-2-2-2 2V4H4a2 2 0 0 0-2 2v14a2 2 0 0 1-2 2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
-    case 'review': return <svg {...props}><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-    case 'startup':return <svg {...props}><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09zM12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>
-  }
-}
 
 /* ── Category icon set — semantic icons mapped from L2 category names.
    Keyword-driven so taxonomy can grow without re-mapping every entry.
@@ -262,7 +259,7 @@ function iconForCategory(name: string, sectorSlug: string): CatIconKey {
   }
 }
 
-type ActiveDD = 'services' | 'solutions' | 'resources' | null
+type ActiveDD = 'services' | null
 
 export default function Navbar(
   // Accept (and ignore) prior props for back-compat.
@@ -274,7 +271,7 @@ export default function Navbar(
   const [activeSector, setActiveSector] = useState<string>(SECTORS[0].slug)
   const [searchOpen, setSearchOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [mobOpen, setMobOpen] = useState<'services' | 'solutions' | 'resources' | null>(null)
+  const [mobOpen, setMobOpen] = useState<'services' | null>(null)
   const [mobAuthOpen, setMobAuthOpen] = useState(false)
 
   const lastY = useRef(0)
@@ -341,10 +338,44 @@ export default function Navbar(
   ].filter(Boolean).join(' ')
 
   const activeL2s = l2sOfSector(activeSector, 10)
+  /* Resolve the active sector's palette so the Categories mega can
+     paint its right panel + active row in that sector's brand colors.
+     Falls back to the first sector if the slug is somehow stale. */
+  const activePalette = (SECTORS.find(s => s.slug === activeSector) || SECTORS[0]).palette
+  const megaPaletteStyle = {
+    ['--sector-c1' as string]: activePalette.c1,
+    ['--sector-c2' as string]: activePalette.c2,
+    ['--sector-c3' as string]: activePalette.c3,
+    ['--sector-c4' as string]: activePalette.c4,
+  } as React.CSSProperties
 
   return (
     <>
       <header className={headerCls} ref={headerRef}>
+        {/* ═══ Brand utility strip — desktop-only.
+              Left:  tagline + hashtag verbs ("Discover/Compare/Review Companies")
+              Right: utility links (Blog · Insights · News · Help · About)
+              Hidden under 980px (items resurface inside the mobile sheet). */}
+        <div className="iw-util" aria-label="Secondary navigation">
+          <div className="iw-util-inner">
+            <span className="iw-util-tag">
+              Best Global Growth Platform
+              <span className="iw-util-tag-sep" aria-hidden="true">·</span>
+              <span className="iw-util-hash">#Discover</span>
+              <span className="iw-util-hash">#Compare</span>
+              <span className="iw-util-hash">#Review</span>
+              <span className="iw-util-tag-obj">Companies</span>
+            </span>
+            <div className="iw-util-links">
+              {UTILITY_LINKS.map(l => (
+                <Link key={l.href} href={l.href} className="iw-util-link">
+                  {l.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+
         <div className="iw-head-inner">
           {/* ── Mobile burger / X toggle — sits before the logo on
                  mobile (per the GoodFirms reference). Hidden via CSS on
@@ -365,7 +396,10 @@ export default function Navbar(
             <img src={`${BASE}/logo/infowebworldlogo-logoforlightbackgrounds.png`} alt="InfoWebWorld" />
           </Link>
 
-          {/* ── Center nav (hidden while search is expanded) ── */}
+          {/* ── Center nav (hidden while search is expanded).
+                  Categories opens a mega; Write a Review and Compare Tools
+                  are direct links. Resources/Solutions moved to the utility
+                  strip above. */}
           {!searchOpen && (
             <nav className="iw-nav" aria-label="Primary">
               <div className="iw-nav-item">
@@ -373,25 +407,21 @@ export default function Navbar(
                   className={'iw-nav-link' + (activeDD === 'services' ? ' iw-nav-link--active' : '')}
                   onClick={() => toggleDD('services')}
                   aria-expanded={activeDD === 'services'}>
-                  Find by Services <ChevDown />
+                  Categories <ChevDown />
                 </button>
               </div>
-              <div className="iw-nav-item">
-                <button type="button"
-                  className={'iw-nav-link' + (activeDD === 'solutions' ? ' iw-nav-link--active' : '')}
-                  onClick={() => toggleDD('solutions')}
-                  aria-expanded={activeDD === 'solutions'}>
-                  Find by Solutions <ChevDown />
-                </button>
-              </div>
-              <div className="iw-nav-item">
-                <button type="button"
-                  className={'iw-nav-link' + (activeDD === 'resources' ? ' iw-nav-link--active' : '')}
-                  onClick={() => toggleDD('resources')}
-                  aria-expanded={activeDD === 'resources'}>
-                  Resources <ChevDown />
-                </button>
-              </div>
+              {PRIMARY_LINKS.map(l => (
+                <div key={l.href} className="iw-nav-item">
+                  <Link
+                    href={l.href}
+                    className="iw-nav-link"
+                    title={l.sub}
+                    onClick={closeDD}
+                  >
+                    {l.label}
+                  </Link>
+                </div>
+              ))}
             </nav>
           )}
 
@@ -409,14 +439,12 @@ export default function Navbar(
           )}
 
           {/* ── Right cluster ──
-              Desktop order: Write a Review · UserMenu · Get Listed · Search
-              Mobile order (via CSS `order`): Get Listed · Search
-              Write a Review + UserMenu are hidden on mobile and surface
-              inside the sheet's bottom dock instead. */}
+              Desktop order: Search · UserMenu · Get Listed
+              Mobile order:  Search · Get Listed
+                (UserMenu hidden on mobile, surfaces in the sheet's bottom dock.)
+              DOM order = visual order — no flex `order` overrides.
+              Write a Review moved into the main nav beside Categories. */}
           <div className="iw-right">
-            <Link href="/write-review" className="iw-link-text">Write a Review</Link>
-            <UserMenu />
-            <Link href="/business" className="iw-cta">Get Listed</Link>
             {!hideSearch && !searchOpen && (
               <button
                 type="button"
@@ -427,16 +455,27 @@ export default function Navbar(
                 <IconSearch />
               </button>
             )}
+            <UserMenu />
+            <Link href="/business" className="iw-cta">Get Listed</Link>
           </div>
         </div>
 
-        {/* ═══ Full-width mega-menu surface (Services & Solutions) ═══ */}
-        <div
-          className={'iw-mega' + ((activeDD === 'services' || activeDD === 'solutions') ? ' iw-mega--open' : '')}
-        >
+        {/* ═══ Categories mega-menu — the only mega surface. ═══ */}
+        <div className={'iw-mega' + (activeDD === 'services' ? ' iw-mega--open' : '')}>
           {activeDD === 'services' && (
-            <div className="iw-mega-inner iw-mega-inner--svc">
+            <div className="iw-mega-inner iw-mega-inner--svc" style={megaPaletteStyle}>
               <div className="iw-svc-left">
+                {/* "All Categories" sits above the sector list as the global
+                    escape hatch. Doesn't update activeSector — hovering it
+                    leaves the right panel showing the last-active sector. */}
+                <Link
+                  href="/categories"
+                  className="iw-svc-row iw-svc-row--all"
+                  onClick={closeDD}
+                >
+                  <span>All Categories</span>
+                  <ChevRight />
+                </Link>
                 {SECTORS.map(s => (
                   <Link
                     key={s.slug}
@@ -444,6 +483,11 @@ export default function Navbar(
                     className={'iw-svc-row' + (activeSector === s.slug ? ' iw-svc-row--on' : '')}
                     onMouseEnter={() => setActiveSector(s.slug)}
                     onClick={closeDD}
+                    style={{
+                      ['--row-c1' as string]: s.palette.c1,
+                      ['--row-c2' as string]: s.palette.c2,
+                      ['--row-c4' as string]: s.palette.c4,
+                    } as React.CSSProperties}
                   >
                     <span>{s.label}</span>
                     <ChevRight />
@@ -476,43 +520,6 @@ export default function Navbar(
               </div>
             </div>
           )}
-
-          {activeDD === 'solutions' && (
-            <div className="iw-mega-inner iw-mega-inner--soln">
-              <div className="iw-soln-grid">
-                {SOLUTIONS.map(s => (
-                  <Link
-                    key={s.label}
-                    href={s.comingSoon ? '#' : s.href}
-                    className={'iw-soln' + (s.comingSoon ? ' iw-soln--soon' : '')}
-                    onClick={(e) => { if (s.comingSoon) e.preventDefault(); closeDD() }}
-                  >
-                    <span className="iw-soln-ico"><SolnIcon k={s.iconKey} /></span>
-                    <span className="iw-soln-text">
-                      <span className="iw-soln-name">
-                        {s.label}
-                        {s.comingSoon && <span className="iw-soln-badge">Coming soon</span>}
-                      </span>
-                      <span className="iw-soln-sub">{s.sub}</span>
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ═══ Narrow Resources dropdown, anchored under the Resources link ═══ */}
-        <div
-          className={'iw-rsrc' + (activeDD === 'resources' ? ' iw-rsrc--open' : '')}
-        >
-          <ul className="iw-rsrc-list">
-            {RESOURCES.map(r => (
-              <li key={r.href}>
-                <Link href={r.href} className="iw-rsrc-item" onClick={closeDD}>{r.label}</Link>
-              </li>
-            ))}
-          </ul>
         </div>
       </header>
 
@@ -520,13 +527,10 @@ export default function Navbar(
       <div className="iw-head-spacer" />
 
       {/* ═══════ Mobile sheet — drops below the header. ═══════
-          Layout (per the GoodFirms reference):
+          Layout:
             - No own top bar (the main header stays put; burger toggles to X).
-            - 3 flat accordions separated by hairlines: Services, Solutions, Resources.
-            - Sub-content:
-                · Services  = 6 L1 sector nav-links
-                · Solutions = 3 tile cards (icon + name + sub-text)
-                · Resources = plain text nav-links
+            - One Categories accordion + a flat "More" list of utility links
+              (the same items shown in the desktop dark strip).
             - Bottom dock: "Write a Review" link + "Sign in" outlined button
               (or "Open dashboard" + "Sign out" when authed). */}
       <div className={'iw-mob' + (menuOpen ? ' iw-mob--open' : '')} aria-hidden={!menuOpen}>
@@ -539,11 +543,16 @@ export default function Navbar(
               onClick={() => setMobOpen(o => o === 'services' ? null : 'services')}
               aria-expanded={mobOpen === 'services'}
             >
-              <span>Find by Services</span>
+              <span>Categories</span>
               <ChevDown />
             </button>
             <div className={'iw-mob-sub-wrap' + (mobOpen === 'services' ? ' iw-mob-sub-wrap--on' : '')}>
               <ul className="iw-mob-sub">
+                <li className="iw-mob-sub-all">
+                  <Link href="/categories" onClick={() => setMenuOpen(false)}>
+                    All Categories
+                  </Link>
+                </li>
                 {SECTORS.map(s => (
                   <li key={s.slug}>
                     <Link href={`/${s.slug}`} onClick={() => setMenuOpen(false)}>
@@ -555,70 +564,37 @@ export default function Navbar(
             </div>
           </div>
 
-          {/* ── Solutions accordion (tile cards) ── */}
-          <div className="iw-mob-row">
-            <button
-              type="button"
-              className={'iw-mob-acc' + (mobOpen === 'solutions' ? ' iw-mob-acc--on' : '')}
-              onClick={() => setMobOpen(o => o === 'solutions' ? null : 'solutions')}
-              aria-expanded={mobOpen === 'solutions'}
-            >
-              <span>Find by Solutions</span>
-              <ChevDown />
-            </button>
-            <div className={'iw-mob-sub-wrap' + (mobOpen === 'solutions' ? ' iw-mob-sub-wrap--on' : '')}>
-              <div className="iw-mob-tiles">
-                {SOLUTIONS.map(s => (
-                  <Link
-                    key={s.label}
-                    href={s.comingSoon ? '#' : s.href}
-                    className={'iw-mob-tile' + (s.comingSoon ? ' iw-mob-tile--soon' : '')}
-                    onClick={(e) => { if (s.comingSoon) e.preventDefault(); else setMenuOpen(false) }}
-                  >
-                    <span className="iw-mob-tile-ico"><SolnIcon k={s.iconKey} /></span>
-                    <span className="iw-mob-tile-text">
-                      <span className="iw-mob-tile-name">
-                        {s.label}
-                        {s.comingSoon && <span className="iw-soln-badge">Coming soon</span>}
-                      </span>
-                      <span className="iw-mob-tile-sub">{s.sub}</span>
-                    </span>
-                  </Link>
-                ))}
-              </div>
+          {/* ── Primary direct-link rows — mirror the desktop main nav.
+                Same heavy weight as the Categories accordion button so
+                they read as siblings, not utility links. */}
+          {PRIMARY_LINKS.map(l => (
+            <div key={l.href} className="iw-mob-row">
+              <Link
+                href={l.href}
+                className="iw-mob-link"
+                onClick={() => setMenuOpen(false)}
+              >
+                <span>{l.label}</span>
+              </Link>
             </div>
-          </div>
+          ))}
 
-          {/* ── Resources accordion ── */}
-          <div className="iw-mob-row">
-            <button
-              type="button"
-              className={'iw-mob-acc' + (mobOpen === 'resources' ? ' iw-mob-acc--on' : '')}
-              onClick={() => setMobOpen(o => o === 'resources' ? null : 'resources')}
-              aria-expanded={mobOpen === 'resources'}
-            >
-              <span>Resources</span>
-              <ChevDown />
-            </button>
-            <div className={'iw-mob-sub-wrap' + (mobOpen === 'resources' ? ' iw-mob-sub-wrap--on' : '')}>
-              <ul className="iw-mob-sub">
-                {RESOURCES.map(r => (
-                  <li key={r.href}>
-                    <Link href={r.href} onClick={() => setMenuOpen(false)}>
-                      {r.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+          {/* ── Flat "More" list — utility links from the desktop strip.
+                Plain rows, no accordion (these are direct destinations). */}
+          <ul className="iw-mob-util">
+            {UTILITY_LINKS.map(l => (
+              <li key={l.href}>
+                <Link href={l.href} onClick={() => setMenuOpen(false)}>
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </nav>
 
-        {/* ── Bottom dock ── */}
+        {/* ── Bottom dock — auth actions only. Write a Review moved up
+              into the primary nav rows. ── */}
         <div className="iw-mob-foot">
-          <Link href="/write-review" className="iw-mob-foot-link" onClick={() => setMenuOpen(false)}>
-            Write a Review
-          </Link>
           {user ? (
             <>
               <Link

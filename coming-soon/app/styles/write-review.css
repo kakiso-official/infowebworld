@@ -383,6 +383,28 @@
   display: inline-flex; align-items: center; justify-content: center;
   margin-bottom: 14px;
 }
+/* Error-state action column — stacked, full-width buttons with the
+   manual-fallback primary at the top so a stuck user can escape the
+   voice flow in one tap. */
+.wr-rec-actions--error {
+  display: flex; flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 320px;
+  margin-top: 12px;
+}
+.wr-rec-back-link {
+  background: transparent; border: 0;
+  color: #6B7280;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 8px 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.wr-rec-back-link:hover { color: #0A1B33; }
 
 /* ── Editor (shared voice-confirm + manual) ── */
 .wr-edit {
@@ -535,6 +557,30 @@
   border-color: #D6D9DD;
 }
 .wr-btn--ghost:hover:not(:disabled) { border-color: #003B2A; color: #003B2A; }
+/* Block modifier — used inside the error column so the manual-fallback
+   and retry buttons span the available width on mobile. */
+.wr-btn--block { width: 100%; padding: 13px 20px; }
+
+/* ── Mobile-first polish ────────────────────────────────────────
+   /write-review will be opened from a phone more often than a laptop,
+   so the rules below tighten the small-screen experience without a
+   full rewrite of the desktop-first base. */
+
+/* iOS Safari zooms the page on input focus when the input's computed
+   font-size is < 16px. Force the form fields to 16px universally so
+   focusing a field never re-flows the layout. The fields look fine
+   at 16px on desktop too. */
+.wr-cp-input,
+.wr-edit-input,
+.wr-edit-textarea { font-size: 16px; }
+
+/* Star buttons get a 44×44 tap area — Apple/Google a11y minimum for
+   touch. The 36×36 star SVG sits centred inside the padded button. */
+.wr-edit-star {
+  padding: 4px;
+  border-radius: 8px;
+}
+.wr-edit-star:active:not(:disabled) { transform: scale(.94); }
 
 @media (max-width: 520px) {
   .wr-rec-stage { width: 140px; height: 140px; }
@@ -542,4 +588,48 @@
   .wr-edit { padding: 18px; }
   .wr-cp   { padding: 18px; }
   .wr-company { padding: 12px 14px; }
+}
+
+@media (max-width: 480px) {
+  /* Tighter page chrome on phones. */
+  .wr-page { padding: 1.25rem .75rem; }
+
+  /* Stack the selected-company strip vertically so long company names
+     don't fight the "Change company" button for horizontal space. */
+  .wr-company {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .wr-company-id { width: 100%; }
+  .wr-company-name { max-width: 100%; }
+  .wr-company-change { align-self: flex-end; padding: 6px 4px; }
+
+  /* Method tiles a touch shorter on phones — still tap-friendly. */
+  .wr-method { padding: 18px 16px 16px; gap: 8px; }
+  .wr-method-desc { font-size: 13.5px; }
+
+  /* Bigger writing space on phones — long reviews are scrollable
+     anyway but the initial textarea height reduces "tiny window"
+     feel that makes phone typing painful. */
+  .wr-edit-textarea { min-height: 200px; }
+
+  /* Equal-width foot buttons with a generous 48px min-height —
+     thumbs can hit either action without aiming. */
+  .wr-edit-foot { gap: 10px; }
+  .wr-edit-foot .wr-btn {
+    flex: 1;
+    padding: 14px 16px;
+    min-height: 48px;
+    font-size: 14.5px;
+  }
+
+  /* The privacy pill below the recorder wraps awkwardly when the
+     copy is long — keep it readable at narrow widths. */
+  .wr-rec-privacy {
+    font-size: 11.5px;
+    line-height: 1.5;
+    padding: 10px 14px;
+    border-radius: 12px;
+  }
 }

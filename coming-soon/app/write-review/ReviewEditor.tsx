@@ -110,6 +110,8 @@ export default function ReviewEditor({
           maxLength={TITLE_MAX}
           placeholder="One-line summary"
           disabled={submitting}
+          autoCapitalize="sentences"
+          enterKeyHint="next"
         />
         <span className="wr-edit-counter">{title.length}/{TITLE_MAX}</span>
       </div>
@@ -125,6 +127,7 @@ export default function ReviewEditor({
           rows={8}
           placeholder="What was the experience like? Pros, cons, would you recommend?"
           disabled={submitting}
+          autoCapitalize="sentences"
         />
         <span className="wr-edit-counter">{body.length}/{BODY_MAX}</span>
       </div>
