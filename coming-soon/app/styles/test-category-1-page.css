@@ -1,0 +1,871 @@
+/* ══════════════════════════════════════════════════════════════
+   /test-category-1-page — AI & ML L1 sector landing.
+
+   All rules scope under .tcat1 so the base .tlp-* component styles
+   in test-landing-page.css remain untouched on the parent demo.
+
+   Palette ("Lavender Neural", from the AI/ML brand sheet):
+     #E8E4F8  c1 — lightest tint, hover bg, surface wash
+     #CBBFF2  c2 — soft fill, dropdown borders
+     #A899E8  c3 — mid accent, secondary orb
+     #7C6DD4  c4 — primary accent, focus + CTA bg
+     #5B4DBE  derived darker — hover state for the CTA (not in
+              the four-swatch sheet but a stricter darker shade
+              of c4; used only where palette darkens are required).
+
+   Box style — "a bit less rounded" pass:
+     .tlp-hsr        16  → 10
+     .tlp-hsr-go     12  →  8
+     .tlp-hsr-clear   8  →  4
+     .tlp-hsr-pop    14  →  8
+     .tlp-hsr-row     8  →  4
+     .tlp-hsr-row-logo 8 →  4
+   Logic: roughly halved, never square. Still has corners but
+   reads architectural instead of pillowy.
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Background wash + decorative orbs ──────────────────────── */
+.tcat1 .tlp-hero {
+  background: linear-gradient(180deg,
+    #E8E4F8 0%,
+    #EFECFA 38%,
+    #FAF8FE 75%,
+    #FFFFFF 100%);
+  border-bottom: 1px solid rgba(124, 109, 212, .12);
+}
+
+/* Top-left orb — primary lavender */
+.tcat1 .tlp-hero-bg::before {
+  background: radial-gradient(circle,
+    rgba(124, 109, 212, .22) 0%,
+    rgba(124, 109, 212, .06) 45%,
+    transparent 70%);
+}
+/* Bottom-right orb — secondary mid-tone */
+.tcat1 .tlp-hero-bg::after {
+  background: radial-gradient(circle,
+    rgba(168, 153, 232, .18) 0%,
+    rgba(168, 153, 232, .05) 45%,
+    transparent 70%);
+}
+/* Central top glow — primary lavender */
+.tcat1 .tlp-hero-glow {
+  background:
+    radial-gradient(ellipse at center,
+      rgba(124, 109, 212, .18) 0%,
+      rgba(124, 109, 212, .05) 35%,
+      transparent 70%);
+}
+
+/* ── Eyebrow (if/when used) ─────────────────────────────────── */
+.tcat1 .tlp-hero-eyebrow {
+  background: rgba(124, 109, 212, .10);
+  border: 1px solid rgba(124, 109, 212, .22);
+  color: #5B4DBE;
+  border-radius: 6px;       /* less pill, more chip — matches the boxy pass */
+}
+
+/* ── Search bar shell ───────────────────────────────────────── */
+.tcat1 .tlp-hsr {
+  border-radius: 10px;
+}
+.tcat1 .tlp-hsr--on {
+  border-color: #7C6DD4;
+  box-shadow:
+    0 16px 40px -16px rgba(124, 109, 212, .30),
+    0 0 0 5px rgba(124, 109, 212, .10);
+}
+.tcat1 .tlp-hsr--on .tlp-hsr-ico { color: #7C6DD4; }
+
+/* Spinner — lavender accents */
+.tcat1 .tlp-hsr-spin {
+  border-color: rgba(124, 109, 212, .20);
+  border-top-color: #7C6DD4;
+}
+
+/* Clear (×) button */
+.tcat1 .tlp-hsr-clear {
+  border-radius: 4px;
+}
+.tcat1 .tlp-hsr-clear:hover {
+  background: #E8E4F8;
+  color: #5B4DBE;
+}
+
+/* Submit button — primary lavender */
+.tcat1 .tlp-hsr-go {
+  border-radius: 8px;
+  background: #7C6DD4;
+}
+.tcat1 .tlp-hsr-go:hover {
+  background: #5B4DBE;       /* derived darker for hover */
+}
+
+/* ── Results dropdown ───────────────────────────────────────── */
+.tcat1 .tlp-hsr-pop {
+  border-radius: 8px;
+  border-color: #CBBFF2;
+}
+.tcat1 .tlp-hsr-row {
+  border-radius: 4px;
+}
+.tcat1 .tlp-hsr-row:hover {
+  background: #E8E4F8;
+}
+.tcat1 .tlp-hsr-row-logo {
+  border-radius: 4px;
+}
+
+/* Inline highlight under the search query — lavender wash */
+.tcat1 .tlp-hl {
+  background: #CBBFF2;
+  color: #5B4DBE;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Most Popular AI Categories section (.tcat-pop-*)
+   Layout: 320px left rail (heading + L2 list) + 1fr right (cards
+   grid + see-all link). Single class namespace, scoped only to
+   this page via the parent .tcat1 (mounted on <main>).
+   ══════════════════════════════════════════════════════════════ */
+.tcat1 .tcat-pop {
+  padding: clamp(28px, 4vw, 52px) clamp(16px, 3vw, 28px);
+  background: #FFFFFF;
+}
+.tcat1 .tcat-pop-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 36px);
+  /* Default grid `align-items: stretch` so the right column matches
+     the left rail height — empty-state mascot then centres in that
+     full height via flex:1 + justify-content:center inside. */
+}
+@media (max-width: 880px) {
+  .tcat1 .tcat-pop-inner {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+/* ── Left rail ─────────────────────────────────────────────── */
+.tcat1 .tcat-pop-left {
+  display: flex; flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+.tcat1 .tcat-pop-title {
+  margin: 0;
+  font-size: clamp(1.35rem, 2.1vw, 1.75rem);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.15;
+  color: #0A1B33;
+}
+.tcat1 .tcat-pop-cats {
+  list-style: none;
+  margin: 0; padding: 0;
+  display: flex; flex-direction: column;
+  gap: 2px;
+}
+/* Click-only tabs — no hover swap, no hover visual. The active row
+   shifts text colour + reveals a thicker lavender border, no fill.
+   Border-width sits at 2px on every row (transparent when inactive)
+   so the active state can't reflow the layout. */
+.tcat1 .tcat-pop-cat {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  text-align: left;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  color: #1A1A1A;
+  cursor: pointer;
+  transition: border-color .15s ease, color .15s ease;
+}
+.tcat1 .tcat-pop-cat:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(124, 109, 212, .35);
+}
+.tcat1 .tcat-pop-cat--on {
+  border-color: #7C6DD4;
+  color: #5B4DBE;
+}
+
+/* ── Right area — see-all + grid ──────────────────────────── */
+.tcat1 .tcat-pop-right {
+  display: flex; flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.tcat1 .tcat-pop-head {
+  display: flex; justify-content: flex-end;
+  padding: 0 2px;
+}
+.tcat1 .tcat-pop-seeall {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  color: #7C6DD4;
+  text-decoration: none;
+  transition: color .12s ease, transform .12s ease;
+}
+.tcat1 .tcat-pop-seeall:hover { color: #5B4DBE; }
+
+/* 3-column product grid — drops to 2 then 1 on narrow widths. */
+.tcat1 .tcat-pop-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+@media (max-width: 1100px) {
+  .tcat1 .tcat-pop-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 520px) {
+  .tcat1 .tcat-pop-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Product card ─────────────────────────────────────────── */
+.tcat1 .tcat-pop-card {
+  display: flex; flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;          /* boxy theme — was the rounded 8/10 */
+  min-height: 150px;
+  transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+.tcat1 .tcat-pop-card:hover {
+  border-color: #7C6DD4;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px -10px rgba(124, 109, 212, .26);
+}
+.tcat1 .tcat-pop-card-meta {
+  display: flex; flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.tcat1 .tcat-pop-card-name {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  color: #0A1B33;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.tcat1 .tcat-pop-card-rate {
+  display: inline-flex; align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: #6B7280;
+  font-variant-numeric: tabular-nums;
+}
+.tcat1 .tcat-pop-card-count { font-weight: 600; }
+
+/* ── Stars (filled / half / empty) — using FA glyphs ────────
+   The FA icon already draws clean half-stroke geometry; we just
+   colour-route via .--on / .--off. No clip-path tricks. */
+.tcat1 .tcat-pop-stars {
+  display: inline-flex; align-items: center;
+  gap: 2px;
+  line-height: 0;
+}
+.tcat1 .tcat-pop-star {
+  width: 14px;
+  height: 14px;
+}
+.tcat1 .tcat-pop-star--off { color: #DAD5E8; }   /* faded lavender = "empty" */
+.tcat1 .tcat-pop-star--on  { color: #7C6DD4; }
+
+/* ── Card link reset — the card is wrapped in <Link>, so kill
+      default underline + text colour inheritance. */
+.tcat1 a.tcat-pop-card { text-decoration: none; color: inherit; }
+
+/* ── Logo (real image first, monogram fallback) ──────────── */
+.tcat1 .tcat-pop-card-logo {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center;
+  min-height: 56px;
+}
+.tcat1 .tcat-pop-card-logo-img {
+  max-width: 88%;
+  max-height: 58px;
+  width: auto; height: auto;
+  object-fit: contain;
+  display: block;
+}
+.tcat1 .tcat-pop-card-mark {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 54px; height: 54px;
+  border-radius: 7px;          /* matches the boxy card radius */
+  background: #E8E4F8;
+  color: #5B4DBE;
+  font-size: 16.5px;
+  font-weight: 800;
+  letter-spacing: -.5px;
+}
+.tcat1 .tcat-pop-card:hover .tcat-pop-card-mark {
+  background: #CBBFF2;
+}
+
+/* See-all arrow shifts on hover for a subtle nudge cue. */
+.tcat1 .tcat-pop-seeall-ico {
+  width: 11px; height: 11px;
+  transition: transform .15s ease;
+}
+.tcat1 .tcat-pop-seeall:hover .tcat-pop-seeall-ico { transform: translateX(3px); }
+
+/* ── Empty-state (no listings in active L2) ──────────────────
+   Shown in place of the cards grid when the selected category
+   has zero active/paid listings. B.O.B builder-bot mascot
+   centred above a lavender "Be the first to list…" CTA pill. */
+.tcat1 .tcat-pop-empty {
+  flex: 1;                     /* fill the right column's full height */
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 16px;
+  padding: 16px 12px 24px;
+  min-height: 320px;
+  text-align: center;
+}
+.tcat1 .tcat-pop-empty-bot {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 220px;
+  max-height: clamp(160px, 28vh, 240px);
+  user-select: none;
+  pointer-events: none;
+  filter: drop-shadow(0 12px 22px rgba(124, 109, 212, .18));
+}
+/* Quiet line below the mascot — single muted sentence with the
+   category name in dark bold. No card, no CTA pill. */
+.tcat1 .tcat-pop-empty-line {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #6B7280;
+  letter-spacing: -.005em;
+}
+.tcat1 .tcat-pop-empty-line strong {
+  color: #1A1A1A;
+  font-weight: 800;
+}
+/* Solid lavender pill — same boxy radius (8px) as the hero submit
+   button. White text on #7C6DD4, hover deepens to #5B4DBE. */
+.tcat1 .tcat-pop-empty-link {
+  display: inline-flex; align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: #7C6DD4;
+  color: #FFFFFF;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  margin-top: 2px;
+  transition: background .15s ease, transform .15s ease;
+}
+.tcat1 .tcat-pop-empty-link:hover {
+  background: #5B4DBE;
+  transform: translateY(-1px);
+}
+.tcat1 .tcat-pop-empty-link:active { transform: translateY(0); }
+.tcat1 .tcat-pop-empty-link-ico {
+  width: 11px; height: 11px;
+  transition: transform .15s ease;
+}
+.tcat1 .tcat-pop-empty-link:hover .tcat-pop-empty-link-ico {
+  transform: translateX(3px);
+}
+
+@media (max-width: 640px) {
+  .tcat1 .tcat-pop-empty { min-height: 280px; padding: 16px 12px 24px; gap: 12px; }
+  .tcat1 .tcat-pop-empty-bot { max-height: clamp(140px, 24vh, 200px); }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   "Find verified AI tools across every category" — overrides for
+   the .tlp-cats-* / .tlp-cat-card-* layout defined in
+   test-landing-page.css. Only colour + radius shift here; layout,
+   typography sizing, padding rules stay inherited so the section
+   matches /test-landing-page 1:1.
+   ══════════════════════════════════════════════════════════════ */
+.tcat1 .tlp-cat-card {
+  border-radius: 8px;                /* boxy theme — was 12px */
+}
+.tcat1 .tlp-cat-card:hover {
+  border-color: rgba(124, 109, 212, .40);
+  box-shadow: 0 14px 32px -16px rgba(124, 109, 212, .22);
+}
+.tcat1 .tlp-cat-card-ico { color: #7C6DD4; }
+.tcat1 .tlp-cat-card-name:hover { color: #5B4DBE; }
+
+/* "Services" / "Locations" pills — lavender-tinted chip instead
+   of grey, matches the rest of the AI/ML palette. */
+.tcat1 .tlp-cat-card-pill {
+  background: #E8E4F8;
+  color: #5B4DBE;
+  border-radius: 5px;
+}
+
+/* Linked services chips */
+.tcat1 .tlp-cat-card-tag { color: #5B4DBE; }
+.tcat1 .tlp-cat-card-tag:hover { color: #7C6DD4; }
+.tcat1 .tlp-cat-card-tag--static { color: #5B4DBE; }
+
+/* Separator bar between tags */
+.tcat1 .tlp-cat-card-bar { color: #CBBFF2; }
+
+/* Bottom CTA — matches the hero submit + empty-state pill (boxy
+   8px radius, solid lavender, darker on hover). */
+.tcat1 .tlp-cats-cta-btn {
+  background: #7C6DD4;
+  border-radius: 8px;
+}
+.tcat1 .tlp-cats-cta-btn:hover { background: #5B4DBE; }
+
+/* ══════════════════════════════════════════════════════════════
+   "Find the top-rated companies in every category" — dark
+   lavender-themed override of .tlp-firms-* layout. Background is
+   a 2-stop linear gradient with a soft lavender radial glow on
+   top; cards stay white and pop against the deep purple. Tabs,
+   CTA, and "Be the first to review" link shift to the AI/ML
+   lavender palette.
+   ══════════════════════════════════════════════════════════════ */
+.tcat1 .tlp-firms {
+  /* Deep purple → near-black at the bottom. Reads brand-on but
+     dark enough to make the white cards float convincingly. */
+  background:
+    linear-gradient(180deg,
+      #2B2466 0%,
+      #1E1A4E 40%,
+      #14112F 100%);
+}
+/* Top-centre lavender glow — replaces the mint glow */
+.tcat1 .tlp-firms::before {
+  background: radial-gradient(ellipse,
+    rgba(168, 153, 232, .28) 0%,
+    rgba(124, 109, 212, .10) 35%,
+    transparent 70%);
+}
+
+/* Tabs — boxier radius, lavender accent on the active pill */
+.tcat1 .tlp-firms-tab { border-radius: 8px; }
+.tcat1 .tlp-firms-tab.is-on {
+  background: #FFFFFF;
+  color: #5B4DBE;
+  border-color: #FFFFFF;
+}
+
+/* Firm cards — slightly boxier than the source 14px */
+.tcat1 .tlp-firm { border-radius: 8px; }
+.tcat1 .tlp-firm-logo { border-radius: 6px; }
+
+/* Stars on the firm cards — repaint from gold to the AI/ML
+   lavender palette, matching PopularSection's stars. */
+.tcat1 .tlp-firm-star { color: #DAD5E8; }     /* empty */
+.tcat1 .tlp-firm-star.is-on { color: #7C6DD4; } /* filled */
+
+/* Right-aligned "X Reviews" → lavender (was blue #2563EB) */
+.tcat1 .tlp-firm-rev { color: #5B4DBE; }
+.tcat1 .tlp-firm-rev:hover { color: #7C6DD4; }
+/* "Be the first to review" CTA → lavender derived darker */
+.tcat1 .tlp-firm-rev--new { color: #5B4DBE; }
+.tcat1 .tlp-firm-rev--new:hover { color: #7C6DD4; }
+
+/* Empty-state card on the dark bg — match boxy radius */
+.tcat1 .tlp-firms-empty { border-radius: 8px; }
+.tcat1 .tlp-firms-empty-cta {
+  border-radius: 6px;
+  color: #5B4DBE;
+}
+.tcat1 .tlp-firms-empty-cta:hover { background: #E8E4F8; }
+
+/* Bottom CTA — lavender pill, white text. Matches hero submit
+   style for visual continuity. */
+.tcat1 .tlp-firms-cta-btn {
+  background: #7C6DD4;
+  color: #FFFFFF;
+  border-radius: 8px;
+}
+.tcat1 .tlp-firms-cta-btn:hover { background: #5B4DBE; }
+
+/* ══════════════════════════════════════════════════════════════
+   "What verified buyers are saying" — lavender wash + boxy cards
+   override of .tlp-revs-* / .tlp-rev-* layout. Adds a faint
+   lavender wash background and a short accent bar under the
+   title so the section visually pops on the page.
+   ══════════════════════════════════════════════════════════════ */
+.tcat1 .tlp-revs {
+  background: linear-gradient(180deg, #FBFAFF 0%, #FFFFFF 60%);
+}
+
+/* Title gets a centred lavender accent bar — adds emphasis without
+   inventing new copy or markup. */
+.tcat1 .tlp-revs-title {
+  position: relative;
+}
+.tcat1 .tlp-revs-title::after {
+  content: '';
+  display: block;
+  width: 56px;
+  height: 4px;
+  background: #7C6DD4;
+  border-radius: 2px;
+  margin: 14px auto 0;
+}
+
+/* Boxier card with lavender-tinted border + a faint resting shadow
+   so the cards already feel lifted before hover. */
+.tcat1 .tlp-rev {
+  border-radius: 8px;
+  border-color: #EDE9F8;
+  box-shadow: 0 1px 2px rgba(124, 109, 212, .06);
+}
+.tcat1 .tlp-rev:hover {
+  border-color: rgba(124, 109, 212, .40);
+  box-shadow: 0 14px 32px -16px rgba(124, 109, 212, .26);
+}
+
+/* Logo + name hover → lavender accent */
+.tcat1 .tlp-rev-logo { border-radius: 6px; }
+.tcat1 .tlp-rev-cname:hover { color: #5B4DBE; }
+
+/* Stars — same lavender pair as the rest of the page */
+.tcat1 .tlp-rev-star { color: #DAD5E8; }
+.tcat1 .tlp-rev-star.is-on { color: #7C6DD4; }
+
+/* "Write a review" CTA — lavender pill, boxy radius */
+.tcat1 .tlp-revs-cta-btn {
+  background: #7C6DD4;
+  color: #FFFFFF;
+  border-radius: 8px;
+}
+.tcat1 .tlp-revs-cta-btn:hover { background: #5B4DBE; }
+
+/* ══════════════════════════════════════════════════════════════
+   "Just launched on InfoWebWorld" — 2-col grid of horizontal
+   cards listing the most recently approved AI/ML listings.
+   Boxy radii, lavender palette, slight lavender-tinted resting
+   shadow so the cards already feel "fresh" / lifted.
+   ══════════════════════════════════════════════════════════════ */
+.tcat1 .tcat-new {
+  background: #FFFFFF;
+  padding: clamp(48px, 7vw, 84px) clamp(18px, 4vw, 32px);
+}
+.tcat1 .tcat-new-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+/* Header — same centred title + lavender accent bar as the reviews
+   section, sub-copy below. */
+.tcat1 .tcat-new-head {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto clamp(28px, 4vw, 44px);
+}
+.tcat1 .tcat-new-title {
+  position: relative;
+  font-size: clamp(1.55rem, 2.6vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -.024em;
+  color: #0A1B33;
+  margin: 0 0 10px;
+  line-height: 1.15;
+}
+.tcat1 .tcat-new-title::after {
+  content: '';
+  display: block;
+  width: 56px;
+  height: 4px;
+  background: #7C6DD4;
+  border-radius: 2px;
+  margin: 14px auto 0;
+}
+.tcat1 .tcat-new-sub {
+  font-size: clamp(13.5px, 1.2vw, 15px);
+  color: #4B5563;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* 2-col grid of horizontal cards, drops to 1 col on phones. */
+.tcat1 .tcat-new-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 720px) {
+  .tcat1 .tcat-new-grid { grid-template-columns: 1fr; }
+}
+
+/* Card — horizontal flex (logo left, content right). Boxy 8px
+   radius + lavender-tinted resting shadow so the cards already
+   look "live" before hover. */
+.tcat1 .tcat-new-card {
+  display: flex;
+  gap: 14px;
+  padding: 14px 16px;
+  background: #FFFFFF;
+  border: 1px solid #EDE9F8;
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 1px 2px rgba(124, 109, 212, .06);
+  transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease;
+  min-width: 0;
+}
+.tcat1 .tcat-new-card:hover {
+  border-color: rgba(124, 109, 212, .42);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -12px rgba(124, 109, 212, .26);
+}
+
+/* Logo column */
+.tcat1 .tcat-new-card-logo {
+  width: 56px; height: 56px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: #FAFBFC;
+  border: 1px solid #EDE9F8;
+  display: inline-flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.tcat1 .tcat-new-card-logo img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  padding: 4px;
+}
+.tcat1 .tcat-new-card-mark {
+  font-size: 15px;
+  font-weight: 800;
+  color: #5B4DBE;
+  letter-spacing: -.5px;
+}
+
+/* Content column */
+.tcat1 .tcat-new-card-main {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column;
+  gap: 4px;
+}
+.tcat1 .tcat-new-card-top {
+  display: flex; align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.tcat1 .tcat-new-card-name {
+  margin: 0;
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: -.012em;
+  color: #0A1B33;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  flex: 1; min-width: 0;
+  line-height: 1.25;
+}
+.tcat1 .tcat-new-card-cat {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  background: #E8E4F8;
+  color: #5B4DBE;
+  border-radius: 4px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .005em;
+  white-space: nowrap;
+  max-width: 50%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tcat1 .tcat-new-card-tag {
+  margin: 0;
+  font-size: 13px;
+  color: #4B5563;
+  line-height: 1.5;
+  /* Single-line clamp so card heights stay uniform across the grid. */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Meta row — time + rating, small */
+.tcat1 .tcat-new-card-meta {
+  display: inline-flex; align-items: center;
+  gap: 12px;
+  margin-top: 2px;
+  font-size: 12px;
+  color: #6B7280;
+  font-variant-numeric: tabular-nums;
+}
+.tcat1 .tcat-new-card-time {
+  display: inline-flex; align-items: center; gap: 5px;
+  white-space: nowrap;
+}
+.tcat1 .tcat-new-card-time-ico {
+  width: 11px; height: 11px;
+  color: #7C6DD4;
+}
+.tcat1 .tcat-new-card-rate {
+  display: inline-flex; align-items: center; gap: 4px;
+  white-space: nowrap;
+}
+.tcat1 .tcat-new-card-star {
+  width: 12px; height: 12px;
+  color: #7C6DD4;
+}
+.tcat1 .tcat-new-card-rate-num {
+  font-weight: 700;
+  color: #0A1B33;
+}
+.tcat1 .tcat-new-card-rate-count { color: #9CA3AF; }
+
+/* Bottom CTA — same lavender pill style as the rest */
+.tcat1 .tcat-new-cta {
+  display: flex; justify-content: center;
+  margin-top: clamp(28px, 4vw, 40px);
+}
+.tcat1 .tcat-new-cta-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 22px;
+  background: #7C6DD4;
+  color: #FFFFFF;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  transition: background .12s ease, transform .15s ease;
+}
+.tcat1 .tcat-new-cta-btn:hover { background: #5B4DBE; transform: translateY(-1px); }
+.tcat1 .tcat-new-cta-btn:active { transform: translateY(0); }
+.tcat1 .tcat-new-cta-ico {
+  width: 11px; height: 11px;
+  transition: transform .15s ease;
+}
+.tcat1 .tcat-new-cta-btn:hover .tcat-new-cta-ico { transform: translateX(3px); }
+
+/* ══════════════════════════════════════════════════════════════
+   "Most popular AI tools" — dark pricing-card section
+   (.tlp-pop-*). Re-themes from mint-on-navy to lavender-on-deep-
+   purple, keeps the white cards but recolours their accents.
+   ══════════════════════════════════════════════════════════════ */
+.tcat1 .tlp-pop {
+  background:
+    linear-gradient(180deg,
+      #2B2466 0%,
+      #1E1A4E 40%,
+      #14112F 100%);
+}
+.tcat1 .tlp-pop::before {
+  background: radial-gradient(ellipse,
+    rgba(168, 153, 232, .28) 0%,
+    rgba(124, 109, 212, .10) 35%,
+    transparent 70%);
+}
+
+.tcat1 .tlp-pop-card {
+  border-radius: 8px;
+}
+.tcat1 .tlp-pop-card:hover {
+  border-color: rgba(124, 109, 212, .42);
+  box-shadow: 0 18px 36px -16px rgba(0, 0, 0, .38);
+}
+.tcat1 .tlp-pop-card-logo { border-radius: 6px; }
+.tcat1 .tlp-pop-card-name:hover { color: #5B4DBE; }
+
+/* Stars — match the rest of the AI/ML page's lavender pair */
+.tcat1 .tlp-pop-star { color: #DAD5E8; }
+.tcat1 .tlp-pop-star.is-on { color: #7C6DD4; }
+
+/* Reviews count + "Be the first to review" — lavender */
+.tcat1 .tlp-pop-card-rev { color: #5B4DBE; }
+.tcat1 .tlp-pop-card-rev:hover { color: #7C6DD4; }
+.tcat1 .tlp-pop-card-rev--new { color: #5B4DBE; }
+.tcat1 .tlp-pop-card-rev--new:hover { color: #7C6DD4; }
+
+/* Bottom CTA — lavender pill, white text */
+.tcat1 .tlp-pop-cta-btn {
+  background: #7C6DD4;
+  color: #FFFFFF;
+  border-radius: 8px;
+}
+.tcat1 .tlp-pop-cta-btn:hover { background: #5B4DBE; }
+
+/* Empty-state CTA on the dark bg — keep light card, lavender text */
+.tcat1 .tlp-pop-empty .tlp-pop-cta-btn { background: #7C6DD4; }
+.tcat1 .tlp-pop-empty .tlp-pop-cta-btn:hover { background: #5B4DBE; }
+
+/* ══════════════════════════════════════════════════════════════
+   "Why trust InfoWebWorld" (.tlp-trust-*) — soft lavender wash
+   instead of grey; trust-point icons turn lavender on a white
+   tile with a lavender ring + drop shadow.
+   ══════════════════════════════════════════════════════════════ */
+.tcat1 .tlp-trust {
+  background: #F4F2FB;
+}
+.tcat1 .tlp-trust-ico {
+  background: #FFFFFF;
+  border: 1.5px solid rgba(124, 109, 212, .20);
+  color: #7C6DD4;
+  border-radius: 10px;             /* boxier than the 14 source */
+  box-shadow: 0 6px 14px -8px rgba(124, 109, 212, .24);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   "Compare the Top-Rated Tools & Services" (.tlp-comp-*) — soft
+   lavender gradient banner replaces the mint one. Cards become
+   boxier and lift with a lavender-tinted shadow on hover.
+   ══════════════════════════════════════════════════════════════ */
+.tcat1 .tlp-comp {
+  background: linear-gradient(180deg,
+    #E8E4F8 0%,
+    #F0EDFB 55%,
+    #FFFFFF 100%);
+}
+.tcat1 .tlp-comp-card {
+  border-radius: 8px;              /* boxy theme — was 12 */
+}
+.tcat1 .tlp-comp-card:hover {
+  color: #5B4DBE;
+  box-shadow:
+    0 2px 0 rgba(124, 109, 212, .05),
+    0 22px 40px -18px rgba(124, 109, 212, .26);
+}
+.tcat1 .tlp-comp-card:hover .tlp-comp-card-ico { color: #5B4DBE; }
+
+/* ══════════════════════════════════════════════════════════════
+   Final CTA (.tlp-fcta-*) — lavender gradient pill card with a
+   single lavender corner glow; "List your business" CTA goes
+   solid #7C6DD4 to match the rest of the page.
+   ══════════════════════════════════════════════════════════════ */
+.tcat1 .tlp-fcta-card {
+  background: linear-gradient(135deg,
+    #E8E4F8 0%,
+    #F0EDFB 55%,
+    #FCF7FE 100%);
+  border-color: rgba(124, 109, 212, .20);
+  border-radius: 12px;             /* boxier than 20 */
+}
+.tcat1 .tlp-fcta-card::before {
+  background: radial-gradient(circle,
+    rgba(124, 109, 212, .20) 0%,
+    rgba(124, 109, 212, .04) 45%,
+    transparent 70%);
+}
+.tcat1 .tlp-fcta-btn {
+  background: #7C6DD4;
+  border-radius: 8px;
+}
+.tcat1 .tlp-fcta-btn:hover { background: #5B4DBE; }
