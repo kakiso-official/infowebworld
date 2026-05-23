@@ -3,17 +3,17 @@ import { CATEGORIES as STATIC_CATEGORIES } from '../config/categories-data'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import {
-  faRobot, faImage, faVideo, faCode, faPenNib, faGears,
+  faRobot, faImage, faCode, faGears, faBullhorn, faHeadset,
 } from '@fortawesome/free-solid-svg-icons'
 
 /* ═══════════════════════════════════════════════════════════════════════
    AI/ML "Find verified AI tools across every category" — same layout
    as /test-landing-page's CategoriesSection (6 cards in a 3×2 grid),
-   but the cards are the 6 hero L2 categories under AI/ML instead of
-   the 6 L1 sectors. Icons → Font Awesome Solid (faRobot, faImage, …).
-   All `.tlp-cats-*` and `.tlp-cat-card-*` classes are reused so the
-   layout/typography stay 1:1 — colour overrides happen via .tcat1
-   selectors in test-category-1-page.css.
+   but the cards are 6 of the 11 new L2 categories under AI/ML (after
+   the v3 taxonomy rebuild). Picked for "AI tools" discovery breadth.
+   Icons → Font Awesome Solid. All `.tlp-cats-*` and `.tlp-cat-card-*`
+   classes are reused so the layout/typography stay 1:1 — colour
+   overrides happen via .tcat1 selectors in test-category-1-page.css.
 
    Each card:
      · sector icon (currentColor, lavender via .tcat1 override)
@@ -21,7 +21,7 @@ import {
      · "Services" pill + top 5 L3 children of that L2 (real, from the
         generated taxonomy in app/config/categories-data.ts)
      · "Locations" pill + the same 5 default markets used on
-        /test-landing-page (kept by request — "other things same to same")
+        /test-landing-page
    Below the grid: "Explore all AI categories" CTA → /ai-ml.
    ═══════════════════════════════════════════════════════════════════════ */
 
@@ -32,12 +32,12 @@ interface CatDef {
 }
 
 const CATEGORIES: CatDef[] = [
-  { slug: 'ai-assistants-chatbots',           label: 'AI Assistants & Chatbots',     icon: faRobot  },
-  { slug: 'ai-image-generation',              label: 'AI Image Generation',          icon: faImage  },
-  { slug: 'ai-video-generation',              label: 'AI Video Generation',          icon: faVideo  },
-  { slug: 'ai-code-developer-tools',          label: 'AI Code & Developer Tools',    icon: faCode   },
-  { slug: 'ai-writing-long-form-text',        label: 'AI Writing & Long-Form Text',  icon: faPenNib },
-  { slug: 'ai-agent-frameworks-infrastructure', label: 'AI Agents & Frameworks',     icon: faGears  },
+  { slug: 'ai-core-models',         label: 'AI Core & Models',         icon: faRobot    },
+  { slug: 'content-creative',       label: 'Content & Creative',       icon: faImage    },
+  { slug: 'development-technical',  label: 'Development & Technical',  icon: faCode     },
+  { slug: 'business-marketing',     label: 'Business & Marketing',     icon: faBullhorn },
+  { slug: 'productivity-workflow',  label: 'Productivity & Workflow',  icon: faGears    },
+  { slug: 'customer-support',       label: 'Customer & Support',       icon: faHeadset  },
 ]
 
 const LOCATIONS = ['USA', 'India', 'UK', 'Canada', 'Australia']
