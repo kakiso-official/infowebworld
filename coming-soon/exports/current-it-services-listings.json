@@ -1,0 +1,18 @@
+{
+  "generated_at": "2026-05-23T12:14:31.504Z",
+  "it_services_root": {
+    "id": 2,
+    "name": "IT Services & Agencies",
+    "slug": "it-services-agencies"
+  },
+  "category_counts_to_delete": {
+    "total": 1639,
+    "by_level": {
+      "L2": 43,
+      "L3": 1596
+    }
+  },
+  "listing_types_to_delete": 883,
+  "seo_content_to_delete": 0,
+  "submissions": []
+}
