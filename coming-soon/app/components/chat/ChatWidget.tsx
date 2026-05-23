@@ -66,6 +66,18 @@ export default function ChatWidget() {
   const path = usePathname()
   const [mounted, setMounted] = useState(false)
   const [open, setOpen] = useState(false)
+  /* `phase` drives the open/close morph. The panel remains in the DOM through
+     'exit' so its scale-down animation can run, then unmounts. */
+  const [phase, setPhase] = useState<'idle' | 'enter' | 'exit'>('idle')
+  const closeWidget = () => {
+    setPhase('exit')
+    setTimeout(() => { setOpen(false); setPhase('idle') }, 240)
+  }
+  const openWidget = () => {
+    setOpen(true)
+    setPhase('enter')
+    setTimeout(() => setPhase('idle'), 420)
+  }
   const [messages, setMessages] = useState<Msg[]>([GREETING])
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
@@ -240,7 +252,7 @@ export default function ChatWidget() {
         <button
           type="button"
           className="iwc-launcher"
-          onClick={() => setOpen(true)}
+          onClick={openWidget}
           aria-label="Open chat"
         >
           <span className="iwc-launcher-icon" aria-hidden="true">
@@ -251,7 +263,7 @@ export default function ChatWidget() {
 
       {/* ── Expanded panel ── */}
       {open && (
-        <div className="iwc-panel" role="dialog" aria-label="InfoBot chat">
+        <div className={`iwc-panel iwc-panel--${phase}`} role="dialog" aria-label="InfoBot chat">
           <header className="iwc-head">
             <div className="iwc-head-id">
               <span className="iwc-head-avatar" aria-hidden="true"><Sparkle size={16} /></span>
@@ -270,7 +282,7 @@ export default function ChatWidget() {
                   <path d="M3.51 15a9 9 0 102.13-9.36L1 10" />
                 </svg>
               </button>
-              <button type="button" className="iwc-head-btn" onClick={() => setOpen(false)}
+              <button type="button" className="iwc-head-btn" onClick={closeWidget}
                 title="Close" aria-label="Close chat">
                 <CloseIcon />
               </button>

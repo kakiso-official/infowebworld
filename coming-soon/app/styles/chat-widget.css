@@ -61,8 +61,18 @@
   color: #1A1A1A;
   /* Neutral grey shadow only — no colored glow per design rules. */
   box-shadow: 0 10px 24px rgba(17, 24, 28, 0.10);
-  animation: iwc-border-spin 4s linear infinite;
+  /* Two simultaneous animations: the perpetual conic spin (border highlight)
+     + a one-shot pop-in that runs every time the launcher mounts (first
+     paint, and again after the panel closes back to the launcher). */
+  animation:
+    iwc-border-spin 4s linear infinite,
+    iwc-launcher-pop 0.4s cubic-bezier(.34, 1.56, .64, 1) backwards;
   transition: transform .15s cubic-bezier(.16,1,.3,1), box-shadow .15s ease;
+}
+@keyframes iwc-launcher-pop {
+  0%   { transform: scale(0) rotate(-90deg); opacity: 0 }
+  60%  { opacity: 1 }
+  100% { transform: scale(1) rotate(0); opacity: 1 }
 }
 .iwc-launcher:hover {
   transform: translateY(-2px);
@@ -109,6 +119,62 @@
   /* Neutral grey shadow only. No colored glow. */
   box-shadow: 0 12px 32px rgba(17, 24, 28, 0.12);
   overflow: hidden;
+  /* Scale-from-launcher morph anchor — bottom-right corner is where the
+     launcher icon sits, so the panel appears to burst out of the icon. */
+  transform-origin: 100% 100%;
+  will-change: transform, opacity;
+}
+
+/* Open: scale + slide up from the launcher's corner with a soft spring. */
+.iwc-panel--enter {
+  animation: iwc-panel-in 0.42s cubic-bezier(.16, 1, .3, 1) backwards;
+}
+@keyframes iwc-panel-in {
+  0%   { transform: scale(0.18) translate(36px, 36px); opacity: 0; border-radius: 38px }
+  55%  { opacity: 1 }
+  100% { transform: scale(1) translate(0, 0); opacity: 1; border-radius: 16px }
+}
+
+/* Close: tighter reverse — collapse back to the launcher and fade. */
+.iwc-panel--exit {
+  animation: iwc-panel-out 0.24s cubic-bezier(.55, 0, .55, 1) forwards;
+  pointer-events: none;
+}
+@keyframes iwc-panel-out {
+  0%   { transform: scale(1) translate(0, 0); opacity: 1; border-radius: 16px }
+  100% { transform: scale(0.16) translate(40px, 40px); opacity: 0; border-radius: 38px }
+}
+
+/* Stagger interior reveal during open — header drops in, the thread fades,
+   the composer slides up. All scoped to --enter so they only run once. */
+.iwc-panel--enter .iwc-head   { animation: iwc-fade-down 0.34s cubic-bezier(.2, .8, .25, 1) 0.16s backwards }
+.iwc-panel--enter .iwc-scroll { animation: iwc-fade-in   0.36s ease-out 0.22s backwards }
+.iwc-panel--enter .iwc-foot   { animation: iwc-fade-up   0.34s cubic-bezier(.2, .8, .25, 1) 0.28s backwards }
+
+@keyframes iwc-fade-down {
+  from { transform: translateY(-12px); opacity: 0 }
+  to   { transform: translateY(0); opacity: 1 }
+}
+@keyframes iwc-fade-up {
+  from { transform: translateY(14px); opacity: 0 }
+  to   { transform: translateY(0); opacity: 1 }
+}
+@keyframes iwc-fade-in {
+  from { opacity: 0 }
+  to   { opacity: 1 }
+}
+
+/* Respect users who don't want motion. Snap on, snap off — same UX, no spin. */
+@media (prefers-reduced-motion: reduce) {
+  .iwc-launcher,
+  .iwc-panel,
+  .iwc-panel--enter,
+  .iwc-panel--exit,
+  .iwc-panel--enter .iwc-head,
+  .iwc-panel--enter .iwc-scroll,
+  .iwc-panel--enter .iwc-foot {
+    animation: none !important;
+  }
 }
 
 /* ─── Header ─────────────────────────────────────────────────── */
