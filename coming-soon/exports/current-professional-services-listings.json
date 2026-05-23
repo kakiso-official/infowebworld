@@ -1,0 +1,33 @@
+{
+  "generated_at": "2026-05-23T12:47:52.532Z",
+  "professional_services_root": {
+    "id": 4,
+    "name": "Professional Services",
+    "slug": "professional-services"
+  },
+  "category_counts_to_delete": {
+    "total": 3393,
+    "by_level": {
+      "L2": 20,
+      "L3": 3373
+    }
+  },
+  "listing_types_to_delete": 1684,
+  "seo_content_to_delete": 0,
+  "submissions": [
+    {
+      "id": 22,
+      "uuid": "66365281-3369-4224-b08f-d3fa727ae2d5",
+      "company_name": "AZB & Partners",
+      "tagline": "Advocates & Solicitors",
+      "description": "AZB & Partners stands as a preeminent powerhouse in the Indian legal landscape, consistently recognized as one of the \"Big Six\" law firms in the country. Established in 2004 through the strategic merger of major legal practices, the firm was founded on a commitment to excellence and a vision to provide world-class legal services within the Indian context. Today, under the leadership of founding pa",
+      "status": "pending",
+      "old_l1": "Professional Services",
+      "old_l2": "Lawyers & Law Firms by Specialty",
+      "old_l3": "Corporate Law Attorneys",
+      "old_cat_slug": "corporate-law-attorneys",
+      "old_cat_level": 3,
+      "old_listing_type": "Corporate Law: Mergers & Acquisitions"
+    }
+  ]
+}
