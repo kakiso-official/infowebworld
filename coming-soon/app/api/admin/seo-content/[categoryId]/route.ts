@@ -35,10 +35,14 @@ export async function GET(
             p.name as parent_name, p.slug as parent_slug,
             CASE WHEN c.level = 1 THEN c.slug
                  WHEN c.level = 2 THEN p.slug
-                 WHEN c.level = 3 THEN gp.slug END as sector_slug
+                 WHEN c.level = 3 THEN gp.slug
+                 WHEN c.level = 4 THEN ggp.slug
+                 WHEN c.level = 5 THEN gggp.slug END as sector_slug
      FROM categories c
-     LEFT JOIN categories p ON p.id = c.parent_id
-     LEFT JOIN categories gp ON gp.id = p.parent_id
+     LEFT JOIN categories p    ON p.id    = c.parent_id
+     LEFT JOIN categories gp   ON gp.id   = p.parent_id
+     LEFT JOIN categories ggp  ON ggp.id  = gp.parent_id
+     LEFT JOIN categories gggp ON gggp.id = ggp.parent_id
      WHERE c.id = ? AND c.is_active = 1`,
     [cid]
   )

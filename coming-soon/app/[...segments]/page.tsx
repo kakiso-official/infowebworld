@@ -32,8 +32,16 @@ async function getSectorCategories(sectorId: number) {
   const rows = await query(
     `SELECT c.id, c.name, c.slug, c.level, c.parent_id, c.sort_order, c.color, c.icon,
             p.name as parent_name, p.slug as parent_slug,
-            CASE WHEN c.level = 1 THEN c.slug WHEN c.level = 2 THEN p.slug WHEN c.level = 3 THEN gp.slug END as sector_slug
-     FROM categories c LEFT JOIN categories p ON p.id = c.parent_id LEFT JOIN categories gp ON gp.id = p.parent_id
+            CASE WHEN c.level = 1 THEN c.slug
+                 WHEN c.level = 2 THEN p.slug
+                 WHEN c.level = 3 THEN gp.slug
+                 WHEN c.level = 4 THEN ggp.slug
+                 WHEN c.level = 5 THEN gggp.slug END as sector_slug
+     FROM categories c
+       LEFT JOIN categories p    ON p.id    = c.parent_id
+       LEFT JOIN categories gp   ON gp.id   = p.parent_id
+       LEFT JOIN categories ggp  ON ggp.id  = gp.parent_id
+       LEFT JOIN categories gggp ON gggp.id = ggp.parent_id
      WHERE c.is_launched = 1 AND c.is_active = 1 AND c.is_navigation = 1
        AND (c.id = ? OR c.parent_id = ? OR c.parent_id IN (SELECT id FROM categories WHERE parent_id = ?))
      ORDER BY c.sort_order`,
@@ -106,10 +114,14 @@ async function getSectorSlugForCategory(categorySlug: string): Promise<string | 
           WHEN c.level = 1 THEN c.slug
           WHEN c.level = 2 THEN p.slug
           WHEN c.level = 3 THEN gp.slug
+          WHEN c.level = 4 THEN ggp.slug
+          WHEN c.level = 5 THEN gggp.slug
         END as sector_slug
       FROM categories c
-      LEFT JOIN categories p ON p.id = c.parent_id
-      LEFT JOIN categories gp ON gp.id = p.parent_id
+      LEFT JOIN categories p    ON p.id    = c.parent_id
+      LEFT JOIN categories gp   ON gp.id   = p.parent_id
+      LEFT JOIN categories ggp  ON ggp.id  = gp.parent_id
+      LEFT JOIN categories gggp ON gggp.id = ggp.parent_id
       WHERE c.slug = ? AND c.is_active = 1
       LIMIT 1`,
       [categorySlug]
@@ -195,10 +207,16 @@ async function fetchCategoryPageData(categorySlug: string) {
     // Round trip 1: category row (everything else depends on this)
     const catRow = await queryOne(
       `SELECT c.*, p.name as parent_name, p.slug as parent_slug,
-              CASE WHEN c.level = 1 THEN c.slug WHEN c.level = 2 THEN p.slug WHEN c.level = 3 THEN gp.slug END as sector_slug
+              CASE WHEN c.level = 1 THEN c.slug
+                   WHEN c.level = 2 THEN p.slug
+                   WHEN c.level = 3 THEN gp.slug
+                   WHEN c.level = 4 THEN ggp.slug
+                   WHEN c.level = 5 THEN gggp.slug END as sector_slug
        FROM categories c
-       LEFT JOIN categories p ON p.id = c.parent_id
-       LEFT JOIN categories gp ON gp.id = p.parent_id
+       LEFT JOIN categories p    ON p.id    = c.parent_id
+       LEFT JOIN categories gp   ON gp.id   = p.parent_id
+       LEFT JOIN categories ggp  ON ggp.id  = gp.parent_id
+       LEFT JOIN categories gggp ON gggp.id = ggp.parent_id
        WHERE c.slug = ? AND c.is_active = 1 LIMIT 1`,
       [categorySlug]
     )

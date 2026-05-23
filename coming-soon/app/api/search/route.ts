@@ -30,19 +30,25 @@ export async function GET(req: Request) {
       `SELECT c.id, c.name, c.slug, c.level, c.color, c.icon, c.description,
               c.listing_count,
               p.name AS parent_name, p.slug AS parent_slug,
-              CASE WHEN c.level = 1 THEN c.slug WHEN c.level = 2 THEN p.slug WHEN c.level = 3 THEN gp.slug END AS sector_slug
+              CASE WHEN c.level = 1 THEN c.slug
+                   WHEN c.level = 2 THEN p.slug
+                   WHEN c.level = 3 THEN gp.slug
+                   WHEN c.level = 4 THEN ggp.slug
+                   WHEN c.level = 5 THEN gggp.slug END AS sector_slug
        FROM categories c
-       LEFT JOIN categories p ON p.id = c.parent_id
-       LEFT JOIN categories gp ON gp.id = p.parent_id
+       LEFT JOIN categories p    ON p.id    = c.parent_id
+       LEFT JOIN categories gp   ON gp.id   = p.parent_id
+       LEFT JOIN categories ggp  ON ggp.id  = gp.parent_id
+       LEFT JOIN categories gggp ON gggp.id = ggp.parent_id
        WHERE c.is_launched = 1 AND c.is_navigation = 1
          AND (c.name LIKE ? OR c.description LIKE ?)
-         ${sectorOn ? 'AND (c.slug = ? OR p.slug = ? OR gp.slug = ?)' : ''}
+         ${sectorOn ? 'AND (c.slug = ? OR p.slug = ? OR gp.slug = ? OR ggp.slug = ? OR gggp.slug = ?)' : ''}
        ORDER BY
          CASE WHEN c.name LIKE ? THEN 0 ELSE 1 END,
          c.level ASC, c.name ASC
        LIMIT 8`,
       sectorOn
-        ? [like, like, sector, sector, sector, `${q}%`]
+        ? [like, like, sector, sector, sector, sector, sector, `${q}%`]
         : [like, like, `${q}%`]
     ),
 
@@ -64,16 +70,16 @@ export async function GET(req: Request) {
               COALESCE(s.listing_mode, 'product') AS listing_mode
        FROM submissions s
        LEFT JOIN categories c   ON c.id   = s.category_id
-       ${sectorOn ? 'LEFT JOIN categories cp  ON cp.id  = c.parent_id LEFT JOIN categories cgp ON cgp.id = cp.parent_id' : ''}
+       ${sectorOn ? 'LEFT JOIN categories cp   ON cp.id   = c.parent_id LEFT JOIN categories cgp  ON cgp.id  = cp.parent_id LEFT JOIN categories cggp ON cggp.id = cgp.parent_id LEFT JOIN categories cgggp ON cgggp.id = cggp.parent_id' : ''}
        WHERE s.status IN ('active', 'paid')
          AND (s.company_name LIKE ? OR s.tagline LIKE ? OR s.description LIKE ?)
-         ${sectorOn ? 'AND (c.slug = ? OR cp.slug = ? OR cgp.slug = ?)' : ''}
+         ${sectorOn ? 'AND (c.slug = ? OR cp.slug = ? OR cgp.slug = ? OR cggp.slug = ? OR cgggp.slug = ?)' : ''}
        ORDER BY
          CASE WHEN s.company_name LIKE ? THEN 0 ELSE 1 END,
          s.approved_at DESC
        LIMIT 6`,
       sectorOn
-        ? [like, like, like, sector, sector, sector, `${q}%`]
+        ? [like, like, like, sector, sector, sector, sector, sector, `${q}%`]
         : [like, like, like, `${q}%`]
     ),
 

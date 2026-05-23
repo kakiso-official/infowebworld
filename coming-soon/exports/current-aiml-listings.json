@@ -1,0 +1,104 @@
+{
+  "generated_at": "2026-05-23T10:01:33.485Z",
+  "source": "cdbrisgy_infowebworld@server46.hostwhitelabel.com",
+  "ai_ml_root": {
+    "id": 1,
+    "name": "Artificial Intelligence & ML",
+    "slug": "ai-ml"
+  },
+  "category_counts_to_delete": {
+    "total_descendants": 1341,
+    "by_level": {
+      "L2": 43,
+      "L3": 1298
+    }
+  },
+  "listing_types_to_delete": 2050,
+  "seo_content_to_delete": 2,
+  "submissions": [
+    {
+      "id": 24,
+      "uuid": "5016248a-5358-11f1-905d-bc2411b59bc1",
+      "company_name": "Claude",
+      "tagline": "The AI built for serious work — long-context, accurate, safe by design",
+      "description": "Claude is Anthropic's flagship AI assistant — a family of large language models engineered from day one for the qualities\r\n  professional teams actually need: faithful long-context reasoning, predictable refusals, and outputs that hold up under scrutiny. Where most assistants\r\n  race for novelty, Claude is built to be the model you trust with work that matters. It excels at tasks that punish hallu",
+      "status": "active",
+      "old_l1": "Artificial Intelligence & ML",
+      "old_l2": "AI Assistants & Chatbots",
+      "old_l3": "All-Purpose AI Chat Companions",
+      "old_cat_slug": "all-purpose-ai-chat-companions",
+      "old_cat_level": 3,
+      "old_listing_type": null
+    },
+    {
+      "id": 25,
+      "uuid": "334fcd93-5372-11f1-905d-bc2411b59bc1",
+      "company_name": "ChatGPT",
+      "tagline": "The world's most-used AI assistant — chat, search, code, and create with GPT",
+      "description": "ChatGPT is OpenAI's flagship conversational AI, the product that brought generative AI to over 200 million weekly active users. Powered by the GPT family of models, ChatGPT handles everything from quick answers and brainstorming to complex reasoning, code generation, agentic tasks, image generation via DALL·E, voice conversations, and live web browsing. The free tier gives access to GPT-5 with lim",
+      "status": "active",
+      "old_l1": "Artificial Intelligence & ML",
+      "old_l2": "AI Assistants & Chatbots",
+      "old_l3": "All-Purpose AI Chat Companions",
+      "old_cat_slug": "all-purpose-ai-chat-companions",
+      "old_cat_level": 3,
+      "old_listing_type": null
+    },
+    {
+      "id": 26,
+      "uuid": "3359a577-5372-11f1-905d-bc2411b59bc1",
+      "company_name": "Gemini",
+      "tagline": "Google's most capable AI — multimodal, agentic, and built into everything you already use",
+      "description": "Gemini is Google's flagship AI assistant, powered by the Gemini model family (Ultra, Pro, Flash, and Nano) and built natively into Google Search, Workspace, Android, Chrome, and the Gemini app. Originally launched as Bard in early 2023, Gemini was relaunched with the Gemini 1.0 model in late 2023 and has since shipped 1.5 (massive 2M-token context), 2.0 (agentic), and 2.5 (deep think) generations.",
+      "status": "active",
+      "old_l1": "Artificial Intelligence & ML",
+      "old_l2": "AI Assistants & Chatbots",
+      "old_l3": "All-Purpose AI Chat Companions",
+      "old_cat_slug": "all-purpose-ai-chat-companions",
+      "old_cat_level": 3,
+      "old_listing_type": null
+    },
+    {
+      "id": 27,
+      "uuid": "3360cf8a-5372-11f1-905d-bc2411b59bc1",
+      "company_name": "Microsoft Copilot",
+      "tagline": "Your everyday AI companion — built into Windows, Edge, and Microsoft 365",
+      "description": "Microsoft Copilot is Microsoft's AI assistant brand, powered primarily by OpenAI's GPT models (with growing investment in Microsoft's own MAI-series). It's the unifying AI surface across Microsoft's product portfolio: the free Copilot consumer app (web, Windows, iOS, Android, macOS), the Edge browser side panel, the Windows + key launcher, and the paid Microsoft 365 Copilot that embeds AI inside W",
+      "status": "active",
+      "old_l1": "Artificial Intelligence & ML",
+      "old_l2": "AI Assistants & Chatbots",
+      "old_l3": "All-Purpose AI Chat Companions",
+      "old_cat_slug": "all-purpose-ai-chat-companions",
+      "old_cat_level": 3,
+      "old_listing_type": null
+    },
+    {
+      "id": 28,
+      "uuid": "336837d6-5372-11f1-905d-bc2411b59bc1",
+      "company_name": "Perplexity",
+      "tagline": "The answer engine — AI search with real-time citations you can verify",
+      "description": "Perplexity is an AI-powered answer engine that combines real-time web search with large language models to return cited, source-linked answers instead of a list of blue links. Every Perplexity response includes the URLs it used, so you can verify and dig deeper. Founded in 2022 by ex-OpenAI and Meta researchers, Perplexity has raised over $500M from Jeff Bezos, NVIDIA, IVP, NEA, and others, reachi",
+      "status": "active",
+      "old_l1": "Artificial Intelligence & ML",
+      "old_l2": "AI Assistants & Chatbots",
+      "old_l3": "All-Purpose AI Chat Companions",
+      "old_cat_slug": "all-purpose-ai-chat-companions",
+      "old_cat_level": 3,
+      "old_listing_type": null
+    },
+    {
+      "id": 31,
+      "uuid": "ec1e482c-5372-11f1-905d-bc2411b59bc1",
+      "company_name": "DeepSeek",
+      "tagline": "Open-source AI built for reasoning and code — efficient, transparent, free",
+      "description": "DeepSeek is the Chinese AI lab whose open-weight models — DeepSeek-V3 and DeepSeek-R1 — shocked the industry in late 2024 / early 2025 by matching\r\n  frontier closed-model performance at a fraction of the training cost and inference price. DeepSeek-R1 introduced a strong open reasoning model competitive\r\n   with OpenAI's o1 family, and DeepSeek-V3 became a benchmark-leading general-purpose chat an",
+      "status": "active",
+      "old_l1": "Artificial Intelligence & ML",
+      "old_l2": "AI Assistants & Chatbots",
+      "old_l3": "All-Purpose AI Chat Companions",
+      "old_cat_slug": "all-purpose-ai-chat-companions",
+      "old_cat_level": 3,
+      "old_listing_type": null
+    }
+  ]
+}

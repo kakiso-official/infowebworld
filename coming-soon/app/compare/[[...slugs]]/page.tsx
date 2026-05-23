@@ -284,11 +284,15 @@ async function fetchCompareData(slugs: string[]): Promise<{
               CASE WHEN c.level = 1 THEN c.slug
                    WHEN c.level = 2 THEN cp.slug
                    WHEN c.level = 3 THEN cgp.slug
+                   WHEN c.level = 4 THEN cggp.slug
+                   WHEN c.level = 5 THEN cgggp.slug
                    ELSE NULL END AS sector_slug
        FROM submissions s
-       LEFT JOIN categories c ON c.id = s.category_id
-       LEFT JOIN categories cp ON cp.id = c.parent_id
-       LEFT JOIN categories cgp ON cgp.id = cp.parent_id
+       LEFT JOIN categories c     ON c.id     = s.category_id
+       LEFT JOIN categories cp    ON cp.id    = c.parent_id
+       LEFT JOIN categories cgp   ON cgp.id   = cp.parent_id
+       LEFT JOIN categories cggp  ON cggp.id  = cgp.parent_id
+       LEFT JOIN categories cgggp ON cgggp.id = cggp.parent_id
        LEFT JOIN plans p ON p.id = s.plan_id
        WHERE s.slug IN (${placeholders})
          AND s.status IN ('active','paid')
@@ -315,11 +319,15 @@ async function fetchCompareData(slugs: string[]): Promise<{
                 CASE WHEN c.level = 1 THEN c.slug
                      WHEN c.level = 2 THEN cp.slug
                      WHEN c.level = 3 THEN cgp.slug
+                     WHEN c.level = 4 THEN cggp.slug
+                     WHEN c.level = 5 THEN cgggp.slug
                      ELSE NULL END AS sector_slug
          FROM submissions s
-         LEFT JOIN categories c ON c.id = s.category_id
-         LEFT JOIN categories cp ON cp.id = c.parent_id
-         LEFT JOIN categories cgp ON cgp.id = cp.parent_id
+         LEFT JOIN categories c     ON c.id     = s.category_id
+         LEFT JOIN categories cp    ON cp.id    = c.parent_id
+         LEFT JOIN categories cgp   ON cgp.id   = cp.parent_id
+         LEFT JOIN categories cggp  ON cggp.id  = cgp.parent_id
+         LEFT JOIN categories cgggp ON cgggp.id = cggp.parent_id
          LEFT JOIN plans p ON p.id = s.plan_id
          WHERE s.slug IN (${placeholders})
            AND s.status IN ('active','paid')`,

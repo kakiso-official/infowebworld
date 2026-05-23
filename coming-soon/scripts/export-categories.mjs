@@ -40,7 +40,11 @@ console.log('Connected to', env.DATABASE_HOST)
 /* Matches the same filter /api/categories used: launched + active + navigable.
    Columns are the minimum the Navbar + CategoriesBrowse actually read.
    The correlated COUNT subquery is the same listing_count we were computing
-   live on every API hit — here it runs ONCE at export time. */
+   live on every API hit — here it runs ONCE at export time.
+
+   AI&ML v3 (2026-05) introduces L4 + L5 as navigable categories under the
+   ai-ml L1 sector. We climb up to four parents (p → gp → ggp → gggp) so
+   sector_slug resolves correctly for L1..L5. */
 const [rows] = await conn.execute(`
   SELECT c.id, c.parent_id, c.level, c.name, c.slug, c.color, c.sort_order,
          p.name AS parent_name, p.slug AS parent_slug,
@@ -48,20 +52,23 @@ const [rows] = await conn.execute(`
            WHEN c.level = 1 THEN c.slug
            WHEN c.level = 2 THEN p.slug
            WHEN c.level = 3 THEN gp.slug
+           WHEN c.level = 4 THEN ggp.slug
+           WHEN c.level = 5 THEN gggp.slug
          END AS sector_slug,
          (SELECT COUNT(*) FROM submissions s
           WHERE s.category_id = c.id AND s.status IN ('active','paid')) AS listing_count
   FROM categories c
-  LEFT JOIN categories p  ON p.id = c.parent_id
-  LEFT JOIN categories gp ON gp.id = p.parent_id
+  LEFT JOIN categories p    ON p.id    = c.parent_id
+  LEFT JOIN categories gp   ON gp.id   = p.parent_id
+  LEFT JOIN categories ggp  ON ggp.id  = gp.parent_id
+  LEFT JOIN categories gggp ON gggp.id = ggp.parent_id
   WHERE c.is_launched = 1 AND c.is_active = 1 AND c.is_navigation = 1
   ORDER BY c.sort_order, c.id
 `)
 
-const l1 = rows.filter(r => r.level === 1).length
-const l2 = rows.filter(r => r.level === 2).length
-const l3 = rows.filter(r => r.level === 3).length
-console.log(`Fetched ${rows.length} rows  (L1=${l1}  L2=${l2}  L3=${l3})`)
+const lvl = n => rows.filter(r => r.level === n).length
+const l1 = lvl(1), l2 = lvl(2), l3 = lvl(3), l4 = lvl(4), l5 = lvl(5)
+console.log(`Fetched ${rows.length} rows  (L1=${l1}  L2=${l2}  L3=${l3}  L4=${l4}  L5=${l5})`)
 
 await conn.end()
 
@@ -91,7 +98,7 @@ const out = `/**
  *
  * Generated: ${now}
  * Source:    ${env.DATABASE_NAME}@${env.DATABASE_HOST}
- * Rows:      ${rows.length}  (L1=${l1}  L2=${l2}  L3=${l3})
+ * Rows:      ${rows.length}  (L1=${l1}  L2=${l2}  L3=${l3}  L4=${l4}  L5=${l5})
  *
  * If admin adds/launches/renames a category, re-run:
  *     node scripts/export-categories.mjs

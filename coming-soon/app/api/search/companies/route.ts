@@ -58,6 +58,8 @@ export async function GET(req: Request) {
     ? `AND (CASE WHEN c.level = 1 THEN c.slug
                  WHEN c.level = 2 THEN cp.slug
                  WHEN c.level = 3 THEN cgp.slug
+                 WHEN c.level = 4 THEN cggp.slug
+                 WHEN c.level = 5 THEN cgggp.slug
                  ELSE NULL END) = ?`
     : ''
 
@@ -69,9 +71,11 @@ export async function GET(req: Request) {
               (SELECT AVG(rating) FROM reviews WHERE listing_id = s.id AND status = 'approved') AS rating_avg,
               (SELECT COUNT(*) FROM reviews WHERE listing_id = s.id AND status = 'approved') AS rating_count
        FROM submissions s
-       LEFT JOIN categories c ON c.id = s.category_id
-       LEFT JOIN categories cp ON cp.id = c.parent_id
-       LEFT JOIN categories cgp ON cgp.id = cp.parent_id
+       LEFT JOIN categories c     ON c.id     = s.category_id
+       LEFT JOIN categories cp    ON cp.id    = c.parent_id
+       LEFT JOIN categories cgp   ON cgp.id   = cp.parent_id
+       LEFT JOIN categories cggp  ON cggp.id  = cgp.parent_id
+       LEFT JOIN categories cgggp ON cgggp.id = cggp.parent_id
        WHERE s.status IN ('active', 'paid')
          AND COALESCE(s.listing_mode, 'product') = 'product'
          AND (s.company_name LIKE ? OR s.tagline LIKE ?)
