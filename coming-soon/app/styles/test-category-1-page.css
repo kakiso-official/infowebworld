@@ -1,17 +1,22 @@
 /* ══════════════════════════════════════════════════════════════
-   /test-category-1-page — AI & ML L1 sector landing.
+   Sector L1 landing pages — shared rules.
 
-   All rules scope under .tcat1 so the base .tlp-* component styles
-   in test-landing-page.css remain untouched on the parent demo.
+   All rules scope under .tcat1 (a marker class added by every sector
+   landing) so the base .tlp-* component styles in test-landing-page.css
+   remain untouched on the /test-landing-page demo.
 
-   Palette ("Lavender Neural", from the AI/ML brand sheet):
-     #E8E4F8  c1 — lightest tint, hover bg, surface wash
-     #CBBFF2  c2 — soft fill, dropdown borders
-     #A899E8  c3 — mid accent, secondary orb
-     #7C6DD4  c4 — primary accent, focus + CTA bg
-     #5B4DBE  derived darker — hover state for the CTA (not in
-              the four-swatch sheet but a stricter darker shade
-              of c4; used only where palette darkens are required).
+   Each sector also adds its own .tcat-<slug> class which redefines the
+   five palette custom properties (--c1..--c4-dark). The shared rules
+   below reference those vars, so the entire landing re-skins by just
+   swapping that one class.
+
+   Palette mapping (from the brand sheet):
+     01 AI & ML              Lavender Neural   var(--c1) var(--c2) var(--c3) var(--c4)
+     02 Software & SaaS      Sky Interface     #DDF0FB #B5D9F4 #7DBDE9 #3F8FD4
+     03 IT Services          Mint Circuit      #D8F5EE #9EE1CF #5DC9AB #1D9E75
+     04 Startups & Innov.    Peach Ignite      #FAEEE3 #F5C4A8 #F09A72 #D96236
+     05 Local Business       Sage Community    #EEF7DE #C9E49A #9ACE5D #659A22
+     06 Professional Svc.    Blush Authority   #FAEEF4 #F2C1D3 #E694B4 #C85580
 
    Box style — "a bit less rounded" pass:
      .tlp-hsr        16  → 10
@@ -20,48 +25,106 @@
      .tlp-hsr-pop    14  →  8
      .tlp-hsr-row     8  →  4
      .tlp-hsr-row-logo 8 →  4
-   Logic: roughly halved, never square. Still has corners but
-   reads architectural instead of pillowy.
+   Logic: roughly halved, never square. Architectural, not pillowy.
    ══════════════════════════════════════════════════════════════ */
+
+/* ── Per-sector palette overrides ────────────────────────────── */
+/* Default palette = AI & ML (Lavender Neural). Sector pages combine
+   .tcat1 with .tcat-<slug>; the per-slug rule below redefines the vars
+   and the shared .tcat1 rules pick them up via var() refs. */
+.tcat1, .tcat-ai-ml {
+  --c1: #E8E4F8;
+  --c2: #CBBFF2;
+  --c3: #A899E8;
+  --c4: #7C6DD4;
+  --c4-dark: #5B4DBE;
+  --c3-rgb: 168, 153, 232;
+  --c4-rgb: 124, 109, 212;
+}
+.tcat-software-saas {
+  --c1: #DDF0FB;
+  --c2: #B5D9F4;
+  --c3: #7DBDE9;
+  --c4: #3F8FD4;
+  --c4-dark: #2B6FB5;
+  --c3-rgb: 125, 189, 233;
+  --c4-rgb: 63, 143, 212;
+}
+.tcat-it-services-agencies {
+  --c1: #D8F5EE;
+  --c2: #9EE1CF;
+  --c3: #5DC9AB;
+  --c4: #1D9E75;
+  --c4-dark: #156B50;
+  --c3-rgb: 93, 201, 171;
+  --c4-rgb: 29, 158, 117;
+}
+.tcat-startups-innovation {
+  --c1: #FAEEE3;
+  --c2: #F5C4A8;
+  --c3: #F09A72;
+  --c4: #D96236;
+  --c4-dark: #B14820;
+  --c3-rgb: 240, 154, 114;
+  --c4-rgb: 217, 98, 54;
+}
+.tcat-local-businesses {
+  --c1: #EEF7DE;
+  --c2: #C9E49A;
+  --c3: #9ACE5D;
+  --c4: #659A22;
+  --c4-dark: #487014;
+  --c3-rgb: 154, 206, 93;
+  --c4-rgb: 101, 154, 34;
+}
+.tcat-professional-services {
+  --c1: #FAEEF4;
+  --c2: #F2C1D3;
+  --c3: #E694B4;
+  --c4: #C85580;
+  --c4-dark: #A93D63;
+  --c3-rgb: 230, 148, 180;
+  --c4-rgb: 200, 85, 128;
+}
 
 /* ── Background wash + decorative orbs ──────────────────────── */
 .tcat1 .tlp-hero {
   background: linear-gradient(180deg,
-    #E8E4F8 0%,
-    #EFECFA 38%,
-    #FAF8FE 75%,
+    var(--c1) 0%,
+    color-mix(in srgb, var(--c1) 45%, #FFFFFF) 38%,
+    color-mix(in srgb, var(--c1) 18%, #FFFFFF) 75%,
     #FFFFFF 100%);
-  border-bottom: 1px solid rgba(124, 109, 212, .12);
+  border-bottom: 1px solid rgba(var(--c4-rgb), .12);
 }
 
 /* Top-left orb — primary lavender */
 .tcat1 .tlp-hero-bg::before {
   background: radial-gradient(circle,
-    rgba(124, 109, 212, .22) 0%,
-    rgba(124, 109, 212, .06) 45%,
+    rgba(var(--c4-rgb), .22) 0%,
+    rgba(var(--c4-rgb), .06) 45%,
     transparent 70%);
 }
 /* Bottom-right orb — secondary mid-tone */
 .tcat1 .tlp-hero-bg::after {
   background: radial-gradient(circle,
-    rgba(168, 153, 232, .18) 0%,
-    rgba(168, 153, 232, .05) 45%,
+    rgba(var(--c3-rgb), .18) 0%,
+    rgba(var(--c3-rgb), .05) 45%,
     transparent 70%);
 }
 /* Central top glow — primary lavender */
 .tcat1 .tlp-hero-glow {
   background:
     radial-gradient(ellipse at center,
-      rgba(124, 109, 212, .18) 0%,
-      rgba(124, 109, 212, .05) 35%,
+      rgba(var(--c4-rgb), .18) 0%,
+      rgba(var(--c4-rgb), .05) 35%,
       transparent 70%);
 }
 
 /* ── Eyebrow (if/when used) ─────────────────────────────────── */
 .tcat1 .tlp-hero-eyebrow {
-  background: rgba(124, 109, 212, .10);
-  border: 1px solid rgba(124, 109, 212, .22);
-  color: #5B4DBE;
+  background: rgba(var(--c4-rgb), .10);
+  border: 1px solid rgba(var(--c4-rgb), .22);
+  color: var(--c4-dark);
   border-radius: 6px;       /* less pill, more chip — matches the boxy pass */
 }
 
@@ -70,17 +133,17 @@
   border-radius: 10px;
 }
 .tcat1 .tlp-hsr--on {
-  border-color: #7C6DD4;
+  border-color: var(--c4);
   box-shadow:
-    0 16px 40px -16px rgba(124, 109, 212, .30),
-    0 0 0 5px rgba(124, 109, 212, .10);
+    0 16px 40px -16px rgba(var(--c4-rgb), .30),
+    0 0 0 5px rgba(var(--c4-rgb), .10);
 }
-.tcat1 .tlp-hsr--on .tlp-hsr-ico { color: #7C6DD4; }
+.tcat1 .tlp-hsr--on .tlp-hsr-ico { color: var(--c4); }
 
 /* Spinner — lavender accents */
 .tcat1 .tlp-hsr-spin {
-  border-color: rgba(124, 109, 212, .20);
-  border-top-color: #7C6DD4;
+  border-color: rgba(var(--c4-rgb), .20);
+  border-top-color: var(--c4);
 }
 
 /* Clear (×) button */
@@ -88,29 +151,29 @@
   border-radius: 4px;
 }
 .tcat1 .tlp-hsr-clear:hover {
-  background: #E8E4F8;
-  color: #5B4DBE;
+  background: var(--c1);
+  color: var(--c4-dark);
 }
 
 /* Submit button — primary lavender */
 .tcat1 .tlp-hsr-go {
   border-radius: 8px;
-  background: #7C6DD4;
+  background: var(--c4);
 }
 .tcat1 .tlp-hsr-go:hover {
-  background: #5B4DBE;       /* derived darker for hover */
+  background: var(--c4-dark);       /* derived darker for hover */
 }
 
 /* ── Results dropdown ───────────────────────────────────────── */
 .tcat1 .tlp-hsr-pop {
   border-radius: 8px;
-  border-color: #CBBFF2;
+  border-color: var(--c2);
 }
 .tcat1 .tlp-hsr-row {
   border-radius: 4px;
 }
 .tcat1 .tlp-hsr-row:hover {
-  background: #E8E4F8;
+  background: var(--c1);
 }
 .tcat1 .tlp-hsr-row-logo {
   border-radius: 4px;
@@ -118,8 +181,8 @@
 
 /* Inline highlight under the search query — lavender wash */
 .tcat1 .tlp-hl {
-  background: #CBBFF2;
-  color: #5B4DBE;
+  background: var(--c2);
+  color: var(--c4-dark);
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -191,11 +254,11 @@
 }
 .tcat1 .tcat-pop-cat:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(124, 109, 212, .35);
+  box-shadow: 0 0 0 2px rgba(var(--c4-rgb), .35);
 }
 .tcat1 .tcat-pop-cat--on {
-  border-color: #7C6DD4;
-  color: #5B4DBE;
+  border-color: var(--c4);
+  color: var(--c4-dark);
 }
 
 /* ── Right area — see-all + grid ──────────────────────────── */
@@ -213,11 +276,11 @@
   font-size: 13px;
   font-weight: 700;
   letter-spacing: -.005em;
-  color: #7C6DD4;
+  color: var(--c4);
   text-decoration: none;
   transition: color .12s ease, transform .12s ease;
 }
-.tcat1 .tcat-pop-seeall:hover { color: #5B4DBE; }
+.tcat1 .tcat-pop-seeall:hover { color: var(--c4-dark); }
 
 /* 3-column product grid — drops to 2 then 1 on narrow widths. */
 .tcat1 .tcat-pop-grid {
@@ -244,9 +307,9 @@
   transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease;
 }
 .tcat1 .tcat-pop-card:hover {
-  border-color: #7C6DD4;
+  border-color: var(--c4);
   transform: translateY(-2px);
-  box-shadow: 0 8px 22px -10px rgba(124, 109, 212, .26);
+  box-shadow: 0 8px 22px -10px rgba(var(--c4-rgb), .26);
 }
 .tcat1 .tcat-pop-card-meta {
   display: flex; flex-direction: column;
@@ -283,7 +346,7 @@
   height: 14px;
 }
 .tcat1 .tcat-pop-star--off { color: #DAD5E8; }   /* faded lavender = "empty" */
-.tcat1 .tcat-pop-star--on  { color: #7C6DD4; }
+.tcat1 .tcat-pop-star--on  { color: var(--c4); }
 
 /* ── Card link reset — the card is wrapped in <Link>, so kill
       default underline + text colour inheritance. */
@@ -306,14 +369,14 @@
   display: inline-flex; align-items: center; justify-content: center;
   width: 54px; height: 54px;
   border-radius: 7px;          /* matches the boxy card radius */
-  background: #E8E4F8;
-  color: #5B4DBE;
+  background: var(--c1);
+  color: var(--c4-dark);
   font-size: 16.5px;
   font-weight: 800;
   letter-spacing: -.5px;
 }
 .tcat1 .tcat-pop-card:hover .tcat-pop-card-mark {
-  background: #CBBFF2;
+  background: var(--c2);
 }
 
 /* See-all arrow shifts on hover for a subtle nudge cue. */
@@ -344,7 +407,7 @@
   max-height: clamp(160px, 28vh, 240px);
   user-select: none;
   pointer-events: none;
-  filter: drop-shadow(0 12px 22px rgba(124, 109, 212, .18));
+  filter: drop-shadow(0 12px 22px rgba(var(--c4-rgb), .18));
 }
 /* Quiet line below the mascot — single muted sentence with the
    category name in dark bold. No card, no CTA pill. */
@@ -360,12 +423,12 @@
   font-weight: 800;
 }
 /* Solid lavender pill — same boxy radius (8px) as the hero submit
-   button. White text on #7C6DD4, hover deepens to #5B4DBE. */
+   button. White text on var(--c4), hover deepens to var(--c4-dark). */
 .tcat1 .tcat-pop-empty-link {
   display: inline-flex; align-items: center;
   gap: 8px;
   padding: 10px 18px;
-  background: #7C6DD4;
+  background: var(--c4);
   color: #FFFFFF;
   border-radius: 8px;
   font-size: 14px;
@@ -376,7 +439,7 @@
   transition: background .15s ease, transform .15s ease;
 }
 .tcat1 .tcat-pop-empty-link:hover {
-  background: #5B4DBE;
+  background: var(--c4-dark);
   transform: translateY(-1px);
 }
 .tcat1 .tcat-pop-empty-link:active { transform: translateY(0); }
@@ -404,35 +467,35 @@
   border-radius: 8px;                /* boxy theme — was 12px */
 }
 .tcat1 .tlp-cat-card:hover {
-  border-color: rgba(124, 109, 212, .40);
-  box-shadow: 0 14px 32px -16px rgba(124, 109, 212, .22);
+  border-color: rgba(var(--c4-rgb), .40);
+  box-shadow: 0 14px 32px -16px rgba(var(--c4-rgb), .22);
 }
-.tcat1 .tlp-cat-card-ico { color: #7C6DD4; }
-.tcat1 .tlp-cat-card-name:hover { color: #5B4DBE; }
+.tcat1 .tlp-cat-card-ico { color: var(--c4); }
+.tcat1 .tlp-cat-card-name:hover { color: var(--c4-dark); }
 
 /* "Services" / "Locations" pills — lavender-tinted chip instead
    of grey, matches the rest of the AI/ML palette. */
 .tcat1 .tlp-cat-card-pill {
-  background: #E8E4F8;
-  color: #5B4DBE;
+  background: var(--c1);
+  color: var(--c4-dark);
   border-radius: 5px;
 }
 
 /* Linked services chips */
-.tcat1 .tlp-cat-card-tag { color: #5B4DBE; }
-.tcat1 .tlp-cat-card-tag:hover { color: #7C6DD4; }
-.tcat1 .tlp-cat-card-tag--static { color: #5B4DBE; }
+.tcat1 .tlp-cat-card-tag { color: var(--c4-dark); }
+.tcat1 .tlp-cat-card-tag:hover { color: var(--c4); }
+.tcat1 .tlp-cat-card-tag--static { color: var(--c4-dark); }
 
 /* Separator bar between tags */
-.tcat1 .tlp-cat-card-bar { color: #CBBFF2; }
+.tcat1 .tlp-cat-card-bar { color: var(--c2); }
 
 /* Bottom CTA — matches the hero submit + empty-state pill (boxy
    8px radius, solid lavender, darker on hover). */
 .tcat1 .tlp-cats-cta-btn {
-  background: #7C6DD4;
+  background: var(--c4);
   border-radius: 8px;
 }
-.tcat1 .tlp-cats-cta-btn:hover { background: #5B4DBE; }
+.tcat1 .tlp-cats-cta-btn:hover { background: var(--c4-dark); }
 
 /* ══════════════════════════════════════════════════════════════
    "Find the top-rated companies in every category" — dark
@@ -454,8 +517,8 @@
 /* Top-centre lavender glow — replaces the mint glow */
 .tcat1 .tlp-firms::before {
   background: radial-gradient(ellipse,
-    rgba(168, 153, 232, .28) 0%,
-    rgba(124, 109, 212, .10) 35%,
+    rgba(var(--c3-rgb), .28) 0%,
+    rgba(var(--c4-rgb), .10) 35%,
     transparent 70%);
 }
 
@@ -463,7 +526,7 @@
 .tcat1 .tlp-firms-tab { border-radius: 8px; }
 .tcat1 .tlp-firms-tab.is-on {
   background: #FFFFFF;
-  color: #5B4DBE;
+  color: var(--c4-dark);
   border-color: #FFFFFF;
 }
 
@@ -474,31 +537,31 @@
 /* Stars on the firm cards — repaint from gold to the AI/ML
    lavender palette, matching PopularSection's stars. */
 .tcat1 .tlp-firm-star { color: #DAD5E8; }     /* empty */
-.tcat1 .tlp-firm-star.is-on { color: #7C6DD4; } /* filled */
+.tcat1 .tlp-firm-star.is-on { color: var(--c4); } /* filled */
 
 /* Right-aligned "X Reviews" → lavender (was blue #2563EB) */
-.tcat1 .tlp-firm-rev { color: #5B4DBE; }
-.tcat1 .tlp-firm-rev:hover { color: #7C6DD4; }
+.tcat1 .tlp-firm-rev { color: var(--c4-dark); }
+.tcat1 .tlp-firm-rev:hover { color: var(--c4); }
 /* "Be the first to review" CTA → lavender derived darker */
-.tcat1 .tlp-firm-rev--new { color: #5B4DBE; }
-.tcat1 .tlp-firm-rev--new:hover { color: #7C6DD4; }
+.tcat1 .tlp-firm-rev--new { color: var(--c4-dark); }
+.tcat1 .tlp-firm-rev--new:hover { color: var(--c4); }
 
 /* Empty-state card on the dark bg — match boxy radius */
 .tcat1 .tlp-firms-empty { border-radius: 8px; }
 .tcat1 .tlp-firms-empty-cta {
   border-radius: 6px;
-  color: #5B4DBE;
+  color: var(--c4-dark);
 }
-.tcat1 .tlp-firms-empty-cta:hover { background: #E8E4F8; }
+.tcat1 .tlp-firms-empty-cta:hover { background: var(--c1); }
 
 /* Bottom CTA — lavender pill, white text. Matches hero submit
    style for visual continuity. */
 .tcat1 .tlp-firms-cta-btn {
-  background: #7C6DD4;
+  background: var(--c4);
   color: #FFFFFF;
   border-radius: 8px;
 }
-.tcat1 .tlp-firms-cta-btn:hover { background: #5B4DBE; }
+.tcat1 .tlp-firms-cta-btn:hover { background: var(--c4-dark); }
 
 /* ══════════════════════════════════════════════════════════════
    "What verified buyers are saying" — lavender wash + boxy cards
@@ -520,7 +583,7 @@
   display: block;
   width: 56px;
   height: 4px;
-  background: #7C6DD4;
+  background: var(--c4);
   border-radius: 2px;
   margin: 14px auto 0;
 }
@@ -530,28 +593,28 @@
 .tcat1 .tlp-rev {
   border-radius: 8px;
   border-color: #EDE9F8;
-  box-shadow: 0 1px 2px rgba(124, 109, 212, .06);
+  box-shadow: 0 1px 2px rgba(var(--c4-rgb), .06);
 }
 .tcat1 .tlp-rev:hover {
-  border-color: rgba(124, 109, 212, .40);
-  box-shadow: 0 14px 32px -16px rgba(124, 109, 212, .26);
+  border-color: rgba(var(--c4-rgb), .40);
+  box-shadow: 0 14px 32px -16px rgba(var(--c4-rgb), .26);
 }
 
 /* Logo + name hover → lavender accent */
 .tcat1 .tlp-rev-logo { border-radius: 6px; }
-.tcat1 .tlp-rev-cname:hover { color: #5B4DBE; }
+.tcat1 .tlp-rev-cname:hover { color: var(--c4-dark); }
 
 /* Stars — same lavender pair as the rest of the page */
 .tcat1 .tlp-rev-star { color: #DAD5E8; }
-.tcat1 .tlp-rev-star.is-on { color: #7C6DD4; }
+.tcat1 .tlp-rev-star.is-on { color: var(--c4); }
 
 /* "Write a review" CTA — lavender pill, boxy radius */
 .tcat1 .tlp-revs-cta-btn {
-  background: #7C6DD4;
+  background: var(--c4);
   color: #FFFFFF;
   border-radius: 8px;
 }
-.tcat1 .tlp-revs-cta-btn:hover { background: #5B4DBE; }
+.tcat1 .tlp-revs-cta-btn:hover { background: var(--c4-dark); }
 
 /* ══════════════════════════════════════════════════════════════
    "Just launched on InfoWebWorld" — 2-col grid of horizontal
@@ -589,7 +652,7 @@
   display: block;
   width: 56px;
   height: 4px;
-  background: #7C6DD4;
+  background: var(--c4);
   border-radius: 2px;
   margin: 14px auto 0;
 }
@@ -622,14 +685,14 @@
   border-radius: 8px;
   text-decoration: none;
   color: inherit;
-  box-shadow: 0 1px 2px rgba(124, 109, 212, .06);
+  box-shadow: 0 1px 2px rgba(var(--c4-rgb), .06);
   transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease;
   min-width: 0;
 }
 .tcat1 .tcat-new-card:hover {
-  border-color: rgba(124, 109, 212, .42);
+  border-color: rgba(var(--c4-rgb), .42);
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px -12px rgba(124, 109, 212, .26);
+  box-shadow: 0 12px 28px -12px rgba(var(--c4-rgb), .26);
 }
 
 /* Logo column */
@@ -650,7 +713,7 @@
 .tcat1 .tcat-new-card-mark {
   font-size: 15px;
   font-weight: 800;
-  color: #5B4DBE;
+  color: var(--c4-dark);
   letter-spacing: -.5px;
 }
 
@@ -678,8 +741,8 @@
 .tcat1 .tcat-new-card-cat {
   flex-shrink: 0;
   padding: 2px 8px;
-  background: #E8E4F8;
-  color: #5B4DBE;
+  background: var(--c1);
+  color: var(--c4-dark);
   border-radius: 4px;
   font-size: 10.5px;
   font-weight: 700;
@@ -715,7 +778,7 @@
 }
 .tcat1 .tcat-new-card-time-ico {
   width: 11px; height: 11px;
-  color: #7C6DD4;
+  color: var(--c4);
 }
 .tcat1 .tcat-new-card-rate {
   display: inline-flex; align-items: center; gap: 4px;
@@ -723,7 +786,7 @@
 }
 .tcat1 .tcat-new-card-star {
   width: 12px; height: 12px;
-  color: #7C6DD4;
+  color: var(--c4);
 }
 .tcat1 .tcat-new-card-rate-num {
   font-weight: 700;
@@ -739,7 +802,7 @@
 .tcat1 .tcat-new-cta-btn {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 12px 22px;
-  background: #7C6DD4;
+  background: var(--c4);
   color: #FFFFFF;
   border-radius: 8px;
   font-size: 14px;
@@ -748,7 +811,7 @@
   text-decoration: none;
   transition: background .12s ease, transform .15s ease;
 }
-.tcat1 .tcat-new-cta-btn:hover { background: #5B4DBE; transform: translateY(-1px); }
+.tcat1 .tcat-new-cta-btn:hover { background: var(--c4-dark); transform: translateY(-1px); }
 .tcat1 .tcat-new-cta-btn:active { transform: translateY(0); }
 .tcat1 .tcat-new-cta-ico {
   width: 11px; height: 11px;
@@ -770,8 +833,8 @@
 }
 .tcat1 .tlp-pop::before {
   background: radial-gradient(ellipse,
-    rgba(168, 153, 232, .28) 0%,
-    rgba(124, 109, 212, .10) 35%,
+    rgba(var(--c3-rgb), .28) 0%,
+    rgba(var(--c4-rgb), .10) 35%,
     transparent 70%);
 }
 
@@ -779,33 +842,33 @@
   border-radius: 8px;
 }
 .tcat1 .tlp-pop-card:hover {
-  border-color: rgba(124, 109, 212, .42);
+  border-color: rgba(var(--c4-rgb), .42);
   box-shadow: 0 18px 36px -16px rgba(0, 0, 0, .38);
 }
 .tcat1 .tlp-pop-card-logo { border-radius: 6px; }
-.tcat1 .tlp-pop-card-name:hover { color: #5B4DBE; }
+.tcat1 .tlp-pop-card-name:hover { color: var(--c4-dark); }
 
 /* Stars — match the rest of the AI/ML page's lavender pair */
 .tcat1 .tlp-pop-star { color: #DAD5E8; }
-.tcat1 .tlp-pop-star.is-on { color: #7C6DD4; }
+.tcat1 .tlp-pop-star.is-on { color: var(--c4); }
 
 /* Reviews count + "Be the first to review" — lavender */
-.tcat1 .tlp-pop-card-rev { color: #5B4DBE; }
-.tcat1 .tlp-pop-card-rev:hover { color: #7C6DD4; }
-.tcat1 .tlp-pop-card-rev--new { color: #5B4DBE; }
-.tcat1 .tlp-pop-card-rev--new:hover { color: #7C6DD4; }
+.tcat1 .tlp-pop-card-rev { color: var(--c4-dark); }
+.tcat1 .tlp-pop-card-rev:hover { color: var(--c4); }
+.tcat1 .tlp-pop-card-rev--new { color: var(--c4-dark); }
+.tcat1 .tlp-pop-card-rev--new:hover { color: var(--c4); }
 
 /* Bottom CTA — lavender pill, white text */
 .tcat1 .tlp-pop-cta-btn {
-  background: #7C6DD4;
+  background: var(--c4);
   color: #FFFFFF;
   border-radius: 8px;
 }
-.tcat1 .tlp-pop-cta-btn:hover { background: #5B4DBE; }
+.tcat1 .tlp-pop-cta-btn:hover { background: var(--c4-dark); }
 
 /* Empty-state CTA on the dark bg — keep light card, lavender text */
-.tcat1 .tlp-pop-empty .tlp-pop-cta-btn { background: #7C6DD4; }
-.tcat1 .tlp-pop-empty .tlp-pop-cta-btn:hover { background: #5B4DBE; }
+.tcat1 .tlp-pop-empty .tlp-pop-cta-btn { background: var(--c4); }
+.tcat1 .tlp-pop-empty .tlp-pop-cta-btn:hover { background: var(--c4-dark); }
 
 /* ══════════════════════════════════════════════════════════════
    "Why trust InfoWebWorld" (.tlp-trust-*) — soft lavender wash
@@ -817,10 +880,10 @@
 }
 .tcat1 .tlp-trust-ico {
   background: #FFFFFF;
-  border: 1.5px solid rgba(124, 109, 212, .20);
-  color: #7C6DD4;
+  border: 1.5px solid rgba(var(--c4-rgb), .20);
+  color: var(--c4);
   border-radius: 10px;             /* boxier than the 14 source */
-  box-shadow: 0 6px 14px -8px rgba(124, 109, 212, .24);
+  box-shadow: 0 6px 14px -8px rgba(var(--c4-rgb), .24);
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -830,7 +893,7 @@
    ══════════════════════════════════════════════════════════════ */
 .tcat1 .tlp-comp {
   background: linear-gradient(180deg,
-    #E8E4F8 0%,
+    var(--c1) 0%,
     #F0EDFB 55%,
     #FFFFFF 100%);
 }
@@ -838,34 +901,34 @@
   border-radius: 8px;              /* boxy theme — was 12 */
 }
 .tcat1 .tlp-comp-card:hover {
-  color: #5B4DBE;
+  color: var(--c4-dark);
   box-shadow:
-    0 2px 0 rgba(124, 109, 212, .05),
-    0 22px 40px -18px rgba(124, 109, 212, .26);
+    0 2px 0 rgba(var(--c4-rgb), .05),
+    0 22px 40px -18px rgba(var(--c4-rgb), .26);
 }
-.tcat1 .tlp-comp-card:hover .tlp-comp-card-ico { color: #5B4DBE; }
+.tcat1 .tlp-comp-card:hover .tlp-comp-card-ico { color: var(--c4-dark); }
 
 /* ══════════════════════════════════════════════════════════════
    Final CTA (.tlp-fcta-*) — lavender gradient pill card with a
    single lavender corner glow; "List your business" CTA goes
-   solid #7C6DD4 to match the rest of the page.
+   solid var(--c4) to match the rest of the page.
    ══════════════════════════════════════════════════════════════ */
 .tcat1 .tlp-fcta-card {
   background: linear-gradient(135deg,
-    #E8E4F8 0%,
+    var(--c1) 0%,
     #F0EDFB 55%,
     #FCF7FE 100%);
-  border-color: rgba(124, 109, 212, .20);
+  border-color: rgba(var(--c4-rgb), .20);
   border-radius: 12px;             /* boxier than 20 */
 }
 .tcat1 .tlp-fcta-card::before {
   background: radial-gradient(circle,
-    rgba(124, 109, 212, .20) 0%,
-    rgba(124, 109, 212, .04) 45%,
+    rgba(var(--c4-rgb), .20) 0%,
+    rgba(var(--c4-rgb), .04) 45%,
     transparent 70%);
 }
 .tcat1 .tlp-fcta-btn {
-  background: #7C6DD4;
+  background: var(--c4);
   border-radius: 8px;
 }
-.tcat1 .tlp-fcta-btn:hover { background: #5B4DBE; }
+.tcat1 .tlp-fcta-btn:hover { background: var(--c4-dark); }

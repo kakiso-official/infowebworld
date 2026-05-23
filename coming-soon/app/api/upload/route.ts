@@ -66,9 +66,15 @@ function postToCpanel(body: Buffer, boundary: string): Promise<{ status: number;
 export async function POST(request: NextRequest) {
   try {
     const ip = await getClientIp()
-    const allowed = await checkRateLimit(ip, 'upload', 10, 600)
-    if (!allowed) {
-      return Response.json({ error: 'Too many uploads. Try again later.' }, { status: 429 })
+    /* Bypass the per-IP rate limit when the request originates from the
+       local dev server itself — the screenshot-capture script (and any
+       similar local batch job) needs to fire many uploads in a row. */
+    const isLocal = ip === '127.0.0.1' || ip === '::1' || ip === 'localhost' || ip.startsWith('::ffff:127.')
+    if (!isLocal) {
+      const allowed = await checkRateLimit(ip, 'upload', 10, 600)
+      if (!allowed) {
+        return Response.json({ error: 'Too many uploads. Try again later.' }, { status: 429 })
+      }
     }
 
     const formData = await request.formData()

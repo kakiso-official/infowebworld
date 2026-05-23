@@ -10,6 +10,8 @@ import SectorAllBrowse from '../components-category/SectorAllBrowse'
 import { getSectorMeta } from '../sector/sector-demo-data'
 import { query, queryOne } from '@/lib/db'
 import { CATEGORIES as STATIC_CATEGORIES } from '../config/categories-data'
+import { SECTOR_LANDINGS } from '@/lib/sector-landings'
+import SectorLandingPage from '../sector-landing/SectorLandingPage'
 
 /** No ISR — render dynamically on each request to avoid Vercel ISR write quota */
 export const dynamic = 'force-dynamic'
@@ -628,6 +630,17 @@ export default async function CategoryDetailRoute({
   const isSector = slug && L1_SLUGS.has(slug) && segments.length === 1
   const navSector = sectorSlug || (isSector ? slug : undefined)
   const isL2L3 = categorySlug && !L1_SLUGS.has(categorySlug)
+
+  /* ── L1 sector landing — sector-themed grid + real data sections.
+     Bypasses the legacy CategoryPage / SectorAllBrowse pipeline. Each of the
+     6 known sectors has a palette + hero copy + 6 marquee L2 cards configured
+     in lib/sector-landings.ts; the layout (HeroSearch + CategoriesSection +
+     Popular/TopFirms/Reviews/Launches/Tools/Trust/Compare/CTA) is shared
+     across all six, scoped by a .tcat-<slug> class that overrides the palette
+     CSS custom properties. */
+  if (isSector && slug && SECTOR_LANDINGS[slug]) {
+    return <SectorLandingPage cfg={SECTOR_LANDINGS[slug]} />
+  }
 
   /* ── Fetch ALL data server-side ── */
   let pageData: Awaited<ReturnType<typeof fetchCategoryPageData>> = null
