@@ -162,9 +162,20 @@ async function fetchCategoryForSeo(slug: string): Promise<CatSeo | null> {
        AND s.category_id IN (
          SELECT id FROM categories WHERE id = ? AND is_active = 1
          UNION SELECT id FROM categories WHERE parent_id = ? AND is_active = 1
-         UNION SELECT c3.id FROM categories c3 JOIN categories c2 ON c2.id = c3.parent_id WHERE c2.parent_id = ? AND c3.is_active = 1
+         UNION SELECT c3.id FROM categories c3
+           JOIN categories c2 ON c2.id = c3.parent_id
+          WHERE c2.parent_id = ? AND c3.is_active = 1
+         UNION SELECT c4.id FROM categories c4
+           JOIN categories c3 ON c3.id = c4.parent_id
+           JOIN categories c2 ON c2.id = c3.parent_id
+          WHERE c2.parent_id = ? AND c4.is_active = 1
+         UNION SELECT c5.id FROM categories c5
+           JOIN categories c4 ON c4.id = c5.parent_id
+           JOIN categories c3 ON c3.id = c4.parent_id
+           JOIN categories c2 ON c2.id = c3.parent_id
+          WHERE c2.parent_id = ? AND c5.is_active = 1
        )`,
-      [cid, cid, cid]
+      [cid, cid, cid, cid, cid]
     )
 
     const subRow = await queryOne(
@@ -229,11 +240,24 @@ async function fetchCategoryPageData(categorySlug: string) {
     const sectorRow = sectorSlug ? await queryOne('SELECT id FROM categories WHERE slug = ? AND level = 1', [sectorSlug]) : null
     const sectorId = sectorRow ? Number(sectorRow.id) : cid
 
-    // Shared WHERE clause for descendant category IDs (used by listings + count)
+    // Shared WHERE clause for descendant category IDs (used by listings + count).
+    // 5-level deep to support the AI&ML v3 tree (L1→L2→L3→L4→L5). Pre-v3 sectors
+    // only go 3 levels; the extra UNION clauses just match zero rows for them.
     const descendantWhere = `s.category_id IN (
       SELECT id FROM categories WHERE id = ? AND is_active = 1
       UNION SELECT id FROM categories WHERE parent_id = ? AND is_active = 1
-      UNION SELECT c3.id FROM categories c3 JOIN categories c2 ON c2.id = c3.parent_id WHERE c2.parent_id = ? AND c3.is_active = 1
+      UNION SELECT c3.id FROM categories c3
+        JOIN categories c2 ON c2.id = c3.parent_id
+       WHERE c2.parent_id = ? AND c3.is_active = 1
+      UNION SELECT c4.id FROM categories c4
+        JOIN categories c3 ON c3.id = c4.parent_id
+        JOIN categories c2 ON c2.id = c3.parent_id
+       WHERE c2.parent_id = ? AND c4.is_active = 1
+      UNION SELECT c5.id FROM categories c5
+        JOIN categories c4 ON c4.id = c5.parent_id
+        JOIN categories c3 ON c3.id = c4.parent_id
+        JOIN categories c2 ON c2.id = c3.parent_id
+       WHERE c2.parent_id = ? AND c5.is_active = 1
     )`
 
     // Round trip 2: all queries in parallel (7 queries, down from 10 — merged count + listings into one, removed duplicate count)
@@ -265,7 +289,7 @@ async function fetchCategoryPageData(categorySlug: string) {
          LEFT JOIN countries co ON co.id = s.country_id
          WHERE s.status IN ('active','paid') AND ${descendantWhere}
          ORDER BY s.approved_at DESC, s.created_at DESC LIMIT 20`,
-        [cid, cid, cid]
+        [cid, cid, cid, cid, cid]
       ),
       // Sector-scoped categories (only this L1 + its L2/L3 children)
       getSectorCategories(sectorId),
@@ -281,7 +305,7 @@ async function fetchCategoryPageData(categorySlug: string) {
     // Get total count from a single lightweight query (replaces 2 duplicate count queries)
     const countRow = await queryOne(
       `SELECT COUNT(*) as cnt FROM submissions s WHERE s.status IN ('active','paid') AND ${descendantWhere}`,
-      [cid, cid, cid]
+      [cid, cid, cid, cid, cid]
     ).catch(() => ({ cnt: 0 }))
 
     const totalCount = Number(countRow?.cnt ?? 0)

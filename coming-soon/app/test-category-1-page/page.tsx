@@ -52,10 +52,12 @@ async function getPopularByL2(): Promise<PopL2[]> {
       `SELECT c.id, c.slug, c.name,
               (SELECT COUNT(*)
                  FROM submissions s
-                 LEFT JOIN categories sc  ON sc.id  = s.category_id
-                 LEFT JOIN categories scp ON scp.id = sc.parent_id
+                 LEFT JOIN categories sc   ON sc.id   = s.category_id
+                 LEFT JOIN categories scp  ON scp.id  = sc.parent_id
+                 LEFT JOIN categories scgp ON scgp.id = scp.parent_id
+                 LEFT JOIN categories scggp ON scggp.id = scgp.parent_id
                 WHERE s.status IN ('active', 'paid')
-                  AND (sc.id = c.id OR scp.id = c.id)
+                  AND (sc.id = c.id OR scp.id = c.id OR scgp.id = c.id OR scggp.id = c.id)
               ) AS listing_count
          FROM categories c
         WHERE c.level = 2
@@ -78,13 +80,15 @@ async function getPopularByL2(): Promise<PopL2[]> {
                   WHERE listing_id = s.id AND status = 'approved') AS rating_count,
                 COALESCE(s.listing_mode, 'product') AS listing_mode
            FROM submissions s
-           LEFT JOIN categories sc  ON sc.id  = s.category_id
-           LEFT JOIN categories scp ON scp.id = sc.parent_id
+           LEFT JOIN categories sc    ON sc.id    = s.category_id
+           LEFT JOIN categories scp   ON scp.id   = sc.parent_id
+           LEFT JOIN categories scgp  ON scgp.id  = scp.parent_id
+           LEFT JOIN categories scggp ON scggp.id = scgp.parent_id
           WHERE s.status IN ('active', 'paid')
-            AND (sc.id = ? OR scp.id = ?)
+            AND (sc.id = ? OR scp.id = ? OR scgp.id = ? OR scggp.id = ?)
           ORDER BY rating_avg DESC, rating_count DESC, s.created_at DESC
           LIMIT 9`,
-        [cat.id, cat.id]
+        [cat.id, cat.id, cat.id, cat.id]
       )
       return {
         slug: cat.slug,
@@ -132,12 +136,14 @@ async function getLatestAIMLReviews(limit = 8): Promise<ReviewRow[]> {
          FROM reviews r
          JOIN business_users u ON u.id = r.user_id
          JOIN submissions    s ON s.id = r.listing_id
-         LEFT JOIN categories c   ON c.id   = s.category_id
-         LEFT JOIN categories cp  ON cp.id  = c.parent_id
-         LEFT JOIN categories cgp ON cgp.id = cp.parent_id
+         LEFT JOIN categories c     ON c.id     = s.category_id
+         LEFT JOIN categories cp    ON cp.id    = c.parent_id
+         LEFT JOIN categories cgp   ON cgp.id   = cp.parent_id
+         LEFT JOIN categories cggp  ON cggp.id  = cgp.parent_id
+         LEFT JOIN categories cgggp ON cgggp.id = cggp.parent_id
         WHERE r.status = 'approved'
           AND s.status IN ('active','paid')
-          AND (c.slug = 'ai-ml' OR cp.slug = 'ai-ml' OR cgp.slug = 'ai-ml')
+          AND (c.slug = 'ai-ml' OR cp.slug = 'ai-ml' OR cgp.slug = 'ai-ml' OR cggp.slug = 'ai-ml' OR cgggp.slug = 'ai-ml')
         ORDER BY r.created_at DESC
         LIMIT ?`,
       [limit]
@@ -189,11 +195,13 @@ async function getRecentAIMLLaunches(limit = 8): Promise<LaunchRow[]> {
               (SELECT COUNT(*)    FROM reviews
                 WHERE listing_id = s.id AND status = 'approved') AS rating_count
          FROM submissions s
-         LEFT JOIN categories c   ON c.id   = s.category_id
-         LEFT JOIN categories cp  ON cp.id  = c.parent_id
-         LEFT JOIN categories cgp ON cgp.id = cp.parent_id
+         LEFT JOIN categories c     ON c.id     = s.category_id
+         LEFT JOIN categories cp    ON cp.id    = c.parent_id
+         LEFT JOIN categories cgp   ON cgp.id   = cp.parent_id
+         LEFT JOIN categories cggp  ON cggp.id  = cgp.parent_id
+         LEFT JOIN categories cgggp ON cgggp.id = cggp.parent_id
         WHERE s.status IN ('active','paid')
-          AND (c.slug = 'ai-ml' OR cp.slug = 'ai-ml' OR cgp.slug = 'ai-ml')
+          AND (c.slug = 'ai-ml' OR cp.slug = 'ai-ml' OR cgp.slug = 'ai-ml' OR cggp.slug = 'ai-ml' OR cgggp.slug = 'ai-ml')
         ORDER BY COALESCE(s.approved_at, s.created_at) DESC
         LIMIT ?`,
       [limit]
@@ -243,11 +251,13 @@ async function getPopularAiTools(limit = 6): Promise<PopFirmRow[]> {
               (SELECT COUNT(*)   FROM reviews
                 WHERE listing_id = s.id AND status = 'approved') AS rating_count
          FROM submissions s
-         LEFT JOIN categories c   ON c.id   = s.category_id
-         LEFT JOIN categories cp  ON cp.id  = c.parent_id
-         LEFT JOIN categories cgp ON cgp.id = cp.parent_id
+         LEFT JOIN categories c     ON c.id     = s.category_id
+         LEFT JOIN categories cp    ON cp.id    = c.parent_id
+         LEFT JOIN categories cgp   ON cgp.id   = cp.parent_id
+         LEFT JOIN categories cggp  ON cggp.id  = cgp.parent_id
+         LEFT JOIN categories cgggp ON cgggp.id = cggp.parent_id
         WHERE s.status IN ('active','paid')
-          AND (c.slug = 'ai-ml' OR cp.slug = 'ai-ml' OR cgp.slug = 'ai-ml')
+          AND (c.slug = 'ai-ml' OR cp.slug = 'ai-ml' OR cgp.slug = 'ai-ml' OR cggp.slug = 'ai-ml' OR cgggp.slug = 'ai-ml')
         ORDER BY rating_avg DESC, s.created_at DESC
         LIMIT ?`,
       [limit]

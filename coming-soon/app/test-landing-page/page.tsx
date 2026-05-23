@@ -53,14 +53,16 @@ async function getFirmsForSector(sectorSlug: string): Promise<FirmRow[]> {
                 WHERE listing_id = s.id AND status = 'approved') AS rating_count,
               COALESCE(s.listing_mode, 'product') AS listing_mode
          FROM submissions s
-         LEFT JOIN categories c    ON c.id   = s.category_id
-         LEFT JOIN categories cp   ON cp.id  = c.parent_id
-         LEFT JOIN categories cgp  ON cgp.id = cp.parent_id
+         LEFT JOIN categories c     ON c.id     = s.category_id
+         LEFT JOIN categories cp    ON cp.id    = c.parent_id
+         LEFT JOIN categories cgp   ON cgp.id   = cp.parent_id
+         LEFT JOIN categories cggp  ON cggp.id  = cgp.parent_id
+         LEFT JOIN categories cgggp ON cgggp.id = cggp.parent_id
         WHERE s.status IN ('active','paid')
-          AND (c.slug = ? OR cp.slug = ? OR cgp.slug = ?)
+          AND (c.slug = ? OR cp.slug = ? OR cgp.slug = ? OR cggp.slug = ? OR cgggp.slug = ?)
         ORDER BY rating_avg DESC, s.created_at DESC
         LIMIT 9`,
-      [sectorSlug, sectorSlug, sectorSlug]
+      [sectorSlug, sectorSlug, sectorSlug, sectorSlug, sectorSlug]
     )
     return rows.map(r => ({
       slug: r.slug,
@@ -153,11 +155,13 @@ async function getPopularAiTools(limit = 6): Promise<PopFirmRow[]> {
               (SELECT COUNT(*)   FROM reviews
                 WHERE listing_id = s.id AND status = 'approved') AS rating_count
          FROM submissions s
-         LEFT JOIN categories c   ON c.id   = s.category_id
-         LEFT JOIN categories cp  ON cp.id  = c.parent_id
-         LEFT JOIN categories cgp ON cgp.id = cp.parent_id
+         LEFT JOIN categories c     ON c.id     = s.category_id
+         LEFT JOIN categories cp    ON cp.id    = c.parent_id
+         LEFT JOIN categories cgp   ON cgp.id   = cp.parent_id
+         LEFT JOIN categories cggp  ON cggp.id  = cgp.parent_id
+         LEFT JOIN categories cgggp ON cgggp.id = cggp.parent_id
         WHERE s.status IN ('active','paid')
-          AND (c.slug = 'ai-ml' OR cp.slug = 'ai-ml' OR cgp.slug = 'ai-ml')
+          AND (c.slug = 'ai-ml' OR cp.slug = 'ai-ml' OR cgp.slug = 'ai-ml' OR cggp.slug = 'ai-ml' OR cgggp.slug = 'ai-ml')
         ORDER BY rating_avg DESC, s.created_at DESC
         LIMIT ?`,
       [limit]

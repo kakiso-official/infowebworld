@@ -69,7 +69,8 @@ export async function GET(
       )
     }
 
-    // Count active listings across this category + all descendants (single query)
+    // Count active listings across this category + all descendants (single query).
+    // 5-level deep to support AI&ML v3 tree.
     const cid = Number(category.id)
     const countRow = await queryOne(
       `SELECT COUNT(*) as count FROM submissions s
@@ -77,9 +78,20 @@ export async function GET(
        AND s.category_id IN (
          SELECT id FROM categories WHERE id = ? AND is_active = 1
          UNION SELECT id FROM categories WHERE parent_id = ? AND is_active = 1
-         UNION SELECT c3.id FROM categories c3 JOIN categories c2 ON c2.id = c3.parent_id WHERE c2.parent_id = ? AND c3.is_active = 1
+         UNION SELECT c3.id FROM categories c3
+           JOIN categories c2 ON c2.id = c3.parent_id
+          WHERE c2.parent_id = ? AND c3.is_active = 1
+         UNION SELECT c4.id FROM categories c4
+           JOIN categories c3 ON c3.id = c4.parent_id
+           JOIN categories c2 ON c2.id = c3.parent_id
+          WHERE c2.parent_id = ? AND c4.is_active = 1
+         UNION SELECT c5.id FROM categories c5
+           JOIN categories c4 ON c4.id = c5.parent_id
+           JOIN categories c3 ON c3.id = c4.parent_id
+           JOIN categories c2 ON c2.id = c3.parent_id
+          WHERE c2.parent_id = ? AND c5.is_active = 1
        )`,
-      [cid, cid, cid]
+      [cid, cid, cid, cid, cid]
     )
 
     return Response.json(
