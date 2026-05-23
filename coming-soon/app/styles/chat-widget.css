@@ -38,9 +38,10 @@
   right: 24px;
   display: inline-flex;
   align-items: center;
-  gap: 14px;
+  justify-content: center;
   height: 76px;
-  padding: 6px 32px 6px 6px;
+  width: 76px;
+  padding: 6px;
   /* Two-layer background: white inside (padding-box) + animated conic
      gradient on the border (border-box). The 4px transparent border is
      the canvas the gradient paints into. */
@@ -91,13 +92,6 @@
    off to the right. Nudge it left so the combined mass sits dead centre. */
 .iwc-launcher-icon > svg { transform: translateX(-3px) }
 .iwc-launcher:hover .iwc-launcher-icon { transform: rotate(-12deg) scale(1.04) }
-
-.iwc-launcher-label {
-  font-size: 17px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-}
 
 /* ─── Expanded panel ─────────────────────────────────────────── */
 .iwc-panel {

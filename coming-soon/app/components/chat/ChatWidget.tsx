@@ -246,7 +246,6 @@ export default function ChatWidget() {
           <span className="iwc-launcher-icon" aria-hidden="true">
             <Sparkle size={40} />
           </span>
-          <span className="iwc-launcher-label">I need a recommendation…</span>
         </button>
       )}
 
