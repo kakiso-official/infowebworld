@@ -1,0 +1,90 @@
+{
+  "generated_at": "2026-05-23T11:33:00.962Z",
+  "source": "cdbrisgy_infowebworld@server46.hostwhitelabel.com",
+  "software_saas_root": {
+    "id": 5,
+    "name": "Software & SaaS",
+    "slug": "software-saas"
+  },
+  "category_counts_to_delete": {
+    "total": 1820,
+    "by_level": {
+      "L2": 37,
+      "L3": 1783
+    }
+  },
+  "listing_types_to_delete": 1770,
+  "seo_content_to_delete": 1,
+  "submissions": [
+    {
+      "id": 32,
+      "uuid": "e5be0a92-5376-11f1-905d-bc2411b59bc1",
+      "company_name": "Salesforce",
+      "tagline": "The #1 AI CRM — unite teams around the customer with Einstein AI",
+      "description": "Salesforce is the world's largest CRM platform, serving more than 150,000 companies including most of the Fortune 500. Founded in 1999, Salesforce pioneered the SaaS model and now spans Sales Cloud, Service Cloud, Marketing Cloud, Commerce Cloud, Data Cloud, and Slack — all unified by the Einstein 1 platform, Salesforce's generative and agentic AI layer. Einstein Copilot delivers AI-powered conver",
+      "status": "active",
+      "old_l1": "Software & SaaS",
+      "old_l2": "Sales & CRM Software",
+      "old_l3": "All-in-One CRM Software",
+      "old_cat_slug": "all-in-one-crm-software",
+      "old_cat_level": 3,
+      "old_listing_type": null
+    },
+    {
+      "id": 33,
+      "uuid": "e5c69028-5376-11f1-905d-bc2411b59bc1",
+      "company_name": "HubSpot",
+      "tagline": "Smart CRM platform — marketing, sales, service, and content on one connected engine",
+      "description": "HubSpot is the leading CRM platform for scaling businesses, serving over 230,000 customers in more than 135 countries. Founded in 2006 by Brian Halligan and Dharmesh Shah at MIT, HubSpot popularized \"inbound marketing\" and now offers a fully unified Smart CRM with five hubs — Marketing, Sales, Service, Content, and Operations — plus Commerce Hub launched in 2024. Breeze, HubSpot's generative AI la",
+      "status": "active",
+      "old_l1": "Software & SaaS",
+      "old_l2": "Sales & CRM Software",
+      "old_l3": "All-in-One CRM Software",
+      "old_cat_slug": "all-in-one-crm-software",
+      "old_cat_level": 3,
+      "old_listing_type": null
+    },
+    {
+      "id": 34,
+      "uuid": "e5ce39e4-5376-11f1-905d-bc2411b59bc1",
+      "company_name": "Zoho CRM",
+      "tagline": "Affordable, customizable CRM that grows with your business — backed by Zoho One",
+      "description": "Zoho CRM is the flagship CRM product from Zoho Corporation, a privately-held global SaaS company founded in 1996 by Sridhar Vembu. With more than 250,000 businesses using Zoho CRM in 180+ countries, it's known for an exceptional price-to-feature ratio and as the centerpiece of Zoho One — a $37/user/month all-employee bundle that includes 45+ Zoho apps spanning sales, marketing, finance, HR, IT, an",
+      "status": "active",
+      "old_l1": "Software & SaaS",
+      "old_l2": "Sales & CRM Software",
+      "old_l3": "All-in-One CRM Software",
+      "old_cat_slug": "all-in-one-crm-software",
+      "old_cat_level": 3,
+      "old_listing_type": null
+    },
+    {
+      "id": 35,
+      "uuid": "e5d55854-5376-11f1-905d-bc2411b59bc1",
+      "company_name": "Pipedrive",
+      "tagline": "Easy-to-use sales CRM built by salespeople, for salespeople",
+      "description": "Pipedrive is a sales-focused CRM used by 100,000+ companies in 179 countries. Founded in 2010 in Tallinn, Estonia, Pipedrive was built by salespeople frustrated with bloated, overly-engineered enterprise CRMs. The result is the most pipeline-centric CRM on the market — a visual, drag-and-drop kanban-style view that makes \"what deal needs attention next?\" instantly obvious. Pipedrive has been profi",
+      "status": "active",
+      "old_l1": "Software & SaaS",
+      "old_l2": "Sales & CRM Software",
+      "old_l3": "All-in-One CRM Software",
+      "old_cat_slug": "all-in-one-crm-software",
+      "old_cat_level": 3,
+      "old_listing_type": null
+    },
+    {
+      "id": 36,
+      "uuid": "e5dc6cb4-5376-11f1-905d-bc2411b59bc1",
+      "company_name": "Freshsales",
+      "tagline": "AI-powered sales CRM by Freshworks — built for high-velocity sales teams",
+      "description": "Freshsales is the sales CRM from Freshworks (NASDAQ: FRSH), the publicly-traded SaaS company behind Freshdesk, Freshchat, Freshservice, and Freshcaller. Founded in 2010 by Girish Mathrubootham and headquartered in San Mateo, California, Freshworks serves 73,000+ businesses globally. Freshsales pairs an intuitive sales pipeline with Freddy AI — generative AI for email drafting, deal predictions, an",
+      "status": "active",
+      "old_l1": "Software & SaaS",
+      "old_l2": "Sales & CRM Software",
+      "old_l3": "All-in-One CRM Software",
+      "old_cat_slug": "all-in-one-crm-software",
+      "old_cat_level": 3,
+      "old_listing_type": null
+    }
+  ]
+}
