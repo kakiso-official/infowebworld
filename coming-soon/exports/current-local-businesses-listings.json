@@ -1,0 +1,18 @@
+{
+  "generated_at": "2026-05-23T12:37:29.153Z",
+  "local_businesses_root": {
+    "id": 3,
+    "name": "Local Businesses",
+    "slug": "local-businesses"
+  },
+  "category_counts_to_delete": {
+    "total": 3322,
+    "by_level": {
+      "L2": 25,
+      "L3": 3297
+    }
+  },
+  "listing_types_to_delete": 1649,
+  "seo_content_to_delete": 0,
+  "submissions": []
+}
