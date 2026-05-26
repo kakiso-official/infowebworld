@@ -469,28 +469,55 @@
 }
 
 /* ─── Mobile ─────────────────────────────────────────────────── */
+/* Launcher is icon-only — keep it a true circle on small screens.
+   The desktop block sets width/height/padding for a 76×76 disc; on
+   mobile we shrink to a 60×60 disc with symmetric padding so the
+   icon stays dead-centre and the conic gradient ring renders evenly.
+   `max(16px, env(safe-area-inset-bottom))` lifts the button above
+   the iPhone home indicator so it isn't half-hidden. */
 @media (max-width: 600px) {
   .iwc-launcher {
-    bottom: 16px;
+    bottom: max(16px, env(safe-area-inset-bottom, 16px));
     right: 16px;
-    height: 66px;
-    padding: 5px 26px 5px 5px;
-    gap: 12px;
-    border-width: 3px;             /* slightly thinner on small screens */
+    width: 60px;
+    height: 60px;
+    padding: 4px;
+    border-width: 3px;
   }
-  .iwc-launcher-icon { width: 56px; height: 56px }
-  .iwc-launcher-label { font-size: 15px }
+  .iwc-launcher-icon { width: 50px; height: 50px }
+  .iwc-launcher-icon > svg { width: 30px; height: 30px }
 
   .iwc-panel {
     inset: auto 0 0 0;
     width: 100vw;
     max-width: 100vw;
+    /* dvh tracks the dynamic viewport (iOS Safari address bar);
+       vh fallback for browsers that don't support dvh. */
     height: 88vh;
+    height: 88dvh;
     max-height: 88vh;
+    max-height: 88dvh;
     border-radius: 16px 16px 0 0;
     border-left: none;
     border-right: none;
     border-bottom: none;
     box-shadow: 0 -10px 32px rgba(17, 24, 28, 0.10);
   }
+  /* Keep the "Powered by" footer clear of the iPhone home indicator. */
+  .iwc-foot {
+    padding-bottom: max(8px, env(safe-area-inset-bottom, 8px));
+  }
+}
+
+/* Very narrow phones (≤360px) — tighten input row + bubbles a touch
+   so a 13px composer button doesn't crowd the textarea. */
+@media (max-width: 360px) {
+  .iwc-launcher {
+    width: 56px;
+    height: 56px;
+  }
+  .iwc-launcher-icon { width: 46px; height: 46px }
+  .iwc-launcher-icon > svg { width: 26px; height: 26px }
+  .iwc-input-row { padding: 8px 10px; gap: 6px }
+  .iwc-scroll { padding: 12px }
 }
