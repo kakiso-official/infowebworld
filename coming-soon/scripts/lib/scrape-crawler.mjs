@@ -110,3 +110,8 @@ export const FAQ_FALLBACKS = [
 export const ABOUT_FALLBACKS = [
   '/about', '/about-us', '/company', '/team', '/who-we-are',
 ]
+export const INTEGRATIONS_FALLBACKS = [
+  '/integrations', '/apps', '/marketplace', '/partners',
+  '/works-with', '/ecosystem', '/connectors', '/extensions',
+  '/integrations/all', '/app-directory',
+]

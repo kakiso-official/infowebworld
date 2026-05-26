@@ -36,6 +36,7 @@ import {
   FEATURES_FALLBACKS,
   FAQ_FALLBACKS,
   ABOUT_FALLBACKS,
+  INTEGRATIONS_FALLBACKS,
 } from './scrape-crawler.mjs'
 import { captureScreenshot } from './scrape-screenshot.mjs'
 import { cleanHtml } from './scrape-clean.mjs'
@@ -97,6 +98,7 @@ export async function scrapeListing({
   let pricingPage = null
   let featuresPage = null
   let faqPage = null
+  let integrationsPage = null
   let homeShotUrl = null
   let secondaryShotUrl = null
   let extracted = null
@@ -170,6 +172,23 @@ export async function scrapeListing({
       }
     })
 
+    /* Dedicated integrations page — most SaaS products keep their
+       integration directory at /integrations or /apps. Without this
+       crawl step the features extract has no real input to fill the
+       integrations array from, and we end up with empty lists. */
+    integrationsPage = await cachedStepOptional(ctx, 'crawl-integrations', 'crawl', null, async () => {
+      const res = await fetchWithFallback(job.website, INTEGRATIONS_FALLBACKS)
+      if (!res) return null
+      ctx.pages++
+      return {
+        input_url: res.attemptedUrl,
+        output_status_code: res.status,
+        output_bytes: res.bytes,
+        output_excerpt: (res.title || '').slice(0, 200),
+        _data: res,
+      }
+    })
+
     // ─── Screenshots ───────────────────────────────────────────────────
     if (!screenshotOutDir) screenshotOutDir = join(process.cwd(), 'public', 'scrape-screenshots')
     mkdirSync(screenshotOutDir, { recursive: true })
@@ -196,7 +215,7 @@ export async function scrapeListing({
     // ─── Extract passes ────────────────────────────────────────────────
     const baseInfo = await extractPass(ctx, 'extract-base', baseInfoSchema, () => buildBasePrompt(job, homePage._data, aboutPage?._data))
     const pricingInfo = await extractPass(ctx, 'extract-pricing', pricingSchema, () => buildPricingPrompt(job, pricingPage?._data, homePage._data))
-    const featuresInfo = await extractPass(ctx, 'extract-features', featuresSchema, () => buildFeaturesPrompt(job, featuresPage?._data, homePage._data))
+    const featuresInfo = await extractPass(ctx, 'extract-features', featuresSchema, () => buildFeaturesPrompt(job, featuresPage?._data, homePage._data, integrationsPage?._data))
     const faqsInfo = await extractPass(ctx, 'extract-faqs', faqsSchema, () => buildFaqsPrompt(job, faqPage?._data, pricingPage?._data, featuresPage?._data))
     const classification = await extractPass(ctx, 'extract-classify', classificationSchema, () => buildClassifyPrompt(job, baseInfo, pricingInfo, featuresInfo, faqsInfo))
 
@@ -539,16 +558,26 @@ function buildPricingPrompt(job, pricing, home) {
   ].join('\n')
 }
 
-function buildFeaturesPrompt(job, features, home) {
-  const featuresHtml = features ? cleanHtml(features.html, 28000) : ''
-  const homeHtml = cleanHtml(home?.html ?? '', features ? 12000 : 32000)
+function buildFeaturesPrompt(job, features, home, integrations) {
+  /* Token budget per pass is shared across the available pages. When we
+     have a dedicated integrations page, give it real space (28k tokens)
+     so the LLM can read the whole directory. Trim the others to fit. */
+  const hasIntegrations = !!integrations
+  const hasFeatures = !!features
+  const featuresHtml      = hasFeatures      ? cleanHtml(features.html,     hasIntegrations ? 18000 : 28000) : ''
+  const integrationsHtml  = hasIntegrations  ? cleanHtml(integrations.html, 28000) : ''
+  const homeHtml          = cleanHtml(home?.html ?? '', hasFeatures || hasIntegrations ? 10000 : 32000)
+
+  const sections = []
+  if (hasFeatures) sections.push(`=== FEATURES PAGE HTML (${features.finalUrl}) ===\n${featuresHtml}`)
+  if (hasIntegrations) sections.push(`=== INTEGRATIONS PAGE HTML (${integrations.finalUrl}) ===\n${integrationsHtml}`)
+  sections.push(`=== HOME PAGE HTML (${home?.finalUrl}) ===\n${homeHtml}`)
+
   return [
     `Extract features + integrations + apps for: ${job.company_name || job.slug}`,
     `Website: ${job.website}`,
     ``,
-    features
-      ? `=== FEATURES PAGE HTML (${features.finalUrl}) ===\n${featuresHtml}\n\n=== HOME PAGE (for context) ===\n${homeHtml}`
-      : `=== HOME PAGE (no dedicated features page) ===\n${homeHtml}`,
+    sections.join('\n\n'),
     ``,
     `=== EXTRACTION RULES ===`,
     ``,
@@ -566,11 +595,23 @@ function buildFeaturesPrompt(job, features, home) {
     `  key_features plus more granular items (integrations stubs, format support,`,
     `  export options, etc.). Real things mentioned on the page, no padding.`,
     ``,
-    `integrations: at least 5 if any are visible. Each = name (the integration target),`,
-    `  website (canonical URL — e.g. https://www.salesforce.com), description (1`,
-    `  sentence explaining what the integration does or what it enables).`,
-    `  Pull from "Integrations" sections, logo walls, "Works with X" mentions.`,
-    `  If NO integrations are visible anywhere, return [] rather than inventing.`,
+    `integrations: AT LEAST 8 if any are visible, up to 30. This is one of the`,
+    `  most important fields for the listing — work HARD to find them.`,
+    `  Sources to search across all supplied HTML:`,
+    `    - dedicated integrations / apps / partners / marketplace pages`,
+    `    - logo walls ("Trusted by", "Works with", "Connects with")`,
+    `    - alt-text + image filenames + brand names in <img> tags`,
+    `    - feature copy that mentions specific products ("syncs with Slack",`,
+    `      "exports to Notion", "connects to Salesforce")`,
+    `    - pricing-tier feature lists that name specific tools`,
+    `  Each integration = {`,
+    `    name: the integration target as a brand (e.g. "Slack", "Microsoft Teams"),`,
+    `    website: canonical URL of the integration target (e.g. https://slack.com),`,
+    `    description: 1 sentence explaining what the integration does — be specific`,
+    `      ("Send recorded videos directly to a Slack channel" not "Connects with Slack")`,
+    `  }`,
+    `  Do NOT invent integrations — only list brands genuinely named on the supplied`,
+    `  HTML. If absolutely none visible after a hard search, return [].`,
     ``,
     `languages: spoken/output languages supported (English, Spanish, etc.). Not`,
     `  programming languages.`,
