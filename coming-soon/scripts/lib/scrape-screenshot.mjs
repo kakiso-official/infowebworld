@@ -11,7 +11,7 @@
  * Later phases can swap in Vercel Blob without changing callers.
  */
 import { chromium } from 'playwright'
-import { mkdirSync } from 'node:fs'
+import { mkdirSync, readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 
 const REAL_UA =
@@ -87,6 +87,39 @@ async function dismissOverlays(page) {
       await page.waitForTimeout(300)
     }
   }
+}
+
+/**
+ * Upload a captured screenshot to the site's /api/upload endpoint, which
+ * proxies to cPanel storage and returns a /api/file/<path> URL that
+ * Vercel's edge can serve in production.
+ *
+ * Falls back to throwing — caller decides whether to use local path
+ * instead. The existing capture-screenshots.mjs script uses the same
+ * endpoint, so the 100 AI/ML listings already have their screenshots
+ * there; new scrapes use the same storage.
+ *
+ * @param {string} filePath           Absolute path to the local .jpg file
+ * @param {string} filename           Suggested filename for the upload
+ * @param {string} [siteBase]         e.g. http://localhost:3000 (default)
+ *                                    or https://infowebworld.com
+ * @returns {Promise<string>}         Public URL (e.g. /api/file/logos/abc.jpg)
+ */
+export async function uploadScreenshot(filePath, filename, siteBase = 'http://localhost:3000') {
+  const buf = readFileSync(filePath)
+  const fd = new FormData()
+  const blob = new Blob([buf], { type: 'image/jpeg' })
+  fd.append('file', blob, filename)
+  const resp = await fetch(`${siteBase}/api/upload`, { method: 'POST', body: fd })
+  if (!resp.ok) {
+    const text = await resp.text().catch(() => '')
+    throw new Error(`upload HTTP ${resp.status}: ${text.slice(0, 200)}`)
+  }
+  const json = await resp.json().catch(() => ({}))
+  if (!json.ok || !json.url) {
+    throw new Error(`bad upload response: ${JSON.stringify(json).slice(0, 200)}`)
+  }
+  return json.url
 }
 
 /**

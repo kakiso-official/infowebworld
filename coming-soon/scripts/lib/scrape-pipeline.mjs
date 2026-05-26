@@ -38,7 +38,7 @@ import {
   ABOUT_FALLBACKS,
   INTEGRATIONS_FALLBACKS,
 } from './scrape-crawler.mjs'
-import { captureScreenshot } from './scrape-screenshot.mjs'
+import { captureScreenshot, uploadScreenshot } from './scrape-screenshot.mjs'
 import { cleanHtml } from './scrape-clean.mjs'
 import { getCached, setCached } from './scrape-cache.mjs'
 import {
@@ -196,7 +196,15 @@ export async function scrapeListing({
     await step(ctx, 'screenshot-home', 'screenshot', { input_url: job.website }, async () => {
       const file = join(screenshotOutDir, `${job.slug}-home.jpg`)
       await captureScreenshot(job.website, file)
-      homeShotUrl = `${publicScreenshotBase}/${job.slug}-home.jpg`
+      // Upload to cPanel via /api/upload so the URL works on production
+      // (Vercel deploy doesn't include public/scrape-screenshots/).
+      try {
+        const siteBase = ctx.env.SITE_BASE || 'http://localhost:3000'
+        homeShotUrl = await uploadScreenshot(file, `${job.slug}-home.jpg`, siteBase)
+      } catch (err) {
+        ctx.log?.warn?.(`[upload failed for ${job.slug}-home] ${err.message} — listing will show fallback images in prod`)
+        homeShotUrl = `${publicScreenshotBase}/${job.slug}-home.jpg`
+      }
       return { output_excerpt: homeShotUrl }
     })
 
@@ -207,7 +215,13 @@ export async function scrapeListing({
         async () => {
           const file = join(screenshotOutDir, `${job.slug}-secondary.jpg`)
           await captureScreenshot(secondaryCandidate.finalUrl, file)
-          secondaryShotUrl = `${publicScreenshotBase}/${job.slug}-secondary.jpg`
+          try {
+            const siteBase = ctx.env.SITE_BASE || 'http://localhost:3000'
+            secondaryShotUrl = await uploadScreenshot(file, `${job.slug}-secondary.jpg`, siteBase)
+          } catch (err) {
+            ctx.log?.warn?.(`[upload failed for ${job.slug}-secondary] ${err.message}`)
+            secondaryShotUrl = `${publicScreenshotBase}/${job.slug}-secondary.jpg`
+          }
           return { output_excerpt: secondaryShotUrl }
         })
     }
