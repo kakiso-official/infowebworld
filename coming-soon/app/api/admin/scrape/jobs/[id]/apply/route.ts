@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { execute, query, queryOne } from '@/lib/db'
 import { requireAdmin } from '@/lib/auth'
 
@@ -115,11 +116,29 @@ export async function POST(
     for (const field of requested) {
       // Map field names: extracted uses `linkedin_url`/`twitter_url`, submissions uses `linkedin`/`twitter`.
       const sourceKey = field === 'linkedin' ? 'linkedin_url' : field === 'twitter' ? 'twitter_url' : field
-      const value = extracted[sourceKey]
+      let value = extracted[sourceKey]
       // Skip undefined AND null — undefined means "field missing", null means
       // "scraper couldn't confirm". In both cases we want DB defaults / prior
       // values to win, not overwrite with NULL.
       if (value === undefined || value === null) continue
+
+      // key_features expected shape on the listing page is [{name, description}].
+      // Older cached extractions or hand-written enrichments stored plain
+      // string[]. Convert here so every applied row uses the rich shape.
+      if (field === 'key_features' && Array.isArray(value)) {
+        value = value.map(item => {
+          if (typeof item === 'string') return { name: item, description: '' }
+          if (item && typeof item === 'object') {
+            const o = item as Record<string, unknown>
+            return {
+              name: String(o.name ?? '').trim(),
+              description: String(o.description ?? '').trim(),
+            }
+          }
+          return null
+        }).filter(it => it && it.name)
+      }
+
       if (JSON_FIELDS.has(field)) {
         sets[field] = JSON.stringify(value)
       } else if (BOOLEAN_FIELDS.has(field)) {
@@ -162,6 +181,17 @@ export async function POST(
     await execute(`UPDATE scrape_sessions SET status='success', applied_at = NOW(), applied_by = ? WHERE id = ?`,
       [String(guard.adminId ?? 'admin'), targetSessionId])
     await execute(`UPDATE scrape_jobs SET status='applied', applied_at = NOW() WHERE id = ?`, [jobId])
+
+    /* Force the public listing page + sector landing to rebuild so the new
+       data shows up immediately in production (page is static with
+       revalidate=172800 so otherwise visitors see stale HTML for 48h).
+       Dev mode no-ops. */
+    try {
+      revalidatePath(`/company/${job.slug}`)
+      revalidatePath('/categories')
+    } catch (err) {
+      console.warn('revalidatePath failed (non-fatal):', err)
+    }
 
     return Response.json({
       ok: true,

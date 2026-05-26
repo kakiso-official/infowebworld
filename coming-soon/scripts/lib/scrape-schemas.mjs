@@ -94,11 +94,29 @@ export const pricingSchema = {
 }
 
 // ─── Pass 3: Features + integrations + apps ─────────────────────────────
+// key_features is a RICH array — each entry has {name, description} so the
+// listing page can render a proper headline + paragraph per feature, not
+// a one-line bullet.  features is a SEPARATE plain-string list, broader
+// and more comprehensive — the "all features" reference.
 export const featuresSchema = {
   type: 'object',
   properties: {
-    key_features: stringList,
+    key_features: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          name: { type: 'string' },
+          description: { type: 'string' },
+          source_quote: nullableString,
+        },
+        required: ['name', 'description'],
+      },
+    },
     key_features_source_url: nullableString,
+
+    features: stringList,
+    features_source_url: nullableString,
 
     integrations: {
       type: 'array',
@@ -124,7 +142,7 @@ export const featuresSchema = {
     apps_source_url: nullableString,
     apps_source_quote: nullableString,
   },
-  required: ['key_features', 'integrations'],
+  required: ['key_features', 'features', 'integrations'],
 }
 
 // ─── Pass 4: FAQs (AEO-targeted) ────────────────────────────────────────

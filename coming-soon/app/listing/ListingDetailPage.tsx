@@ -2103,11 +2103,18 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                       <div className="tlp-qa-head">
                         <h3>What is {view.companyName}?</h3>
                       </div>
-                      <p>
-                        {view.description
-                          ? view.description
-                          : `${view.companyName} is a ${view.category.toLowerCase()} platform offering key features such as workflow automation, analytics, integrations, and team collaboration tools.`}
-                      </p>
+                      {/* Render description as separate <p> per paragraph. Scraped
+                          descriptions use \n\n between paragraphs; legacy single-
+                          paragraph descriptions render as one <p> unchanged. */}
+                      {view.description
+                        ? view.description
+                            .split(/\n{2,}/)
+                            .map(p => p.trim())
+                            .filter(Boolean)
+                            .map((para, i) => <p key={i}>{para}</p>)
+                        : (
+                          <p>{`${view.companyName} is a ${view.category.toLowerCase()} platform offering key features such as workflow automation, analytics, integrations, and team collaboration tools.`}</p>
+                        )}
                     </div>
                   )}
 

@@ -499,7 +499,28 @@ function buildBasePrompt(job, home, about) {
     homeHtml,
     aboutHtml ? `\n\n=== ABOUT PAGE HTML (${about.finalUrl}) ===\n${aboutHtml}` : '',
     ``,
-    `Extract per the schema. Every non-null field needs _source_url + _source_quote.`,
+    `=== EXTRACTION RULES ===`,
+    `tagline: one sharp sentence, max 110 chars, paraphrase or direct quote from the hero.`,
+    ``,
+    `description: MUST be 200-350 words, written in proper paragraphs separated by`,
+    `  blank lines (\\n\\n between paragraphs). Structure:`,
+    `    - Paragraph 1 (3-4 sentences): what the product IS — its core value proposition,`,
+    `      who it serves, and what category it falls into. Open with the company name.`,
+    `    - Paragraph 2 (3-4 sentences): WHAT IT DOES — primary capabilities, the workflows`,
+    `      or problems it solves, and notable differentiators.`,
+    `    - Paragraph 3 (2-3 sentences): credibility / scale — funding, customers, founding`,
+    `      story, ecosystem position. Only include facts grounded in the supplied HTML.`,
+    `  Real, factual, SEO + AEO friendly. NO marketing hype ("revolutionary",`,
+    `  "best-in-class", "game-changing"). NO filler. Every claim must be supported by`,
+    `  the page content.`,
+    ``,
+    `founded_year, hq_city, hq_country_code, team_size: extract only if explicitly stated.`,
+    `  null otherwise. team_size in canonical bands ('1-10', '11-50', '51-200', '201-500',`,
+    `  '501-1000', '1000+').`,
+    ``,
+    `linkedin_url, twitter_url: pull from social icons / footer. Full URLs only.`,
+    ``,
+    `Every non-null field needs _source_url + _source_quote (verbatim from HTML).`,
   ].join('\n')
 }
 
@@ -529,7 +550,38 @@ function buildFeaturesPrompt(job, features, home) {
       ? `=== FEATURES PAGE HTML (${features.finalUrl}) ===\n${featuresHtml}\n\n=== HOME PAGE (for context) ===\n${homeHtml}`
       : `=== HOME PAGE (no dedicated features page) ===\n${homeHtml}`,
     ``,
-    `key_features: 6-12 concrete capabilities (no marketing fluff). integrations: name + canonical website + 1-sentence description. compliance: only certifications visibly claimed on the page — do not assume SOC 2 / HIPAA from "enterprise" language.`,
+    `=== EXTRACTION RULES ===`,
+    ``,
+    `key_features: 10-15 RICH feature objects. Each object MUST have:`,
+    `  - name: short headline (3-7 words, no period). Distinct, concrete, action-bearing`,
+    `    (NOT marketing categories like "Powerful AI" — instead "Real-time transcription`,
+    `    of Zoom meetings"). These are the headline capabilities the company itself`,
+    `    promotes hardest.`,
+    `  - description: 1-2 sentences (25-60 words) explaining what the feature does and`,
+    `    why it matters. Grounded in the page — paraphrase or extend an on-page claim.`,
+    `  - source_quote: a verbatim snippet from the HTML that establishes the feature.`,
+    ``,
+    `features: 15-25 broader capabilities as plain strings (3-10 words each). This is`,
+    `  the COMPREHENSIVE "all features" list — should include everything from`,
+    `  key_features plus more granular items (integrations stubs, format support,`,
+    `  export options, etc.). Real things mentioned on the page, no padding.`,
+    ``,
+    `integrations: at least 5 if any are visible. Each = name (the integration target),`,
+    `  website (canonical URL — e.g. https://www.salesforce.com), description (1`,
+    `  sentence explaining what the integration does or what it enables).`,
+    `  Pull from "Integrations" sections, logo walls, "Works with X" mentions.`,
+    `  If NO integrations are visible anywhere, return [] rather than inventing.`,
+    ``,
+    `languages: spoken/output languages supported (English, Spanish, etc.). Not`,
+    `  programming languages.`,
+    ``,
+    `compliance: ONLY certifications EXPLICITLY visible on the page — e.g. "SOC 2`,
+    `  Type II", "HIPAA", "GDPR", "ISO 27001". Do NOT assume from "enterprise" or`,
+    `  "secure" language. Return [] if none visible. compliance_source_quote must`,
+    `  contain the literal certification name.`,
+    ``,
+    `has_ios_app / has_android_app: true only if app store links / "Download on the`,
+    `  App Store" / "Get it on Google Play" buttons are present. null if uncertain.`,
   ].join('\n')
 }
 
@@ -539,16 +591,36 @@ function buildFaqsPrompt(job, faq, pricing, features) {
   if (pricing)  parts.push(`=== PRICING PAGE (${pricing.finalUrl}) ===\n${cleanHtml(pricing.html, 12000)}`)
   if (features) parts.push(`=== FEATURES PAGE (${features.finalUrl}) ===\n${cleanHtml(features.html, 8000)}`)
   return [
-    `Build 6 high-value FAQs for: ${job.company_name || job.slug}`,
+    `Build 8 high-value FAQs for: ${job.company_name || job.slug}`,
     `Website: ${job.website}`,
     ``,
     parts.length ? parts.join('\n\n') : '=== NO RELEVANT PAGES FOUND ===',
     ``,
-    `Format each FAQ as a real question (starts with How / What / Does / Is / Can / Why), with an answer 30-80 words. Answers must be grounded in the supplied pages (cite source). These FAQs target Google AI Overview and ChatGPT / Perplexity citations — write to be the answer to common buyer questions.`,
+    `=== FAQ RULES ===`,
+    ``,
+    `Generate exactly 8 FAQs targeting Google "People Also Ask", AI Overview, and`,
+    `ChatGPT / Perplexity citations. Mix of:`,
+    `  - 2 pricing / billing questions (cost, free tier, refund, trial)`,
+    `  - 2 capability / feature questions ("Does X support Y?", "Can I do Z with X?")`,
+    `  - 2 comparison / category questions ("What is X?", "Who is X best for?")`,
+    `  - 2 logistics questions (integrations, security, languages, deployment)`,
+    ``,
+    `Each question MUST start with: How / What / Does / Is / Can / Why / Who.`,
+    `Each answer: 40-90 words, factual, grounded in the supplied pages. Direct answer`,
+    `in the first sentence (AEO best practice). No hedging language ("might be","could be").`,
+    `Real info only. If you can't answer from the pages, pick a different question.`,
+    ``,
+    `Each FAQ object also gets source_url + source_quote citing where in the HTML the`,
+    `answer is grounded.`,
   ].join('\n')
 }
 
 function buildClassifyPrompt(job, baseInfo, pricingInfo, featuresInfo, faqsInfo) {
+  const topFeatures = (featuresInfo.key_features ?? []).slice(0, 8).map(kf => {
+    if (typeof kf === 'string') return kf
+    return kf.name || ''
+  }).filter(Boolean).join('; ')
+
   return [
     `Classify and label: ${job.company_name || job.slug}`,
     `Website: ${job.website}`,
@@ -557,17 +629,42 @@ function buildClassifyPrompt(job, baseInfo, pricingInfo, featuresInfo, faqsInfo)
     `Tagline: ${baseInfo.tagline ?? '(unknown)'}`,
     `Description: ${baseInfo.description ?? '(unknown)'}`,
     `Pricing model: ${pricingInfo.pricing_model ?? '(unknown)'}`,
-    `Top key features: ${(featuresInfo.key_features ?? []).slice(0, 6).join('; ')}`,
+    `Top key features: ${topFeatures || '(none)'}`,
+    `FAQ topics: ${(faqsInfo.faqs ?? []).slice(0, 4).map(f => f.question).join(' | ')}`,
     ``,
-    `Output:`,
-    `- header_tags: 3 short distinctive tags (1-3 words each)`,
-    `- industries_served: 6-8 industries this product serves`,
-    `- use_cases: 6-8 concrete use cases`,
-    `- target_company_sizes: subset of [Freelancers, Small businesses, Midsize companies, Enterprises]`,
-    `- pros: 6 distinctive strengths derived from the extracted data`,
-    `- cons: 4 honest weaknesses (be balanced — don't pad)`,
-    `- support_channels: derive from features + plausibility`,
-    `- training_options: derive from features + plausibility`,
+    `=== OUTPUT RULES ===`,
+    ``,
+    `header_tags: exactly 3 short distinctive tags (1-3 words each). Industry / model /`,
+    `  positioning hints. e.g. ["Open-weight models", "European AI", "Codestral"].`,
+    ``,
+    `industries_served: 6-10 industries this product serves. Concrete sectors`,
+    `  (SaaS & Software, E-commerce, Financial Services, Healthcare…), not buyer`,
+    `  archetypes ("growing companies"). Include only what the page evidence supports;`,
+    `  err on broader inclusion when product is horizontal.`,
+    ``,
+    `use_cases: 8-10 concrete use cases. Format: "Use case name" (3-7 words). Specific`,
+    `  workflows or jobs-to-be-done, not features ("Onboard new hires", "Triage`,
+    `  customer tickets", "Search across docs"). Derive from features + FAQs.`,
+    ``,
+    `target_company_sizes: subset of [Freelancers, Small businesses, Midsize companies,`,
+    `  Enterprises]. Use pricing tiers as signal — free / starter tier = SMB-included;`,
+    `  custom / enterprise tier = Enterprise-included.`,
+    ``,
+    `pros: exactly 8 distinctive strengths. Concrete, specific, no clichés. Derived`,
+    `  from extracted features + pricing + integrations. Examples of bad pros to AVOID:`,
+    `  "Easy to use", "Reliable", "Great support". Good examples: "Free tier handles`,
+    `  unlimited messages with no token cap", "Native VS Code + JetBrains plugins"`,
+    ``,
+    `cons: exactly 5 honest weaknesses. Balanced — no padding ("Subscription required"`,
+    `  is filler unless the listing distinguishes on that). Real tradeoffs, e.g.`,
+    `  "Browser-only — no desktop app", "Pricing scales with seats".`,
+    ``,
+    `support_channels: 3-6 channels. Derive from extracted evidence ("Email support",`,
+    `  "Live chat", "Help center", "Community forum", "Dedicated CSM"). Be conservative —`,
+    `  if only a contact form exists, just list "Email support".`,
+    ``,
+    `training_options: 3-6 channels. ("Documentation", "Video tutorials", "Webinars",`,
+    `  "Knowledge base"). Skip "Onboarding workshops" unless visible.`,
     ``,
     `No citations required for classification — these are derived labels, not extracted facts.`,
   ].join('\n')
@@ -609,8 +706,11 @@ function assembleListing({ baseInfo, pricingInfo, featuresInfo, faqsInfo, classi
     has_free_trial: pricingInfo.has_free_trial ?? null,
     has_free_version: pricingInfo.has_free_version ?? null,
 
-    key_features: featuresInfo.key_features ?? [],
-    features: featuresInfo.key_features ?? [],
+    /* key_features is now an array of {name, description} objects so the
+       listing page can render headline + paragraph per feature. features
+       is the broader "all features" list as plain strings. */
+    key_features: normalizeKeyFeatures(featuresInfo.key_features),
+    features: Array.isArray(featuresInfo.features) ? featuresInfo.features : [],
     integrations: featuresInfo.integrations ?? [],
     languages: featuresInfo.languages ?? [],
     compliance: featuresInfo.compliance ?? [],
@@ -648,6 +748,25 @@ function assembleListing({ baseInfo, pricingInfo, featuresInfo, faqsInfo, classi
 
 function extractCitations(extracted) {
   return extracted._sources ?? {}
+}
+
+/**
+ * Coerce key_features into the shape the listing page expects:
+ * [{ name, description }]. Tolerates the older string[] shape (early
+ * scrape sessions and the manually-written AI/ML 26 enrichments).
+ */
+function normalizeKeyFeatures(raw) {
+  if (!Array.isArray(raw)) return []
+  return raw.map(item => {
+    if (typeof item === 'string') return { name: item, description: '' }
+    if (item && typeof item === 'object') {
+      return {
+        name: String(item.name ?? '').trim(),
+        description: String(item.description ?? '').trim(),
+      }
+    }
+    return { name: '', description: '' }
+  }).filter(it => it.name)
 }
 
 /**
