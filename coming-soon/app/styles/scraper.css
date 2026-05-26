@@ -122,6 +122,28 @@
 
 /* ─── Buttons ─────────────────────────────────────────────────────── */
 .scrp-btn,
+.scrp-deploy {
+  display: inline-flex; align-items: center; gap: 10px;
+}
+.scrp-btn--deploy {
+  background: var(--scrp-coral);
+  border-color: var(--scrp-coral);
+  color: #FFFFFF;
+}
+.scrp-btn--deploy:hover:not(:disabled) {
+  background: var(--scrp-coral-dim);
+  border-color: var(--scrp-coral-dim);
+}
+.scrp-deploy-msg {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.scrp-deploy-msg.is-ok  { background: #ECFDF5; color: #065F46 }
+.scrp-deploy-msg.is-err { background: #FEF2F2; color: #991B1B }
+
 .scrp-add-btn {
   display: inline-flex; align-items: center; justify-content: center;
   padding: 7px 14px;

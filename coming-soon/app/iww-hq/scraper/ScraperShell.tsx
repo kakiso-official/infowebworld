@@ -137,6 +137,7 @@ export default function ScraperShell() {
             7d: <strong>${(stats?.sevenDay.cost ?? 0).toFixed(2)}</strong>
             <span className="scrp-spend-sub">{stats?.sevenDay.sessions ?? 0} sessions</span>
           </div>
+          <DeployButton />
           <button type="button" className="scrp-add-btn" onClick={() => setAddOpen(true)}>
             + Add Companies
           </button>
@@ -437,6 +438,45 @@ function JobDetailView({ jobId, onChanged }: { jobId: number; onChanged: () => v
           </details>
         </section>
       )}
+    </div>
+  )
+}
+
+/**
+ * Fires the existing /api/admin/deploy endpoint, which POSTs to the
+ * Vercel Deploy Hook URL (VERCEL_DEPLOY_HOOK_URL). Without a deploy,
+ * applied changes (incl. updated screenshot URLs) won't be visible on
+ * infowebworld.com — the page is static, baked at the last deploy time.
+ */
+function DeployButton() {
+  const [busy, setBusy] = useState(false)
+  const [msg, setMsg] = useState<string | null>(null)
+
+  const click = async () => {
+    if (!confirm('Trigger a Vercel production deploy?\n\nThis rebuilds every /company/<slug> page with the latest DB data. Takes ~1-2 minutes. Required after Apply for changes to show on infowebworld.com.')) return
+    setBusy(true); setMsg(null)
+    try {
+      const res = await fetch('/api/admin/deploy', { method: 'POST' })
+      const json = await res.json().catch(() => ({}))
+      if (!res.ok || !json.ok) {
+        setMsg(`✗ ${json.error || `HTTP ${res.status}`}`)
+      } else {
+        setMsg('✓ Deploy started — infowebworld.com will refresh in ~1–2 min')
+      }
+    } catch (err) {
+      setMsg(`✗ ${err instanceof Error ? err.message : String(err)}`)
+    } finally {
+      setBusy(false)
+      setTimeout(() => setMsg(null), 8000)
+    }
+  }
+
+  return (
+    <div className="scrp-deploy">
+      <button type="button" className="scrp-btn scrp-btn--deploy" onClick={click} disabled={busy}>
+        {busy ? 'Deploying…' : 'Deploy to Vercel'}
+      </button>
+      {msg && <span className={`scrp-deploy-msg ${msg.startsWith('✓') ? 'is-ok' : 'is-err'}`}>{msg}</span>}
     </div>
   )
 }
