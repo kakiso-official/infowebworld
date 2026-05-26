@@ -9,7 +9,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "scrape:listing": "node scripts/scrape-listing.mjs",
+    "scrape:worker": "node scripts/scrape-worker.mjs",
+    "scrape:seed-applied": "node scripts/seed-applied-jobs.mjs"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.2.0",

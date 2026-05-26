@@ -44,3 +44,7 @@ next-env.d.ts
 
 # Claude Code internal session state (per-machine, never commit)
 .claude/
+
+# Scraper artefacts (per-job step cache + generated screenshots)
+/.scrape-cache/
+/public/scrape-screenshots/
