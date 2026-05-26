@@ -244,6 +244,7 @@ function JobDetailView({ jobId, onChanged }: { jobId: number; onChanged: () => v
   const [busy, setBusy] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [toast, setToast] = useState<string | null>(null)
+  const [scrapeMenuOpen, setScrapeMenuOpen] = useState(false)
 
   const reload = useCallback(async () => {
     try {
@@ -303,14 +304,49 @@ function JobDetailView({ jobId, onChanged }: { jobId: number; onChanged: () => v
           <span className={`scrp-pill scrp-pill--${job.status}`}>
             <span className="scrp-pill-dot" />{job.status}
           </span>
-          <button
-            type="button"
-            className="scrp-btn"
-            disabled={busy != null}
-            onClick={() => action('Scrape', () => fetch(`/api/admin/scrape/jobs/${jobId}/requeue`, { method: 'POST' }))}
-          >
-            {job.status === 'running' ? 'Re-queue' : 'Scrape now'}
-          </button>
+          <div className="scrp-btn-group">
+            <button
+              type="button"
+              className="scrp-btn"
+              disabled={busy != null}
+              onClick={() => action(
+                'Scrape (cached retry)',
+                () => fetch(`/api/admin/scrape/jobs/${jobId}/requeue`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ sections: [] }),
+                })
+              )}
+              title="Re-queue; cached steps replay free, only failed step burns tokens"
+            >
+              {job.status === 'running' ? 'Re-queue' : 'Scrape now'}
+            </button>
+            <button
+              type="button"
+              className="scrp-btn scrp-btn--chev"
+              disabled={busy != null}
+              onClick={() => setScrapeMenuOpen(o => !o)}
+              aria-label="Scrape section options"
+              aria-expanded={scrapeMenuOpen}
+            >
+              ▾
+            </button>
+            {scrapeMenuOpen && (
+              <SectionMenu
+                jobId={jobId}
+                busy={busy != null}
+                onClose={() => setScrapeMenuOpen(false)}
+                onScrape={(section, label) => {
+                  setScrapeMenuOpen(false)
+                  action(`Scrape ${label}`, () => fetch(`/api/admin/scrape/jobs/${jobId}/requeue`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sections: [section] }),
+                  }))
+                }}
+              />
+            )}
+          </div>
           {job.last_session_id && (
             <button
               type="button"
@@ -410,4 +446,63 @@ function relTime(iso: string): string {
   if (diff < 3_600_000) return `${Math.floor(diff / 60_000)} min ago`
   if (diff < 86_400_000) return `${Math.floor(diff / 3_600_000)} h ago`
   return `${Math.floor(diff / 86_400_000)} d ago`
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Section-specific scrape dropdown.
+   Each option clears only the cache for its section, so the worker
+   re-extracts ONLY that section and replays the rest from cache (free).
+   "Full scrape" wipes the whole job cache.
+   ───────────────────────────────────────────────────────────────────── */
+function SectionMenu({
+  jobId, busy, onClose, onScrape,
+}: {
+  jobId: number
+  busy: boolean
+  onClose: () => void
+  onScrape: (section: string, label: string) => void
+}) {
+  // Close on outside click + Escape
+  useEffect(() => {
+    const onDoc = (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+      if (!target.closest('.scrp-menu') && !target.closest('.scrp-btn--chev')) onClose()
+    }
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('mousedown', onDoc)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onDoc)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [onClose])
+
+  const opts: { section: string; label: string; sub: string }[] = [
+    { section: 'all',           label: 'all sections',           sub: 'Full fresh scrape (clears cache) — ~$0.05' },
+    { section: 'base',          label: 'description',            sub: 'Tagline + description + founded/HQ/team — ~$0.005' },
+    { section: 'pricing',       label: 'pricing',                sub: 'Pricing tiers + starting price + free tier — ~$0.008' },
+    { section: 'features',      label: 'features + integrations', sub: 'Key features + features + integrations + apps — ~$0.012' },
+    { section: 'integrations',  label: 'integrations only',      sub: 'Subset of features pass — ~$0.012' },
+    { section: 'faqs',          label: 'FAQs',                   sub: 'Refreshes the 8 FAQs — ~$0.006' },
+    { section: 'classify',      label: 'classification',         sub: 'Pros/cons/use cases/industries — ~$0.004' },
+  ]
+
+  return (
+    <div className="scrp-menu" role="menu">
+      <div className="scrp-menu-head">Re-scrape just one section — keeps everything else cached</div>
+      {opts.map(o => (
+        <button
+          key={o.section}
+          type="button"
+          role="menuitem"
+          className="scrp-menu-item"
+          disabled={busy}
+          onClick={() => onScrape(o.section, o.label)}
+        >
+          <span className="scrp-menu-label">{o.label}</span>
+          <span className="scrp-menu-sub">{o.sub}</span>
+        </button>
+      ))}
+    </div>
+  )
 }
