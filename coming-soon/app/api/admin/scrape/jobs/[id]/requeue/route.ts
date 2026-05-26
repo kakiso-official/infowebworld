@@ -29,14 +29,20 @@ import { join } from 'node:path'
 
 const SECTION_TO_STEPS: Record<string, string[]> = {
   all:           ['crawl-home','crawl-about','crawl-pricing','crawl-features',
-                  'crawl-faq','crawl-integrations','extract-base','extract-pricing',
-                  'extract-features','extract-faqs','extract-classify'],
+                  'crawl-faq','crawl-integrations','screenshot-home','screenshot-secondary',
+                  'extract-base','extract-pricing','extract-features','extract-faqs',
+                  'extract-classify'],
   base:          ['crawl-home','crawl-about','extract-base'],
   pricing:       ['crawl-pricing','extract-pricing'],
   features:      ['crawl-features','crawl-integrations','extract-features'],
   integrations:  ['crawl-integrations','extract-features'],
   faqs:          ['crawl-faq','extract-faqs'],
   classify:      ['extract-classify'],
+  /* Screenshots are cached (the URL is the cached value). Clearing the
+     screenshot-* cache forces the pipeline to re-capture via Playwright
+     and re-upload to cPanel. Everything else (extract, crawl, critique)
+     stays cached so the LLM cost stays at $0. */
+  screenshots:   ['screenshot-home','screenshot-secondary'],
 }
 
 export async function POST(

@@ -479,6 +479,7 @@ function SectionMenu({
 
   const opts: { section: string; label: string; sub: string }[] = [
     { section: 'all',           label: 'all sections',           sub: 'Full fresh scrape (clears cache) — ~$0.05' },
+    { section: 'screenshots',   label: 'screenshots only',       sub: 'Re-capture + re-upload home + secondary — $0 LLM' },
     { section: 'base',          label: 'description',            sub: 'Tagline + description + founded/HQ/team — ~$0.005' },
     { section: 'pricing',       label: 'pricing',                sub: 'Pricing tiers + starting price + free tier — ~$0.008' },
     { section: 'features',      label: 'features + integrations', sub: 'Key features + features + integrations + apps — ~$0.012' },

@@ -193,37 +193,45 @@ export async function scrapeListing({
     if (!screenshotOutDir) screenshotOutDir = join(process.cwd(), 'public', 'scrape-screenshots')
     mkdirSync(screenshotOutDir, { recursive: true })
 
-    await step(ctx, 'screenshot-home', 'screenshot', { input_url: job.website }, async () => {
-      const file = join(screenshotOutDir, `${job.slug}-home.jpg`)
-      await captureScreenshot(job.website, file)
-      // Upload to cPanel via /api/upload so the URL works on production
-      // (Vercel deploy doesn't include public/scrape-screenshots/).
-      try {
-        const siteBase = ctx.env.SITE_BASE || 'http://localhost:3000'
-        homeShotUrl = await uploadScreenshot(file, `${job.slug}-home.jpg`, siteBase)
-      } catch (err) {
-        ctx.log?.warn?.(`[upload failed for ${job.slug}-home] ${err.message} — listing will show fallback images in prod`)
-        homeShotUrl = `${publicScreenshotBase}/${job.slug}-home.jpg`
-      }
-      return { output_excerpt: homeShotUrl }
-    })
+    // Screenshots are now cached (the cached value is the public URL).
+    // Re-running a non-screenshot section never re-captures the browser
+    // or hits the cPanel upload. The 'screenshots' section explicitly
+    // clears these two cache entries to force a refresh.
+    const homeShotStep = await cachedStep(ctx, 'screenshot-home', 'screenshot',
+      { input_url: job.website },
+      async () => {
+        const file = join(screenshotOutDir, `${job.slug}-home.jpg`)
+        await captureScreenshot(job.website, file)
+        try {
+          const siteBase = ctx.env.SITE_BASE || 'http://localhost:3000'
+          const uploaded = await uploadScreenshot(file, `${job.slug}-home.jpg`, siteBase)
+          return { output_excerpt: uploaded, _data: uploaded }
+        } catch (err) {
+          ctx.log?.warn?.(`[upload failed for ${job.slug}-home] ${err.message} — using local path`)
+          const local = `${publicScreenshotBase}/${job.slug}-home.jpg`
+          return { output_excerpt: local, _data: local }
+        }
+      })
+    homeShotUrl = homeShotStep?._data ?? null
 
     const secondaryCandidate = pricingPage?._data ?? featuresPage?._data ?? aboutPage?._data ?? null
     if (secondaryCandidate) {
-      await stepOptional(ctx, 'screenshot-secondary', 'screenshot',
+      const secondaryShotStep = await cachedStepOptional(ctx, 'screenshot-secondary', 'screenshot',
         { input_url: secondaryCandidate.finalUrl },
         async () => {
           const file = join(screenshotOutDir, `${job.slug}-secondary.jpg`)
           await captureScreenshot(secondaryCandidate.finalUrl, file)
           try {
             const siteBase = ctx.env.SITE_BASE || 'http://localhost:3000'
-            secondaryShotUrl = await uploadScreenshot(file, `${job.slug}-secondary.jpg`, siteBase)
+            const uploaded = await uploadScreenshot(file, `${job.slug}-secondary.jpg`, siteBase)
+            return { output_excerpt: uploaded, _data: uploaded }
           } catch (err) {
             ctx.log?.warn?.(`[upload failed for ${job.slug}-secondary] ${err.message}`)
-            secondaryShotUrl = `${publicScreenshotBase}/${job.slug}-secondary.jpg`
+            const local = `${publicScreenshotBase}/${job.slug}-secondary.jpg`
+            return { output_excerpt: local, _data: local }
           }
-          return { output_excerpt: secondaryShotUrl }
         })
+      secondaryShotUrl = secondaryShotStep?._data ?? null
     }
 
     // ─── Extract passes ────────────────────────────────────────────────
