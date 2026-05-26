@@ -391,6 +391,20 @@
   text-transform: uppercase;
   padding: 3px 8px; border-radius: 4px;
 }
+.scrp-screen-badge {
+  position: absolute; top: 8px; right: 8px;
+  background: var(--scrp-card); color: var(--scrp-mute);
+  font-size: 10px; font-weight: 600; letter-spacing: 0.02em;
+  padding: 3px 8px; border-radius: 4px;
+  border: 1px solid var(--scrp-line);
+  max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.scrp-screen-badge--ok {
+  background: #ECFDF5; color: #065F46; border-color: #6EE7B7;
+}
+.scrp-screen-badge--err {
+  background: #FEF2F2; color: #991B1B; border-color: #FCA5A5;
+}
 
 /* ─── Sessions ────────────────────────────────────────────────────── */
 .scrp-sessions {

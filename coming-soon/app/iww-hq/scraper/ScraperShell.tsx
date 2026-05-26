@@ -369,12 +369,14 @@ function JobDetailView({ jobId, onChanged }: { jobId: number; onChanged: () => v
           {job.screenshot_home_url && (
             <a href={job.screenshot_home_url} target="_blank" rel="noopener noreferrer" className="scrp-screen">
               <span className="scrp-screen-label">Home</span>
+              <ScreenshotBadge url={job.screenshot_home_url} />
               <img src={job.screenshot_home_url} alt="Home page screenshot" />
             </a>
           )}
           {job.screenshot_secondary_url && (
             <a href={job.screenshot_secondary_url} target="_blank" rel="noopener noreferrer" className="scrp-screen">
               <span className="scrp-screen-label">Secondary</span>
+              <ScreenshotBadge url={job.screenshot_secondary_url} />
               <img src={job.screenshot_secondary_url} alt="Secondary page screenshot" />
             </a>
           )}
@@ -437,6 +439,23 @@ function JobDetailView({ jobId, onChanged }: { jobId: number; onChanged: () => v
       )}
     </div>
   )
+}
+
+/**
+ * Visual indicator for screenshot URL provenance.
+ * /api/file/...        → uploaded to cPanel, works in production ✓
+ * /scrape-screenshots/ → local only — Vercel won't have the file ✗
+ *                       (means the worker's /api/upload call failed; usually
+ *                        the dev server wasn't running. Re-scrape screenshots
+ *                        with the dev server up.)
+ */
+function ScreenshotBadge({ url }: { url: string | null }) {
+  if (!url) return null
+  const isCpanel = url.startsWith('/api/file/') || url.includes('infowebworld.com')
+  const isLocal  = url.startsWith('/scrape-screenshots/')
+  if (isCpanel) return <span className="scrp-screen-badge scrp-screen-badge--ok">on cPanel — prod-safe</span>
+  if (isLocal)  return <span className="scrp-screen-badge scrp-screen-badge--err">LOCAL ONLY — won&apos;t load on infowebworld.com</span>
+  return <span className="scrp-screen-badge">{url.slice(0, 40)}…</span>
 }
 
 function relTime(iso: string): string {

@@ -202,12 +202,16 @@ export async function scrapeListing({
       async () => {
         const file = join(screenshotOutDir, `${job.slug}-home.jpg`)
         await captureScreenshot(job.website, file)
+        const siteBase = ctx.env.SITE_BASE || 'http://localhost:3000'
+        console.log(`  uploading ${job.slug}-home.jpg → ${siteBase}/api/upload`)
         try {
-          const siteBase = ctx.env.SITE_BASE || 'http://localhost:3000'
           const uploaded = await uploadScreenshot(file, `${job.slug}-home.jpg`, siteBase)
+          console.log(`  ✓ uploaded ${job.slug}-home.jpg → ${uploaded}`)
           return { output_excerpt: uploaded, _data: uploaded }
         } catch (err) {
-          ctx.log?.warn?.(`[upload failed for ${job.slug}-home] ${err.message} — using local path`)
+          console.warn(`  ✗ upload FAILED for ${job.slug}-home: ${err.message}`)
+          console.warn(`    → falling back to local path (will NOT work on infowebworld.com)`)
+          console.warn(`    → ensure dev server is running:  npm run dev`)
           const local = `${publicScreenshotBase}/${job.slug}-home.jpg`
           return { output_excerpt: local, _data: local }
         }
@@ -221,12 +225,14 @@ export async function scrapeListing({
         async () => {
           const file = join(screenshotOutDir, `${job.slug}-secondary.jpg`)
           await captureScreenshot(secondaryCandidate.finalUrl, file)
+          const siteBase = ctx.env.SITE_BASE || 'http://localhost:3000'
+          console.log(`  uploading ${job.slug}-secondary.jpg → ${siteBase}/api/upload`)
           try {
-            const siteBase = ctx.env.SITE_BASE || 'http://localhost:3000'
             const uploaded = await uploadScreenshot(file, `${job.slug}-secondary.jpg`, siteBase)
+            console.log(`  ✓ uploaded ${job.slug}-secondary.jpg → ${uploaded}`)
             return { output_excerpt: uploaded, _data: uploaded }
           } catch (err) {
-            ctx.log?.warn?.(`[upload failed for ${job.slug}-secondary] ${err.message}`)
+            console.warn(`  ✗ upload FAILED for ${job.slug}-secondary: ${err.message}`)
             const local = `${publicScreenshotBase}/${job.slug}-secondary.jpg`
             return { output_excerpt: local, _data: local }
           }
