@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>InfoWebWorld — Site Structure (May 2026)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --ink:   #11181C;
+    --text:  #1A1A1A;
+    --mute:  #6B7280;
+    --faint: #9CA3AF;
+    --line:  #E5E7EB;
+    --bg:    #F9FAFB;
+    --card:  #FFFFFF;
+    --coral: #E8553D;
+    --coral-soft: #FFF5F2;
+    --blue:  #2563EB;
+    --blue-soft: #EFF6FF;
+    --green: #059669;
+    --green-soft: #ECFDF5;
+    --amber: #D97706;
+    --amber-soft: #FFFBEB;
+    --purple:#7C3AED;
+    --purple-soft: #FAF5FF;
+    --red:   #DC2626;
+    --red-soft: #FEF2F2;
+  }
+  * { box-sizing: border-box }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 32px 40px 80px; }
+
+  /* ── Header ─────────────────────────────────────────────── */
+  .hero { border-bottom: 1.5px solid var(--line); padding-bottom: 20px; margin-bottom: 28px; }
+  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--coral); margin: 0 0 6px; }
+  h1 { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); margin: 0; line-height: 1.1; }
+  .subtitle { font-size: 14px; color: var(--mute); margin: 8px 0 0; max-width: 720px; }
+
+  /* ── KPI strip ──────────────────────────────────────────── */
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 24px 0 0; }
+  .kpi { background: var(--card); border: 1.5px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  .kpi-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--mute); margin: 0 0 6px; }
+  .kpi-val { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); margin: 0; }
+  .kpi-sub { font-size: 12px; color: var(--mute); margin: 4px 0 0; }
+
+  /* ── Section ────────────────────────────────────────────── */
+  section { margin: 36px 0 0; }
+  h2 { font-size: 18px; font-weight: 700; letter-spacing: -0.005em; color: var(--ink); margin: 0 0 4px; }
+  .section-sub { font-size: 13px; color: var(--mute); margin: 0 0 16px; }
+
+  /* ── Card wrapper ───────────────────────────────────────── */
+  .card { background: var(--card); border: 1.5px solid var(--line); border-radius: 12px; padding: 18px 22px; margin: 0 0 14px; }
+  .card-head { display: flex; align-items: baseline; gap: 12px; margin: 0 0 12px; flex-wrap: wrap; }
+  .card-title { font-size: 15px; font-weight: 700; color: var(--ink); margin: 0; }
+  .card-meta  { font-size: 12px; color: var(--mute); }
+
+  /* ── Route tree ─────────────────────────────────────────── */
+  .tree { list-style: none; margin: 0; padding: 0; font-family: ui-monospace, SFMono-Regular, "Cascadia Mono", monospace; font-size: 12.5px; }
+  .tree li { padding: 3px 0; }
+  .tree .branch { padding-left: 22px; border-left: 1px solid var(--line); margin-left: 6px; }
+  .route { display: inline-block; padding: 1px 6px; border-radius: 4px; background: #F4F5F7; color: var(--ink); font-weight: 600; }
+  .route--dyn { background: var(--purple-soft); color: var(--purple); }
+  .desc { color: var(--mute); margin-left: 8px; }
+
+  /* ── Badges ─────────────────────────────────────────────── */
+  .badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 7px; border-radius: 4px; margin-left: 4px; vertical-align: middle; }
+  .b-sitemap   { background: var(--green-soft);  color: var(--green); }
+  .b-crawl     { background: var(--amber-soft);  color: var(--amber); }
+  .b-noindex   { background: #F4F5F7;            color: var(--mute); }
+  .b-blocked   { background: var(--red-soft);    color: var(--red); }
+  .b-auth      { background: var(--blue-soft);   color: var(--blue); }
+  .b-internal  { background: var(--purple-soft); color: var(--purple); }
+
+  /* ── Legend ─────────────────────────────────────────────── */
+  .legend { display: flex; gap: 10px; flex-wrap: wrap; padding: 14px 18px; background: var(--card); border: 1.5px solid var(--line); border-radius: 10px; margin: 16px 0 24px; }
+  .legend-item { font-size: 11.5px; color: var(--text); display: inline-flex; align-items: center; gap: 6px; }
+
+  /* ── Taxonomy table ─────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; }
+  th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); font-size: 13px; }
+  th { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--mute); background: var(--bg); }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; font-family: ui-monospace, SFMono-Regular, monospace; }
+  tr:last-child td { border-bottom: none; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+  .pill--live    { background: var(--green-soft);  color: var(--green); }
+  .pill--queued  { background: var(--amber-soft);  color: var(--amber); }
+  .pill--skipped { background: #F4F5F7; color: var(--mute); }
+
+  /* ── Footer ─────────────────────────────────────────────── */
+  .foot { margin-top: 60px; padding-top: 20px; border-top: 1.5px solid var(--line); font-size: 12px; color: var(--mute); }
+
+  /* ── Print ──────────────────────────────────────────────── */
+  @media print {
+    body { background: white; font-size: 11.5px; }
+    .wrap { padding: 12mm 14mm; max-width: none; }
+    .kpis { grid-template-columns: repeat(4, 1fr); }
+    .card { break-inside: avoid; border-color: #000; }
+    section { break-inside: avoid; }
+    h1 { font-size: 22px; }
+    h2 { font-size: 15px; }
+    .tree { font-size: 10.5px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <p class="eyebrow">Site architecture · May 2026</p>
+  <h1>InfoWebWorld — Complete Site Structure</h1>
+  <p class="subtitle">
+    A full inventory of every page surface on <strong>infowebworld.com</strong>, grouped by section,
+    annotated with indexability and live-count status. Generated from the live route tree
+    at <code>app/</code> and the current scrape queue.
+  </p>
+</header>
+
+<!-- ═════════════ KPI STRIP ═════════════ -->
+<div class="kpis">
+  <div class="kpi">
+    <p class="kpi-label">Public route patterns</p>
+    <p class="kpi-val">35</p>
+    <p class="kpi-sub">distinct page templates</p>
+  </div>
+  <div class="kpi">
+    <p class="kpi-label">Live listings today</p>
+    <p class="kpi-val">101</p>
+    <p class="kpi-sub">100 AI/ML + Clarifai</p>
+  </div>
+  <div class="kpi">
+    <p class="kpi-label">Queued for scraping</p>
+    <p class="kpi-val">1,030</p>
+    <p class="kpi-sub">across 5 of 6 L1 sectors</p>
+  </div>
+  <div class="kpi">
+    <p class="kpi-label">Category taxonomy</p>
+    <p class="kpi-val">8,849</p>
+    <p class="kpi-sub">6 L1 → 120 L2 → 3,054 L3 → 4,827 L4 → 842 L5</p>
+  </div>
+</div>
+
+<!-- ═════════════ LEGEND ═════════════ -->
+<div class="legend">
+  <span class="legend-item"><span class="badge b-sitemap">In sitemap</span> explicit URL Google has</span>
+  <span class="legend-item"><span class="badge b-crawl">Crawlable</span> reachable via internal links</span>
+  <span class="legend-item"><span class="badge b-noindex">No-index</span> public but not indexed</span>
+  <span class="legend-item"><span class="badge b-auth">Auth</span> requires sign-in</span>
+  <span class="legend-item"><span class="badge b-internal">Admin</span> staff only</span>
+  <span class="legend-item"><span class="route route--dyn">[slug]</span> dynamic route</span>
+</div>
+
+<!-- ═════════════ 1. PUBLIC MARKETING + INFO ═════════════ -->
+<section>
+  <h2>1 · Public marketing &amp; informational pages</h2>
+  <p class="section-sub">Statically rendered, indexed in the current sitemap. These are the credibility / trust pages that establish the brand and answer common questions.</p>
+
+  <div class="card">
+    <div class="card-head">
+      <h3 class="card-title">Hero + business</h3>
+      <span class="card-meta">3 surfaces</span>
+    </div>
+    <ul class="tree">
+      <li><span class="route">/</span>                          <span class="desc">Homepage — hero + featured sectors + value props</span> <span class="badge b-sitemap">In sitemap</span></li>
+      <li><span class="route">/business</span>                  <span class="desc">"List your business" landing — funnel into onboarding</span> <span class="badge b-sitemap">In sitemap</span></li>
+      <li><span class="route">/business/plans</span>            <span class="desc">Pricing tiers + plan comparison</span> <span class="badge b-sitemap">In sitemap</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3 class="card-title">Trust, legal &amp; policy</h3>
+      <span class="card-meta">8 surfaces</span>
+    </div>
+    <ul class="tree">
+      <li><span class="route">/about</span>            <span class="desc">Company story + mission</span>           <span class="badge b-sitemap">In sitemap</span></li>
+      <li><span class="route">/terms</span>            <span class="desc">Terms of service</span>                   <span class="badge b-sitemap">In sitemap</span></li>
+      <li><span class="route">/privacy</span>          <span class="desc">Privacy policy</span>                     <span class="badge b-sitemap">In sitemap</span></li>
+      <li><span class="route">/cookies</span>          <span class="desc">Cookie policy</span>                      <span class="badge b-sitemap">In sitemap</span></li>
+      <li><span class="route">/content-guidelines</span> <span class="desc">What listings can &amp; can't say</span> <span class="badge b-sitemap">In sitemap</span></li>
+      <li><span class="route">/do-not-sell</span>      <span class="desc">CCPA opt-out</span>                        <span class="badge b-sitemap">In sitemap</span></li>
+      <li><span class="route">/removals</span>         <span class="desc">Request removal of a listing</span>       <span class="badge b-sitemap">In sitemap</span></li>
+      <li><span class="route">/investors</span>        <span class="desc">Investor relations</span>                 <span class="badge b-crawl">Crawlable</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3 class="card-title">Help &amp; reference</h3>
+      <span class="card-meta">5 surfaces</span>
+    </div>
+    <ul class="tree">
+      <li><span class="route">/help</span>             <span class="desc">Help center landing</span>                <span class="badge b-sitemap">In sitemap</span></li>
+      <li><span class="route">/faqs</span>             <span class="desc">Frequently asked questions</span>         <span class="badge b-sitemap">In sitemap</span></li>
+      <li><span class="route">/glossary</span>         <span class="desc">B2B / tech glossary (AEO surface)</span>  <span class="badge b-sitemap">In sitemap</span></li>
+      <li><span class="route">/category-guides</span>  <span class="desc">How to navigate sectors / pick categories</span> <span class="badge b-sitemap">In sitemap</span></li>
+      <li><span class="route">/contact</span>          <span class="desc">Contact form</span>                       <span class="badge b-noindex">No-index</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3 class="card-title">Marketing surfaces</h3>
+      <span class="card-meta">6 surfaces</span>
+    </div>
+    <ul class="tree">
+      <li><span class="route">/insights</span>       <span class="desc">Industry insights / thought leadership hub</span> <span class="badge b-sitemap">In sitemap</span></li>
+      <li><span class="route">/media</span>          <span class="desc">Press kit + media mentions</span>                  <span class="badge b-sitemap">In sitemap</span></li>
+      <li><span class="route">/news</span>           <span class="desc">Company news + announcements</span>                <span class="badge b-crawl">Crawlable</span></li>
+      <li><span class="route">/agencies</span>       <span class="desc">For agencies — partnership pitch</span>            <span class="badge b-sitemap">In sitemap</span></li>
+      <li><span class="route">/affiliates</span>     <span class="desc">Affiliate program</span>                           <span class="badge b-sitemap">In sitemap</span></li>
+      <li><span class="route">/team</span>           <span class="desc">Current team</span>                                <span class="badge b-sitemap">In sitemap</span></li>
+      <li><span class="route">/team/past</span>      <span class="desc">Past team / alumni</span>                          <span class="badge b-sitemap">In sitemap</span></li>
+      <li><span class="route">/write-review</span>   <span class="desc">Public review submission</span>                    <span class="badge b-sitemap">In sitemap</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═════════════ 2. THE DIRECTORY (sectors + categories + listings) ═════════════ -->
+<section>
+  <h2>2 · The directory — sectors, categories, listings</h2>
+  <p class="section-sub">The heart of the product. Six L1 sectors fan out into thousands of categories; each category aggregates the live listings underneath it.</p>
+
+  <div class="card">
+    <div class="card-head">
+      <h3 class="card-title">Top-level directory</h3>
+    </div>
+    <ul class="tree">
+      <li><span class="route">/categories</span> <span class="desc">All six sectors at a glance — entry point to the entire directory</span> <span class="badge b-sitemap">In sitemap</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3 class="card-title">L1 sector landings — 6 surfaces</h3>
+      <span class="card-meta">served by <code>app/[...segments]/page.tsx</code></span>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Sector slug</th><th>Display name</th><th>Status</th><th class="num">Live listings</th><th class="num">Queued</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="route route--dyn">/ai-ml</span></td>                <td>AI &amp; ML</td>                    <td><span class="pill pill--live">Live</span></td>    <td class="num">100</td>  <td class="num">202</td></tr>
+        <tr><td><span class="route route--dyn">/software-saas</span></td>        <td>Software &amp; SaaS</td>            <td><span class="pill pill--queued">Queue</span></td>  <td class="num">0</td>    <td class="num">248</td></tr>
+        <tr><td><span class="route route--dyn">/it-services-agencies</span></td> <td>IT Services &amp; Agencies</td>    <td><span class="pill pill--queued">Queue</span></td>  <td class="num">0</td>    <td class="num">182</td></tr>
+        <tr><td><span class="route route--dyn">/startups-innovation</span></td>  <td>Startups &amp; Innovation</td>     <td><span class="pill pill--queued">Queue</span></td>  <td class="num">0</td>    <td class="num">244</td></tr>
+        <tr><td><span class="route route--dyn">/professional-services</span></td><td>Professional Services</td>          <td><span class="pill pill--queued">Queue</span></td>  <td class="num">0</td>    <td class="num">154</td></tr>
+        <tr><td><span class="route route--dyn">/local-businesses</span></td>     <td>Local Businesses</td>                <td><span class="pill pill--skipped">Deferred</span></td><td class="num">0</td>    <td class="num">0</td></tr>
+        <tr style="background:var(--bg);font-weight:700"><td colspan="3">Total across sectors</td><td class="num">100</td><td class="num">1,030</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3 class="card-title">Hierarchical category landings — up to 5 levels deep</h3>
+      <span class="card-meta">URL pattern: <code>/&lt;sector&gt;/&lt;l2&gt;/&lt;l3&gt;/&lt;l4&gt;/&lt;l5&gt;</code></span>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Depth</th><th>What it represents</th><th class="num">Categories defined</th><th>Example URL</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>L1</td><td>Top-level sector</td><td class="num">6</td><td><code>/ai-ml</code></td></tr>
+        <tr><td>L2</td><td>Sub-sector / family</td><td class="num">120</td><td><code>/ai-ml/llms-chat-assistants</code></td></tr>
+        <tr><td>L3</td><td>Category</td><td class="num">3,054</td><td><code>/ai-ml/llms-chat-assistants/general-chat-assistants</code></td></tr>
+        <tr><td>L4</td><td>Sub-category</td><td class="num">4,827</td><td><code>/&hellip;/large-language-models</code></td></tr>
+        <tr><td>L5</td><td>Niche specialty</td><td class="num">842</td><td><code>/&hellip;/multimodal-llm</code></td></tr>
+        <tr style="background:var(--bg);font-weight:700"><td colspan="2">Total category surfaces (taxonomy in <code>categories</code> table)</td><td class="num">8,849</td><td>&mdash;</td></tr>
+      </tbody>
+    </table>
+    <p class="section-sub" style="margin-top:14px">
+      Live, indexable category pages = subset where <code>is_launched = 1 AND is_active = 1 AND is_navigation = 1</code>.
+      Every category page lists every live submission below it (recursive descendant rollup), so each listing surfaces on its own page + every parent up the chain.
+    </p>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3 class="card-title">Individual listings — 101 live, 1,030 queued</h3>
+    </div>
+    <ul class="tree">
+      <li><span class="route route--dyn">/listing/[slug]</span> <span class="desc">The main listing detail page — overview, pricing, FAQs, integrations, screenshots, pros/cons</span> <span class="badge b-crawl">Crawlable</span></li>
+      <li><span class="route route--dyn">/company/[slug]</span> <span class="desc">Legacy alias — 308 permanent-redirects to <code>/listing/&lt;slug&gt;</code></span> <span class="badge b-crawl">Crawlable</span></li>
+      <li><span class="route route--dyn">/profile/[slug]</span> <span class="desc">User / reviewer profile page</span> <span class="badge b-crawl">Crawlable</span></li>
+      <li><span class="route route--dyn">/compare/[[...slugs]]</span> <span class="desc">Side-by-side comparison of 2-4 listings</span> <span class="badge b-crawl">Crawlable</span></li>
+    </ul>
+    <p class="section-sub" style="margin-top:14px">
+      <strong>Once the scrape queue is fully processed:</strong> <code>/listing/&lt;slug&gt;</code> alone delivers <strong>1,131 unique pages</strong> (100 already live + Clarifai + 1,030 queued).
+      Local Businesses (a different listing shape — hours, service area, etc.) ships in a follow-up batch.
+    </p>
+  </div>
+</section>
+
+<!-- ═════════════ 3. CONTENT ═════════════ -->
+<section>
+  <h2>3 · Editorial content — blog + insights</h2>
+  <p class="section-sub">Long-form content engine. Driven by the <code>blog_posts</code> table (<code>status='published'</code> appears publicly).</p>
+
+  <div class="card">
+    <ul class="tree">
+      <li><span class="route">/blog</span>          <span class="desc">Blog index — paginated, filterable by category</span> <span class="badge b-sitemap">In sitemap</span></li>
+      <li><span class="route route--dyn">/blog/[slug]</span> <span class="desc">Individual post — full article, author, schema.org Article markup</span> <span class="badge b-crawl">Crawlable</span></li>
+      <li><span class="route">/blog/post</span>     <span class="desc">Legacy preview/redirect surface</span> <span class="badge b-noindex">No-index</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═════════════ 4. DASHBOARD (auth) ═════════════ -->
+<section>
+  <h2>4 · Business owner dashboard <span class="badge b-auth">Auth</span></h2>
+  <p class="section-sub">Behind sign-in. Where claimed listings are managed — edit copy, view engagement, request verification.</p>
+
+  <div class="card">
+    <ul class="tree">
+      <li><span class="route">/dashboard</span>                       <span class="desc">Dashboard home — overview cards</span></li>
+      <li><span class="route">/dashboard/listings</span>              <span class="desc">All listings owned by the account</span></li>
+      <li><span class="branch"><span class="route route--dyn">/dashboard/listings/[uuid]/edit</span>       <span class="desc">Edit a single listing</span></span></li>
+      <li><span class="branch"><span class="route route--dyn">/dashboard/listings/[uuid]/engagement</span> <span class="desc">Per-listing analytics — views, clicks, conversions</span></span></li>
+      <li><span class="branch"><span class="route route--dyn">/dashboard/listings/[uuid]/verify</span>     <span class="desc">Listing verification flow</span></span></li>
+      <li><span class="route">/dashboard/new</span>                   <span class="desc">Create a new listing</span></li>
+      <li><span class="branch"><span class="route">/dashboard/new/checkout</span>           <span class="desc">Pay for the chosen plan</span></span></li>
+      <li><span class="route">/dashboard/company</span>               <span class="desc">Company profile</span></li>
+      <li><span class="route route--dyn">/dashboard/section/[key]</span> <span class="desc">Section-specific deep links</span></li>
+      <li><span class="route route--dyn">/dashboard/feature/[slug]</span> <span class="desc">Feature spotlight pages</span></li>
+      <li><span class="route">/dashboard/activity</span>              <span class="desc">Activity log — claim history, edits, etc.</span></li>
+      <li><span class="route">/dashboard/settings</span>              <span class="desc">Account settings</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═════════════ 5. ADMIN ═════════════ -->
+<section>
+  <h2>5 · Internal admin (iww-hq) <span class="badge b-internal">Staff only</span></h2>
+  <p class="section-sub">All non-indexable — disallowed in robots, gated behind admin auth. The operational console.</p>
+
+  <div class="card">
+    <div class="card-head">
+      <h3 class="card-title">Core admin</h3>
+    </div>
+    <ul class="tree">
+      <li><span class="route">/iww-hq</span>             <span class="desc">Admin home — overview</span></li>
+      <li><span class="route">/iww-hq/dashboard</span>   <span class="desc">Operational dashboard</span></li>
+      <li><span class="route">/iww-hq/analytics</span>   <span class="desc">Site-wide analytics</span></li>
+      <li><span class="route">/iww-hq/settings</span>    <span class="desc">Global settings</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3 class="card-title">Content tooling</h3>
+    </div>
+    <ul class="tree">
+      <li><span class="route">/iww-hq/blog</span>              <span class="desc">Blog index (admin)</span></li>
+      <li><span class="branch"><span class="route">/iww-hq/blog/new</span>     <span class="desc">Compose new post</span></span></li>
+      <li><span class="branch"><span class="route">/iww-hq/blog/edit</span>    <span class="desc">Edit existing post</span></span></li>
+      <li><span class="branch"><span class="route">/iww-hq/blog/preview</span> <span class="desc">Preview draft</span></span></li>
+      <li><span class="branch"><span class="route">/iww-hq/blog/seo</span>     <span class="desc">SEO meta editor for posts</span></span></li>
+      <li><span class="route">/iww-hq/seo-content</span>      <span class="desc">Site-wide SEO content blocks</span></li>
+      <li><span class="branch"><span class="route">/iww-hq/seo-content/edit</span> <span class="desc">Edit a content block</span></span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3 class="card-title">Taxonomy &amp; classification</h3>
+    </div>
+    <ul class="tree">
+      <li><span class="route">/iww-hq/categories</span>      <span class="desc">Category tree management</span></li>
+      <li><span class="branch"><span class="route">/iww-hq/categories/edit</span> <span class="desc">Edit a category</span></span></li>
+      <li><span class="branch"><span class="route">/iww-hq/categories/seo</span>  <span class="desc">SEO meta per category</span></span></li>
+      <li><span class="route">/iww-hq/listing-types</span> <span class="desc">Manage listing types</span></li>
+      <li><span class="route">/iww-hq/tags</span>          <span class="desc">Tag management</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3 class="card-title">Operations</h3>
+    </div>
+    <ul class="tree">
+      <li><span class="route">/iww-hq/submissions</span>   <span class="desc">All submissions — review, edit, approve</span></li>
+      <li><span class="route">/iww-hq/reviews</span>       <span class="desc">Moderate user reviews</span></li>
+      <li><span class="route">/iww-hq/verifications</span> <span class="desc">Verify claim requests</span></li>
+      <li><span class="route">/iww-hq/waitlist</span>      <span class="desc">Waitlist management</span></li>
+      <li><span class="route">/iww-hq/scraper</span>       <span class="desc"><strong>Scraper console</strong> — 1,030-job queue, Gemini extraction, screenshots, apply-to-DB</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═════════════ 6. CRAWL / SEO HEALTH ═════════════ -->
+<section>
+  <h2>6 · Crawl &amp; SEO health</h2>
+  <p class="section-sub">Where Google can reach today vs. what's actually live.</p>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr><th>Surface</th><th class="num">Live URLs</th><th>In current sitemap?</th><th>Crawlable?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Static marketing &amp; info pages</td><td class="num">22</td><td><span class="pill pill--live">Yes</span></td><td><span class="pill pill--live">Yes</span></td></tr>
+        <tr><td>Sector landings</td><td class="num">5 (of 6)</td><td>—</td><td><span class="pill pill--live">Yes</span></td></tr>
+        <tr><td>Category landings (launched in DB)</td><td class="num">≈ launched subset</td><td>—</td><td><span class="pill pill--live">Yes</span></td></tr>
+        <tr><td><code>/listing/&lt;slug&gt;</code> listings</td><td class="num">101</td><td>—</td><td><span class="pill pill--live">Yes</span></td></tr>
+        <tr><td>Blog posts (published)</td><td class="num">depends on <code>blog_posts</code></td><td>—</td><td><span class="pill pill--live">Yes</span></td></tr>
+      </tbody>
+    </table>
+    <p class="section-sub" style="margin-top:14px">
+      <strong>Current state:</strong> the live sitemap (<code>sitemap-pages.xml</code>) only lists the 22 static pages. The dynamic sitemap that emitted listings + sectors + categories + blog posts is currently disabled (<code>app/sitemap.ts.bak</code>). Google can still reach every page by following internal links, but explicit URL submission gives much stronger discovery.
+    </p>
+    <p class="section-sub" style="margin-top:6px">
+      <strong>Once the dynamic sitemap is re-enabled:</strong> expect <strong>~150 URLs today</strong> (22 static + 101 listings + 6 sectors + launched categories + published blog) growing to <strong>~1,150+ URLs</strong> after the queue is fully processed, plus the full launched-category set.
+    </p>
+  </div>
+</section>
+
+<div class="foot">
+  Generated 2026-05-27 · Source: <code>app/</code> + <code>database/seed-bulk-*.sql</code> + <code>config/categories-data.ts</code> · Print-friendly (Ctrl/⌘+P → Save as PDF).
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  InfoWebWorld — proposed sitemap reflecting the current site structure
+  (May 2026). Reference document for review, NOT for submission to
+  Search Console as-is.
+
+  Structure:
+    · Static marketing & informational pages (1.0 - 0.6 priority)
+    · L1 sector landings (0.9)
+    · /categories index (0.85)
+    · /listing/<slug> placeholder (0.7) — illustrative; the actual
+       URL list comes from `submissions.slug WHERE status='active'`
+    · /blog index + posts placeholder (0.7) — illustrative; actual
+       posts from `blog_posts WHERE status='published'`
+
+  When this becomes the live sitemap, the listing + blog + category
+  blocks should be emitted dynamically from the DB (see the existing
+  app/sitemap.ts.bak which already does exactly that).
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- ════════════ 1. HOMEPAGE & BUSINESS FUNNEL ════════════ -->
+  <url><loc>https://infowebworld.com/</loc>              <lastmod>2026-05-27</lastmod><changefreq>daily</changefreq>  <priority>1.0</priority></url>
+  <url><loc>https://infowebworld.com/business</loc>      <lastmod>2026-05-27</lastmod><changefreq>weekly</changefreq> <priority>0.95</priority></url>
+  <url><loc>https://infowebworld.com/business/plans</loc><lastmod>2026-05-27</lastmod><changefreq>weekly</changefreq> <priority>0.95</priority></url>
+
+  <!-- ════════════ 2. THE DIRECTORY ════════════ -->
+  <url><loc>https://infowebworld.com/categories</loc>    <lastmod>2026-05-27</lastmod><changefreq>daily</changefreq>  <priority>0.95</priority></url>
+
+  <!-- L1 sector landings (5 active, local-businesses deferred) -->
+  <url><loc>https://infowebworld.com/ai-ml</loc>                  <lastmod>2026-05-27</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://infowebworld.com/software-saas</loc>          <lastmod>2026-05-27</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://infowebworld.com/it-services-agencies</loc>   <lastmod>2026-05-27</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://infowebworld.com/startups-innovation</loc>    <lastmod>2026-05-27</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://infowebworld.com/professional-services</loc>  <lastmod>2026-05-27</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <!-- /local-businesses omitted — deferred until the Local listing shape ships -->
+
+  <!--
+    L2-L5 category landings — emit dynamically from the DB:
+      SELECT slug FROM categories
+       WHERE is_launched = 1 AND is_active = 1 AND is_navigation = 1
+         AND level BETWEEN 2 AND 5
+    URL pattern: /<sector>/<l2>/<l3?>/<l4?>/<l5?>
+    Total taxonomy: 6 L1 + 120 L2 + 3,054 L3 + 4,827 L4 + 842 L5 = 8,849 categories
+    (only the `is_launched` subset actually emits URLs).
+  -->
+
+  <!-- ════════════ 3. LISTINGS ════════════ -->
+  <!--
+    /listing/<slug> — emit dynamically from the DB:
+      SELECT slug, updated_at FROM submissions
+       WHERE status IN ('active','paid') AND slug IS NOT NULL
+       ORDER BY created_at DESC
+
+    Current live count: 101 (100 AI/ML + Clarifai post-apply).
+    Once the scrape queue is processed: ~1,131 total
+      ·   202 AI/ML queued (in addition to the 100 already applied)
+      ·   248 Software & SaaS queued
+      ·   182 IT Services queued
+      ·   244 Startups queued
+      ·   154 Professional Services queued
+
+    Example illustrative entries (the 6 hand-written AI/ML listings):
+  -->
+  <url><loc>https://infowebworld.com/listing/claude</loc>                <lastmod>2026-05-27</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://infowebworld.com/listing/chatgpt-by-openai</loc>     <lastmod>2026-05-27</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://infowebworld.com/listing/gemini</loc>                <lastmod>2026-05-27</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://infowebworld.com/listing/microsoft-copilot</loc>     <lastmod>2026-05-27</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://infowebworld.com/listing/perplexity</loc>            <lastmod>2026-05-27</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://infowebworld.com/listing/deepseek</loc>              <lastmod>2026-05-27</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://infowebworld.com/listing/clarifai</loc>              <lastmod>2026-05-27</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <!-- … 94 more AI/ML hand-seeded listings emitted from submissions table … -->
+  <!-- … 1,030 more emitted as the scrape queue applies … -->
+
+  <!-- ════════════ 4. BLOG ════════════ -->
+  <url><loc>https://infowebworld.com/blog</loc> <lastmod>2026-05-27</lastmod><changefreq>daily</changefreq><priority>0.85</priority></url>
+  <!--
+    /blog/<slug> — emit dynamically:
+      SELECT slug, updated_at FROM blog_posts WHERE status = 'published'
+       ORDER BY published_at DESC
+    Priority 0.7, changefreq weekly.
+  -->
+
+  <!-- ════════════ 5. INFORMATIONAL & TRUST ════════════ -->
+  <url><loc>https://infowebworld.com/about</loc>              <lastmod>2026-05-27</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://infowebworld.com/faqs</loc>               <lastmod>2026-05-27</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://infowebworld.com/help</loc>               <lastmod>2026-05-27</lastmod><changefreq>weekly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://infowebworld.com/glossary</loc>           <lastmod>2026-05-27</lastmod><changefreq>weekly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://infowebworld.com/category-guides</loc>    <lastmod>2026-05-27</lastmod><changefreq>weekly</changefreq><priority>0.85</priority></url>
+
+  <!-- ════════════ 6. MARKETING ════════════ -->
+  <url><loc>https://infowebworld.com/insights</loc>           <lastmod>2026-05-27</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://infowebworld.com/media</loc>              <lastmod>2026-05-27</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://infowebworld.com/agencies</loc>           <lastmod>2026-05-27</lastmod><changefreq>weekly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://infowebworld.com/affiliates</loc>         <lastmod>2026-05-27</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://infowebworld.com/team</loc>               <lastmod>2026-05-27</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://infowebworld.com/team/past</loc>          <lastmod>2026-05-27</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://infowebworld.com/write-review</loc>       <lastmod>2026-05-27</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- ════════════ 7. LEGAL & POLICY ════════════ -->
+  <url><loc>https://infowebworld.com/terms</loc>              <lastmod>2026-05-27</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://infowebworld.com/privacy</loc>            <lastmod>2026-05-27</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://infowebworld.com/cookies</loc>            <lastmod>2026-05-27</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://infowebworld.com/content-guidelines</loc> <lastmod>2026-05-27</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://infowebworld.com/do-not-sell</loc>        <lastmod>2026-05-27</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://infowebworld.com/removals</loc>           <lastmod>2026-05-27</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+
+</urlset>
