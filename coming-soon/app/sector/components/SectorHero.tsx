@@ -140,7 +140,7 @@ export default function SectorHero({ category, meta, sectorName, shortName, l2Ca
   const goToResult = (slug: string, mode: string = 'product') => {
     setFocused(false)
     if (!slug) { router.push('/business'); return }
-    router.push((mode === 'company' ? '/profile/' : '/company/') + slug)
+    router.push((mode === 'company' ? '/profile/' : '/listing/') + slug)
   }
   const goToCategory = (slug: string) => { setFocused(false); router.push(`/${sectorSlug}/${slug}`) }
 

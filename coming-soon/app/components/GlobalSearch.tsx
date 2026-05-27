@@ -182,7 +182,7 @@ export default function GlobalSearch({
               {results!.listings.map(l => (
                 <Link
                   key={l.id}
-                  href={(l.listing_mode === 'company' ? '/profile/' : '/company/') + l.slug}
+                  href={(l.listing_mode === 'company' ? '/profile/' : '/listing/') + l.slug}
                   className="iw-srch-row"
                   onClick={close}
                   role="option"

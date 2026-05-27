@@ -172,7 +172,7 @@ export default function VerifyApplyClient({ initial }: { initial: InitialVerifyS
               {listing.verifiedAt ? ` Approved ${fmtDate(listing.verifiedAt)}.` : ''}
             </p>
             <div className="dash-verify-card-actions">
-              <Link href={listing.listingMode === 'company' ? `/profile/${listing.slug}` : `/company/${listing.slug}`} className="dash-verify-btn dash-verify-btn--primary">
+              <Link href={listing.listingMode === 'company' ? `/profile/${listing.slug}` : `/listing/${listing.slug}`} className="dash-verify-btn dash-verify-btn--primary">
                 See it on your listing →
               </Link>
               <Link href="/dashboard/listings" className="dash-verify-btn dash-verify-btn--ghost">

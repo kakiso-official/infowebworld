@@ -179,7 +179,7 @@ export default function HeroSearchClient() {
                   {results!.listings.map(l => (
                     <Link
                       key={l.id}
-                      href={(l.listing_mode === 'company' ? '/profile/' : '/company/') + l.slug}
+                      href={(l.listing_mode === 'company' ? '/profile/' : '/listing/') + l.slug}
                       className="tlp-hsr-row"
                       onClick={() => setOpen(false)}
                     >

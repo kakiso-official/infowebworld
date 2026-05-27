@@ -36,7 +36,7 @@ function initialsOf(name: string): string {
 }
 
 function listingHref(p: PopProduct): string {
-  return (p.listingMode === 'company' ? '/profile/' : '/company/') + p.slug
+  return (p.listingMode === 'company' ? '/profile/' : '/listing/') + p.slug
 }
 
 /* Logo with onError fallback to a monogram tile. Real logos are tried

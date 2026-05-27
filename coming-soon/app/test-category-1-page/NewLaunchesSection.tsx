@@ -29,7 +29,7 @@ export interface LaunchRow {
 }
 
 function publicHref(r: LaunchRow): string {
-  return (r.listingMode === 'company' ? '/profile/' : '/company/') + r.slug
+  return (r.listingMode === 'company' ? '/profile/' : '/listing/') + r.slug
 }
 
 /** Compress a date into a short relative-time label.

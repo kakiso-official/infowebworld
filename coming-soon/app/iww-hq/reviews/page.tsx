@@ -218,7 +218,7 @@ export default function AdminReviewsPage() {
                       fontSize: '.62rem', fontWeight: 800,
                     }}>{(r.listing_name || '?').slice(0, 1).toUpperCase()}</span>
                   )}
-                  <a href={(r.listing_mode === 'company' ? '/profile/' : '/company/') + r.listing_slug} target="_blank" rel="noopener noreferrer" style={{
+                  <a href={(r.listing_mode === 'company' ? '/profile/' : '/listing/') + r.listing_slug} target="_blank" rel="noopener noreferrer" style={{
                     fontSize: '.78rem', fontWeight: 700, color: '#1A1A1A',
                     textDecoration: 'none',
                   }}>{r.listing_name}</a>

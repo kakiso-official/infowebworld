@@ -46,7 +46,7 @@ export async function POST(request: NextRequest, ctx: { params: Promise<{ slug: 
   }
   if (!row) return Response.json({ ok: false, error: 'Listing not found' }, { status: 404 })
 
-  const path = row.listing_mode === 'company' ? `/profile/${slug}` : `/company/${slug}`
+  const path = row.listing_mode === 'company' ? `/profile/${slug}` : `/listing/${slug}`
 
   try {
     revalidatePath(path)

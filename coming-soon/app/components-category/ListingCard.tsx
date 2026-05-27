@@ -319,7 +319,7 @@ export function RealListingCard({
         <div className="cd-lc-info">
           <div className="cd-lc-name-row">
             <h3 className="cd-lc-name">
-              <Link href={`/company/${item.slug}`}>{item.companyName}</Link>
+              <Link href={`/listing/${item.slug}`}>{item.companyName}</Link>
               <ExtIcon size={12} color={ACCENT} />
             </h3>
             {(item.city || item.country) && (
@@ -348,7 +348,7 @@ export function RealListingCard({
       {desc && (
         <div className="cd-lc-desc-section">
           <p className="cd-lc-desc">{desc}</p>
-          <Link href={`/company/${item.slug}`} className="cd-lc-readmore">
+          <Link href={`/listing/${item.slug}`} className="cd-lc-readmore">
             Read more about {item.companyName}
           </Link>
         </div>

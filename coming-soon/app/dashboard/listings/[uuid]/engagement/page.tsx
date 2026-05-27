@@ -170,7 +170,7 @@ export default async function EngagementPage({
             Reviews, reactions, followers and inbound leads on this listing.
             {' · '}
             {isLive
-              ? <Link href={listing.listing_mode === 'company' ? `/profile/${listing.slug}` : `/company/${listing.slug}`} target="_blank" rel="noopener noreferrer">View live page ↗</Link>
+              ? <Link href={listing.listing_mode === 'company' ? `/profile/${listing.slug}` : `/listing/${listing.slug}`} target="_blank" rel="noopener noreferrer">View live page ↗</Link>
               : <span className="eng-muted">Awaiting review — not live yet</span>}
             {' · '}
             <Link href={`/dashboard/listings/${listing.uuid}/edit`}>Edit listing</Link>

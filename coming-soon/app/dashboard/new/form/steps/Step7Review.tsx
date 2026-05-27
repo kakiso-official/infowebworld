@@ -31,7 +31,7 @@ export default function Step7Review({ form, allCategories, listingTypes, tagGrou
         <h2 className="df-section-title">Review &amp; submit</h2>
         <p className="df-section-sub">
           Check what your listing will look like. After you submit, it goes to the admin
-          for approval — once approved it&apos;s live at <code>/company/your-slug</code>.
+          for approval — once approved it&apos;s live at <code>/listing/your-slug</code>.
         </p>
       </header>
 

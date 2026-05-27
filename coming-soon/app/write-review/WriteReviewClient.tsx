@@ -270,13 +270,13 @@ export default function WriteReviewClient() {
             <h2 className="wr-success-title">Thanks — your review is in.</h2>
             <p className="wr-success-desc">
               We&apos;ll moderate it shortly. Once approved it appears on{' '}
-              <Link href={`/company/${company.slug}`} className="wr-success-link">
+              <Link href={`/listing/${company.slug}`} className="wr-success-link">
                 {company.companyName}&apos;s page
               </Link>{' '}
               within a day.
             </p>
             <div className="wr-success-actions">
-              <Link href={`/company/${company.slug}`} className="wr-btn wr-btn--ghost">
+              <Link href={`/listing/${company.slug}`} className="wr-btn wr-btn--ghost">
                 See the listing
               </Link>
               <Link href="/categories" className="wr-btn wr-btn--primary">

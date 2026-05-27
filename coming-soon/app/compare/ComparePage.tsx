@@ -524,7 +524,7 @@ function PickSecondView({
           <div className="cpr-pick2-id">
             <SmartLogo col={col} className="cpr-pick2-logo" />
             <div className="cpr-pick2-info">
-              <Link href={`/company/${col.slug}`} className="cpr-pick2-name">{col.companyName}</Link>
+              <Link href={`/listing/${col.slug}`} className="cpr-pick2-name">{col.companyName}</Link>
               {col.category && (
                 <Link href={`/${col.category.slug}`} className="cpr-pick2-cat" style={{ color: col.category.color }}>
                   {col.category.name}
@@ -579,11 +579,11 @@ function ColumnHead({
         {Ico.close}
       </button>
       <div className="cpr-col-id">
-        <Link href={`/company/${col.slug}`} className="cpr-col-logo-link">
+        <Link href={`/listing/${col.slug}`} className="cpr-col-logo-link">
           <SmartLogo col={col} className="cpr-col-logo" />
         </Link>
         <div className="cpr-col-name-row">
-          <Link href={`/company/${col.slug}`} className="cpr-col-name">
+          <Link href={`/listing/${col.slug}`} className="cpr-col-name">
             {col.companyName}
             {col.verified && <span className="cpr-col-verified" title="Verified by InfoWebWorld">{Ico.shield}</span>}
           </Link>
@@ -613,7 +613,7 @@ function ColumnHead({
             Visit Website {Ico.external}
           </a>
         ) : (
-          <Link href={`/company/${col.slug}`} className="cpr-col-visit">
+          <Link href={`/listing/${col.slug}`} className="cpr-col-visit">
             Learn More {Ico.arrowRight}
           </Link>
         )}
@@ -765,7 +765,7 @@ function OverviewCell({ col }: { col: CompareCol }) {
         </div>
       )}
 
-      <Link href={`/company/${col.slug}`} className="cpr-pill-link">
+      <Link href={`/listing/${col.slug}`} className="cpr-pill-link">
         View more details {Ico.arrowRight}
       </Link>
     </div>
@@ -774,7 +774,7 @@ function OverviewCell({ col }: { col: CompareCol }) {
 
 /** Mirrors the UI_IMAGES_FALLBACK array in app/listing/ListingDetailPage.tsx
     so a compare column shows the same screenshot set the visitor would
-    see if they clicked through to /company/<slug>. When the listing has
+    see if they clicked through to /listing/<slug>. When the listing has
     uploaded real screenshots, those win; when it doesn't, this Unsplash
     set is the same fallback the public listing page uses — keeping the
     two surfaces visually consistent. Rotated per-listing via the row id
@@ -832,7 +832,7 @@ function ScreenshotsCell({ col }: { col: CompareCol }) {
   const rest = shots.slice(1, 4)
   return (
     <div className="cpr-cell cpr-cell--shots">
-      <Link href={`/company/${col.slug}#screenshots`} className="cpr-shot-hero">
+      <Link href={`/listing/${col.slug}#screenshots`} className="cpr-shot-hero">
         <SmartImg src={hero} alt={`${col.companyName} screenshot`} />
         <span className="cpr-shot-badge">
           {isFallback
@@ -843,13 +843,13 @@ function ScreenshotsCell({ col }: { col: CompareCol }) {
       {rest.length > 0 && (
         <div className="cpr-shot-thumbs">
           {rest.map((s, i) => (
-            <Link key={i} href={`/company/${col.slug}#screenshots`} className="cpr-shot-thumb">
+            <Link key={i} href={`/listing/${col.slug}#screenshots`} className="cpr-shot-thumb">
               <SmartImg src={s} alt="" />
             </Link>
           ))}
         </div>
       )}
-      <Link href={`/company/${col.slug}#screenshots`} className="cpr-pill-link cpr-pill-link--ghost">
+      <Link href={`/listing/${col.slug}#screenshots`} className="cpr-pill-link cpr-pill-link--ghost">
         View all media {Ico.arrowRight}
       </Link>
     </div>
@@ -928,7 +928,7 @@ function PricingCell({ col }: { col: CompareCol }) {
         </li>
       </ul>
 
-      <Link href={`/company/${col.slug}#pricing`} className="cpr-app-info">
+      <Link href={`/listing/${col.slug}#pricing`} className="cpr-app-info">
         App info
       </Link>
     </div>
@@ -1003,7 +1003,7 @@ function ReviewsCell({ col }: { col: CompareCol }) {
           <div className="cpr-rev-empty-rate">—</div>
           <Stars value={0} size={16} />
           <div className="cpr-rev-empty-msg">No reviews yet for {col.companyName}.</div>
-          <Link href={`/company/${col.slug}`} className="cpr-pill-link cpr-pill-link--accent">
+          <Link href={`/listing/${col.slug}`} className="cpr-pill-link cpr-pill-link--accent">
             Write the first review {Ico.arrowRight}
           </Link>
         </div>
@@ -1185,7 +1185,7 @@ function CompanyInfoCell({ col }: { col: CompareCol }) {
           </div>
         ))}
       </div>
-      <Link href={`/company/${col.slug}`} className="cpr-pill-link">
+      <Link href={`/listing/${col.slug}`} className="cpr-pill-link">
         Full profile {Ico.arrowRight}
       </Link>
     </div>
@@ -1227,7 +1227,7 @@ function KeyFeaturesCell({ col }: { col: CompareCol }) {
         </div>
       ))}
       {col.keyFeatures.length > 5 && (
-        <Link href={`/company/${col.slug}#features`} className="cpr-pill-link cpr-pill-link--ghost">
+        <Link href={`/listing/${col.slug}#features`} className="cpr-pill-link cpr-pill-link--ghost">
           See all {col.keyFeatures.length} key features {Ico.arrowRight}
         </Link>
       )}
@@ -1404,7 +1404,7 @@ function AlternativesCell({
               ? [...currentSlugs.slice(0, maxCap - 1), a.slug]
               : [...currentSlugs, a.slug])
         const compareHref = alreadyComparing
-          ? `/company/${a.slug}`
+          ? `/listing/${a.slug}`
           : buildCompareUrl(newSlugs)
         return (
           <div key={a.slug} className="cpr-alt2">
@@ -1414,7 +1414,7 @@ function AlternativesCell({
                 className="cpr-alt2-logo"
               />
               <div className="cpr-alt2-id">
-                <Link href={`/company/${a.slug}`} className="cpr-alt2-name">
+                <Link href={`/listing/${a.slug}`} className="cpr-alt2-name">
                   {a.companyName}
                 </Link>
                 <div className="cpr-alt2-rate">

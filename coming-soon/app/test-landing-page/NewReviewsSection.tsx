@@ -33,7 +33,7 @@ interface Props {
 }
 
 function listingHref(r: ReviewRow): string {
-  return (r.listing_mode === 'company' ? '/profile/' : '/company/') + r.listing_slug
+  return (r.listing_mode === 'company' ? '/profile/' : '/listing/') + r.listing_slug
 }
 
 /** Normalise a stored name to Title Case so reviewers who typed their

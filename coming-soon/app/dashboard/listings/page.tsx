@@ -348,7 +348,7 @@ export default async function ListingsPage({
                     </Link>
                   )}
                   {isLive ? (
-                    <Link href={`/company/${l.slug}`} className="dash-list-btn">
+                    <Link href={`/listing/${l.slug}`} className="dash-list-btn">
                       View listing
                       <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <path d="M7 17L17 7M7 7h10v10" />

@@ -312,13 +312,13 @@ function JobDetailView({ jobId, onChanged }: { jobId: number; onChanged: () => v
               <>
                 <span className="scrp-dot" />
                 <a
-                  href={`/company/${job.slug}`}
+                  href={`/listing/${job.slug}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="scrp-hero-link"
                   title={`Applied to DB at ${new Date(job.applied_at).toLocaleString()}`}
                 >
-                  ✓ live since {relTime(job.applied_at)} → /company/{job.slug} ↗
+                  ✓ live since {relTime(job.applied_at)} → /listing/{job.slug} ↗
                 </a>
               </>
             )}
@@ -476,7 +476,7 @@ function DeployButton() {
   const [msg, setMsg] = useState<string | null>(null)
 
   const click = async () => {
-    if (!confirm('Trigger a Vercel production deploy?\n\nThis rebuilds every /company/<slug> page with the latest DB data. Takes ~1-2 minutes. Required after Apply for changes to show on infowebworld.com.')) return
+    if (!confirm('Trigger a Vercel production deploy?\n\nThis rebuilds every /listing/<slug> page with the latest DB data. Takes ~1-2 minutes. Required after Apply for changes to show on infowebworld.com.')) return
     setBusy(true); setMsg(null)
     try {
       const res = await fetch('/api/admin/deploy', { method: 'POST' })

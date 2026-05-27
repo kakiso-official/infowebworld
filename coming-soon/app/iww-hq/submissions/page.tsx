@@ -403,7 +403,7 @@ function SubmissionDetail({ sub, busy, onSetStatus, onDelete, onSaveFaqs, flash 
         {isLive && sub.slug && (
           <a
             className="sub-btn sub-btn--ghost"
-            href={sub.listingMode === 'company' ? `/profile/${sub.slug}` : `/company/${sub.slug}`}
+            href={sub.listingMode === 'company' ? `/profile/${sub.slug}` : `/listing/${sub.slug}`}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -430,7 +430,7 @@ function SubmissionDetail({ sub, busy, onSetStatus, onDelete, onSaveFaqs, flash 
           <KV label="Email"    value={sub.email} link={sub.email ? `mailto:${sub.email}` : ''} />
           <KV label="Phone"    value={sub.phone ? `${sub.phoneCode || ''} ${sub.phone}`.trim() : ''} />
           <KV label="Website"  value={sub.website} link={sub.website} external />
-          <KV label="Slug"     value={sub.slug ? (sub.listingMode === 'company' ? `/profile/${sub.slug}` : `/company/${sub.slug}`) : ''} />
+          <KV label="Slug"     value={sub.slug ? (sub.listingMode === 'company' ? `/profile/${sub.slug}` : `/listing/${sub.slug}`) : ''} />
           <KV label="Listing type" value={sub.listingType} />
         </dl>
       </section>

@@ -121,7 +121,7 @@ export default function ActivityClient({ saved, liked, disliked, reviewed }: Pro
     } else {
       /* Reviewed — surface a redirect to the listing detail page where the
          review modal lives. Don't auto-delete reviews from a side channel. */
-      router.push(`/company/${slug}#review`)
+      router.push(`/listing/${slug}#review`)
       return
     }
     markRemoved(tab, slug)
@@ -166,13 +166,13 @@ export default function ActivityClient({ saved, liked, disliked, reviewed }: Pro
             const accent = item.category.color || '#E8553D'
             return (
               <article key={item.slug} className="act-card">
-                <Link href={`/company/${item.slug}`} className="act-card-logo" aria-label={item.companyName}>
+                <Link href={`/listing/${item.slug}`} className="act-card-logo" aria-label={item.companyName}>
                   {item.logoUrl
                     ? <img src={item.logoUrl} alt="" />
                     : <span style={{ background: `${accent}14`, color: accent }}>{initial}</span>}
                 </Link>
                 <div className="act-card-body">
-                  <Link href={`/company/${item.slug}`} className="act-card-name">{item.companyName}</Link>
+                  <Link href={`/listing/${item.slug}`} className="act-card-name">{item.companyName}</Link>
                   {item.tagline && <p className="act-card-tag">{item.tagline}</p>}
                   <div className="act-card-meta">
                     {item.category.name && (
@@ -190,7 +190,7 @@ export default function ActivityClient({ saved, liked, disliked, reviewed }: Pro
                   </div>
                 </div>
                 <div className="act-card-actions">
-                  <Link href={`/company/${item.slug}`} className="act-card-btn act-card-btn--ghost">
+                  <Link href={`/listing/${item.slug}`} className="act-card-btn act-card-btn--ghost">
                     View
                   </Link>
                   <button

@@ -118,7 +118,7 @@ export async function POST(req: Request) {
                 </td>
                 <td style="vertical-align:top;padding-left:12px">
                   <div style="font-family:'Bricolage Grotesque',Georgia,serif;font-size:17px;font-weight:800;color:#1A1A1A;line-height:1.25;margin-bottom:3px">
-                    <a href="${SITE}/company/${escapeHtml(r.slug)}" target="_blank" style="color:#1A1A1A;text-decoration:none">${escapeHtml(r.company_name)}</a>
+                    <a href="${SITE}/listing/${escapeHtml(r.slug)}" target="_blank" style="color:#1A1A1A;text-decoration:none">${escapeHtml(r.company_name)}</a>
                   </div>
                   ${r.category_name ? `<div style="font-family:Nunito,sans-serif;font-size:12px;color:#8B847C;margin-bottom:6px">${escapeHtml(r.category_name)}</div>` : ''}
                   ${r.tagline ? `<div style="font-family:Nunito,sans-serif;font-size:13.5px;color:#5C5852;line-height:1.5;margin-bottom:8px">${escapeHtml(r.tagline)}</div>` : ''}

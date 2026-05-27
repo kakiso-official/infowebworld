@@ -33,7 +33,7 @@ interface Props {
 }
 
 function listingHref(f: PopFirmRow): string {
-  return (f.listing_mode === 'company' ? '/profile/' : '/company/') + f.slug
+  return (f.listing_mode === 'company' ? '/profile/' : '/listing/') + f.slug
 }
 
 /** Format the entry-level-price field for the meta row.

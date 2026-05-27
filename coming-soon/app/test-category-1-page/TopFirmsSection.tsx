@@ -18,7 +18,7 @@ import type { PopL2, PopProduct } from './PopularSection'
    ═══════════════════════════════════════════════════════════════════════ */
 
 function publicHref(p: PopProduct): string {
-  return (p.listingMode === 'company' ? '/profile/' : '/company/') + p.slug
+  return (p.listingMode === 'company' ? '/profile/' : '/listing/') + p.slug
 }
 
 function Stars({ value, max = 5 }: { value: number; max?: number }) {

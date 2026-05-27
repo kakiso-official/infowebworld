@@ -216,7 +216,7 @@ export async function POST(
        revalidate=172800 so otherwise visitors see stale HTML for 48h).
        Dev mode no-ops. */
     try {
-      revalidatePath(`/company/${job.slug}`)
+      revalidatePath(`/listing/${job.slug}`)
       revalidatePath('/categories')
     } catch (err) {
       console.warn('revalidatePath failed (non-fatal):', err)

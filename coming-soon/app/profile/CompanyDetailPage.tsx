@@ -924,7 +924,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                 return (
                   <a
                     key={p.id}
-                    href={`/company/${p.slug}`}
+                    href={`/listing/${p.slug}`}
                     className="cmp-portfolio-card"
                   >
                     <div className="cmp-pf-card-top">
@@ -1077,7 +1077,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                   {popularTools.slice(0, 8).map(t => {
                     const tLogo = t.logo_url || ''
                     return (
-                      <a key={t.id} href={`/company/${t.slug}`} className="tlp-sib-card">
+                      <a key={t.id} href={`/listing/${t.slug}`} className="tlp-sib-card">
                         <div className="tlp-sib-head">
                           {tLogo
                             ? <img src={tLogo} alt={`${t.company_name} logo`} className="tlp-sib-logo" />

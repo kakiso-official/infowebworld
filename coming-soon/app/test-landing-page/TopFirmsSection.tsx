@@ -32,7 +32,7 @@ interface Props {
 }
 
 function publicHref(f: FirmRow): string {
-  return (f.listing_mode === 'company' ? '/profile/' : '/company/') + f.slug
+  return (f.listing_mode === 'company' ? '/profile/' : '/listing/') + f.slug
 }
 
 function Stars({ value, max = 5 }: { value: number; max?: number }) {

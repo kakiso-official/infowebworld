@@ -2983,7 +2983,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                         </div>
 
                         <div className="tlp-alt-cta-row">
-                          <a href={`/company/${s.slug}`} className="tlp-alt-cta">Learn More</a>
+                          <a href={`/listing/${s.slug}`} className="tlp-alt-cta">Learn More</a>
                           <a
                             href={`/compare/${listingSlug}-vs-${s.slug}`}
                             className="tlp-alt-cta tlp-alt-cta--outline"
@@ -3919,7 +3919,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                     const sLogo = s.logo_url
                       || (s.website ? clearbit(String(s.website).replace(/^https?:\/\//, '').split('/')[0], 128) : '')
                     return (
-                      <a key={s.id} href={`/company/${s.slug}`} className="tlp-sib-card">
+                      <a key={s.id} href={`/listing/${s.slug}`} className="tlp-sib-card">
                         <div className="tlp-sib-head">
                           {sLogo
                             ? <img src={sLogo} alt={`${s.company_name} logo`} className="tlp-sib-logo" />
@@ -4067,7 +4067,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
       <SignupModal
         open={authOpen}
         onClose={() => setAuthOpen(false)}
-        nextUrl={listingSlug ? `/company/${listingSlug}` : undefined}
+        nextUrl={listingSlug ? `/listing/${listingSlug}` : undefined}
       />
 
       <LeadFormModal

@@ -91,7 +91,7 @@ export async function POST(
       if (row.listing_slug) {
         const path = row.listing_mode === 'company'
           ? `/profile/${row.listing_slug}`
-          : `/company/${row.listing_slug}`
+          : `/listing/${row.listing_slug}`
         try { revalidatePath(path) }
         catch (e) { console.error('[verify-approve] revalidate failed:', e) }
       }

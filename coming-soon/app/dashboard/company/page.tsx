@@ -297,7 +297,7 @@ export default async function MyCompanyPage() {
                 <div className="dco-prod-actions">
                   <Link href={`/dashboard/listings/${p.uuid}/edit`} className="dco-prod-link">Edit</Link>
                   {(p.status === 'active' || p.status === 'paid') && (
-                    <Link href={`/company/${p.slug}`} className="dco-prod-link" target="_blank" rel="noopener noreferrer">
+                    <Link href={`/listing/${p.slug}`} className="dco-prod-link" target="_blank" rel="noopener noreferrer">
                       View ↗
                     </Link>
                   )}

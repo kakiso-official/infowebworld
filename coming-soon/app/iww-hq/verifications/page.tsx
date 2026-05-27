@@ -170,7 +170,7 @@ export default function AdminVerificationsPage() {
         <p style={{ margin: '6px 0 0', color: 'var(--h-muted)', fontSize: '.85rem' }}>
           Owner-submitted applications to verify their listing. Approving flips
           the public Verified-by-InfoWebWorld badge live (with a manual rebuild
-          of /company/&lt;slug&gt;) and emails the owner.
+          of /listing/&lt;slug&gt;) and emails the owner.
         </p>
       </header>
 
@@ -264,7 +264,7 @@ export default function AdminVerificationsPage() {
                       fontSize: '.7rem', fontWeight: 800,
                     }}>{(r.listing_name || '?').slice(0, 1).toUpperCase()}</span>
                   )}
-                  <a href={(r.listing_mode === 'company' ? '/profile/' : '/company/') + r.listing_slug} target="_blank" rel="noopener noreferrer" style={{
+                  <a href={(r.listing_mode === 'company' ? '/profile/' : '/listing/') + r.listing_slug} target="_blank" rel="noopener noreferrer" style={{
                     fontSize: '.92rem', fontWeight: 800, color: '#1A1A1A', textDecoration: 'none',
                   }}>{r.listing_name}</a>
                   {Number(r.listing_verified) === 1 && (
