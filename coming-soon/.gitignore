@@ -48,3 +48,5 @@ next-env.d.ts
 # Scraper artefacts (per-job step cache + generated screenshots)
 /.scrape-cache/
 /public/scrape-screenshots/
+/.scrape-worker.heartbeat
+/.scrape-worker.stop

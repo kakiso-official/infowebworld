@@ -1,6 +1,30 @@
 import { NextRequest } from 'next/server'
+import fs from 'node:fs'
+import path from 'node:path'
 import { query } from '@/lib/db'
 import { requireAdmin } from '@/lib/auth'
+
+const HEARTBEAT_FILE = path.resolve(process.cwd(), '.scrape-worker.heartbeat')
+const STOP_FILE      = path.resolve(process.cwd(), '.scrape-worker.stop')
+
+/* Reads the worker heartbeat sentinel — the scrape-worker process
+   re-writes this file on every poll iteration. Fresh = online. Stale
+   (>30s) or missing = offline. Falls back to nulls if the file can't
+   be read (e.g. in production where the worker doesn't run). */
+function readWorkerHeartbeat(): { online: boolean; lastBeatAt: string | null; stopRequested: boolean } {
+  let lastBeatMs: number | null = null
+  try {
+    const stat = fs.statSync(HEARTBEAT_FILE)
+    lastBeatMs = stat.mtimeMs
+  } catch {}
+  let stopRequested = false
+  try { stopRequested = fs.existsSync(STOP_FILE) } catch {}
+  return {
+    online: lastBeatMs != null && Date.now() - lastBeatMs < 30_000,
+    lastBeatAt: lastBeatMs != null ? new Date(lastBeatMs).toISOString() : null,
+    stopRequested,
+  }
+}
 
 /**
  * GET /api/admin/scrape/stats
@@ -54,9 +78,15 @@ export async function GET(request: NextRequest) {
     }), { cost: 0, sessions: 0 })
 
     const last = lastSession[0]
-    const workerLikelyOnline = last
+    /* Prefer the heartbeat file (rewritten every poll iteration) so an
+       idle worker is still detected as online. Fall back to the
+       last-session timestamp if the heartbeat file is unavailable (e.g.
+       running on Vercel where the worker doesn't run). */
+    const heartbeat = readWorkerHeartbeat()
+    const lastSessionAlive = last
       ? Date.now() - new Date(last.started_at).getTime() < 5 * 60 * 1000
       : false
+    const workerLikelyOnline = heartbeat.online || lastSessionAlive
 
     return Response.json({
       ok: true,
@@ -64,6 +94,8 @@ export async function GET(request: NextRequest) {
       l1,
       sevenDay,
       workerLikelyOnline,
+      workerHeartbeatAt: heartbeat.lastBeatAt,
+      workerStopRequested: heartbeat.stopRequested,
       lastActivityAt: last?.started_at ?? null,
     })
   } catch (err) {

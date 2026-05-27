@@ -16,10 +16,32 @@
  * per job). Default 1 to be polite to remote sites. Daily cost cap is
  * enforced across all sessions started by this worker.
  */
+import fs from 'node:fs'
+import path from 'node:path'
 import { loadEnv, requireEnv } from './lib/scrape-env.mjs'
 import { closeDb, q, q1, exec } from './lib/scrape-db.mjs'
 import { scrapeListing } from './lib/scrape-pipeline.mjs'
 import { closeCrawler } from './lib/scrape-crawler.mjs'
+
+/* Sentinel files at the project root. The /api/admin/scrape/worker/*
+   routes touch these to coordinate with the long-running worker
+   process. Heartbeat is rewritten every poll iteration; stop is touched
+   by the UI's Stop button. */
+const HEARTBEAT_FILE = path.resolve(process.cwd(), '.scrape-worker.heartbeat')
+const STOP_FILE      = path.resolve(process.cwd(), '.scrape-worker.stop')
+
+function writeHeartbeat() {
+  try { fs.writeFileSync(HEARTBEAT_FILE, String(Date.now())) } catch {}
+}
+function clearHeartbeat() {
+  try { fs.unlinkSync(HEARTBEAT_FILE) } catch {}
+}
+function stopRequested() {
+  try { return fs.existsSync(STOP_FILE) } catch { return false }
+}
+function clearStopFile() {
+  try { fs.unlinkSync(STOP_FILE) } catch {}
+}
 
 const args = Object.fromEntries(
   process.argv.slice(2)
@@ -48,10 +70,26 @@ let daySpend = 0
 process.on('SIGINT',  () => { console.log('\n[worker] SIGINT — finishing in-flight jobs then exiting'); running = false })
 process.on('SIGTERM', () => { running = false })
 
+/* Clear any stale stop sentinel from a previous run; write first
+   heartbeat immediately so the UI sees us online right away. */
+clearStopFile()
+writeHeartbeat()
+
 console.log(`[worker] online  poll=${POLL_MS}ms  concurrency=${CONCURRENCY}  model=${MODEL}  daily-cap=$${DAILY_CAP_USD}  job-cap=$${PER_JOB_CAP_USD}${L1_FILTER ? `  l1=${L1_FILTER}` : ''}`)
 
 try {
   while (running || active.size > 0) {
+    /* Heartbeat — UI uses the file's mtime to display 'online'. */
+    writeHeartbeat()
+
+    /* Stop sentinel — the /api/admin/scrape/worker/stop route touches
+       this file when the user clicks Stop in the UI. */
+    if (stopRequested()) {
+      console.log('[worker] stop file detected — finishing in-flight jobs then exiting')
+      running = false
+      clearStopFile()
+    }
+
     // Reset daily counter at UTC midnight
     const today = new Date().toISOString().slice(0, 10)
     if (today !== dayKey) {
@@ -80,6 +118,7 @@ try {
 } finally {
   await closeCrawler().catch(() => {})
   await closeDb().catch(() => {})
+  clearHeartbeat()
   console.log('[worker] offline')
 }
 

@@ -55,6 +55,8 @@ interface Stats {
   l1: Record<string, Record<string, number>>
   sevenDay: { cost: number; sessions: number }
   workerLikelyOnline: boolean
+  workerHeartbeatAt: string | null
+  workerStopRequested: boolean
   lastActivityAt: string | null
 }
 
@@ -128,11 +130,18 @@ export default function ScraperShell() {
         <div className="scrp-top-right">
           <div className="scrp-worker">
             <span className={`scrp-worker-dot ${stats?.workerLikelyOnline ? 'is-online' : 'is-offline'}`} />
-            <span>Worker {stats?.workerLikelyOnline ? 'online' : 'offline'}</span>
-            {!stats?.workerLikelyOnline && (
+            <span>
+              Worker {stats?.workerStopRequested
+                ? 'stopping…'
+                : stats?.workerLikelyOnline ? 'online' : 'offline'}
+            </span>
+            {!stats?.workerLikelyOnline && !stats?.workerStopRequested && (
               <code className="scrp-worker-hint">npm run scrape:worker</code>
             )}
           </div>
+          {stats?.workerLikelyOnline && (
+            <StopWorkerButton stopRequested={stats.workerStopRequested} />
+          )}
           <div className="scrp-spend">
             7d: <strong>${(stats?.sevenDay.cost ?? 0).toFixed(2)}</strong>
             <span className="scrp-spend-sub">{stats?.sevenDay.sessions ?? 0} sessions</span>
@@ -299,6 +308,20 @@ function JobDetailView({ jobId, onChanged }: { jobId: number; onChanged: () => v
             <span className="scrp-dot" />
             <span>{job.category_l1}</span>
             {job.category_slug && <><span className="scrp-dot" /><span>{job.category_slug}</span></>}
+            {job.applied_at && (
+              <>
+                <span className="scrp-dot" />
+                <a
+                  href={`/company/${job.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="scrp-hero-link"
+                  title={`Applied to DB at ${new Date(job.applied_at).toLocaleString()}`}
+                >
+                  ✓ live since {relTime(job.applied_at)} → /company/{job.slug} ↗
+                </a>
+              </>
+            )}
           </div>
         </div>
         <div className="scrp-hero-actions">
@@ -477,6 +500,51 @@ function DeployButton() {
         {busy ? 'Deploying…' : 'Deploy to Vercel'}
       </button>
       {msg && <span className={`scrp-deploy-msg ${msg.startsWith('✓') ? 'is-ok' : 'is-err'}`}>{msg}</span>}
+    </div>
+  )
+}
+
+/**
+ * Stops the local scrape-worker process by writing a sentinel file
+ * (.scrape-worker.stop) that the worker polls between iterations.
+ * Worker exits gracefully — finishes in-flight jobs, releases DB
+ * + browser, then dies. Picked up within one poll (~10s).
+ */
+function StopWorkerButton({ stopRequested }: { stopRequested: boolean }) {
+  const [busy, setBusy] = useState(false)
+  const [msg, setMsg] = useState<string | null>(null)
+
+  const click = async () => {
+    if (!confirm('Stop the scraper worker?\n\nIn-flight jobs will be allowed to finish (~30-60s each). The worker will then exit. You can restart it with `npm run scrape:worker` in the terminal.')) return
+    setBusy(true); setMsg(null)
+    try {
+      const res = await fetch('/api/admin/scrape/worker/stop', { method: 'POST' })
+      const json = await res.json().catch(() => ({}))
+      if (!res.ok || !json.ok) {
+        setMsg(`✗ ${json.error || `HTTP ${res.status}`}`)
+      } else {
+        setMsg(json.message || '✓ Stop requested')
+      }
+    } catch (err) {
+      setMsg(`✗ ${err instanceof Error ? err.message : String(err)}`)
+    } finally {
+      setBusy(false)
+      setTimeout(() => setMsg(null), 6000)
+    }
+  }
+
+  return (
+    <div className="scrp-deploy">
+      <button
+        type="button"
+        className="scrp-btn scrp-btn--danger"
+        onClick={click}
+        disabled={busy || stopRequested}
+        title="Send graceful stop signal to the worker"
+      >
+        {busy ? 'Sending…' : stopRequested ? 'Stopping…' : 'Stop worker'}
+      </button>
+      {msg && <span className={`scrp-deploy-msg ${msg.startsWith('✓') || msg.startsWith('Stop requested') ? 'is-ok' : 'is-err'}`}>{msg}</span>}
     </div>
   )
 }
