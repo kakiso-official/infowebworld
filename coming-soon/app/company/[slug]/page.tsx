@@ -1,28 +1,18 @@
-import { permanentRedirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 
 /**
- * Legacy URL — every product listing now lives at /listing/<slug>.
+ * /company/<slug> is dead.
  *
- * Background: until May 2026 product pages were canonically /company/<slug>
- * with /listing/<slug> as a soft redirect alias. The naming was confusing
- * because most "listings" on the directory are products (Claude, ChatGPT,
- * Midjourney…) made BY a company — they aren't companies themselves.
- *
- * We swapped:
- *   · /listing/<slug>  → renders the page (canonical)
- *   · /company/<slug>  → 301 to /listing/<slug>  (this file)
+ * Until May 2026 product listings rendered here. We moved them to
+ * /listing/<slug> because the directory's listings are products (Claude,
+ * ChatGPT, Midjourney…), not companies. The /company/ namespace was
+ * misnamed and is now retired entirely — return 404 so it doesn't
+ * confuse Search Console, crawlers, or internal links. None of these
+ * pages were indexed, so nothing to consolidate.
  *
  * Companies-as-entities (Anthropic, OpenAI, Stability AI…) keep their
- * own URL space at /profile/<slug>, untouched by this swap.
- *
- * `permanentRedirect` emits HTTP 308 so old backlinks consolidate cleanly
- * in Search Console / search engines.
+ * own URL space at /profile/<slug>, untouched.
  */
-export default async function CompanySlugRedirect({
-  params,
-}: {
-  params: Promise<{ slug: string }>
-}) {
-  const { slug } = await params
-  permanentRedirect(`/listing/${slug}`)
+export default async function CompanySlugGone() {
+  notFound()
 }
