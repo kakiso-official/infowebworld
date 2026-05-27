@@ -39,12 +39,6 @@ const nextConfig: NextConfig = {
         destination: '/business/plans',
         permanent: true,
       },
-      // Old /listing/:slug → /company/:slug
-      {
-        source: '/listing/:slug',
-        destination: '/company/:slug',
-        permanent: true,
-      },
       // /infowebworld/* → /* (except uploads which are proxied)
       {
         source: '/infowebworld/:path((?!uploads/).*)',
