@@ -55,6 +55,27 @@ const BOOLEAN_FIELDS = new Set<string>([
   'has_free_trial', 'has_free_version',
 ])
 
+/* The scraper queue (scrape_jobs.category_l1) historically used readable
+   slugs like 'ai-and-ml' / 'software-and-saas' that don't match the
+   canonical slugs in the `categories` table ('ai-ml' / 'software-saas').
+   Map seed-style L1 slugs to whatever lives at level=1 in `categories`.
+   Already-canonical slugs map to themselves so callers can hand us
+   either form. */
+const L1_ALIAS: Record<string, string> = {
+  'ai-and-ml':              'ai-ml',
+  'ai-ml':                  'ai-ml',
+  'software-and-saas':      'software-saas',
+  'software-saas':          'software-saas',
+  'it-services':            'it-services-agencies',
+  'it-services-and-agencies':'it-services-agencies',
+  'it-services-agencies':   'it-services-agencies',
+  'professional-services':  'professional-services',
+  'startups':               'startups-innovation',
+  'startups-innovation':    'startups-innovation',
+  'local-businesses':       'local-businesses',
+  'local-business':         'local-businesses',
+}
+
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -156,6 +177,14 @@ export async function POST(
       sets.screenshots = JSON.stringify(shotUrls)
     }
 
+    /* Logo: Gemini extracts whatever <img> looks logo-ish on the page,
+       which is often the wide wordmark SVG. The listing layout wants a
+       square 256×256 icon — same convention as the existing 100 AI/ML
+       listings. Always synthesise from the domain via Google's favicons
+       CDN; reliable and predictable. The Gemini-extracted logo_url (if
+       any) is intentionally discarded here. */
+    sets.logo_url = `https://www.google.com/s2/favicons?domain=${extractDomain(job.website)}&sz=256`
+
     /* ─── Either UPDATE an existing submission, or INSERT a new one ───── */
     const existing = await queryOne<{ id: number }>(`SELECT id FROM submissions WHERE slug = ?`, [job.slug])
     let action: 'inserted' | 'updated'
@@ -220,7 +249,13 @@ async function insertNewSubmission(
   /* 1. Resolve category_id — prefer L3+ slug, fall back to L1. */
   const categoryId = await resolveCategoryId(job.category_slug, job.category_l1)
   if (!categoryId) {
-    throw new Error(`No categories row found for slug='${job.category_slug ?? '(null)'}' or L1='${job.category_l1}'. Fix the taxonomy mapping before applying.`)
+    const aliased = L1_ALIAS[job.category_l1] ?? job.category_l1
+    throw new Error(
+      `Couldn't resolve a category. Tried L3 slug='${job.category_slug ?? '(null)'}' (level>=2) ` +
+      `and L1 slug='${job.category_l1}' → canonical='${aliased}' (level=1). ` +
+      `Either the L1 alias map in apply/route.ts is missing this slug, ` +
+      `or the categories table doesn't have an active L1 row for it.`
+    )
   }
 
   /* 2. Resolve plan_id — cheapest active plan (free tier). */
@@ -292,25 +327,26 @@ async function insertNewSubmission(
 }
 
 async function resolveCategoryId(categorySlug: string | null, l1Slug: string): Promise<number | null> {
+  /* Try the L3+ slug first. Restrict to level >= 2 so a category_slug
+     that accidentally collides with an L1 slug doesn't get picked up as
+     a sub-category. */
   if (categorySlug) {
     const row = await queryOne<{ id: number }>(
-      `SELECT id FROM categories WHERE slug = ? ORDER BY level DESC LIMIT 1`,
+      `SELECT id FROM categories WHERE slug = ? AND level >= 2 ORDER BY level DESC LIMIT 1`,
       [categorySlug]
     )
     if (row?.id) return row.id
   }
+  /* Fall back to the L1 row. The seed/UI uses readable slugs like
+     'ai-and-ml' which don't match the canonical DB slug 'ai-ml' — the
+     alias map translates. */
   if (l1Slug) {
+    const canonical = L1_ALIAS[l1Slug] ?? l1Slug
     const row = await queryOne<{ id: number }>(
       `SELECT id FROM categories WHERE slug = ? AND level = 1 LIMIT 1`,
-      [l1Slug]
+      [canonical]
     )
     if (row?.id) return row.id
-    // last resort — any row matching the L1 slug at any level
-    const any = await queryOne<{ id: number }>(
-      `SELECT id FROM categories WHERE slug = ? LIMIT 1`,
-      [l1Slug]
-    )
-    if (any?.id) return any.id
   }
   return null
 }
