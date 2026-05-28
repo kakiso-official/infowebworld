@@ -568,65 +568,111 @@ function buildJsonLd(
   /* ── Per-listing schemas — Product / SoftwareApplication / LocalBusiness
      based on sector + listing mode. Each entity gets its own @id so the
      CollectionPage's ItemList can reference them as proper graph nodes.
-     This is what unlocks Google product carousels in SERP. */
+     Type discipline: only set fields the chosen @type actually defines —
+     foundingDate / numberOfEmployees on LocalBusiness only, applicationCategory
+     on SoftwareApplication only, etc. Mixing them up fails Google's Rich
+     Results test with "Invalid object type for field" errors. */
   const sectorIsSoftware = sectorSlug === 'ai-ml' || sectorSlug === 'software-saas'
+
+  /* Parse "$25-$49/hr" / "$50/hr" / "$25-$49" into AggregateOffer-friendly
+     numbers. Returns null when no digits found. */
+  const parseHourly = (s?: string): { low: number; high: number } | { single: number } | null => {
+    if (!s) return null
+    const nums = s.match(/\d+/g)
+    if (!nums || nums.length === 0) return null
+    if (nums.length >= 2) {
+      const lo = Number(nums[0]); const hi = Number(nums[1])
+      if (hi > lo) return { low: lo, high: hi }
+      return { single: lo }
+    }
+    return { single: Number(nums[0]) }
+  }
+
   const seedSchemas = (seedListings || []).slice(0, 12).map(l => {
     const href = (l.listingMode === 'company' ? '/profile/' : '/listing/') + l.slug
     const fullUrl = canonicalUrl(country, href)
     const isCompany = l.listingMode === 'company'
     const type = isCompany ? 'LocalBusiness' : (sectorIsSoftware ? 'SoftwareApplication' : 'Product')
+
+    /* Base fields valid for every supported @type. */
     const node: Record<string, unknown> = {
       '@type': type,
       '@id': `${fullUrl}#listing`,
       name: l.companyName,
       url: fullUrl,
       ...(l.tagline || l.description ? { description: (l.tagline || l.description || '').slice(0, 300) } : {}),
-      ...(l.logoUrl ? { image: l.logoUrl, logo: l.logoUrl } : {}),
-      brand: { '@type': 'Brand', name: l.companyName },
+      ...(l.logoUrl ? { image: l.logoUrl } : {}),
     }
+
+    /* AggregateRating works on Product, SoftwareApplication, LocalBusiness,
+       Service — all our chosen types. */
     if (l.reviewAvg && l.reviewCount && l.reviewCount > 0) {
       node.aggregateRating = {
         '@type': 'AggregateRating',
-        ratingValue: l.reviewAvg.toFixed(1),
+        ratingValue: Number(l.reviewAvg.toFixed(1)),
         reviewCount: l.reviewCount,
         bestRating: 5,
         worstRating: 1,
       }
     }
-    /* Address for LocalBusiness — city/state/country only since we don't
-       collect street addresses. Google accepts partial addresses. */
-    if (isCompany && (l.city || l.country)) {
-      node.address = {
-        '@type': 'PostalAddress',
-        ...(l.city ? { addressLocality: l.city } : {}),
-        ...(l.state ? { addressRegion: l.state } : {}),
-        ...(l.country ? { addressCountry: l.country } : {}),
+
+    /* Offers — AggregateOffer for ranges, Offer for single price. Numbers
+       only (no "$25-$49/hr" strings — Google's parser rejects those). */
+    const hr = parseHourly(l.hourlyRate)
+    if (hr) {
+      node.offers = 'low' in hr
+        ? {
+            '@type': 'AggregateOffer',
+            priceCurrency: 'USD',
+            lowPrice: hr.low,
+            highPrice: hr.high,
+            availability: 'https://schema.org/InStock',
+          }
+        : {
+            '@type': 'Offer',
+            priceCurrency: 'USD',
+            price: hr.single,
+            availability: 'https://schema.org/InStock',
+          }
+    }
+
+    /* sameAs works on every Thing-derived type. */
+    if (l.website) node.sameAs = [l.website]
+
+    /* ── LocalBusiness-only fields ── */
+    if (type === 'LocalBusiness') {
+      if (l.city || l.state || l.country) {
+        node.address = {
+          '@type': 'PostalAddress',
+          ...(l.city ? { addressLocality: l.city } : {}),
+          ...(l.state ? { addressRegion: l.state } : {}),
+          ...(l.country ? { addressCountry: l.country } : {}),
+        }
+      }
+      if (l.founded) node.foundingDate = String(l.founded)
+      if (l.employees) {
+        /* numberOfEmployees expects a QuantitativeValue, not a free string. */
+        const empNums = String(l.employees).match(/\d+/g)
+        if (empNums && empNums.length >= 1) {
+          node.numberOfEmployees = empNums.length >= 2
+            ? { '@type': 'QuantitativeValue', minValue: Number(empNums[0]), maxValue: Number(empNums[1]) }
+            : { '@type': 'QuantitativeValue', value: Number(empNums[0]) }
+        }
       }
     }
-    /* SoftwareApplication category — sector-derived. */
+
+    /* ── SoftwareApplication-only fields ── */
     if (type === 'SoftwareApplication') {
-      node.applicationCategory = sectorSlug === 'ai-ml' ? 'BusinessApplication' : 'BusinessApplication'
+      node.applicationCategory = 'BusinessApplication'
       node.operatingSystem = 'Web'
     }
-    /* Offers — emit when we know pricing. hourlyRate for service-style,
-       minProjectSize for fixed-quote, pricingModel as free-text. */
-    if (l.hourlyRate) {
-      node.offers = {
-        '@type': 'Offer',
-        priceSpecification: { '@type': 'UnitPriceSpecification', referenceQuantity: { '@type': 'QuantitativeValue', unitCode: 'HUR' }, price: l.hourlyRate, priceCurrency: 'USD' },
-        availability: 'https://schema.org/InStock',
-      }
-    } else if (l.pricingModel && l.pricingModel !== 'contact') {
-      node.offers = {
-        '@type': 'Offer',
-        category: l.pricingModel,
-        availability: 'https://schema.org/InStock',
-      }
+
+    /* ── Product-only fields ── */
+    if (type === 'Product') {
+      node.brand = { '@type': 'Brand', name: l.companyName }
+      if (l.categoryName) node.category = l.categoryName
     }
-    if (l.founded) node.foundingDate = l.founded
-    if (l.employees) node.numberOfEmployees = l.employees
-    if (l.website) node.sameAs = [l.website]
-    if (l.categoryName) node.category = l.categoryName
+
     return node
   })
 
