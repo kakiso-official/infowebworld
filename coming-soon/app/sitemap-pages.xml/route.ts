@@ -28,6 +28,7 @@ const STATIC_PAGES = [
   { path: '/team/past',          changefreq: 'monthly', priority: '0.5' },
   { path: '/insights',           changefreq: 'weekly',  priority: '0.8' },
   { path: '/write-review',       changefreq: 'weekly',  priority: '0.8' },
+  { path: '/blog',               changefreq: 'daily',   priority: '0.9' },
 ]
 
 export async function GET() {
