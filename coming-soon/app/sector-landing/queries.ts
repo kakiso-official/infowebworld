@@ -10,8 +10,10 @@ import type { ReviewRow } from '../test-landing-page/NewReviewsSection'
 import type { LaunchRow } from '../test-category-1-page/NewLaunchesSection'
 import type { PopFirmRow } from '../test-landing-page/PopularSection'
 
-/** Top N L2 categories under a sector (by listing count, then sort_order),
- *  each with its top M listings. Empty L2s are kept so the rail stays full. */
+/** Top N L2 categories under a sector that ACTUALLY HAVE LISTINGS (counting
+ *  the full descendant tree). Empty L2s are filtered out so the L1 page
+ *  never shows an empty product rail. Each L2 comes back with its top M
+ *  listings, sorted by rating desc. */
 export async function getPopularByL2(sectorSlug: string, l2Limit = 10, productLimit = 9): Promise<PopL2[]> {
   try {
     const cats = await query<{
@@ -31,6 +33,7 @@ export async function getPopularByL2(sectorSlug: string, l2Limit = 10, productLi
         WHERE c.level = 2
           AND c.parent_id = (SELECT id FROM categories WHERE slug = ? AND level = 1)
           AND c.is_launched = 1
+        HAVING listing_count > 0
         ORDER BY listing_count DESC, c.sort_order ASC
         LIMIT ?`,
       [sectorSlug, l2Limit]

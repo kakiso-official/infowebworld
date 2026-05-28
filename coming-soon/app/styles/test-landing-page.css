@@ -21,8 +21,14 @@
    sit in opposing corners for depth without weight. ── */
 .tlp-hero {
   position: relative;
-  isolation: isolate;
-  overflow: hidden;
+  /* Clip horizontally so the decorative orbs/glow don't trigger horizontal
+     scroll, but ALLOW vertical overflow so the search-bar dropdown can spill
+     down into the next section instead of being cut off at the hero's
+     bottom edge. `overflow-x: clip` (vs hidden) avoids creating a scroll
+     container that would still clip absolutely-positioned descendants. */
+  overflow-x: clip;
+  overflow-y: visible;
+  z-index: 1;
   padding: clamp(56px, 9vw, 110px) clamp(18px, 4vw, 32px) clamp(60px, 9vw, 110px);
   /* Very subtle mint tint that fades to pure white — visible enough to
      read as a distinct section, light enough to feel professional. */
@@ -136,6 +142,32 @@
   margin: 4px auto 18px;
   max-width: 54ch;
 }
+/* Hero meta strip — author byline + rating + listing count. Muted neutral
+   line that signals E-E-A-T (Editorial review · Updated date · Rating)
+   without competing with the headline. */
+.tlp-hero-meta {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 12px;
+  margin: -6px auto 18px;
+  max-width: 64ch;
+  font-size: 13.5px;
+  font-weight: 400;
+  color: #6B7280;
+  line-height: 1.4;
+}
+.tlp-hero-meta strong { color: #1F2937; font-weight: 700; }
+.tlp-hero-meta-byline strong { color: #0F172A; }
+.tlp-hero-meta-sep { color: #9CA3AF; }
+.tlp-hero-meta-rate {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.tlp-hero-meta-star { color: #F5A623; font-size: 14px; }
+.tlp-hero-meta-count strong { color: #0F172A; }
 
 /* ── Hero search bar (.tlp-hsr-*) ── */
 .tlp-hero-search {
@@ -237,8 +269,16 @@
   padding: 8px;
   max-height: 480px;
   overflow-y: auto;
-  z-index: 30;
+  /* High enough to clear any section below the hero (sticky CTAs,
+     compare bars, gradient banners, etc.). */
+  z-index: 1000;
   text-align: left;
+}
+/* Lift the search wrapper into its own stacking context so the
+   absolutely-positioned popover anchors to it correctly. */
+.tlp-hero-search {
+  position: relative;
+  z-index: 50;
 }
 .tlp-hsr-sec + .tlp-hsr-sec {
   margin-top: 4px;

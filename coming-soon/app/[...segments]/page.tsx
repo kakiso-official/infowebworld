@@ -343,6 +343,267 @@ async function fetchCategoryPageData(categorySlug: string) {
   }
 }
 
+/* ════════════════════════════════════════════════════════════════════════
+   L1 sector @graph builder — killer SEO/AEO/GEO surface for the 6 main
+   sector landing pages. Emits Organization + WebSite + SearchAction +
+   BreadcrumbList + CollectionPage + Article + DefinedTerm + HowTo +
+   FAQPage with Speakable + per-listing Product/SoftwareApplication/
+   LocalBusiness entities, all in one @graph with @id cross-references.
+   ════════════════════════════════════════════════════════════════════════ */
+async function buildSectorJsonLd(
+  sectorSlug: string,
+  country: string,
+  monthYear: string,
+  seoContent: { rich_description?: string; buyers_guide?: unknown; extended_faq?: unknown; generated_at?: string } | null,
+): Promise<string> {
+  const meta = getSectorMeta(sectorSlug)
+  const sName = meta.seoTitle
+  const sUrl = canonicalUrl(country, `/${sectorSlug}`)
+  const year = new Date().getFullYear()
+
+  /* Pull top 12 sector listings + aggregate review row in parallel — these
+     feed the per-listing schemas + drive the freshness signal on Article. */
+  let topListings: Array<Record<string, unknown>> = []
+  try {
+    topListings = await query(
+      `SELECT s.id, s.slug, s.company_name, s.tagline, s.description,
+              s.website, s.logo_url, s.city, s.state, s.team_size, s.founded_year,
+              s.hourly_rate, s.pricing_model, COALESCE(s.listing_mode,'product') as listing_mode,
+              co.name as country_name, c.name as category_name,
+              (SELECT AVG(r.rating) FROM reviews r WHERE r.listing_id = s.id AND r.status='approved') AS review_avg,
+              (SELECT COUNT(*) FROM reviews r WHERE r.listing_id = s.id AND r.status='approved') AS review_count
+         FROM submissions s
+         LEFT JOIN categories c ON c.id = s.category_id
+         LEFT JOIN categories cp ON cp.id = c.parent_id
+         LEFT JOIN categories cgp ON cgp.id = cp.parent_id
+         LEFT JOIN categories cggp ON cggp.id = cgp.parent_id
+         LEFT JOIN countries co ON co.id = s.country_id
+        WHERE s.status IN ('active','paid')
+          AND ((SELECT slug FROM categories WHERE id = c.id) = ?
+            OR (SELECT slug FROM categories WHERE id = cp.id) = ?
+            OR (SELECT slug FROM categories WHERE id = cgp.id) = ?
+            OR (SELECT slug FROM categories WHERE id = cggp.id) = ?)
+        ORDER BY review_avg DESC, review_count DESC, s.approved_at DESC
+        LIMIT 12`,
+      [sectorSlug, sectorSlug, sectorSlug, sectorSlug]
+    )
+  } catch { /* listings are optional for the graph */ }
+
+  /* Sector type for per-listing schema selection. */
+  const sectorIsSoftware = sectorSlug === 'ai-ml' || sectorSlug === 'software-saas'
+
+  const parseHourly = (s?: string): { low: number; high: number } | { single: number } | null => {
+    if (!s) return null
+    const nums = s.match(/\d+/g)
+    if (!nums || nums.length === 0) return null
+    if (nums.length >= 2) {
+      const lo = Number(nums[0]); const hi = Number(nums[1])
+      if (hi > lo) return { low: lo, high: hi }
+      return { single: lo }
+    }
+    return { single: Number(nums[0]) }
+  }
+
+  /* Per-listing schemas — Product / SoftwareApplication / LocalBusiness
+     based on listing mode + sector. Type-disciplined: only the fields each
+     @type defines, so Rich Results Test validates green. */
+  const listingNodes = topListings.map(l => {
+    const isCompany = l.listing_mode === 'company'
+    const type = isCompany ? 'LocalBusiness' : (sectorIsSoftware ? 'SoftwareApplication' : 'Product')
+    const href = (isCompany ? '/profile/' : '/listing/') + String(l.slug)
+    const fullUrl = canonicalUrl(country, href)
+    const node: Record<string, unknown> = {
+      '@type': type,
+      '@id': `${fullUrl}#listing`,
+      name: String(l.company_name),
+      url: fullUrl,
+      ...(l.tagline || l.description ? { description: String(l.tagline || l.description).slice(0, 300) } : {}),
+      ...(l.logo_url ? { image: String(l.logo_url) } : {}),
+    }
+    const avg = l.review_avg != null ? Number(l.review_avg) : 0
+    const cnt = Number(l.review_count ?? 0)
+    if (avg > 0 && cnt > 0) {
+      node.aggregateRating = {
+        '@type': 'AggregateRating',
+        ratingValue: Number(avg.toFixed(1)),
+        reviewCount: cnt,
+        bestRating: 5,
+        worstRating: 1,
+      }
+    }
+    const hr = parseHourly(l.hourly_rate as string | undefined)
+    if (hr) {
+      node.offers = 'low' in hr
+        ? { '@type': 'AggregateOffer', priceCurrency: 'USD', lowPrice: hr.low, highPrice: hr.high, availability: 'https://schema.org/InStock' }
+        : { '@type': 'Offer', priceCurrency: 'USD', price: hr.single, availability: 'https://schema.org/InStock' }
+    }
+    if (l.website) node.sameAs = [String(l.website)]
+    if (type === 'LocalBusiness') {
+      if (l.city || l.state || l.country_name) {
+        node.address = {
+          '@type': 'PostalAddress',
+          ...(l.city ? { addressLocality: String(l.city) } : {}),
+          ...(l.state ? { addressRegion: String(l.state) } : {}),
+          ...(l.country_name ? { addressCountry: String(l.country_name) } : {}),
+        }
+      }
+      if (l.founded_year) node.foundingDate = String(l.founded_year)
+      if (l.team_size) {
+        const empNums = String(l.team_size).match(/\d+/g)
+        if (empNums && empNums.length >= 1) {
+          node.numberOfEmployees = empNums.length >= 2
+            ? { '@type': 'QuantitativeValue', minValue: Number(empNums[0]), maxValue: Number(empNums[1]) }
+            : { '@type': 'QuantitativeValue', value: Number(empNums[0]) }
+        }
+      }
+    }
+    if (type === 'SoftwareApplication') {
+      node.applicationCategory = 'BusinessApplication'
+      node.operatingSystem = 'Web'
+    }
+    if (type === 'Product') {
+      node.brand = { '@type': 'Brand', name: String(l.company_name) }
+      if (l.category_name) node.category = String(l.category_name)
+    }
+    return node
+  })
+
+  /* Parse Gemini SEO content for entity bodies. */
+  const jpSafe = (v: unknown): unknown => {
+    if (!v) return null
+    if (typeof v === 'object') return v
+    if (typeof v === 'string') { try { return JSON.parse(v) } catch { return null } }
+    return null
+  }
+  const richDescFirstPara = (() => {
+    const rd = seoContent?.rich_description
+    if (typeof rd !== 'string') return ''
+    return rd.split('\n\n')[0] || ''
+  })()
+  const sectorGeminiFaq = jpSafe(seoContent?.extended_faq) as { q: string; a: string }[] | null
+  const faqEntities = sectorGeminiFaq && sectorGeminiFaq.length > 0
+    ? sectorGeminiFaq.map(f => ({
+        '@type': 'Question' as const,
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer' as const, text: f.a },
+      }))
+    : [
+        { '@type': 'Question' as const, name: `What is ${sName}?`, acceptedAnswer: { '@type': 'Answer' as const, text: meta.description } },
+        { '@type': 'Question' as const, name: `How to find the best ${sName} companies?`, acceptedAnswer: { '@type': 'Answer' as const, text: `Browse verified ${sName} companies on InfoWebWorld. Compare services, read reviews and connect directly.` } },
+        { '@type': 'Question' as const, name: `Is it free to list my ${sName.toLowerCase()} business?`, acceptedAnswer: { '@type': 'Answer' as const, text: 'Yes, InfoWebWorld offers free business listing with optional premium plans for enhanced visibility, dofollow backlinks, and lead generation.' } },
+        { '@type': 'Question' as const, name: `How are ${sName} companies ranked on InfoWebWorld?`, acceptedAnswer: { '@type': 'Answer' as const, text: 'Rankings are based on verified reviews, user satisfaction scores, and market presence. Our team verifies every listing.' } },
+      ]
+  const bgParsed = jpSafe(seoContent?.buyers_guide) as Record<string, unknown> | null
+  const bgQuestions = Array.isArray(bgParsed?.questions) ? bgParsed.questions as string[] : []
+  const bgFeatures = Array.isArray(bgParsed?.features) ? bgParsed.features as Array<{ title?: string; description?: string }> : []
+  const howToSteps = bgQuestions.length > 0
+    ? bgQuestions.slice(0, 12).map((q, i) => ({
+        '@type': 'HowToStep' as const,
+        position: i + 1,
+        name: q.length > 90 ? q.slice(0, 87) + '…' : q,
+        text: q,
+      }))
+    : bgFeatures.slice(0, 12).map((f, i) => ({
+        '@type': 'HowToStep' as const,
+        position: i + 1,
+        name: String(f.title || ''),
+        text: String(f.description || f.title || ''),
+      }))
+
+  const graph: Record<string, unknown>[] = [
+    {
+      '@type': 'Organization',
+      '@id': `${DOMAIN}#org`,
+      name: 'InfoWebWorld',
+      url: DOMAIN,
+      logo: { '@type': 'ImageObject', url: `${DOMAIN}/favicon-512.png` },
+      sameAs: ['https://x.com/infowebworld_x', 'https://www.linkedin.com/company/infowebworld/', 'https://www.instagram.com/infowebworld'],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${DOMAIN}#website`,
+      url: DOMAIN,
+      name: 'InfoWebWorld',
+      publisher: { '@id': `${DOMAIN}#org` },
+      inLanguage: 'en-US',
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: { '@type': 'EntryPoint', urlTemplate: `${DOMAIN}/all?q={search_term_string}` },
+        'query-input': 'required name=search_term_string',
+      },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      '@id': `${sUrl}#breadcrumb`,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: DOMAIN },
+        { '@type': 'ListItem', position: 2, name: sName, item: sUrl },
+      ],
+    },
+    {
+      '@type': 'CollectionPage',
+      '@id': `${sUrl}#page`,
+      name: `Top ${sName} Companies`,
+      description: meta.seoDescription,
+      url: sUrl,
+      inLanguage: 'en-US',
+      isPartOf: { '@id': `${DOMAIN}#website` },
+      publisher: { '@id': `${DOMAIN}#org` },
+      dateModified: new Date().toISOString(),
+    },
+    {
+      '@type': 'Article',
+      '@id': `${sUrl}#article`,
+      headline: `${sName} — Buyer's Guide, Comparisons & FAQs (${year})`,
+      description: meta.seoDescription,
+      image: `${DOMAIN}/api/og/${sectorSlug}`,
+      author: { '@id': `${DOMAIN}#org` },
+      publisher: { '@id': `${DOMAIN}#org` },
+      datePublished: seoContent?.generated_at
+        ? new Date(String(seoContent.generated_at)).toISOString()
+        : new Date().toISOString(),
+      dateModified: new Date().toISOString(),
+      mainEntityOfPage: { '@type': 'WebPage', '@id': `${sUrl}#page` },
+      inLanguage: 'en-US',
+    },
+    {
+      '@type': 'DefinedTerm',
+      '@id': `${sUrl}#term`,
+      name: sName,
+      description: (richDescFirstPara || meta.seoDescription || `${sName} — verified providers on InfoWebWorld.`).slice(0, 600),
+      termCode: sectorSlug,
+      url: sUrl,
+      inDefinedTermSet: {
+        '@type': 'DefinedTermSet',
+        '@id': `${DOMAIN}#categoryset`,
+        name: 'InfoWebWorld Sector Index',
+        url: `${DOMAIN}/categories`,
+      },
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${sUrl}#faq`,
+      speakable: { '@type': 'SpeakableSpecification', cssSelector: ['.seo-faq-q', '.seo-faq-a'] },
+      mainEntity: faqEntities,
+    },
+    ...(howToSteps.length > 0 ? [{
+      '@type': 'HowTo',
+      '@id': `${sUrl}#howto`,
+      name: `How to Choose the Right ${sName} Provider`,
+      description: `Step-by-step framework to evaluate and select the right ${sName} provider, based on InfoWebWorld's editorial methodology.`,
+      image: meta.heroImage || `${DOMAIN}/og-image.png`,
+      totalTime: 'PT15M',
+      step: howToSteps,
+    }] : []),
+    ...listingNodes,
+  ]
+  // monthYear param accepted for future expansion (Article body templating);
+  // current emission doesn't reference it directly so reference once to keep TS quiet.
+  void monthYear
+
+  return JSON.stringify({ '@context': 'https://schema.org', '@graph': graph })
+}
+
 /* Sector-aware name qualifier — disambiguates ambiguous category names
    like "Software", "Tools", "Models", "Services" when they sit inside a
    specific sector. Without this, a /ai-ml/software-development page would
@@ -385,7 +646,12 @@ function buildCategoryMeta(
   const description = `Compare the best ${countClause}${baseName.toLowerCase()} companies. ${ratingClause}Pricing, reviews, features & hourly rates. Updated ${monthYear}.`.trim()
 
   const url = canonicalUrl(country, `/${sectorSlug}/${cat.slug}`)
-  const ogImage = cat.seoOgImage || cat.coverImage || `${DOMAIN}/og-image.png`
+  /* Dynamic per-category OG image — rendered at request time by
+     /api/og/{sector}/{slug} with the category name, listing count, and
+     sector palette. Replaces the static fallback so every category gets
+     a distinct social share card + Google Discover thumbnail. DB-stored
+     seoOgImage still wins if explicitly set. */
+  const ogImage = cat.seoOgImage || `${DOMAIN}/api/og/${sectorSlug}/${cat.slug}`
 
   /* Keyword stack — DB seo_keywords + targeted variants pulling in the
      buying intent ("hire", "cost", "agency"), comparative ("vs", "top
@@ -413,7 +679,17 @@ function buildCategoryMeta(
     title,
     description,
     keywords,
-    alternates: { canonical: cat.seoCanonical || url },
+    alternates: {
+      canonical: cat.seoCanonical || url,
+      /* hreflang — declares the locale of this page. en-US explicit + x-default
+         pointing at the same URL satisfies Google's international handling
+         even though we're English-only right now. Enables future localization
+         without breaking existing URLs. */
+      languages: {
+        'en-US': url,
+        'x-default': url,
+      },
+    },
     openGraph: {
       title,
       description,
@@ -859,18 +1135,97 @@ export async function generateMetadata({
     }
   }
 
-  /* ── L1 Sectors — hardcoded rich meta (only when L1 is the sole segment) ── */
+  /* ── L1 Sectors — full SEO/AEO/GEO metadata surface. ── */
   if (L1_SLUGS.has(slug) && segments.length === 1) {
     const meta = getSectorMeta(slug)
-    const title = `${meta.seoTitle} ${monthYear} | InfoWebWorld`
-    const description = `${meta.seoDescription} Compare the best on InfoWebWorld, ${monthYear}.`
     const url = canonicalUrl(country, `/${slug}`)
+    const year = new Date().getFullYear()
+
+    /* Pull aggregate listing count + review aggregate for this sector tree —
+       same UNION-across-levels pattern used for L2-L4 categories. Used to
+       advertise count + rating in title/description, both of which drive
+       SERP CTR. */
+    let listingCount = 0
+    let rating: { avg: number; total: number } | null = null
+    try {
+      const [cntRow, ratingRow] = await Promise.all([
+        queryOne(
+          `SELECT COUNT(*) as cnt FROM submissions s WHERE s.status IN ('active','paid') AND s.category_id IN (
+             SELECT id FROM categories WHERE id = (SELECT id FROM categories WHERE slug = ? AND level = 1)
+             UNION SELECT id FROM categories WHERE parent_id = (SELECT id FROM categories WHERE slug = ? AND level = 1)
+             UNION SELECT c3.id FROM categories c3 JOIN categories c2 ON c2.id = c3.parent_id WHERE c2.parent_id = (SELECT id FROM categories WHERE slug = ? AND level = 1)
+             UNION SELECT c4.id FROM categories c4 JOIN categories c3 ON c3.id = c4.parent_id JOIN categories c2 ON c2.id = c3.parent_id WHERE c2.parent_id = (SELECT id FROM categories WHERE slug = ? AND level = 1)
+           )`,
+          [slug, slug, slug, slug]
+        ).catch(() => ({ cnt: 0 })),
+        queryOne(
+          `SELECT AVG(r.rating) as avg_rating, COUNT(*) as total_reviews
+           FROM reviews r
+           JOIN submissions s ON s.id = r.listing_id
+           WHERE r.status = 'approved' AND s.status IN ('active','paid')
+             AND s.category_id IN (
+               SELECT id FROM categories WHERE id = (SELECT id FROM categories WHERE slug = ? AND level = 1)
+               UNION SELECT id FROM categories WHERE parent_id = (SELECT id FROM categories WHERE slug = ? AND level = 1)
+               UNION SELECT c3.id FROM categories c3 JOIN categories c2 ON c2.id = c3.parent_id WHERE c2.parent_id = (SELECT id FROM categories WHERE slug = ? AND level = 1)
+               UNION SELECT c4.id FROM categories c4 JOIN categories c3 ON c3.id = c4.parent_id JOIN categories c2 ON c2.id = c3.parent_id WHERE c2.parent_id = (SELECT id FROM categories WHERE slug = ? AND level = 1)
+             )`,
+          [slug, slug, slug, slug]
+        ).catch(() => ({ avg_rating: null, total_reviews: 0 })),
+      ])
+      listingCount = Number(cntRow?.cnt ?? 0)
+      if (ratingRow?.avg_rating != null && Number(ratingRow?.total_reviews ?? 0) > 0) {
+        rating = { avg: Number(ratingRow.avg_rating), total: Number(ratingRow.total_reviews) }
+      }
+    } catch { /* aggregate is optional */ }
+
+    /* Title — keyword leading, count + year for click rate + freshness. */
+    const countText = listingCount > 0 ? `${listingCount}+ ` : ''
+    const title = `Top ${meta.seoTitle} ${countText}— ${year} | InfoWebWorld`
+
+    /* Description — rating signal + count + freshness + value prop, ~155 chars. */
+    const ratingClause = rating
+      ? `Rated ${rating.avg.toFixed(1)}/5 by ${rating.total.toLocaleString()} verified users. `
+      : ''
+    const description = `${meta.seoDescription} ${ratingClause}Compare ${listingCount > 0 ? `${listingCount}+ ` : ''}verified providers — pricing, reviews, features. Updated ${monthYear}.`.trim()
+
+    /* Keyword stack — sector name + buying-intent + comparative + temporal
+       modifiers Google + AI engines reward. Includes sector-specific verticals
+       from getSectorMeta + auto-generated variants. */
+    const lcName = meta.seoTitle.toLowerCase()
+    const autoKw = [
+      lcName,
+      `best ${lcName}`,
+      `top ${lcName}`,
+      `top ${lcName} companies`,
+      `${lcName} companies`,
+      `${lcName} reviews`,
+      `${lcName} comparison`,
+      `${lcName} pricing`,
+      `${lcName} services`,
+      `hire ${lcName}`,
+      `${lcName} ${year}`,
+      `${lcName} list`,
+      `${lcName} rankings`,
+      `verified ${lcName}`,
+      `${lcName} directory`,
+    ]
+    const keywords = [...new Set([...meta.seoKeywords.map(k => k.toLowerCase()), ...autoKw])].join(', ')
+
+    /* Dynamic per-sector OG image — rendered at request time by
+       /api/og/{sector} with sector name + listing count + brand palette. */
+    const sectorOgImage = `${DOMAIN}/api/og/${slug}`
 
     return {
       title,
       description,
-      keywords: meta.seoKeywords.join(', '),
-      alternates: { canonical: url },
+      keywords,
+      alternates: {
+        canonical: url,
+        languages: {
+          'en-US': url,
+          'x-default': url,
+        },
+      },
       openGraph: {
         title,
         description,
@@ -878,15 +1233,18 @@ export async function generateMetadata({
         siteName: 'InfoWebWorld',
         type: 'website',
         locale: 'en_US',
-        images: [{ url: meta.heroImage, width: 1200, height: 630, alt: meta.seoTitle }],
+        images: [{ url: sectorOgImage, width: 1200, height: 630, alt: `${meta.seoTitle} — Top Companies on InfoWebWorld` }],
       },
       twitter: {
         card: 'summary_large_image',
         title,
         description,
-        images: [meta.heroImage],
+        images: [sectorOgImage],
         site: '@infowebworld',
       },
+      /* SEO-FIRST: index + follow. Every L1 sector page is a unique
+         CollectionPage with curated listings + Gemini long-form content +
+         aggregate review signal — exactly what Google wants to rank. */
       robots: {
         index: true,
         follow: true,
@@ -1042,15 +1400,11 @@ export default async function CategoryDetailRoute({
      Popular/TopFirms/Reviews/Launches/Tools/Trust/Compare/CTA) is shared
      across all six, scoped by a .tcat-<slug> class that overrides the palette
      CSS custom properties. */
-  if (isSector && slug && SECTOR_LANDINGS[slug]) {
-    return <SectorLandingPage cfg={SECTOR_LANDINGS[slug]} />
-  }
-
   /* ── Fetch ALL data server-side ── */
   let pageData: Awaited<ReturnType<typeof fetchCategoryPageData>> = null
 
   if (isSector && slug) {
-    // L1 sector: fetch allCategories (cached) + listings for this sector
+    // L1 sector: fetch allCategories (cached) + Gemini SEO content row.
     const catRow = await queryOne(
       `SELECT c.id, c.name, c.slug, c.level, c.parent_id, c.color, c.icon, c.description FROM categories c WHERE c.slug = ? AND c.is_active = 1 LIMIT 1`, [slug]
     ).catch(() => null)
@@ -1075,6 +1429,66 @@ export default async function CategoryDetailRoute({
     pageData = await fetchCategoryPageData(categorySlug)
   }
 
+  /* L1 sector pages — build a killer SEO/AEO/GEO @graph BEFORE rendering
+     SectorLandingPage, then pass it through as a prop. Mirrors the depth of
+     the L2-L4 @graph: Organization, WebSite + SearchAction, BreadcrumbList,
+     CollectionPage, Article (sector buyer's guide), DefinedTerm (sector as
+     a named concept), HowTo (when buyer's guide questions exist), FAQPage
+     with Speakable, plus per-listing Product / SoftwareApplication /
+     LocalBusiness schemas for the top firms in the sector. */
+  if (isSector && slug && SECTOR_LANDINGS[slug]) {
+    /* Sector-tree aggregates for the hero meta strip + per-listing schemas
+       in the JSON-LD graph. Same UNION-across-levels pattern used in
+       metadata generation. */
+    const [sectorJsonLd, aggRow] = await Promise.all([
+      buildSectorJsonLd(slug, country, monthYear, pageData?.seoContent || null),
+      queryOne(
+        `SELECT
+           (SELECT COUNT(*) FROM submissions s
+              LEFT JOIN categories sc    ON sc.id    = s.category_id
+              LEFT JOIN categories scp   ON scp.id   = sc.parent_id
+              LEFT JOIN categories scgp  ON scgp.id  = scp.parent_id
+              LEFT JOIN categories scggp ON scggp.id = scgp.parent_id
+             WHERE s.status IN ('active','paid')
+               AND (sc.slug = ? OR scp.slug = ? OR scgp.slug = ? OR scggp.slug = ?)
+           ) AS total_listings,
+           (SELECT AVG(r.rating) FROM reviews r
+              JOIN submissions s ON s.id = r.listing_id
+              LEFT JOIN categories sc    ON sc.id    = s.category_id
+              LEFT JOIN categories scp   ON scp.id   = sc.parent_id
+              LEFT JOIN categories scgp  ON scgp.id  = scp.parent_id
+              LEFT JOIN categories scggp ON scggp.id = scgp.parent_id
+             WHERE r.status = 'approved' AND s.status IN ('active','paid')
+               AND (sc.slug = ? OR scp.slug = ? OR scgp.slug = ? OR scggp.slug = ?)
+           ) AS avg_rating,
+           (SELECT COUNT(*) FROM reviews r
+              JOIN submissions s ON s.id = r.listing_id
+              LEFT JOIN categories sc    ON sc.id    = s.category_id
+              LEFT JOIN categories scp   ON scp.id   = sc.parent_id
+              LEFT JOIN categories scgp  ON scgp.id  = scp.parent_id
+              LEFT JOIN categories scggp ON scggp.id = scgp.parent_id
+             WHERE r.status = 'approved' AND s.status IN ('active','paid')
+               AND (sc.slug = ? OR scp.slug = ? OR scgp.slug = ? OR scggp.slug = ?)
+           ) AS total_reviews`,
+        [slug, slug, slug, slug, slug, slug, slug, slug, slug, slug, slug, slug]
+      ).catch(() => ({ total_listings: 0, avg_rating: null, total_reviews: 0 })),
+    ])
+    const totalListings = Number(aggRow?.total_listings ?? 0)
+    const avgRating = aggRow?.avg_rating != null ? Number(aggRow.avg_rating) : 0
+    const totalReviews = Number(aggRow?.total_reviews ?? 0)
+    return (
+      <SectorLandingPage
+        cfg={SECTOR_LANDINGS[slug]}
+        seoContent={pageData?.seoContent || null}
+        allCategories={pageData?.allCategories || []}
+        jsonLd={sectorJsonLd}
+        avgRating={avgRating}
+        totalReviews={totalReviews}
+        totalListings={totalListings}
+      />
+    )
+  }
+
   /* ── Unknown route — render the designed app/not-found.tsx ──
      Hits when the slug isn't an L1 sector, isn't a view-all path, and the
      L2/L3 lookup found no match in the DB. Without this, the client falls
@@ -1086,52 +1500,10 @@ export default async function CategoryDetailRoute({
   /* ── JSON-LD ── */
   let jsonLdScripts: React.ReactNode = null
 
-  // L1 sector JSON-LD (server-side instead of client)
-  if (isSector && slug) {
-    const sMeta = getSectorMeta(slug)
-    const sName = sMeta.seoTitle
-    const sUrl = canonicalUrl(country, `/${slug}`)
-    // Parse Gemini FAQ for richer JSON-LD
-    const jpSec = (v: unknown) => { if (!v) return null; if (typeof v === 'string') { try { return JSON.parse(v) } catch { return null } } return v }
-    const sectorGeminiFaq = jpSec(pageData?.seoContent?.extended_faq) as { q: string; a: string }[] | null
-    const sectorFaqEntities = sectorGeminiFaq && sectorGeminiFaq.length > 0
-      ? sectorGeminiFaq.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } }))
-      : [
-          { '@type': 'Question', name: `What is ${sName}?`, acceptedAnswer: { '@type': 'Answer', text: sMeta.description } },
-          { '@type': 'Question', name: `How to find the best ${sName} companies?`, acceptedAnswer: { '@type': 'Answer', text: `Browse verified ${sName} companies on InfoWebWorld. Compare services, read reviews and connect directly.` } },
-          { '@type': 'Question', name: `Is it free to list my business?`, acceptedAnswer: { '@type': 'Answer', text: 'Yes, InfoWebWorld offers free business listing with optional premium plans.' } },
-        ]
-    const l2Count = (pageData?.allCategories || []).filter((c: any) => Number(c.level) === 2).length
-    const l3Count = (pageData?.allCategories || []).filter((c: any) => Number(c.level) === 3).length
-    /* All three sector schemas in one @graph script — half the DOM weight. */
-    const sectorGraph = {
-      '@context': 'https://schema.org',
-      '@graph': [
-        {
-          '@type': 'BreadcrumbList',
-          itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'Home', item: DOMAIN },
-            { '@type': 'ListItem', position: 2, name: sName },
-          ],
-        },
-        {
-          '@type': 'CollectionPage',
-          name: `Top ${sName} Companies`,
-          description: sMeta.seoDescription,
-          url: sUrl,
-          inLanguage: 'en-US',
-          isPartOf: { '@type': 'WebSite', name: 'InfoWebWorld', url: DOMAIN },
-          publisher: { '@type': 'Organization', name: 'InfoWebWorld', url: DOMAIN, logo: { '@type': 'ImageObject', url: `${DOMAIN}/favicon-512.png` } },
-          dateModified: new Date().toISOString(),
-          numberOfItems: l2Count + l3Count,
-        },
-        { '@type': 'FAQPage', mainEntity: sectorFaqEntities },
-      ],
-    }
-    jsonLdScripts = (
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(sectorGraph) }} />
-    )
-  }
+  /* L1 sector JSON-LD lives in SectorLandingPage now (built via
+     buildSectorJsonLd above, passed as a prop). This branch is dead because
+     the L1 early-return above renders SectorLandingPage directly. Kept as a
+     comment marker so future readers don't add inline L1 graph here again. */
 
   // L2/L3 JSON-LD
   if (isL2L3 && pageData?.category) {

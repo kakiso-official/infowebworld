@@ -1,4 +1,5 @@
 User-agent: *
+# ─── Static indexable pages ───
 Allow: /$
 Allow: /business$
 Allow: /business/plans$
@@ -23,18 +24,45 @@ Allow: /write-review$
 Allow: /categories$
 Allow: /llms.txt$
 Allow: /llms-full.txt$
+
+# ─── The 6 L1 sector landings ───
+Allow: /ai-ml$
+Allow: /software-saas$
+Allow: /it-services-agencies$
+Allow: /startups-innovation$
+Allow: /local-businesses$
+Allow: /professional-services$
+
+# ─── L2/L3/L4/L5 category pages under each sector ───
+# Page-level metadata.robots already gates sparse pages (<5 listings →
+# noindex,follow). Crawler is allowed in; thin pages won't index.
+Allow: /ai-ml/
+Allow: /software-saas/
+Allow: /it-services-agencies/
+Allow: /startups-innovation/
+Allow: /local-businesses/
+Allow: /professional-services/
+
+# ─── Individual listing + company profile + blog post pages ───
+Allow: /listing/
+Allow: /profile/
+Allow: /blog$
+Allow: /blog/
+Allow: /sector/
+
+# ─── Blocked routes ───
 Disallow: /contact
 Disallow: /iww-hq/
 Disallow: /api/
 Disallow: /payment-test/
-Disallow: /category/
-Disallow: /categories/*
-Disallow: /blog/
-Disallow: /company/
-Disallow: /listing/
-Disallow: /profile/
 Disallow: /dashboard/
 Disallow: /investors
+Disallow: /preview/
+Disallow: /test-listing-page/
+Disallow: /test-category-1-page/
+Disallow: /test-landing-page/
+# View-all sub-categories pages duplicate /categories — no unique content
+Disallow: /*/view-all-sub-categories-
 
 # Block parasitic SEO audit crawlers (zero value, heavy traffic)
 User-agent: AhrefsBot

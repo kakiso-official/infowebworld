@@ -63,6 +63,9 @@ const SECTORS: { slug: string; label: string; palette: SectorPalette }[] = [
   { slug: 'local-businesses',         label: 'Local Businesses',       palette: { c1: '#EEF7DE', c2: '#C9E49A', c3: '#9ACE5D', c4: '#659A22', name: 'Sage Community' } },
   { slug: 'professional-services',    label: 'Professional Services',  palette: { c1: '#FAEEF4', c2: '#F2C1D3', c3: '#E694B4', c4: '#C85580', name: 'Blush Authority' } },
 ]
+/* Alphabetical display order for the Categories mega's left rail. Computed
+   at module scope so the component's initial state can reference it. */
+const SORTED_SECTORS = [...SECTORS].sort((a, b) => a.label.localeCompare(b.label))
 
 /* Utility-strip links — the dark bar above the main header.
    Curated high-signal picks from the old Resources dropdown.
@@ -279,7 +282,12 @@ export default function Navbar(
   const [scrolled, setScrolled] = useState(false)
   const [hidden, setHidden] = useState(false)
   const [activeDD, setActiveDD] = useState<ActiveDD>(null)
-  const [activeSector, setActiveSector] = useState<string>(SECTORS[0].slug)
+  const [activeSector, setActiveSector] = useState<string>(SORTED_SECTORS[0].slug)
+  /* When the user hovers the "All Categories" row at the bottom of the
+     left rail, the right panel swaps from the active sector's L2 tiles
+     to the 6 L1 sectors themselves so they can jump directly to any one. */
+  const [showAllSectorsRight, setShowAllSectorsRight] = useState(false)
+  const sortedSectors = SORTED_SECTORS
   const [searchOpen, setSearchOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [mobOpen, setMobOpen] = useState<'services' | null>(null)
@@ -476,23 +484,15 @@ export default function Navbar(
           {activeDD === 'services' && (
             <div className="iw-mega-inner iw-mega-inner--svc" style={megaPaletteStyle}>
               <div className="iw-svc-left">
-                {/* "All Categories" sits above the sector list as the global
-                    escape hatch. Doesn't update activeSector — hovering it
-                    leaves the right panel showing the last-active sector. */}
-                <Link
-                  href="/categories"
-                  className="iw-svc-row iw-svc-row--all"
-                  onClick={closeDD}
-                >
-                  <span>All Categories</span>
-                  <ChevRight />
-                </Link>
-                {SECTORS.map(s => (
+                {/* Sectors first, alphabetical. Each row sets its own palette
+                    + active sector + reverts the right panel back to L2 tiles
+                    if it had been showing the all-sectors overview. */}
+                {sortedSectors.map(s => (
                   <Link
                     key={s.slug}
                     href={`/${s.slug}`}
-                    className={'iw-svc-row' + (activeSector === s.slug ? ' iw-svc-row--on' : '')}
-                    onMouseEnter={() => setActiveSector(s.slug)}
+                    className={'iw-svc-row' + (!showAllSectorsRight && activeSector === s.slug ? ' iw-svc-row--on' : '')}
+                    onMouseEnter={() => { setActiveSector(s.slug); setShowAllSectorsRight(false) }}
                     onClick={closeDD}
                     style={{
                       ['--row-c1' as string]: s.palette.c1,
@@ -504,30 +504,79 @@ export default function Navbar(
                     <ChevRight />
                   </Link>
                 ))}
+                {/* "All Categories" — sits at the BOTTOM of the rail. Hovering
+                    it swaps the right panel to a 6-tile grid of every sector
+                    so the user can jump directly into any L1. */}
+                <Link
+                  href="/categories"
+                  className={'iw-svc-row iw-svc-row--all' + (showAllSectorsRight ? ' iw-svc-row--on' : '')}
+                  onMouseEnter={() => setShowAllSectorsRight(true)}
+                  onClick={closeDD}
+                >
+                  <span>All Categories</span>
+                  <ChevRight />
+                </Link>
               </div>
               <div className="iw-svc-right">
-                <div className="iw-svc-grid">
-                  {activeL2s.map(c => (
-                    <Link
-                      key={c.slug}
-                      href={`/${activeSector}/${c.slug}`}
-                      className="iw-tile"
-                      onClick={closeDD}
-                    >
-                      <span className="iw-tile-ico"><CatIcon k={iconForCategory(c.name, activeSector)} /></span>
-                      <span className="iw-tile-name">{c.name}</span>
-                    </Link>
-                  ))}
-                </div>
-                <div className="iw-svc-foot">
-                  <Link
-                    href={`/${activeSector}/view-all-sub-categories-${activeSector}`}
-                    className="iw-cta iw-cta--mega"
-                    onClick={closeDD}
-                  >
-                    Explore all categories
-                  </Link>
-                </div>
+                {showAllSectorsRight ? (
+                  /* Right panel — 6 sector tiles, alphabetical. Each tile
+                     uses its own palette via inline custom props so the
+                     icon background reads in-brand on hover. */
+                  <>
+                    <div className="iw-svc-grid">
+                      {sortedSectors.map(s => (
+                        <Link
+                          key={s.slug}
+                          href={`/${s.slug}`}
+                          className="iw-tile iw-tile--sector"
+                          onClick={closeDD}
+                          style={{
+                            ['--tile-c1' as string]: s.palette.c1,
+                            ['--tile-c4' as string]: s.palette.c4,
+                          } as React.CSSProperties}
+                        >
+                          <span
+                            className="iw-tile-ico"
+                            style={{ background: s.palette.c1, color: s.palette.c4 }}
+                          >
+                            <CatIcon k={iconForCategory(s.label, s.slug)} />
+                          </span>
+                          <span className="iw-tile-name">{s.label}</span>
+                        </Link>
+                      ))}
+                    </div>
+                    <div className="iw-svc-foot">
+                      <Link href="/categories" className="iw-cta iw-cta--mega" onClick={closeDD}>
+                        Browse every category
+                      </Link>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="iw-svc-grid">
+                      {activeL2s.map(c => (
+                        <Link
+                          key={c.slug}
+                          href={`/${activeSector}/${c.slug}`}
+                          className="iw-tile"
+                          onClick={closeDD}
+                        >
+                          <span className="iw-tile-ico"><CatIcon k={iconForCategory(c.name, activeSector)} /></span>
+                          <span className="iw-tile-name">{c.name}</span>
+                        </Link>
+                      ))}
+                    </div>
+                    <div className="iw-svc-foot">
+                      <Link
+                        href={`/${activeSector}/view-all-sub-categories-${activeSector}`}
+                        className="iw-cta iw-cta--mega"
+                        onClick={closeDD}
+                      >
+                        Explore all categories
+                      </Link>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           )}

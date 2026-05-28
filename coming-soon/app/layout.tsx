@@ -92,6 +92,15 @@ export default function RootLayout({
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <head>
+        {/* Performance hints — preconnect to origins we hit on every page so
+            the TLS handshake completes before the actual request, shaving
+            ~100-200ms off LCP. dns-prefetch is the lighter cousin for
+            origins we only hit conditionally. Order: most-critical first. */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="" />
+        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+        <link rel="dns-prefetch" href="https://accounts.google.com" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <meta name="theme-color" content="#FAF5F0" />

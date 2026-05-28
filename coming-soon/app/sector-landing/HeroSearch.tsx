@@ -30,9 +30,14 @@ type Props = {
   title: string
   sub: string
   placeholder: string
+  /** Aggregate review signal from server — drives the rating + byline strip
+      under the search bar. Both are E-E-A-T signals Google + AI engines read. */
+  avgRating?: number
+  totalReviews?: number
+  totalListings?: number
 }
 
-export default function HeroSearch({ sectorSlug, title, sub, placeholder }: Props) {
+export default function HeroSearch({ sectorSlug, title, sub, placeholder, avgRating = 0, totalReviews = 0, totalListings = 0 }: Props) {
   const router = useRouter()
   const [q, setQ] = useState('')
   const [results, setResults] = useState<Results | null>(null)
@@ -113,6 +118,35 @@ export default function HeroSearch({ sectorSlug, title, sub, placeholder }: Prop
       <div className="tlp-hero-inner">
         <h1 className="tlp-hero-title">{title}</h1>
         <p className="tlp-hero-sub">{sub}</p>
+
+        {/* Author byline + rating + listing count — visible E-E-A-T signal +
+            machine-readable freshness via <time>. Reads as a single muted
+            line beneath the headline. */}
+        <div className="tlp-hero-meta">
+          <span className="tlp-hero-meta-byline">
+            By <strong>InfoWebWorld Editorial</strong> · Updated{' '}
+            <time dateTime={new Date().toISOString()}>
+              {new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+            </time>
+          </span>
+          {totalReviews > 0 && (
+            <>
+              <span className="tlp-hero-meta-sep" aria-hidden="true">·</span>
+              <span className="tlp-hero-meta-rate">
+                <span className="tlp-hero-meta-star" aria-hidden="true">★</span>
+                <strong>{avgRating.toFixed(1)}</strong>/5 from <strong>{totalReviews.toLocaleString()}</strong> verified reviews
+              </span>
+            </>
+          )}
+          {totalListings > 0 && (
+            <>
+              <span className="tlp-hero-meta-sep" aria-hidden="true">·</span>
+              <span className="tlp-hero-meta-count">
+                <strong>{totalListings.toLocaleString()}+</strong> verified companies
+              </span>
+            </>
+          )}
+        </div>
 
         <div className="tlp-hero-search" ref={wrapRef}>
           <form className={'tlp-hsr' + ((focused || open) ? ' tlp-hsr--on' : '')} onSubmit={onSubmit} role="search">

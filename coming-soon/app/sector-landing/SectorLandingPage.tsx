@@ -1,3 +1,4 @@
+import dynamic from 'next/dynamic'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import HeroSearch from './HeroSearch'
@@ -15,6 +16,8 @@ import {
 } from './queries'
 import type { SectorLandingConfig } from '@/lib/sector-landings'
 
+const SeoSections = dynamic(() => import('../components-category/SeoSections'), { ssr: true })
+
 /* ═══════════════════════════════════════════════════════════════════════
    Shared L1 sector landing page.
 
@@ -29,7 +32,27 @@ import type { SectorLandingConfig } from '@/lib/sector-landings'
    custom properties (--c1..--c4-dark) that the shared .tcat1 rules
    reference.
    ═══════════════════════════════════════════════════════════════════════ */
-export default async function SectorLandingPage({ cfg }: { cfg: SectorLandingConfig }) {
+export default async function SectorLandingPage({
+  cfg,
+  seoContent = null,
+  allCategories = [],
+  jsonLd,
+  avgRating = 0,
+  totalReviews = 0,
+  totalListings = 0,
+}: {
+  cfg: SectorLandingConfig
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  seoContent?: any
+  allCategories?: Array<{ name: string; slug: string; level: number; sectorSlug?: string; sector_slug?: string }>
+  /** Pre-built @graph JSON string from the page route. Rendered at top of
+      the page in a single application/ld+json script for the SEO surface. */
+  jsonLd?: string
+  /** Aggregate signals from the sector tree for the hero meta strip. */
+  avgRating?: number
+  totalReviews?: number
+  totalListings?: number
+}) {
   /* Serial — the MySQL pool size is 2 and getPopularByL2 already fans out
      internally. Doing all four in parallel here blows the queue when more
      than one sector page is being rendered at the same time. */
@@ -39,6 +62,13 @@ export default async function SectorLandingPage({ cfg }: { cfg: SectorLandingCon
   const popularTools = await getPopularSectorTools(cfg.slug, 6)
   return (
     <>
+      {/* Killer SEO/AEO/GEO surface — full @graph carrying Organization +
+          WebSite/SearchAction + BreadcrumbList + CollectionPage + Article +
+          DefinedTerm + HowTo + FAQPage with Speakable + per-listing
+          Product / SoftwareApplication / LocalBusiness entities. */}
+      {jsonLd && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
+      )}
       <Navbar sectorSlug={cfg.slug} />
       <main className={`tlp tcat1 ${cfg.scopeClass}`}>
         <HeroSearch
@@ -46,6 +76,9 @@ export default async function SectorLandingPage({ cfg }: { cfg: SectorLandingCon
           title={cfg.heroTitle}
           sub={cfg.heroSub}
           placeholder={cfg.heroPlaceholder}
+          avgRating={avgRating}
+          totalReviews={totalReviews}
+          totalListings={totalListings}
         />
         <SectorCategoriesSection
           sectorSlug={cfg.slug}
@@ -60,6 +93,23 @@ export default async function SectorLandingPage({ cfg }: { cfg: SectorLandingCon
         <PopularToolsSection firms={popularTools} />
         <TrustSection />
         <CompareSection />
+        {/* Gemini-generated SEO content — same sticky-TOC editorial block used
+            on L2/L3/L4 category pages. Renders only when Gemini content exists
+            in category_seo_content for this sector. Sits above the final CTA
+            so it's prominent but doesn't bury the conversion CTA. */}
+        {seoContent && (
+          <div className="cd-page tlp-seo-wrap">
+            <div className="cd-wrap">
+              <SeoSections
+                seoContent={seoContent}
+                categoryName={cfg.name}
+                categorySlug={cfg.slug}
+                sectorSlug={cfg.slug}
+                allCategories={allCategories}
+              />
+            </div>
+          </div>
+        )}
         <FinalCtaSection />
       </main>
       <Footer />
