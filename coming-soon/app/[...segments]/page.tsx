@@ -584,7 +584,7 @@ async function buildSectorJsonLd(
     {
       '@type': 'Article',
       '@id': `${sUrl}#article`,
-      headline: `${sName} — Buyer's Guide, Comparisons & FAQs (${year})`,
+      headline: `${sName} - Buyer's Guide, Comparisons & FAQs (${year})`,
       description: meta.seoDescription,
       image: `${DOMAIN}/api/og/${sectorSlug}`,
       author: { '@id': `${DOMAIN}#org` },
@@ -600,7 +600,7 @@ async function buildSectorJsonLd(
       '@type': 'DefinedTerm',
       '@id': `${sUrl}#term`,
       name: sName,
-      description: (richDescFirstPara || meta.seoDescription || `${sName} — verified providers on InfoWebWorld.`).slice(0, 600),
+      description: (richDescFirstPara || meta.seoDescription || `${sName} - verified providers on InfoWebWorld.`).slice(0, 600),
       termCode: sectorSlug,
       url: sUrl,
       inDefinedTermSet: {
@@ -663,17 +663,20 @@ function buildCategoryMeta(
   const baseName = qualifyCategoryName(cat.seoTitle || cat.name, sectorSlug)
   const year = new Date().getFullYear()
 
-  /* Title — keyword leading, year + brand trailing. Keep under ~60 chars
-     so SERP doesn't truncate. Includes count when listings exist. */
-  const countText = cat.listingCount > 0 ? `(${cat.listingCount}+) ` : ''
-  const title = `Top ${baseName} ${countText}— ${year} | InfoWebWorld`
+  /* Title — buying-intent first ("Best"), "Companies" carries the high-CTR
+     directory-search keyword, year for freshness, single hyphen separator
+     (no em-dash), brand trailing. No listing count: thin-page categories
+     would expose tiny numbers in the SERP, and dense ones would expose
+     numbers that age fast. Keep ~55-65 chars so SERP doesn't truncate. */
+  const title = `Best ${baseName} Companies (${year}) - Reviews & Pricing | InfoWebWorld`
 
-  /* Description — rating + count + freshness signal + value prop. ~155 chars. */
+  /* Description — buying-intent keyword stack + trust signal + freshness.
+     ~155 chars. Rating is a trust signal (rich-snippet eligible via
+     AggregateRating schema) and stays; the bare listing count does not. */
   const ratingClause = rating && rating.total > 0
     ? `Rated ${rating.avg.toFixed(1)}/5 by ${rating.total.toLocaleString()} verified users. `
     : ''
-  const countClause = cat.listingCount > 0 ? `${cat.listingCount}+ ` : ''
-  const description = `Compare the best ${countClause}${baseName.toLowerCase()} companies. ${ratingClause}Pricing, reviews, features & hourly rates. Updated ${monthYear}.`.trim()
+  const description = `Compare the best ${baseName.toLowerCase()} companies on InfoWebWorld - top picks, verified reviews, transparent pricing & features. ${ratingClause}Updated ${monthYear}.`.trim()
 
   const url = canonicalUrl(country, `/${sectorSlug}/${cat.slug}`)
   /* Dynamic per-category OG image — rendered at request time by
@@ -683,25 +686,37 @@ function buildCategoryMeta(
      seoOgImage still wins if explicitly set. */
   const ogImage = cat.seoOgImage || `${DOMAIN}/api/og/${sectorSlug}/${cat.slug}`
 
-  /* Keyword stack — DB seo_keywords + targeted variants pulling in the
-     buying intent ("hire", "cost", "agency"), comparative ("vs", "top
-     rated"), and temporal ("2026") modifiers Google rewards. */
+  /* Keyword stack — DB seo_keywords + targeted variants spanning buying
+     intent ("hire", "best", "buy"), comparison ("vs", "alternatives",
+     "compare"), modifier ("top rated", "enterprise", "free"), and temporal
+     ("2026") modifiers Google + AI search engines reward. */
   const lcName = baseName.toLowerCase()
   const autoKw = [
     lcName,
     `best ${lcName}`,
     `top ${lcName}`,
+    `top rated ${lcName}`,
     `top ${lcName} companies`,
     `top ${lcName} agencies`,
     `${lcName} companies`,
     `${lcName} reviews`,
     `${lcName} comparison`,
+    `compare ${lcName}`,
+    `${lcName} alternatives`,
     `${lcName} pricing`,
+    `${lcName} cost`,
     `${lcName} services`,
+    `${lcName} tools`,
+    `${lcName} software`,
+    `${lcName} platforms`,
     `hire ${lcName}`,
+    `best ${lcName} ${year}`,
     `${lcName} ${year}`,
     `${lcName} list`,
     `${lcName} rankings`,
+    `${lcName} buyer's guide`,
+    `enterprise ${lcName}`,
+    `${lcName} for small business`,
   ]
   const keywords = [...new Set([...cat.seoKeywords.map(k => k.toLowerCase()), ...autoKw])].join(', ')
 
@@ -727,7 +742,7 @@ function buildCategoryMeta(
       siteName: 'InfoWebWorld',
       type: 'website',
       locale: 'en_US',
-      images: [{ url: ogImage, width: 1200, height: 630, alt: `${baseName} — Top Companies` }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: `${baseName} - Top Companies` }],
     },
     twitter: {
       card: 'summary_large_image',
@@ -1171,26 +1186,31 @@ export async function generateMetadata({
       r => r.level === 3 && r.parent_id != null && l2Ids.has(r.parent_id)
     ).length
 
-    const lcName = meta.seoTitle.toLowerCase()
-    const title = `All ${meta.seoTitle} Categories ${year} — ${l2InSector} Categories, ${l3InSector.toLocaleString()} Subcategories | InfoWebWorld`
-    const description = `Browse the complete ${meta.seoTitle.toLowerCase()} taxonomy on InfoWebWorld — ${l2InSector} categories and ${l3InSector.toLocaleString()} subcategories, every verified company. Search, compare, and connect. Updated ${monthYear}.`
+    /* Use the short, clean sector label (e.g., "AI & ML") for the title and
+       headings. Single hyphen separator (no em-dash). Suffix carries the
+       buying-intent keyword "Companies" so the title hits both browse
+       ("Categories") and buy ("Top Companies") search intents. */
+    const shortName = meta.shortName
+    const lcName = shortName.toLowerCase()
+    const title = `${shortName} Categories (${year}) - Find Top Companies | InfoWebWorld`
+    const description = `Every ${shortName} category on InfoWebWorld - browse top companies by topic, read verified reviews, compare pricing & features. Updated ${monthYear}.`
 
     /* Keyword stack — sector + browse/discovery intent + comparative +
        temporal modifiers that Google + AI engines reward. */
     const autoKw = [
       `${lcName} categories`,
-      `all ${lcName} categories`,
-      `${lcName} directory`,
       `${lcName} subcategories`,
-      `browse ${lcName}`,
-      `${lcName} taxonomy`,
-      `list of ${lcName}`,
+      `${lcName} directory`,
       `${lcName} companies list`,
-      `complete ${lcName} directory`,
+      `${lcName} taxonomy`,
+      `browse ${lcName}`,
+      `list of ${lcName} tools`,
       `${lcName} ${year}`,
       `find ${lcName}`,
-      `${lcName} comparison directory`,
+      `${lcName} comparison`,
       `verified ${lcName} listings`,
+      `${lcName} marketplace`,
+      `top ${lcName} categories`,
     ]
     const keywords = [...new Set([...meta.seoKeywords.map(k => k.toLowerCase()), ...autoKw])].join(', ')
 
@@ -1211,7 +1231,7 @@ export async function generateMetadata({
         siteName: 'InfoWebWorld',
         type: 'website',
         locale: 'en_US',
-        images: [{ url: sectorOgImage, width: 1200, height: 630, alt: `All ${meta.seoTitle} Categories — InfoWebWorld` }],
+        images: [{ url: sectorOgImage, width: 1200, height: 630, alt: `${shortName} Categories — InfoWebWorld` }],
       },
       twitter: {
         card: 'summary_large_image',
@@ -1234,10 +1254,10 @@ export async function generateMetadata({
         },
       },
       other: {
-        'article:section': `${meta.seoTitle} Directory`,
+        'article:section': `${shortName} Categories`,
         'article:tag': `${lcName}, business categories, directory, ${meta.seoKeywords.slice(0, 5).join(', ')}`,
         'article:modified_time': new Date().toISOString(),
-        'DC.title': `All ${meta.seoTitle} Categories — InfoWebWorld`,
+        'DC.title': `${shortName} Categories — InfoWebWorld`,
         'DC.subject': `${lcName} taxonomy, business directory, category list`,
         'DC.language': 'en-US',
         'DC.coverage': 'Worldwide',
@@ -1290,34 +1310,46 @@ export async function generateMetadata({
       }
     } catch { /* aggregate is optional */ }
 
-    /* Title — keyword leading, count + year for click rate + freshness. */
-    const countText = listingCount > 0 ? `${listingCount}+ ` : ''
-    const title = `Top ${meta.seoTitle} ${countText}— ${year} | InfoWebWorld`
+    /* Title — sector seoTitle already leads with "Best" and includes a
+       sector-noun (Tools/Services/Platforms/Businesses), so just wrap with
+       (year) + brand. Single hyphen separator (no em-dash). No listing
+       count: tiny numbers expose thin-page weakness, dense ones age fast. */
+    const title = `${meta.seoTitle} (${year}) | InfoWebWorld`
 
-    /* Description — rating signal + count + freshness + value prop, ~155 chars. */
+    /* Description — value prop + buying-intent keywords + trust signal +
+       freshness. ~155 chars. Rating stays (AggregateRating rich-snippet
+       signal), listing count drops. */
     const ratingClause = rating
       ? `Rated ${rating.avg.toFixed(1)}/5 by ${rating.total.toLocaleString()} verified users. `
       : ''
-    const description = `${meta.seoDescription} ${ratingClause}Compare ${listingCount > 0 ? `${listingCount}+ ` : ''}verified providers — pricing, reviews, features. Updated ${monthYear}.`.trim()
+    const description = `${meta.seoDescription} ${ratingClause}Compare verified providers - pricing, reviews, features & alternatives. Updated ${monthYear}.`.trim()
 
     /* Keyword stack — sector name + buying-intent + comparative + temporal
        modifiers Google + AI engines reward. Includes sector-specific verticals
        from getSectorMeta + auto-generated variants. */
     const lcName = meta.seoTitle.toLowerCase()
+    const shortLc = meta.shortName.toLowerCase()
     const autoKw = [
       lcName,
-      `best ${lcName}`,
-      `top ${lcName}`,
-      `top ${lcName} companies`,
-      `${lcName} companies`,
-      `${lcName} reviews`,
-      `${lcName} comparison`,
-      `${lcName} pricing`,
-      `${lcName} services`,
-      `hire ${lcName}`,
-      `${lcName} ${year}`,
-      `${lcName} list`,
-      `${lcName} rankings`,
+      shortLc,
+      `best ${shortLc}`,
+      `top ${shortLc}`,
+      `top rated ${shortLc}`,
+      `top ${shortLc} companies`,
+      `${shortLc} companies`,
+      `${shortLc} reviews`,
+      `${shortLc} comparison`,
+      `compare ${shortLc}`,
+      `${shortLc} alternatives`,
+      `${shortLc} pricing`,
+      `${shortLc} cost`,
+      `${shortLc} services`,
+      `hire ${shortLc}`,
+      `best ${shortLc} ${year}`,
+      `${shortLc} ${year}`,
+      `${shortLc} list`,
+      `${shortLc} rankings`,
+      `${shortLc} buyer's guide`,
       `verified ${lcName}`,
       `${lcName} directory`,
     ]
@@ -1461,8 +1493,14 @@ export default async function CategoryDetailRoute({
        static data directly (client file), so the tree lives in a hashed JS
        chunk cached forever, not in every page's hydration blob. */
     const sectorMeta = getSectorMeta(viewAllSector2)
-    const sectorName = sectorMeta.seoTitle
+    /* shortName ("AI & ML") reads cleanly in "{shortName} Directory" framing.
+       The longer seoTitle ("Best AI & ML Tools, Platforms & Services") is
+       reserved for the L1 landing page. fullSectorName is the canonical
+       taxonomy name ("Artificial Intelligence & ML") — folded into body
+       copy + schema to carry long-tail SEO signal alongside the short label. */
+    const sectorName = sectorMeta.shortName
     const sectorRow = STATIC_CATEGORIES.find(r => r.slug === viewAllSector2 && r.level === 1)
+    const fullSectorName = sectorRow?.name || sectorName
     const sectorId = sectorRow ? sectorRow.id : 0
     const l2RowsInSector = STATIC_CATEGORIES.filter(r => r.parent_id === sectorId && r.level === 2)
     const l2InSector = l2RowsInSector.length
@@ -1499,9 +1537,9 @@ export default async function CategoryDetailRoute({
       '@type': ['WebPage', 'CollectionPage'],
       '@id': ID_WEBPAGE,
       url: URL_VIEWALL,
-      name: `All ${sectorName} Categories ${yearNow}`,
-      headline: `All ${sectorName} Categories`,
-      description: `Browse the complete ${lcSectorName} taxonomy on InfoWebWorld — ${l2InSector} categories and ${l3InSector.toLocaleString()} subcategories, every verified company. Updated ${monthYearNow}.`,
+      name: `${sectorName} Categories ${yearNow}`,
+      headline: `${sectorName} Categories — ${l2InSector} Topics, ${l3InSector.toLocaleString()} Subcategories`,
+      description: `Every ${sectorName} category on InfoWebWorld — ${l2InSector} topics and ${l3InSector.toLocaleString()} subcategories inside ${fullSectorName}, every verified company. Updated ${monthYearNow}.`,
       inLanguage: 'en-US',
       isPartOf: { '@id': ID_WEBSITE },
       breadcrumb: { '@id': ID_BREADCRUMB },
@@ -1510,12 +1548,13 @@ export default async function CategoryDetailRoute({
         '@type': 'ImageObject',
         url: `${DOMAIN}/api/og/${viewAllSector2}`,
         width: 1200, height: 630,
-        caption: `All ${sectorName} Categories — InfoWebWorld`,
+        caption: `${sectorName} Categories — InfoWebWorld`,
       },
       about: [
         { '@type': 'Thing', name: sectorName },
-        { '@type': 'Thing', name: `${sectorName} directory` },
+        { '@type': 'Thing', name: fullSectorName },
         { '@type': 'Thing', name: `${sectorName} categories` },
+        { '@type': 'Thing', name: `${sectorName} directory` },
         { '@type': 'Thing', name: 'Business directory' },
         { '@type': 'Thing', name: 'Industry taxonomy' },
       ],
@@ -1553,13 +1592,14 @@ export default async function CategoryDetailRoute({
         'query-input': 'required name=search_term_string',
       },
       keywords: [
-        `${lcSectorName} categories`,
-        `all ${lcSectorName} categories`,
         `${lcSectorName} directory`,
+        `${lcSectorName} categories`,
         `${lcSectorName} subcategories`,
+        `complete ${lcSectorName} directory`,
         `browse ${lcSectorName}`,
         `${lcSectorName} taxonomy`,
         `${lcSectorName} ${yearNow}`,
+        `${fullSectorName.toLowerCase()} directory`,
       ].join(', '),
     }
 
@@ -1666,7 +1706,7 @@ export default async function CategoryDetailRoute({
       description: `Four steps to find verified businesses inside the ${lcSectorName} sector on InfoWebWorld — search by keyword, browse by category, drill into a subcategory, and compare alternatives.`,
       totalTime: 'PT2M',
       steps: [
-        { name: `Open the ${sectorName} categories page`, text: `Go to the ${sectorName} index to see all ${l2InSector} categories and ${l3InSector.toLocaleString()} subcategories.`, url: URL_VIEWALL },
+        { name: `Open the ${sectorName} Categories page`, text: `Go to the ${sectorName} Categories index to see all ${l2InSector} top-level categories and ${l3InSector.toLocaleString()} subcategories.`, url: URL_VIEWALL },
         { name: 'Search by keyword', text: `Type a product, problem, or industry keyword in the search bar — the search is scoped to ${sectorName} so results are always relevant.` },
         { name: 'Or browse by category', text: `Click any of the ${l2InSector} category cards to expand its subcategories. Pick the subcategory closest to what you need.` },
         { name: 'Compare verified businesses', text: 'On the subcategory page, see every verified business listed there. Filter by location, plan tier, and rating; click any listing for the full profile, real reviews, and direct contact.' },
@@ -1680,8 +1720,8 @@ export default async function CategoryDetailRoute({
         a: `InfoWebWorld lists ${l2InSector} top-level ${lcSectorName} categories and ${l3InSector.toLocaleString()} subcategories. Every category contains verified businesses with real reviews and side-by-side comparison.`,
       },
       {
-        q: `How do I find a ${lcSectorName} business by category?`,
-        a: `Use the search bar on the All ${sectorName} Categories page — it searches across every ${lcSectorName} category and subcategory instantly. Or browse the category grid: pick the L2 card closest to your need, then click any L3 subcategory to see all verified businesses listed under it.`,
+        q: `How do I find ${lcSectorName} businesses by category?`,
+        a: `Use the search bar on the ${sectorName} Categories page — it searches across every ${lcSectorName} category and subcategory instantly. Or browse the category grid: pick the L2 card closest to your need, then click any L3 subcategory to see all verified businesses listed under it.`,
       },
       {
         q: `What's the difference between an L2 category and an L3 subcategory in ${sectorName}?`,
@@ -1692,7 +1732,7 @@ export default async function CategoryDetailRoute({
         a: `Yes. Every business listed under ${sectorName} on InfoWebWorld is human-verified before going live. Reviews are identity-checked. Rankings are merit-based — pay-to-play does not buy placement.`,
       },
       {
-        q: `Is the ${sectorName} category page free to browse?`,
+        q: `Is the ${sectorName} Categories page free to browse?`,
         a: `Yes. Browsing every ${lcSectorName} category, subcategory, and listing on InfoWebWorld is free for buyers. Only businesses pay to be listed (free and paid plans available).`,
       },
       {
@@ -1713,7 +1753,7 @@ export default async function CategoryDetailRoute({
             { name: 'Home', url: SEO_BASE_URL },
             { name: 'Business Categories', url: URL_CATEGORIES },
             { name: sectorName, url: URL_SECTOR },
-            { name: `All ${sectorName} Categories`, url: URL_VIEWALL },
+            { name: `${sectorName} Categories`, url: URL_VIEWALL },
           ],
           ID_BREADCRUMB,
         ),
@@ -1738,13 +1778,13 @@ export default async function CategoryDetailRoute({
             classes so AI voice readers pick up the answer-first content. */}
         <div className="cd-server-skeleton">
           <nav className="cd-server-breadcrumb" aria-label="Breadcrumb">
-            <a href="/" aria-label="Home"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a><span> &gt; </span><a href="/categories">All Categories</a><span> &gt; </span><a href={`/${viewAllSector2}`}>{sectorName}</a><span> &gt; </span><span>All {sectorName} Categories</span>
+            <a href="/" aria-label="Home"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a><span> &gt; </span><a href="/categories">Categories</a><span> &gt; </span><a href={`/${viewAllSector2}`}>{sectorName}</a><span> &gt; </span><span>{sectorName} Categories</span>
           </nav>
           <h1 className="cd-server-h1">
-            All {sectorName} Categories — {l2InSector} Categories, {l3InSector.toLocaleString()} Subcategories
+            {sectorName} Categories — {l2InSector} Topics, {l3InSector.toLocaleString()} Subcategories
           </h1>
           <p className="cd-server-desc">
-            Browse the complete {lcSectorName} taxonomy on InfoWebWorld — {l2InSector} categories and {l3InSector.toLocaleString()} subcategories inside {sectorName}. Every verified company, free to browse.
+            Every {fullSectorName} category on InfoWebWorld — {l2InSector} topics and {l3InSector.toLocaleString()} subcategories inside {sectorName}. Every verified company, free to browse.
           </p>
           <h2 className="cd-server-h2">Categories in {sectorName}</h2>
         </div>
@@ -1870,7 +1910,7 @@ export default async function CategoryDetailRoute({
               ordered list. Mirrors the HowTo @graph above. */}
           <div className="cat-seo-wrap">
             <header className="cat-seo-head">
-              <h2 className="cat-seo-h2">How to Find a {sectorName} Business</h2>
+              <h2 className="cat-seo-h2">How to Find {sectorName} Businesses</h2>
             </header>
             <ol className="cat-seo-steps">
               <li>

@@ -54,8 +54,21 @@ function buildTree(cats: Category[]): CatNode[] {
 }
 
 /* ═══════════════════════════════════════════
-   Sector metadata — accent + pastel bg
+   Sector metadata — accent + pastel bg + short display label
    ═══════════════════════════════════════════ */
+
+/* Short, clean display labels — keep heading short and search-friendly
+   ("AI & ML Directory" reads better than "Artificial Intelligence & ML
+   Directory"). Sector.name from the static taxonomy still appears in body
+   copy for long-tail SEO. */
+const SHORT_NAMES: Record<string, string> = {
+  'ai-ml': 'AI & ML',
+  'software-saas': 'Software & SaaS',
+  'it-services-agencies': 'IT Services & Agencies',
+  'startups-innovation': 'Startups & Innovation',
+  'local-businesses': 'Local Businesses',
+  'professional-services': 'Professional Services',
+}
 
 function sectorMeta(name: string) {
   const n = name.toLowerCase()
@@ -92,6 +105,8 @@ export default function SectorAllBrowse({ sectorSlug }: { sectorSlug: string }) 
   const tree = useMemo(() => buildTree(categories), [categories])
   const sector = useMemo(() => tree.find(s => s.slug === sectorSlug) || null, [tree, sectorSlug])
   const meta = useMemo(() => sector ? sectorMeta(sector.name) : { color: '#E8553D', pastel: '#FECACA' }, [sector])
+  /* Short label for the hero heading — falls back to sector.name. */
+  const shortName = SHORT_NAMES[sectorSlug] || sector?.name || ''
 
   /* All categories within this sector (L2 + L3) */
   const sectorCats = useMemo(() => {
@@ -195,26 +210,31 @@ export default function SectorAllBrowse({ sectorSlug }: { sectorSlug: string }) 
             <polygon fill="#7FBA00" points="125 173.96 173.96 173.96 173.96 132.38 200.11 132.38 200.11 200.11 125 200.11 125 173.96" />
           </svg>
 
-          {/* Breadcrumb — Home / Categories / Sector */}
+          {/* Breadcrumb — Home / Categories / Sector / Categories */}
           <nav className="cb-hero-bc" aria-label="Breadcrumb">
             <Link href="/" className="cb-hero-bc-link">Home</Link>
             <span className="cb-hero-bc-sep" aria-hidden="true">/</span>
             <Link href="/categories" className="cb-hero-bc-link">Categories</Link>
             <span className="cb-hero-bc-sep" aria-hidden="true">/</span>
-            <span className="cb-hero-bc-current">{sector.name}</span>
+            <Link href={`/${sectorSlug}`} className="cb-hero-bc-link">{shortName}</Link>
+            <span className="cb-hero-bc-sep" aria-hidden="true">/</span>
+            <span className="cb-hero-bc-current">Categories</span>
           </nav>
 
-          {/* H2 title — H1 already sits sr-only in the page route */}
+          {/* H2 title — short, catchy "{Sector} Categories" framing.
+              Sector.name (the canonical taxonomy long-form, e.g. "Artificial
+              Intelligence & ML") still appears in body copy below for
+              long-tail SEO. H1 lives sr-only in the page route. */}
           <h2 className="cb-title">
-            All <em style={{ color: meta.color, borderBottomColor: meta.color }}>{sector.name}</em> Categories
+            <em style={{ color: meta.color, borderBottomColor: meta.color }}>{shortName}</em> Categories
           </h2>
 
-          {/* Description */}
+          {/* Description — full canonical sector name in body for SEO */}
           {sector.description && (
             <p className="cb-desc">{sector.description}</p>
           )}
           <p className="cb-desc">
-            <strong>{stats.l2} categories</strong> and <strong>{stats.l3.toLocaleString()} subcategories</strong> inside <strong>{sector.name}</strong>. Find, compare, and connect with the best verified companies.
+            Every <strong>{sector.name}</strong> category on InfoWebWorld: <strong>{stats.l2} categories</strong>, <strong>{stats.l3.toLocaleString()} subcategories</strong>, every verified company. Search, compare, connect.
           </p>
 
           {/* Stat pills */}
@@ -337,7 +357,7 @@ export default function SectorAllBrowse({ sectorSlug }: { sectorSlug: string }) 
         {/* ══════════════════════════════════════
            L2 Category cards — main content
            ══════════════════════════════════════ */}
-        <h2 className="cb-section-heading">All <em>Categories</em> in {sector.name}</h2>
+        <h2 className="cb-section-heading">Browse <em>Categories</em> in {shortName}</h2>
         <div className="cb-sectors">
           {l2Cards.map(l2 => (
             <div
