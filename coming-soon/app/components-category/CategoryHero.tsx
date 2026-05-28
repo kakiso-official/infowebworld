@@ -58,6 +58,21 @@ function Stars({ value }: { value: number }) {
   )
 }
 
+/* Sector-aware name qualifier — must match the one in
+   app/[...segments]/page.tsx so the H1 and the page title agree.
+   Prepends "AI & ML" to ambiguous category names inside the ai-ml sector
+   (e.g. "Software" → "AI & ML Software") so users don't confuse the page
+   with the broader /software-saas sector. */
+function qualifyCategoryName(name: string, sectorSlug?: string): string {
+  if (!name) return name
+  const lc = name.toLowerCase()
+  if (sectorSlug === 'ai-ml') {
+    if (/\b(ai|ml|a\.i\.|m\.l\.|artificial[- ]intelligence|machine[- ]learning|llm|gpt|neural|deep[- ]learning|generative|nlp)\b/.test(lc)) return name
+    return `AI & ML ${name}`
+  }
+  return name
+}
+
 /* Build the descriptive paragraph. Real data: listing count + category name +
    parent sector. Country chips are interpolated inline at the natural spot. */
 function buildDescription(name: string, parentName: string, listingCount: number): string {
@@ -88,9 +103,14 @@ export default function CategoryHero({
   const today = new Date()
   const dateStr = `${MONTHS[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()}`
 
+  /* Sector-qualified name — used in H1 + description so an L2 like
+     "Software" inside ai-ml renders as "AI & ML Software" and doesn't get
+     confused with the /software-saas sector. */
+  const qualifiedName = qualifyCategoryName(c.name, sectorSlug)
+
   /* Split the description at the {COUNTRIES} marker so the country chips
      can render inline as real links inside the paragraph. */
-  const descTemplate = c.description || buildDescription(c.name, c.parentName || sectorName || '', listingCount)
+  const descTemplate = c.description || buildDescription(qualifiedName, c.parentName || sectorName || '', listingCount)
   const [descBefore, descAfter] = descTemplate.includes('{COUNTRIES}')
     ? descTemplate.split('{COUNTRIES}')
     : [descTemplate, '']
@@ -151,8 +171,8 @@ export default function CategoryHero({
         <span className="cd-breadcrumb-current">{c.name}</span>
       </nav>
 
-      {/* H1 — Top {Category} Companies */}
-      <h1 className="cd-hero-title">Top {c.name} Companies</h1>
+      {/* H1 — Top {Category} Companies (sector-qualified) */}
+      <h1 className="cd-hero-title">Top {qualifiedName} Companies</h1>
 
       {/* Description with inline country chips + read-more toggle */}
       <p className="cd-hero-desc">

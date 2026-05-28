@@ -343,6 +343,23 @@ async function fetchCategoryPageData(categorySlug: string) {
   }
 }
 
+/* Sector-aware name qualifier — disambiguates ambiguous category names
+   like "Software", "Tools", "Models", "Services" when they sit inside a
+   specific sector. Without this, a /ai-ml/software-development page would
+   title as "Top Software Development Companies" and users (and Google)
+   could confuse it with the /software-saas sector. Only applies when the
+   category name doesn't already reference the sector concept. */
+function qualifyCategoryName(name: string, sectorSlug: string): string {
+  if (!name) return name
+  const lc = name.toLowerCase()
+  if (sectorSlug === 'ai-ml') {
+    if (/\b(ai|ml|a\.i\.|m\.l\.|artificial[- ]intelligence|machine[- ]learning|llm|gpt|neural|deep[- ]learning|generative|nlp)\b/.test(lc)) return name
+    return `AI & ML ${name}`
+  }
+  /* Other sectors keep their bare name for now — extend here per request. */
+  return name
+}
+
 /* ── Build metadata for L2/L3 categories — full SEO surface ── */
 function buildCategoryMeta(
   cat: CatSeo,
@@ -352,7 +369,7 @@ function buildCategoryMeta(
   sectorSlug: string,
   rating?: { avg: number; total: number },
 ): Metadata {
-  const baseName = cat.seoTitle || cat.name
+  const baseName = qualifyCategoryName(cat.seoTitle || cat.name, sectorSlug)
   const year = new Date().getFullYear()
 
   /* Title — keyword leading, year + brand trailing. Keep under ~60 chars
@@ -480,7 +497,7 @@ function buildJsonLd(
     extended_faq?: unknown
   } | null,
 ) {
-  const baseName = cat.seoTitle || cat.name
+  const baseName = qualifyCategoryName(cat.seoTitle || cat.name, sectorSlug)
   const baseDesc = cat.seoDescription || cat.description
   const url = canonicalUrl(country, `/${sectorSlug}/${cat.slug}`)
 
