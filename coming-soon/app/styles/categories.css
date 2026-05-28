@@ -1365,385 +1365,10 @@
   font-family: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
 }
 
-.cd-lc {
-  background: #FFFFFF;
-  border: 1px solid var(--lc-line);
-  border-radius: 12px;
-  margin-bottom: 14px;
-  overflow: hidden;
-  transition: box-shadow .25s cubic-bezier(.16,1,.3,1), border-color .2s;
-  animation: cdFadeUp .35s cubic-bezier(.16,1,.3,1) both;
-}
-.cd-lc:hover {
-  border-color: #D1D5DB;
-  box-shadow: 0 8px 24px rgba(16, 24, 40, .07);
-}
-.cd-lc:nth-child(1) { animation-delay: 0s }
-.cd-lc:nth-child(2) { animation-delay: .04s }
-.cd-lc:nth-child(3) { animation-delay: .08s }
-.cd-lc:nth-child(4) { animation-delay: .12s }
-.cd-lc:nth-child(5) { animation-delay: .16s }
 
-/* Header: logo + info + actions ─ all centered vertically. */
-.cd-lc-header {
-  display: grid;
-  grid-template-columns: 56px 1fr auto;
-  gap: 16px;
-  padding: 18px 20px;
-  align-items: center;
-}
-.cd-lc-logo {
-  width: 56px; height: 56px;
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  border: 1px solid var(--lc-line-soft);
-  overflow: hidden;
-  background: #FFFFFF;
-}
-.cd-lc-logo img { width: 100%; height: 100%; object-fit: contain; padding: 4px }
-.cd-lc-logo-initial { font-weight: 800; font-size: 1.25rem }
-
-.cd-lc-info { min-width: 0 }
-.cd-lc-name-row {
-  display: flex; align-items: center;
-  gap: 10px;
-  margin-bottom: 4px;
-  flex-wrap: wrap;
-}
-.cd-lc-name {
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: var(--lc-teal);
-  line-height: 1.25;
-  display: inline-flex; align-items: center;
-  gap: 6px;
-  margin: 0;
-  letter-spacing: -.012em;
-}
-.cd-lc-name a {
-  color: inherit;
-  text-decoration: none;
-}
-.cd-lc-name a:hover { color: var(--lc-teal-hover) }
-.cd-lc-preview {
-  display: inline-flex; align-items: center;
-  font-size: 9px; font-weight: 700;
-  color: var(--lc-muted);
-  background: #F9FAFB;
-  padding: 2px 7px;
-  border-radius: 999px;
-  border: 1px solid var(--lc-line);
-  text-transform: uppercase; letter-spacing: .05em;
-}
-.cd-lc-location {
-  font-size: 11px;
-  color: var(--lc-muted);
-  font-weight: 500;
-}
-
-.cd-lc-rating-row {
-  display: flex; align-items: center;
-  gap: 6px;
-  margin: 2px 0 6px;
-}
-.cd-lc-score { font-size: 13px; font-weight: 700; color: var(--lc-text) }
-.cd-lc-reviews {
-  font-size: 12px;
-  color: var(--lc-muted);
-  font-weight: 500;
-}
-
-.cd-lc-subtitle {
-  font-size: 13px;
-  color: var(--lc-text);
-  margin: 0;
-  line-height: 1.4;
-  font-weight: 400;
-}
-
-/* ── Actions cluster — Visit + swap row ── */
-.cd-lc-actions {
-  display: flex; flex-direction: column;
-  gap: 8px;
-  flex-shrink: 0;
-  min-width: 260px;
-  align-items: stretch;
-}
-.cd-lc-visit {
-  display: inline-flex; align-items: center; justify-content: center;
-  gap: 6px;
-  font-size: 12px;
-  font-weight: 700;
-  color: #FFFFFF;
-  background: var(--lc-teal);
-  border: 1.5px solid var(--lc-teal);
-  padding: 9px 18px;
-  border-radius: 6px;
-  text-decoration: none;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-  transition: background .18s, border-color .18s, transform .15s;
-  white-space: nowrap;
-}
-.cd-lc-visit:hover {
-  background: var(--lc-teal-hover);
-  border-color: var(--lc-teal-hover);
-  transform: translateY(-1px);
-}
-
-/* The swap container holds Compare+Save by default and morphs into the
-   CompareSearchBar when the user clicks Compare. Fixed min-height so the
-   card doesn't jump during the swap. */
-.cd-lc-swap {
-  display: flex; gap: 8px;
-  align-items: stretch;
-  position: relative;
-}
-.cd-lc-swap--cmp { display: block }
-
-.cd-lc-btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  gap: 5px;
-  flex: 1;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--lc-teal);
-  background: #FFFFFF;
-  border: 1.5px solid var(--lc-teal);
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background .15s, color .15s, border-color .15s;
-  white-space: nowrap;
-}
-.cd-lc-btn:hover { background: var(--lc-teal-soft) }
-.cd-lc-btn:disabled { opacity: .55; cursor: not-allowed }
-.cd-lc-btn-save--on { background: var(--lc-teal-soft) }
-
-/* ── Inline compare search bar ── */
-@keyframes cdCmpIn { from { opacity: 0; transform: translateY(-4px) } to { opacity: 1; transform: translateY(0) } }
-.cd-lc-cmp { animation: cdCmpIn .18s cubic-bezier(.16,1,.3,1) both; position: relative }
-.cd-lc-cmp-bar {
-  display: flex; align-items: center;
-  gap: 8px;
-  background: #FFFFFF;
-  border: 1.5px solid var(--lc-teal);
-  border-radius: 6px;
-  padding: 7px 10px;
-  box-shadow: 0 0 0 3px rgba(14, 143, 110, .12);
-}
-.cd-lc-cmp-icon { color: var(--lc-teal); flex-shrink: 0 }
-.cd-lc-cmp-input {
-  flex: 1;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--lc-text);
-  min-width: 0;
-}
-.cd-lc-cmp-input::placeholder { color: var(--lc-mute-2) }
-.cd-lc-cmp-close {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 22px; height: 22px;
-  border-radius: 4px;
-  border: none;
-  background: transparent;
-  color: var(--lc-muted);
-  cursor: pointer;
-  flex-shrink: 0;
-}
-.cd-lc-cmp-close:hover { background: var(--lc-line-soft); color: var(--lc-text) }
-
-/* Suggestion dropdown */
-.cd-lc-cmp-drop {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0; right: 0;
-  z-index: 30;
-  background: #FFFFFF;
-  border: 1px solid var(--lc-line);
-  border-radius: 8px;
-  box-shadow: 0 12px 28px rgba(16, 24, 40, .14);
-  max-height: 320px;
-  overflow-y: auto;
-  padding: 4px;
-}
-.cd-lc-cmp-empty {
-  padding: 14px;
-  text-align: center;
-  font-size: 12px;
-  color: var(--lc-muted);
-}
-.cd-lc-cmp-hit {
-  display: flex; align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 8px;
-  border: none;
-  border-radius: 6px;
-  background: transparent;
-  text-align: left;
-  cursor: pointer;
-  transition: background .12s;
-}
-.cd-lc-cmp-hit:hover,
-.cd-lc-cmp-hit--active { background: var(--lc-teal-soft) }
-.cd-lc-cmp-hit-logo {
-  width: 32px; height: 32px;
-  border-radius: 6px;
-  background: var(--lc-teal-soft);
-  color: var(--lc-teal);
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 800;
-  font-size: 13px;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-.cd-lc-cmp-hit-logo img { width: 100%; height: 100%; object-fit: contain; padding: 2px }
-.cd-lc-cmp-hit-body { display: flex; flex-direction: column; min-width: 0 }
-.cd-lc-cmp-hit-name {
-  font-size: 12.5px;
-  font-weight: 700;
-  color: var(--lc-text);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.cd-lc-cmp-hit-tag {
-  font-size: 11px;
-  color: var(--lc-muted);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-
-/* Description section */
-.cd-lc-desc-section {
-  padding: 14px 20px 16px;
-  border-top: 1px solid var(--lc-line-soft);
-}
-.cd-lc-desc {
-  font-size: 13px;
-  color: var(--lc-text);
-  line-height: 1.6;
-  margin: 0 0 8px;
-  font-weight: 400;
-}
-.cd-lc-readmore {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--lc-teal);
-  text-decoration: none;
-}
-.cd-lc-readmore:hover { text-decoration: underline; text-underline-offset: 3px }
-
-/* "Users also considered" expandable footer */
-.cd-lc-also { border-top: 1px solid var(--lc-line-soft) }
-.cd-lc-also-toggle {
-  display: flex; align-items: center; justify-content: space-between;
-  width: 100%;
-  padding: 12px 20px;
-  background: var(--lc-teal-soft);
-  border: none;
-  cursor: pointer;
-  transition: background .15s;
-}
-.cd-lc-also-toggle:hover { background: var(--lc-teal-soft-2) }
-.cd-lc-also-left { display: flex; align-items: center; gap: 10px }
-.cd-lc-also-label {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--lc-text);
-}
-.cd-lc-also-chev {
-  color: var(--lc-muted);
-  transition: transform .22s ease;
-  display: flex;
-}
-.cd-lc-also-chev--on { transform: rotate(180deg) }
-
-.cd-lc-also-panel {
-  background: var(--lc-teal-soft);
-  padding: 0 16px 14px;
-}
-.cd-lc-also-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-/* Mini card inside Users also considered */
-.cd-lc-mini {
-  background: #FFFFFF;
-  border-radius: 10px;
-  padding: 12px;
-  display: flex; flex-direction: column;
-  gap: 0;
-  transition: box-shadow .15s;
-}
-.cd-lc-mini:hover { box-shadow: 0 3px 12px rgba(0, 0, 0, .06) }
-.cd-lc-mini-logo {
-  width: 36px; height: 36px;
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 8px;
-}
-.cd-lc-mini-name {
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--lc-text);
-  margin: 0 0 4px;
-  line-height: 1.2;
-}
-.cd-lc-mini-rating {
-  display: flex; align-items: center;
-  gap: 4px;
-  margin-bottom: 6px;
-}
-.cd-lc-mini-score {
-  font-size: 11px;
-  font-weight: 800;
-  color: var(--lc-text);
-}
-.cd-lc-mini-reviews {
-  font-size: 10px;
-  color: var(--lc-muted);
-}
-.cd-lc-mini-desc {
-  font-size: 11.5px;
-  color: var(--lc-text);
-  line-height: 1.5;
-  margin: 0;
-  flex: 1;
-  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
-  overflow: hidden;
-  font-weight: 400;
-}
-.cd-lc-mini-link {
-  font-size: 11.5px;
-  font-weight: 700;
-  color: var(--lc-teal);
-  text-decoration: none;
-  margin-top: 8px;
-}
-.cd-lc-mini-link:hover { text-decoration: underline; text-underline-offset: 3px }
-
-/* Tighter responsive for narrow screens */
-@media (max-width: 760px) {
-  .cd-lc-header {
-    grid-template-columns: 48px 1fr;
-    grid-template-areas:
-      'logo info'
-      'actions actions';
-    gap: 12px;
-    padding: 14px 16px;
-  }
-  .cd-lc-logo { grid-area: logo; width: 48px; height: 48px }
-  .cd-lc-info { grid-area: info }
-  .cd-lc-actions { grid-area: actions; min-width: 0 }
-  .cd-lc-also-grid { grid-template-columns: 1fr }
-  .cd-lc-desc-section { padding: 12px 16px 14px }
-  .cd-lc-also-toggle { padding: 10px 16px }
-}
+/* Legacy listing-card subtree (Goodfirms-teal design) removed — was
+   conflicting with the Magneto rebuild. New rules live below in the
+   "L2-L4 CATEGORY DETAIL — STRUCTURING PASS" block. */
 
 /* Empty state */
 .cd-empty { text-align: center; padding: 3rem 1rem }
@@ -2055,22 +1680,11 @@
   .cd-sidebar { min-width: 0; width: 92vw; max-width: none; }
   .cd-sidebar-head { padding: 18px 20px }
   .cd-sidebar-body { padding: 16px 20px 0 }
-  /* Listing card mobile */
-  .cd-lc-header { flex-wrap: wrap; padding: 1rem; gap: .75rem }
-  .cd-lc-actions { flex-direction: row; width: 100%; flex-wrap: wrap }
-  .cd-lc-visit { flex: 1; justify-content: center; text-align: center }
-  .cd-lc-secondary { flex: 1; justify-content: center }
-  .cd-lc-location { display: none }
-  .cd-lc-desc-section { padding: .75rem 1rem }
-  .cd-lc-also-toggle { padding: .6rem 1rem }
-  .cd-lc-also-panel { padding: 0 1rem 1rem }
-  .cd-lc-also-grid { grid-template-columns: 1fr; gap: .5rem }
+  /* Legacy listing-card mobile overrides removed — handled in the
+     new STRUCTURING PASS block below. */
   .cd-trust-grid { grid-template-columns: 1fr }
 }
 @media (max-width: 480px) {
-  .cd-lc-logo { width: 44px; height: 44px }
-  .cd-lc-name { font-size: .92rem }
-  .cd-lc-visit { font-size: .65rem; padding: .5rem .8rem }
   .cd-cta-inline { flex-wrap: wrap; gap: .75rem }
   .cd-cta-inline-btn { width: 100%; justify-content: center }
   .cd-pagination-btn { padding: .4rem .75rem; font-size: .72rem }
@@ -2112,3 +1726,1086 @@
 .cb-l2-meta {
   letter-spacing: -.005em !important;
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+   L2-L4 CATEGORY DETAIL — STRUCTURING PASS
+
+   Pure white surface. Sector palette inherited from the .tcat-<slug> scope
+   class on .cd-page (defined in test-category-1-page.css). Boxy 8px radii,
+   tinted shadows, no decorative blobs, no scroll-reveal transforms.
+
+   Layered AFTER the legacy .cd-* rules above so these win on conflict.
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* ── Sector palette inheritance — bind --cd-color to the active sector. */
+.cd-page[class*="tcat-"] {
+  --cd-color: var(--c4);
+}
+
+/* Pure white background, no decorative blobs anywhere. */
+.cd-page { background: #FFFFFF !important; }
+.cd-page .cd-shapes,
+.cd-page .cd-shape { display: none !important; }
+
+/* ── Hero — InfoWebWorld category landing header.
+   Matches the reference exactly: breadcrumb, large title, descriptive
+   paragraph with inline country chips + read-more, aggregate rating row,
+   meta row with rankings date + Buyer's Guide / FAQs links. */
+.cd-page .cd-hero {
+  margin-bottom: 1.4rem;
+  padding-bottom: 1.1rem;
+  min-height: 0;
+  border-bottom: 1px solid #EEF0F2;
+  animation: none;
+}
+/* Breadcrumb */
+.cd-page .cd-hero .cd-breadcrumb {
+  margin-bottom: .8rem;
+  font-size: .85rem;
+}
+.cd-page .cd-hero .cd-breadcrumb-link {
+  color: #1F2937;
+  font-weight: 500;
+  text-decoration: none;
+}
+.cd-page .cd-hero .cd-breadcrumb-link:hover { text-decoration: underline; }
+.cd-page .cd-hero .cd-breadcrumb-sep {
+  color: #9CA3AF;
+  margin: 0 6px;
+}
+.cd-page .cd-hero .cd-breadcrumb-current {
+  color: #6B7280;
+  font-weight: 500;
+}
+/* H1 */
+.cd-page .cd-hero-title {
+  margin: 0 0 .55rem;
+  font-size: clamp(1.6rem, 3.2vw, 2.15rem);
+  font-weight: 800;
+  letter-spacing: -.022em;
+  color: #0A1B33;
+  line-height: 1.15;
+}
+/* Description paragraph */
+.cd-page .cd-hero-desc {
+  margin: 0 0 .9rem;
+  font-size: .95rem;
+  line-height: 1.6;
+  color: #1F2937;
+  font-weight: 400;
+  max-width: 1100px;
+}
+.cd-page .cd-hero-countries {
+  display: inline;
+}
+.cd-page .cd-hero-country {
+  color: #2563EB;
+  text-decoration: none;
+  font-weight: 500;
+}
+.cd-page .cd-hero-country:hover { text-decoration: underline; }
+.cd-page .cd-hero-expand {
+  display: inline;
+  margin-left: 4px;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: #2563EB;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.cd-page .cd-hero-expand:hover { text-decoration: underline; }
+/* Rating row */
+.cd-page .cd-hero-rate {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: .65rem;
+  font-size: .92rem;
+  color: #1F2937;
+}
+.cd-page .cd-hero-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  line-height: 0;
+}
+.cd-page .cd-hero-star {
+  width: 18px !important;
+  height: 18px !important;
+}
+.cd-page .cd-hero-star--on { color: #F5A623; }
+.cd-page .cd-hero-star--off { color: #E0E2E6; }
+.cd-page .cd-hero-rate-text { font-weight: 400; }
+.cd-page .cd-hero-rate-text strong { font-weight: 700; color: #0A1B33; }
+.cd-page .cd-hero-rate-text--empty { color: #6B7280; font-style: italic; }
+/* Meta row — rankings date + Buyer's Guide + FAQs */
+.cd-page .cd-hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  font-size: .85rem;
+}
+.cd-page .cd-hero-updated {
+  color: #6B7280;
+  font-weight: 400;
+}
+.cd-page .cd-hero-meta-link {
+  color: #2563EB;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.cd-page .cd-hero-meta-link:hover { color: #1D4ED8; }
+
+/* Legacy stat pills hidden — replaced by the rating row above. */
+.cd-page .cd-hero-pills { display: none !important; }
+
+/* ── SUBCATEGORY LIST — flat folder-icon row, hover-underline only ── */
+.cd-sublist {
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: .6rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  border-top: 1px solid #F1F2F4;
+  border-bottom: 1px solid #F1F2F4;
+}
+.cd-sublist-item { margin: 0; }
+.cd-sublist-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  color: #1A1A1A;
+  text-decoration: none;
+  font-size: .95rem;
+  font-weight: 600;
+  letter-spacing: -.005em;
+  /* no transitions, no transforms — hover underline only */
+}
+.cd-sublist-link:hover .cd-sublist-name {
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+  color: var(--c4, var(--cd-color, var(--h-accent)));
+}
+.cd-sublist-ico {
+  display: inline-flex;
+  color: var(--c4, var(--cd-color, var(--h-accent)));
+  flex-shrink: 0;
+}
+.cd-sublist-name { line-height: 1.3; }
+
+/* ── COMPACT TOOLBAR — slim row above the listings ─────────────────── */
+.cd-page .cd-toolbar {
+  padding: .4rem 0 .55rem;
+  margin-bottom: .65rem;
+  border-bottom: 1px solid #EEF0F2;
+}
+.cd-page .cd-toolbar-count {
+  font-family: var(--font-inter, 'Inter'), sans-serif;
+  font-size: .85rem;
+  font-weight: 700;
+  color: #0A1B33;
+  letter-spacing: -.01em;
+}
+.cd-page .cd-toolbar-count strong {
+  color: var(--c4, var(--cd-color));
+  font-weight: 800;
+}
+.cd-page .cd-toolbar-right { gap: 6px; }
+
+.cd-page .cd-filter-btn,
+.cd-page .cd-sort-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 30px;
+  padding: 0 11px;
+  border-radius: 6px;
+  border: 1px solid #E1E4E8;
+  background: #FFFFFF;
+  font-family: var(--font-inter, 'Inter'), sans-serif;
+  font-size: .76rem;
+  font-weight: 600;
+  color: #0A1B33;
+  letter-spacing: -.005em;
+  cursor: pointer;
+  transition: border-color .15s ease;
+  white-space: nowrap;
+}
+.cd-page .cd-filter-btn:hover,
+.cd-page .cd-sort-btn:hover {
+  border-color: var(--c4, var(--cd-color));
+  background: #FFFFFF;
+}
+.cd-page .cd-filter-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 16px; height: 16px;
+  border-radius: 4px;
+  background: var(--c4, var(--cd-color));
+  color: #FFFFFF;
+  font-size: .65rem;
+  font-weight: 800;
+  padding: 0 4px;
+}
+.cd-page .cd-sort-dropdown {
+  border-radius: 8px;
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 10px 28px -10px rgba(10,27,51,.18);
+  padding: 4px;
+}
+.cd-page .cd-sort-option { padding: 8px 10px; border-radius: 4px; font-size: .78rem; }
+.cd-page .cd-sort-option--active { color: var(--c4, var(--cd-color)); }
+.cd-page .cd-sort-option svg { color: var(--c4, var(--cd-color)); }
+
+/* ── SLIM AI SUMMARY BANNER ────────────────────────────────────────── */
+.cd-page .cd-ai-summary {
+  position: relative;
+  margin: 0 0 .9rem;
+  padding: .65rem .85rem;
+  background: #FFFFFF;
+  border: 1px solid #ECECF5;
+  border-left: 3px solid var(--c4, var(--cd-color));
+  border-radius: 4px;
+  box-shadow: none;
+}
+.cd-page .cd-ai-summary::before { display: none; }
+.cd-page .cd-ai-summary-footer {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-bottom: 4px;
+}
+.cd-page .cd-ai-summary-icon { width: 16px; height: 16px; }
+.cd-page .cd-ai-summary-label {
+  font-size: .65rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #6B7280;
+}
+.cd-page .cd-ai-summary-text {
+  margin: 0;
+  font-size: .85rem;
+  line-height: 1.55;
+  color: #1A1A1A;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   MAGNETO-STYLE LISTING CARD — full layout.
+
+   Top strip = .cd-lc-top (logo + name + rating + actions cluster)
+   Body      = .cd-lc-body (3-col: services / main / review)
+
+   All accents pull from --c4 / --c4-dark / --c1 set by .tcat-<slug>.
+   ════════════════════════════════════════════════════════════════════════ */
+.cd-page .cd-lc {
+  display: block;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 14px 18px 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 2px rgba(10,27,51,.04);
+  animation: none;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.cd-page .cd-lc:hover {
+  border-color: rgba(var(--c4-rgb, 168,153,232), .42);
+  box-shadow: 0 10px 28px -14px rgba(var(--c4-rgb, 168,153,232), .22);
+  transform: none;
+}
+
+/* ── Top strip — compact vertical rhythm. */
+.cd-page .cd-lc-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #F1F2F4;
+  margin-bottom: 10px;
+}
+
+.cd-page .cd-lc-id {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+
+/* Logo tile — compact 64px square. !important beats legacy. */
+.cd-page .cd-lc-logo {
+  width: 64px !important;
+  height: 64px !important;
+  flex-shrink: 0;
+  border: 1px solid #E5E7EB;
+  border-radius: 4px;
+  background: #FFFFFF;
+  display: inline-flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  padding: 6px;
+}
+.cd-page .cd-lc-logo img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  padding: 0;
+}
+.cd-page .cd-lc-logo--ph {
+  background: var(--c1, #F3F4F6);
+  padding: 0;
+}
+.cd-page .cd-lc-logo--ph span {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--c4-dark, var(--cd-color));
+  letter-spacing: -.5px;
+}
+
+.cd-page .cd-lc-meta { min-width: 0; flex: 1; padding-top: 0; }
+
+.cd-page .cd-lc-name {
+  margin: 0 0 4px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -.018em;
+  color: #1A1A1A;
+  line-height: 1.2;
+}
+.cd-page .cd-lc-name a {
+  color: inherit;
+  text-decoration: none;
+}
+.cd-page .cd-lc-name a:hover {
+  color: var(--c4-dark, var(--cd-color));
+}
+
+/* Rating row — single line: "5.0 (72 Reviews) ★★★★★ [Verified] [shield]" */
+.cd-page .cd-lc-rate {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: .88rem;
+  color: #4B5563;
+  line-height: 1.4;
+}
+.cd-page .cd-lc-rate-num {
+  font-weight: 700;
+  color: #1A1A1A;
+  font-variant-numeric: tabular-nums;
+}
+.cd-page .cd-lc-rate-count {
+  color: #2563EB;
+  text-decoration: none;
+  font-weight: 500;
+}
+.cd-page .cd-lc-rate-count:hover { text-decoration: underline; }
+
+/* Star strip — gold FA stars (filled) + faded gray (empty) */
+.cd-page .cd-lc-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  line-height: 0;
+  margin-left: 2px;
+  margin-right: 6px;
+}
+.cd-page .cd-lc-star {
+  width: 15px !important;
+  height: 15px !important;
+  display: inline-block;
+}
+.cd-page .cd-lc-star--on { color: #F5A623; }
+.cd-page .cd-lc-star--off { color: #E0E2E6; }
+
+/* Verified pill — exact-match to Magneto/Clutch reference.
+   Light mint pill bg + dark teal text + teal-circle-with-white-check icon.
+   Icon component (VerifiedCheckIcon) carries its own colors so CSS just
+   handles pill geometry and typography. */
+.cd-page .cd-lc-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px 4px 6px;
+  background: #C3E8E4;
+  color: #0C8A85;
+  border-radius: 999px;
+  font-size: .82rem;
+  font-weight: 600;
+  letter-spacing: -.005em;
+  white-space: nowrap;
+  line-height: 1;
+}
+/* Standalone blue shield badge — same idea: icon paints itself, CSS is layout */
+.cd-page .cd-lc-shield {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+}
+
+/* Actions cluster — single horizontal row, matches Magneto exactly.
+   `!important` overrides legacy column rules from the old listing card. */
+.cd-page .cd-lc-actions {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 10px !important;
+  flex-shrink: 0 !important;
+  flex-wrap: nowrap !important;
+  min-width: 0 !important;
+  width: auto !important;
+}
+
+/* Bookmark — outline icon, neutral grey, sector color on hover. */
+.cd-page .cd-lc-bookmark {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px;
+  border: 0;
+  background: transparent;
+  color: #4B5563;
+  border-radius: 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color .15s ease;
+}
+.cd-page .cd-lc-bookmark:hover { color: var(--c4, var(--cd-color)); }
+.cd-page .cd-lc-bookmark--on { color: var(--c4, var(--cd-color)); }
+
+/* ── Compare button — gradient sector-color pill that swaps the actions
+   strip into an inline search bar when clicked. Compact 38px to match. */
+.cd-page .cd-lc-compare-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 4px;
+  background: linear-gradient(135deg,
+    var(--c3, var(--c4, var(--cd-color))) 0%,
+    var(--c4, var(--cd-color)) 50%,
+    var(--c4-dark, var(--cd-color)) 100%);
+  color: #FFFFFF;
+  font-family: var(--font-inter, 'Inter'), sans-serif;
+  font-size: .85rem;
+  font-weight: 600;
+  letter-spacing: -.005em;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.18) inset,
+    0 6px 16px -6px rgba(var(--c4-rgb, 168,153,232), .45);
+  transition: transform .15s ease, box-shadow .2s ease, filter .15s ease;
+}
+.cd-page .cd-lc-compare-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.22) inset,
+    0 10px 24px -6px rgba(var(--c4-rgb, 168,153,232), .55);
+}
+.cd-page .cd-lc-compare-btn:active { transform: translateY(0); }
+.cd-page .cd-lc-compare-btn:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  transform: none;
+}
+.cd-page .cd-lc-compare-btn-ico {
+  width: 14px !important;
+  height: 14px !important;
+  color: #FFFFFF;
+}
+
+/* When in compare-mode, the actions cluster grows to give the search bar
+   breathing room and the bar takes the full remaining width. */
+.cd-page .cd-lc-actions--cmp {
+  flex: 1 !important;
+  min-width: 320px !important;
+}
+
+/* ── CompareSearchBar (.cd-lc-cmp-*) — inline sector-scoped company search.
+   Replaces the legacy rules deleted in the structuring pass. */
+.cd-page .cd-lc-cmp {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+.cd-page .cd-lc-cmp-bar {
+  display: flex; align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 12px;
+  background: #FFFFFF;
+  border: 1.5px solid var(--c4, var(--cd-color));
+  border-radius: 4px;
+  box-shadow: 0 0 0 3px rgba(var(--c4-rgb, 168,153,232), .12);
+}
+.cd-page .cd-lc-cmp-icon {
+  color: var(--c4, var(--cd-color));
+  flex-shrink: 0;
+}
+.cd-page .cd-lc-cmp-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-family: var(--font-inter, 'Inter'), sans-serif;
+  font-size: .9rem;
+  font-weight: 500;
+  color: #1A1A1A;
+}
+.cd-page .cd-lc-cmp-input::placeholder { color: #9CA3AF; }
+.cd-page .cd-lc-cmp-close {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px;
+  border: 0;
+  background: transparent;
+  color: #6B7280;
+  border-radius: 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background .15s, color .15s;
+}
+.cd-page .cd-lc-cmp-close:hover {
+  background: var(--c1, #F3F4F6);
+  color: var(--c4-dark, var(--cd-color));
+}
+
+/* Suggestion dropdown — overlays card content below the search bar. */
+.cd-page .cd-lc-cmp-drop {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0; right: 0;
+  z-index: 40;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  box-shadow: 0 14px 36px -10px rgba(10,27,51,.20);
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 4px;
+}
+.cd-page .cd-lc-cmp-empty {
+  padding: 16px;
+  text-align: center;
+  font-size: .82rem;
+  color: #6B7280;
+}
+.cd-page .cd-lc-cmp-hit {
+  display: flex; align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background .12s;
+}
+.cd-page .cd-lc-cmp-hit:hover,
+.cd-page .cd-lc-cmp-hit--active { background: var(--c1, #F3F4F6); }
+.cd-page .cd-lc-cmp-hit-logo {
+  width: 32px; height: 32px;
+  border-radius: 4px;
+  background: var(--c1, #F3F4F6);
+  color: var(--c4-dark, var(--cd-color));
+  display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 800;
+  font-size: 13px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.cd-page .cd-lc-cmp-hit-logo img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  padding: 2px;
+}
+.cd-page .cd-lc-cmp-hit-body {
+  display: flex; flex-direction: column;
+  min-width: 0;
+}
+.cd-page .cd-lc-cmp-hit-name {
+  font-size: .85rem;
+  font-weight: 700;
+  color: #0A1B33;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.cd-page .cd-lc-cmp-hit-tag {
+  font-size: .76rem;
+  color: #6B7280;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* Top-strip buttons — outline + solid pair, both in sector --c4.
+   Compact 38px height to match the tightened top strip. */
+.cd-page .cd-lc-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 38px !important;
+  padding: 0 18px !important;
+  border-radius: 4px !important;
+  font-family: var(--font-inter, 'Inter'), sans-serif !important;
+  font-size: .85rem !important;
+  font-weight: 600 !important;
+  letter-spacing: -.005em !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  flex-shrink: 0 !important;
+  text-transform: none !important;
+  transition: background .15s ease, border-color .15s ease, color .15s ease;
+}
+.cd-page .cd-lc-btn--outline {
+  background: #FFFFFF !important;
+  color: var(--c4, var(--cd-color)) !important;
+  border: 1.5px solid var(--c4, var(--cd-color)) !important;
+}
+.cd-page .cd-lc-btn--outline:hover {
+  background: var(--c1, #F3F4F6) !important;
+  color: var(--c4-dark, var(--cd-color)) !important;
+  border-color: var(--c4-dark, var(--cd-color)) !important;
+}
+.cd-page .cd-lc-btn--solid {
+  background: var(--c4, var(--cd-color)) !important;
+  color: #FFFFFF !important;
+  border: 1.5px solid var(--c4, var(--cd-color)) !important;
+}
+.cd-page .cd-lc-btn--solid:hover {
+  background: var(--c4-dark, var(--cd-color)) !important;
+  border-color: var(--c4-dark, var(--cd-color)) !important;
+}
+
+/* ── Body grid — 3 cols when services exist, 2 cols when they don't.
+   Vertical separators between cols via border-right on left + center.
+   `!important` defends against any legacy display rule trying to make this
+   block-level (which would stack the three columns vertically). */
+.cd-page .cd-lc-body {
+  display: grid !important;
+  grid-template-columns: 210px minmax(0, 1fr) 260px;
+  gap: 20px;
+  align-items: stretch;
+}
+.cd-page .cd-lc-body--no-svcs {
+  grid-template-columns: minmax(0, 1fr) 280px;
+}
+.cd-page .cd-lc-svcs,
+.cd-page .cd-lc-body:not(.cd-lc-body--no-svcs) .cd-lc-main {
+  padding-right: 20px;
+  border-right: 1px solid #E5E7EB;
+}
+.cd-page .cd-lc-body--no-svcs .cd-lc-main {
+  padding-right: 20px;
+  border-right: 1px solid #E5E7EB;
+}
+
+/* Left column — Services Provided */
+.cd-page .cd-lc-svcs {
+  display: flex; flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.cd-page .cd-lc-svcs-head {
+  display: inline-flex; align-items: center;
+  gap: 5px;
+  margin-bottom: 4px;
+}
+.cd-page .cd-lc-svcs-title {
+  font-size: .82rem;
+  font-weight: 700;
+  color: #1A1A1A;
+  letter-spacing: -.005em;
+}
+.cd-page .cd-lc-svcs-info {
+  display: inline-flex;
+  color: #9CA3AF;
+  cursor: help;
+}
+/* Stacked services bar — thin 8px, square edges, segments butt-join cleanly. */
+.cd-page .cd-lc-svcs-bar {
+  display: flex;
+  width: 100%;
+  height: 8px;
+  border-radius: 0;
+  overflow: hidden;
+  background: #F3F4F6;
+  margin-top: 2px;
+}
+.cd-page .cd-lc-svcs-bar-seg { display: block; height: 100%; }
+.cd-page .cd-lc-svcs-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex; flex-direction: column;
+  gap: 5px;
+}
+/* Default row — flex so pct + name flow inline as one phrase. Compact font,
+   medium weight everywhere (no bold), gray-tone hierarchy via color only. */
+.cd-page .cd-lc-svcs-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .82rem;
+  line-height: 1.3;
+  color: #4B5563;
+  font-weight: 500;
+  min-width: 0;
+}
+.cd-page .cd-lc-svcs-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.cd-page .cd-lc-svcs-pct {
+  font-weight: 500;
+  color: #4B5563;
+  font-variant-numeric: tabular-nums;
+  margin-right: 3px;
+  flex-shrink: 0;
+}
+.cd-page .cd-lc-svcs-name {
+  color: #4B5563;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  flex: 1;
+}
+/* Primary row — first service, dark color only (same weight, no bold spike). */
+.cd-page .cd-lc-svcs-row--primary { color: #1A1A1A; }
+.cd-page .cd-lc-svcs-row--primary .cd-lc-svcs-pct,
+.cd-page .cd-lc-svcs-row--primary .cd-lc-svcs-name {
+  color: #1A1A1A;
+  font-weight: 600;
+}
+
+/* Feature-mode row — no percentage column, multi-hue dot (per row index),
+   name can wrap. Same visual rhythm as Services Provided but without %. */
+.cd-page .cd-lc-svcs-row--feature {
+  grid-template-columns: 10px 1fr;
+  align-items: flex-start;
+  gap: 10px;
+}
+.cd-page .cd-lc-svcs-row--feature .cd-lc-svcs-dot {
+  margin-top: 7px;
+}
+.cd-page .cd-lc-svcs-row--feature.cd-lc-svcs-row--primary {
+  grid-template-columns: 11px 1fr;
+}
+.cd-page .cd-lc-svcs-row--feature.cd-lc-svcs-row--primary .cd-lc-svcs-dot {
+  margin-top: 6px;
+}
+.cd-page .cd-lc-svcs-name--feature {
+  font-weight: 500;
+  white-space: normal;
+  text-overflow: clip;
+  overflow: visible;
+  line-height: 1.4;
+}
+.cd-page .cd-lc-svcs-row--feature.cd-lc-svcs-row--primary .cd-lc-svcs-name--feature {
+  font-weight: 800;
+  color: #0A1B33;
+}
+
+/* Center column — tagline + description + "See full details" + info row.
+   Matches Magneto reference: gray italic-feel tagline, dark readable
+   description, blue link with thin gray separator, outline icons below. */
+.cd-page .cd-lc-main {
+  display: flex; flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.cd-page .cd-lc-tag {
+  margin: 0;
+  font-size: .9rem;
+  color: #6B7280;
+  font-weight: 400;
+  line-height: 1.45;
+}
+.cd-page .cd-lc-desc {
+  margin: 0;
+  font-size: .88rem;
+  color: #1F2937;
+  font-weight: 400;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  overflow: hidden;
+}
+.cd-page .cd-lc-portfolio {
+  display: block;
+  padding: 4px 0 14px;
+  margin-top: 4px;
+  font-size: .9rem;
+  font-weight: 500;
+  color: #2563EB;
+  text-decoration: none;
+  border-bottom: 1px solid #E5E7EB;
+}
+.cd-page .cd-lc-portfolio:hover { color: #1D4ED8; text-decoration: underline; }
+.cd-page .cd-lc-info-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 24px;
+  padding-top: 12px;
+}
+.cd-page .cd-lc-info {
+  display: inline-flex; align-items: center;
+  gap: 7px;
+  font-size: .85rem;
+  color: #1F2937;
+  font-weight: 400;
+}
+.cd-page .cd-lc-info-ico {
+  display: inline-flex;
+  color: var(--c4, var(--cd-color));
+  flex-shrink: 0;
+  line-height: 0;
+}
+.cd-page .cd-lc-svcs-info {
+  width: 12px !important;
+  height: 12px !important;
+  color: #9CA3AF;
+  cursor: help;
+  margin-left: 2px;
+}
+
+/* Right column — Verified Client Review aside.
+   Pale sector-tinted bg, flex column so the "View all N Reviews" link
+   anchors to the bottom while title/byline sit at top. */
+.cd-page .cd-lc-review {
+  background: var(--c1, #F4F6FB);
+  border-radius: 6px;
+  padding: 14px 16px;
+  display: flex; flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  justify-content: flex-start;
+}
+.cd-page .cd-lc-review--empty {
+  background: #F4F6FA;
+  border: 1px solid #E5E7EB;
+}
+.cd-page .cd-lc-review-head {
+  display: inline-flex; align-items: center;
+  gap: 7px;
+  font-size: .85rem;
+  font-weight: 700;
+  color: #0A1B33;
+  letter-spacing: -.005em;
+  line-height: 1;
+}
+.cd-page .cd-lc-review-star {
+  color: #F5A623;
+  width: 15px !important;
+  height: 15px !important;
+  flex-shrink: 0;
+}
+.cd-page .cd-lc-review-star--off { color: #9CA3AF; }
+.cd-page .cd-lc-review-all-ico {
+  width: 11px !important;
+  height: 11px !important;
+}
+.cd-page .cd-lc-review-title {
+  margin: 0;
+  font-size: .9rem;
+  font-weight: 700;
+  color: #0A1B33;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+.cd-page .cd-lc-review-by {
+  margin: 0;
+  font-size: .8rem;
+  color: #4B5563;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+.cd-page .cd-lc-review-empty-txt {
+  margin: 0;
+  font-size: .82rem;
+  color: #6B7280;
+  line-height: 1.5;
+}
+.cd-page .cd-lc-review-all {
+  display: inline-flex; align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 4px;
+  font-size: .82rem;
+  font-weight: 600;
+  color: #2563EB;
+  text-decoration: none;
+}
+.cd-page .cd-lc-review-all:hover { color: #1D4ED8; text-decoration: underline; }
+
+/* ── Listing card responsive collapse ─────────────────────────────── */
+@media (max-width: 1024px) {
+  .cd-page .cd-lc-body {
+    grid-template-columns: minmax(0, 1fr) 240px;
+  }
+  .cd-page .cd-lc-svcs {
+    grid-column: 1 / -1;
+    padding-right: 0;
+    border-right: 0;
+    border-bottom: 1px solid #F1F2F4;
+    padding-bottom: 14px;
+  }
+  .cd-page .cd-lc-svcs-bar { max-width: 360px; }
+  .cd-page .cd-lc-svcs-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px 16px;
+  }
+}
+@media (max-width: 720px) {
+  .cd-page .cd-lc { padding: 14px 14px 12px; }
+  .cd-page .cd-lc-top {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .cd-page .cd-lc-actions {
+    flex-wrap: wrap !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+  }
+  .cd-page .cd-lc-btn { flex: 1 1 auto; }
+  .cd-page .cd-lc-body {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .cd-page .cd-lc-body .cd-lc-main {
+    padding-right: 0;
+    border-right: 0;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #F1F2F4;
+  }
+  .cd-page .cd-lc-svcs-list { grid-template-columns: 1fr; }
+}
+
+/* ── MASCOT EMPTY STATE — replaces the rocket "Be the First" block ── */
+.cd-empty-bot {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 14px;
+  padding: 36px 16px 28px;
+  text-align: center;
+  background: #FFFFFF;
+}
+.cd-empty-bot-img {
+  display: block;
+  width: auto; height: auto;
+  max-width: 200px;
+  max-height: 220px;
+  filter: drop-shadow(0 12px 22px rgba(var(--c4-rgb, 168,153,232), .18));
+  user-select: none;
+  pointer-events: none;
+}
+.cd-empty-bot-line {
+  margin: 0;
+  font-size: .92rem;
+  color: #6B7280;
+  letter-spacing: -.005em;
+  line-height: 1.45;
+}
+.cd-empty-bot-line strong {
+  color: #1A1A1A;
+  font-weight: 800;
+}
+.cd-empty-bot-cta {
+  display: inline-flex; align-items: center;
+  gap: 7px;
+  padding: 10px 18px;
+  background: var(--c4, var(--cd-color));
+  color: #FFFFFF;
+  border-radius: 6px;
+  font-size: .85rem;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  transition: background .15s ease;
+}
+.cd-empty-bot-cta:hover { background: var(--c4-dark, var(--cd-color)); color: #FFFFFF; }
+
+/* ── COMPACT BOTTOM CTA BAR — slim, white, single row on wide ───── */
+.cd-cta {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin: clamp(1.5rem, 3vw, 2.25rem) 0 .5rem;
+  padding: 14px 18px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-left: 3px solid var(--c4, var(--cd-color));
+  border-radius: 4px;
+}
+.cd-cta-text {
+  font-size: .88rem;
+  color: #4B5563;
+  line-height: 1.45;
+  min-width: 0;
+}
+.cd-cta-text strong {
+  color: #0A1B33;
+  font-weight: 800;
+  letter-spacing: -.01em;
+}
+.cd-cta-sub {
+  display: inline;
+  color: #6B7280;
+  font-size: .82rem;
+}
+.cd-cta-actions {
+  display: inline-flex; align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+.cd-cta-btn {
+  display: inline-flex; align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--c4, var(--cd-color));
+  color: #FFFFFF;
+  border-radius: 6px;
+  font-size: .82rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background .15s ease;
+}
+.cd-cta-btn:hover { background: var(--c4-dark, var(--cd-color)); color: #FFFFFF; }
+.cd-cta-back {
+  display: inline-flex; align-items: center;
+  gap: 5px;
+  color: #6B7280;
+  font-size: .8rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.cd-cta-back:hover { color: var(--c4-dark, var(--cd-color)); }
+
+@media (max-width: 720px) {
+  .cd-cta { flex-direction: column; align-items: stretch; gap: 12px; }
+  .cd-cta-actions { justify-content: space-between; }
+  .cd-cta-sub { display: block; margin-top: 2px; }
+}
+
+/* ── Hide stale legacy blocks that the new shell no longer renders ── */
+.cd-page .cd-first,
+.cd-page .cd-bottom-cta,
+.cd-page .cd-subcats { display: none; }

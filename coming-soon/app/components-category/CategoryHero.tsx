@@ -1,185 +1,199 @@
 'use client'
-import dynamic from 'next/dynamic'
+import { useState } from 'react'
 import Link from 'next/link'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faStar, faStarHalfStroke } from '@fortawesome/free-solid-svg-icons'
 import type { Category } from '../iww-hq/data/category-storage'
-import { I, ic } from '../components/icons'
-import { type GeoCountry, type GeoState, type GeoCity } from '../lib/geo-slugs'
-
-const LocationSearch = dynamic(() => import('./LocationSearch'), { ssr: false })
 
 type Props = {
   category: Category
   sectorSlug?: string
   sectorName?: string
-  locationCountry: GeoCountry | null
-  locationState: GeoState | null
-  locationCity: GeoCity | null
-  onLocationCountryChange: (val: GeoCountry | null) => void
-  onStateChange: (val: GeoState | null) => void
-  onCityChange: (val: GeoCity | null) => void
-  onLocationChange?: (country: GeoCountry | null, state: GeoState | null, city: GeoCity | null) => void
+  /** Full ancestor chain from root → current's parent. Drives the breadcrumb so
+      L4 pages show Home / Sector / L2 / L3 / Current, L3 shows Home / Sector /
+      L2 / Current, etc. — without missing intermediate levels. */
+  ancestors?: Category[]
+  /** Aggregate avg rating across every listing in the category tree. */
+  avgRating?: number
+  /** Total approved review count across the same tree. */
+  totalReviews?: number
+  /** Active listing count (passed through to keep the count in sync w/ filters). */
+  totalListings?: number
+  /** Whether Gemini SEO content exists — controls Buyer's Guide / FAQs link visibility. */
+  hasGuide?: boolean
 }
 
-/* ── Dynamic SEO description generator ── */
-function generateCategoryDesc(
-  name: string,
-  level: number,
-  parentName: string | undefined,
-  listingCount: number,
-  subCount: number,
-  locationCountryName: string,
-  stateName: string,
-  cityName: string,
-): string {
-  const year = new Date().getFullYear()
-  const month = ['January','February','March','April','May','June','July','August','September','October','November','December'][new Date().getMonth()]
+/* Top markets surfaced as inline filter chips inside the hero description.
+   Each links to the same category page with a ?country= filter that
+   CategoryPage already parses and applies to the listings query. */
+const TOP_COUNTRIES: { name: string; slug: string }[] = [
+  { name: 'USA', slug: 'united-states' },
+  { name: 'UK', slug: 'united-kingdom' },
+  { name: 'India', slug: 'india' },
+  { name: 'Australia', slug: 'australia' },
+  { name: 'UAE', slug: 'united-arab-emirates' },
+  { name: 'Canada', slug: 'canada' },
+]
 
-  const fullLoc = cityName && stateName
-    ? `${cityName}, ${stateName}, ${locationCountryName}`
-    : cityName && locationCountryName
-    ? `${cityName}, ${locationCountryName}`
-    : stateName && locationCountryName
-    ? `${stateName}, ${locationCountryName}`
-    : locationCountryName || ''
-  const shortLoc = cityName || stateName || locationCountryName || ''
+const MONTHS = [
+  'January','February','March','April','May','June',
+  'July','August','September','October','November','December',
+]
 
-  const inFull = fullLoc ? ` in ${fullLoc}` : ''
-  const inShort = shortLoc ? ` in ${shortLoc}` : ''
-  const forLoc = shortLoc ? ` for businesses in ${shortLoc}` : ''
-
-  const count = listingCount > 0 ? listingCount : null
-  const countBadge = count ? `${count}+` : ''
-  const countVerified = count ? `${count}+ verified` : 'verified'
-  const browseCount = count ? `Browse ${count}+ listings` : 'Browse listings'
-
-  const sector = parentName || ''
-  const inSector = sector ? ` in the ${sector} industry` : ''
-  const sectorTag = sector ? ` — a key segment of ${sector}` : ''
-
-  const subText = subCount > 0 ? `, spanning ${subCount} specialized subcategories` : ''
-  const subSentence = subCount > 0 ? ` Explore ${subCount} subcategories to narrow down exactly what you need.` : ''
-
-  let hash = 0
-  for (let i = 0; i < name.length; i++) hash = ((hash << 5) - hash + name.charCodeAt(i)) | 0
-  const pick = Math.abs(hash)
-
-  if (level >= 3) {
-    const templates = [
-      `Looking for the best ${name} companies${inFull}? InfoWebWorld lists ${countVerified} ${name} providers${inSector} — each with detailed profiles, genuine user reviews, pricing transparency, and direct contact options. Compare solutions side by side and connect with the right partner. Last updated ${month} ${year}.`,
-      `${name}${sectorTag}. ${browseCount}${inShort} with real customer reviews, feature breakdowns, and satisfaction scores. Every listing on InfoWebWorld is manually verified so you can shortlist, compare, and reach out to ${name} providers${forLoc} with confidence. Free to use, no sign-up required.`,
-      `Find ${countVerified} ${name} solutions${inFull}. InfoWebWorld makes it easy to compare ${name} companies${inSector} by features, pricing, reviews, and ratings — all on one page. Read what real users say, check verified credentials, and request quotes directly. Updated ${month} ${year}.`,
-      `The most comprehensive directory of ${name} providers${inFull}. ${countBadge ? `With ${countBadge} verified listings` : 'With verified listings'}${inSector}, InfoWebWorld helps you evaluate every option — from feature sets and integrations to pricing models and customer support.`,
-      `Why waste hours researching ${name} companies? InfoWebWorld curates ${countVerified} providers${inShort}${inSector}, complete with user reviews, feature comparisons, and trust scores. Filter by location, budget, or specialization — then connect directly. Updated for ${month} ${year}.`,
-      `${name}${inFull} — your definitive comparison guide. We've gathered ${countVerified} providers${inSector} with honest reviews from real customers, transparent pricing, and detailed capability breakdowns. Find and compare the best ${name} options in minutes.`,
-    ]
-    return templates[pick % templates.length]
-  }
-
-  const templates = [
-    `Explore the top ${name} companies${inFull}${subText}. InfoWebWorld brings you ${countVerified} listings with in-depth profiles, authentic user reviews, feature comparisons, and pricing details.${subSentence} Updated ${month} ${year}.`,
-    `${name}${inFull} — discover ${countVerified} businesses${subText}. From emerging startups to established leaders${inSector}, every listing on InfoWebWorld is vetted for quality.${subSentence} Last updated ${month} ${year}.`,
-    `Your complete guide to ${name}${inShort}. ${browseCount}${subText}${inSector}, each with verified reviews, transparent pricing, and detailed feature breakdowns.${subSentence}`,
-    `Find and compare the best ${name} providers${inFull}. ${countBadge ? `${countBadge} verified companies` : 'Verified companies'}${subText} — all reviewed by real users.${subSentence} Updated for ${year}.`,
-    `Need ${name} services${forLoc}? InfoWebWorld is the largest curated directory of ${name} providers${inSector}${subText}. Every listing includes verified reviews, feature matrices, and direct contact.${subSentence} Updated ${month} ${year}.`,
-    `The definitive ${name} directory${inFull}. ${browseCount}${subText}${inSector} with side-by-side comparisons and genuine user feedback. Free, transparent, and always up to date.${subSentence}`,
-  ]
-  return templates[pick % templates.length]
+function Stars({ value }: { value: number }) {
+  const full = Math.floor(value)
+  const half = value - full >= 0.5
+  return (
+    <span className="cd-hero-stars" aria-label={`${value.toFixed(1)} out of 5`}>
+      {[0, 1, 2, 3, 4].map(i => {
+        if (i < full) {
+          return <FontAwesomeIcon key={i} icon={faStar} className="cd-hero-star cd-hero-star--on" />
+        }
+        if (i === full && half) {
+          return <FontAwesomeIcon key={i} icon={faStarHalfStroke} className="cd-hero-star cd-hero-star--on" />
+        }
+        return <FontAwesomeIcon key={i} icon={faStar} className="cd-hero-star cd-hero-star--off" />
+      })}
+    </span>
+  )
 }
 
-export default function CategoryHero({ category: c, sectorSlug, sectorName, locationCountry, locationState, locationCity, onLocationCountryChange, onStateChange, onCityChange, onLocationChange }: Props) {
-  const color = c.color || 'var(--h-accent)'
+/* Build the descriptive paragraph. Real data: listing count + category name +
+   parent sector. Country chips are interpolated inline at the natural spot. */
+function buildDescription(name: string, parentName: string, listingCount: number): string {
+  const sector = parentName ? ` ${parentName.toLowerCase()}` : ''
+  const count = listingCount > 0 ? `${listingCount}+ ` : ''
+  return (
+    `Find top ${name.toLowerCase()} companies worldwide offering reliable, ` +
+    `high-quality solutions across budgets. Explore ${count}firms delivering real project outcomes ` +
+    `and verified client satisfaction. InfoWebWorld provides a curated list of leading${sector} ` +
+    `companies, helping you compare hourly rates, reviews, industry expertise, and locations ` +
+    `like the {COUNTRIES} — filter by specialisations to make smarter, faster choices for your project.`
+  )
+}
 
-  const effectiveCountry = locationCountry
-  const effectiveIso = effectiveCountry?.isoCode || ''
+export default function CategoryHero({
+  category: c,
+  sectorSlug,
+  sectorName,
+  ancestors = [],
+  avgRating = 0,
+  totalReviews = 0,
+  totalListings,
+  hasGuide = false,
+}: Props) {
+  const [expanded, setExpanded] = useState(false)
 
-  const countryDisplayName = effectiveCountry?.name || ''
-  const locationText = [locationCity?.name, locationState?.name, countryDisplayName].filter(Boolean).join(', ')
+  const listingCount = totalListings ?? c.listingCount ?? 0
+  const today = new Date()
+  const dateStr = `${MONTHS[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()}`
 
-  const subCount = c.subcategories?.length ?? 0
-  const hasListings = c.listingCount > 0
+  /* Split the description at the {COUNTRIES} marker so the country chips
+     can render inline as real links inside the paragraph. */
+  const descTemplate = c.description || buildDescription(c.name, c.parentName || sectorName || '', listingCount)
+  const [descBefore, descAfter] = descTemplate.includes('{COUNTRIES}')
+    ? descTemplate.split('{COUNTRIES}')
+    : [descTemplate, '']
+  const showExpand = (descBefore.length + descAfter.length) > 280 && !expanded
+  const beforeText = showExpand ? descBefore.slice(0, 200) : descBefore
+  const afterText = showExpand ? '' : descAfter
 
   return (
-    <div className="cd-hero">
-      {/* ── Breadcrumb: Home / L1 / L2 / L3 / Location ── */}
+    <header className="cd-hero">
+      {/* Breadcrumb — Home / [every ancestor in order] / Current.
+          L1 (sector) links to /{slug}, L2+ link to /{sector}/{slug}. If
+          `ancestors` wasn't passed (legacy callers), fall back to the
+          sectorSlug + immediate parent shown previously. */}
       <nav className="cd-breadcrumb" aria-label="Breadcrumb">
-        <Link href="/" className="cd-breadcrumb-home" aria-label="Home">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        </Link>
-
-        {/* L1 Sector (always show if sectorSlug exists) */}
-        {sectorSlug && sectorName && (
-          <>
-            <span className="cd-breadcrumb-sep">/</span>
-            <Link href={`/${sectorSlug}`}>{sectorName}</Link>
-          </>
-        )}
-
-        {/* L2 Parent (show for L3 categories — parent is L2) */}
-        {c.level === 3 && c.parentName && c.parentSlug && sectorSlug && (
-          <>
-            <span className="cd-breadcrumb-sep">/</span>
-            <Link href={`/${sectorSlug}/${c.parentSlug}`}>{c.parentName}</Link>
-          </>
-        )}
-
-        {/* Current category */}
+        <Link href="/" className="cd-breadcrumb-link">Home</Link>
         <span className="cd-breadcrumb-sep">/</span>
+        {ancestors.length > 0 ? ancestors.map(a => (
+          <span key={a.id}>
+            <Link
+              href={a.level === 1 ? `/${a.slug}` : `/${sectorSlug || ''}/${a.slug}`}
+              className="cd-breadcrumb-link"
+            >
+              {a.name}
+            </Link>
+            <span className="cd-breadcrumb-sep">/</span>
+          </span>
+        )) : (
+          <>
+            {sectorSlug && sectorName && (
+              <>
+                <Link href={`/${sectorSlug}`} className="cd-breadcrumb-link">{sectorName}</Link>
+                <span className="cd-breadcrumb-sep">/</span>
+              </>
+            )}
+            {c.parentName && c.parentSlug && sectorSlug && (
+              <>
+                <Link href={`/${sectorSlug}/${c.parentSlug}`} className="cd-breadcrumb-link">{c.parentName}</Link>
+                <span className="cd-breadcrumb-sep">/</span>
+              </>
+            )}
+          </>
+        )}
         <span className="cd-breadcrumb-current">{c.name}</span>
-
-        {/* Location filters (if any active) */}
-        {locationCountry && (
-          <>
-            <span className="cd-breadcrumb-sep">/</span>
-            <span className="cd-breadcrumb-loc">{locationCountry.name}</span>
-          </>
-        )}
-        {locationState && (
-          <>
-            <span className="cd-breadcrumb-sep">/</span>
-            <span className="cd-breadcrumb-loc">{locationState.name}</span>
-          </>
-        )}
-        {locationCity && (
-          <>
-            <span className="cd-breadcrumb-sep">/</span>
-            <span className="cd-breadcrumb-loc">{locationCity.name}</span>
-          </>
-        )}
       </nav>
 
-      {/* ── Title with accent ── */}
-      <h2 className="cd-hero-title">
-        Best <em style={{ color }}>{c.name}</em>{locationText ? ` in ${locationText}` : ''}
-      </h2>
+      {/* H1 — Top {Category} Companies */}
+      <h1 className="cd-hero-title">Top {c.name} Companies</h1>
 
-      {/* ── Description ── */}
+      {/* Description with inline country chips + read-more toggle */}
       <p className="cd-hero-desc">
-        {c.description || generateCategoryDesc(
-          c.name, c.level, c.parentName, c.listingCount,
-          subCount, countryDisplayName,
-          locationState?.name || '', locationCity?.name || '',
+        {beforeText}
+        {!showExpand && (
+          <>
+            <span className="cd-hero-countries">
+              {TOP_COUNTRIES.map((cn, i) => (
+                <span key={cn.slug}>
+                  <Link
+                    href={`/${sectorSlug || c.parentSlug || ''}/${c.slug}?country=${cn.slug}`}
+                    className="cd-hero-country"
+                  >
+                    {cn.name}
+                  </Link>
+                  {i < TOP_COUNTRIES.length - 2 ? ', ' : i === TOP_COUNTRIES.length - 2 ? ', and ' : ''}
+                </span>
+              ))}
+            </span>
+            {afterText}
+          </>
+        )}
+        {showExpand && (
+          <>
+            …
+            <button type="button" className="cd-hero-expand" onClick={() => setExpanded(true)}>
+              Read Full Description
+            </button>
+          </>
         )}
       </p>
 
-      {/* ── Stat pills (colored, matching /categories style) ── */}
-      <div className="cd-hero-pills">
-        <span className="cd-hero-pill" style={{ '--pc': color } as React.CSSProperties}>
-          <I d={ic.building} size={13} color={color} sw={2} />
-          <strong>{c.listingCount || 0}</strong> {hasListings ? 'verified companies' : 'companies'}
-        </span>
-        {subCount > 0 && (
-          <span className="cd-hero-pill" style={{ '--pc': '#8B5CF6' } as React.CSSProperties}>
-            <I d={ic.layers} size={13} color="#8B5CF6" sw={2} />
-            <strong>{subCount}</strong> subcategories
+      {/* Rating row — aggregate stars + "X out of 5, based on N real reviews" */}
+      <div className="cd-hero-rate">
+        <Stars value={avgRating > 0 ? avgRating : 0} />
+        {totalReviews > 0 ? (
+          <span className="cd-hero-rate-text">
+            <strong>{avgRating.toFixed(1)}</strong> out of 5, based on <strong>{totalReviews.toLocaleString()}</strong> real reviews.
           </span>
-        )}
-        {c.parentName && (
-          <span className="cd-hero-pill" style={{ '--pc': '#14B8A6' } as React.CSSProperties}>
-            <I d={ic.grid} size={13} color="#14B8A6" sw={2} />
-            {c.parentName}
+        ) : (
+          <span className="cd-hero-rate-text cd-hero-rate-text--empty">
+            No reviews yet — be the first.
           </span>
         )}
       </div>
-    </div>
+
+      {/* Bottom row — Rankings updated date + Buyer's Guide + FAQs links */}
+      <div className="cd-hero-meta">
+        <span className="cd-hero-updated">Rankings updated: {dateStr}</span>
+        {hasGuide && (
+          <>
+            <a href="#seo-guide" className="cd-hero-meta-link">Buyer&rsquo;s Guide</a>
+            <a href="#seo-faq" className="cd-hero-meta-link">FAQs</a>
+          </>
+        )}
+      </div>
+    </header>
   )
 }

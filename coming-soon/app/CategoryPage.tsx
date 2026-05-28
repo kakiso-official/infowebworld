@@ -14,10 +14,9 @@ import { lookupLocationCountry, lookupState, lookupCity, preloadCSC, type GeoCou
 import dynamic from 'next/dynamic'
 import { I, ic } from './components-category/icons'
 import CategoryHero from './components-category/CategoryHero'
-import SubcategoryChips from './components-category/SubcategoryChips'
+import SubcategoryList from './components-category/SubcategoryList'
 import { RealListingCard } from './components-category/ListingCard'
 import Pagination from './components-category/Pagination'
-// CompactCta, PopularSearches, TrustSection replaced by cd-bottom-cta
 
 /* Heavy / below-fold components — loaded on demand with loading placeholders */
 const SectorLanding = dynamic(() => import('./sector/SectorLanding'), { loading: () => <div style={{ minHeight: '100vh' }} />, ssr: true })
@@ -39,6 +38,8 @@ type InitialData = {
   listings: any[]
   listingTotal: number
   seoContent?: any
+  avgRating?: number
+  totalReviews?: number
 }
 
 export default function CategoryPage({ segments, sectorSlug, initialData }: { segments?: string[]; sectorSlug?: string; initialData?: InitialData }) {
@@ -285,75 +286,40 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
   const totalPages = Math.max(1, Math.ceil(listingTotal / ITEMS_PER_PAGE))
   const hasAnyFilter = selectedTags.size > 0 || !!selectedListingType || !!locationCountry || !!locationState || !!locationCity
 
-  return (
-    <section className="cd-page" style={{ '--cd-color': color } as React.CSSProperties}>
-      {/* ── Decorative background shapes ── */}
-      <div className="cd-shapes" aria-hidden="true">
-        <div className="cd-shape cd-shape--1" style={{ background: color }} />
-        <div className="cd-shape cd-shape--2" />
-        <div className="cd-shape cd-shape--3" style={{ background: color }} />
-        <div className="cd-shape cd-shape--4" />
-        <div className="cd-shape cd-shape--5" />
-      </div>
+  /* Sector-palette scope: every section inside picks up --c1..--c4-dark from
+     app/styles/test-category-1-page.css via the .tcat-<slug> rule. Pure white
+     background; no decorative blobs. */
+  const sectorClass = sectorSlug ? `tcat-${sectorSlug}` : ''
 
+  return (
+    <section className={'cd-page ' + sectorClass} style={{ '--cd-color': color } as React.CSSProperties}>
       <div className="cd-wrap">
 
         <CategoryHero
           category={c}
           sectorSlug={sectorSlug}
           sectorName={sectorSlug ? (allCats.find(x => x.slug === sectorSlug)?.name || '') : ''}
-          locationCountry={locationCountry}
-          locationState={locationState}
-          locationCity={locationCity}
-          onLocationCountryChange={handleLocationCountryChange}
-          onStateChange={handleStateChange}
-          onCityChange={handleCityChange}
-          onLocationChange={handleLocationChange}
+          /* Walk up the parent chain from the current category. `allCats`
+             contains every category in the sector tree (L1→L5), so we can
+             reconstruct the full ancestor list client-side without an
+             extra DB call. Order: oldest first (root → current's parent). */
+          ancestors={(() => {
+            const chain: Category[] = []
+            let cur: Category | null = c
+            while (cur && cur.parentId) {
+              const parent = allCats.find(x => x.id === cur!.parentId)
+              if (!parent) break
+              chain.unshift(parent)
+              cur = parent
+            }
+            return chain
+          })()}
+          avgRating={initialData?.avgRating ?? 0}
+          totalReviews={initialData?.totalReviews ?? 0}
+          totalListings={listingTotal}
+          hasGuide={!!initialData?.seoContent}
         />
-        {subcats.length > 0 && <SubcategoryChips subcategories={subcats} sectorSlug={sectorSlug} />}
-
-        {/* ── Section tabs — flat underline pattern.
-              "All Listings" jumps to the listings grid, "Guide" jumps to the
-              first Gemini-generated SEO section. Only render the Guide tab
-              once there's content to scroll to. ── */}
-        {initialData?.seoContent && (() => {
-          const sc = initialData.seoContent
-          const bg = sc.buyers_guide && (typeof sc.buyers_guide === 'string' ? (() => { try { return JSON.parse(sc.buyers_guide) } catch { return null } })() : sc.buyers_guide)
-          const guideAnchor =
-            sc.rich_description ? 'seo-about' :
-            bg?.features ? 'seo-guide' :
-            sc.use_cases ? 'seo-usecases' :
-            sc.comparisons ? 'seo-compare' :
-            sc.long_tail_keywords ? 'seo-find' :
-            sc.complementary_categories ? 'seo-explore' :
-            sc.extended_faq ? 'seo-faq' :
-            null
-          const tabs: { id: string; label: string; icon: string }[] = [
-            { id: 'cd-listings', label: 'All Listings', icon: ic.layers },
-          ]
-          if (guideAnchor) tabs.push({ id: guideAnchor, label: 'Guide', icon: ic.file })
-          return (
-            <nav className="cd-toc" aria-label="Page sections" style={{ '--toc-c': color } as React.CSSProperties}>
-              <div className="cd-toc-tabs" role="tablist">
-                {tabs.map((t, i) => (
-                  <a
-                    key={t.id}
-                    href={`#${t.id}`}
-                    role="tab"
-                    aria-selected={i === 0}
-                    className={'cd-toc-tab' + (i === 0 ? ' cd-toc-tab--active' : '')}
-                    onClick={e => { e.preventDefault(); document.getElementById(t.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }}
-                  >
-                    <span className="cd-toc-tab-inner">
-                      <I d={t.icon} size={15} color="currentColor" sw={2} />
-                      <span className="cd-toc-tab-label">{t.label}</span>
-                    </span>
-                  </a>
-                ))}
-              </div>
-            </nav>
-          )
-        })()}
+        {subcats.length > 0 && <SubcategoryList subcategories={subcats} sectorSlug={sectorSlug} />}
 
         {/* Main layout: listings only (no sidebar in grid) */}
         <div className="cd-layout" id="cd-listings">
@@ -457,56 +423,23 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
                   <button onClick={clearFilters} className="cd-empty-btn" style={{ color }}>Clear all filters</button>
                 </div>
               ) : (
-                <div className="cd-first" style={{ '--first-c': color } as React.CSSProperties}>
-                  {/* Floating shapes */}
-                  <div className="cd-first-shapes">
-                    <div className="cd-first-shape cd-first-shape--1" />
-                    <div className="cd-first-shape cd-first-shape--2" />
-                    <div className="cd-first-shape cd-first-shape--3" />
-                    <div className="cd-first-shape cd-first-shape--4" />
-                    <div className="cd-first-shape cd-first-shape--5" />
-                  </div>
-                  {/* Rocket icon — Hugeicons rocket */}
-                  <div className="cd-first-icon">
-                    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M8 10.167L12.123 6.043c1.125-1.125 1.687-1.687 2.308-2.14a9.447 9.447 0 014.308-1.784C19.499 2 20.294 2 21.885 2c.083 0 .115.038.115.115 0 1.591 0 2.386-.119 3.145a9.447 9.447 0 01-1.784 4.308c-.454.62-1.016 1.183-2.14 2.308L13.832 16" />
-                      <path d="M10.341 8.098c-1.703 0-3.843-.36-5.437.3C3.737 8.881 2.878 10 2 10.879l3.306 1.416c.876.376.34 1.481.196 2.207-.162.808-.153.838.43 1.42l2.146 2.146c.583.583.612.592 1.42.43.726-.145 1.831-.68 2.207.196L13.12 22c.878-.878 1.998-1.737 2.481-2.904.66-1.594.3-3.734.3-5.437" />
-                      <path d="M12 20l-1 1M4 12l-1 1" />
-                      <path d="M15 4.08a8.835 8.835 0 013.161 1.38A8.468 8.468 0 0119.92 9" />
-                    </svg>
-                  </div>
-                  {/* Badge */}
-                  <span className="cd-first-badge">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M13.728 3.444l1.76 3.549c.24.494.88.968 1.42 1.058l3.19.535c2.04.342 2.52 1.835 1.05 3.306l-2.48 2.5c-.42.424-.65 1.24-.52 1.825l.71 3.095c.56 2.45-.73 3.397-2.88 2.117l-2.99-1.785c-.54-.322-1.43-.322-1.98 0L8.018 21.43c-2.14 1.28-3.44.322-2.88-2.117l.71-3.095c.13-.585-.1-1.401-.52-1.825l-2.48-2.5c-1.46-1.471-.99-2.964 1.05-3.306l3.19-.535c.53-.09 1.17-.564 1.41-1.058l1.76-3.55c.96-1.925 2.52-1.925 3.48 0z" /></svg>
-                    #1 Spot Available
-                  </span>
-                  {/* Heading */}
-                  <h3 className="cd-first-heading">
-                    Be the <em>First</em> to List in<br />{c.name}
-                  </h3>
-                  {/* Description */}
-                  <p className="cd-first-desc">
-                    No companies listed here yet. Claim the top spot, get a dofollow backlink, and be seen by every buyer searching this category.
+                /* Mascot empty state — matches L1's .tcat-pop-empty pattern.
+                   Single muted line + lavender pill CTA, no boxes / no shapes. */
+                <div className="cd-empty-bot">
+                  <img
+                    src="/illustrations/builder-bot.png"
+                    alt=""
+                    aria-hidden="true"
+                    className="cd-empty-bot-img"
+                    draggable={false}
+                    onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
+                  />
+                  <p className="cd-empty-bot-line">
+                    No companies listed in <strong>{c.name}</strong> yet.
                   </p>
-                  {/* Perks */}
-                  <div className="cd-first-perks">
-                    <span className="cd-first-perk">
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 2l.295.797c.29.783.435 1.175.721 1.46.286.286.677.432 1.461.722L20.4 5.2l-.797.295c-.784.29-1.175.435-1.461.721-.286.286-.431.677-.721 1.461L17 8.6l-.295-.797c-.29-.783-.435-1.175-.721-1.46-.286-.286-.677-.432-1.461-.722L13.6 5.2l.797-.295c.784-.29 1.175-.435 1.461-.721.286-.286.431-.677.721-1.461L17 2z" /><path d="M6 4l.221.597c.29.784.435 1.175.721 1.461.286.286.677.431 1.461.721L9.4 7l-.597.221c-.784.29-1.175.435-1.461.721-.286.286-.431.677-.721 1.461L6 10l-.221-.597c-.29-.784-.435-1.175-.721-1.461-.286-.286-.677-.431-1.461-.721L2.6 7l.597-.221c.784-.29 1.175-.435 1.461-.721.286-.286.431-.677.721-1.461L6 4z" /></svg>
-                      Dofollow Backlink
-                    </span>
-                    <span className="cd-first-perk">
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 12V18" /><path d="M12 18c-1.674 0-3.13 1.012-3.882 2.505-.36.713.155 1.495.84 1.495h6.083c.685 0 1.2-.782.84-1.495C15.13 19.012 13.674 18 12 18z" /><path d="M12 12c3.866 0 7-3.117 7-6.962 0-.1-.002-.2-.006-.3-.043-1-.064-1.5-.741-2.119C17.575 2 16.825 2 15.324 2H8.676c-1.5 0-2.25 0-2.928.62-.672.618-.694 1.118-.736 2.118A7.115 7.115 0 005 5.038C5 8.883 8.134 12 12 12z" /></svg>
-                      Verified Badge
-                    </span>
-                    <span className="cd-first-perk">
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 21h14" /><path d="M14.915 7.611l-1.107-2.23c-.789-1.587-1.183-2.381-1.808-2.381s-1.019.794-1.808 2.382L9.085 7.61c-.504 1.015-.756 1.522-1.205 1.636a2.26 2.26 0 01-.095.019c-.458.07-.886-.299-1.741-1.037C4.012 6.476 3 5.6 2.38 5.95a1.1 1.1 0 00-.114.076C1.702 6.454 2.095 7.74 2.882 10.315l1.166 3.813c.423 1.384.635 2.076 1.17 2.474.535.398 1.255.398 2.693.398h8.178c1.438 0 2.158 0 2.693-.398.535-.398.747-1.09 1.17-2.474l1.166-3.813c.787-2.574 1.18-3.861.617-4.29a1.095 1.095 0 00-.115-.077c-.617-.349-1.629.527-3.66 2.28-.856.737-1.284 1.106-1.742 1.036a2.26 2.26 0 01-.095-.019c-.45-.114-.701-.621-1.205-1.635z" /></svg>
-                      Top Placement
-                    </span>
-                  </div>
-                  {/* CTA */}
-                  <Link href={`/business?category=${encodeURIComponent(c.name)}`} className="cd-first-cta">
-                    Get Listed Now
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
+                  <Link href={`/business?category=${encodeURIComponent(c.name)}`} className="cd-empty-bot-cta">
+                    List the first one
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
                   </Link>
                 </div>
               )}
@@ -529,23 +462,19 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
           />
         )}
 
-        {/* ── Bottom CTA bar ── */}
-        <div className="cd-bottom-cta" style={{ '--bc': color } as React.CSSProperties}>
-          <div className="cd-bottom-cta-left">
-            <span className="cd-bottom-cta-badge">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13.728 3.444l1.76 3.549c.24.494.88.968 1.42 1.058l3.19.535c2.04.342 2.52 1.835 1.05 3.306l-2.48 2.5c-.42.424-.65 1.24-.52 1.825l.71 3.095c.56 2.45-.73 3.397-2.88 2.117l-2.99-1.785c-.54-.322-1.43-.322-1.98 0L8.018 21.43c-2.14 1.28-3.44.322-2.88-2.117l.71-3.095c.13-.585-.1-1.401-.52-1.825l-2.48-2.5c-1.46-1.471-.99-2.964 1.05-3.306l3.19-.535c.53-.09 1.17-.564 1.41-1.058l1.76-3.55c.96-1.925 2.52-1.925 3.48 0z" /></svg>
-              {Math.max(0, 200 - c.listingCount)} founding spots left
-            </span>
-            <h3 className="cd-bottom-cta-heading">List your business in <em>{c.name}</em></h3>
-            <p className="cd-bottom-cta-desc">Dofollow backlink · Verified badge · Top placement · From $99/yr</p>
+        {/* ── Compact bottom CTA — slim, pure white, single line on wide ── */}
+        <div className="cd-cta">
+          <div className="cd-cta-text">
+            <strong>List your business in {c.name}.</strong>{' '}
+            <span className="cd-cta-sub">Dofollow backlink · Verified badge · Top placement · From $99/yr</span>
           </div>
-          <div className="cd-bottom-cta-right">
-            <Link href={`/business?category=${encodeURIComponent(c.name)}`} className="cd-bottom-cta-btn">
+          <div className="cd-cta-actions">
+            <Link href={`/business?category=${encodeURIComponent(c.name)}`} className="cd-cta-btn">
               Get Listed
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
             </Link>
-            <Link href="/categories" className="cd-bottom-cta-back">
-              <I d={ic.arrowLeft} size={13} color="currentColor" sw={2} /> All categories
+            <Link href="/categories" className="cd-cta-back">
+              <I d={ic.arrowLeft} size={12} color="currentColor" sw={2} /> All categories
             </Link>
           </div>
         </div>

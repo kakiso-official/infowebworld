@@ -276,15 +276,16 @@ async function fetchCategoryPageData(categorySlug: string) {
         ? query('SELECT lt.id, lt.name, lt.slug, lt.sort_order FROM listing_types lt JOIN categories c ON c.id = lt.category_id WHERE c.parent_id = ? AND c.is_active = 1 ORDER BY lt.sort_order', [cid])
         : query('SELECT lt.id, lt.name, lt.slug, lt.sort_order FROM listing_types lt JOIN categories c3 ON c3.id = lt.category_id JOIN categories c2 ON c2.id = c3.parent_id WHERE c2.parent_id = ? AND c3.is_active = 1 ORDER BY lt.sort_order LIMIT 200', [cid]),
       catRow.parent_id ? queryOne('SELECT id, name, slug, icon, color FROM categories WHERE id = ?', [catRow.parent_id]) : Promise.resolve(null),
-      // Listings + total count in ONE query using SQL_CALC_FOUND_ROWS pattern (avoids duplicate count query)
+      // Listings + reviews aggregate + latest review snippet for the Magneto-style card
       query(
-        `SELECT s.id, s.company_name, s.slug, s.tagline, s.description, s.website, s.logo_url,
-                s.city, s.state, s.country_id, s.category_id, s.status, s.listing_type_id,
-                s.features, s.pricing_model, s.pricing_tiers, s.founded_year, s.team_size,
-                s.screenshots, s.approved_at, s.created_at,
+        `SELECT s.*,
                 co.name as country_name,
                 c.name as category_name, c.slug as category_slug, c.color as category_color, c.icon as category_icon,
-                lt.name as listing_type_name, lt.slug as listing_type_slug
+                lt.name as listing_type_name, lt.slug as listing_type_slug,
+                (SELECT COUNT(*) FROM reviews r WHERE r.listing_id = s.id AND r.status = 'approved') AS review_count,
+                (SELECT AVG(r.rating) FROM reviews r WHERE r.listing_id = s.id AND r.status = 'approved') AS review_avg,
+                (SELECT r.title FROM reviews r WHERE r.listing_id = s.id AND r.status = 'approved' ORDER BY r.created_at DESC LIMIT 1) AS latest_review_title,
+                (SELECT u.name FROM reviews r JOIN business_users u ON u.id = r.user_id WHERE r.listing_id = s.id AND r.status = 'approved' ORDER BY r.created_at DESC LIMIT 1) AS latest_review_author
          FROM submissions s
          LEFT JOIN categories c ON c.id = s.category_id
          LEFT JOIN listing_types lt ON lt.id = s.listing_type_id
@@ -304,13 +305,25 @@ async function fetchCategoryPageData(categorySlug: string) {
       ).catch(() => null),
     ])
 
-    // Get total count from a single lightweight query (replaces 2 duplicate count queries)
-    const countRow = await queryOne(
-      `SELECT COUNT(*) as cnt FROM submissions s WHERE s.status IN ('active','paid') AND ${descendantWhere}`,
-      [cid, cid, cid, cid, cid]
-    ).catch(() => ({ cnt: 0 }))
+    // Total listing count + aggregate review stats (avg rating + total review
+    // count across the entire category tree). Powers the hero rating row.
+    const [countRow, reviewAggRow] = await Promise.all([
+      queryOne(
+        `SELECT COUNT(*) as cnt FROM submissions s WHERE s.status IN ('active','paid') AND ${descendantWhere}`,
+        [cid, cid, cid, cid, cid]
+      ).catch(() => ({ cnt: 0 })),
+      queryOne(
+        `SELECT AVG(r.rating) as avg_rating, COUNT(*) as total_reviews
+         FROM reviews r
+         JOIN submissions s ON s.id = r.listing_id
+         WHERE r.status = 'approved' AND s.status IN ('active','paid') AND ${descendantWhere}`,
+        [cid, cid, cid, cid, cid]
+      ).catch(() => ({ avg_rating: null, total_reviews: 0 })),
+    ])
 
     const totalCount = Number(countRow?.cnt ?? 0)
+    const avgRating = reviewAggRow?.avg_rating != null ? Number(reviewAggRow.avg_rating) : 0
+    const totalReviews = Number(reviewAggRow?.total_reviews ?? 0)
 
     return JSON.parse(JSON.stringify({
       category: { ...catRow, subcategories: subcats, listingTypes, parent: parentRow, activeListings: totalCount },
@@ -319,6 +332,8 @@ async function fetchCategoryPageData(categorySlug: string) {
       listings: listingsWithCount,
       listingTotal: totalCount,
       seoContent: seoContentRow || null,
+      avgRating,
+      totalReviews,
     }))
   } catch (err) {
     console.error('fetchCategoryPageData error:', err)

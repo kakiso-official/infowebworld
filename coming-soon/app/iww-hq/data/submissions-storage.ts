@@ -91,6 +91,11 @@ export type RealSubmission = {
   focusBreakdown: ServiceShare[]
   clientLogos: ClientLogo[]
   clientsSummary: string
+  /* ── Reviews aggregate (joined from `reviews` table for category listing cards) ── */
+  reviewCount: number
+  reviewAvg: number
+  latestReviewTitle: string
+  latestReviewAuthor: string
 }
 
 function parseJson(val: unknown): unknown[] {
@@ -209,6 +214,10 @@ export function mapRow(r: Record<string, unknown>): RealSubmission {
       })
       .filter(c => c.name) as ClientLogo[],
     clientsSummary: String(r.clients_summary ?? ''),
+    reviewCount: Number(r.review_count ?? 0),
+    reviewAvg: r.review_avg != null ? Number(r.review_avg) : 0,
+    latestReviewTitle: String(r.latest_review_title ?? ''),
+    latestReviewAuthor: String(r.latest_review_author ?? ''),
   }
 }
 
