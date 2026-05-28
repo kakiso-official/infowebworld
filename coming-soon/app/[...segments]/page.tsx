@@ -547,15 +547,14 @@ function buildJsonLd(
     dateModified: new Date().toISOString(),
     ...(cat.listingCount > 0 ? { numberOfItems: cat.listingCount } : {}),
   }
-  if (rating && rating.total > 0) {
-    collection.aggregateRating = {
-      '@type': 'AggregateRating',
-      ratingValue: rating.avg.toFixed(1),
-      reviewCount: rating.total,
-      bestRating: 5,
-      worstRating: 1,
-    }
-  }
+  /* AggregateRating intentionally NOT set on CollectionPage — Google's
+     Review Snippet rich result whitelist is limited to Product, Service,
+     LocalBusiness, SoftwareApplication, Organization, Book, Course,
+     Event, HowTo, Movie, Recipe, MediaObject. CollectionPage isn't on
+     that list, so emitting aggregateRating here triggers "Invalid object
+     type for field" in Rich Results testing. Page-level rating signal
+     is instead carried by the per-listing schemas below, which use valid
+     review-snippet parent types. */
   if (itemListEntities.length > 0) {
     collection.mainEntity = {
       '@type': 'ItemList',
