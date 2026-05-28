@@ -1,7 +1,9 @@
 import { ImageResponse } from 'next/og'
 import { query } from '@/lib/db'
 
-export const runtime = 'edge'
+// Node runtime required: lib/db uses mysql2 (Node-only). Edge runtime
+// breaks the build at "collect page data". CDN cache (s-maxage=86400)
+// makes Edge perf irrelevant here.
 
 /* Dynamic Open Graph image route — renders a 1200×630 social card per
    category. URL: /api/og/{sectorSlug}/{categorySlug} or /api/og/{sectorSlug}.
