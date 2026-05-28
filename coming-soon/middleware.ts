@@ -45,13 +45,12 @@ function shouldNoindex(pathname: string): boolean {
   /* /{sector} — L1 sector landing pages. Always indexable. */
   if (segments.length === 1 && SECTOR_SLUGS.has(segments[0])) return false
 
-  /* /{sector}/{categorySlug} — L2/L3/L4/L5 category detail pages.
-     Indexable EXCEPT for the view-all-sub-categories navigation aids
-     (those duplicate the /categories index and add no unique content). */
-  if (segments.length === 2 && SECTOR_SLUGS.has(segments[0])) {
-    if (segments[1].startsWith('view-all-sub-categories-')) return true
-    return false
-  }
+  /* /{sector}/{categorySlug} — L2/L3/L4/L5 category detail pages AND the
+     view-all-sub-categories-{sector} index pages. Both are indexable: the
+     view-all pages now carry a full @graph (CollectionPage + ItemList +
+     Dataset + DefinedTermSet + HowTo + sector-specific FAQ) so they're a
+     real AEO/GEO surface, not a duplicate of /categories. */
+  if (segments.length === 2 && SECTOR_SLUGS.has(segments[0])) return false
 
   /* Individual listing + company profile pages. */
   if (segments.length === 2 && (segments[0] === 'listing' || segments[0] === 'profile')) return false

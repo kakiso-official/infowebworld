@@ -12,6 +12,11 @@ import { query, queryOne } from '@/lib/db'
 import { CATEGORIES as STATIC_CATEGORIES } from '../config/categories-data'
 import { SECTOR_LANDINGS } from '@/lib/sector-landings'
 import SectorLandingPage from '../sector-landing/SectorLandingPage'
+import {
+  BASE_URL as SEO_BASE_URL, ID_ORG, ID_WEBSITE,
+  organizationNode, brandNode, websiteNode,
+  breadcrumbNode, faqNode, howToNode,
+} from '../components/seo-schema'
 
 /** No ISR — render dynamically on each request to avoid Vercel ISR write quota */
 export const dynamic = 'force-dynamic'
@@ -21,6 +26,31 @@ const L1_SLUGS = new Set([
   'ai-ml', 'software-saas', 'it-services-agencies',
   'startups-innovation', 'local-businesses', 'professional-services',
 ])
+
+/* Sector accent colors — same palette as SectorAllBrowse's sectorMeta()
+   client helper, redeclared here so the server-rendered .va-card grid on
+   view-all pages can be tinted via --sec without a client component. */
+const SECTOR_ACCENT: Record<string, string> = {
+  'ai-ml': '#8B5CF6',
+  'software-saas': '#3B82F6',
+  'it-services-agencies': '#14B8A6',
+  'startups-innovation': '#E8553D',
+  'local-businesses': '#F59E0B',
+  'professional-services': '#2FAE6A',
+}
+
+/* Inline closed-folder glyph used in the .va-card grid on view-all pages.
+   Stroke = currentColor so it inherits the sector accent set on the parent. */
+function VaFolderIcon({ size = 22 }: { size?: number }) {
+  return (
+    <svg viewBox="0 0 48 48" width={size} height={size} aria-hidden="true">
+      <path fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinejoin="round"
+        d="M6 14h12l3 4h21v22H6z" />
+      <path fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinejoin="round" opacity=".55"
+        d="M6 14l3 4h12l3 4h18" />
+    </svg>
+  )
+}
 
 /** Helper: build the view-all slug for a sector */
 function viewAllSlug(sectorSlug: string) {
@@ -1120,18 +1150,100 @@ export async function generateMetadata({
     categorySlug = segments[1]
   }
 
-  /* ── view-all page — sector categories browse ── */
+  /* ── view-all page — sector categories browse ──
+     Was noindex with a one-liner description. Now full SEO/AEO/GEO surface:
+     unique title carrying counts + year, rich keyword stack, dynamic OG
+     image, hreflang, indexable. Matches the /categories metadata depth. */
   if (isViewAll && viewAllSector && L1_SLUGS.has(viewAllSector)) {
     const meta = getSectorMeta(viewAllSector)
-    const title = `All ${meta.seoTitle} Categories | InfoWebWorld`
-    const description = `Browse all categories and subcategories within ${meta.seoTitle}. Find, compare, and connect with the best tools and services.`
     const url = canonicalUrl(country, `/${viewAllSector}/${viewAllSlug(viewAllSector)}`)
+    const year = new Date().getFullYear()
+
+    /* Static taxonomy counts for this sector — no DB hit; the file lives
+       in the same edge bundle as the page. */
+    const sectorRow = STATIC_CATEGORIES.find(r => r.slug === viewAllSector && r.level === 1)
+    const sectorId = sectorRow ? sectorRow.id : 0
+    const l2InSector = STATIC_CATEGORIES.filter(r => r.parent_id === sectorId && r.level === 2).length
+    const l2Ids = new Set(
+      STATIC_CATEGORIES.filter(r => r.parent_id === sectorId && r.level === 2).map(r => r.id)
+    )
+    const l3InSector = STATIC_CATEGORIES.filter(
+      r => r.level === 3 && r.parent_id != null && l2Ids.has(r.parent_id)
+    ).length
+
+    const lcName = meta.seoTitle.toLowerCase()
+    const title = `All ${meta.seoTitle} Categories ${year} — ${l2InSector} Categories, ${l3InSector.toLocaleString()} Subcategories | InfoWebWorld`
+    const description = `Browse the complete ${meta.seoTitle.toLowerCase()} taxonomy on InfoWebWorld — ${l2InSector} categories and ${l3InSector.toLocaleString()} subcategories, every verified company. Search, compare, and connect. Updated ${monthYear}.`
+
+    /* Keyword stack — sector + browse/discovery intent + comparative +
+       temporal modifiers that Google + AI engines reward. */
+    const autoKw = [
+      `${lcName} categories`,
+      `all ${lcName} categories`,
+      `${lcName} directory`,
+      `${lcName} subcategories`,
+      `browse ${lcName}`,
+      `${lcName} taxonomy`,
+      `list of ${lcName}`,
+      `${lcName} companies list`,
+      `complete ${lcName} directory`,
+      `${lcName} ${year}`,
+      `find ${lcName}`,
+      `${lcName} comparison directory`,
+      `verified ${lcName} listings`,
+    ]
+    const keywords = [...new Set([...meta.seoKeywords.map(k => k.toLowerCase()), ...autoKw])].join(', ')
+
+    const sectorOgImage = `${DOMAIN}/api/og/${viewAllSector}`
+
     return {
       title,
       description,
-      alternates: { canonical: url },
-      openGraph: { title, description, url, siteName: 'InfoWebWorld', type: 'website' },
-      robots: { index: false, follow: false },
+      keywords,
+      alternates: {
+        canonical: url,
+        languages: { 'en-US': url, 'x-default': url },
+      },
+      openGraph: {
+        title,
+        description,
+        url,
+        siteName: 'InfoWebWorld',
+        type: 'website',
+        locale: 'en_US',
+        images: [{ url: sectorOgImage, width: 1200, height: 630, alt: `All ${meta.seoTitle} Categories — InfoWebWorld` }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        description,
+        images: [sectorOgImage],
+        site: '@infowebworld',
+      },
+      /* Threshold doesn't apply here — view-all is a curated index page over a
+         non-trivial sector taxonomy, always worth indexing. */
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          'max-snippet': -1,
+          'max-image-preview': 'large',
+          'max-video-preview': -1,
+        },
+      },
+      other: {
+        'article:section': `${meta.seoTitle} Directory`,
+        'article:tag': `${lcName}, business categories, directory, ${meta.seoKeywords.slice(0, 5).join(', ')}`,
+        'article:modified_time': new Date().toISOString(),
+        'DC.title': `All ${meta.seoTitle} Categories — InfoWebWorld`,
+        'DC.subject': `${lcName} taxonomy, business directory, category list`,
+        'DC.language': 'en-US',
+        'DC.coverage': 'Worldwide',
+        'DC.type': 'Collection',
+        'theme-color': '#E8553D',
+      },
     }
   }
 
@@ -1352,37 +1464,458 @@ export default async function CategoryDetailRoute({
     const sectorName = sectorMeta.seoTitle
     const sectorRow = STATIC_CATEGORIES.find(r => r.slug === viewAllSector2 && r.level === 1)
     const sectorId = sectorRow ? sectorRow.id : 0
-    const l2InSector = STATIC_CATEGORIES.filter(r => r.parent_id === sectorId && r.level === 2).length
+    const l2RowsInSector = STATIC_CATEGORIES.filter(r => r.parent_id === sectorId && r.level === 2)
+    const l2InSector = l2RowsInSector.length
+    const l2IdSet = new Set(l2RowsInSector.map(r => r.id))
+    const l3InSector = STATIC_CATEGORIES.filter(
+      r => r.level === 3 && r.parent_id != null && l2IdSet.has(r.parent_id)
+    ).length
+    const totalListingsInSector = STATIC_CATEGORIES.reduce((s, r) => {
+      if (r.level === 1 && r.id === sectorId) return s + (r.listing_count || 0)
+      if (r.level === 2 && r.parent_id === sectorId) return s + (r.listing_count || 0)
+      if (r.level === 3 && r.parent_id != null && l2IdSet.has(r.parent_id)) return s + (r.listing_count || 0)
+      return s
+    }, 0)
 
-    const allJsonLd = (
-      <>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
-          '@context': 'https://schema.org', '@type': 'BreadcrumbList',
-          itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://infowebworld.com' },
-            { '@type': 'ListItem', position: 2, name: sectorName },
-          ]
-        })}} />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
-          '@context': 'https://schema.org', '@type': 'CollectionPage',
-          name: `All ${sectorName} Categories`, url: canonicalUrl(country, `/${viewAllSector2}/${viewAllSlug(viewAllSector2)}`),
-        })}} />
-      </>
-    )
+    const URL_VIEWALL = `${SEO_BASE_URL}/${viewAllSector2}/${viewAllSlug(viewAllSector2)}`
+    const URL_SECTOR = `${SEO_BASE_URL}/${viewAllSector2}`
+    const URL_CATEGORIES = `${SEO_BASE_URL}/categories`
+    const yearNow = new Date().getFullYear()
+    const monthYearNow = currentMonthYear()
+    const lcSectorName = sectorName.toLowerCase()
+
+    /* ── Schema graph IDs ── */
+    const ID_BREADCRUMB = `${URL_VIEWALL}#breadcrumb`
+    const ID_WEBPAGE    = `${URL_VIEWALL}#webpage`
+    const ID_ITEMLIST   = `${URL_VIEWALL}#categorylist`
+    const ID_DATASET    = `${URL_VIEWALL}#dataset`
+    const ID_TERMSET    = `${URL_VIEWALL}#hierarchy`
+    const ID_HOWTO      = `${URL_VIEWALL}#howto`
+    const ID_FAQ        = `${URL_VIEWALL}#faq`
+
+    /* CollectionPage / WebPage — the focal entity. Carries all the AEO/GEO
+       signals: about, mentions, audience, speakable, significantLink. */
+    const webPageNode = {
+      '@type': ['WebPage', 'CollectionPage'],
+      '@id': ID_WEBPAGE,
+      url: URL_VIEWALL,
+      name: `All ${sectorName} Categories ${yearNow}`,
+      headline: `All ${sectorName} Categories`,
+      description: `Browse the complete ${lcSectorName} taxonomy on InfoWebWorld — ${l2InSector} categories and ${l3InSector.toLocaleString()} subcategories, every verified company. Updated ${monthYearNow}.`,
+      inLanguage: 'en-US',
+      isPartOf: { '@id': ID_WEBSITE },
+      breadcrumb: { '@id': ID_BREADCRUMB },
+      publisher: { '@id': ID_ORG },
+      primaryImageOfPage: {
+        '@type': 'ImageObject',
+        url: `${DOMAIN}/api/og/${viewAllSector2}`,
+        width: 1200, height: 630,
+        caption: `All ${sectorName} Categories — InfoWebWorld`,
+      },
+      about: [
+        { '@type': 'Thing', name: sectorName },
+        { '@type': 'Thing', name: `${sectorName} directory` },
+        { '@type': 'Thing', name: `${sectorName} categories` },
+        { '@type': 'Thing', name: 'Business directory' },
+        { '@type': 'Thing', name: 'Industry taxonomy' },
+      ],
+      audience: {
+        '@type': 'Audience',
+        audienceType: 'Business buyers, founders, marketers, technology evaluators',
+      },
+      accessibilityFeature: ['highContrastDisplay', 'readingOrder', 'structuralNavigation', 'tableOfContents'],
+      accessibilityHazard: 'none',
+      mentions: l2RowsInSector.slice(0, 15).map(l2 => ({
+        '@type': 'Thing',
+        name: l2.name,
+        url: `${SEO_BASE_URL}/${viewAllSector2}/${l2.slug}`,
+      })),
+      speakable: {
+        '@type': 'SpeakableSpecification',
+        cssSelector: ['.cd-server-h1', '.cd-server-desc', '.cd-server-h2'],
+      },
+      significantLink: l2RowsInSector.slice(0, 20).map(l2 => `${SEO_BASE_URL}/${viewAllSector2}/${l2.slug}`),
+      mainEntity: { '@id': ID_ITEMLIST },
+      mainEntityOfPage: URL_VIEWALL,
+      numberOfItems: l2InSector + l3InSector,
+      datePublished: '2026-04-24',
+      dateModified: new Date().toISOString().split('T')[0],
+      copyrightYear: yearNow,
+      copyrightHolder: { '@id': ID_ORG },
+      license: `${SEO_BASE_URL}/terms`,
+      isAccessibleForFree: true,
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: {
+          '@type': 'EntryPoint',
+          urlTemplate: `${SEO_BASE_URL}/all?q={search_term_string}&sector=${viewAllSector2}`,
+        },
+        'query-input': 'required name=search_term_string',
+      },
+      keywords: [
+        `${lcSectorName} categories`,
+        `all ${lcSectorName} categories`,
+        `${lcSectorName} directory`,
+        `${lcSectorName} subcategories`,
+        `browse ${lcSectorName}`,
+        `${lcSectorName} taxonomy`,
+        `${lcSectorName} ${yearNow}`,
+      ].join(', '),
+    }
+
+    /* ItemList of L2 categories in this sector — Google + LLM citation engines
+       parse this to surface the sector's top categories as sitelinks-style
+       answers. */
+    const itemList = {
+      '@type': 'ItemList',
+      '@id': ID_ITEMLIST,
+      name: `Categories in ${sectorName}`,
+      description: `Top-level categories inside the ${lcSectorName} sector on InfoWebWorld. Each contains tens to hundreds of subcategories and verified businesses.`,
+      numberOfItems: l2InSector,
+      itemListOrder: 'https://schema.org/ItemListOrderAscending',
+      itemListElement: l2RowsInSector.map((l2, i) => {
+        const l3sUnder = STATIC_CATEGORIES.filter(r => r.level === 3 && r.parent_id === l2.id).length
+        return {
+          '@type': 'ListItem',
+          position: i + 1,
+          url: `${SEO_BASE_URL}/${viewAllSector2}/${l2.slug}`,
+          name: l2.name,
+          item: {
+            '@type': 'Thing',
+            '@id': `${SEO_BASE_URL}/${viewAllSector2}/${l2.slug}#category`,
+            name: l2.name,
+            description: `${l2.name} — ${l3sUnder} subcategories inside ${sectorName} on InfoWebWorld.`,
+            url: `${SEO_BASE_URL}/${viewAllSector2}/${l2.slug}`,
+          },
+        }
+      }),
+    }
+
+    /* Dataset entity — the curated sector taxonomy slice. Dataset entities are
+       a strong AEO signal (Google Dataset Search + LLM citation). */
+    const datasetNode = {
+      '@type': 'Dataset',
+      '@id': ID_DATASET,
+      name: `InfoWebWorld ${sectorName} taxonomy`,
+      alternateName: `${sectorName} categories dataset`,
+      description: `Human-curated taxonomy of ${l2InSector} categories and ${l3InSector.toLocaleString()} subcategories inside the ${lcSectorName} sector. Covers every verified business listing on InfoWebWorld within ${sectorName}.`,
+      url: URL_VIEWALL,
+      sameAs: URL_VIEWALL,
+      creator: { '@id': ID_ORG },
+      publisher: { '@id': ID_ORG },
+      license: `${SEO_BASE_URL}/terms`,
+      isAccessibleForFree: true,
+      inLanguage: 'en-US',
+      keywords: `${lcSectorName}, ${lcSectorName} categories, ${lcSectorName} subcategories, business directory, industry taxonomy`,
+      datePublished: '2026-04-24',
+      dateModified: new Date().toISOString().split('T')[0],
+      variableMeasured: [
+        { '@type': 'PropertyValue', name: 'Categories (Level 2)', value: l2InSector },
+        { '@type': 'PropertyValue', name: 'Subcategories (Level 3)', value: l3InSector },
+        { '@type': 'PropertyValue', name: 'Verified listings', value: totalListingsInSector },
+      ],
+      spatialCoverage: { '@type': 'Place', name: 'Worldwide' },
+      temporalCoverage: '2026/..',
+      distribution: {
+        '@type': 'DataDownload',
+        encodingFormat: 'text/html',
+        contentUrl: URL_VIEWALL,
+      },
+    }
+
+    /* DefinedTermSet — explains the 3-level hierarchy to crawlers + LLMs.
+       Same structure as /categories but the term examples are sector-scoped. */
+    const definedTermSet = {
+      '@type': 'DefinedTermSet',
+      '@id': ID_TERMSET,
+      name: `${sectorName} category hierarchy terms`,
+      inLanguage: 'en-US',
+      hasDefinedTerm: [
+        {
+          '@type': 'DefinedTerm',
+          '@id': `${URL_VIEWALL}#term-sector`,
+          name: 'Sector',
+          alternateName: 'L1',
+          description: `The top-level industry grouping on InfoWebWorld. ${sectorName} is one of 6 sectors.`,
+          inDefinedTermSet: { '@id': ID_TERMSET },
+        },
+        {
+          '@type': 'DefinedTerm',
+          '@id': `${URL_VIEWALL}#term-category`,
+          name: 'Category',
+          alternateName: 'L2',
+          description: `A specific market inside ${sectorName}. ${sectorName} has ${l2InSector} categories — examples: ${l2RowsInSector.slice(0, 3).map(r => r.name).join(', ')}.`,
+          inDefinedTermSet: { '@id': ID_TERMSET },
+        },
+        {
+          '@type': 'DefinedTerm',
+          '@id': `${URL_VIEWALL}#term-subcategory`,
+          name: 'Subcategory',
+          alternateName: 'L3',
+          description: `The precise niche where buyers compare alternatives inside ${sectorName}. ${l3InSector.toLocaleString()} subcategories total.`,
+          inDefinedTermSet: { '@id': ID_TERMSET },
+        },
+      ],
+    }
+
+    /* HowTo — the canonical 4-step flow for finding a business in this
+       sector. Drives "how-to" rich-result eligibility + LLM step extraction. */
+    const howToNodeBuilt = howToNode({
+      id: ID_HOWTO,
+      name: `How to find a ${lcSectorName} business on InfoWebWorld`,
+      description: `Four steps to find verified businesses inside the ${lcSectorName} sector on InfoWebWorld — search by keyword, browse by category, drill into a subcategory, and compare alternatives.`,
+      totalTime: 'PT2M',
+      steps: [
+        { name: `Open the ${sectorName} categories page`, text: `Go to the ${sectorName} index to see all ${l2InSector} categories and ${l3InSector.toLocaleString()} subcategories.`, url: URL_VIEWALL },
+        { name: 'Search by keyword', text: `Type a product, problem, or industry keyword in the search bar — the search is scoped to ${sectorName} so results are always relevant.` },
+        { name: 'Or browse by category', text: `Click any of the ${l2InSector} category cards to expand its subcategories. Pick the subcategory closest to what you need.` },
+        { name: 'Compare verified businesses', text: 'On the subcategory page, see every verified business listed there. Filter by location, plan tier, and rating; click any listing for the full profile, real reviews, and direct contact.' },
+      ],
+    })
+
+    /* Sector-specific FAQs — answers the questions buyers actually ask. */
+    const faqsForSector = [
+      {
+        q: `How many ${lcSectorName} categories are on InfoWebWorld?`,
+        a: `InfoWebWorld lists ${l2InSector} top-level ${lcSectorName} categories and ${l3InSector.toLocaleString()} subcategories. Every category contains verified businesses with real reviews and side-by-side comparison.`,
+      },
+      {
+        q: `How do I find a ${lcSectorName} business by category?`,
+        a: `Use the search bar on the All ${sectorName} Categories page — it searches across every ${lcSectorName} category and subcategory instantly. Or browse the category grid: pick the L2 card closest to your need, then click any L3 subcategory to see all verified businesses listed under it.`,
+      },
+      {
+        q: `What's the difference between an L2 category and an L3 subcategory in ${sectorName}?`,
+        a: `An L2 category is a specific market inside ${sectorName} (${l2InSector} total). An L3 subcategory is the precise niche where buyers compare alternatives (${l3InSector.toLocaleString()} total). Listings are tagged to one primary L3 subcategory plus up to two secondary subcategories.`,
+      },
+      {
+        q: `Are ${sectorName} listings on InfoWebWorld verified?`,
+        a: `Yes. Every business listed under ${sectorName} on InfoWebWorld is human-verified before going live. Reviews are identity-checked. Rankings are merit-based — pay-to-play does not buy placement.`,
+      },
+      {
+        q: `Is the ${sectorName} category page free to browse?`,
+        a: `Yes. Browsing every ${lcSectorName} category, subcategory, and listing on InfoWebWorld is free for buyers. Only businesses pay to be listed (free and paid plans available).`,
+      },
+      {
+        q: `How often is the ${sectorName} taxonomy updated?`,
+        a: `New ${lcSectorName} categories and subcategories are added as new markets emerge. The taxonomy is reviewed quarterly and updated when buyer demand and listing supply justify a change.`,
+      },
+    ]
+    const faqJsonLd = faqNode(faqsForSector, ID_FAQ, ID_WEBPAGE)
+
+    const allJsonLdGraph = {
+      '@context': 'https://schema.org',
+      '@graph': [
+        organizationNode,
+        brandNode,
+        websiteNode,
+        breadcrumbNode(
+          [
+            { name: 'Home', url: SEO_BASE_URL },
+            { name: 'Business Categories', url: URL_CATEGORIES },
+            { name: sectorName, url: URL_SECTOR },
+            { name: `All ${sectorName} Categories`, url: URL_VIEWALL },
+          ],
+          ID_BREADCRUMB,
+        ),
+        webPageNode,
+        itemList,
+        datasetNode,
+        definedTermSet,
+        howToNodeBuilt,
+        faqJsonLd,
+      ],
+    }
 
     return (
       <>
-        {allJsonLd}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(allJsonLdGraph) }}
+        />
         <Navbar sectorSlug={viewAllSector2} />
+        {/* sr-only skeleton — H1 + breadcrumb visible to crawlers / screen
+            readers before client hydration. Speakable selectors target these
+            classes so AI voice readers pick up the answer-first content. */}
         <div className="cd-server-skeleton">
           <nav className="cd-server-breadcrumb" aria-label="Breadcrumb">
-            <a href="/" aria-label="Home"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a><span> &gt; </span><a href="/categories">All Categories</a><span> &gt; </span><span>{sectorName}</span>
+            <a href="/" aria-label="Home"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a><span> &gt; </span><a href="/categories">All Categories</a><span> &gt; </span><a href={`/${viewAllSector2}`}>{sectorName}</a><span> &gt; </span><span>All {sectorName} Categories</span>
           </nav>
-          <h1 className="cd-server-h1">All {sectorName} Categories</h1>
-          <p className="cd-server-desc">Browse all categories and subcategories within {sectorName}. {l2InSector} categories to explore.</p>
+          <h1 className="cd-server-h1">
+            All {sectorName} Categories — {l2InSector} Categories, {l3InSector.toLocaleString()} Subcategories
+          </h1>
+          <p className="cd-server-desc">
+            Browse the complete {lcSectorName} taxonomy on InfoWebWorld — {l2InSector} categories and {l3InSector.toLocaleString()} subcategories inside {sectorName}. Every verified company, free to browse.
+          </p>
           <h2 className="cd-server-h2">Categories in {sectorName}</h2>
         </div>
         <Suspense><SectorAllBrowse sectorSlug={viewAllSector2} /></Suspense>
+
+        {/* ════════════════════════════════════════════════════════════════
+            Visible SEO/AEO/GEO content surface — mirrors the .cat-seo block
+            on /categories, scoped to this single sector. Every element here
+            is human-readable AND the @graph above schema-describes the same
+            content, so Google + LLMs can cite, quote, or speak it back.
+            ════════════════════════════════════════════════════════════════ */}
+        <section className="cat-seo" aria-label={`Browse, hierarchy, and FAQ for ${sectorName}`}>
+          {/* TL;DR — answer-first paragraph for AI engines + featured snippets */}
+          <div className="cat-seo-wrap cat-seo-tldr">
+            <div className="cat-seo-tldr-card">
+              <span className="cat-seo-tldr-label">What is this page</span>
+              <p className="cat-seo-tldr-body">
+                <strong>InfoWebWorld&apos;s complete {sectorName} taxonomy.</strong> {l2InSector}{' '}
+                categories, {l3InSector.toLocaleString()} subcategories, and{' '}
+                {totalListingsInSector.toLocaleString()} verified businesses inside the{' '}
+                {lcSectorName} sector. Every listing is human-verified, every review is
+                identity-checked, every ranking is merit-based.
+              </p>
+              <p className="cat-seo-tldr-meta">
+                <span>
+                  Updated{' '}
+                  <time dateTime={new Date().toISOString().split('T')[0]}>
+                    {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                  </time>
+                </span>
+                <span aria-hidden="true">·</span>
+                <span>Human-curated</span>
+                <span aria-hidden="true">·</span>
+                <span>Free to browse</span>
+              </p>
+            </div>
+          </div>
+
+          {/* Browse Categories in {Sector} — 3-column .va-cards grid that
+              mirrors the bordered folder+name card design from the listing
+              page's subcategory list (Image #24). Each card: thin gray
+              border, folder icon + bold name both tinted with the sector
+              accent (--sec). Schema.org ItemList microdata still carried
+              on every card so the DOM agrees with the @graph above. */}
+          <div className="cat-seo-wrap">
+            <header className="cat-seo-head">
+              <h2 className="cat-seo-h2">Browse Categories in {sectorName}</h2>
+              <p className="cat-seo-section-desc">
+                Every category inside {sectorName}. Click any to see all subcategories and
+                verified listings.
+              </p>
+            </header>
+            <nav
+              className="va-cards"
+              aria-label={`Categories in ${sectorName}`}
+              itemScope
+              itemType="https://schema.org/ItemList"
+              style={{ '--sec': SECTOR_ACCENT[viewAllSector2] || '#14B8A6' } as React.CSSProperties}
+            >
+              <meta itemProp="numberOfItems" content={String(l2RowsInSector.length)} />
+              {l2RowsInSector.map((l2, i) => (
+                <a
+                  key={l2.slug}
+                  href={`/${viewAllSector2}/${l2.slug}`}
+                  className="va-card"
+                  itemProp="itemListElement"
+                  itemScope
+                  itemType="https://schema.org/ListItem"
+                >
+                  <meta itemProp="position" content={String(i + 1)} />
+                  <link itemProp="url" href={`${SEO_BASE_URL}/${viewAllSector2}/${l2.slug}`} />
+                  <span className="va-card-ico" aria-hidden="true">
+                    <VaFolderIcon size={22} />
+                  </span>
+                  <span className="va-card-name" itemProp="name">{l2.name}</span>
+                </a>
+              ))}
+            </nav>
+          </div>
+
+          {/* How the Hierarchy Works — sector-scoped examples in the L2/L3
+              term descriptions so each view-all page has a unique explainer. */}
+          <div className="cat-seo-wrap">
+            <header className="cat-seo-head">
+              <h2 className="cat-seo-h2">How the {sectorName} Hierarchy Works</h2>
+              <p className="cat-seo-section-desc">
+                InfoWebWorld uses a 3-level taxonomy so buyers can search broad or narrow
+                without losing relevance — even inside a single sector like {sectorName}.
+              </p>
+            </header>
+            <div className="cat-seo-hierarchy">
+              <article className="cat-seo-hier-card" itemScope itemType="https://schema.org/DefinedTerm">
+                <span className="cat-seo-hier-level">Level 1</span>
+                <h3 itemProp="name">Sector</h3>
+                <p itemProp="description">
+                  The broad industry grouping. <strong>{sectorName}</strong> is one of 6 sectors on
+                  InfoWebWorld. Every business on the platform lives inside exactly one sector.
+                </p>
+              </article>
+              <article className="cat-seo-hier-card" itemScope itemType="https://schema.org/DefinedTerm">
+                <span className="cat-seo-hier-level">Level 2</span>
+                <h3 itemProp="name">Category</h3>
+                <p itemProp="description">
+                  A specific market inside {sectorName}. <strong>{l2InSector} total</strong>.
+                  {l2RowsInSector.length > 0
+                    ? ` Examples: ${l2RowsInSector.slice(0, 3).map(r => r.name).join(', ')}.`
+                    : ''}
+                </p>
+              </article>
+              <article className="cat-seo-hier-card" itemScope itemType="https://schema.org/DefinedTerm">
+                <span className="cat-seo-hier-level">Level 3</span>
+                <h3 itemProp="name">Subcategory</h3>
+                <p itemProp="description">
+                  The precise niche where buyers compare alternatives inside {sectorName}.{' '}
+                  <strong>{l3InSector.toLocaleString()} total</strong>. Listings are tagged to one
+                  primary L3 plus up to two secondary subcategories.
+                </p>
+              </article>
+            </div>
+          </div>
+
+          {/* How-to flow — answers "how do I find a {sector} business?" as an
+              ordered list. Mirrors the HowTo @graph above. */}
+          <div className="cat-seo-wrap">
+            <header className="cat-seo-head">
+              <h2 className="cat-seo-h2">How to Find a {sectorName} Business</h2>
+            </header>
+            <ol className="cat-seo-steps">
+              <li>
+                <strong>Search by keyword.</strong> Type a product, problem, or sub-industry
+                keyword in the search bar above; it matches across every {lcSectorName} category
+                and subcategory instantly.
+              </li>
+              <li>
+                <strong>Or browse by category.</strong> Click any of the {l2InSector} category
+                cards to expand its subcategories. Pick the subcategory closest to what you need.
+              </li>
+              <li>
+                <strong>Open the subcategory.</strong> See every verified {lcSectorName} business
+                listed there, filterable by location, plan tier, specializations, and rating.
+              </li>
+              <li>
+                <strong>Compare and contact.</strong> Open any listing for the full profile, real
+                reviews, side-by-side comparison with alternatives, and direct contact.
+              </li>
+            </ol>
+          </div>
+
+          {/* FAQ — same six Q&As that the FAQPage @graph above carries, so the
+              visible DOM matches the schema. Each <details> uses microdata so
+              Google parses Q + A even without seeing the schema script. */}
+          <div className="cat-seo-wrap">
+            <header className="cat-seo-head">
+              <h2 className="cat-seo-h2">Frequently Asked Questions</h2>
+              <p className="cat-seo-section-desc">
+                Everything buyers ask about finding a {lcSectorName} business on InfoWebWorld.
+              </p>
+            </header>
+            <div className="cat-seo-faq">
+              {faqsForSector.map(({ q, a }) => (
+                <details key={q} className="cat-seo-faq-item" itemScope itemType="https://schema.org/Question">
+                  <summary itemProp="name">{q}</summary>
+                  <div className="cat-seo-faq-body" itemScope itemType="https://schema.org/Answer" itemProp="acceptedAnswer">
+                    <p itemProp="text">{a}</p>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <AiDisclaimer />
         <Footer />
       </>

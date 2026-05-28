@@ -61,8 +61,10 @@ Disallow: /preview/
 Disallow: /test-listing-page/
 Disallow: /test-category-1-page/
 Disallow: /test-landing-page/
-# View-all sub-categories pages duplicate /categories — no unique content
-Disallow: /*/view-all-sub-categories-
+# View-all sub-categories pages — sector-scoped category indexes with full
+# @graph SEO/AEO/GEO (CollectionPage + ItemList + Dataset + DefinedTermSet +
+# HowTo + sector-specific FAQ). Each one is a unique answer-engine surface.
+Allow: /*/view-all-sub-categories-
 
 # Block parasitic SEO audit crawlers (zero value, heavy traffic)
 User-agent: AhrefsBot

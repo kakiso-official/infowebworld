@@ -230,6 +230,120 @@
   margin-bottom: 1.5rem;
 }
 
+/* ─────────────────────────────────────────────────────────────
+   Enhanced hero (cb-hero--v2) — mirrors the L2-L4 .cd-hero look
+   without dragging in the full .cd-page scope (which would force
+   Inter font + hide the decorative bg shapes on /categories).
+   ───────────────────────────────────────────────────────────── */
+.cb-hero--v2 {
+  position: relative;
+  overflow: visible;
+  padding-bottom: 0;
+  margin-bottom: clamp(1.25rem, 2.5vw, 1.75rem);
+  min-height: 160px;
+  animation: cbFadeUp .5s cubic-bezier(.16,1,.3,1) both;
+}
+.cb-hero--v2 > *:not(.cb-hero-watermark) {
+  position: relative; z-index: 1;
+}
+
+/* Brand watermark — soft, ghosted, sits to the right behind content */
+.cb-hero-watermark {
+  position: absolute;
+  top: 50%; right: -28px;
+  transform: translateY(-50%);
+  width: clamp(170px, 18vw, 250px);
+  height: clamp(170px, 18vw, 250px);
+  opacity: .22;
+  filter: saturate(.9);
+  pointer-events: none;
+  z-index: 0;
+}
+@media (max-width: 720px) {
+  .cb-hero--v2 { padding-right: 0 }
+  .cb-hero-watermark { display: none }
+}
+
+/* Breadcrumb */
+.cb-hero-bc {
+  display: flex; align-items: center; flex-wrap: wrap;
+  font-family: var(--font-nunito), sans-serif;
+  font-size: .85rem;
+  margin-bottom: .8rem;
+}
+.cb-hero-bc-link {
+  color: #1F2937;
+  font-weight: 500;
+  text-decoration: none;
+}
+.cb-hero-bc-link:hover { text-decoration: underline }
+.cb-hero-bc-sep { color: #9CA3AF; margin: 0 6px }
+.cb-hero-bc-current { color: #6B7280; font-weight: 500 }
+
+/* Title size + desc — leaner than the original /categories hero to
+   match the L2-L4 hero's quieter, more reading-friendly proportions. */
+.cb-hero--v2 .cb-title {
+  font-size: clamp(1.7rem, 3.6vw, 2.4rem);
+  letter-spacing: -.03em;
+  margin-bottom: .55rem;
+}
+.cb-hero--v2 .cb-desc {
+  font-size: clamp(.92rem, 1.6vw, 1rem);
+  font-weight: 500;
+  color: #1F2937;
+  line-height: 1.65;
+  max-width: 720px;
+  margin-bottom: .9rem;
+}
+
+/* Meta row — byline + updated date, same visual rhythm as L2-L4 */
+.cb-hero-meta {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 6px 18px;
+  margin-top: .9rem;
+  font-family: var(--font-nunito), sans-serif;
+  font-size: .85rem;
+}
+.cb-hero-byline { color: #4B5563; font-weight: 500 }
+.cb-hero-byline strong { color: #1F2937; font-weight: 800 }
+.cb-hero-meta-sep { color: #9CA3AF; font-weight: 400 }
+.cb-hero-updated { color: #6B7280; font-weight: 500 }
+
+@keyframes cbFadeUp {
+  from { opacity: 0; transform: translateY(16px) }
+  to   { opacity: 1; transform: translateY(0) }
+}
+
+/* The /categories search bar reuses the sector-landing .tlp-hsr styles
+   verbatim; this wrapper overrides the 720px cap that .tlp-hero-search
+   applies (it's a sector hero where the search sits in a narrow column —
+   on /categories it should span the full content width) and bumps the
+   stacking context so the dropdown clears the sector grid. */
+.cb-hero-search-wrap.tlp-hero-search {
+  margin: 0 0 clamp(1.5rem, 3vw, 2.25rem);
+  max-width: none;
+  width: 100%;
+  position: relative;
+  z-index: 50;
+}
+
+/* The sector-landing default is a 1.5px light-gray border (#E5E7EB) which
+   visually disappears on the pure-white /categories + view-all backgrounds.
+   Replace it with a 2px dark navy resting border + heavier resting shadow
+   so the search bar reads as the focal call-to-action it is. Focus state
+   keeps the same color but adds a wider colored halo. */
+.cb-hero-search-wrap .tlp-hsr {
+  border: 2px solid #0A1B33;
+  box-shadow: 0 8px 26px -10px rgba(10, 27, 51, .18),
+              0 2px 6px -2px rgba(10, 27, 51, .08);
+}
+.cb-hero-search-wrap .tlp-hsr--on {
+  border-color: #0A1B33;
+  box-shadow: 0 12px 32px -10px rgba(10, 27, 51, .26),
+              0 0 0 5px rgba(10, 27, 51, .08);
+}
+.cb-hero-search-wrap .tlp-hsr-ico { color: #0A1B33 }
+
 .cb-title {
   font-family: var(--font-bricolage), sans-serif;
   font-size: clamp(2.2rem, 5.5vw, 3.6rem);
@@ -409,7 +523,8 @@
 }
 
 .cb-sector-row {
-  display: block;
+  display: flex; align-items: center;
+  gap: .55rem;
   padding: .8rem 1.5rem;
   font-family: var(--font-nunito), sans-serif;
   font-size: .85rem; font-weight: 600;
@@ -431,6 +546,30 @@
   background: var(--h-bg);
   color: var(--sc, var(--h-accent));
 }
+
+/* Folder icon prefix on sector header — inherits the sector accent
+   so it tints with the card's palette. */
+.cb-sector-folder {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  color: var(--sc, #000);
+  line-height: 0;
+}
+
+/* Open-folder icon prefix on each subcategory row — tinted with the
+   sector accent, opacity .75 so it stays subordinate to the label, then
+   lifts to full opacity on hover so the row visibly activates. */
+.cb-sector-row-ico {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  flex-shrink: 0;
+  color: var(--sc, #000);
+  opacity: .75;
+  line-height: 0;
+  transition: opacity .2s;
+}
+.cb-sector-row:hover .cb-sector-row-ico { opacity: 1 }
+.cb-sector-row-name { flex: 1; min-width: 0 }
 
 
 /* ============================================================
@@ -1936,6 +2075,56 @@
   flex-shrink: 0;
 }
 .cd-sublist-name { line-height: 1.3; }
+
+/* ════════════════════════════════════════════════════════════════════════
+   .va-cards — 3-column "Browse Categories in {Sector}" grid used on the
+   6 view-all pages. Mirrors the bordered folder+name card design used on
+   the listing-page subcategory list. Each card: thin gray border, folder
+   icon on the left tinted with --sec (sector accent), bold name on the
+   right also tinted with --sec. Hover lifts the border to --sec + adds a
+   soft shadow.
+   ════════════════════════════════════════════════════════════════════════ */
+.va-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 1rem;
+}
+@media (max-width: 900px) { .va-cards { grid-template-columns: repeat(2, 1fr) } }
+@media (max-width: 580px) { .va-cards { grid-template-columns: 1fr } }
+
+.va-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 22px;
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--sec, #14B8A6);
+  transition: border-color .15s, box-shadow .15s, transform .15s;
+}
+.va-card:hover {
+  border-color: var(--sec, #14B8A6);
+  box-shadow: 0 4px 14px rgba(0,0,0,.05);
+  transform: translateY(-1px);
+}
+.va-card-ico {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  flex-shrink: 0;
+  color: var(--sec, #14B8A6);
+  line-height: 0;
+}
+.va-card-name {
+  font-family: var(--font-nunito), sans-serif;
+  font-weight: 700;
+  font-size: .92rem;
+  letter-spacing: -.005em;
+  color: var(--sec, #14B8A6);
+  line-height: 1.3;
+}
 
 /* ════════════════════════════════════════════════════════════════════════
    HORIZONTAL FILTER BAR (.cd-fb-*)
