@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 
-type Category = { id: number; name: string; slug: string; level: number; parentId: number | null; parentName?: string }
+type Category = { id: number; name: string; slug: string; level: number; parentId: number | null; parentName?: string; listingCount: number }
 type SectionMap = Record<number, { sections: Record<string, boolean>; generatedAt: string }>
 type StatusInfo = { total: number; generated: number; sectionMap: SectionMap }
 
@@ -27,8 +27,13 @@ const SECTOR_COLORS: Record<string, string> = {
 
 const PAGE_SIZE = 50
 
-type SortOption = 'name-az' | 'name-za' | 'most-complete' | 'least-complete' | 'recent-first'
-type GenStatusFilter = 'all' | 'complete' | 'partial' | 'none' | 'missing-faq' | 'missing-about' | 'missing-ai-summary'
+type SortOption = 'name-az' | 'name-za' | 'most-complete' | 'least-complete' | 'recent-first' | 'most-listings' | 'least-listings'
+type GenStatusFilter = 'all' | 'indexable' | 'sparse' | 'complete' | 'partial' | 'none' | 'missing-faq' | 'missing-about' | 'missing-ai-summary'
+/* INDEXABLE_THRESHOLD must match the live category page's robots gate in
+   app/[...segments]/page.tsx (cat.listingCount >= 5 → index:true). Categories
+   meeting this threshold are the ones Google will actually crawl + rank — so
+   they're the priority for AI content generation. */
+const INDEXABLE_THRESHOLD = 5
 
 function relativeTime(dateStr: string): string {
   if (!dateStr || dateStr === 'null' || dateStr === 'undefined') return ''
@@ -82,11 +87,39 @@ export default function SeoContentAdmin() {
         id: Number(c.id), name: String(c.name), slug: String(c.slug),
         level: Number(c.level), parentId: c.parent_id ? Number(c.parent_id) : null,
         parentName: c.parent_name ? String(c.parent_name) : undefined,
+        listingCount: Number(c.listing_count ?? 0),
       }))
       setAllCategories(cats)
     })
     refreshStatus()
   }, [])
+
+  /* Aggregate descendant listing counts — walks the children tree per
+     category and sums their direct listing_count so a parent L2 with no
+     direct listings but 30 across its L3/L4s still shows 30. Mirrors the
+     UNION-across-levels SQL the live category page uses, but client-side
+     from the flat category list (zero extra network calls). */
+  const treeCount = useMemo<Record<number, number>>(() => {
+    const childMap = new Map<number, Category[]>()
+    for (const c of allCategories) {
+      if (c.parentId == null) continue
+      const arr = childMap.get(c.parentId) || []
+      arr.push(c)
+      childMap.set(c.parentId, arr)
+    }
+    const cache = new Map<number, number>()
+    const walk = (cat: Category): number => {
+      if (cache.has(cat.id)) return cache.get(cat.id)!
+      let total = cat.listingCount || 0
+      const children = childMap.get(cat.id) || []
+      for (const ch of children) total += walk(ch)
+      cache.set(cat.id, total)
+      return total
+    }
+    const out: Record<number, number> = {}
+    for (const c of allCategories) out[c.id] = walk(c)
+    return out
+  }, [allCategories])
 
   const refreshStatus = () => {
     fetch('/api/admin/generate-seo-content').then(r => r.json()).then(setStatus).catch(() => {})
@@ -124,12 +157,15 @@ export default function SeoContentAdmin() {
       const q = search.toLowerCase()
       cats = cats.filter(c => c.name.toLowerCase().includes(q) || (c.parentName || '').toLowerCase().includes(q))
     }
-    // Generation status filter
+    // Generation status filter (+ indexable / sparse based on tree count)
     if (genStatusFilter !== 'all') {
       cats = cats.filter(c => {
         const count = sectionCount(c.id)
         const secs = catSections(c.id)
+        const tc = treeCount[c.id] || 0
         switch (genStatusFilter) {
+          case 'indexable': return tc >= INDEXABLE_THRESHOLD
+          case 'sparse': return tc < INDEXABLE_THRESHOLD
           case 'complete': return count === 8
           case 'partial': return count >= 1 && count <= 7
           case 'none': return count === 0
@@ -155,11 +191,13 @@ export default function SeoContentAdmin() {
           if (!bTime) return -1
           return new Date(bTime).getTime() - new Date(aTime).getTime()
         }
+        case 'most-listings': return (treeCount[b.id] || 0) - (treeCount[a.id] || 0) || a.name.localeCompare(b.name)
+        case 'least-listings': return (treeCount[a.id] || 0) - (treeCount[b.id] || 0) || a.name.localeCompare(b.name)
         default: return 0
       }
     })
     return cats
-  }, [l2l3, sectorFilter, levelFilter, search, getSectorSlug, genStatusFilter, sortBy, sectionCount, catSections, status])
+  }, [l2l3, sectorFilter, levelFilter, search, getSectorSlug, genStatusFilter, sortBy, sectionCount, catSections, status, treeCount])
 
   // Reset to page 1 when filters change
   useEffect(() => { setCurrentPage(1) }, [search, sectorFilter, levelFilter, genStatusFilter, sortBy])
@@ -372,6 +410,8 @@ export default function SeoContentAdmin() {
         </select>
         <select value={genStatusFilter} onChange={e => setGenStatusFilter(e.target.value as GenStatusFilter)} style={selectStyle}>
           <option value="all">All Status</option>
+          <option value="indexable">⚡ Indexable ({INDEXABLE_THRESHOLD}+ listings)</option>
+          <option value="sparse">Sparse (under {INDEXABLE_THRESHOLD})</option>
           <option value="complete">Complete (8/8)</option>
           <option value="partial">Partial (1-7)</option>
           <option value="none">None (0/8)</option>
@@ -382,6 +422,8 @@ export default function SeoContentAdmin() {
         <select value={sortBy} onChange={e => setSortBy(e.target.value as SortOption)} style={selectStyle}>
           <option value="name-az">Name A-Z</option>
           <option value="name-za">Name Z-A</option>
+          <option value="most-listings">Most Listings First</option>
+          <option value="least-listings">Least Listings First</option>
           <option value="most-complete">Most Complete</option>
           <option value="least-complete">Least Complete</option>
           <option value="recent-first">Recently Generated</option>
@@ -474,11 +516,18 @@ export default function SeoContentAdmin() {
           const timeAgo = relativeTime(genAt)
           const singleLoading = !batchRunning && active
 
+          const tc = treeCount[cat.id] || 0
+          const isIndexable = tc >= INDEXABLE_THRESHOLD
+          /* Indexable rows get a left accent stripe in sector color + a slight
+             tinted background so admin can scan and prioritise the categories
+             Google will actually crawl & rank. */
           return (
             <div key={cat.id} style={{
-              background: '#fff', border: `1.5px solid ${active ? sc : 'rgba(0,0,0,.08)'}`,
+              background: isIndexable ? `${sc}06` : '#fff',
+              border: `1.5px solid ${active ? sc : isIndexable ? `${sc}55` : 'rgba(0,0,0,.08)'}`,
+              borderLeft: isIndexable ? `4px solid ${sc}` : `1.5px solid ${active ? sc : 'rgba(0,0,0,.08)'}`,
               borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,.04)',
-              transition: 'border-color .2s',
+              transition: 'border-color .2s, background .2s',
             }}>
               {/* Header row */}
               <div onClick={() => setExpandedCat(isExpanded ? null : cat.id)}
@@ -503,6 +552,26 @@ export default function SeoContentAdmin() {
                       animation: 'iww-spin 0.8s linear infinite',
                     }} />
                   )}
+                </span>
+                {/* Listing-count badge — INDEXABLE flag when >= 5 listings in
+                    the descendant tree (matches the live page's robots gate).
+                    Sector-colored solid badge when indexable, grey ghost
+                    badge when sparse so admin knows generation priority. */}
+                <span
+                  title={isIndexable
+                    ? `${tc} listings — INDEXABLE on the live site. Generate AI content.`
+                    : `${tc} listing${tc === 1 ? '' : 's'} — under ${INDEXABLE_THRESHOLD}, page is noindex on the live site.`}
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 4,
+                    padding: '2px 7px', borderRadius: 4,
+                    fontSize: '.6rem', fontWeight: 800, letterSpacing: '.02em',
+                    background: isIndexable ? sc : 'rgba(0,0,0,.05)',
+                    color: isIndexable ? '#fff' : '#999',
+                    flexShrink: 0, lineHeight: 1.4,
+                  }}
+                >
+                  {isIndexable && <span style={{ fontSize: '.55rem' }}>●</span>}
+                  {tc}
                 </span>
                 {/* Timestamp */}
                 {timeAgo && (

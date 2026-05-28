@@ -20,8 +20,10 @@ import Pagination from './components-category/Pagination'
 
 /* Heavy / below-fold components — loaded on demand with loading placeholders */
 const SectorLanding = dynamic(() => import('./sector/SectorLanding'), { loading: () => <div style={{ minHeight: '100vh' }} />, ssr: true })
-const FilterSidebar = dynamic(() => import('./components-category/FilterSidebar'), { ssr: false })
 const SeoSections = dynamic(() => import('./components-category/SeoSections'), { loading: () => <div style={{ minHeight: 200 }} />, ssr: true })
+import CategoryFilterBar, { type FilterOption, type FilterField } from './components-category/CategoryFilterBar'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 // TrustSection removed — replaced by bottom CTA
 // FaqAccordion removed — Gemini extended_faq replaces it
 // PopularSearches removed — replaced by bottom CTA
@@ -74,20 +76,7 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
   const [tagGroups, setTagGroups] = useState<TagGroup[]>(initTagGroups)
   const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set())
   const [selectedListingType, setSelectedListingType] = useState<string>('')
-  const [sortBy, setSortBy] = useState<'newest' | 'name-az' | 'name-za'>('newest')
-  const [sortOpen, setSortOpen] = useState(false)
-  const sortRef = useRef<HTMLDivElement>(null)
-
-  /* Close sort dropdown on outside click */
-  useEffect(() => {
-    if (!sortOpen) return
-    const handler = (e: MouseEvent) => {
-      if (sortRef.current && !sortRef.current.contains(e.target as Node)) setSortOpen(false)
-    }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
-  }, [sortOpen])
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sortBy, setSortBy] = useState<string>('newest')
   const [openAccordions, setOpenAccordions] = useState<Set<string>>(new Set())
   const [page, setPage] = useState(1)
 
@@ -101,11 +90,11 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
   const hasGeoParams = searchParams.has('country') || searchParams.has('state') || searchParams.has('city')
   useEffect(() => {
     if (geoReady) return
-    // Load immediately if URL has geo filters, otherwise defer until sidebar opens
-    if (hasGeoParams || sidebarOpen) {
+    // Load CSC eagerly so the Locations dropdown can resolve country names.
+    if (hasGeoParams || listings.length > 0) {
       preloadCSC().then(() => setGeoReady(true))
     }
-  }, [hasGeoParams, sidebarOpen, geoReady])
+  }, [hasGeoParams, listings.length, geoReady])
 
   /* ── Parse filters from URL search params (?country=X&state=Y&city=Z&type=X&tags=X,Y) ── */
   const [filtersParsed, setFiltersParsed] = useState(false)
@@ -221,14 +210,187 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
     })
   }, [pushFilters])
 
-  /* ── Filtering (real listings only) ── */
+  /* Build a map of every tag slug → its group meta + label, so the filter
+     below can decide which scraped JSON field to match against. */
+  const tagSlugMeta = useMemo(() => {
+    const map = new Map<string, { groupSlug: string; groupName: string; label: string }>()
+    for (const g of tagGroups) {
+      const gs = (g.slug || '').toLowerCase()
+      const gn = (g.name || '').toLowerCase()
+      for (const t of g.tags) {
+        if (t.slug) map.set(t.slug, { groupSlug: gs, groupName: gn, label: t.name })
+      }
+    }
+    return map
+  }, [tagGroups])
+
+  /* ── Filtering (client-side over the loaded listings) ── */
   const filteredReal = useMemo(() => {
     let r = [...listings]
+
+    /* Listing type — match by slug (from listing_types JOIN). */
     if (selectedListingType) r = r.filter(i => i.listingTypeSlug === selectedListingType)
+
+    /* Tags — try the real submission_tags slugs first (proper relation).
+       For scraped listings that don't have submission_tags rows, fall back
+       to matching the tag's *label* against the relevant scraped JSON
+       field on the listing (industries/pricing/sizes/compliance/etc.). */
+    if (selectedTags.size > 0) {
+      /* Map a tag group's slug/name to the listing fields its tags should
+         match against. The lookup is permissive — multiple keys map to the
+         same fields so DB naming variants ("pricing" / "pricing-model" /
+         "pricing model") all work. */
+      const fieldsForGroup = (groupSlug: string, groupName: string) => (i: RealSubmission): string[] => {
+        const k = (groupSlug + ' ' + groupName).toLowerCase()
+        if (/(pricing|monetiz|billing|business[-\s]?model)/.test(k)) {
+          return [i.pricingModel, ...i.pricingTiers.map(p => p.name || ''), ...i.pricingTiers.map(p => p.period || '')]
+        }
+        if (/(company[-\s]?size|team[-\s]?size|target[-\s]?company|employees)/.test(k)) {
+          return [i.employees, ...i.targetCompanySizes]
+        }
+        if (/(industr|vertical|sector)/.test(k)) {
+          return i.industriesServed
+        }
+        if (/(use[-\s]?case|workflow|scenario)/.test(k)) {
+          return i.useCases
+        }
+        if (/(language|locale)/.test(k)) {
+          return i.languages
+        }
+        if (/(compliance|certification|regulator)/.test(k)) {
+          return i.compliance
+        }
+        if (/(tech[-\s]?stack|technolog|integration|stack)/.test(k)) {
+          return [...i.features, ...i.integrations.map(x => x.name || '')]
+        }
+        if (/(feature|capabilit|functional)/.test(k)) {
+          return [...i.features, ...i.keyFeatures.map(kf => kf.name || '')]
+        }
+        if (/(support|channel)/.test(k)) {
+          return i.supportChannels
+        }
+        if (/(training)/.test(k)) {
+          return i.trainingOptions
+        }
+        /* Unknown group → check every text-bearing field. */
+        return [
+          ...i.features, ...i.industriesServed, ...i.useCases,
+          ...i.targetCompanySizes, ...i.languages, ...i.compliance,
+          ...i.headerTags, ...i.pros, ...i.supportChannels, ...i.trainingOptions,
+          i.pricingModel, i.employees,
+          ...i.pricingTiers.map(p => p.name || ''),
+          ...i.integrations.map(x => x.name || ''),
+          ...i.keyFeatures.map(kf => kf.name || ''),
+        ]
+      }
+      r = r.filter(i => {
+        for (const tagSlug of selectedTags) {
+          /* First — exact submission_tags relation. */
+          if (i.tagSlugs.includes(tagSlug)) return true
+          /* Fallback — label substring match in the right scraped field. */
+          const meta = tagSlugMeta.get(tagSlug)
+          if (!meta) continue
+          const fields = fieldsForGroup(meta.groupSlug, meta.groupName)(i)
+          const labelLc = meta.label.toLowerCase().trim()
+          if (!labelLc) continue
+          for (const f of fields) {
+            if (f && String(f).toLowerCase().includes(labelLc)) return true
+          }
+        }
+        return false
+      })
+    }
+
+    /* Location — match only at the DEEPEST specified level, because real
+       listings often have city + country set but state blank (or vice
+       versa). Requiring all three to match exactly would zero-out matches
+       that should clearly count (e.g. Paris listing has city="Paris" but
+       no state populated). Tries each level with case + punctuation
+       normalization so "Île-de-France" matches "Ile-de-France" etc. */
+    const norm = (s: string) => s.trim().toLowerCase().replace(/[^a-z0-9]/g, '')
+    if (locationCity?.name) {
+      const want = norm(locationCity.name)
+      r = r.filter(i => norm(i.city) === want)
+    } else if (locationState?.name) {
+      const want = norm(locationState.name)
+      r = r.filter(i => norm(i.state) === want)
+    } else if (locationCountry?.name) {
+      const want = norm(locationCountry.name)
+      r = r.filter(i => norm(i.country) === want)
+    }
+
+    /* Sort */
     if (sortBy === 'name-az') r.sort((a, b) => a.companyName.localeCompare(b.companyName))
     else if (sortBy === 'name-za') r.sort((a, b) => b.companyName.localeCompare(a.companyName))
+    else if (sortBy === 'rated') r.sort((a, b) => b.reviewAvg - a.reviewAvg)
+    else if (sortBy === 'reviewed') r.sort((a, b) => b.reviewCount - a.reviewCount)
     return r
-  }, [listings, selectedListingType, sortBy])
+  }, [listings, selectedListingType, selectedTags, tagSlugMeta, locationCountry, locationState, locationCity, sortBy])
+
+  /* Specializations dropdown options — pulled from the category's
+     listing_types (the same set the old sidebar showed). */
+  const serviceOptions: FilterOption[] = useMemo(() => {
+    return (category?.listingTypes || []).map(lt => ({ value: lt.slug, label: lt.name }))
+  }, [category])
+
+  const SORT_OPTIONS: FilterOption[] = [
+    { value: 'newest', label: 'Most Relevant' },
+    { value: 'rated', label: 'Highest Rated' },
+    { value: 'reviewed', label: 'Most Reviewed' },
+    { value: 'name-az', label: 'Name A-Z' },
+    { value: 'name-za', label: 'Name Z-A' },
+  ]
+
+  /* Dynamic filter bar fields — Locations is rendered separately via the
+     special LocationFilterDropdown (cascading Country/State/City).
+     Specializations + tag groups + Sort are rendered as generic dropdowns. */
+  const filterFields: FilterField[] = useMemo(() => {
+    const fields: FilterField[] = []
+    if (serviceOptions.length > 0) {
+      fields.push({
+        key: 'specializations',
+        label: 'Specializations',
+        options: serviceOptions,
+        value: selectedListingType,
+        onChange: (v) => handleListingTypeChange(Array.isArray(v) ? v[0] || '' : v),
+      })
+    }
+    /* One multi-select dropdown per tag group from the DB (Pricing,
+       Languages, Industries, etc.). Skip groups whose name/slug duplicates
+       the primary Locations field (the geo lookup already covers that). */
+    const LOCATION_LIKE = /^(locations?|countries|countries\s*served|geographic|geography|markets?|regions?)$/i
+    for (const g of tagGroups) {
+      if (!g.tags || g.tags.length === 0) continue
+      if (LOCATION_LIKE.test(g.name) || LOCATION_LIKE.test(g.slug)) continue
+      fields.push({
+        key: `tg-${g.slug}`,
+        label: g.name,
+        options: g.tags.map(t => ({ value: t.slug, label: t.name })),
+        value: Array.from(selectedTags).filter(s => g.tags.some(t => t.slug === s)),
+        multi: true,
+        onChange: (next) => {
+          /* Replace this group's tag slugs in the global selectedTags set
+             with the new selection, leaving other groups untouched. */
+          const ownSlugs = new Set(g.tags.map(t => t.slug))
+          const merged = new Set<string>()
+          for (const s of selectedTags) if (!ownSlugs.has(s)) merged.add(s)
+          for (const s of (Array.isArray(next) ? next : [next])) if (s) merged.add(s)
+          setSelectedTags(merged); setPage(1)
+          pushFilters({ tags: Array.from(merged) })
+        },
+      })
+    }
+    fields.push({
+      key: 'sort',
+      label: 'Sort',
+      options: SORT_OPTIONS,
+      value: sortBy,
+      searchable: false,
+      onChange: (v) => { setSortBy(Array.isArray(v) ? v[0] || 'newest' : v); setPage(1) },
+    })
+    return fields
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serviceOptions, selectedListingType, tagGroups, selectedTags, sortBy])
 
   /* faqs + popularSearches removed — Gemini content covers these */
 
@@ -321,80 +483,28 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
         />
         {subcats.length > 0 && <SubcategoryList subcategories={subcats} sectorSlug={sectorSlug} />}
 
-        {/* Main layout: listings only (no sidebar in grid) */}
+        {/* Horizontal filter bar — Locations is a cascading Country/State/City
+            dropdown driven by the full CSC dataset; the rest are dynamic
+            dropdowns built from real DB data (Specializations + tag groups +
+            Sort). */}
+        <CategoryFilterBar
+          location={{
+            country: locationCountry,
+            state: locationState,
+            city: locationCity,
+            onChange: handleLocationChange,
+          }}
+          fields={filterFields}
+        />
+
+        {/* Listings grid + pagination */}
         <div className="cd-layout" id="cd-listings">
-
-          {/* Filter drawer — slides from right, 35% width */}
-          {showFilters && (
-            <FilterSidebar
-              color={color}
-              isL3={showFilters}
-              isOpen={sidebarOpen}
-              onClose={() => setSidebarOpen(false)}
-              listingTypes={sidebarLTs}
-              selectedListingType={selectedListingType}
-              onListingTypeChange={handleListingTypeChange}
-              tagGroups={tagGroups}
-              selectedTags={selectedTags}
-              onToggleTag={toggleTag}
-              openAccordions={openAccordions}
-              onToggleAccordion={toggleAccordion}
-              onClearFilters={clearFilters}
-              hasAnyFilter={hasAnyFilter}
-              getListingTypeCount={getLTCount}
-              totalAllCount={listings.length}
-              totalFilteredCount={totalCount}
-              hasListings={hasListings}
-              demoTagCounts={new Map()}
-              locationCountry={locationCountry}
-              locationState={locationState}
-              locationCity={locationCity}
-              onLocationCountryChange={handleLocationCountryChange}
-              onStateChange={handleStateChange}
-              onCityChange={handleCityChange}
-              onApplyFilters={handleApplyFilters}
-              effectiveIso={locationCountry?.isoCode || ''}
-            />
-          )}
-
-          {/* Center: toolbar + listings + pagination */}
           <div>
-            {/* Toolbar */}
+            {/* Compact result count above the listings. */}
             <div className="cd-toolbar">
               <span className="cd-toolbar-count">
-                Top in {category?.name || 'Category'} - {new Date().toLocaleString('en-US', { month: 'long' })} {new Date().getFullYear()} (<strong>{totalCount}</strong>)
+                Top in {category?.name || 'Category'} — {new Date().toLocaleString('en-US', { month: 'long' })} {new Date().getFullYear()} (<strong>{totalCount}</strong>)
               </span>
-              <div className="cd-toolbar-right">
-              {showFilters && (
-                <button className="cd-filter-btn" onClick={() => setSidebarOpen(true)} type="button">
-                  <I d={ic.sliders} size={14} color={color} sw={2} />
-                  Filters
-                  {hasAnyFilter && (
-                    <span className="cd-filter-badge" style={{ background: color }}>
-                      {selectedTags.size + (selectedListingType ? 1 : 0) + (locationCountry ? 1 : 0) + (locationState ? 1 : 0) + (locationCity ? 1 : 0)}
-                    </span>
-                  )}
-                </button>
-              )}
-              <div className="cd-sort" ref={sortRef}>
-                <button className="cd-sort-btn" onClick={() => setSortOpen(o => !o)} type="button">
-                  Sort: {{ newest: 'Most relevant', 'name-az': 'Name A-Z', 'name-za': 'Name Z-A' }[sortBy]}
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'transform 200ms', transform: sortOpen ? 'rotate(180deg)' : 'none' }}><polyline points="6 9 12 15 18 9"/></svg>
-                </button>
-                {sortOpen && (
-                  <div className="cd-sort-dropdown">
-                    {([['newest', 'Most relevant'], ['name-az', 'Name A-Z'], ['name-za', 'Name Z-A']] as const).map(([val, label]) => (
-                      <button key={val} type="button"
-                        className={`cd-sort-option${sortBy === val ? ' cd-sort-option--active' : ''}`}
-                        onClick={() => { setSortBy(val); setSortOpen(false); setPage(1) }}>
-                        {label}
-                        {sortBy === val && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-              </div>
             </div>
 
             {/* AI Summary */}

@@ -96,6 +96,9 @@ export type RealSubmission = {
   reviewAvg: number
   latestReviewTitle: string
   latestReviewAuthor: string
+  /* Tag slugs attached via submission_tags — drives the filter bar's
+     tag-group dropdowns. */
+  tagSlugs: string[]
 }
 
 function parseJson(val: unknown): unknown[] {
@@ -218,6 +221,9 @@ export function mapRow(r: Record<string, unknown>): RealSubmission {
     reviewAvg: r.review_avg != null ? Number(r.review_avg) : 0,
     latestReviewTitle: String(r.latest_review_title ?? ''),
     latestReviewAuthor: String(r.latest_review_author ?? ''),
+    tagSlugs: typeof r.tag_slugs === 'string' && r.tag_slugs
+      ? r.tag_slugs.split(',').map((s: string) => s.trim()).filter(Boolean)
+      : [],
   }
 }
 

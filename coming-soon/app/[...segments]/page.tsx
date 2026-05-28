@@ -276,7 +276,8 @@ async function fetchCategoryPageData(categorySlug: string) {
         ? query('SELECT lt.id, lt.name, lt.slug, lt.sort_order FROM listing_types lt JOIN categories c ON c.id = lt.category_id WHERE c.parent_id = ? AND c.is_active = 1 ORDER BY lt.sort_order', [cid])
         : query('SELECT lt.id, lt.name, lt.slug, lt.sort_order FROM listing_types lt JOIN categories c3 ON c3.id = lt.category_id JOIN categories c2 ON c2.id = c3.parent_id WHERE c2.parent_id = ? AND c3.is_active = 1 ORDER BY lt.sort_order LIMIT 200', [cid]),
       catRow.parent_id ? queryOne('SELECT id, name, slug, icon, color FROM categories WHERE id = ?', [catRow.parent_id]) : Promise.resolve(null),
-      // Listings + reviews aggregate + latest review snippet for the Magneto-style card
+      // Listings + reviews aggregate + latest review + tag slugs (for the
+      // filter bar's tag-group dropdowns to actually filter listings).
       query(
         `SELECT s.*,
                 co.name as country_name,
@@ -285,13 +286,14 @@ async function fetchCategoryPageData(categorySlug: string) {
                 (SELECT COUNT(*) FROM reviews r WHERE r.listing_id = s.id AND r.status = 'approved') AS review_count,
                 (SELECT AVG(r.rating) FROM reviews r WHERE r.listing_id = s.id AND r.status = 'approved') AS review_avg,
                 (SELECT r.title FROM reviews r WHERE r.listing_id = s.id AND r.status = 'approved' ORDER BY r.created_at DESC LIMIT 1) AS latest_review_title,
-                (SELECT u.name FROM reviews r JOIN business_users u ON u.id = r.user_id WHERE r.listing_id = s.id AND r.status = 'approved' ORDER BY r.created_at DESC LIMIT 1) AS latest_review_author
+                (SELECT u.name FROM reviews r JOIN business_users u ON u.id = r.user_id WHERE r.listing_id = s.id AND r.status = 'approved' ORDER BY r.created_at DESC LIMIT 1) AS latest_review_author,
+                (SELECT GROUP_CONCAT(t.slug) FROM submission_tags st JOIN tags t ON t.id = st.tag_id WHERE st.submission_id = s.id) AS tag_slugs
          FROM submissions s
          LEFT JOIN categories c ON c.id = s.category_id
          LEFT JOIN listing_types lt ON lt.id = s.listing_type_id
          LEFT JOIN countries co ON co.id = s.country_id
          WHERE s.status IN ('active','paid') AND ${descendantWhere}
-         ORDER BY s.approved_at DESC, s.created_at DESC LIMIT 20`,
+         ORDER BY s.approved_at DESC, s.created_at DESC LIMIT 100`,
         [cid, cid, cid, cid, cid]
       ),
       // Sector-scoped categories (only this L1 + its L2/L3 children)
@@ -341,29 +343,52 @@ async function fetchCategoryPageData(categorySlug: string) {
   }
 }
 
-/* ── Build metadata for L2/L3 categories ── */
-function buildCategoryMeta(cat: CatSeo, country: string, countryName: string, monthYear: string, sectorSlug: string): Metadata {
+/* ── Build metadata for L2/L3 categories — full SEO surface ── */
+function buildCategoryMeta(
+  cat: CatSeo,
+  country: string,
+  countryName: string,
+  monthYear: string,
+  sectorSlug: string,
+  rating?: { avg: number; total: number },
+): Metadata {
   const baseName = cat.seoTitle || cat.name
-  // Title: 50-60 chars max
   const year = new Date().getFullYear()
-  const title = `Best ${baseName} ${year} | InfoWebWorld`
 
-  // Description: 100-130 chars max
-  const countText = cat.listingCount > 0 ? `${cat.listingCount}+ ` : ''
-  const description = `Compare ${countText}${baseName} companies worldwide. Verified reviews, pricing & features. Updated ${monthYear}.`
+  /* Title — keyword leading, year + brand trailing. Keep under ~60 chars
+     so SERP doesn't truncate. Includes count when listings exist. */
+  const countText = cat.listingCount > 0 ? `(${cat.listingCount}+) ` : ''
+  const title = `Top ${baseName} ${countText}— ${year} | InfoWebWorld`
+
+  /* Description — rating + count + freshness signal + value prop. ~155 chars. */
+  const ratingClause = rating && rating.total > 0
+    ? `Rated ${rating.avg.toFixed(1)}/5 by ${rating.total.toLocaleString()} verified users. `
+    : ''
+  const countClause = cat.listingCount > 0 ? `${cat.listingCount}+ ` : ''
+  const description = `Compare the best ${countClause}${baseName.toLowerCase()} companies. ${ratingClause}Pricing, reviews, features & hourly rates. Updated ${monthYear}.`.trim()
 
   const url = canonicalUrl(country, `/${sectorSlug}/${cat.slug}`)
   const ogImage = cat.seoOgImage || cat.coverImage || `${DOMAIN}/og-image.png`
 
-  // Merge DB keywords + auto-generated
+  /* Keyword stack — DB seo_keywords + targeted variants pulling in the
+     buying intent ("hire", "cost", "agency"), comparative ("vs", "top
+     rated"), and temporal ("2026") modifiers Google rewards. */
+  const lcName = baseName.toLowerCase()
   const autoKw = [
-    baseName.toLowerCase(),
-    `best ${baseName.toLowerCase()}`,
-    `${baseName.toLowerCase()} worldwide`,
-    `${baseName.toLowerCase()} reviews`,
-    `${baseName.toLowerCase()} comparison`,
-    `top ${baseName.toLowerCase()} software`,
-    `${baseName.toLowerCase()} tools ${new Date().getFullYear()}`,
+    lcName,
+    `best ${lcName}`,
+    `top ${lcName}`,
+    `top ${lcName} companies`,
+    `top ${lcName} agencies`,
+    `${lcName} companies`,
+    `${lcName} reviews`,
+    `${lcName} comparison`,
+    `${lcName} pricing`,
+    `${lcName} services`,
+    `hire ${lcName}`,
+    `${lcName} ${year}`,
+    `${lcName} list`,
+    `${lcName} rankings`,
   ]
   const keywords = [...new Set([...cat.seoKeywords.map(k => k.toLowerCase()), ...autoKw])].join(', ')
 
@@ -378,20 +403,83 @@ function buildCategoryMeta(cat: CatSeo, country: string, countryName: string, mo
       url,
       siteName: 'InfoWebWorld',
       type: 'website',
-      images: [{ url: ogImage, width: 1200, height: 630, alt: baseName }],
+      locale: 'en_US',
+      images: [{ url: ogImage, width: 1200, height: 630, alt: `${baseName} — Top Companies` }],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
       images: [ogImage],
+      site: '@infowebworld',
     },
-    robots: { index: false, follow: false },
+    /* Conditional indexing — only categories with 5+ listings (counting the
+       whole descendant tree) get index:true. Sparse categories stay
+       noindex,follow so PageRank still flows down the tree, but Google
+       doesn't waste crawl budget on thin pages and we don't dilute site-
+       wide quality signal with empty CollectionPages. */
+    robots: cat.listingCount >= 5
+      ? {
+          index: true,
+          follow: true,
+          googleBot: {
+            index: true,
+            follow: true,
+            'max-snippet': -1,
+            'max-image-preview': 'large',
+            'max-video-preview': -1,
+          },
+        }
+      : { index: false, follow: true },
   }
 }
 
+/* Richer listing shape for per-card Product / LocalBusiness / SoftwareApp
+   schema emission. Mirrors the columns we already pull in the listings
+   query — no extra DB hits. */
+type ListingSchemaSeed = {
+  id: string | number
+  companyName: string
+  slug: string
+  tagline?: string
+  description?: string
+  logoUrl?: string
+  website?: string
+  listingMode?: string
+  city?: string
+  state?: string
+  country?: string
+  hourlyRate?: string
+  minProjectSize?: string
+  employees?: string
+  founded?: string
+  reviewAvg?: number
+  reviewCount?: number
+  pricingModel?: string
+  categoryName?: string
+}
+
 /* ── Build JSON-LD schemas for L2/L3 categories ── */
-function buildJsonLd(cat: CatSeo, country: string, countryName: string, monthYear: string, sectorSlug: string, geminiFaq?: { q: string; a: string }[] | null) {
+function buildJsonLd(
+  cat: CatSeo,
+  country: string,
+  countryName: string,
+  monthYear: string,
+  sectorSlug: string,
+  geminiFaq?: { q: string; a: string }[] | null,
+  rating?: { avg: number; total: number },
+  topListings?: Array<{ companyName: string; slug: string; logoUrl?: string; listingMode?: string }>,
+  seedListings?: ListingSchemaSeed[],
+  articleMeta?: { datePublished?: string },
+  /* SeoContent for GEO entities (DefinedTerm + HowTo). Pulled from
+     category_seo_content table so re-generating Gemini content auto-updates
+     all of this on next page render — no extra wiring needed. */
+  seoContent?: {
+    rich_description?: string
+    buyers_guide?: unknown
+    extended_faq?: unknown
+  } | null,
+) {
   const baseName = cat.seoTitle || cat.name
   const baseDesc = cat.seoDescription || cat.description
   const url = canonicalUrl(country, `/${sectorSlug}/${cat.slug}`)
@@ -421,16 +509,109 @@ function buildJsonLd(cat: CatSeo, country: string, countryName: string, monthYea
     itemListElement: bcItems,
   }
 
-  // CollectionPage
-  const collection = {
+  // CollectionPage — enriched with AggregateRating (rich snippet trigger),
+  // mainEntity ItemList of top listings, and publisher reference.
+  const itemListEntities = (topListings || []).slice(0, 10).map((l, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    url: canonicalUrl(country, `${l.listingMode === 'company' ? '/profile/' : '/listing/'}${l.slug}`),
+    name: l.companyName,
+    ...(l.logoUrl ? { image: l.logoUrl } : {}),
+  }))
+  const collection: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: `Best ${baseName}`,
+    name: `Top ${baseName} Companies`,
     description: baseDesc || `Explore top ${baseName} businesses on InfoWebWorld.`,
     url,
+    inLanguage: 'en-US',
     isPartOf: { '@type': 'WebSite', name: 'InfoWebWorld', url: DOMAIN },
+    publisher: { '@type': 'Organization', name: 'InfoWebWorld', url: DOMAIN, logo: { '@type': 'ImageObject', url: `${DOMAIN}/favicon-512.png` } },
+    dateModified: new Date().toISOString(),
     ...(cat.listingCount > 0 ? { numberOfItems: cat.listingCount } : {}),
   }
+  if (rating && rating.total > 0) {
+    collection.aggregateRating = {
+      '@type': 'AggregateRating',
+      ratingValue: rating.avg.toFixed(1),
+      reviewCount: rating.total,
+      bestRating: 5,
+      worstRating: 1,
+    }
+  }
+  if (itemListEntities.length > 0) {
+    collection.mainEntity = {
+      '@type': 'ItemList',
+      name: `Top ${baseName} Companies`,
+      numberOfItems: itemListEntities.length,
+      itemListElement: itemListEntities,
+    }
+  }
+
+  /* ── Per-listing schemas — Product / SoftwareApplication / LocalBusiness
+     based on sector + listing mode. Each entity gets its own @id so the
+     CollectionPage's ItemList can reference them as proper graph nodes.
+     This is what unlocks Google product carousels in SERP. */
+  const sectorIsSoftware = sectorSlug === 'ai-ml' || sectorSlug === 'software-saas'
+  const seedSchemas = (seedListings || []).slice(0, 12).map(l => {
+    const href = (l.listingMode === 'company' ? '/profile/' : '/listing/') + l.slug
+    const fullUrl = canonicalUrl(country, href)
+    const isCompany = l.listingMode === 'company'
+    const type = isCompany ? 'LocalBusiness' : (sectorIsSoftware ? 'SoftwareApplication' : 'Product')
+    const node: Record<string, unknown> = {
+      '@type': type,
+      '@id': `${fullUrl}#listing`,
+      name: l.companyName,
+      url: fullUrl,
+      ...(l.tagline || l.description ? { description: (l.tagline || l.description || '').slice(0, 300) } : {}),
+      ...(l.logoUrl ? { image: l.logoUrl, logo: l.logoUrl } : {}),
+      brand: { '@type': 'Brand', name: l.companyName },
+    }
+    if (l.reviewAvg && l.reviewCount && l.reviewCount > 0) {
+      node.aggregateRating = {
+        '@type': 'AggregateRating',
+        ratingValue: l.reviewAvg.toFixed(1),
+        reviewCount: l.reviewCount,
+        bestRating: 5,
+        worstRating: 1,
+      }
+    }
+    /* Address for LocalBusiness — city/state/country only since we don't
+       collect street addresses. Google accepts partial addresses. */
+    if (isCompany && (l.city || l.country)) {
+      node.address = {
+        '@type': 'PostalAddress',
+        ...(l.city ? { addressLocality: l.city } : {}),
+        ...(l.state ? { addressRegion: l.state } : {}),
+        ...(l.country ? { addressCountry: l.country } : {}),
+      }
+    }
+    /* SoftwareApplication category — sector-derived. */
+    if (type === 'SoftwareApplication') {
+      node.applicationCategory = sectorSlug === 'ai-ml' ? 'BusinessApplication' : 'BusinessApplication'
+      node.operatingSystem = 'Web'
+    }
+    /* Offers — emit when we know pricing. hourlyRate for service-style,
+       minProjectSize for fixed-quote, pricingModel as free-text. */
+    if (l.hourlyRate) {
+      node.offers = {
+        '@type': 'Offer',
+        priceSpecification: { '@type': 'UnitPriceSpecification', referenceQuantity: { '@type': 'QuantitativeValue', unitCode: 'HUR' }, price: l.hourlyRate, priceCurrency: 'USD' },
+        availability: 'https://schema.org/InStock',
+      }
+    } else if (l.pricingModel && l.pricingModel !== 'contact') {
+      node.offers = {
+        '@type': 'Offer',
+        category: l.pricingModel,
+        availability: 'https://schema.org/InStock',
+      }
+    }
+    if (l.founded) node.foundingDate = l.founded
+    if (l.employees) node.numberOfEmployees = l.employees
+    if (l.website) node.sameAs = [l.website]
+    if (l.categoryName) node.category = l.categoryName
+    return node
+  })
 
   // FAQPage — use Gemini-generated FAQ when available (12 rich Q&As > 5 generic)
   const desc = baseDesc || `${baseName} encompasses a range of tools, platforms, and services.`
@@ -450,10 +631,124 @@ function buildJsonLd(cat: CatSeo, country: string, countryName: string, monthYea
   const faq = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
+    /* Speakable — voice assistants (Google Assistant) prefer FAQ content
+       marked speakable. Targets our rendered question + answer DOM. */
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['.seo-faq-q', '.seo-faq-a'],
+    },
     mainEntity: faqEntities,
   }
 
-  return { breadcrumb, collection, faq }
+  /* WebSite + SearchAction — qualifies for the SERP sitelinks search box
+     by declaring our /all search URL as the EntryPoint. */
+  const website = {
+    '@type': 'WebSite',
+    '@id': `${DOMAIN}#website`,
+    url: DOMAIN,
+    name: 'InfoWebWorld',
+    publisher: { '@id': `${DOMAIN}#org` },
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: { '@type': 'EntryPoint', urlTemplate: `${DOMAIN}/all?q={search_term_string}` },
+      'query-input': 'required name=search_term_string',
+    },
+  }
+
+  /* Organization — anchor entity referenced by website/publisher/etc via
+     @id. Establishes the brand for Google's Knowledge Graph. */
+  const organization = {
+    '@type': 'Organization',
+    '@id': `${DOMAIN}#org`,
+    name: 'InfoWebWorld',
+    url: DOMAIN,
+    logo: { '@type': 'ImageObject', url: `${DOMAIN}/favicon-512.png` },
+    sameAs: [
+      'https://twitter.com/infowebworld',
+      'https://www.linkedin.com/company/infowebworld',
+    ],
+  }
+
+  /* Article entity for the long-form Gemini SEO content. Author + publisher
+     established as InfoWebWorld editorial. datePublished tracks the
+     generated_at timestamp when the Gemini content was produced. */
+  const article = {
+    '@type': 'Article',
+    '@id': `${url}#article`,
+    headline: `${baseName} — Buyer's Guide, Comparisons & FAQs`,
+    description: baseDesc || `Complete buyer's guide to ${baseName} companies.`,
+    image: cat.seoOgImage || cat.coverImage || `${DOMAIN}/og-image.png`,
+    author: { '@id': `${DOMAIN}#org` },
+    publisher: { '@id': `${DOMAIN}#org` },
+    datePublished: articleMeta?.datePublished || new Date().toISOString(),
+    dateModified: new Date().toISOString(),
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+    inLanguage: 'en-US',
+  }
+
+  /* DefinedTerm — anchors the category as a named concept LLMs cite when
+     asked "what is X?". Slot into the GraphQL-style InfoWebWorld category
+     vocabulary so multiple categories reference one shared term set. */
+  const richDescFirstPara = (() => {
+    const rd = seoContent?.rich_description
+    if (typeof rd !== 'string') return ''
+    return rd.split('\n\n')[0] || ''
+  })()
+  const definedTerm = {
+    '@type': 'DefinedTerm',
+    '@id': `${url}#term`,
+    name: baseName,
+    description: (richDescFirstPara || baseDesc || `${baseName} — verified providers on InfoWebWorld.`).slice(0, 600),
+    termCode: cat.slug,
+    url,
+    inDefinedTermSet: {
+      '@type': 'DefinedTermSet',
+      '@id': `${DOMAIN}#categoryset`,
+      name: 'InfoWebWorld Category Index',
+      url: `${DOMAIN}/categories`,
+    },
+  }
+
+  /* HowTo — emitted when the Gemini buyers_guide contains questions or
+     features. Maps to "how to choose X provider" AI answers + Google
+     "how to" rich results. Each question becomes a HowToStep. */
+  const bgParsed = (() => {
+    const bg = seoContent?.buyers_guide
+    if (!bg) return null
+    if (typeof bg === 'string') { try { return JSON.parse(bg) } catch { return null } }
+    if (typeof bg === 'object') return bg as Record<string, unknown>
+    return null
+  })()
+  const bgQuestions = Array.isArray(bgParsed?.questions) ? bgParsed.questions as string[] : []
+  const bgFeatures = Array.isArray(bgParsed?.features) ? bgParsed.features as Array<{ title?: string; description?: string }> : []
+  const howToSteps = bgQuestions.length > 0
+    ? bgQuestions.slice(0, 12).map((q, i) => ({
+        '@type': 'HowToStep',
+        position: i + 1,
+        name: q.length > 90 ? q.slice(0, 87) + '…' : q,
+        text: q,
+      }))
+    : bgFeatures.slice(0, 12).map((f, i) => ({
+        '@type': 'HowToStep',
+        position: i + 1,
+        name: String(f.title || ''),
+        text: String(f.description || f.title || ''),
+      }))
+  const howTo = howToSteps.length > 0 ? {
+    '@type': 'HowTo',
+    '@id': `${url}#howto`,
+    name: `How to Choose the Right ${baseName} Provider`,
+    description: `Step-by-step framework to evaluate and select the right ${baseName} provider, based on InfoWebWorld's editorial methodology.`,
+    image: cat.seoOgImage || `${DOMAIN}/og-image.png`,
+    totalTime: 'PT15M',
+    step: howToSteps,
+  } : null
+
+  return {
+    breadcrumb, collection, faq, website, organization, article,
+    definedTerm, howTo,
+    listingNodes: seedSchemas,
+  }
 }
 
 /* ════════════════════════════════════════
@@ -520,6 +815,7 @@ export async function generateMetadata({
         url,
         siteName: 'InfoWebWorld',
         type: 'website',
+        locale: 'en_US',
         images: [{ url: meta.heroImage, width: 1200, height: 630, alt: meta.seoTitle }],
       },
       twitter: {
@@ -527,8 +823,19 @@ export async function generateMetadata({
         title,
         description,
         images: [meta.heroImage],
+        site: '@infowebworld',
       },
-      robots: { index: false, follow: false },
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          'max-snippet': -1,
+          'max-image-preview': 'large',
+          'max-video-preview': -1,
+        },
+      },
     }
   }
 
@@ -541,7 +848,27 @@ export async function generateMetadata({
     sectorSlug = (await getSectorSlugForCategory(categorySlug)) || ''
   }
 
-  return buildCategoryMeta(cat, country, countryName, monthYear, sectorSlug)
+  /* Pull the aggregate rating so the meta description can advertise it. */
+  let ratingArg: { avg: number; total: number } | undefined
+  try {
+    const aggRow = await queryOne(
+      `SELECT AVG(r.rating) as avg_rating, COUNT(*) as total_reviews
+       FROM reviews r
+       JOIN submissions s ON s.id = r.listing_id
+       WHERE r.status = 'approved' AND s.status IN ('active','paid') AND s.category_id IN (
+         SELECT id FROM categories WHERE id = ? AND is_active = 1
+         UNION SELECT id FROM categories WHERE parent_id = ? AND is_active = 1
+         UNION SELECT c3.id FROM categories c3 JOIN categories c2 ON c2.id = c3.parent_id WHERE c2.parent_id = ? AND c3.is_active = 1
+         UNION SELECT c4.id FROM categories c4 JOIN categories c3 ON c3.id = c4.parent_id JOIN categories c2 ON c2.id = c3.parent_id WHERE c2.parent_id = ? AND c4.is_active = 1
+       )`,
+      [cat.id, cat.id, cat.id, cat.id]
+    )
+    if (aggRow?.avg_rating != null && Number(aggRow?.total_reviews ?? 0) > 0) {
+      ratingArg = { avg: Number(aggRow.avg_rating), total: Number(aggRow.total_reviews) }
+    }
+  } catch { /* aggregate is optional */ }
+
+  return buildCategoryMeta(cat, country, countryName, monthYear, sectorSlug, ratingArg)
 }
 
 /* ════════════════════════════════════════
@@ -714,26 +1041,33 @@ export default async function CategoryDetailRoute({
         ]
     const l2Count = (pageData?.allCategories || []).filter((c: any) => Number(c.level) === 2).length
     const l3Count = (pageData?.allCategories || []).filter((c: any) => Number(c.level) === 3).length
-    jsonLdScripts = (
-      <>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
-          '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+    /* All three sector schemas in one @graph script — half the DOM weight. */
+    const sectorGraph = {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'BreadcrumbList',
           itemListElement: [
             { '@type': 'ListItem', position: 1, name: 'Home', item: DOMAIN },
             { '@type': 'ListItem', position: 2, name: sName },
-          ]
-        })}} />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
-          '@context': 'https://schema.org', '@type': 'CollectionPage',
-          name: `Best ${sName}`, description: sMeta.seoDescription, url: sUrl,
+          ],
+        },
+        {
+          '@type': 'CollectionPage',
+          name: `Top ${sName} Companies`,
+          description: sMeta.seoDescription,
+          url: sUrl,
+          inLanguage: 'en-US',
           isPartOf: { '@type': 'WebSite', name: 'InfoWebWorld', url: DOMAIN },
+          publisher: { '@type': 'Organization', name: 'InfoWebWorld', url: DOMAIN, logo: { '@type': 'ImageObject', url: `${DOMAIN}/favicon-512.png` } },
+          dateModified: new Date().toISOString(),
           numberOfItems: l2Count + l3Count,
-        })}} />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
-          '@context': 'https://schema.org', '@type': 'FAQPage',
-          mainEntity: sectorFaqEntities,
-        })}} />
-      </>
+        },
+        { '@type': 'FAQPage', mainEntity: sectorFaqEntities },
+      ],
+    }
+    jsonLdScripts = (
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(sectorGraph) }} />
     )
   }
 
@@ -755,13 +1089,72 @@ export default async function CategoryDetailRoute({
     // Parse Gemini extended_faq for JSON-LD rich snippets
     const jpFaq = (v: unknown) => { if (!v) return null; if (typeof v === 'string') { try { return JSON.parse(v) } catch { return null } } return v }
     const geminiFaq = jpFaq(pageData?.seoContent?.extended_faq) as { q: string; a: string }[] | null
-    const schemas = buildJsonLd(catSeo, country, countryName, monthYear, resolvedSector, geminiFaq)
+    /* Pull the top 10 listings + aggregate rating from pageData and pass them
+       through so the CollectionPage JSON-LD ships AggregateRating (rich
+       snippet stars in SERP) + ItemList (rich product entities). */
+    const ratingArg = pageData?.totalReviews && pageData.totalReviews > 0
+      ? { avg: Number(pageData.avgRating ?? 0), total: Number(pageData.totalReviews) }
+      : undefined
+    const topListings = (pageData?.listings || []).slice(0, 10).map((l: Record<string, unknown>) => ({
+      companyName: String(l.company_name ?? ''),
+      slug: String(l.slug ?? ''),
+      logoUrl: l.logo_url ? String(l.logo_url) : undefined,
+      listingMode: l.listing_mode ? String(l.listing_mode) : 'product',
+    }))
+    /* Richer per-listing seeds for Product / SoftwareApplication /
+       LocalBusiness schemas — pulls every signal we have into the graph
+       so Google can render product carousels + local pack + ratings. */
+    const seedListings: ListingSchemaSeed[] = (pageData?.listings || []).slice(0, 12).map((l: Record<string, unknown>) => ({
+      id: String(l.id ?? ''),
+      companyName: String(l.company_name ?? ''),
+      slug: String(l.slug ?? ''),
+      tagline: l.tagline ? String(l.tagline) : undefined,
+      description: l.description ? String(l.description) : undefined,
+      logoUrl: l.logo_url ? String(l.logo_url) : undefined,
+      website: l.website ? String(l.website) : undefined,
+      listingMode: l.listing_mode ? String(l.listing_mode) : 'product',
+      city: l.city ? String(l.city) : undefined,
+      state: l.state ? String(l.state) : undefined,
+      country: l.country_name ? String(l.country_name) : undefined,
+      hourlyRate: l.hourly_rate ? String(l.hourly_rate) : undefined,
+      minProjectSize: l.min_project_size ? String(l.min_project_size) : undefined,
+      employees: l.team_size ? String(l.team_size) : undefined,
+      founded: l.founded_year ? String(l.founded_year) : undefined,
+      reviewAvg: l.review_avg != null ? Number(l.review_avg) : undefined,
+      reviewCount: l.review_count != null ? Number(l.review_count) : undefined,
+      pricingModel: l.pricing_model ? String(l.pricing_model) : undefined,
+      categoryName: l.category_name ? String(l.category_name) : undefined,
+    }))
+    const articleMeta = pageData?.seoContent?.generated_at
+      ? { datePublished: new Date(String(pageData.seoContent.generated_at)).toISOString() }
+      : undefined
+    const schemas = buildJsonLd(
+      catSeo, country, countryName, monthYear, resolvedSector,
+      geminiFaq, ratingArg, topListings, seedListings, articleMeta,
+      pageData?.seoContent || null,
+    )
+    /* All entities in one @graph — Google + Bing prefer this form, half
+       the DOM weight, single network payload, @id cross-references work.
+       Now carries: Organization, WebSite + SearchAction, BreadcrumbList,
+       CollectionPage + AggregateRating + ItemList, Article, FAQPage +
+       Speakable, DefinedTerm (GEO), HowTo (GEO), and per-listing
+       Product / SoftwareApplication / LocalBusiness. */
+    const graph = {
+      '@context': 'https://schema.org',
+      '@graph': [
+        schemas.organization,
+        schemas.website,
+        schemas.breadcrumb,
+        schemas.collection,
+        schemas.article,
+        schemas.definedTerm,
+        ...(schemas.howTo ? [schemas.howTo] : []),
+        schemas.faq,
+        ...schemas.listingNodes,
+      ],
+    }
     jsonLdScripts = (
-      <>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.breadcrumb) }} />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.collection) }} />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.faq) }} />
-      </>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(graph) }} />
     )
   }
 
@@ -772,55 +1165,11 @@ export default async function CategoryDetailRoute({
      don't need the content. Client-side <SeoSections> inside <CategoryPage>
      still renders it all for real users after hydration. Drops server HTML
      from ~700-800 KB to ~120 KB per page. ── */
-  let serverSkeleton: React.ReactNode = null
-
-  if (isSector && slug) {
-    const sMeta = getSectorMeta(slug)
-    const sName = sMeta.seoTitle
-    const year = new Date().getFullYear()
-    const allCats = pageData?.allCategories || []
-    const l2s = allCats.filter((c: { level?: number }) => Number(c.level) === 2).length
-    const l3s = allCats.filter((c: { level?: number }) => Number(c.level) === 3).length
-    serverSkeleton = (
-      <div className="cd-server-skeleton">
-        <nav className="cd-server-breadcrumb" aria-label="Breadcrumb">
-          <a href="/" aria-label="Home"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a><span> &gt; </span><a href="/categories">Categories</a><span> &gt; </span><span>{sName}</span>
-        </nav>
-        <h1 className="cd-server-h1">{sName} {year}</h1>
-        <p className="cd-server-desc">{sMeta.seoDescription}</p>
-        <div className="cd-server-stats"><span><strong>{l2s}</strong> categories</span><span><strong>{l3s}</strong> subcategories</span></div>
-      </div>
-    )
-  }
-
-  if (isL2L3) {
-    const catInfo = pageData?.category
-    const catName = catInfo?.name ? String(catInfo.name) : categorySlug
-    const catDesc = catInfo?.seo_description || catInfo?.description || `Compare the best ${catName} companies worldwide.`
-    const parentName = catInfo?.parent_name ? String(catInfo.parent_name) : ''
-    const parentSlug = catInfo?.parent_slug ? String(catInfo.parent_slug) : ''
-    const catLevel = Number(catInfo?.level ?? 2)
-    const listingCount = pageData?.listingTotal ?? 0
-    const subCount = Array.isArray(catInfo?.subcategories) ? catInfo.subcategories.length : 0
-    const parentHref = parentSlug ? (catLevel === 3 && sectorSlug ? `/${sectorSlug}/${parentSlug}` : `/${parentSlug}`) : null
-    const year = new Date().getFullYear()
-    serverSkeleton = (
-      <div className="cd-server-skeleton">
-        <nav className="cd-server-breadcrumb" aria-label="Breadcrumb">
-          <a href="/" aria-label="Home"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a><span> &gt; </span>
-          <a href="/categories">Categories</a>
-          {parentName && parentHref && (<><span> &gt; </span><a href={parentHref}>{parentName}</a></>)}
-          <span> &gt; </span><span>{catName}</span>
-        </nav>
-        <h1 className="cd-server-h1">Best {catName} {year}</h1>
-        <p className="cd-server-desc">{catDesc}</p>
-        <div className="cd-server-stats">
-          <span><strong>{listingCount}</strong> companies</span>
-          {subCount > 0 && <span><strong>{subCount}</strong> subcategories</span>}
-        </div>
-      </div>
-    )
-  }
+  /* Server skeleton block REMOVED — it duplicated CategoryHero's H1 +
+     breadcrumb + description. CategoryPage is a 'use client' component but
+     Next.js SSRs it on initial paint, so the hero markup is already in the
+     HTML for crawlers. No need for a separate <div> that renders the same
+     content again. View source is now ~50% lighter. */
 
   const catSegments = L1_SLUGS.has(segments[0]) && segments.length > 1 ? segments.slice(1) : segments
 
@@ -828,7 +1177,6 @@ export default async function CategoryDetailRoute({
     <>
       {jsonLdScripts}
       <Navbar sectorSlug={navSector} />
-      {serverSkeleton}
       <Suspense>
         <CategoryPage
           segments={catSegments}

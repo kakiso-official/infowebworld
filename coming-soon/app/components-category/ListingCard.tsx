@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faStar, faStarHalfStroke,
   faCircleInfo, faArrowRight, faRightLeft,
+  faArrowUpRightFromSquare,
 } from '@fortawesome/free-solid-svg-icons'
 import SignupModal from '../components/auth/SignupModal'
 import CompareSearchBar from './CompareSearchBar'
@@ -264,7 +265,13 @@ export function RealListingCard({
         <div className="cd-lc-id">
           {item.logoUrl ? (
             <div className="cd-lc-logo">
-              <img src={item.logoUrl} alt={`${item.companyName} logo`} loading="lazy" />
+              <img
+                src={item.logoUrl}
+                alt={`${item.companyName} — ${item.category || 'company'} listed on InfoWebWorld`}
+                loading="lazy"
+                width="64"
+                height="64"
+              />
             </div>
           ) : (
             <div className="cd-lc-logo cd-lc-logo--ph">
@@ -328,6 +335,7 @@ export function RealListingCard({
                   onClick={() => trackWebsiteClick(item.slug, 'category-card')}
                 >
                   Visit Website
+                  <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="cd-lc-btn-ico" />
                 </a>
               ) : (
                 <Link href={profileHref} className="cd-lc-btn cd-lc-btn--solid">View Profile</Link>

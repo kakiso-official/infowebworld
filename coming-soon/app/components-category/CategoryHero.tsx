@@ -100,6 +100,21 @@ export default function CategoryHero({
 
   return (
     <header className="cd-hero">
+      {/* Brand watermark — InfoWebWorld's 4-quadrant window mark in its
+          signature colors (mustard / coral / sky / lime). Decorative only,
+          hidden from screen readers, sits behind content. */}
+      <svg
+        className="cd-hero-watermark"
+        viewBox="0 0 250 250"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <polygon fill="#FEB801" points="117.62 76.04 76.04 76.04 76.04 125 49.89 125 49.89 49.89 117.62 49.89 117.62 76.04" />
+        <polygon fill="#F25022" points="173.96 117.62 173.96 76.04 132.38 76.04 132.38 49.89 200.11 49.89 200.11 117.62 173.96 117.62" />
+        <polygon fill="#01A4EF" points="76.04 125 76.04 173.96 125 173.96 125 200.11 49.89 200.11 49.89 125 76.04 125" />
+        <polygon fill="#7FBA00" points="125 173.96 173.96 173.96 173.96 132.38 200.11 132.38 200.11 200.11 125 200.11 125 173.96" />
+      </svg>
+
       {/* Breadcrumb — Home / [every ancestor in order] / Current.
           L1 (sector) links to /{slug}, L2+ link to /{sector}/{slug}. If
           `ancestors` wasn't passed (legacy callers), fall back to the
@@ -184,9 +199,18 @@ export default function CategoryHero({
         )}
       </div>
 
-      {/* Bottom row — Rankings updated date + Buyer's Guide + FAQs links */}
+      {/* Meta row — author byline + last updated + Buyer's Guide + FAQs.
+          The "By InfoWebWorld Editorial · Reviewed by" line is an E-E-A-T
+          signal (Experience-Expertise-Authoritativeness-Trustworthiness)
+          that Google + LLMs both read. <time> dateTime makes freshness
+          machine-readable for AI answer engines. */}
       <div className="cd-hero-meta">
-        <span className="cd-hero-updated">Rankings updated: {dateStr}</span>
+        <span className="cd-hero-byline">
+          By <strong>InfoWebWorld Editorial</strong> · Reviewed by InfoWebWorld Team
+        </span>
+        <span className="cd-hero-meta-sep" aria-hidden="true">·</span>
+        <span className="cd-hero-updated">
+          Updated <time dateTime={today.toISOString()}>{dateStr}</time></span>
         {hasGuide && (
           <>
             <a href="#seo-guide" className="cd-hero-meta-link">Buyer&rsquo;s Guide</a>
