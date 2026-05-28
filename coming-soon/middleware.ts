@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-/* ── Indexable pages — everything else gets noindex ── */
+/* ── Exact-match indexable static pages ── */
 const INDEXABLE_PATHS = new Set([
   '', '/',
   '/business',
@@ -28,8 +28,42 @@ const INDEXABLE_PATHS = new Set([
   '/write-review',
 ])
 
+/* L1 sector slugs — used to detect sector landing + category detail routes
+   so middleware can allow them through (meta-robots in [...segments]/page.tsx
+   then handles the per-page index/noindex decision via the 5-listing
+   threshold). Must stay in sync with the L1_SLUGS set in that file. */
+const SECTOR_SLUGS = new Set([
+  'ai-ml', 'software-saas', 'it-services-agencies',
+  'startups-innovation', 'local-businesses', 'professional-services',
+])
+
 function shouldNoindex(pathname: string): boolean {
-  return !INDEXABLE_PATHS.has(pathname)
+  if (INDEXABLE_PATHS.has(pathname)) return false
+
+  const segments = pathname.split('/').filter(Boolean)
+
+  /* /{sector} — L1 sector landing pages. Always indexable. */
+  if (segments.length === 1 && SECTOR_SLUGS.has(segments[0])) return false
+
+  /* /{sector}/{categorySlug} — L2/L3/L4/L5 category detail pages.
+     Indexable EXCEPT for the view-all-sub-categories navigation aids
+     (those duplicate the /categories index and add no unique content). */
+  if (segments.length === 2 && SECTOR_SLUGS.has(segments[0])) {
+    if (segments[1].startsWith('view-all-sub-categories-')) return true
+    return false
+  }
+
+  /* Individual listing + company profile pages. */
+  if (segments.length === 2 && (segments[0] === 'listing' || segments[0] === 'profile')) return false
+
+  /* Blog index + posts. */
+  if (segments[0] === 'blog') return false
+
+  /* Sector standalone routes used by the legacy /sector/<slug> path. */
+  if (segments[0] === 'sector' && segments.length === 2) return false
+
+  /* Everything else (auth, admin, signup, dashboard, settings, etc.) stays noindex. */
+  return true
 }
 
 /* Routes that serve per-user content — must never be cached in a shared cache.
