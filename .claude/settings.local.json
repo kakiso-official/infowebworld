@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c 'import json,sys; print\\(json.load\\(open\\(sys.argv[1]\\)\\)['\\\\''token'\\\\'']\\)' '/c/Users/AADIL PARMAR/AppData/Roaming/com.vercel.cli/Data/auth.json')",
+      "Bash(curl -s -H 'Authorization: Bearer __TRACKED_VAR__' https://api.vercel.com/v2/teams/__TRACKED_VAR__ -o /tmp/team.json)",
+      "Bash(python -c ' *)"
+    ]
+  }
+}
