@@ -1,50 +1,45 @@
 import { NextRequest } from 'next/server'
+import fs from 'node:fs'
+import path from 'node:path'
 import { query } from '@/lib/db'
 import { requireAdmin } from '@/lib/auth'
 
-interface WorkerRow {
-  worker_id: string
-  hostname: string | null
-  status: string
-  started_at: string
-  last_seen_at: string
-  current_jobs: unknown
-  day_spend_usd: number | string
-  model: string | null
-  concurrency: number
-  daily_cap_usd: number | string
-}
+const HEARTBEAT_FILE = path.resolve(process.cwd(), '.scrape-worker.heartbeat')
+const STOP_FILE      = path.resolve(process.cwd(), '.scrape-worker.stop')
 
-interface ControlRow {
-  desired_state: 'running' | 'stopped'
-  updated_at: string
-  updated_by: string | null
-  note: string | null
-}
-
-interface CurrentJob {
-  id: number
-  slug: string
-  started_at: string
+/* Reads the worker heartbeat sentinel — the scrape-worker process
+   re-writes this file on every poll iteration. Fresh = online. Stale
+   (>30s) or missing = offline. Falls back to nulls if the file can't
+   be read (e.g. in production where the worker doesn't run). */
+function readWorkerHeartbeat(): { online: boolean; lastBeatAt: string | null; stopRequested: boolean } {
+  let lastBeatMs: number | null = null
+  try {
+    const stat = fs.statSync(HEARTBEAT_FILE)
+    lastBeatMs = stat.mtimeMs
+  } catch {}
+  let stopRequested = false
+  try { stopRequested = fs.existsSync(STOP_FILE) } catch {}
+  return {
+    online: lastBeatMs != null && Date.now() - lastBeatMs < 30_000,
+    lastBeatAt: lastBeatMs != null ? new Date(lastBeatMs).toISOString() : null,
+    stopRequested,
+  }
 }
 
 /**
  * GET /api/admin/scrape/stats
  *
- * Top-bar counters + per-L1 funnel + 7-day spend + worker fleet status.
+ * Aggregate counters for the top bar + Dashboards tab. Per-status counts,
+ * per-L1 funnel, 7-day cost total, 7-day session count.
  *
- * Worker state lives in scrape_worker_control (desired_state) and
- * scrape_worker_heartbeats (per-process liveness). A heartbeat fresher
- * than 60s = process alive. Polled by the UI every 4s so the dot stays
- * live; cheap query — both tables are tiny (1 control row, ~1 row per
- * worker process).
+ * Polled by the UI every few seconds so the top counter pills stay live.
  */
 export async function GET(request: NextRequest) {
   const guard = await requireAdmin(request)
   if (guard instanceof Response) return guard
 
   try {
-    const [byStatus, byL1, recent, lastSession, controlRows, workerRows] = await Promise.all([
+    const [byStatus, byL1, recent, lastSession] = await Promise.all([
       query<{ status: string; count: number }>(`
         SELECT status, COUNT(*) AS count FROM scrape_jobs GROUP BY status
       `),
@@ -66,17 +61,6 @@ export async function GET(request: NextRequest) {
         SELECT started_at, status FROM scrape_sessions
          ORDER BY started_at DESC LIMIT 1
       `),
-      query<ControlRow>(`
-        SELECT desired_state, updated_at, updated_by, note
-          FROM scrape_worker_control WHERE id = 1
-      `),
-      query<WorkerRow>(`
-        SELECT worker_id, hostname, status, started_at, last_seen_at,
-               current_jobs, day_spend_usd, model, concurrency, daily_cap_usd
-          FROM scrape_worker_heartbeats
-         WHERE last_seen_at >= DATE_SUB(NOW(), INTERVAL 10 MINUTE)
-         ORDER BY last_seen_at DESC
-      `),
     ])
 
     const status: Record<string, number> = { queued: 0, running: 0, review: 0, applied: 0, failed: 0, skipped: 0 }
@@ -93,54 +77,26 @@ export async function GET(request: NextRequest) {
       sessions: acc.sessions + Number(r.sessions ?? 0),
     }), { cost: 0, sessions: 0 })
 
-    const desiredState: 'running' | 'stopped' = controlRows[0]?.desired_state ?? 'stopped'
-
-    /* A worker that crashed without writing the final 'offline' beat
-       will leave a stale row with status='online'. Treat any row with
-       last_seen_at > 60s ago as offline regardless of its self-reported
-       status. */
-    const now = Date.now()
-    const workers = workerRows.map(w => {
-      const lastSeenMs = new Date(w.last_seen_at).getTime()
-      const ageSec = Math.floor((now - lastSeenMs) / 1000)
-      const alive = ageSec < 60
-      let parsedJobs: CurrentJob[] = []
-      try {
-        const raw = typeof w.current_jobs === 'string' ? JSON.parse(w.current_jobs) : w.current_jobs
-        if (Array.isArray(raw)) parsedJobs = raw as CurrentJob[]
-      } catch {}
-      return {
-        workerId: w.worker_id,
-        hostname: w.hostname,
-        status: alive ? w.status : 'offline',
-        startedAt: w.started_at,
-        lastSeenAt: w.last_seen_at,
-        ageSec,
-        alive,
-        currentJobs: parsedJobs,
-        daySpendUsd: Number(w.day_spend_usd ?? 0),
-        model: w.model,
-        concurrency: Number(w.concurrency ?? 1),
-        dailyCapUsd: Number(w.daily_cap_usd ?? 0),
-      }
-    })
-
-    const aliveWorkers = workers.filter(w => w.alive)
-    const workerLikelyOnline = aliveWorkers.length > 0
+    const last = lastSession[0]
+    /* Prefer the heartbeat file (rewritten every poll iteration) so an
+       idle worker is still detected as online. Fall back to the
+       last-session timestamp if the heartbeat file is unavailable (e.g.
+       running on Vercel where the worker doesn't run). */
+    const heartbeat = readWorkerHeartbeat()
+    const lastSessionAlive = last
+      ? Date.now() - new Date(last.started_at).getTime() < 5 * 60 * 1000
+      : false
+    const workerLikelyOnline = heartbeat.online || lastSessionAlive
 
     return Response.json({
       ok: true,
       status,
       l1,
       sevenDay,
-      /* Legacy fields preserved so older UI bundles keep rendering during
-         deploys. The new UI uses desiredState + workers[] directly. */
       workerLikelyOnline,
-      workerHeartbeatAt: aliveWorkers[0]?.lastSeenAt ?? null,
-      workerStopRequested: desiredState === 'stopped',
-      lastActivityAt: lastSession[0]?.started_at ?? null,
-      desiredState,
-      workers: aliveWorkers,
+      workerHeartbeatAt: heartbeat.lastBeatAt,
+      workerStopRequested: heartbeat.stopRequested,
+      lastActivityAt: last?.started_at ?? null,
     })
   } catch (err) {
     console.error('GET /scrape/stats:', err)

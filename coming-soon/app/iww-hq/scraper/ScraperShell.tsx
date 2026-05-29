@@ -50,21 +50,6 @@ interface JobDetail {
   sessions: Session[]
 }
 
-interface WorkerInfo {
-  workerId: string
-  hostname: string | null
-  status: string
-  startedAt: string
-  lastSeenAt: string
-  ageSec: number
-  alive: boolean
-  currentJobs: Array<{ id: number; slug: string; started_at: string }>
-  daySpendUsd: number
-  model: string | null
-  concurrency: number
-  dailyCapUsd: number
-}
-
 interface Stats {
   status: Record<string, number>
   l1: Record<string, Record<string, number>>
@@ -73,8 +58,6 @@ interface Stats {
   workerHeartbeatAt: string | null
   workerStopRequested: boolean
   lastActivityAt: string | null
-  desiredState: 'running' | 'stopped'
-  workers: WorkerInfo[]
 }
 
 const STATUS_ORDER = ['queued', 'running', 'review', 'applied', 'failed', 'skipped'] as const
@@ -145,15 +128,20 @@ export default function ScraperShell() {
           </div>
         </div>
         <div className="scrp-top-right">
-          <div className="scrp-worker" title={workerTooltip(stats)}>
-            <span className={`scrp-worker-dot ${workerDotClass(stats)}`} />
-            <span>{workerLabel(stats)}</span>
+          <div className="scrp-worker">
+            <span className={`scrp-worker-dot ${stats?.workerLikelyOnline ? 'is-online' : 'is-offline'}`} />
+            <span>
+              Worker {stats?.workerStopRequested
+                ? 'stopping…'
+                : stats?.workerLikelyOnline ? 'online' : 'offline'}
+            </span>
+            {!stats?.workerLikelyOnline && !stats?.workerStopRequested && (
+              <code className="scrp-worker-hint">npm run scrape:worker</code>
+            )}
           </div>
-          <WorkerControl
-            desiredState={stats?.desiredState ?? 'stopped'}
-            workersOnline={stats?.workers?.length ?? 0}
-            onChange={refresh}
-          />
+          {stats?.workerLikelyOnline && (
+            <StopWorkerButton stopRequested={stats.workerStopRequested} />
+          )}
           <div className="scrp-spend">
             7d: <strong>${(stats?.sevenDay.cost ?? 0).toFixed(2)}</strong>
             <span className="scrp-spend-sub">{stats?.sevenDay.sessions ?? 0} sessions</span>
@@ -424,7 +412,7 @@ function JobDetailView({ jobId, onChanged }: { jobId: number; onChanged: () => v
         <h3 className="scrp-section-title">Sessions <span className="scrp-section-sub">{sessions.length}</span></h3>
         {sessions.length === 0 && (
           <div className="scrp-empty-sessions">
-            No sessions yet. Click <strong>Scrape now</strong> above — the worker on your server will pick it up within ~10s (make sure it&apos;s started).
+            No sessions yet. Click <strong>Scrape now</strong> above, then run <code>npm run scrape:worker</code> in your terminal.
           </div>
         )}
         {sessions.map(s => (
@@ -517,45 +505,31 @@ function DeployButton() {
 }
 
 /**
- * Unified Start/Stop control. Writes scrape_worker_control.desired_state
- * via /api/admin/scrape/worker/{start|stop}. The long-running worker
- * daemon (on a Linux server, under PM2) polls that row each iteration —
- * signal latency ≈ poll interval (default 10s). The worker process
- * itself stays alive on Stop; only its claiming behavior pauses.
+ * Stops the local scrape-worker process by writing a sentinel file
+ * (.scrape-worker.stop) that the worker polls between iterations.
+ * Worker exits gracefully — finishes in-flight jobs, releases DB
+ * + browser, then dies. Picked up within one poll (~10s).
  */
-function WorkerControl({
-  desiredState,
-  workersOnline,
-  onChange,
-}: {
-  desiredState: 'running' | 'stopped'
-  workersOnline: number
-  onChange: () => void
-}) {
+function StopWorkerButton({ stopRequested }: { stopRequested: boolean }) {
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState<string | null>(null)
-  const isRunning = desiredState === 'running'
 
   const click = async () => {
-    if (isRunning) {
-      if (!confirm('Stop the scraper worker?\n\nIn-flight jobs will be allowed to finish (~30-60s each). The worker process stays alive on the server — click Start to resume.')) return
-    }
-    const action = isRunning ? 'stop' : 'start'
+    if (!confirm('Stop the scraper worker?\n\nIn-flight jobs will be allowed to finish (~30-60s each). The worker will then exit. You can restart it with `npm run scrape:worker` in the terminal.')) return
     setBusy(true); setMsg(null)
     try {
-      const res = await fetch(`/api/admin/scrape/worker/${action}`, { method: 'POST' })
+      const res = await fetch('/api/admin/scrape/worker/stop', { method: 'POST' })
       const json = await res.json().catch(() => ({}))
       if (!res.ok || !json.ok) {
         setMsg(`✗ ${json.error || `HTTP ${res.status}`}`)
       } else {
-        setMsg(json.message || (isRunning ? 'Stop signal sent' : 'Start signal sent'))
+        setMsg(json.message || '✓ Stop requested')
       }
-      onChange()
     } catch (err) {
       setMsg(`✗ ${err instanceof Error ? err.message : String(err)}`)
     } finally {
       setBusy(false)
-      setTimeout(() => setMsg(null), 8000)
+      setTimeout(() => setMsg(null), 6000)
     }
   }
 
@@ -563,50 +537,16 @@ function WorkerControl({
     <div className="scrp-deploy">
       <button
         type="button"
-        className={`scrp-btn ${isRunning ? 'scrp-btn--danger' : 'scrp-btn--primary'}`}
+        className="scrp-btn scrp-btn--danger"
         onClick={click}
-        disabled={busy}
-        title={isRunning ? 'Pause job claiming (process stays alive)' : 'Resume job claiming'}
+        disabled={busy || stopRequested}
+        title="Send graceful stop signal to the worker"
       >
-        {busy ? '…' : isRunning ? 'Stop worker' : 'Start worker'}
+        {busy ? 'Sending…' : stopRequested ? 'Stopping…' : 'Stop worker'}
       </button>
-      {workersOnline === 0 && !busy && (
-        <span className="scrp-deploy-msg" style={{ color: '#999' }}>
-          no worker on server
-        </span>
-      )}
-      {msg && <span className={`scrp-deploy-msg ${msg.startsWith('✓') || msg.toLowerCase().includes('signal') || msg.toLowerCase().includes('idle') ? 'is-ok' : 'is-err'}`}>{msg}</span>}
+      {msg && <span className={`scrp-deploy-msg ${msg.startsWith('✓') || msg.startsWith('Stop requested') ? 'is-ok' : 'is-err'}`}>{msg}</span>}
     </div>
   )
-}
-
-/* ───── Worker indicator helpers ────────────────────────────────────────
-   Dot color = process liveness (any heartbeat in last 60s).
-   Label    = what the worker is currently doing.
-   These are decoupled so Start sets desired=running while still showing
-   "idle" until queued jobs exist. */
-function workerDotClass(s: Stats | null): string {
-  if (!s || !s.workerLikelyOnline) return 'is-offline'
-  return 'is-online'
-}
-
-function workerLabel(s: Stats | null): string {
-  if (!s) return 'Worker —'
-  if (!s.workerLikelyOnline) return 'Worker offline'
-  const activeJobs = (s.workers || []).reduce((n, w) => n + (w.currentJobs?.length || 0), 0)
-  if (s.desiredState === 'stopped') {
-    return activeJobs > 0 ? `Worker draining (${activeJobs})` : 'Worker stopped (idle)'
-  }
-  return activeJobs > 0 ? `Worker running (${activeJobs})` : 'Worker idle (no queued)'
-}
-
-function workerTooltip(s: Stats | null): string {
-  if (!s || !s.workers || s.workers.length === 0) {
-    return 'No worker process online. Start the daemon on your Linux server (pm2 start scraper-worker).'
-  }
-  return s.workers.map(w =>
-    `${w.workerId} • ${w.status} • ${w.currentJobs.length} in-flight • $${w.daySpendUsd.toFixed(2)} today • ${w.model || ''}`
-  ).join('\n')
 }
 
 /**
