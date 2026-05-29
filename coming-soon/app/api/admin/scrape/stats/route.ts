@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
   if (guard instanceof Response) return guard
 
   try {
-    const [byStatus, byL1, recent, lastSession] = await Promise.all([
+    const [byStatus, byL1, recent, lastSession, staleRunning, runtimeCfg] = await Promise.all([
       query<{ status: string; count: number }>(`
         SELECT status, COUNT(*) AS count FROM scrape_jobs GROUP BY status
       `),
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
          GROUP BY category_l1, status
       `),
       query<{ days_ago: number; cost: number; sessions: number }>(`
-        SELECT DATEDIFF(NOW(), started_at) AS days_ago,
+        SELECT COALESCE(DATEDIFF(NOW(), started_at), 0) AS days_ago,
                SUM(total_cost_usd) AS cost,
                COUNT(*) AS sessions
           FROM scrape_sessions
@@ -61,6 +61,26 @@ export async function GET(request: NextRequest) {
         SELECT started_at, status FROM scrape_sessions
          ORDER BY started_at DESC LIMIT 1
       `),
+      /* Stale 'running' = orphaned rows. Matches the worker's reclaim
+         predicate so the UI count is exactly what the cleanup button
+         would recover. Surfaced as a separate badge in the top bar. */
+      query<{ count: number }>(`
+        SELECT COUNT(*) AS count
+          FROM scrape_jobs j
+          LEFT JOIN scrape_sessions s ON s.id = j.last_session_id
+         WHERE j.status = 'running'
+           AND (
+             s.id IS NULL
+             OR (s.status = 'running' AND s.started_at < DATE_SUB(NOW(), INTERVAL 30 MINUTE))
+             OR s.status IN ('success', 'review', 'failed', 'cancelled')
+           )
+      `),
+      /* Wrapped in a catch so the stats endpoint still works on a fresh
+         install where the migration hasn't been run yet. Missing table
+         is harmless — we just report no L1 filter. */
+      query<{ l1_filter: string | null }>(`
+        SELECT l1_filter FROM scraper_runtime_config WHERE id = 1
+      `).catch(() => [] as { l1_filter: string | null }[]),
     ])
 
     const status: Record<string, number> = { queued: 0, running: 0, review: 0, applied: 0, failed: 0, skipped: 0 }
@@ -97,6 +117,8 @@ export async function GET(request: NextRequest) {
       workerHeartbeatAt: heartbeat.lastBeatAt,
       workerStopRequested: heartbeat.stopRequested,
       lastActivityAt: last?.started_at ?? null,
+      staleRunning: Number(staleRunning[0]?.count ?? 0),
+      l1Filter: runtimeCfg[0]?.l1_filter ?? null,
     })
   } catch (err) {
     console.error('GET /scrape/stats:', err)

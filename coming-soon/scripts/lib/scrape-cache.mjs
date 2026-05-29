@@ -19,7 +19,7 @@
  *   self-critique — depends on freshly assembled extracted JSON
  *   validate-citations / save-session — bookkeeping
  */
-import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync, readdirSync } from 'node:fs'
+import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync, readdirSync, renameSync, unlinkSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 
 const DEFAULT_TTL_MS = 24 * 60 * 60 * 1000
@@ -43,16 +43,27 @@ export function getCached(jobId, stepName, ttlMs = DEFAULT_TTL_MS, cwd = process
     if (!entry || typeof entry.ts !== 'number') return null
     if (Date.now() - entry.ts > ttlMs) return null
     return entry.data ?? null
-  } catch {
+  } catch (err) {
+    /* Corrupted cache file (partial write from a crashed previous run,
+       disk full, etc.). Delete it so we don't keep tripping on the same
+       broken JSON on every retry. */
+    try { unlinkSync(path) } catch {}
+    console.warn(`[cache] discarded corrupted ${jobId}/${stepName}: ${err.message}`)
     return null
   }
 }
 
-/** Persist data under (jobId, stepName). Silent on IO errors. */
+/** Persist data under (jobId, stepName). Silent on IO errors.
+ *  Writes to .tmp first then renames — rename is atomic on POSIX and
+ *  effectively atomic on Windows, so a worker crash mid-write can never
+ *  leave a partial JSON file that breaks the next read. */
 export function setCached(jobId, stepName, data, cwd = process.cwd()) {
   try {
     mkdirSync(jobDir(jobId, cwd), { recursive: true })
-    writeFileSync(stepPath(jobId, stepName, cwd), JSON.stringify({ ts: Date.now(), data }))
+    const finalPath = stepPath(jobId, stepName, cwd)
+    const tmpPath = `${finalPath}.${process.pid}.tmp`
+    writeFileSync(tmpPath, JSON.stringify({ ts: Date.now(), data }))
+    renameSync(tmpPath, finalPath)
     return true
   } catch (err) {
     console.warn(`[cache] could not write ${jobId}/${stepName}: ${err.message}`)

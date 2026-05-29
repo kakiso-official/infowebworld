@@ -62,6 +62,19 @@ export async function POST(
     const body = await request.json().catch(() => ({})) as { sections?: string[] }
     const sections = Array.isArray(body.sections) ? body.sections : []
 
+    /* Reject unknown section names instead of silently no-opping. A typo
+       in the UI dropdown ("featuress") used to return 200 OK and clear
+       nothing — admin would re-scrape, get the cached output, and assume
+       it just hadn't changed. */
+    const validSections = Object.keys(SECTION_TO_STEPS)
+    const unknown = sections.filter(s => !validSections.includes(s))
+    if (unknown.length) {
+      return Response.json({
+        ok: false,
+        error: `Unknown section${unknown.length === 1 ? '' : 's'}: ${unknown.join(', ')}. Valid: ${validSections.join(', ')}`,
+      }, { status: 400 })
+    }
+
     const existing = await queryOne<{ status: string }>(`SELECT status FROM scrape_jobs WHERE id = ?`, [jobId])
     if (!existing) return Response.json({ ok: false, error: 'Job not found' }, { status: 404 })
     if (existing.status === 'running') {

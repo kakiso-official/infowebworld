@@ -58,6 +58,18 @@ const REQUIRED_FIELDS_WITH_SOURCE = [
   ['team_size', 'team_size_source_url', 'team_size_source_quote'],
 ]
 
+/**
+ * CancelledError marks a clean admin-cancel exit (not a real failure).
+ * The outer catch maps this to scrape_sessions.status='cancelled' so the
+ * UI's filter pills count it separately from worker-failed runs.
+ */
+class CancelledError extends Error {
+  constructor(msg = 'cancelled') {
+    super(msg)
+    this.name = 'AbortError'
+  }
+}
+
 export async function scrapeListing({
   env,
   jobId,
@@ -67,6 +79,7 @@ export async function scrapeListing({
   log = console,
   costCapUsd = 0.50,
   dryRun = false,
+  signal,
 }) {
   if (!env.GEMINI_API_KEY) throw new Error('GEMINI_API_KEY missing')
 
@@ -89,7 +102,7 @@ export async function scrapeListing({
   )
 
   const ctx = {
-    env, sessionId, jobId: job.id, model, log, costCapUsd,
+    env, sessionId, jobId: job.id, model, log, costCapUsd, signal,
     stepIndex: 0, totalCost: 0, totalIn: 0, totalOut: 0, pages: 0, failedSteps: 0,
   }
 
@@ -213,7 +226,14 @@ export async function scrapeListing({
           console.warn(`    → falling back to local path (will NOT work on infowebworld.com)`)
           console.warn(`    → ensure dev server is running:  npm run dev`)
           const local = `${publicScreenshotBase}/${job.slug}-home.jpg`
-          return { output_excerpt: local, _data: local }
+          /* Prefix the step excerpt so the UI timeline shows the upload
+             failure clearly — otherwise the local path looks like a
+             success and the listing appears broken in production with no
+             explanation in the step log. */
+          return {
+            output_excerpt: `[UPLOAD FAILED — dev-only path] ${local} :: ${err.message?.slice(0, 120)}`,
+            _data: local,
+          }
         }
       })
     homeShotUrl = homeShotStep?._data ?? null
@@ -234,7 +254,10 @@ export async function scrapeListing({
           } catch (err) {
             console.warn(`  ✗ upload FAILED for ${job.slug}-secondary: ${err.message}`)
             const local = `${publicScreenshotBase}/${job.slug}-secondary.jpg`
-            return { output_excerpt: local, _data: local }
+            return {
+              output_excerpt: `[UPLOAD FAILED — dev-only path] ${local} :: ${err.message?.slice(0, 120)}`,
+              _data: local,
+            }
           }
         })
       secondaryShotUrl = secondaryShotStep?._data ?? null
@@ -259,6 +282,13 @@ export async function scrapeListing({
       ctx.totalCost += out.costUsd
       ctx.totalIn += out.inputTokens
       ctx.totalOut += out.outputTokens
+      /* Dedup the flagged_fields array — Gemini sometimes lists the same
+         field twice (once per concern). Counting duplicates inflated both
+         the review badge ("3 issues!") and the DB row, making the human
+         reviewer chase phantom problems. */
+      if (out.json && Array.isArray(out.json.flagged_fields)) {
+        out.json.flagged_fields = [...new Set(out.json.flagged_fields.filter(Boolean))]
+      }
       return {
         input_prompt_preview: prompt.slice(0, 500),
         input_tokens: out.inputTokens,
@@ -339,25 +369,32 @@ export async function scrapeListing({
     log.info?.(`✓ [job ${job.id}] ${job.slug} → ${finalStatus} in $${ctx.totalCost.toFixed(4)} (${ctx.totalIn}+${ctx.totalOut} tok, ${ctx.pages} pages)`)
     return { sessionId, extracted, critique: critiqueResult, citationIssues, cost: ctx.totalCost, status: finalStatus }
   } catch (err) {
-    log.error?.(`✗ [job ${job.id}] failed: ${err.message}`)
+    const wasCancelled = err?.name === 'AbortError'
+    const finalStatus  = wasCancelled ? 'cancelled' : 'failed'
+    const summary      = wasCancelled
+      ? '[CANCELLED by admin]'
+      : String(err.message).slice(0, 1000)
+
+    log.error?.(`${wasCancelled ? '⊘' : '✗'} [job ${job.id}] ${finalStatus}: ${err.message}`)
+
     await exec(ctx.env,
       `UPDATE scrape_sessions SET
-         status = 'failed', error_summary = ?,
+         status = ?, error_summary = ?,
          total_steps = ?, failed_steps = ?,
          total_input_tokens = ?, total_output_tokens = ?, total_cost_usd = ?,
          pages_fetched = ?,
          finished_at = NOW(),
          duration_ms = TIMESTAMPDIFF(MICROSECOND, started_at, NOW()) / 1000
        WHERE id = ?`,
-      [String(err.message).slice(0, 1000),
-       ctx.stepIndex, ctx.failedSteps + 1,
+      [finalStatus, summary,
+       ctx.stepIndex, ctx.failedSteps + (wasCancelled ? 0 : 1),
        ctx.totalIn, ctx.totalOut, round4(ctx.totalCost),
        ctx.pages,
        sessionId]
     )
     await exec(ctx.env,
-      `UPDATE scrape_jobs SET status = 'failed', last_session_id = ? WHERE id = ?`,
-      [sessionId, ctx.jobId]
+      `UPDATE scrape_jobs SET status = ?, last_session_id = ? WHERE id = ?`,
+      [finalStatus, sessionId, ctx.jobId]
     )
     throw err
   }
@@ -368,6 +405,12 @@ export async function scrapeListing({
 // ─────────────────────────────────────────────────────────────────────────
 
 async function step(ctx, name, type, init = {}, fn) {
+  /* Honor the admin-cancel signal at every step boundary. The signal
+     is set by the worker when scrape_jobs.status flips to 'cancelled'
+     (admin clicked Cancel). Throwing here short-circuits the rest of
+     the pipeline; the outer catch maps AbortError → status='cancelled'. */
+  if (ctx.signal?.aborted) throw new CancelledError('Job cancelled by admin')
+
   const stepIndex = ctx.stepIndex++
   const ins = await exec(ctx.env,
     `INSERT INTO scrape_session_steps
@@ -847,6 +890,14 @@ export function validateCitations(extracted) {
   const issues = []
   const s = extracted._sources ?? {}
 
+  /* Source URLs must be real http(s):// URLs — Gemini occasionally
+     returns the page label ("Pricing page") or the slug ("pricing") and
+     the field appears citation-pass. Tightening the check here means a
+     malformed source actually shows up as a citation issue and the
+     session lands in 'review' instead of 'success'. */
+  const goodUrl = (u) => typeof u === 'string' && /^https?:\/\/\S+/i.test(u.trim())
+  const goodQuote = (q) => typeof q === 'string' && q.trim().length >= 6
+
   for (const [field, srcKey] of [
     ['tagline', 'tagline'],
     ['description', 'description'],
@@ -854,20 +905,22 @@ export function validateCitations(extracted) {
     ['hq_city', 'hq'],
     ['team_size', 'team_size'],
   ]) {
-    if (extracted[field] != null && !(s[srcKey]?.url && s[srcKey]?.quote)) {
-      issues.push({ field, reason: 'missing source url + quote' })
+    if (extracted[field] != null) {
+      if (!goodUrl(s[srcKey]?.url) || !goodQuote(s[srcKey]?.quote)) {
+        issues.push({ field, reason: 'missing or malformed source url + quote' })
+      }
     }
   }
 
-  if ((extracted.pricing_tiers?.length ?? 0) > 0 && !s.pricing?.url) {
-    issues.push({ field: 'pricing_tiers', reason: 'missing source url' })
+  if ((extracted.pricing_tiers?.length ?? 0) > 0 && !goodUrl(s.pricing?.url)) {
+    issues.push({ field: 'pricing_tiers', reason: 'missing or malformed source url' })
   }
-  if ((extracted.compliance?.length ?? 0) > 0 && !(s.compliance?.url && s.compliance?.quote)) {
+  if ((extracted.compliance?.length ?? 0) > 0 && !(goodUrl(s.compliance?.url) && goodQuote(s.compliance?.quote))) {
     issues.push({ field: 'compliance', reason: 'compliance claim without quotable source — REJECT by default' })
   }
   if ((extracted.faqs?.length ?? 0) > 0) {
-    const unsourced = (s.faqs ?? []).filter(c => !c.url).length
-    if (unsourced > 0) issues.push({ field: 'faqs', reason: `${unsourced} FAQ(s) without source` })
+    const unsourced = (s.faqs ?? []).filter(c => !goodUrl(c?.url)).length
+    if (unsourced > 0) issues.push({ field: 'faqs', reason: `${unsourced} FAQ(s) without valid source url` })
   }
 
   return issues

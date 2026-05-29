@@ -66,8 +66,27 @@ export async function fetchPage(url, { timeout = 30000, waitForNetworkIdle = 500
       title,
     }
   } finally {
-    await ctx.close()
+    /* Swallow context-close errors but log them — a leaked context
+       eventually OOMs the chromium process. Without this catch, a
+       close-time error in one job kills the worker mid-pipeline. */
+    await ctx.close().catch(err => {
+      console.warn(`[crawler] context close failed for ${url}: ${err.message}`)
+    })
   }
+}
+
+/* Soft-404 heuristic. Some sites return HTTP 200 for /pricing even when
+   there is no pricing page (sneaky redirects to home, error templates
+   that render with status 200, single-page apps that render their 404
+   route client-side). If the body is tiny or the title looks like an
+   error page, we don't want to use it as the pricing source — fall
+   back to the next path in the chain. */
+function looksLikeSoft404(res) {
+  const text = String(res?.text || '').trim()
+  if (text.length < 200) return true
+  const title = String(res?.title || '').toLowerCase()
+  if (/^(404|not found|page not found|error)\b/.test(title)) return true
+  return false
 }
 
 /**
@@ -75,6 +94,10 @@ export async function fetchPage(url, { timeout = 30000, waitForNetworkIdle = 500
  * that worked) or null if every attempt failed / 404'd.
  */
 export async function fetchWithFallback(baseUrl, paths, opts = {}) {
+  /* Keep the best soft-404 candidate as a last resort: a single 2xx that
+     looked like an error page is still better than null when none of the
+     other paths returned anything at all. */
+  let softFallback = null
   for (const path of paths) {
     let fullUrl
     try {
@@ -85,13 +108,17 @@ export async function fetchWithFallback(baseUrl, paths, opts = {}) {
     try {
       const res = await fetchPage(fullUrl, opts)
       if (res.status >= 200 && res.status < 300) {
+        if (looksLikeSoft404(res)) {
+          if (!softFallback) softFallback = { ...res, path, attemptedUrl: fullUrl }
+          continue
+        }
         return { ...res, path, attemptedUrl: fullUrl }
       }
     } catch {
       // try the next path
     }
   }
-  return null
+  return softFallback
 }
 
 // Canonical fallback chains — order matters (most common first).

@@ -97,12 +97,12 @@ export async function callGemini({
 
       let parsed
       if (responseSchema) {
-        try {
-          parsed = JSON.parse(rawText)
-        } catch {
-          // Some Gemini responses wrap JSON in ```json fences. Strip them.
-          const stripped = rawText.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '').trim()
-          parsed = JSON.parse(stripped)
+        parsed = parseJsonLoose(rawText)
+        if (parsed === undefined) {
+          /* Three parse strategies all failed — surface the rawText
+             prefix so the failing step row has a useful error_message
+             instead of "Unexpected token <". */
+          throw new Error(`Gemini returned unparseable JSON: ${rawText.slice(0, 300)}`)
         }
       } else {
         parsed = rawText
@@ -134,3 +134,32 @@ export function pricingFor(model) {
 }
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)) }
+
+/* Three-pass JSON parser. Gemini with responseSchema USUALLY returns
+   clean JSON, but we've seen ```json fences, leading commentary, and
+   trailing markdown. Try strict first (fast path), then fence-strip,
+   then substring-between-first-{-and-last-}. Returns undefined if all
+   three fail, so the caller can distinguish "no JSON" from "valid null". */
+function parseJsonLoose(rawText) {
+  if (typeof rawText !== 'string' || !rawText) return undefined
+  try { return JSON.parse(rawText) } catch {}
+
+  const stripped = rawText.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '').trim()
+  try { return JSON.parse(stripped) } catch {}
+
+  /* Substring extraction — find a balanced top-level { ... } or [ ... ].
+     Cheaper than a real parser and works on the failure modes we've seen
+     (Gemini prepending "Here is the JSON:" or appending "Note: ..."). */
+  const firstObj = stripped.indexOf('{')
+  const firstArr = stripped.indexOf('[')
+  const first = firstObj === -1 ? firstArr
+              : firstArr === -1 ? firstObj
+              : Math.min(firstObj, firstArr)
+  if (first === -1) return undefined
+  const openChar = stripped[first]
+  const closeChar = openChar === '{' ? '}' : ']'
+  const last = stripped.lastIndexOf(closeChar)
+  if (last <= first) return undefined
+  try { return JSON.parse(stripped.slice(first, last + 1)) } catch {}
+  return undefined
+}

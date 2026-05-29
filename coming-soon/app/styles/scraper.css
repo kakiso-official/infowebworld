@@ -108,6 +108,11 @@
 }
 .scrp-worker-dot.is-online  { background: #10B981; box-shadow: 0 0 0 2px #ECFDF5 }
 .scrp-worker-dot.is-offline { background: #EF4444 }
+.scrp-worker-dot.is-paused  { background: #F59E0B; box-shadow: 0 0 0 2px #FFFBEB; animation: scrp-pulse 1.4s ease-in-out infinite; }
+@keyframes scrp-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.45; }
+}
 .scrp-worker-hint {
   background: #F4F5F7; padding: 2px 8px; border-radius: 4px;
   font-family: ui-monospace, SFMono-Regular, Cascadia Mono, monospace !important;
@@ -119,6 +124,61 @@
 }
 .scrp-spend strong { color: var(--scrp-ink); font-weight: 700 }
 .scrp-spend-sub { color: var(--scrp-faint); font-size: 11px; margin-left: 6px }
+
+/* ─── Offline banner ──────────────────────────────────────────────── */
+.scrp-banner {
+  display: flex; gap: 14px;
+  padding: 14px 18px;
+  margin: 0 24px 16px;
+  border-radius: 8px;
+  align-items: flex-start;
+}
+.scrp-banner--warn {
+  background: #FFFBEB;
+  border: 1px solid #FBBF24;
+  color: #78350F;
+}
+.scrp-banner-icon { font-size: 22px; line-height: 1; flex: 0 0 auto; padding-top: 2px }
+.scrp-banner-body { flex: 1; min-width: 0 }
+.scrp-banner-title { font-weight: 600; color: #92400E; font-size: 14px; margin-bottom: 6px }
+.scrp-banner-pill {
+  display: inline-block;
+  background: #FCD34D; color: #78350F;
+  padding: 1px 8px; border-radius: 999px;
+  font-size: 11px; font-weight: 700;
+  margin-left: 8px; vertical-align: middle;
+}
+.scrp-banner-detail { color: #78350F; font-size: 13px; line-height: 1.6 }
+.scrp-banner-detail code {
+  background: rgba(146,64,14,0.10);
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-family: ui-monospace, SFMono-Regular, Cascadia Mono, monospace;
+  font-size: 12px;
+}
+.scrp-banner-detail kbd {
+  background: #FFFFFF;
+  border: 1px solid #D6D3D1;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-family: ui-monospace, SFMono-Regular, Cascadia Mono, monospace;
+  font-size: 11px;
+  color: #44403C;
+}
+.scrp-banner-cmd {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin: 0 8px;
+  padding: 4px 10px;
+  background: #FFFFFF;
+  border: 1px solid #FBBF24;
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Cascadia Mono, monospace;
+  font-size: 12px; font-weight: 700;
+  color: #92400E;
+  cursor: pointer;
+}
+.scrp-banner-cmd:hover { background: #FEF3C7 }
+.scrp-banner-cmd-copy { font-size: 11px; color: #78350F; font-weight: 500 }
 
 /* ─── Buttons ─────────────────────────────────────────────────────── */
 .scrp-btn {
@@ -179,6 +239,33 @@
   background: var(--scrp-red);
   border-color: var(--scrp-red);
   color: #FFFFFF;
+}
+
+/* Warn — amber (Reset stale orphaned 'running' rows) */
+.scrp-btn--warn {
+  background: #FFFFFF;
+  border-color: #D97706;
+  color: #92400E;
+}
+.scrp-btn--warn:hover:not(:disabled) {
+  background: #D97706;
+  border-color: #D97706;
+  color: #FFFFFF;
+}
+
+/* L1 focus dropdown — narrow inline select next to the worker control */
+.scrp-l1-focus {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--scrp-mute);
+}
+.scrp-l1-focus-label { font-weight: 500 }
+.scrp-l1-focus-select {
+  padding: 4px 8px;
+  font-size: 12px;
+  min-width: 140px;
 }
 
 .scrp-deploy-msg {

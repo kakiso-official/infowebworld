@@ -22,18 +22,27 @@ export async function GET(
       return Response.json({ ok: false, error: 'Invalid job id' }, { status: 400 })
     }
 
+    /* ?summary=1 — skip the heavy extracted_json + source_citations blobs.
+       The detail pane polls every 3.5s and these columns can hit 100KB+
+       on rich listings, so a single open tab can pull megabytes per minute
+       just to re-render unchanged session timestamps. UI uses summary mode
+       for polling and re-fetches the full payload on demand. */
+    const summary = new URL(request.url).searchParams.get('summary') === '1'
+
+    const baseCols = `id, slug, company_name, website, category_l1, category_slug, status,
+              total_sessions, total_cost_usd, last_session_id,
+              current_screenshot_home_url, current_screenshot_secondary_url,
+              queued_at, applied_at`
+    const heavyCols = `, current_extracted_json, current_source_citations`
+
     const job = await queryOne<{
       id: number; slug: string; company_name: string | null; website: string
       category_l1: string; category_slug: string | null; status: string
       total_sessions: number; total_cost_usd: number; last_session_id: number | null
-      current_extracted_json: string | null; current_source_citations: string | null
+      current_extracted_json?: string | null; current_source_citations?: string | null
       current_screenshot_home_url: string | null; current_screenshot_secondary_url: string | null
       queued_at: string; applied_at: string | null
-    }>(`SELECT id, slug, company_name, website, category_l1, category_slug, status,
-              total_sessions, total_cost_usd, last_session_id,
-              current_extracted_json, current_source_citations,
-              current_screenshot_home_url, current_screenshot_secondary_url,
-              queued_at, applied_at
+    }>(`SELECT ${baseCols}${summary ? '' : heavyCols}
          FROM scrape_jobs WHERE id = ?`, [jobId])
 
     if (!job) return Response.json({ ok: false, error: 'Job not found' }, { status: 404 })
@@ -54,6 +63,7 @@ export async function GET(
 
     return Response.json({
       ok: true,
+      summary,
       job: {
         id: job.id,
         slug: job.slug,
@@ -67,8 +77,8 @@ export async function GET(
         last_session_id: job.last_session_id,
         screenshot_home_url: job.current_screenshot_home_url,
         screenshot_secondary_url: job.current_screenshot_secondary_url,
-        extracted: parseJson(job.current_extracted_json),
-        citations: parseJson(job.current_source_citations),
+        extracted: summary ? null : parseJson(job.current_extracted_json ?? null),
+        citations: summary ? null : parseJson(job.current_source_citations ?? null),
         queued_at: String(job.queued_at),
         applied_at: job.applied_at ? String(job.applied_at) : null,
       },

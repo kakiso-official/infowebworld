@@ -20,6 +20,25 @@ export function cleanHtml(rawHtml, maxLen = MAX_HTML_LEN) {
   if (!rawHtml) return ''
   let h = String(rawHtml)
 
+  /* Preserve structured-data scripts before stripping the rest. Modern
+     React apps (Next.js, Nuxt, Astro) ship serialized props inside
+     <script type="application/json"> and most SaaS landing pages embed
+     org/product info in <script type="application/ld+json">. Both are
+     gold for the extractor and would otherwise get nuked by the general
+     <script> strip below. We pull them out, then weave them back in as
+     plain JSON islands the LLM can read. */
+  const jsonIslands = []
+  h = h.replace(
+    /<script\b[^>]*\btype\s*=\s*["'](application\/(?:ld\+json|json))["'][^>]*>([\s\S]*?)<\/script>/gi,
+    (_, mime, body) => {
+      const trimmed = String(body).trim()
+      if (trimmed && trimmed.length < 20_000) {
+        jsonIslands.push(`<!-- ${mime} -->\n${trimmed}`)
+      }
+      return ''
+    }
+  )
+
   // Strip noise tags
   h = h.replace(/<script\b[\s\S]*?<\/script>/gi, '')
   h = h.replace(/<style\b[\s\S]*?<\/style>/gi, '')
@@ -44,6 +63,13 @@ export function cleanHtml(rawHtml, maxLen = MAX_HTML_LEN) {
   // Collapse repeated whitespace
   h = h.replace(/\s{2,}/g, ' ')
   h = h.replace(/>\s+</g, '><')
+
+  /* Append preserved JSON-LD / application/json blobs after the cleaned
+     markup. They count against the budget but the LLM extracts
+     drastically better data from them than from class-spammed divs. */
+  if (jsonIslands.length) {
+    h = `${h.trim()}\n\n${jsonIslands.join('\n\n')}`
+  }
 
   // Truncate if still huge (rare after cleanup, but a safety net)
   if (h.length > maxLen) h = h.slice(0, maxLen) + '\n<!-- truncated for token budget -->'

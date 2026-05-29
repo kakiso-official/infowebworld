@@ -12,7 +12,7 @@
  * error message, full cost breakdown).
  */
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 interface Step {
   id: number
@@ -38,19 +38,36 @@ export default function SessionTimeline({ sessionId, live }: { sessionId: number
   const [steps, setSteps] = useState<Step[]>([])
   const [expandedStep, setExpandedStep] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
+  /* In-flight guard so a slow network can't stack requests. Without this,
+     a 2s fetch on a 1.5s interval queues a new request before the previous
+     resolves, then both update state in the wrong order. */
+  const inFlight = useRef(false)
+  const cancelled = useRef(false)
 
   const reload = useCallback(async () => {
-    const res = await fetch(`/api/admin/scrape/sessions/${sessionId}`, { cache: 'no-store' })
-    const json = await res.json()
-    if (json.ok) setSteps(json.steps)
-    setLoading(false)
+    if (inFlight.current) return
+    inFlight.current = true
+    try {
+      const res = await fetch(`/api/admin/scrape/sessions/${sessionId}`, { cache: 'no-store' })
+      const json = await res.json()
+      if (!cancelled.current && json.ok) setSteps(json.steps)
+    } catch {
+      /* Swallow transient fetch errors — next tick retries. */
+    } finally {
+      inFlight.current = false
+      if (!cancelled.current) setLoading(false)
+    }
   }, [sessionId])
 
   useEffect(() => {
+    cancelled.current = false
     reload()
     if (!live) return
     const id = setInterval(reload, 1500)
-    return () => clearInterval(id)
+    return () => {
+      cancelled.current = true
+      clearInterval(id)
+    }
   }, [sessionId, live, reload])
 
   const maxDuration = Math.max(1, ...steps.map(s => s.duration_ms ?? 0))

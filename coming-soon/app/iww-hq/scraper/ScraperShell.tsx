@@ -58,9 +58,11 @@ interface Stats {
   workerHeartbeatAt: string | null
   workerStopRequested: boolean
   lastActivityAt: string | null
+  staleRunning: number
+  l1Filter: string | null
 }
 
-const STATUS_ORDER = ['queued', 'running', 'review', 'applied', 'failed', 'skipped'] as const
+const STATUS_ORDER = ['queued', 'running', 'review', 'applied', 'failed', 'skipped', 'cancelled'] as const
 const L1_OPTIONS = [
   { value: '', label: 'All sectors' },
   { value: 'ai-and-ml', label: 'AI & ML' },
@@ -128,17 +130,17 @@ export default function ScraperShell() {
           </div>
         </div>
         <div className="scrp-top-right">
-          <div className="scrp-worker">
-            <span className={`scrp-worker-dot ${stats?.workerLikelyOnline ? 'is-online' : 'is-offline'}`} />
-            <span>
-              Worker {stats?.workerStopRequested
-                ? 'stopping…'
-                : stats?.workerLikelyOnline ? 'online' : 'offline'}
-            </span>
-            {!stats?.workerLikelyOnline && !stats?.workerStopRequested && (
+          <div className="scrp-worker" title={workerLabel(stats).tip}>
+            <span className={`scrp-worker-dot ${workerLabel(stats).dotClass}`} />
+            <span>{workerLabel(stats).text}</span>
+            {workerLabel(stats).showHint && (
               <code className="scrp-worker-hint">npm run scrape:worker</code>
             )}
           </div>
+          {(stats?.staleRunning ?? 0) > 0 && (
+            <ResetStaleButton count={stats!.staleRunning} onDone={refresh} />
+          )}
+          <L1FocusDropdown current={stats?.l1Filter ?? null} onChange={refresh} />
           {stats?.workerLikelyOnline && (
             <StopWorkerButton stopRequested={stats.workerStopRequested} />
           )}
@@ -152,6 +154,13 @@ export default function ScraperShell() {
           </button>
         </div>
       </header>
+
+      {/* ─── Offline banner — clearest possible signal that nothing
+           runs without the worker process. Shown ONLY when no heartbeat
+           in the last 30s and the user hasn't just clicked Stop. ─── */}
+      {stats && !stats.workerLikelyOnline && !stats.workerStopRequested && (
+        <WorkerOfflineBanner queuedCount={stats.status.queued ?? 0} l1Filter={stats.l1Filter} />
+      )}
 
       {/* ─── Filter strip ───────────────────────────────────── */}
       <div className="scrp-filters">
@@ -256,12 +265,30 @@ function JobDetailView({ jobId, onChanged }: { jobId: number; onChanged: () => v
   const [toast, setToast] = useState<string | null>(null)
   const [scrapeMenuOpen, setScrapeMenuOpen] = useState(false)
 
-  const reload = useCallback(async () => {
+  /* `summary=1` polls skip the 100KB+ current_extracted_json /
+     current_source_citations blobs so the 3.5s tick doesn't drag
+     megabytes per minute over the wire. The first load is full so the
+     "Latest extraction" section has data; subsequent polls keep that
+     blob in state without re-fetching it. */
+  const reload = useCallback(async (full = false) => {
     try {
-      const res = await fetch(`/api/admin/scrape/jobs/${jobId}`, { cache: 'no-store' })
+      const url = `/api/admin/scrape/jobs/${jobId}${full ? '' : '?summary=1'}`
+      const res = await fetch(url, { cache: 'no-store' })
       const json = await res.json()
       if (json.ok) {
-        setData(json)
+        setData(prev => {
+          if (json.summary && prev?.job) {
+            return {
+              ...json,
+              job: {
+                ...json.job,
+                extracted: prev.job.extracted,
+                citations: prev.job.citations,
+              },
+            }
+          }
+          return json
+        })
         if (json.sessions.length && openSessionId == null) setOpenSessionId(json.sessions[0].id)
       }
     } catch (err) {
@@ -271,8 +298,8 @@ function JobDetailView({ jobId, onChanged }: { jobId: number; onChanged: () => v
 
   useEffect(() => {
     setOpenSessionId(null); setData(null)
-    reload()
-    const id = setInterval(reload, 3500)
+    reload(true)                                                  // initial full
+    const id = setInterval(() => reload(false), 3500)             // polls summary
     return () => clearInterval(id)
   }, [jobId])  // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -289,7 +316,10 @@ function JobDetailView({ jobId, onChanged }: { jobId: number; onChanged: () => v
       if (!res.ok || !json.ok) throw new Error(json.error || `HTTP ${res.status}`)
       flash(`${label} ✓`)
       onChanged()
-      reload()
+      /* Force a full reload after a write action — Apply / Requeue change
+         extracted_json on the server, so we want the next render to show
+         the new blob, not the cached one from the summary poll. */
+      reload(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err))
     } finally {
@@ -328,22 +358,44 @@ function JobDetailView({ jobId, onChanged }: { jobId: number; onChanged: () => v
           <span className={`scrp-pill scrp-pill--${job.status}`}>
             <span className="scrp-pill-dot" />{job.status}
           </span>
+          {(job.status === 'running' || job.status === 'queued') && (
+            <button
+              type="button"
+              className="scrp-btn scrp-btn--danger"
+              disabled={busy != null}
+              title={job.status === 'running'
+                ? 'Abort the in-flight scrape at the next step boundary.'
+                : 'Remove from the queue without scraping.'}
+              onClick={() => {
+                if (!confirm(`Cancel "${job.slug}"?\n\n${job.status === 'running'
+                  ? 'Worker will abort within ~10s. Partial extraction will be discarded.'
+                  : 'Job will be removed from the queue.'}`)) return
+                action('Cancel', () => fetch(`/api/admin/scrape/jobs/${jobId}/cancel`, {
+                  method: 'POST',
+                }))
+              }}
+            >
+              Cancel
+            </button>
+          )}
           <div className="scrp-btn-group">
             <button
               type="button"
               className="scrp-btn"
-              disabled={busy != null}
+              disabled={busy != null || job.status === 'running'}
               onClick={() => action(
-                'Scrape (cached retry)',
+                'Queued',
                 () => fetch(`/api/admin/scrape/jobs/${jobId}/requeue`, {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({ sections: [] }),
                 })
               )}
-              title="Re-queue; cached steps replay free, only failed step burns tokens"
+              title={job.status === 'running'
+                ? 'Already running — cancel first if you want to re-queue.'
+                : 'Set status=queued. Worker claims it within ~10s. Cached steps replay free; only failed step burns tokens.'}
             >
-              {job.status === 'running' ? 'Re-queue' : 'Scrape now'}
+              {job.status === 'running' ? 'Running…' : 'Scrape now'}
             </button>
             <button
               type="button"
@@ -375,8 +427,29 @@ function JobDetailView({ jobId, onChanged }: { jobId: number; onChanged: () => v
             <button
               type="button"
               className="scrp-btn scrp-btn--primary"
-              disabled={busy != null || job.status === 'applied'}
-              onClick={() => action('Apply to DB', () => fetch(`/api/admin/scrape/jobs/${jobId}/apply`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: job.last_session_id }) }))}
+              disabled={busy != null || job.status === 'applied' || job.status === 'running'}
+              title={
+                job.status === 'running'
+                  ? 'Wait for the current scrape to finish before applying.'
+                  : job.status === 'applied'
+                    ? 'Already applied to DB.'
+                    : 'Write extracted data into the submissions table (makes the listing live).'
+              }
+              onClick={() => {
+                /* Pre-check: don't fire Apply against a still-running
+                   session — the extracted_json column will be NULL and
+                   the API will reject it; surface that as a clearer
+                   message than the toast-after-spinner pattern. */
+                const latest = sessions[0]
+                if (latest && latest.status === 'running') {
+                  setError('Latest session is still running — wait for it to finish, then Apply.')
+                  return
+                }
+                if (latest && latest.status === 'failed') {
+                  if (!confirm('Latest session failed. Apply will use the last successful session if any. Continue?')) return
+                }
+                action('Apply to DB', () => fetch(`/api/admin/scrape/jobs/${jobId}/apply`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: job.last_session_id }) }))
+              }}
             >
               Apply latest to DB
             </button>
@@ -412,7 +485,7 @@ function JobDetailView({ jobId, onChanged }: { jobId: number; onChanged: () => v
         <h3 className="scrp-section-title">Sessions <span className="scrp-section-sub">{sessions.length}</span></h3>
         {sessions.length === 0 && (
           <div className="scrp-empty-sessions">
-            No sessions yet. Click <strong>Scrape now</strong> above, then run <code>npm run scrape:worker</code> in your terminal.
+            No sessions yet. Click <strong>Scrape now</strong> above to queue this listing. The worker will pick it up within ~10s — make sure <code>npm run scrape:worker</code> is running in a terminal.
           </div>
         )}
         {sessions.map(s => (
@@ -505,6 +578,143 @@ function DeployButton() {
 }
 
 /**
+ * Loud banner when the worker isn't running. The Scrape Now / Apply /
+ * Add Companies buttons all just write to MySQL — they don't START the
+ * pipeline. The pipeline only runs when a worker process is alive to
+ * claim queued rows. Without this banner users (rightly) think the
+ * buttons are broken when nothing happens after clicking them.
+ */
+function WorkerOfflineBanner({ queuedCount, l1Filter }: { queuedCount: number; l1Filter: string | null }) {
+  const [copied, setCopied] = useState(false)
+  const cmd = 'npm run scrape:worker'
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(cmd)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    } catch {}
+  }
+  return (
+    <div className="scrp-banner scrp-banner--warn" role="alert">
+      <div className="scrp-banner-icon">⚠️</div>
+      <div className="scrp-banner-body">
+        <div className="scrp-banner-title">
+          Worker is offline — nothing will run until you start it.
+          {queuedCount > 0 && (
+            <span className="scrp-banner-pill"> {queuedCount} job{queuedCount === 1 ? '' : 's'} waiting</span>
+          )}
+        </div>
+        <div className="scrp-banner-detail">
+          Open a terminal in your <code>coming-soon</code> folder and run:
+          <button type="button" className="scrp-banner-cmd" onClick={copy} title="Click to copy">
+            {cmd}
+            <span className="scrp-banner-cmd-copy">{copied ? '✓ copied' : '📋'}</span>
+          </button>
+          The worker stays running until you press <kbd>Ctrl-C</kbd>. {l1Filter
+            ? <>Currently focused on <strong>{l1Filter}</strong> — change the dropdown above to switch categories.</>
+            : <>It claims queued jobs from any L1; use the <strong>Focus</strong> dropdown above to restrict it.</>}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Recovers orphaned scrape_jobs.status='running' rows whose worker died
+ * without finishing them. Calls POST /api/admin/scrape/cleanup-stale,
+ * which runs the same recovery logic the worker does on boot. Surfaced
+ * only when stats.staleRunning > 0 so it doesn't clutter the bar.
+ */
+function ResetStaleButton({ count, onDone }: { count: number; onDone: () => void }) {
+  const [busy, setBusy] = useState(false)
+  const [msg, setMsg] = useState<string | null>(null)
+
+  const click = async () => {
+    if (!confirm(`Reset ${count} stale running job${count === 1 ? '' : 's'}?\n\nThese are jobs marked 'running' but no worker is actually processing them. They'll be re-queued or synced to whatever their last session landed on.`)) return
+    setBusy(true); setMsg(null)
+    try {
+      const res = await fetch('/api/admin/scrape/cleanup-stale', { method: 'POST' })
+      const json = await res.json().catch(() => ({}))
+      if (!res.ok || !json.ok) {
+        setMsg(`✗ ${json.error || `HTTP ${res.status}`}`)
+      } else {
+        setMsg(`✓ ${json.recovered} recovered`)
+        onDone()
+      }
+    } catch (err) {
+      setMsg(`✗ ${err instanceof Error ? err.message : String(err)}`)
+    } finally {
+      setBusy(false)
+      setTimeout(() => setMsg(null), 6000)
+    }
+  }
+
+  return (
+    <div className="scrp-deploy">
+      <button
+        type="button"
+        className="scrp-btn scrp-btn--warn"
+        onClick={click}
+        disabled={busy}
+        title={`${count} job(s) marked 'running' with no live worker. Click to recover.`}
+      >
+        {busy ? 'Resetting…' : `Reset stale (${count})`}
+      </button>
+      {msg && <span className={`scrp-deploy-msg ${msg.startsWith('✓') ? 'is-ok' : 'is-err'}`}>{msg}</span>}
+    </div>
+  )
+}
+
+/**
+ * L1 focus dropdown. Writes scraper_runtime_config.l1_filter; the worker
+ * picks it up on the next poll iteration (~10s) without restarting. Empty
+ * value = no filter = claim from any L1. Optimistic UI: update + refresh
+ * stats so the new value reflects immediately.
+ */
+function L1FocusDropdown({ current, onChange }: { current: string | null; onChange: () => void }) {
+  const [busy, setBusy] = useState(false)
+
+  const choose = async (next: string) => {
+    setBusy(true)
+    try {
+      const res = await fetch('/api/admin/scrape/worker/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ l1_filter: next || null }),
+      })
+      const json = await res.json().catch(() => ({}))
+      if (!res.ok || !json.ok) {
+        alert(`Failed to set L1 filter: ${json.error || `HTTP ${res.status}`}`)
+      }
+      onChange()
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="scrp-l1-focus" title="Restrict the worker to a single L1 category. Empty = any category.">
+      <span className="scrp-l1-focus-label">Focus:</span>
+      <select
+        className="scrp-select scrp-l1-focus-select"
+        value={current ?? ''}
+        onChange={e => choose(e.target.value)}
+        disabled={busy}
+        aria-label="Worker focus L1 category"
+      >
+        <option value="">any L1</option>
+        <option value="ai-and-ml">AI & ML</option>
+        <option value="software-and-saas">Software & SaaS</option>
+        <option value="it-services-and-agencies">IT Services</option>
+        <option value="professional-services">Professional Services</option>
+        <option value="startups">Startups</option>
+        <option value="local-businesses">Local Businesses</option>
+      </select>
+    </div>
+  )
+}
+
+/**
  * Stops the local scrape-worker process by writing a sentinel file
  * (.scrape-worker.stop) that the worker polls between iterations.
  * Worker exits gracefully — finishes in-flight jobs, releases DB
@@ -575,6 +785,46 @@ function relTime(iso: string): string {
   return `${Math.floor(diff / 86_400_000)} d ago`
 }
 
+/* Worker label resolves the three-way state cleanly:
+   - dot = process liveness from heartbeat
+   - text = what it's doing (online / stopping / offline)
+   The old logic could show a green dot AND "stopping…" because
+   workerStopRequested was checked independently of workerLikelyOnline. */
+function workerLabel(stats: Stats | null): {
+  text: string
+  dotClass: 'is-online' | 'is-offline' | 'is-paused'
+  showHint: boolean
+  tip: string
+} {
+  if (!stats) return { text: 'Worker —', dotClass: 'is-offline', showHint: false, tip: 'loading…' }
+  const beatAt = stats.workerHeartbeatAt ? new Date(stats.workerHeartbeatAt).getTime() : 0
+  const beatAgo = beatAt ? Date.now() - beatAt : Infinity
+  if (!stats.workerLikelyOnline) {
+    return {
+      text: 'Worker offline',
+      dotClass: 'is-offline',
+      showHint: !stats.workerStopRequested,
+      tip: stats.workerStopRequested
+        ? 'Stop file present but no heartbeat — worker already exited.'
+        : 'No heartbeat in the last 30s.',
+    }
+  }
+  if (stats.workerStopRequested) {
+    return {
+      text: 'Worker stopping…',
+      dotClass: 'is-paused',
+      showHint: false,
+      tip: `Stop signal sent ${Math.floor(beatAgo / 1000)}s ago of heartbeat. Will exit after in-flight jobs finish.`,
+    }
+  }
+  return {
+    text: 'Worker online',
+    dotClass: 'is-online',
+    showHint: false,
+    tip: `Heartbeat ${Math.floor(beatAgo / 1000)}s ago.`,
+  }
+}
+
 /* ─────────────────────────────────────────────────────────────────────
    Section-specific scrape dropdown.
    Each option clears only the cache for its section, so the worker
@@ -589,18 +839,25 @@ function SectionMenu({
   onClose: () => void
   onScrape: (section: string, label: string) => void
 }) {
-  // Close on outside click + Escape
+  // Close on outside click, Escape, or scroll. Scroll-close matters
+  // because the menu's CSS position is anchored to the trigger; if the
+  // detail pane scrolls, the menu would visually detach from its button.
   useEffect(() => {
     const onDoc = (e: MouseEvent) => {
       const target = e.target as HTMLElement
       if (!target.closest('.scrp-menu') && !target.closest('.scrp-btn--chev')) onClose()
     }
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    const onScroll = () => onClose()
     document.addEventListener('mousedown', onDoc)
     document.addEventListener('keydown', onKey)
+    /* capture=true so we catch scroll on any nested scrollable container,
+       not just window — the detail pane is its own scroll context. */
+    document.addEventListener('scroll', onScroll, true)
     return () => {
       document.removeEventListener('mousedown', onDoc)
       document.removeEventListener('keydown', onKey)
+      document.removeEventListener('scroll', onScroll, true)
     }
   }, [onClose])
 

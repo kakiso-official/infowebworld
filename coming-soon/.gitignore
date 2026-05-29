@@ -50,3 +50,4 @@ next-env.d.ts
 /public/scrape-screenshots/
 /.scrape-worker.heartbeat
 /.scrape-worker.stop
+/.scrape-worker.spend
