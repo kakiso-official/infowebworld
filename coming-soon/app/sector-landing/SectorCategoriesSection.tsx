@@ -10,15 +10,25 @@ import type { CardDef } from '@/lib/sector-landings'
    version, scoped by the parent's .tcat-<slug> palette class. Each card:
      · sector-themed icon (currentColor → palette c4 via the .tcat-X scope)
      · L2 name → /<sector>/<l2-slug>
-     · "Services" pill + top 5 L3 children pulled live from the
+     · "Sub Categories" pill + top 5 L3 children pulled live from the
         generated taxonomy in app/config/categories-data.ts
-     · "Locations" pill + default-market chips (USA / India / UK /
-        Canada / Australia)
+     · "Locations" pill + default-market chips that link into the L2
+        category page with the country filter applied
+        (/{sector}/{l2}?country=<country-slug>)
 
    Cards come in via the per-sector config in lib/sector-landings.ts.
    ═══════════════════════════════════════════════════════════════════════ */
 
-const LOCATIONS = ['USA', 'India', 'UK', 'Canada', 'Australia']
+/* label = chip text; slug = ?country=<slug> value the category page
+   resolves via lookupLocationCountry(). Must match toSlug(country.name)
+   from app/lib/geo-slugs.ts (so e.g. "USA" → "united-states"). */
+const LOCATIONS: { label: string; slug: string }[] = [
+  { label: 'USA',       slug: 'united-states' },
+  { label: 'India',     slug: 'india' },
+  { label: 'UK',        slug: 'united-kingdom' },
+  { label: 'Canada',    slug: 'canada' },
+  { label: 'Australia', slug: 'australia' },
+]
 
 /** Top N L3 children of an L2, in taxonomy sort order. */
 function topL3sOfL2(l2Slug: string, sectorSlug: string, limit = 5): { name: string; slug: string }[] {
@@ -58,7 +68,7 @@ export default function SectorCategoriesSection({ sectorSlug, heading, sub, card
                 </div>
                 <Link href={`/${sectorSlug}/${c.slug}`} className="tlp-cat-card-name">{c.label}</Link>
 
-                <span className="tlp-cat-card-pill">Services</span>
+                <span className="tlp-cat-card-pill">Sub Categories</span>
                 <ul className="tlp-cat-card-tags">
                   {services.map((sub, i) => (
                     <li key={sub.slug}>
@@ -75,8 +85,14 @@ export default function SectorCategoriesSection({ sectorSlug, heading, sub, card
                 <span className="tlp-cat-card-pill">Locations</span>
                 <ul className="tlp-cat-card-tags">
                   {LOCATIONS.map((loc, i) => (
-                    <li key={loc}>
-                      <span className="tlp-cat-card-tag tlp-cat-card-tag--static">{loc}</span>
+                    <li key={loc.slug}>
+                      <Link
+                        href={`/${sectorSlug}/${c.slug}?country=${loc.slug}`}
+                        className="tlp-cat-card-tag"
+                        aria-label={`${c.label} in ${loc.label}`}
+                      >
+                        {loc.label}
+                      </Link>
                       {i < LOCATIONS.length - 1 && (
                         <span className="tlp-cat-card-bar" aria-hidden="true">|</span>
                       )}
