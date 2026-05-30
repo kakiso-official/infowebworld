@@ -36,7 +36,23 @@ function Stars({ value, max = 5 }: { value: number; max?: number }) {
   )
 }
 
-export default function TopFirmsSection({ cats }: { cats: PopL2[] }) {
+export default function TopFirmsSection({
+  cats,
+  sectorSlug = 'ai-ml',
+  sub = 'InfoWebWorld helps you connect with top-ranked AI companies backed by trusted research and verified reviews.',
+  tabsLabel = 'AI categories',
+  emptyNoun = 'AI tools',
+}: {
+  cats: PopL2[]
+  /** L1 sector slug — used to build the "View all <cat> companies" CTA. */
+  sectorSlug?: string
+  /** Section sub-paragraph (sector-specific). */
+  sub?: string
+  /** Aria-label for the tablist. */
+  tabsLabel?: string
+  /** Noun used in the "More top-rated <noun> are coming soon" empty state. */
+  emptyNoun?: string
+}) {
   /* Default the active tab to the first category that actually has
      listings, falling back to the first category if nothing populated. */
   const firstWithFirms = cats.find(c => c.products.length > 0)
@@ -55,12 +71,10 @@ export default function TopFirmsSection({ cats }: { cats: PopL2[] }) {
           <h2 id="tcat-firms-h" className="tlp-firms-title">
             Find the top-rated companies in every category
           </h2>
-          <p className="tlp-firms-sub">
-            InfoWebWorld helps you connect with top-ranked AI companies backed by trusted research and verified reviews.
-          </p>
+          <p className="tlp-firms-sub">{sub}</p>
         </header>
 
-        <div className="tlp-firms-tabs" role="tablist" aria-label="AI categories">
+        <div className="tlp-firms-tabs" role="tablist" aria-label={tabsLabel}>
           {cats.map(c => (
             <button
               key={c.slug}
@@ -77,7 +91,7 @@ export default function TopFirmsSection({ cats }: { cats: PopL2[] }) {
 
         {firms.length === 0 ? (
           <div className="tlp-firms-empty">
-            More top-rated AI tools are coming soon in <strong>{activeLabel}</strong>.
+            More top-rated {emptyNoun} are coming soon in <strong>{activeLabel}</strong>.
             <Link
               href={`/business?category=${encodeURIComponent(active)}`}
               className="tlp-firms-empty-cta"
@@ -139,7 +153,7 @@ export default function TopFirmsSection({ cats }: { cats: PopL2[] }) {
         )}
 
         <div className="tlp-firms-cta">
-          <Link href={`/ai-ml/${active}`} className="tlp-firms-cta-btn">
+          <Link href={`/${sectorSlug}/${active}`} className="tlp-firms-cta-btn">
             View all {activeLabel} companies
           </Link>
         </div>

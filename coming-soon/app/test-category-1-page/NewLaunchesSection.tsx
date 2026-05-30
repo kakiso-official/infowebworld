@@ -64,7 +64,20 @@ function initialsOf(name: string): string {
   return cleaned.slice(0, 2).toUpperCase()
 }
 
-export default function NewLaunchesSection({ launches }: { launches: LaunchRow[] }) {
+export default function NewLaunchesSection({
+  launches,
+  sectorSlug = 'ai-ml',
+  sub = 'The newest AI tools, agents, and models added to the directory — moderated and verified before they appear.',
+  cta = 'Browse all AI tools',
+}: {
+  launches: LaunchRow[]
+  /** L1 sector slug — used by the "Browse all" CTA. */
+  sectorSlug?: string
+  /** Section sub-paragraph (sector-specific). */
+  sub?: string
+  /** "Browse all <noun>" CTA label. */
+  cta?: string
+}) {
   if (!launches.length) return null
 
   return (
@@ -72,9 +85,7 @@ export default function NewLaunchesSection({ launches }: { launches: LaunchRow[]
       <div className="tcat-new-inner">
         <header className="tcat-new-head">
           <h2 id="tcat-new-h" className="tcat-new-title">Just launched on InfoWebWorld</h2>
-          <p className="tcat-new-sub">
-            The newest AI tools, agents, and models added to the directory — moderated and verified before they appear.
-          </p>
+          <p className="tcat-new-sub">{sub}</p>
         </header>
 
         <div className="tcat-new-grid">
@@ -122,8 +133,8 @@ export default function NewLaunchesSection({ launches }: { launches: LaunchRow[]
         </div>
 
         <div className="tcat-new-cta">
-          <Link href="/ai-ml" className="tcat-new-cta-btn">
-            Browse all AI tools
+          <Link href={`/${sectorSlug}/view-all-sub-categories-${sectorSlug}`} className="tcat-new-cta-btn">
+            {cta}
             <FontAwesomeIcon icon={faArrowRight} className="tcat-new-cta-ico" />
           </Link>
         </div>

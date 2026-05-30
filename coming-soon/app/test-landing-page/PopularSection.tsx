@@ -30,6 +30,19 @@ export interface PopFirmRow {
 
 interface Props {
   firms: PopFirmRow[]
+  /** L1 sector slug — used by the "Browse all" CTA. Defaults to ai-ml for
+   *  the legacy /test-landing-page demo. */
+  sectorSlug?: string
+  /** Section H2 (sector-specific). */
+  title?: string
+  /** Sub-paragraph when there are firms (sector-specific). */
+  sub?: string
+  /** Sub-paragraph for the empty state. */
+  emptySub?: string
+  /** Empty-state line above the CTA. */
+  emptyLine?: string
+  /** "Browse all <noun>" CTA label. */
+  cta?: string
 }
 
 function listingHref(f: PopFirmRow): string {
@@ -73,20 +86,28 @@ function Stars({ value, max = 5 }: { value: number; max?: number }) {
   )
 }
 
-export default function PopularSection({ firms }: Props) {
+export default function PopularSection({
+  firms,
+  sectorSlug = 'ai-ml',
+  title = 'Most popular AI tools',
+  sub = 'Hand-picked AI tools backed by real buyer reviews. Find the perfect fit for your business without the guesswork.',
+  emptySub = 'Hand-picked AI tools vetted by real buyers. Find the perfect fit without the guesswork.',
+  emptyLine = 'No AI tools to feature yet — check back soon.',
+  cta = 'Browse all AI tools',
+}: Props) {
+  const browseHref = `/${sectorSlug}/view-all-sub-categories-${sectorSlug}`
+
   if (firms.length === 0) {
     return (
       <section className="tlp-pop" aria-labelledby="tlp-pop-h">
         <div className="tlp-pop-inner">
           <header className="tlp-pop-head">
-            <h2 id="tlp-pop-h" className="tlp-pop-title">Most popular AI tools</h2>
-            <p className="tlp-pop-sub">
-              Hand-picked AI tools vetted by real buyers. Find the perfect fit without the guesswork.
-            </p>
+            <h2 id="tlp-pop-h" className="tlp-pop-title">{title}</h2>
+            <p className="tlp-pop-sub">{emptySub}</p>
           </header>
           <div className="tlp-pop-empty">
-            <p>No AI tools to feature yet — check back soon.</p>
-            <Link href="/ai-ml" className="tlp-pop-cta-btn">Browse all AI tools</Link>
+            <p>{emptyLine}</p>
+            <Link href={browseHref} className="tlp-pop-cta-btn">{cta}</Link>
           </div>
         </div>
       </section>
@@ -97,10 +118,8 @@ export default function PopularSection({ firms }: Props) {
     <section className="tlp-pop" aria-labelledby="tlp-pop-h">
       <div className="tlp-pop-inner">
         <header className="tlp-pop-head">
-          <h2 id="tlp-pop-h" className="tlp-pop-title">Most popular AI tools</h2>
-          <p className="tlp-pop-sub">
-            Hand-picked AI tools backed by real buyer reviews. Find the perfect fit for your business without the guesswork.
-          </p>
+          <h2 id="tlp-pop-h" className="tlp-pop-title">{title}</h2>
+          <p className="tlp-pop-sub">{sub}</p>
         </header>
 
         <div className="tlp-pop-grid">
@@ -165,7 +184,7 @@ export default function PopularSection({ firms }: Props) {
         </div>
 
         <div className="tlp-pop-cta">
-          <Link href="/ai-ml" className="tlp-pop-cta-btn">Browse all AI tools</Link>
+          <Link href={browseHref} className="tlp-pop-cta-btn">{cta}</Link>
         </div>
       </div>
     </section>

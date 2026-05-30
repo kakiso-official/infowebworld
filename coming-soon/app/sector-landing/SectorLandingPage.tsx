@@ -85,12 +85,36 @@ export default async function SectorLandingPage({
           heading={cfg.catsHeading}
           sub={cfg.catsSub}
           cards={cfg.cards}
+          ctaLabel={cfg.catsCtaLabel}
         />
-        <PopularSection cats={popular} />
-        <TopFirmsSection cats={popular} />
+        <PopularSection
+          cats={popular}
+          sectorSlug={cfg.slug}
+          title={cfg.sections.popularCatsTitle}
+        />
+        <TopFirmsSection
+          cats={popular}
+          sectorSlug={cfg.slug}
+          sub={cfg.sections.topFirmsSub}
+          tabsLabel={cfg.sections.topFirmsTabsLabel}
+          emptyNoun={cfg.sections.topFirmsEmptyNoun}
+        />
         <NewReviewsSection reviews={reviews} />
-        <NewLaunchesSection launches={launches} />
-        <PopularToolsSection firms={popularTools} />
+        <NewLaunchesSection
+          launches={launches}
+          sectorSlug={cfg.slug}
+          sub={cfg.sections.newLaunchesSub}
+          cta={cfg.sections.newLaunchesCta}
+        />
+        <PopularToolsSection
+          firms={popularTools}
+          sectorSlug={cfg.slug}
+          title={cfg.sections.popularToolsTitle}
+          sub={cfg.sections.popularToolsSub}
+          emptySub={cfg.sections.popularToolsEmptySub}
+          emptyLine={cfg.sections.popularToolsEmptyLine}
+          cta={cfg.sections.popularToolsCta}
+        />
         <TrustSection />
         <CompareSection />
         {/* Gemini-generated SEO content — same sticky-TOC editorial block used

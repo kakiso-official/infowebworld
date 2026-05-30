@@ -24,6 +24,34 @@ import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 
 export type CardDef = { slug: string; label: string; icon: IconDefinition }
 
+/** Per-sector copy for every shared landing section. Headings, sub-copy,
+ *  empty states, and "Browse all" CTA labels. Sector-specific so the AI/ML
+ *  defaults baked into the test pages don't bleed onto Software, IT, etc. */
+export type SectorSectionsCopy = {
+  /** "Most Popular AI Categories" left-rail title (line break allowed). */
+  popularCatsTitle: string
+  /** TopFirms section sub-paragraph. */
+  topFirmsSub: string
+  /** TopFirms aria-label for the tablist (screen reader). */
+  topFirmsTabsLabel: string
+  /** "More top-rated {emptyNoun} are coming soon in <Cat>" empty-state noun. */
+  topFirmsEmptyNoun: string
+  /** "Just launched on InfoWebWorld" sub-paragraph. */
+  newLaunchesSub: string
+  /** "Browse all {noun}" CTA on NewLaunches. */
+  newLaunchesCta: string
+  /** "Most popular AI tools" PopularTools section title. */
+  popularToolsTitle: string
+  /** PopularTools section sub (when there are firms). */
+  popularToolsSub: string
+  /** PopularTools section sub (empty state). */
+  popularToolsEmptySub: string
+  /** "No AI tools to feature yet — check back soon." empty-state line. */
+  popularToolsEmptyLine: string
+  /** "Browse all AI tools" CTA on PopularTools. */
+  popularToolsCta: string
+}
+
 export type SectorLandingConfig = {
   /** L1 slug — also the route segment (e.g. "ai-ml"). */
   slug: string
@@ -47,8 +75,14 @@ export type SectorLandingConfig = {
   catsHeading: string
   /** CategoriesSection grid sub-heading. */
   catsSub: string
+  /** "Explore all categories" CTA button label (sector-specific). */
+  catsCtaLabel: string
   /** 6 hand-picked L2 cards (slug must exist under this sector). */
   cards: CardDef[]
+  /** Per-section copy for the shared landing sections (Popular, TopFirms,
+   *  NewLaunches, PopularTools). Keeps AI/ML copy from bleeding into other
+   *  sector landings. */
+  sections: SectorSectionsCopy
 }
 
 export const SECTOR_LANDINGS: Record<string, SectorLandingConfig> = {
@@ -64,6 +98,7 @@ export const SECTOR_LANDINGS: Record<string, SectorLandingConfig> = {
     heroPlaceholder: 'Search AI tools, agents, models, categories…',
     catsHeading: 'Find verified AI tools across every category',
     catsSub: 'Discover trusted AI assistants, image and video generators, copilots, agents, and frameworks — all verified, moderated, and never paid for.',
+    catsCtaLabel: 'Explore all AI categories',
     cards: [
       { slug: 'ai-core-models',        label: 'AI Core & Models',        icon: faRobot    },
       { slug: 'content-creative',      label: 'Content & Creative',      icon: faImage    },
@@ -72,6 +107,19 @@ export const SECTOR_LANDINGS: Record<string, SectorLandingConfig> = {
       { slug: 'productivity-workflow', label: 'Productivity & Workflow', icon: faGears    },
       { slug: 'customer-support',      label: 'Customer & Support',      icon: faHeadset  },
     ],
+    sections: {
+      popularCatsTitle: 'Most Popular\nAI Categories',
+      topFirmsSub: 'InfoWebWorld helps you connect with top-ranked AI companies backed by trusted research and verified reviews.',
+      topFirmsTabsLabel: 'AI categories',
+      topFirmsEmptyNoun: 'AI tools',
+      newLaunchesSub: 'The newest AI tools, agents, and models added to the directory — moderated and verified before they appear.',
+      newLaunchesCta: 'Browse all AI tools',
+      popularToolsTitle: 'Most popular AI tools',
+      popularToolsSub: 'Hand-picked AI tools backed by real buyer reviews. Find the perfect fit for your business without the guesswork.',
+      popularToolsEmptySub: 'Hand-picked AI tools vetted by real buyers. Find the perfect fit without the guesswork.',
+      popularToolsEmptyLine: 'No AI tools to feature yet — check back soon.',
+      popularToolsCta: 'Browse all AI tools',
+    },
   },
 
   'software-saas': {
@@ -86,6 +134,7 @@ export const SECTOR_LANDINGS: Record<string, SectorLandingConfig> = {
     heroPlaceholder: 'Search software, SaaS tools, categories…',
     catsHeading: 'Find verified software across every category',
     catsSub: 'Compare CRM platforms, marketing suites, support tools, analytics, and security software — all verified and never paid for.',
+    catsCtaLabel: 'Explore all software categories',
     cards: [
       { slug: 'crm-sales-software',                 label: 'CRM & Sales',          icon: faChartLine     },
       { slug: 'marketing-software',                 label: 'Marketing',            icon: faBullhorn      },
@@ -94,6 +143,19 @@ export const SECTOR_LANDINGS: Record<string, SectorLandingConfig> = {
       { slug: 'cybersecurity-software',             label: 'Cybersecurity',        icon: faShieldHalved  },
       { slug: 'project-management-software',        label: 'Project Management',   icon: faGears         },
     ],
+    sections: {
+      popularCatsTitle: 'Most Popular\nSoftware Categories',
+      topFirmsSub: 'InfoWebWorld helps you connect with top-rated software vendors backed by trusted research and verified buyer reviews.',
+      topFirmsTabsLabel: 'Software categories',
+      topFirmsEmptyNoun: 'software products',
+      newLaunchesSub: 'The newest software platforms and SaaS tools added to the directory — moderated and verified before they appear.',
+      newLaunchesCta: 'Browse all software',
+      popularToolsTitle: 'Most popular software',
+      popularToolsSub: 'Hand-picked software platforms backed by real buyer reviews. Find the perfect fit for your business without the guesswork.',
+      popularToolsEmptySub: 'Hand-picked software vetted by real buyers. Find the perfect fit without the guesswork.',
+      popularToolsEmptyLine: 'No software products to feature yet — check back soon.',
+      popularToolsCta: 'Browse all software',
+    },
   },
 
   'it-services-agencies': {
@@ -108,6 +170,7 @@ export const SECTOR_LANDINGS: Record<string, SectorLandingConfig> = {
     heroPlaceholder: 'Search IT services, agencies, categories…',
     catsHeading: 'Find verified agencies across every service category',
     catsSub: 'Web, mobile, software, design, marketing — find specialized agencies vetted by InfoWebWorld and reviewed by real clients.',
+    catsCtaLabel: 'Explore all service categories',
     cards: [
       { slug: 'web-development-services',         label: 'Web Development',       icon: faGlobe         },
       { slug: 'mobile-app-development-services',  label: 'Mobile App Dev',        icon: faMobileScreen  },
@@ -116,6 +179,19 @@ export const SECTOR_LANDINGS: Record<string, SectorLandingConfig> = {
       { slug: 'digital-marketing-seo-services',   label: 'Digital Marketing & SEO', icon: faBullhorn    },
       { slug: 'ai-emerging-tech-services',        label: 'AI & Emerging Tech',    icon: faRobot         },
     ],
+    sections: {
+      popularCatsTitle: 'Most Popular\nService Categories',
+      topFirmsSub: 'InfoWebWorld helps you connect with top-rated IT agencies and service providers backed by trusted research and verified client reviews.',
+      topFirmsTabsLabel: 'Service categories',
+      topFirmsEmptyNoun: 'agencies',
+      newLaunchesSub: 'The newest IT agencies and service providers added to the directory — moderated and verified before they appear.',
+      newLaunchesCta: 'Browse all agencies',
+      popularToolsTitle: 'Most popular agencies',
+      popularToolsSub: 'Hand-picked IT agencies backed by real client reviews. Find the perfect partner for your project without the guesswork.',
+      popularToolsEmptySub: 'Hand-picked agencies vetted by real clients. Find the perfect partner without the guesswork.',
+      popularToolsEmptyLine: 'No agencies to feature yet — check back soon.',
+      popularToolsCta: 'Browse all agencies',
+    },
   },
 
   'startups-innovation': {
@@ -130,6 +206,7 @@ export const SECTOR_LANDINGS: Record<string, SectorLandingConfig> = {
     heroPlaceholder: 'Search startups, sectors, categories…',
     catsHeading: 'Discover startups across every emerging industry',
     catsSub: 'From FinTech and HealthTech to AI, ClimateTech, and Web3 — find the next breakthrough company across every vertical.',
+    catsCtaLabel: 'Explore all startup categories',
     cards: [
       { slug: 'fintech-financial-services-startups',         label: 'FinTech',           icon: faMoneyBillTrendUp },
       { slug: 'healthtech-medtech-startups',                 label: 'HealthTech',        icon: faHeartPulse       },
@@ -138,6 +215,19 @@ export const SECTOR_LANDINGS: Record<string, SectorLandingConfig> = {
       { slug: 'ai-ml-generative-ai-startups',                label: 'AI & ML Startups',  icon: faRobot            },
       { slug: 'web3-crypto-blockchain-startups',             label: 'Web3 & Crypto',     icon: faShieldHalved     },
     ],
+    sections: {
+      popularCatsTitle: 'Most Popular\nStartup Categories',
+      topFirmsSub: 'InfoWebWorld helps you discover breakthrough startups backed by trusted research and verified reviews.',
+      topFirmsTabsLabel: 'Startup categories',
+      topFirmsEmptyNoun: 'startups',
+      newLaunchesSub: 'The newest startups added to the directory — moderated and verified before they appear.',
+      newLaunchesCta: 'Browse all startups',
+      popularToolsTitle: 'Most popular startups',
+      popularToolsSub: 'Hand-picked startups backed by real reviews. Discover the next breakthrough company without the guesswork.',
+      popularToolsEmptySub: 'Hand-picked startups vetted by real buyers. Discover breakthroughs without the guesswork.',
+      popularToolsEmptyLine: 'No startups to feature yet — check back soon.',
+      popularToolsCta: 'Browse all startups',
+    },
   },
 
   'local-businesses': {
@@ -152,6 +242,7 @@ export const SECTOR_LANDINGS: Record<string, SectorLandingConfig> = {
     heroPlaceholder: 'Search restaurants, contractors, services, categories…',
     catsHeading: 'Find verified local businesses across every category',
     catsSub: 'From restaurants and home services to health, automotive, and retail — trusted local businesses, reviewed by neighbors.',
+    catsCtaLabel: 'Explore all local categories',
     cards: [
       { slug: 'restaurants-food-drink',     label: 'Restaurants & Food',  icon: faUtensils             },
       { slug: 'home-services-contractors',  label: 'Home Services',       icon: faHouseChimneyUser     },
@@ -160,6 +251,19 @@ export const SECTOR_LANDINGS: Record<string, SectorLandingConfig> = {
       { slug: 'beauty-personal-care',       label: 'Beauty & Personal',   icon: faSpa                  },
       { slug: 'shopping-retail',            label: 'Shopping & Retail',   icon: faBagShopping          },
     ],
+    sections: {
+      popularCatsTitle: 'Most Popular\nLocal Categories',
+      topFirmsSub: 'InfoWebWorld helps you find top-rated local businesses backed by neighborhood reviews and verified credentials.',
+      topFirmsTabsLabel: 'Local categories',
+      topFirmsEmptyNoun: 'local businesses',
+      newLaunchesSub: 'The newest local businesses added to the directory — moderated and verified before they appear.',
+      newLaunchesCta: 'Browse all local businesses',
+      popularToolsTitle: 'Most popular local businesses',
+      popularToolsSub: 'Hand-picked local businesses backed by real neighbor reviews. Find the right one without the guesswork.',
+      popularToolsEmptySub: 'Hand-picked local businesses vetted by real neighbors. Find the right one without the guesswork.',
+      popularToolsEmptyLine: 'No local businesses to feature yet — check back soon.',
+      popularToolsCta: 'Browse all local businesses',
+    },
   },
 
   'professional-services': {
@@ -174,6 +278,7 @@ export const SECTOR_LANDINGS: Record<string, SectorLandingConfig> = {
     heroPlaceholder: 'Search professionals, firms, specialties…',
     catsHeading: 'Find verified professionals across every service area',
     catsSub: 'Accountants, lawyers, advisors, consultants, recruiters — verified credentials and real client reviews across every specialty.',
+    catsCtaLabel: 'Explore all professional categories',
     cards: [
       { slug: 'accounting-tax-services',            label: 'Accounting & Tax',      icon: faCalculator           },
       { slug: 'legal-services-pro',                 label: 'Legal Services',        icon: faScaleBalanced        },
@@ -182,6 +287,19 @@ export const SECTOR_LANDINGS: Record<string, SectorLandingConfig> = {
       { slug: 'hr-staffing-recruiting',             label: 'HR & Recruiting',       icon: faUserGroup            },
       { slug: 'marketing-advertising-communications', label: 'Marketing & Advertising', icon: faBullhorn          },
     ],
+    sections: {
+      popularCatsTitle: 'Most Popular\nProfessional Categories',
+      topFirmsSub: 'InfoWebWorld helps you find experienced professionals backed by verified credentials and real client reviews.',
+      topFirmsTabsLabel: 'Professional categories',
+      topFirmsEmptyNoun: 'professionals',
+      newLaunchesSub: 'The newest professionals and firms added to the directory — moderated and verified before they appear.',
+      newLaunchesCta: 'Browse all professionals',
+      popularToolsTitle: 'Most popular professionals',
+      popularToolsSub: 'Hand-picked professionals backed by real client reviews. Find the right expert for your needs without the guesswork.',
+      popularToolsEmptySub: 'Hand-picked professionals vetted by real clients. Find the right expert without the guesswork.',
+      popularToolsEmptyLine: 'No professionals to feature yet — check back soon.',
+      popularToolsCta: 'Browse all professionals',
+    },
   },
 }
 

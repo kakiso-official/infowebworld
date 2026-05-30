@@ -35,9 +35,11 @@ type Props = {
   heading: string
   sub: string
   cards: CardDef[]
+  /** Sector-specific CTA label. Defaults to "Explore all categories". */
+  ctaLabel?: string
 }
 
-export default function SectorCategoriesSection({ sectorSlug, heading, sub, cards }: Props) {
+export default function SectorCategoriesSection({ sectorSlug, heading, sub, cards, ctaLabel = 'Explore all categories' }: Props) {
   return (
     <section className="tlp-cats" aria-labelledby="tcat-cats-h">
       <div className="tlp-cats-inner">
@@ -87,7 +89,12 @@ export default function SectorCategoriesSection({ sectorSlug, heading, sub, card
         </div>
 
         <div className="tlp-cats-cta">
-          <Link href={`/${sectorSlug}`} className="tlp-cats-cta-btn">Explore all categories</Link>
+          <Link
+            href={`/${sectorSlug}/view-all-sub-categories-${sectorSlug}`}
+            className="tlp-cats-cta-btn"
+          >
+            {ctaLabel}
+          </Link>
         </div>
       </div>
     </section>

@@ -86,7 +86,17 @@ function Stars({ value }: { value: number }) {
   )
 }
 
-export default function PopularSection({ cats }: { cats: PopL2[] }) {
+export default function PopularSection({
+  cats,
+  sectorSlug = 'ai-ml',
+  title = 'Most Popular\nAI Categories',
+}: {
+  cats: PopL2[]
+  /** L1 sector slug — used to build /{sector}/{l2-slug} links. */
+  sectorSlug?: string
+  /** Left-rail heading. `\n` becomes <br/>. */
+  title?: string
+}) {
   /* No real listings to show → don't render the section at all.
      Honest empty state — no curated placeholder cards. */
   const [activeSlug, setActiveSlug] = useState<string>(cats[0]?.slug || '')
@@ -97,13 +107,18 @@ export default function PopularSection({ cats }: { cats: PopL2[] }) {
 
   if (!cats.length || !active) return null
 
+  // Render newline-separated title as multiline with <br />
+  const titleLines = title.split('\n')
+
   return (
     <section className="tcat-pop" aria-labelledby="tcat-pop-h">
       <div className="tcat-pop-inner">
         {/* ── Left rail — heading + L2 list ── */}
         <aside className="tcat-pop-left">
           <h2 id="tcat-pop-h" className="tcat-pop-title">
-            Most Popular<br />AI Categories
+            {titleLines.map((line, i) => (
+              <span key={i}>{line}{i < titleLines.length - 1 && <br />}</span>
+            ))}
           </h2>
           <ul className="tcat-pop-cats" role="tablist">
             {cats.map(c => {
@@ -131,7 +146,7 @@ export default function PopularSection({ cats }: { cats: PopL2[] }) {
           {active.products.length > 0 ? (
             <>
               <div className="tcat-pop-head">
-                <Link href={`/ai-ml/${active.slug}`} className="tcat-pop-seeall">
+                <Link href={`/${sectorSlug}/${active.slug}`} className="tcat-pop-seeall">
                   See all {active.name}
                   <FontAwesomeIcon icon={faArrowRight} className="tcat-pop-seeall-ico" />
                 </Link>
