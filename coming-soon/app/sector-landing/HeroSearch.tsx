@@ -95,7 +95,7 @@ export default function HeroSearch({ sectorSlug, title, sub, placeholder, avgRat
     e.preventDefault()
     const term = q.trim()
     if (!term) { inputRef.current?.focus(); return }
-    router.push(`/all?q=${encodeURIComponent(term)}`)
+    router.push(`/search?q=${encodeURIComponent(term)}&sector=${encodeURIComponent(sectorSlug)}`)
   }
 
   const hl = (text: string) => {

@@ -1,5 +1,6 @@
 'use client'
 import { useState, useRef, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 /* ════════════════════════════════════════════════════════════════════
@@ -64,6 +65,16 @@ export default function GlobalSearch({
   const inputRef = useRef<HTMLInputElement>(null)
   const debounce = useRef<ReturnType<typeof setTimeout>>(undefined)
   const shortcut = useShortcutLabel()
+  const router = useRouter()
+
+  /* Enter, or the dropdown's "See all results" footer, runs a full search
+     → /search?q=… (the dedicated results page). */
+  const goToResults = useCallback(() => {
+    const term = query.trim()
+    if (!term) return
+    setOpen(false)
+    router.push(`/search?q=${encodeURIComponent(term)}`)
+  }, [query, router])
 
   useEffect(() => {
     if (autoFocus) {
@@ -158,6 +169,7 @@ export default function GlobalSearch({
           onChange={e => handleChange(e.target.value)}
           onFocus={() => { setFocused(true); if (results) setOpen(true) }}
           onBlur={() => setFocused(false)}
+          onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); goToResults() } }}
           autoComplete="off"
           autoCorrect="off"
           spellCheck={false}
@@ -252,6 +264,16 @@ export default function GlobalSearch({
               ))}
             </div>
           )}
+
+          {hasResults ? (
+            <button type="button" className="iw-srch-all" onClick={goToResults}>
+              See all results for &ldquo;{query.trim()}&rdquo;
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor"
+                   strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+              </svg>
+            </button>
+          ) : null}
 
           {noResults && (
             <div className="iw-srch-empty">

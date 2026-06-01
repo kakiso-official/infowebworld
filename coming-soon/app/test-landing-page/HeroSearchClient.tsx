@@ -20,7 +20,7 @@ import Link from 'next/link'
 
    The hero search is self-contained: debounced fetch against /api/search,
    inline dropdown of results, Enter or "Search" button navigates to
-   /all?q=… as the fallback when no result is clicked.
+   /search?q=… (the dedicated results page) when no result is clicked.
    ═══════════════════════════════════════════════════════════════════════ */
 
 type CategoryHit = {
@@ -99,7 +99,7 @@ export default function HeroSearchClient() {
     e.preventDefault()
     const term = q.trim()
     if (!term) { inputRef.current?.focus(); return }
-    router.push(`/all?q=${encodeURIComponent(term)}`)
+    router.push(`/search?q=${encodeURIComponent(term)}`)
   }
 
   const hl = (text: string) => {

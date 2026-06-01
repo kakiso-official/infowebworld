@@ -1,9 +1,30 @@
 import type { Metadata } from 'next'
 import Navbar from './components/Navbar'
-import Hero from './components/Hero'
-import Countdown from './components/Countdown'
-import BusinessCTA from './components/BusinessCTA'
 import Footer from './components/Footer'
+import HeroSearchClient from './test-landing-page/HeroSearchClient'
+import CategoriesSection from './test-landing-page/CategoriesSection'
+import TopFirmsSection, { type FirmRow } from './test-landing-page/TopFirmsSection'
+import NewReviewsSection, { type ReviewRow } from './test-landing-page/NewReviewsSection'
+import PopularSection, { type PopFirmRow } from './test-landing-page/PopularSection'
+import TrustSection from './test-landing-page/TrustSection'
+import CompareSection from './test-landing-page/CompareSection'
+import FinalCtaSection from './test-landing-page/FinalCtaSection'
+import { query } from '@/lib/db'
+
+/* ════════════════════════════════════════════════════════════════════════
+   Live homepage — the directory landing.
+
+   Rendered dynamically so the per-sector firm rows, latest reviews, and
+   popular-tools strip reflect current DB state (edge-cached ~1h via
+   middleware, so the origin is hit at most once per hour per region).
+
+   The section components are authored under ./test-landing-page/; that route
+   now 308-redirects here, so this is the single canonical landing. The SEO
+   @graph below (Organization, WebSite + SearchAction, the 6-sector ItemList +
+   SiteNavigationElements that drive sitelink selection, and the FAQPage) is
+   preserved from the previous homepage so nothing regresses on launch.
+   ════════════════════════════════════════════════════════════════════════ */
+export const dynamic = 'force-dynamic'
 
 const SITE = 'https://infowebworld.com'
 
@@ -20,6 +41,19 @@ const SECTORS = [
   { slug: 'startups-innovation',    name: 'Startups & Innovation',  desc: 'Breakthrough companies in FinTech, HealthTech, ClimateTech, AI & Web3.' },
   { slug: 'local-businesses',       name: 'Local Businesses',       desc: 'Restaurants, home services, health, automotive, beauty, retail.' },
   { slug: 'professional-services',  name: 'Professional Services',  desc: 'Accountants, attorneys, advisors, consultants, recruiters.' },
+]
+
+/* Sectors driving the live data sections (TopFirms tabs + per-sector firm
+   fetch). Order mirrors the section design (Software first) and is kept
+   separate from the SEO SECTORS list above, whose order is tuned for
+   sitelink selection. */
+const LANDING_SECTORS: { slug: string; label: string }[] = [
+  { slug: 'software-saas',         label: 'Software & SaaS' },
+  { slug: 'ai-ml',                 label: 'AI & ML' },
+  { slug: 'it-services-agencies',  label: 'IT Services & Agencies' },
+  { slug: 'startups-innovation',   label: 'Startups & Innovation' },
+  { slug: 'local-businesses',      label: 'Local Businesses' },
+  { slug: 'professional-services', label: 'Professional Services' },
 ]
 
 const organization = {
@@ -64,7 +98,7 @@ const website = {
   inLanguage: 'en-US',
   potentialAction: {
     '@type': 'SearchAction',
-    target: { '@type': 'EntryPoint', urlTemplate: `${SITE}/all?q={search_term_string}` },
+    target: { '@type': 'EntryPoint', urlTemplate: `${SITE}/search?q={search_term_string}` },
     'query-input': 'required name=search_term_string',
   },
   hasPart: SECTORS.map(s => ({ '@type': 'WebPage', '@id': `${SITE}/${s.slug}`, url: `${SITE}/${s.slug}`, name: s.name })),
@@ -105,7 +139,7 @@ const webPage = {
   '@type': 'WebPage',
   '@id': `${SITE}#homepage`,
   url: SITE,
-  name: 'InfoWebWorld — Find, Compare & Review Verified Businesses',
+  name: 'InfoWebWorld - Find, Compare & Review Verified Businesses',
   description: 'Search verified businesses, tools, agencies, and professionals across 80+ industries — with real reviews, transparent pricing, and dofollow listings.',
   isPartOf: { '@id': `${SITE}#website` },
   about: { '@id': `${SITE}#org` },
@@ -150,7 +184,166 @@ const faqJsonLd = {
   ],
 }
 
-export default function Home() {
+/* ── Live data fetchers ──────────────────────────────────────────────────
+   Each is defensively wrapped: a missing column / table (pre-migration
+   install) renders the section empty rather than 500ing the homepage. */
+
+/* Top 9 active listings per L1 sector, ordered by rating then recency.
+   Walks up to 4 levels of category hierarchy so listings attached to
+   L2/L3/L4 still attribute to the right L1. */
+async function getFirmsForSector(sectorSlug: string): Promise<FirmRow[]> {
+  try {
+    const rows = await query<{
+      slug: string; company_name: string; logo_url: string | null
+      rating_avg: number | null; rating_count: number | null
+      listing_mode: 'product' | 'company' | null
+    }>(
+      `SELECT s.slug, s.company_name, s.logo_url,
+              (SELECT AVG(rating) FROM reviews
+                WHERE listing_id = s.id AND status = 'approved') AS rating_avg,
+              (SELECT COUNT(*)   FROM reviews
+                WHERE listing_id = s.id AND status = 'approved') AS rating_count,
+              COALESCE(s.listing_mode, 'product') AS listing_mode
+         FROM submissions s
+         LEFT JOIN categories c     ON c.id     = s.category_id
+         LEFT JOIN categories cp    ON cp.id    = c.parent_id
+         LEFT JOIN categories cgp   ON cgp.id   = cp.parent_id
+         LEFT JOIN categories cggp  ON cggp.id  = cgp.parent_id
+         LEFT JOIN categories cgggp ON cgggp.id = cggp.parent_id
+        WHERE s.status IN ('active','paid')
+          AND (c.slug = ? OR cp.slug = ? OR cgp.slug = ? OR cggp.slug = ? OR cgggp.slug = ?)
+        ORDER BY rating_avg DESC, s.created_at DESC
+        LIMIT 9`,
+      [sectorSlug, sectorSlug, sectorSlug, sectorSlug, sectorSlug]
+    )
+    return rows.map(r => ({
+      slug: r.slug,
+      company_name: r.company_name,
+      logo_url: r.logo_url,
+      rating_avg: Number(r.rating_avg ?? 0),
+      rating_count: Number(r.rating_count ?? 0),
+      listing_mode: r.listing_mode || 'product',
+    }))
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    if (!/Unknown column|Table.*doesn't exist/.test(msg)) {
+      console.warn('[home] firm fetch failed for', sectorSlug, err)
+    }
+    return []
+  }
+}
+
+/* Most recent approved reviews across the directory, joined to the listing
+   identity + reviewer identity. */
+async function getLatestReviews(limit = 8): Promise<ReviewRow[]> {
+  try {
+    const rows = await query<{
+      id: number; rating: number; title: string; body: string; created_at: string
+      user_name: string | null; user_avatar: string | null; user_email: string | null
+      listing_slug: string; listing_name: string; listing_logo: string | null
+      listing_mode: 'product' | 'company' | null
+    }>(
+      `SELECT r.id, r.rating, r.title, r.body, r.created_at,
+              u.name AS user_name, u.avatar_url AS user_avatar, u.email AS user_email,
+              s.slug AS listing_slug, s.company_name AS listing_name,
+              s.logo_url AS listing_logo,
+              COALESCE(s.listing_mode, 'product') AS listing_mode
+         FROM reviews r
+         JOIN business_users u ON u.id = r.user_id
+         JOIN submissions    s ON s.id = r.listing_id
+        WHERE r.status = 'approved'
+          AND s.status IN ('active','paid')
+        ORDER BY r.created_at DESC
+        LIMIT ?`,
+      [limit]
+    )
+    return rows.map(r => ({
+      id: r.id,
+      rating: Number(r.rating),
+      title: r.title || '',
+      body: r.body || '',
+      created_at: r.created_at,
+      user_name: r.user_name,
+      user_avatar: r.user_avatar,
+      user_email: r.user_email,
+      listing_slug: r.listing_slug,
+      listing_name: r.listing_name,
+      listing_logo: r.listing_logo,
+      listing_mode: r.listing_mode || 'product',
+    }))
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    if (!/Unknown column|Table.*doesn't exist/.test(msg)) {
+      console.warn('[home] reviews fetch failed:', err)
+    }
+    return []
+  }
+}
+
+/* Top AI/ML listings with pricing + trial fields for the "Most popular AI
+   tools" block (columns added in migration-listings-v3.sql). */
+async function getPopularAiTools(limit = 6): Promise<PopFirmRow[]> {
+  try {
+    const rows = await query<{
+      slug: string; company_name: string; logo_url: string | null
+      starting_price: string | number | null
+      starting_price_period: string | null
+      has_free_trial: number | null
+      has_free_version: number | null
+      rating_avg: number | null; rating_count: number | null
+      listing_mode: 'product' | 'company' | null
+    }>(
+      `SELECT s.slug, s.company_name, s.logo_url,
+              s.starting_price, s.starting_price_period,
+              s.has_free_trial, s.has_free_version,
+              COALESCE(s.listing_mode, 'product') AS listing_mode,
+              (SELECT AVG(rating) FROM reviews
+                WHERE listing_id = s.id AND status = 'approved') AS rating_avg,
+              (SELECT COUNT(*)   FROM reviews
+                WHERE listing_id = s.id AND status = 'approved') AS rating_count
+         FROM submissions s
+         LEFT JOIN categories c     ON c.id     = s.category_id
+         LEFT JOIN categories cp    ON cp.id    = c.parent_id
+         LEFT JOIN categories cgp   ON cgp.id   = cp.parent_id
+         LEFT JOIN categories cggp  ON cggp.id  = cgp.parent_id
+         LEFT JOIN categories cgggp ON cgggp.id = cggp.parent_id
+        WHERE s.status IN ('active','paid')
+          AND (c.slug = 'ai-ml' OR cp.slug = 'ai-ml' OR cgp.slug = 'ai-ml' OR cggp.slug = 'ai-ml' OR cgggp.slug = 'ai-ml')
+        ORDER BY rating_avg DESC, s.created_at DESC
+        LIMIT ?`,
+      [limit]
+    )
+    return rows.map(r => ({
+      slug: r.slug,
+      company_name: r.company_name,
+      logo_url: r.logo_url,
+      rating_avg: Number(r.rating_avg ?? 0),
+      rating_count: Number(r.rating_count ?? 0),
+      listing_mode: r.listing_mode || 'product',
+      starting_price: r.starting_price != null ? String(r.starting_price) : '',
+      starting_price_period: r.starting_price_period || '',
+      has_free_trial: Boolean(Number(r.has_free_trial ?? 0)),
+      has_free_version: Boolean(Number(r.has_free_version ?? 0)),
+    }))
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    if (!/Unknown column|Table.*doesn't exist/.test(msg)) {
+      console.warn('[home] popular AI fetch failed:', err)
+    }
+    return []
+  }
+}
+
+export default async function Home() {
+  /* Parallel fetch — sectors, reviews, popular AI tools — all in one round. */
+  const [firmsBySectorArr, reviews, popularAi] = await Promise.all([
+    Promise.all(LANDING_SECTORS.map(s => getFirmsForSector(s.slug))),
+    getLatestReviews(8),
+    getPopularAiTools(6),
+  ])
+  const firmsBySector: Record<string, FirmRow[]> = {}
+  LANDING_SECTORS.forEach((s, i) => { firmsBySector[s.slug] = firmsBySectorArr[i] })
+
   return (
     <>
       {/* JSON-LD — single @graph carrying Organization, WebSite+SearchAction
@@ -167,17 +360,16 @@ export default function Home() {
       />
 
       <Navbar />
-
-      {/* 1. Hero — Email capture + visual showcase */}
-      <Hero />
-
-      {/* 2. Countdown timer — urgency */}
-      <Countdown />
-
-      {/* 3. Business CTA */}
-      <BusinessCTA />
-
-      {/* 4. Footer */}
+      <main className="tlp">
+        <HeroSearchClient />
+        <CategoriesSection />
+        <TopFirmsSection sectors={LANDING_SECTORS} firmsBySector={firmsBySector} />
+        <NewReviewsSection reviews={reviews} />
+        <PopularSection firms={popularAi} />
+        <TrustSection />
+        <CompareSection />
+        <FinalCtaSection />
+      </main>
       <Footer />
     </>
   )

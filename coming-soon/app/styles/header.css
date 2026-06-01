@@ -767,10 +767,28 @@
               visibility 0s linear 0s;
 }
 
-.iw-mob-nav {
+.iw-mob-scroll {
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+.iw-mob-search {
+  padding: 12px clamp(16px, 4vw, 22px);
+  border-bottom: 1px solid var(--iw-border);
+  background: var(--iw-bg-soft);
+}
+.iw-mob-label {
+  margin: 0;
+  padding: 18px clamp(16px, 4vw, 22px) 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--iw-text-muted);
+}
+.iw-mob-nav {
+  padding-bottom: 10px;
 }
 .iw-mob-row {
   border-bottom: 1px solid var(--iw-border);
@@ -839,14 +857,23 @@
   border-top: 1px solid var(--iw-border-soft);
 }
 .iw-mob-sub a {
-  display: block;
-  padding: 13px clamp(16px, 4vw, 22px) 13px clamp(28px, 6vw, 36px);
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 13px clamp(16px, 4vw, 22px) 13px clamp(22px, 5vw, 28px);
   font-size: 14px;
   font-weight: 500;
   color: var(--iw-text);
   text-decoration: none;
   min-height: 46px;
   transition: background .12s ease, color .12s ease;
+}
+.iw-mob-sub-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  background: var(--iw-accent);
 }
 .iw-mob-sub a:hover,
 .iw-mob-sub a:focus-visible {
@@ -928,6 +955,24 @@
   background: var(--iw-accent);
   color: #FFFFFF;
 }
+/* Filled primary action in the dock — "List your business" (logged out) or
+   "Open dashboard" (authed). Sits above the outlined Sign-in / Sign-out. */
+.iw-mob-foot-cta {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 13px 20px;
+  background: var(--iw-cta-bg);
+  color: var(--iw-cta-text);
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  min-height: 50px;
+  transition: background .12s ease, transform .12s ease;
+}
+.iw-mob-foot-cta:hover { background: var(--iw-cta-bg-hov); }
+.iw-mob-foot-cta:active { transform: translateY(1px); }
 .iw-mob-foot-signout {
   padding: 6px 0;
   background: transparent;

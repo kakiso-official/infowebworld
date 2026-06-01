@@ -12,9 +12,9 @@ import Link from 'next/link'
    `sector=ai-ml` so the dropdown surfaces only AI/ML categories, AI/ML
    listings (companies + products), and blog hits.
 
-   The submit (Enter or Search button) still navigates to /all?q=…
-   — sector scope is enforced by the API, not the URL, so a follow-up
-   page change can wire submit to a sector-specific results page later.
+   The submit (Enter or Search button) navigates to /search?q=…&sector=ai-ml
+   so the dedicated results page stays scoped to AI/ML (the dropdown is
+   already sector-scoped via the same `sector` param on /api/search).
    ═══════════════════════════════════════════════════════════════════════ */
 
 const SECTOR = 'ai-ml'
@@ -95,7 +95,7 @@ export default function HeroSearchClient() {
     e.preventDefault()
     const term = q.trim()
     if (!term) { inputRef.current?.focus(); return }
-    router.push(`/all?q=${encodeURIComponent(term)}`)
+    router.push(`/search?q=${encodeURIComponent(term)}&sector=${SECTOR}`)
   }
 
   const hl = (text: string) => {

@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { BASE } from '../config/base-path'
 import GlobalSearch from './GlobalSearch'
 import UserMenu from './auth/UserMenu'
@@ -296,6 +297,16 @@ export default function Navbar(
   const lastY = useRef(0)
   const headerRef = useRef<HTMLElement>(null)
   const { user, logout } = useAuth()
+
+  /* Close any open surface (mobile sheet, header search, mega) whenever the
+     route changes — e.g. after tapping a search result inside the sheet, so
+     the drawer never lingers over the destination page. */
+  const pathname = usePathname()
+  useEffect(() => {
+    setMenuOpen(false)
+    setSearchOpen(false)
+    setActiveDD(null)
+  }, [pathname])
 
   /* Scroll behaviour — RAF-throttled. */
   useEffect(() => {
@@ -594,72 +605,80 @@ export default function Navbar(
             - Bottom dock: "Write a Review" link + "Sign in" outlined button
               (or "Open dashboard" + "Sign out" when authed). */}
       <div className={'iw-mob' + (menuOpen ? ' iw-mob--open' : '')} aria-hidden={!menuOpen}>
-        <nav className="iw-mob-nav" aria-label="Mobile navigation">
-          {/* ── Services accordion ── */}
-          <div className="iw-mob-row">
-            <button
-              type="button"
-              className={'iw-mob-acc' + (mobOpen === 'services' ? ' iw-mob-acc--on' : '')}
-              onClick={() => setMobOpen(o => o === 'services' ? null : 'services')}
-              aria-expanded={mobOpen === 'services'}
-            >
-              <span>Categories</span>
-              <ChevDown />
-            </button>
-            <div className={'iw-mob-sub-wrap' + (mobOpen === 'services' ? ' iw-mob-sub-wrap--on' : '')}>
-              <ul className="iw-mob-sub">
-                <li className="iw-mob-sub-all">
-                  <Link href="/categories" onClick={() => setMenuOpen(false)}>
-                    All Categories
-                  </Link>
-                </li>
-                {SECTORS.map(s => (
-                  <li key={s.slug}>
-                    <Link href={`/${s.slug}`} onClick={() => setMenuOpen(false)}>
-                      {s.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+        <div className="iw-mob-scroll">
+          {/* ── Search — primary mobile action, pinned to the top of the sheet. ── */}
+          <div className="iw-mob-search">
+            <GlobalSearch inline placeholder="Search businesses, tools, categories" />
           </div>
 
-          {/* ── Primary direct-link rows — mirror the desktop main nav.
-                Same heavy weight as the Categories accordion button so
-                they read as siblings, not utility links. */}
-          {PRIMARY_LINKS.map(l => (
-            <div key={l.href} className="iw-mob-row">
-              <Link
-                href={l.href}
-                className="iw-mob-link"
-                onClick={() => setMenuOpen(false)}
+          <nav className="iw-mob-nav" aria-label="Mobile navigation">
+            <p className="iw-mob-label">Browse</p>
+
+            {/* ── Categories accordion — sectors carry their brand-colour dot. ── */}
+            <div className="iw-mob-row">
+              <button
+                type="button"
+                className={'iw-mob-acc' + (mobOpen === 'services' ? ' iw-mob-acc--on' : '')}
+                onClick={() => setMobOpen(o => o === 'services' ? null : 'services')}
+                aria-expanded={mobOpen === 'services'}
               >
-                <span>{l.label}</span>
-              </Link>
+                <span>Categories</span>
+                <ChevDown />
+              </button>
+              <div className={'iw-mob-sub-wrap' + (mobOpen === 'services' ? ' iw-mob-sub-wrap--on' : '')}>
+                <ul className="iw-mob-sub">
+                  <li className="iw-mob-sub-all">
+                    <Link href="/categories" onClick={() => setMenuOpen(false)}>
+                      <span className="iw-mob-sub-dot" aria-hidden="true" />
+                      All Categories
+                    </Link>
+                  </li>
+                  {SECTORS.map(s => (
+                    <li key={s.slug}>
+                      <Link href={`/${s.slug}`} onClick={() => setMenuOpen(false)}>
+                        <span className="iw-mob-sub-dot" style={{ background: s.palette.c4 }} aria-hidden="true" />
+                        {s.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          ))}
 
-          {/* ── Flat "More" list — utility links from the desktop strip.
-                Plain rows, no accordion (these are direct destinations). */}
-          <ul className="iw-mob-util">
-            {UTILITY_LINKS.map(l => (
-              <li key={l.href}>
-                <Link href={l.href} onClick={() => setMenuOpen(false)}>
-                  {l.label}
+            {/* ── Primary direct-link rows — siblings of the Categories accordion. ── */}
+            {PRIMARY_LINKS.map(l => (
+              <div key={l.href} className="iw-mob-row">
+                <Link
+                  href={l.href}
+                  className="iw-mob-link"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <span>{l.label}</span>
                 </Link>
-              </li>
+              </div>
             ))}
-          </ul>
-        </nav>
 
-        {/* ── Bottom dock — auth actions only. Write a Review moved up
-              into the primary nav rows. ── */}
+            {/* ── Resources — utility links that live in the desktop dark strip. ── */}
+            <p className="iw-mob-label">Resources</p>
+            <ul className="iw-mob-util">
+              {UTILITY_LINKS.map(l => (
+                <li key={l.href}>
+                  <Link href={l.href} onClick={() => setMenuOpen(false)}>
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+
+        {/* ── Bottom dock — primary action + auth, thumb-reachable. ── */}
         <div className="iw-mob-foot">
           {user ? (
             <>
               <Link
                 href="/dashboard"
-                className="iw-mob-foot-btn"
+                className="iw-mob-foot-cta"
                 onClick={() => setMenuOpen(false)}
               >
                 Open dashboard
@@ -677,13 +696,22 @@ export default function Navbar(
               </button>
             </>
           ) : (
-            <button
-              type="button"
-              className="iw-mob-foot-btn"
-              onClick={() => { setMenuOpen(false); setMobAuthOpen(true) }}
-            >
-              Sign in
-            </button>
+            <>
+              <Link
+                href="/business"
+                className="iw-mob-foot-cta"
+                onClick={() => setMenuOpen(false)}
+              >
+                List your business
+              </Link>
+              <button
+                type="button"
+                className="iw-mob-foot-btn"
+                onClick={() => { setMenuOpen(false); setMobAuthOpen(true) }}
+              >
+                Sign in
+              </button>
+            </>
           )}
         </div>
       </div>

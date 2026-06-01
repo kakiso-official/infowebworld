@@ -558,7 +558,7 @@ async function buildSectorJsonLd(
       inLanguage: 'en-US',
       potentialAction: {
         '@type': 'SearchAction',
-        target: { '@type': 'EntryPoint', urlTemplate: `${DOMAIN}/all?q={search_term_string}` },
+        target: { '@type': 'EntryPoint', urlTemplate: `${DOMAIN}/search?q={search_term_string}` },
         'query-input': 'required name=search_term_string',
       },
     },
@@ -1033,7 +1033,7 @@ function buildJsonLd(
     publisher: { '@id': `${DOMAIN}#org` },
     potentialAction: {
       '@type': 'SearchAction',
-      target: { '@type': 'EntryPoint', urlTemplate: `${DOMAIN}/all?q={search_term_string}` },
+      target: { '@type': 'EntryPoint', urlTemplate: `${DOMAIN}/search?q={search_term_string}` },
       'query-input': 'required name=search_term_string',
     },
   }
@@ -1516,8 +1516,6 @@ export default async function CategoryDetailRoute({
     }, 0)
 
     const URL_VIEWALL = `${SEO_BASE_URL}/${viewAllSector2}/${viewAllSlug(viewAllSector2)}`
-    const URL_SECTOR = `${SEO_BASE_URL}/${viewAllSector2}`
-    const URL_CATEGORIES = `${SEO_BASE_URL}/categories`
     const yearNow = new Date().getFullYear()
     const monthYearNow = currentMonthYear()
     const lcSectorName = sectorName.toLowerCase()
@@ -1587,7 +1585,7 @@ export default async function CategoryDetailRoute({
         '@type': 'SearchAction',
         target: {
           '@type': 'EntryPoint',
-          urlTemplate: `${SEO_BASE_URL}/all?q={search_term_string}&sector=${viewAllSector2}`,
+          urlTemplate: `${SEO_BASE_URL}/search?q={search_term_string}&sector=${viewAllSector2}`,
         },
         'query-input': 'required name=search_term_string',
       },
@@ -1751,8 +1749,6 @@ export default async function CategoryDetailRoute({
         breadcrumbNode(
           [
             { name: 'Home', url: SEO_BASE_URL },
-            { name: 'Business Categories', url: URL_CATEGORIES },
-            { name: sectorName, url: URL_SECTOR },
             { name: `${sectorName} Categories`, url: URL_VIEWALL },
           ],
           ID_BREADCRUMB,
@@ -1778,7 +1774,7 @@ export default async function CategoryDetailRoute({
             classes so AI voice readers pick up the answer-first content. */}
         <div className="cd-server-skeleton">
           <nav className="cd-server-breadcrumb" aria-label="Breadcrumb">
-            <a href="/" aria-label="Home"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a><span> &gt; </span><a href="/categories">Categories</a><span> &gt; </span><a href={`/${viewAllSector2}`}>{sectorName}</a><span> &gt; </span><span>{sectorName} Categories</span>
+            <a href="/" aria-label="Home"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a><span> &gt; </span><span>{sectorName} Categories</span>
           </nav>
           <h1 className="cd-server-h1">
             {sectorName} Categories — {l2InSector} Topics, {l3InSector.toLocaleString()} Subcategories

@@ -147,7 +147,7 @@ export default function CategoriesBrowse() {
     e.preventDefault()
     const term = search.trim()
     if (!term) { inputRef.current?.focus(); return }
-    router.push(`/all?q=${encodeURIComponent(term)}`)
+    router.push(`/search?q=${encodeURIComponent(term)}`)
   }
 
   if (loading) return <section className="cb"><div className="cb-wrap cb-loading">Loading categories&hellip;</div></section>

@@ -81,7 +81,10 @@ const AUTH_PATH_RE = /(^|\/)(dashboard|iww-hq)(\/|$)/
       forward navigation. */
 function applyHeaders(response: NextResponse, pathname: string, isVercelApp: boolean) {
   if (isVercelApp || shouldNoindex(pathname)) {
-    response.headers.set('X-Robots-Tag', 'noindex, nofollow')
+    /* Search results stay out of the index but keep their links crawlable
+       (follow) so PageRank flows to the listings + categories they surface. */
+    const robots = (!isVercelApp && pathname === '/search') ? 'noindex, follow' : 'noindex, nofollow'
+    response.headers.set('X-Robots-Tag', robots)
   }
 
   if (AUTH_PATH_RE.test(pathname)) {

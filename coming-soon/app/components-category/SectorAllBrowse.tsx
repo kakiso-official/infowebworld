@@ -179,7 +179,7 @@ export default function SectorAllBrowse({ sectorSlug }: { sectorSlug: string }) 
     e.preventDefault()
     const term = search.trim()
     if (!term) { inputRef.current?.focus(); return }
-    router.push(`/all?q=${encodeURIComponent(term)}`)
+    router.push(`/search?q=${encodeURIComponent(term)}&sector=${encodeURIComponent(sectorSlug)}`)
   }
 
   if (loading) return <section className="cb"><div className="cb-wrap cb-loading">Loading categories&hellip;</div></section>
@@ -210,15 +210,11 @@ export default function SectorAllBrowse({ sectorSlug }: { sectorSlug: string }) 
             <polygon fill="#7FBA00" points="125 173.96 173.96 173.96 173.96 132.38 200.11 132.38 200.11 200.11 125 200.11 125 173.96" />
           </svg>
 
-          {/* Breadcrumb — Home / Categories / Sector / Categories */}
+          {/* Breadcrumb — Home / {Sector} Categories */}
           <nav className="cb-hero-bc" aria-label="Breadcrumb">
             <Link href="/" className="cb-hero-bc-link">Home</Link>
             <span className="cb-hero-bc-sep" aria-hidden="true">/</span>
-            <Link href="/categories" className="cb-hero-bc-link">Categories</Link>
-            <span className="cb-hero-bc-sep" aria-hidden="true">/</span>
-            <Link href={`/${sectorSlug}`} className="cb-hero-bc-link">{shortName}</Link>
-            <span className="cb-hero-bc-sep" aria-hidden="true">/</span>
-            <span className="cb-hero-bc-current">Categories</span>
+            <span className="cb-hero-bc-current">{shortName} Categories</span>
           </nav>
 
           {/* H2 title — short, catchy "{Sector} Categories" framing.
