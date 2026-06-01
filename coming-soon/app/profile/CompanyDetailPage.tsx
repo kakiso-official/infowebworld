@@ -1,5 +1,9 @@
 'use client'
 
+/* Profile styles + the reused .tlp-main listing-card styles — scoped here. */
+import '../styles/profile-page.css'
+import '../styles/test-listing-page.css'
+
 import { useEffect, useMemo, useState } from 'react'
 import LeadFormModal from '../listing/LeadFormModal'
 import SignupModal from '../components/auth/SignupModal'

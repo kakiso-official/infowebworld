@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import '../styles/categories.css'
 import { Suspense } from 'react'
 
 /* Fully static — taxonomy comes from app/config/categories-data.ts (generated

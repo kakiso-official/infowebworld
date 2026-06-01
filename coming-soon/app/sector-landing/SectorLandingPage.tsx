@@ -1,4 +1,6 @@
 import dynamic from 'next/dynamic'
+import '../styles/test-category-1-page.css'
+import '../styles/test-landing-page.css'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import HeroSearch from './HeroSearch'

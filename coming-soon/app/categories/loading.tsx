@@ -1,3 +1,5 @@
+import '../styles/categories.css'
+
 export default function CategoriesLoading() {
   return (
     <div className="sk-page">

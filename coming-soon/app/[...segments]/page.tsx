@@ -1,4 +1,5 @@
 import { Suspense } from 'react'
+import '../styles/categories.css'
 import type { Metadata } from 'next'
 import { redirect, notFound } from 'next/navigation'
 import { unstable_cache } from 'next/cache'

@@ -1,5 +1,7 @@
 'use client'
 
+import '../styles/compare.css'
+
 /* ─────────────────────────────────────────────────────────────
    /compare — client orchestrator (heavy redesign to match the
    GetApp-style reference Aadil shared).

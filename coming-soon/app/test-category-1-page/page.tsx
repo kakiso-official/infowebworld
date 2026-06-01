@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import '../styles/test-category-1-page.css'
+import '../styles/test-landing-page.css'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import HeroSearchClient from './HeroSearchClient'

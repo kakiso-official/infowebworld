@@ -1,5 +1,10 @@
 'use client'
 
+/* Listing-page styles — scoped to this component (and the profile page, which
+   reuses the .tlp-main product cards) so they no longer ship on every page. */
+import '../styles/listing.css'
+import '../styles/test-listing-page.css'
+
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import type { ReactNode } from 'react'

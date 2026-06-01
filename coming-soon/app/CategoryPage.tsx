@@ -1,4 +1,5 @@
 'use client'
+import './styles/categories.css'
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'

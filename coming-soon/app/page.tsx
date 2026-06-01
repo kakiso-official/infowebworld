@@ -11,6 +11,7 @@ import CompareSection from './test-landing-page/CompareSection'
 import FinalCtaSection from './test-landing-page/FinalCtaSection'
 import { query } from '@/lib/db'
 import { unstable_cache } from 'next/cache'
+import './styles/test-landing-page.css'
 
 /* ════════════════════════════════════════════════════════════════════════
    Live homepage — the directory landing.

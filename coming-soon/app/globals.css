@@ -35,18 +35,19 @@
 @import "./styles/info-pages.css";
 @import "./styles/terms-page.css";
 @import "./styles/about-page.css";
-@import "./styles/listing.css";
 @import "./styles/blog.css";
-@import "./styles/categories.css";
+/* categories.css (123KB) -> catch-all ([...segments]/page+loading), /categories
+   (page+loading), CategoryPage. Off the homepage + listing/profile/business. */
 @import "./styles/plans.css";
-@import "./styles/test-listing-page.css";
-@import "./styles/profile-page.css";
-@import "./styles/compare.css";
+/* listing.css/test-listing-page.css -> ListingDetailPage + CompanyDetailPage;
+   profile-page.css -> CompanyDetailPage; compare.css -> ComparePage.
+   Route-scoped to their components, off the global bundle. */
 @import "./styles/news.css";
 @import "./styles/header.css";
 @import "./styles/write-review.css";
-@import "./styles/test-landing-page.css";
-@import "./styles/test-category-1-page.css";
+/* test-landing-page.css -> app/page.tsx + SectorLandingPage + test-category-1-page
+   (homepage + the sector landings that reuse those sections). */
+/* test-category-1-page.css -> SectorLandingPage + test-category-1-page (sector landings) */
 @import "./styles/search-page.css";
 
 /* ── AI editorial notice (magazine-style footnote, pure Inter) ── */
