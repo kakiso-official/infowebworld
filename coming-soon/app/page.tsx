@@ -10,6 +10,7 @@ import TrustSection from './test-landing-page/TrustSection'
 import CompareSection from './test-landing-page/CompareSection'
 import FinalCtaSection from './test-landing-page/FinalCtaSection'
 import { query } from '@/lib/db'
+import { unstable_cache } from 'next/cache'
 
 /* ════════════════════════════════════════════════════════════════════════
    Live homepage — the directory landing.
@@ -334,12 +335,20 @@ async function getPopularAiTools(limit = 6): Promise<PopFirmRow[]> {
   }
 }
 
+/* Data-cache the homepage fetches so a cold render doesn't run 8 DB queries
+   every time (the HTML is also edge-cached ~1h via middleware). Keyed by the
+   function args; short revalidate keeps content fresh and lets a transient
+   empty result self-heal quickly. */
+const getCachedFirmsForSector = unstable_cache(getFirmsForSector, ['home-firms-v1'], { revalidate: 600 })
+const getCachedLatestReviews  = unstable_cache(getLatestReviews,  ['home-reviews-v1'], { revalidate: 600 })
+const getCachedPopularAi      = unstable_cache(getPopularAiTools, ['home-popular-ai-v1'], { revalidate: 600 })
+
 export default async function Home() {
   /* Parallel fetch — sectors, reviews, popular AI tools — all in one round. */
   const [firmsBySectorArr, reviews, popularAi] = await Promise.all([
-    Promise.all(LANDING_SECTORS.map(s => getFirmsForSector(s.slug))),
-    getLatestReviews(8),
-    getPopularAiTools(6),
+    Promise.all(LANDING_SECTORS.map(s => getCachedFirmsForSector(s.slug))),
+    getCachedLatestReviews(8),
+    getCachedPopularAi(6),
   ])
   const firmsBySector: Record<string, FirmRow[]> = {}
   LANDING_SECTORS.forEach((s, i) => { firmsBySector[s.slug] = firmsBySectorArr[i] })

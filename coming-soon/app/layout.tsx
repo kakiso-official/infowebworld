@@ -8,17 +8,23 @@ import NavigationProgress from "./components/NavigationProgress";
 import ScrollToTop from "./components/ScrollToTop";
 import GoogleOneTap from "./components/auth/GoogleOneTap";
 import ChatWidget from "./components/chat/ChatWidget";
+import DeferredClient from "./components/DeferredClient";
 
 const nunito = Nunito({
   variable: "--font-nunito",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["400", "600", "700", "800"],
+  display: "swap",
 });
 
 const bricolage = Bricolage_Grotesque({
   variable: "--font-bricolage",
   subsets: ["latin"],
   weight: ["400", "800"],
+  display: "swap",
+  /* Display/heading accent font — not the LCP text, so don't let it
+     preload-block the critical path. */
+  preload: false,
 });
 
 const inter = Inter({
@@ -96,8 +102,8 @@ export default function RootLayout({
             the TLS handshake completes before the actual request, shaving
             ~100-200ms off LCP. dns-prefetch is the lighter cousin for
             origins we only hit conditionally. Order: most-critical first. */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        {/* Fonts are self-hosted by next/font (served from /_next/static) —
+            no Google Fonts preconnect needed. */}
         <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <link rel="dns-prefetch" href="https://accounts.google.com" />
@@ -109,18 +115,18 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
       </head>
       <body className={`${nunito.variable} ${bricolage.variable} ${inter.variable}`}>
-        <Script src="https://www.googletagmanager.com/gtag/js?id=G-C6LY2016NW" strategy="afterInteractive" />
-        <Script id="gtag-init" strategy="afterInteractive">{`
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-C6LY2016NW" strategy="lazyOnload" />
+        <Script id="gtag-init" strategy="lazyOnload">{`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
           gtag('config', 'G-C6LY2016NW');
         `}</Script>
         <Suspense><NavigationProgress /></Suspense>
-        <Suspense><GoogleOneTap /></Suspense>
+        <Suspense><DeferredClient><GoogleOneTap /></DeferredClient></Suspense>
         {children}
         <ScrollToTop />
-        <ChatWidget />
+        <DeferredClient><ChatWidget /></DeferredClient>
       </body>
     </html>
   );
