@@ -109,7 +109,7 @@ export default function NewReviewsSection({ reviews }: Props) {
                     >
                       <header className="tlp-rev-head">
                         {r.listing_logo
-                          ? <img className="tlp-rev-logo" src={r.listing_logo} alt="" />
+                          ? <img className="tlp-rev-logo" src={r.listing_logo} alt="" loading="lazy" decoding="async" />
                           : <span className="tlp-rev-logo tlp-rev-logo--ph">
                               {(r.listing_name || '?').slice(0, 2).toUpperCase()}
                             </span>}
@@ -129,7 +129,7 @@ export default function NewReviewsSection({ reviews }: Props) {
                       <footer className="tlp-rev-foot">
                         <div className="tlp-rev-author">
                           {r.user_avatar
-                            ? <img className="tlp-rev-avatar" src={r.user_avatar} alt="" />
+                            ? <img className="tlp-rev-avatar" src={r.user_avatar} alt="" loading="lazy" decoding="async" />
                             : <span className="tlp-rev-avatar tlp-rev-avatar--ph">
                                 <FontAwesomeIcon icon={faUser} style={{ width: 16, height: 16 }} />
                               </span>}

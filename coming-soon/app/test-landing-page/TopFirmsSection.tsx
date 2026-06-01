@@ -101,7 +101,7 @@ export default function TopFirmsSection({ sectors, firmsBySector }: Props) {
                   <Link href={publicHref(f)} className="tlp-firm-main">
                     <div className="tlp-firm-logo">
                       {f.logo_url
-                        ? <img src={f.logo_url} alt="" />
+                        ? <img src={f.logo_url} alt="" loading="lazy" decoding="async" />
                         : <span>{f.company_name.slice(0, 2).toUpperCase()}</span>}
                     </div>
                     <div className="tlp-firm-mid">

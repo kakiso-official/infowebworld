@@ -5,6 +5,19 @@ import { I, ic } from '../components/icons'
 import type { Category } from '../iww-hq/data/category-storage'
 import { getSectorMeta } from './sector-demo-data'
 
+/* Old sector-landing styles — route-scoped here so the ~61KB .sl-* bundle
+   loads only with this (lazy-loaded) component, not on every public page. */
+import '../styles/sector/page.css'
+import '../styles/sector/hero.css'
+import '../styles/sector/search.css'
+import '../styles/sector/section.css'
+import '../styles/sector/card.css'
+import '../styles/sector/categories.css'
+import '../styles/sector/chips.css'
+import '../styles/sector/cta.css'
+import '../styles/sector/animations.css'
+import '../styles/sector/responsive.css'
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 function jp(v: unknown) { if (!v) return null; if (typeof v === 'string') { try { return JSON.parse(v) } catch { return null } } return v }
 

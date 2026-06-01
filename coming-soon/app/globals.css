@@ -5,16 +5,9 @@
 @import "./styles/seo-sections.css";
 /* seo-editor.css + admin-forms.css are route-scoped in app/iww-hq/layout.tsx
    so they no longer load on public pages (homepage perf). */
-@import "./styles/sector/page.css";
-@import "./styles/sector/hero.css";
-@import "./styles/sector/search.css";
-@import "./styles/sector/section.css";
-@import "./styles/sector/card.css";
-@import "./styles/sector/categories.css";
-@import "./styles/sector/chips.css";
-@import "./styles/sector/cta.css";
-@import "./styles/sector/animations.css";
-@import "./styles/sector/responsive.css";
+/* sector/*.css (.sl-* old sector landing, ~61KB) is route-scoped in
+   app/sector/SectorLanding.tsx so it loads only with that (lazy) component,
+   not on every public page. */
 @import "./styles/nav.css";
 @import "./styles/nav-gl.css";
 @import "./styles/hero.css";

@@ -130,7 +130,7 @@ export default function PopularSection({
                 <header className="tlp-pop-card-head">
                   <Link href={listingHref(f)} className="tlp-pop-card-logo">
                     {f.logo_url
-                      ? <img src={f.logo_url} alt="" />
+                      ? <img src={f.logo_url} alt="" loading="lazy" decoding="async" />
                       : <span>{f.company_name.slice(0, 2).toUpperCase()}</span>}
                   </Link>
                   <div className="tlp-pop-card-id">
