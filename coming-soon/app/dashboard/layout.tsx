@@ -3,6 +3,14 @@ import { getUserPlan } from '@/lib/user-plan'
 import { queryOne } from '@/lib/db'
 import DashboardShell from './DashboardShell'
 
+/* Route-scoped styles — kept out of globals.css so they don't ship on public
+   pages (homepage perf). Loaded only under /dashboard/*. */
+import '../styles/dashboard-shell.css'
+import '../styles/dashboard.css'
+import '../styles/dashboard-form.css'
+import '../styles/dashboard-checkout.css'
+import '../styles/dashboard-engagement.css'
+
 export const dynamic = 'force-dynamic'
 
 /**

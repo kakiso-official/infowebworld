@@ -3,8 +3,8 @@
    ═══════════════════════════════════════════════════════ */
 @import "./styles/not-found.css";
 @import "./styles/seo-sections.css";
-@import "./styles/seo-editor.css";
-@import "./styles/admin-forms.css";
+/* seo-editor.css + admin-forms.css are route-scoped in app/iww-hq/layout.tsx
+   so they no longer load on public pages (homepage perf). */
 @import "./styles/sector/page.css";
 @import "./styles/sector/hero.css";
 @import "./styles/sector/search.css";
@@ -27,11 +27,8 @@
 @import "./styles/payment-modal.css";
 @import "./styles/signup-modal.css";
 @import "./styles/user-menu.css";
-@import "./styles/dashboard-shell.css";
-@import "./styles/dashboard.css";
-@import "./styles/dashboard-form.css";
-@import "./styles/dashboard-checkout.css";
-@import "./styles/dashboard-engagement.css";
+/* dashboard-*.css are route-scoped in app/dashboard/layout.tsx so they no
+   longer load on public pages (homepage perf). */
 @import "./styles/scroll-to-top.css";
 @import "./styles/stats.css";
 @import "./styles/tiers.css";
