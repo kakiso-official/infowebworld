@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import FooterNewsletter from './FooterNewsletter'
 import FooterAuthLink from './FooterAuthLink'
+import LoggedOutOnly from './LoggedOutOnly'
 
 import { BASE } from '../config/base-path'
 const bp = BASE
@@ -77,22 +78,25 @@ export default function Footer() {
   return (
     <footer className="ft">
       <div className="container">
-        {/* ── Newsletter strip — premium CTA at the top of the footer ── */}
-        <div className="ft-newsletter">
-          <div className="ft-nl-copy">
-            <span className="ft-nl-eyebrow">Stay in the loop</span>
-            <h3 className="ft-nl-title">Get the InfoWebWorld brief</h3>
-            <p className="ft-nl-sub">
-              Weekly category reports, new features, and early access — straight to your inbox. No spam, ever.
-            </p>
+        {/* ── Newsletter strip — premium CTA at the top of the footer.
+            Shown to logged-out visitors only; hidden once a user is signed in. ── */}
+        <LoggedOutOnly>
+          <div className="ft-newsletter">
+            <div className="ft-nl-copy">
+              <span className="ft-nl-eyebrow">Stay in the loop</span>
+              <h3 className="ft-nl-title">Get the InfoWebWorld brief</h3>
+              <p className="ft-nl-sub">
+                Weekly category reports, new features, and early access — straight to your inbox. No spam, ever.
+              </p>
+            </div>
+            <div className="ft-nl-form-wrap">
+              <FooterNewsletter />
+              <span className="ft-nl-legal">
+                By subscribing you agree to our <Link href="/privacy" className="ft-col-link ft-copy-link">Privacy Policy</Link>.
+              </span>
+            </div>
           </div>
-          <div className="ft-nl-form-wrap">
-            <FooterNewsletter />
-            <span className="ft-nl-legal">
-              By subscribing you agree to our <Link href="/privacy" className="ft-col-link ft-copy-link">Privacy Policy</Link>.
-            </span>
-          </div>
-        </div>
+        </LoggedOutOnly>
 
         {/* ── Top: Brand + Nav columns ── */}
         <div className="ft-top">

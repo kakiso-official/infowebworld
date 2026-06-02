@@ -415,7 +415,7 @@
 
 /* ── Small phones ── */
 @media (max-width: 420px) {
-  .ft-columns { grid-template-columns: 1fr; gap: 1.5rem }
+  .ft-columns { grid-template-columns: repeat(2, 1fr); gap: 1.5rem 1rem }
   .ft-col-title { margin-bottom: .55rem; padding-bottom: .45rem }
 }
 

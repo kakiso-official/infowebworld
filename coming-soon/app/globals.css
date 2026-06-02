@@ -48,6 +48,11 @@
 /* test-landing-page.css -> app/page.tsx + SectorLandingPage + test-category-1-page
    (homepage + the sector landings that reuse those sections). */
 /* test-category-1-page.css -> SectorLandingPage + test-category-1-page (sector landings) */
+/* search-bar.css — the shared .tlp-hsr-* search field + dropdown, reused by the
+   homepage, sector landings, /categories, and /search. Stays GLOBAL (≈5KB): a
+   route-scoped copy is exactly how it got dropped from /categories + /search in
+   the CSS code-split. Must load before search-page.css (which overrides it). */
+@import "./styles/search-bar.css";
 @import "./styles/search-page.css";
 
 /* ── AI editorial notice (magazine-style footnote, pure Inter) ── */

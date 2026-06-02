@@ -140,10 +140,10 @@ export default function SectorAllBrowse({ sectorSlug }: { sectorSlug: string }) 
   }, [sector])
 
   const stats = useMemo(() => ({
-    l2: sector?.children.length ?? 0,
-    l3: sector?.children.reduce((s, l2) => s + l2.children.length, 0) ?? 0,
-    listings: sectorCats.reduce((s, c) => s + c.listingCount, 0),
-  }), [sector, sectorCats])
+    l2: sectorCats.filter(c => c.level === 2).length,
+    l3: sectorCats.filter(c => c.level === 3).length,
+    deep: sectorCats.filter(c => c.level >= 4).length,
+  }), [sectorCats])
 
   /* Click outside closes dropdown — same UX as sector landing HeroSearch. */
   useEffect(() => {
@@ -236,10 +236,10 @@ export default function SectorAllBrowse({ sectorSlug }: { sectorSlug: string }) 
           {/* Stat pills */}
           <div className="cb-hero-pills">
             {[
-              { n: stats.l2, l: 'Categories', c: meta.color },
-              { n: stats.l3, l: 'Subcategories', c: '#8B5CF6' },
-              { n: stats.listings, l: 'Listings', c: '#2FAE6A' },
-            ].map(s => (
+              { n: stats.l2, l: 'L1 Categories', c: meta.color },
+              { n: stats.l3, l: 'L2 sub categories', c: '#8B5CF6' },
+              { n: stats.deep, l: 'L3/L4/L5 sub categories', c: '#E8553D' },
+            ].filter(s => s.n > 0).map(s => (
               <span key={s.l} className="cb-hero-pill" style={{ '--pc': s.c } as React.CSSProperties}>
                 <strong>{s.n.toLocaleString()}</strong> {s.l}
               </span>

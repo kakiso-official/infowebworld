@@ -61,7 +61,7 @@ function countByLevel(node: CatNode, lvl: number): number {
 
 
 /* ═══════════════════════════════════════════
-   Sector metadata — icon, accent, pastel bg
+   Sector metadata — icon, accent,8 pastel bg
    ═══════════════════════════════════════════ */
 
 function sectorMeta(name: string) {
@@ -111,6 +111,7 @@ export default function CategoriesBrowse() {
     sectors: tree.length,
     l2: categories.filter(c => c.level === 2).length,
     l3: categories.filter(c => c.level === 3).length,
+    deep: categories.filter(c => c.level >= 4).length,
   }), [tree, categories])
 
   /* Click outside closes the dropdown — same UX as sector landing HeroSearch. */
@@ -191,18 +192,18 @@ export default function CategoriesBrowse() {
 
           {/* Description */}
           <p className="cb-desc">
-            <strong>{(stats.l2 + stats.l3).toLocaleString()} categories</strong> across <strong>{stats.sectors} industry sectors</strong>. Find, compare, and connect with the best tools, services, and solutions.
+            <strong>{(stats.l2 + stats.l3).toLocaleString()} business categories</strong> across <strong>{stats.sectors} industry sectors</strong>: Artificial Intelligence &amp; Machine Learning, IT Services &amp; Agencies, Local Businesses, Professional Services, Software &amp; SaaS, and Startups &amp; Innovation. Discover, compare, review, and connect with the best tools, services, and business solutions.
           </p>
 
           {/* Stat pills */}
           <div className="cb-hero-pills">
             {[
-              { n: stats.sectors, l: 'Sectors', c: '#E8553D' },
-              { n: stats.l2, l: 'Categories', c: '#3B82F6' },
-              { n: stats.l3, l: 'Subcategories', c: '#8B5CF6' },
+              { n: stats.l2, l: 'L1 Categories', c: '#3B82F6' },
+              { n: stats.l3, l: 'L2 sub categories', c: '#8B5CF6' },
+              { n: stats.deep, l: 'L3/L4/L5 sub categories', c: '#E8553D' },
             ].map(s => (
               <span key={s.l} className="cb-hero-pill" style={{ '--pc': s.c } as React.CSSProperties}>
-                <strong>{s.n}</strong> {s.l}
+                <strong>{s.n.toLocaleString()}</strong> {s.l}
               </span>
             ))}
           </div>
@@ -243,7 +244,7 @@ export default function CategoriesBrowse() {
               ref={inputRef}
               type="text"
               className="tlp-hsr-input"
-              placeholder="Search 14,000+ categories — AI, SaaS, Marketing, CRM"
+              placeholder={`Search ${(stats.l2 + stats.l3).toLocaleString()} categories — AI, SaaS, Marketing, CRM`}
               value={search}
               onChange={e => onChange(e.target.value)}
               onFocus={() => { setFocused(true); if (search.trim()) setOpen(true) }}
@@ -319,9 +320,9 @@ export default function CategoriesBrowse() {
            Sector cards — always visible
            ══════════════════════════════════════ */}
         <>
-          <h2 className="cb-section-heading">All <em>Sectors</em></h2>
+          <h2 className="cb-section-heading">All Sectors <em>Business Categories</em></h2>
           <div className="cb-sectors">
-            {tree.map(sector => {
+            {[...tree].sort((a, b) => a.name.localeCompare(b.name)).map(sector => {
               const meta = sectorMeta(sector.name)
 
               return (

@@ -68,16 +68,16 @@ const SECTOR_COPY: Record<string, { slug: string; icon: string; color: string; s
   },
 }
 
-const SECTOR_ORDER = ['ai-ml', 'software-saas', 'it-services-agencies', 'startups-innovation', 'local-businesses', 'professional-services'] as const
+const SECTOR_ORDER = ['ai-ml', 'it-services-agencies', 'local-businesses', 'professional-services', 'software-saas', 'startups-innovation'] as const
 
 const faqs = [
   {
     q: 'How many business categories does InfoWebWorld cover?',
-    a: 'InfoWebWorld covers 6 top-level sectors, 211 Level-2 categories, and 13,843 Level-3 subcategories across 80+ industries and 12+ countries — for a total of 14,060 categorized business areas. The taxonomy is human-curated and updated as new markets emerge.',
+    a: 'InfoWebWorld covers 6 top-level sectors, 120 Level-2 categories, and 3,054 Level-3 subcategories across 80+ industries and 12+ countries — for a total of 3,174 business categories. The taxonomy is human-curated and updated as new markets emerge.',
   },
   {
     q: 'What are the 6 main business sectors on InfoWebWorld?',
-    a: 'The six sectors are: AI & Machine Learning, Software & SaaS, IT Services & Agencies, Startups & Innovation, Local Businesses, and Professional Services. Each sector contains dozens of categories and hundreds to thousands of subcategories.',
+    a: 'The six sectors are: AI & Machine Learning, IT Services & Agencies, Local Businesses, Professional Services, Software & SaaS, and Startups & Innovation. Each sector contains dozens of categories and hundreds to thousands of subcategories.',
   },
   {
     q: 'How is the InfoWebWorld category taxonomy organized?',
@@ -85,11 +85,11 @@ const faqs = [
   },
   {
     q: 'How do I find a business by category on InfoWebWorld?',
-    a: 'Use the search bar on the categories page to type any keyword — it searches across all 14,060 categories instantly. Or browse by clicking a sector to expand its categories and subcategories, then click any subcategory to see all verified businesses listed under it.',
+    a: 'Use the search bar on the categories page to type any keyword — it searches across all categories instantly. Or browse by clicking a sector to expand its categories and subcategories, then click any subcategory to see all verified businesses listed under it.',
   },
   {
     q: 'What is the difference between a sector, a category, and a subcategory?',
-    a: 'A sector is the top-level industry grouping (6 total on InfoWebWorld). A category is a specific market inside a sector (211 total). A subcategory is the precise niche where buyers compare alternatives side by side (13,843 total). Listings are tagged to one primary subcategory plus up to two secondary subcategories.',
+    a: 'A sector is the top-level industry grouping (6 total on InfoWebWorld). A category is a specific market inside a sector (120 total). A subcategory is the precise niche where buyers compare alternatives side by side (3,054 total). Listings are tagged to one primary subcategory plus up to two secondary subcategories.',
   },
   {
     q: 'Can a business list in more than one category?',
@@ -101,7 +101,7 @@ const faqs = [
   },
   {
     q: 'Are InfoWebWorld business categories country-specific?',
-    a: 'The taxonomy is global — the same 14,060 categories apply across every country. Listings themselves can be filtered by country and city for local discovery.',
+    a: 'The taxonomy is global — the same 3,174 categories apply across every country. Listings themselves can be filtered by country and city for local discovery.',
   },
   {
     q: 'How often is the InfoWebWorld category taxonomy updated?',
@@ -115,8 +115,8 @@ const faqs = [
 
 export async function generateMetadata(): Promise<Metadata> {
   const year = new Date().getFullYear()
-  const title = `Business Categories ${year} — 6 Sectors · 211 Categories · 13,843 Subcategories | InfoWebWorld`
-  const description = `Browse the complete InfoWebWorld business directory taxonomy: 6 sectors, 211 categories, 13,843 subcategories across AI & ML, SaaS, IT Services, Startups, Local Businesses, and Professional Services. Verified companies, real reviews, side-by-side comparison.`
+  const title = `Business Categories ${year} - 6 Sectors · 120 Categories · 3,054 Subcategories | InfoWebWorld`
+  const description = `Browse the complete InfoWebWorld business directory taxonomy: 6 sectors, 120 categories, 3,054 subcategories across AI & ML, SaaS, IT Services, Startups, Local Businesses, and Professional Services. Verified companies, real reviews, side-by-side comparison.`
 
   return {
     title,
@@ -137,7 +137,7 @@ export async function generateMetadata(): Promise<Metadata> {
       'browse business categories by sector',
       'find business by category',
       'business directory taxonomy 2026',
-      '14000 business subcategories',
+      '3000 business subcategories',
       'AI ML company directory',
       'SaaS company directory by category',
       'AI agent frameworks directory',
@@ -160,8 +160,8 @@ export async function generateMetadata(): Promise<Metadata> {
     ],
     alternates: { canonical: URL_CAT },
     openGraph: {
-      title: `Business Categories — 14,060 Categories Across 6 Sectors`,
-      description: `Browse 6 sectors, 211 categories, and 13,843 subcategories of verified businesses. AI, SaaS, IT, Startups, Local, Professional Services.`,
+      title: `Business Categories - 3,174 Categories Across 6 Sectors`,
+      description: `Browse 6 sectors, 120 categories, and 3,054 subcategories of verified businesses. AI, SaaS, IT, Startups, Local, Professional Services.`,
       url: URL_CAT,
       siteName: 'InfoWebWorld',
       type: 'website',
@@ -170,8 +170,8 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: 'summary_large_image',
-      title: `Business Categories — 14,060 Categories Across 6 Sectors`,
-      description: `6 sectors · 211 categories · 13,843 subcategories. AI, SaaS, IT, Startups, Local, Pro Services.`,
+      title: `Business Categories - 3,174 Categories Across 6 Sectors`,
+      description: `6 sectors · 120 categories · 3,054 subcategories. AI, SaaS, IT, Startups, Local, Pro Services.`,
       images: [`${BASE_URL}/og-image.png`],
     },
     robots: {
@@ -193,7 +193,7 @@ export async function generateMetadata(): Promise<Metadata> {
       'article:modified_time': new Date().toISOString(),
       /* Dublin Core — niche but parsed by academic + some news crawlers. */
       'DC.title': `Business Categories — InfoWebWorld`,
-      'DC.description': `6 sectors, 211 categories, 13,843 subcategories of verified businesses.`,
+      'DC.description': `6 sectors, 120 categories, 3,054 subcategories of verified businesses.`,
       'DC.creator': 'Brain Stream Australia Pty Ltd',
       'DC.publisher': 'InfoWebWorld',
       'DC.subject': 'business directory, industry taxonomy, SaaS, AI tools, IT services',
@@ -242,8 +242,8 @@ export default async function CategoriesPage() {
     .filter((s): s is NonNullable<typeof s> => s !== null)
 
   const year = new Date().getFullYear()
-  const title = `Business Categories ${year} — 6 Sectors · 211 Categories · 13,843 Subcategories | InfoWebWorld`
-  const description = `Browse the complete InfoWebWorld business directory taxonomy: 6 sectors, 211 categories, 13,843 subcategories across AI & ML, SaaS, IT Services, Startups, Local Businesses, and Professional Services. Verified companies, real reviews, side-by-side comparison.`
+  const title = `Business Categories ${year} - 6 Sectors · 120 Categories · 3,054 Subcategories | InfoWebWorld`
+  const description = `Browse the complete InfoWebWorld business directory taxonomy: 6 sectors, 120 categories, 3,054 subcategories across AI & ML, SaaS, IT Services, Startups, Local Businesses, and Professional Services. Verified companies, real reviews, side-by-side comparison.`
 
   /* ── Schema graph ── */
   const ID_BREADCRUMB = `${URL_CAT}#breadcrumb`
@@ -359,14 +359,14 @@ export default async function CategoriesPage() {
     })),
   }
 
-  /* The full 14,060-row taxonomy is itself a curated Dataset. Google Dataset
+  /* The full taxonomy is itself a curated Dataset. Google Dataset
      Search + LLM citation engines treat Dataset entities as high-trust sources. */
   const datasetNode = {
     '@type': 'Dataset',
     '@id': `${URL_CAT}#dataset`,
     name: 'InfoWebWorld global business directory taxonomy',
     alternateName: 'InfoWebWorld category dataset',
-    description: `Human-curated 3-level taxonomy of ${CATEGORIES.length.toLocaleString()} business categories across 6 sectors, 211 categories, and 13,843 subcategories. Updated as new markets emerge. Used to classify every verified business listing on InfoWebWorld.`,
+    description: `Human-curated taxonomy of ${(l2Count + l3Count).toLocaleString()} business categories across ${sectors} sectors, ${l2Count} categories, and ${l3Count.toLocaleString()} subcategories. Updated as new markets emerge. Used to classify every verified business listing on InfoWebWorld.`,
     url: URL_CAT,
     sameAs: URL_CAT,
     creator: { '@id': ID_ORG },
@@ -411,7 +411,7 @@ export default async function CategoriesPage() {
         '@id': `${URL_CAT}#term-category`,
         name: 'Category',
         alternateName: 'L2',
-        description: 'A specific market inside a sector. Example: "AI Chatbots" sits inside the "AI & ML" sector. InfoWebWorld has 211 categories.',
+        description: 'A specific market inside a sector. Example: "AI Chatbots" sits inside the "AI & ML" sector. InfoWebWorld has 120 categories.',
         inDefinedTermSet: { '@id': ID_TERMSET },
       },
       {
@@ -419,7 +419,7 @@ export default async function CategoriesPage() {
         '@id': `${URL_CAT}#term-subcategory`,
         name: 'Subcategory',
         alternateName: 'L3',
-        description: 'A precise niche inside a category. Example: "Customer Support Chatbots" sits inside "AI Chatbots". InfoWebWorld has 13,843 subcategories.',
+        description: 'A precise niche inside a category. Example: "Customer Support Chatbots" sits inside "AI Chatbots". InfoWebWorld has 3,054 subcategories.',
         inDefinedTermSet: { '@id': ID_TERMSET },
       },
     ],
@@ -431,8 +431,8 @@ export default async function CategoriesPage() {
     description: 'Four steps to find verified businesses by industry category on InfoWebWorld — search by keyword, browse by sector, drill into a subcategory, and compare alternatives.',
     totalTime: 'PT2M',
     steps: [
-      { name: 'Open the categories page', text: 'Go to the InfoWebWorld categories page to see all 6 sectors and 14,000+ subcategories.', url: URL_CAT },
-      { name: 'Search by keyword', text: 'Type a product, problem, or industry keyword in the search bar — for example "AI chatbot", "CRM", or "cybersecurity consultant". The search matches across all 14,060 categories instantly.' },
+      { name: 'Open the categories page', text: 'Go to the InfoWebWorld categories page to see all 6 sectors and 3,054 subcategories.', url: URL_CAT },
+      { name: 'Search by keyword', text: 'Type a product, problem, or industry keyword in the search bar — for example "AI chatbot", "CRM", or "cybersecurity consultant". The search matches across all categories instantly.' },
       { name: 'Or browse by sector', text: 'Click any of the 6 sector cards to expand its categories and subcategories. Pick the subcategory closest to what you need.' },
       { name: 'Compare verified businesses', text: 'On the subcategory page, see all verified businesses listed there. Filter by location, plan tier, and rating; click any listing for the full profile, reviews, and direct contact.' },
     ],
@@ -500,9 +500,9 @@ export default async function CategoriesPage() {
             <p className="cat-seo-tldr-body">
               <strong>InfoWebWorld&apos;s complete business directory taxonomy.</strong> {sectors} top-level
               sectors, {l2Count.toLocaleString()} categories, and {l3Count.toLocaleString()} subcategories
-              ({CATEGORIES.length.toLocaleString()} total rows) covering AI &amp; ML, Software &amp; SaaS,
-              IT Services &amp; Agencies, Startups &amp; Innovation, Local Businesses, and Professional
-              Services. Every listing is human-verified, every review is identity-checked, every ranking
+              covering AI &amp; ML, IT Services &amp; Agencies, Local Businesses,
+              Professional Services, Software &amp; SaaS, and Startups &amp; Innovation.
+              Every listing is human-verified, every review is identity-checked, every ranking
               is merit-based.
             </p>
             <p className="cat-seo-tldr-meta">
@@ -590,8 +590,7 @@ export default async function CategoriesPage() {
           <ol className="cat-seo-steps">
             <li>
               <strong>Search by keyword.</strong> Type a product, problem, or industry keyword in
-              the search bar above; it matches across all {CATEGORIES.length.toLocaleString()}{' '}
-              categories instantly.
+              the search bar above; it matches across all categories instantly.
             </li>
             <li>
               <strong>Or browse by sector.</strong> Click any of the 6 sector cards to expand its

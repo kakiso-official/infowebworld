@@ -1,0 +1,233 @@
+/* ══════════════════════════════════════════════════════════════
+   Shared search bar (.tlp-hsr-*) — base field + dropdown.
+
+   This is the SHARED search-bar component, reused verbatim by:
+     - the homepage hero (app/page.tsx → HeroSearchClient)
+     - the sector landings (SectorLandingPage, test-category-1-page)
+     - /categories (CategoriesBrowse)
+     - /search (SearchBar)
+
+   It used to live inside test-landing-page.css and ship globally. The
+   CSS code-split (commit 276a1da) route-scoped test-landing-page.css to
+   only the landing pages, which silently un-styled the bar on /categories
+   and /search. Because the bar is genuinely cross-route, it now lives in
+   its own ~5KB file imported GLOBALLY in globals.css — small enough to be
+   global, and impossible to "forget to import" on a new consumer.
+
+   Page-level tweaks stay route-scoped and layer on top of this base:
+     - categories.css          → .cb-hero-search-wrap .tlp-hsr* (width/colors)
+     - search-page.css         → .tlp-hsr-row--active, .srch-hero-search
+     - test-category-1-page.css → .tcat1 .tlp-hsr* (responsive sizing)
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Hero search bar (.tlp-hsr-*) ── */
+.tlp-hero-search {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  margin-top: 6px;
+}
+.tlp-hsr {
+  position: relative;
+  display: flex; align-items: center;
+  background: #FFFFFF;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 16px;
+  padding: 6px 6px 6px 0;
+  box-shadow: 0 14px 36px -18px rgba(10, 27, 51, .14),
+              0 2px 6px -2px rgba(10, 27, 51, .04);
+  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+.tlp-hsr--on {
+  border-color: #003B2A;
+  box-shadow: 0 16px 40px -16px rgba(0, 59, 42, .25),
+              0 0 0 5px rgba(0, 59, 42, .07);
+}
+.tlp-hsr-ico {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 56px; height: 56px;
+  color: #6B7280;
+  flex-shrink: 0;
+  transition: color .15s ease;
+}
+.tlp-hsr--on .tlp-hsr-ico { color: #003B2A; }
+.tlp-hsr-spin {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(0, 59, 42, .18);
+  border-top-color: #003B2A;
+  animation: tlp-hsr-spin .8s linear infinite;
+}
+@keyframes tlp-hsr-spin { to { transform: rotate(360deg); } }
+.tlp-hsr-input {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 56px;
+  background: transparent;
+  border: 0;
+  font-family: inherit;
+  font-size: clamp(15px, 1.4vw, 16.5px);
+  color: #0A1B33;
+  padding: 0 8px 0 4px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.tlp-hsr-input::placeholder { color: #9CA3AF; }
+.tlp-hsr-input:focus { outline: none; }
+.tlp-hsr-clear {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: transparent;
+  border: 0;
+  color: #6B7280;
+  cursor: pointer;
+  margin-right: 4px;
+  transition: background .12s ease, color .12s ease;
+  flex-shrink: 0;
+}
+.tlp-hsr-clear:hover { background: #F1F2F4; color: #0A1B33; }
+.tlp-hsr-go {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 6px;
+  padding: 0 22px;
+  height: 48px;
+  border-radius: 12px;
+  background: #003B2A;
+  color: #FFFFFF;
+  border: 0;
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background .12s ease, transform .15s ease;
+}
+.tlp-hsr-go:hover { background: #0C5A40; }
+.tlp-hsr-go:active { transform: translateY(1px); }
+
+/* ── Dropdown (results) ── */
+.tlp-hsr-pop {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0; right: 0;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  box-shadow: 0 24px 60px -24px rgba(10, 27, 51, .18),
+              0 4px 12px -6px rgba(10, 27, 51, .06);
+  padding: 8px;
+  max-height: 480px;
+  overflow-y: auto;
+  /* High enough to clear any section below the hero (sticky CTAs,
+     compare bars, gradient banners, etc.). */
+  z-index: 1000;
+  text-align: left;
+}
+/* Lift the search wrapper into its own stacking context so the
+   absolutely-positioned popover anchors to it correctly. */
+.tlp-hero-search {
+  position: relative;
+  z-index: 50;
+}
+.tlp-hsr-sec + .tlp-hsr-sec {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid #F1F2F4;
+}
+.tlp-hsr-sec-lbl {
+  padding: 8px 12px 4px;
+  font-size: 11.5px; font-weight: 700;
+  color: #6B7280;
+  letter-spacing: 0;
+}
+.tlp-hsr-row {
+  display: flex; align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #0A1B33;
+  font-size: 14px;
+  transition: background .12s ease;
+}
+.tlp-hsr-row:hover { background: #E6F4EC; }
+.tlp-hsr-row-logo {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid #E5E7EB;
+  background: #FAFBFC;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.tlp-hsr-row-logo--ph {
+  font-weight: 800; font-size: 12px; color: #0A1B33;
+  background: linear-gradient(180deg, #F1F2F4, #E5E7EB);
+}
+.tlp-hsr-row-dot {
+  width: 11px; height: 11px; border-radius: 3px;
+  background: #003B2A;
+  flex-shrink: 0;
+}
+.tlp-hsr-row-dot--article { background: #3B82F6; }
+.tlp-hsr-row-text {
+  display: flex; flex-direction: column;
+  gap: 1px;
+  flex: 1; min-width: 0;
+}
+.tlp-hsr-row-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: #0A1B33;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  letter-spacing: -.008em;
+}
+.tlp-hsr-row-sub {
+  font-size: 12px;
+  color: #6B7280;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.tlp-hsr-row-tag {
+  font-size: 11px;
+  color: #4B5563;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #F1F2F4;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  max-width: 160px;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.tlp-hsr-row-tag--soft { background: transparent; }
+.tlp-hl {
+  background: rgba(0, 59, 42, .14);
+  color: #003B2A;
+  border-radius: 2px;
+  padding: 0 2px;
+  font-weight: 700;
+}
+.tlp-hsr-empty {
+  padding: 26px 16px;
+  text-align: center;
+  color: #4B5563;
+  font-size: 13.5px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.tlp-hsr-empty strong { color: #0A1B33; font-weight: 700; }
+.tlp-hsr-empty span { font-size: 12.5px; color: #9CA3AF; }
+
+/* ── Mobile tweaks (≤720px) — compact field + icon-only Search button ── */
+@media (max-width: 720px) {
+  .tlp-hsr { border-radius: 14px; padding: 4px 4px 4px 0; }
+  .tlp-hsr-ico { width: 48px; height: 48px; }
+  .tlp-hsr-input { height: 48px; font-size: 15px; }
+  .tlp-hsr-go {
+    /* Compact icon-only button on small screens — text fades out, chevron stays. */
+    padding: 0; width: 44px; height: 44px;
+    border-radius: 10px;
+  }
+  .tlp-hsr-go span { display: none; }
+}
