@@ -73,7 +73,7 @@ class CancelledError extends Error {
 export async function scrapeListing({
   env,
   jobId,
-  model = 'gemini-2.5-pro',
+  model = 'gemini-2.5-flash',
   publicScreenshotBase = '/scrape-screenshots',
   screenshotOutDir,
   log = console,
@@ -103,7 +103,7 @@ export async function scrapeListing({
 
   const ctx = {
     env, sessionId, jobId: job.id, model, log, costCapUsd, signal,
-    stepIndex: 0, totalCost: 0, totalIn: 0, totalOut: 0, pages: 0, failedSteps: 0,
+    stepIndex: 0, totalCost: 0, totalIn: 0, totalOut: 0, pages: 0, failedSteps: 0, degraded: 0,
   }
 
   let homePage = null
@@ -119,10 +119,29 @@ export async function scrapeListing({
   let critiqueResult = null
 
   try {
-    // ─── Crawl phase (cached per job — retries don't re-fetch) ─────────
-    homePage = await cachedStep(ctx, 'crawl-home', 'crawl',
-      { input_url: job.website },
-      async () => {
+    // ─── Crawl phase (parallel; cached per job so retries don't re-fetch) ──
+    // All six fetches now run CONCURRENTLY on the shared browser instead of
+    // one after another — sequential crawling (especially probing fallback
+    // paths for a missing /pricing, /faq, …) was the single biggest time
+    // sink. crawl-home is required (a reject aborts the run); the five section
+    // crawls are optional (swallow → null) and probe a capped set of fallback
+    // paths on shorter timeouts.
+    const optionalCrawl = (name, fallbacks) =>
+      cachedStepOptional(ctx, name, 'crawl', null, async () => {
+        const res = await fetchWithFallback(job.website, fallbacks)
+        if (!res) return null
+        ctx.pages++
+        return {
+          input_url: res.attemptedUrl,
+          output_status_code: res.status,
+          output_bytes: res.bytes,
+          output_excerpt: (res.title || '').slice(0, 200),
+          _data: res,
+        }
+      })
+
+    const crawlResults = await Promise.all([
+      cachedStep(ctx, 'crawl-home', 'crawl', { input_url: job.website }, async () => {
         const res = await fetchPage(job.website)
         ctx.pages++
         return {
@@ -131,144 +150,53 @@ export async function scrapeListing({
           output_excerpt: (res.title || '').slice(0, 200),
           _data: res,
         }
-      })
+      }),
+      optionalCrawl('crawl-about', ABOUT_FALLBACKS),
+      optionalCrawl('crawl-pricing', PRICING_FALLBACKS),
+      optionalCrawl('crawl-features', FEATURES_FALLBACKS),
+      optionalCrawl('crawl-faq', FAQ_FALLBACKS),
+      optionalCrawl('crawl-integrations', INTEGRATIONS_FALLBACKS),
+    ])
+    homePage = crawlResults[0]
+    aboutPage = crawlResults[1]
+    pricingPage = crawlResults[2]
+    featuresPage = crawlResults[3]
+    faqPage = crawlResults[4]
+    integrationsPage = crawlResults[5]
 
-    aboutPage = await cachedStepOptional(ctx, 'crawl-about', 'crawl', null, async () => {
-      const res = await fetchWithFallback(job.website, ABOUT_FALLBACKS)
-      if (!res) return null
-      ctx.pages++
-      return {
-        input_url: res.attemptedUrl,
-        output_status_code: res.status,
-        output_bytes: res.bytes,
-        output_excerpt: (res.title || '').slice(0, 200),
-        _data: res,
-      }
-    })
-
-    pricingPage = await cachedStepOptional(ctx, 'crawl-pricing', 'crawl', null, async () => {
-      const res = await fetchWithFallback(job.website, PRICING_FALLBACKS)
-      if (!res) return null
-      ctx.pages++
-      return {
-        input_url: res.attemptedUrl,
-        output_status_code: res.status,
-        output_bytes: res.bytes,
-        output_excerpt: (res.title || '').slice(0, 200),
-        _data: res,
-      }
-    })
-
-    featuresPage = await cachedStepOptional(ctx, 'crawl-features', 'crawl', null, async () => {
-      const res = await fetchWithFallback(job.website, FEATURES_FALLBACKS)
-      if (!res) return null
-      ctx.pages++
-      return {
-        input_url: res.attemptedUrl,
-        output_status_code: res.status,
-        output_bytes: res.bytes,
-        output_excerpt: (res.title || '').slice(0, 200),
-        _data: res,
-      }
-    })
-
-    faqPage = await cachedStepOptional(ctx, 'crawl-faq', 'crawl', null, async () => {
-      const res = await fetchWithFallback(job.website, FAQ_FALLBACKS)
-      if (!res) return null
-      ctx.pages++
-      return {
-        input_url: res.attemptedUrl,
-        output_status_code: res.status,
-        output_bytes: res.bytes,
-        output_excerpt: (res.title || '').slice(0, 200),
-        _data: res,
-      }
-    })
-
-    /* Dedicated integrations page — most SaaS products keep their
-       integration directory at /integrations or /apps. Without this
-       crawl step the features extract has no real input to fill the
-       integrations array from, and we end up with empty lists. */
-    integrationsPage = await cachedStepOptional(ctx, 'crawl-integrations', 'crawl', null, async () => {
-      const res = await fetchWithFallback(job.website, INTEGRATIONS_FALLBACKS)
-      if (!res) return null
-      ctx.pages++
-      return {
-        input_url: res.attemptedUrl,
-        output_status_code: res.status,
-        output_bytes: res.bytes,
-        output_excerpt: (res.title || '').slice(0, 200),
-        _data: res,
-      }
-    })
-
-    // ─── Screenshots ───────────────────────────────────────────────────
+    // ─── Screenshots (fire now, run CONCURRENTLY with the extract passes) ──
+    // Both shots are optional — a capture/upload failure must NOT kill the
+    // listing (the extracted data is the valuable part). We kick them off here
+    // and await the promise just before saving, so the slow browser capture +
+    // cPanel upload overlaps the LLM passes instead of adding to them serially.
     if (!screenshotOutDir) screenshotOutDir = join(process.cwd(), 'public', 'scrape-screenshots')
     mkdirSync(screenshotOutDir, { recursive: true })
-
-    // Screenshots are now cached (the cached value is the public URL).
-    // Re-running a non-screenshot section never re-captures the browser
-    // or hits the cPanel upload. The 'screenshots' section explicitly
-    // clears these two cache entries to force a refresh.
-    const homeShotStep = await cachedStep(ctx, 'screenshot-home', 'screenshot',
-      { input_url: job.website },
-      async () => {
-        const file = join(screenshotOutDir, `${job.slug}-home.jpg`)
-        await captureScreenshot(job.website, file)
-        const siteBase = ctx.env.SITE_BASE || 'http://localhost:3000'
-        console.log(`  uploading ${job.slug}-home.jpg → ${siteBase}/api/upload`)
-        try {
-          const uploaded = await uploadScreenshot(file, `${job.slug}-home.jpg`, siteBase)
-          console.log(`  ✓ uploaded ${job.slug}-home.jpg → ${uploaded}`)
-          return { output_excerpt: uploaded, _data: uploaded }
-        } catch (err) {
-          console.warn(`  ✗ upload FAILED for ${job.slug}-home: ${err.message}`)
-          console.warn(`    → falling back to local path (will NOT work on infowebworld.com)`)
-          console.warn(`    → ensure dev server is running:  npm run dev`)
-          const local = `${publicScreenshotBase}/${job.slug}-home.jpg`
-          /* Prefix the step excerpt so the UI timeline shows the upload
-             failure clearly — otherwise the local path looks like a
-             success and the listing appears broken in production with no
-             explanation in the step log. */
-          return {
-            output_excerpt: `[UPLOAD FAILED — dev-only path] ${local} :: ${err.message?.slice(0, 120)}`,
-            _data: local,
-          }
-        }
-      })
-    homeShotUrl = homeShotStep?._data ?? null
-
     const secondaryCandidate = pricingPage?._data ?? featuresPage?._data ?? aboutPage?._data ?? null
-    if (secondaryCandidate) {
-      const secondaryShotStep = await cachedStepOptional(ctx, 'screenshot-secondary', 'screenshot',
-        { input_url: secondaryCandidate.finalUrl },
-        async () => {
-          const file = join(screenshotOutDir, `${job.slug}-secondary.jpg`)
-          await captureScreenshot(secondaryCandidate.finalUrl, file)
-          const siteBase = ctx.env.SITE_BASE || 'http://localhost:3000'
-          console.log(`  uploading ${job.slug}-secondary.jpg → ${siteBase}/api/upload`)
-          try {
-            const uploaded = await uploadScreenshot(file, `${job.slug}-secondary.jpg`, siteBase)
-            console.log(`  ✓ uploaded ${job.slug}-secondary.jpg → ${uploaded}`)
-            return { output_excerpt: uploaded, _data: uploaded }
-          } catch (err) {
-            console.warn(`  ✗ upload FAILED for ${job.slug}-secondary: ${err.message}`)
-            const local = `${publicScreenshotBase}/${job.slug}-secondary.jpg`
-            return {
-              output_excerpt: `[UPLOAD FAILED — dev-only path] ${local} :: ${err.message?.slice(0, 120)}`,
-              _data: local,
-            }
-          }
-        })
-      secondaryShotUrl = secondaryShotStep?._data ?? null
-    }
+    const screenshotsPromise = Promise.all([
+      cachedStepOptional(ctx, 'screenshot-home', 'screenshot', { input_url: job.website }, () =>
+        captureAndUpload(ctx, job.website, join(screenshotOutDir, `${job.slug}-home.jpg`), `${job.slug}-home.jpg`, publicScreenshotBase)),
+      secondaryCandidate
+        ? cachedStepOptional(ctx, 'screenshot-secondary', 'screenshot', { input_url: secondaryCandidate.finalUrl }, () =>
+            captureAndUpload(ctx, secondaryCandidate.finalUrl, join(screenshotOutDir, `${job.slug}-secondary.jpg`), `${job.slug}-secondary.jpg`, publicScreenshotBase))
+        : Promise.resolve(null),
+    ]).then(([home, secondary]) => {
+      homeShotUrl = home?._data ?? null
+      secondaryShotUrl = secondary?._data ?? null
+    }).catch(() => { /* screenshots are best-effort; never fail the run */ })
 
     // ─── Extract passes ────────────────────────────────────────────────
-    const baseInfo = await extractPass(ctx, 'extract-base', baseInfoSchema, () => buildBasePrompt(job, homePage._data, aboutPage?._data))
-    const pricingInfo = await extractPass(ctx, 'extract-pricing', pricingSchema, () => buildPricingPrompt(job, pricingPage?._data, homePage._data))
-    const featuresInfo = await extractPass(ctx, 'extract-features', featuresSchema, () => buildFeaturesPrompt(job, featuresPage?._data, homePage._data, integrationsPage?._data))
-    const faqsInfo = await extractPass(ctx, 'extract-faqs', faqsSchema, () => buildFaqsPrompt(job, faqPage?._data, pricingPage?._data, featuresPage?._data))
-    const classification = await extractPass(ctx, 'extract-classify', classificationSchema, () => buildClassifyPrompt(job, baseInfo, pricingInfo, featuresInfo, faqsInfo))
+    // The four content passes are independent (they read the crawled pages,
+    // not each other's output) so they run CONCURRENTLY; classify depends on
+    // all four so it runs after. safeExtract makes each pass resilient — a
+    // hard failure retries once, then degrades to an empty section so one
+    // flaky pass can't abort the whole listing.
+    const [baseInfo, pricingInfo, featuresInfo, faqsInfo] = await Promise.all([
+      safeExtract(ctx, 'extract-base', baseInfoSchema, () => buildBasePrompt(job, homePage._data, aboutPage?._data)),
+      safeExtract(ctx, 'extract-pricing', pricingSchema, () => buildPricingPrompt(job, pricingPage?._data, homePage._data)),
+      safeExtract(ctx, 'extract-features', featuresSchema, () => buildFeaturesPrompt(job, featuresPage?._data, homePage._data, integrationsPage?._data)),
+      safeExtract(ctx, 'extract-faqs', faqsSchema, () => buildFaqsPrompt(job, faqPage?._data, pricingPage?._data, featuresPage?._data)),
+    ])
+    const classification = await safeExtract(ctx, 'extract-classify', classificationSchema, () => buildClassifyPrompt(job, baseInfo, pricingInfo, featuresInfo, faqsInfo))
 
     extracted = assembleListing({ baseInfo, pricingInfo, featuresInfo, faqsInfo, classification })
 
@@ -278,6 +206,7 @@ export async function scrapeListing({
       const out = await callGemini({
         apiKey: ctx.env.GEMINI_API_KEY, model: ctx.model,
         system: SYSTEM_CRITIQUE, prompt, responseSchema: critiqueSchema,
+        thinkingBudget: 0,
       })
       ctx.totalCost += out.costUsd
       ctx.totalIn += out.inputTokens
@@ -309,8 +238,14 @@ export async function scrapeListing({
       }
     })
 
+    // Wait for the concurrently-running screenshots before saving their URLs.
+    await screenshotsPromise
+
     // ─── Save session ──────────────────────────────────────────────────
-    const finalStatus = (critiqueResult?.flagged_fields?.length ?? 0) > 0 || citationIssues.length > 0
+    // 'review' if the critique flagged anything, citations are missing, OR a
+    // section degraded (a pass failed and came back empty) — so a partial
+    // listing always lands in the human queue rather than silently as success.
+    const finalStatus = (critiqueResult?.flagged_fields?.length ?? 0) > 0 || citationIssues.length > 0 || (ctx.degraded ?? 0) > 0
       ? 'review'
       : 'success'
 
@@ -502,6 +437,7 @@ async function extractPass(ctx, name, schema, buildPrompt) {
     const out = await callGemini({
       apiKey: ctx.env.GEMINI_API_KEY, model: ctx.model,
       system: SYSTEM_EXTRACT, prompt, responseSchema: schema,
+      thinkingBudget: 0,
     })
     ctx.totalCost += out.costUsd
     ctx.totalIn += out.inputTokens
@@ -518,6 +454,54 @@ async function extractPass(ctx, name, schema, buildPrompt) {
   const extracted = result?._data ?? {}
   setCached(ctx.jobId, name, extracted)
   return extracted
+}
+
+/**
+ * extractPass wrapped so a hard failure never aborts the whole session.
+ * callGemini already retries 429/5xx + malformed JSON; this adds one more
+ * full-pass retry, and if it STILL fails marks the run degraded and returns
+ * {} so the section comes back empty and the listing saves as 'review'.
+ * Admin-cancel (AbortError) still propagates. Used for the parallel extract
+ * round so one flaky pass can't kill the other three.
+ */
+async function safeExtract(ctx, name, schema, buildPrompt) {
+  for (let tryNum = 0; tryNum < 2; tryNum++) {
+    try {
+      return await extractPass(ctx, name, schema, buildPrompt)
+    } catch (err) {
+      if (err?.name === 'AbortError') throw err
+      if (tryNum === 0) {
+        ctx.log?.warn?.(`  extract ${name} failed, retrying once: ${err.message}`)
+        continue
+      }
+      ctx.degraded = (ctx.degraded ?? 0) + 1
+      ctx.log?.warn?.(`  extract ${name} degraded to empty after retry: ${err.message}`)
+      return {}
+    }
+  }
+  return {}
+}
+
+/**
+ * Capture one screenshot and upload it to cPanel. On UPLOAD failure (not
+ * capture failure) returns the local dev path flagged in the excerpt rather
+ * than throwing — matching the previous behaviour. A capture failure throws
+ * and is swallowed by the optional step wrapper, so the run still continues.
+ */
+async function captureAndUpload(ctx, url, file, filename, publicBase) {
+  await captureScreenshot(url, file)
+  const siteBase = ctx.env.SITE_BASE || 'http://localhost:3000'
+  ctx.log?.info?.(`  uploading ${filename} → ${siteBase}/api/upload`)
+  try {
+    const uploaded = await uploadScreenshot(file, filename, siteBase)
+    return { output_excerpt: uploaded, _data: uploaded }
+  } catch (err) {
+    const local = `${publicBase}/${filename}`
+    return {
+      output_excerpt: `[UPLOAD FAILED — dev-only path] ${local} :: ${err.message?.slice(0, 120)}`,
+      _data: local,
+    }
+  }
 }
 
 /**
@@ -545,11 +529,15 @@ async function cachedStep(ctx, name, type, init, fn) {
   return result
 }
 
-/** cachedStep but swallows errors so the pipeline continues. */
+/** cachedStep but swallows errors so the pipeline continues. Admin-cancel
+ *  (AbortError) is the one error that must still propagate — otherwise a
+ *  cancel landing during a swallowed (crawl/screenshot) step would be eaten
+ *  and the run would keep going. */
 async function cachedStepOptional(ctx, name, type, init, fn) {
   try {
     return await cachedStep(ctx, name, type, init || {}, fn)
   } catch (err) {
+    if (err?.name === 'AbortError') throw err
     ctx.log?.warn?.(`step ${name} failed (optional): ${err.message}`)
     return null
   }
