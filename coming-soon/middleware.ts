@@ -55,6 +55,12 @@ function shouldNoindex(pathname: string): boolean {
   /* Individual listing + company profile pages. */
   if (segments.length === 2 && (segments[0] === 'listing' || segments[0] === 'profile')) return false
 
+  /* Product comparison pages — let the page's own metadata decide index vs
+     noindex (real 2-4 product comparisons are index+follow; empty, invalid-
+     slug, and single-product variants set their own noindex). Without this,
+     the blanket header below would noindex every /compare URL regardless. */
+  if (segments.length === 2 && segments[0] === 'compare') return false
+
   /* Blog index + posts. */
   if (segments[0] === 'blog') return false
 
