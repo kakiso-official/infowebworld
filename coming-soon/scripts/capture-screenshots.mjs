@@ -20,8 +20,11 @@
  *   node scripts/capture-screenshots.mjs --sector=ai-ml --force
  *
  * Limits + politeness:
- *   - 1280x800 viewport, full-page disabled (just above-the-fold), 1 screenshot
- *     per listing for now (the hero of the home page).
+ *   - 1280x800 viewport, full-page disabled (just above-the-fold). Pass
+ *     --shots=N to capture N views per listing at increasing scroll depths
+ *     (hero, then content sections); default 1. screenshots is stored as a
+ *     JSON array, so 2 shots → a 2-image gallery on the listing page.
+ *       node scripts/capture-screenshots.mjs --sector=professional-services --shots=2
  *   - Each visit gets up to 25s to settle, then a 1.5s nap before the snap.
  *   - 2s gap between domains so we're not hammering anyone.
  *   - All errors are logged and skipped; the script doesn't stop on a bad URL.
@@ -52,6 +55,7 @@ const args = Object.fromEntries(
 const SECTOR = args.sector || null
 const FORCE  = !!args.force
 const LIMIT  = args.limit ? Number(args.limit) : null
+const SHOTS  = args.shots ? Math.max(1, Number(args.shots)) : 1
 const SITE_BASE = env.SITE_BASE || 'http://localhost:3000'
 
 const conn = await mysql.createConnection({
@@ -60,7 +64,7 @@ const conn = await mysql.createConnection({
   ssl: env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : undefined,
 })
 console.log(`Connected: ${env.DATABASE_HOST}/${env.DATABASE_NAME}`)
-console.log(`Sector: ${SECTOR || '(all)'}   Force: ${FORCE}   Site base: ${SITE_BASE}`)
+console.log(`Sector: ${SECTOR || '(all)'}   Force: ${FORCE}   Shots: ${SHOTS}   Site base: ${SITE_BASE}`)
 
 /* ─── Pick listings ──────────────────────────────────────────────────────── */
 const where = [`s.status IN ('active','paid')`, `s.website IS NOT NULL`, `s.website <> ''`]
@@ -132,28 +136,36 @@ for (let i = 0; i < rows.length; i++) {
     }
     await page.waitForTimeout(500)
 
-    const buf = await page.screenshot({ fullPage: false, type: 'png' })
-    const localPath = join('exports', 'screenshots', `${r.listing_slug || r.id}.png`)
-    writeFileSync(localPath, buf)
+    /* Capture SHOTS views at increasing scroll depths so each listing gets a
+       few distinct images of the site (hero, then a content section). Each is
+       uploaded to cPanel via /api/upload; all URLs go into one JSON array. */
+    const urls = []
+    for (let k = 0; k < SHOTS; k++) {
+      if (k > 0) {
+        await page.evaluate(y => window.scrollTo(0, y), k * 1400)
+        await page.waitForTimeout(700)
+      }
+      const buf = await page.screenshot({ fullPage: false, type: 'png' })
+      const fileName = `${r.listing_slug || r.id}-${k + 1}.png`
+      writeFileSync(join('exports', 'screenshots', fileName), buf)
 
-    /* Upload via the existing /api/upload endpoint (multipart). The endpoint
-       proxies to cPanel and returns a public URL. */
-    const fd = new FormData()
-    const blob = new Blob([buf], { type: 'image/png' })
-    fd.append('file', blob, `${r.listing_slug || r.id}.png`)
-    const up = await fetch(`${SITE_BASE}/api/upload`, { method: 'POST', body: fd })
-    const upJson = await up.json().catch(() => ({}))
-    if (!up.ok || !upJson.url) {
-      throw new Error(`upload failed: HTTP ${up.status}  ${JSON.stringify(upJson).slice(0, 160)}`)
+      const fd = new FormData()
+      fd.append('file', new Blob([buf], { type: 'image/png' }), fileName)
+      const up = await fetch(`${SITE_BASE}/api/upload`, { method: 'POST', body: fd })
+      const upJson = await up.json().catch(() => ({}))
+      if (!up.ok || !upJson.url) {
+        throw new Error(`upload failed (shot ${k + 1}): HTTP ${up.status}  ${JSON.stringify(upJson).slice(0, 160)}`)
+      }
+      urls.push(upJson.url)
     }
-    const publicUrl = upJson.url
 
-    /* Update DB row. screenshots is JSON; write a single-element array. */
+    /* Update DB row — screenshots is a JSON array of every captured URL,
+       matched to the listing by id so it auto-attaches. */
     await conn.execute(
-      `UPDATE submissions SET screenshots = JSON_ARRAY(?) WHERE id = ?`,
-      [publicUrl, r.id]
+      `UPDATE submissions SET screenshots = JSON_ARRAY(${urls.map(() => '?').join(', ')}) WHERE id = ?`,
+      [...urls, r.id]
     )
-    process.stdout.write(`✓\n`)
+    process.stdout.write(`✓ ${urls.length} shot${urls.length === 1 ? '' : 's'}\n`)
     success++
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
