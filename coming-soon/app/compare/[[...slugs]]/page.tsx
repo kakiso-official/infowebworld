@@ -22,8 +22,11 @@ import ComparePage from '../ComparePage'
    fetched server-side (zero client API waterfall) and passed to the
    client component as initialCols + initialAlts.
 
-   noindex for v1 (matches the rest of our category/comparison
-   surface — quota-safe and easy to flip post-launch).
+   Indexing policy: genuine 2-4 product comparisons (every slug resolves to a
+   real active listing) are index + follow; the empty /compare, invalid-slug,
+   and single-product variants stay noindex (thin, or they duplicate the
+   /listing page). Quota stays safe because only link-discovered comparisons
+   get crawled - arbitrary user-built combos aren't linked anywhere.
    ───────────────────────────────────────────────────────────── */
 
 export const dynamic = 'force-dynamic'
@@ -89,7 +92,15 @@ export async function generateMetadata(
     title,
     description,
     alternates: { canonical: `${SITE}${buildCompareUrl(slugs)}` },
-    robots: { index: false, follow: false },
+    /* Real multi-product comparisons (2-4 resolved listings) are indexable;
+       a single resolved product isn't a comparison, so it stays noindex. */
+    robots: resolved.length >= 2
+      ? {
+          index: true,
+          follow: true,
+          googleBot: { index: true, follow: true, 'max-snippet': -1, 'max-image-preview': 'large', 'max-video-preview': -1 },
+        }
+      : { index: false, follow: false },
     openGraph: {
       title,
       description,
