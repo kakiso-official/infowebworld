@@ -142,7 +142,7 @@ export default async function SectorLandingPage({
             this ONE sector only; the condition is false for every other
             sector, so their output is byte-identical. Uses the .cat-seo*
             classes already loaded by the /[...segments] route. */}
-        {cfg.slug === 'professional-services' && <ProServicesDirectorySeo />}
+        {cfg.slug === 'professional-services' && <ProServicesDirectorySeo firmCount={totalListings} />}
         <FinalCtaSection />
       </main>
       <Footer />

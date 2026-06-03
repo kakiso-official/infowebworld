@@ -20,7 +20,7 @@ import { PRO_SERVICES_VERTICALS, PRO_SERVICES_FAQ } from './pro-services-content
    view-all pages visually. The .cat-seo-tldr-body + .cat-seo-faq-item
    selectors are the ones the FAQPage `speakable` schema points at.
    ═══════════════════════════════════════════════════════════════════════ */
-export default function ProServicesDirectorySeo() {
+export default function ProServicesDirectorySeo({ firmCount = 0 }: { firmCount?: number }) {
   const today = new Date()
   const isoDate = today.toISOString().split('T')[0]
   const humanDate = today.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
@@ -34,10 +34,10 @@ export default function ProServicesDirectorySeo() {
           <span className="cat-seo-tldr-label">What is this</span>
           <p className="cat-seo-tldr-body">
             <strong>InfoWebWorld is a professional services directory</strong> - a free, curated
-            place to find and compare verified professional service firms across 19 fields and
-            2,400+ specialties, from accounting and legal to consulting, financial advisory, HR,
-            and marketing. Every firm is human-verified, every review is identity-checked, and
-            rankings are merit-based, never pay-to-play.
+            place to find and compare {firmCount > 0 ? `${firmCount.toLocaleString()} ` : ''}verified
+            professional service firms across 19 fields and 2,400+ specialties, from accounting and
+            legal to consulting, financial advisory, HR, and marketing. Every firm is human-verified,
+            every review is identity-checked, and rankings are merit-based, never pay-to-play.
           </p>
           <p className="cat-seo-tldr-meta">
             <span>
