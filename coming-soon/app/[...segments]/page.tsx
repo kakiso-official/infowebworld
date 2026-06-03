@@ -441,7 +441,18 @@ async function buildSectorJsonLd(
      @type defines, so Rich Results Test validates green. */
   const listingNodes = topListings.map(l => {
     const isCompany = l.listing_mode === 'company'
-    const type = isCompany ? 'LocalBusiness' : (sectorIsSoftware ? 'SoftwareApplication' : 'Product')
+    /* Professional-services entries are firms, not products — type them as
+       Organization so Google doesn't require offers/review/aggregateRating on
+       a directory listing that legitimately has none yet (the standalone
+       /listing/[slug] page already uses Organization for the same reason).
+       Other sectors keep their existing type. */
+    const type = isCompany
+      ? 'LocalBusiness'
+      : sectorIsSoftware
+        ? 'SoftwareApplication'
+        : sectorSlug === 'professional-services'
+          ? 'Organization'
+          : 'Product'
     const href = (isCompany ? '/profile/' : '/listing/') + String(l.slug)
     const fullUrl = canonicalUrl(country, href)
     const node: Record<string, unknown> = {
