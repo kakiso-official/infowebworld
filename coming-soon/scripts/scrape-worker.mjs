@@ -61,7 +61,7 @@ requireEnv(env, ['DATABASE_HOST', 'DATABASE_USER', 'GEMINI_API_KEY'])
 
 const POLL_MS          = Number(args.poll || 10000)
 const CONCURRENCY      = Math.max(1, Math.min(5, Number(args.concurrency || 1)))
-const MODEL            = String(args.model || 'gemini-2.5-flash')
+const MODEL            = String(args.model || 'gemini-2.5-pro')
 const DAILY_CAP_USD    = Number(args['daily-cap'] || 20)
 const PER_JOB_CAP_USD  = Number(args['job-cap']   || 0.50)
 const CLI_L1_FILTER    = args.l1 ? String(args.l1) : null

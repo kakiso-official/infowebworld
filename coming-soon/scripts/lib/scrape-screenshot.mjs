@@ -35,7 +35,7 @@ export async function captureScreenshot(url, outPath, opts = {}) {
     width = 1440,
     height = 900,
     maxScrollHeight = 1800,
-    settleMs = 800,
+    settleMs = 1500,
     quality = 82,
   } = opts
   const browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] })
@@ -47,8 +47,8 @@ export async function captureScreenshot(url, outPath, opts = {}) {
       ignoreHTTPSErrors: true,
     })
     const page = await ctx.newPage()
-    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 20000 })
-    await page.waitForLoadState('networkidle', { timeout: 2500 }).catch(() => {})
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 })
+    await page.waitForLoadState('networkidle', { timeout: 6000 }).catch(() => {})
     await page.waitForTimeout(settleMs)
 
     // Dismiss obvious cookie banners by hitting common dismiss buttons.

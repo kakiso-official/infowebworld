@@ -39,7 +39,7 @@ const REAL_UA =
  * Throws only on network-level errors (timeout, DNS, etc.). Non-2xx returns
  * the status — caller decides whether to retry / fall back.
  */
-export async function fetchPage(url, { timeout = 18000, waitForNetworkIdle = 2500 } = {}) {
+export async function fetchPage(url, { timeout = 30000, waitForNetworkIdle = 5000 } = {}) {
   const b = await getBrowser()
   const ctx = await b.newContext({
     userAgent: REAL_UA,
@@ -96,12 +96,9 @@ function looksLikeSoft404(res) {
 export async function fetchWithFallback(baseUrl, paths, opts = {}) {
   /* Keep the best soft-404 candidate as a last resort: a single 2xx that
      looked like an error page is still better than null when none of the
-     other paths returned anything at all. maxAttempts caps how many candidate
-     paths we probe — most sites put the page at the first 1-2 paths, and
-     probing all 10 sequentially is the main per-section latency sink. */
-  const { maxAttempts = 5, ...fetchOpts } = opts
+     other paths returned anything at all. */
   let softFallback = null
-  for (const path of paths.slice(0, maxAttempts)) {
+  for (const path of paths) {
     let fullUrl
     try {
       fullUrl = new URL(path, baseUrl).toString()
@@ -109,7 +106,7 @@ export async function fetchWithFallback(baseUrl, paths, opts = {}) {
       continue
     }
     try {
-      const res = await fetchPage(fullUrl, fetchOpts)
+      const res = await fetchPage(fullUrl, opts)
       if (res.status >= 200 && res.status < 300) {
         if (looksLikeSoft404(res)) {
           if (!softFallback) softFallback = { ...res, path, attemptedUrl: fullUrl }

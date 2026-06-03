@@ -99,15 +99,9 @@ export async function callGemini({
       if (responseSchema) {
         parsed = parseJsonLoose(rawText)
         if (parsed === undefined) {
-          /* Transient malformed JSON — retry like a 5xx before giving up.
-             A one-off bad emission shouldn't fail the whole extract pass;
-             only throw once retries are exhausted, surfacing the rawText
-             prefix so the failing step row has a useful error_message. */
-          if (attempt < retries) {
-            await sleep(2 ** attempt * 1500)
-            attempt++
-            continue
-          }
+          /* Three parse strategies all failed — surface the rawText
+             prefix so the failing step row has a useful error_message
+             instead of "Unexpected token <". */
           throw new Error(`Gemini returned unparseable JSON: ${rawText.slice(0, 300)}`)
         }
       } else {

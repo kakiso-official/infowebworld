@@ -51,7 +51,7 @@ if (!job) {
   process.exit(3)
 }
 
-const model = String(args.model || 'gemini-2.5-flash')
+const model = String(args.model || 'gemini-2.5-pro')
 const dryRun = !!args['dry-run']
 
 const startTime = Date.now()
