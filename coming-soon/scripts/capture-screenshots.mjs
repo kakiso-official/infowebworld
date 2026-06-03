@@ -76,6 +76,15 @@ if (SECTOR) {
   )`)
   params.push(SECTOR, SECTOR, SECTOR, SECTOR, SECTOR)
 }
+/* --slugs=a,b,c → re-shoot specific listings by their submission slug
+   (handy for retrying the handful that failed). Pair with --force. */
+if (args.slugs) {
+  const list = String(args.slugs).split(',').map(s => s.trim()).filter(Boolean)
+  if (list.length) {
+    where.push(`s.slug IN (${list.map(() => '?').join(', ')})`)
+    params.push(...list)
+  }
+}
 
 const sql = `
   SELECT s.id, s.slug AS listing_slug, s.company_name, s.website
@@ -99,7 +108,10 @@ if (rows.length === 0) {
 }
 
 /* ─── Browser ─────────────────────────────────────────────────────────────── */
-const browser = await chromium.launch({ headless: true })
+/* --disable-http2 forces HTTP/1.1 — fixes net::ERR_HTTP2_PROTOCOL_ERROR on
+   sites (some big finance/consulting domains) whose HTTP/2 stack rejects the
+   headless client. Universally supported, so it's safe to leave on. */
+const browser = await chromium.launch({ headless: true, args: ['--disable-http2'] })
 const ctx = await browser.newContext({
   viewport: { width: 1280, height: 800 },
   userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36',

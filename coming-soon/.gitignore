@@ -51,3 +51,6 @@ next-env.d.ts
 /.scrape-worker.heartbeat
 /.scrape-worker.stop
 /.scrape-worker.spend
+
+# capture-screenshots.mjs local image captures (uploaded to cPanel; not for git)
+/exports/screenshots/
