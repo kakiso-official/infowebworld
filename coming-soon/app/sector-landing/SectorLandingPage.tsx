@@ -13,6 +13,7 @@ import PopularToolsSection from '../test-landing-page/PopularSection'
 import TrustSection from '../test-landing-page/TrustSection'
 import CompareSection from '../test-landing-page/CompareSection'
 import FinalCtaSection from '../test-landing-page/FinalCtaSection'
+import ProServicesDirectorySeo from './ProServicesDirectorySeo'
 import {
   getPopularByL2, getLatestSectorReviews, getRecentSectorLaunches, getPopularSectorTools,
 } from './queries'
@@ -136,6 +137,12 @@ export default async function SectorLandingPage({
             </div>
           </div>
         )}
+        {/* Professional Services directory — visible SEO/AEO/GEO surface
+            (answer-first definition + 19 fields + how-to + FAQ). Renders for
+            this ONE sector only; the condition is false for every other
+            sector, so their output is byte-identical. Uses the .cat-seo*
+            classes already loaded by the /[...segments] route. */}
+        {cfg.slug === 'professional-services' && <ProServicesDirectorySeo />}
         <FinalCtaSection />
       </main>
       <Footer />

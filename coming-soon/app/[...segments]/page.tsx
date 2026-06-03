@@ -13,6 +13,7 @@ import { query, queryOne } from '@/lib/db'
 import { CATEGORIES as STATIC_CATEGORIES } from '../config/categories-data'
 import { SECTOR_LANDINGS } from '@/lib/sector-landings'
 import SectorLandingPage from '../sector-landing/SectorLandingPage'
+import { PRO_SERVICES_VERTICALS, PRO_SERVICES_FAQ } from '../sector-landing/pro-services-content'
 import {
   BASE_URL as SEO_BASE_URL, ID_ORG, ID_WEBSITE,
   organizationNode, brandNode, websiteNode,
@@ -541,6 +542,32 @@ async function buildSectorJsonLd(
         text: String(f.description || f.title || ''),
       }))
 
+  /* ── Professional Services directory enrichments (scoped to this sector).
+     FAQ + field list mirror the visible block (ProServicesDirectorySeo.tsx)
+     via the shared pro-services-content module, so schema and on-page
+     content stay in lockstep. Every other sector skips this entirely. ── */
+  const isProServices = sectorSlug === 'professional-services'
+  const proFaqEntities = PRO_SERVICES_FAQ.map(f => ({
+    '@type': 'Question' as const,
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer' as const, text: f.a },
+  }))
+  const proItemListId = `${sUrl}#fields`
+  const proFieldsItemList = {
+    '@type': 'ItemList',
+    '@id': proItemListId,
+    name: 'Professional service fields',
+    description: 'The 19 professional service fields listed in the InfoWebWorld professional services directory.',
+    numberOfItems: PRO_SERVICES_VERTICALS.length,
+    itemListOrder: 'https://schema.org/ItemListOrderAscending',
+    itemListElement: PRO_SERVICES_VERTICALS.map((v, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: v.name,
+      url: canonicalUrl(country, `/professional-services/${v.slug}`),
+    })),
+  }
+
   const graph: Record<string, unknown>[] = [
     {
       '@type': 'Organization',
@@ -574,13 +601,25 @@ async function buildSectorJsonLd(
     {
       '@type': 'CollectionPage',
       '@id': `${sUrl}#page`,
-      name: `Top ${sName} Companies`,
-      description: meta.seoDescription,
+      name: isProServices ? 'Professional Services Directory' : `Top ${sName} Companies`,
+      description: isProServices
+        ? 'A free professional services directory to find and compare verified professional service firms across 19 fields and 2,400+ specialties - accounting, legal, consulting, financial advisory, HR, marketing and more. Human-verified listings, identity-checked reviews, merit-based rankings.'
+        : meta.seoDescription,
       url: sUrl,
       inLanguage: 'en-US',
       isPartOf: { '@id': `${DOMAIN}#website` },
       publisher: { '@id': `${DOMAIN}#org` },
       dateModified: new Date().toISOString(),
+      ...(isProServices ? {
+        about: [
+          { '@type': 'Thing', name: 'Professional services directory' },
+          { '@type': 'Thing', name: 'Professional service providers' },
+          { '@type': 'Thing', name: 'Business directory' },
+        ],
+        keywords: 'professional services directory, professional service providers, find professional services, verified professional firms, professional services reviews',
+        mainEntity: { '@id': proItemListId },
+        numberOfItems: PRO_SERVICES_VERTICALS.length,
+      } : {}),
     },
     {
       '@type': 'Article',
@@ -614,8 +653,8 @@ async function buildSectorJsonLd(
     {
       '@type': 'FAQPage',
       '@id': `${sUrl}#faq`,
-      speakable: { '@type': 'SpeakableSpecification', cssSelector: ['.seo-faq-q', '.seo-faq-a'] },
-      mainEntity: faqEntities,
+      speakable: { '@type': 'SpeakableSpecification', cssSelector: isProServices ? ['.cat-seo-tldr-body', '.cat-seo-faq-item'] : ['.seo-faq-q', '.seo-faq-a'] },
+      mainEntity: isProServices ? proFaqEntities : faqEntities,
     },
     ...(howToSteps.length > 0 ? [{
       '@type': 'HowTo',
@@ -626,6 +665,7 @@ async function buildSectorJsonLd(
       totalTime: 'PT15M',
       step: howToSteps,
     }] : []),
+    ...(isProServices ? [proFieldsItemList] : []),
     ...listingNodes,
   ]
   // monthYear param accepted for future expansion (Article body templating);
@@ -1315,7 +1355,7 @@ export async function generateMetadata({
        sector-noun (Tools/Services/Platforms/Businesses), so just wrap with
        (year) + brand. Single hyphen separator (no em-dash). No listing
        count: tiny numbers expose thin-page weakness, dense ones age fast. */
-    const title = `${meta.seoTitle} (${year}) | InfoWebWorld`
+    let title = `${meta.seoTitle} (${year}) | InfoWebWorld`
 
     /* Description — value prop + buying-intent keywords + trust signal +
        freshness. ~155 chars. Rating stays (AggregateRating rich-snippet
@@ -1323,7 +1363,15 @@ export async function generateMetadata({
     const ratingClause = rating
       ? `Rated ${rating.avg.toFixed(1)}/5 by ${rating.total.toLocaleString()} verified users. `
       : ''
-    const description = `${meta.seoDescription} ${ratingClause}Compare verified providers - pricing, reviews, features & alternatives. Updated ${monthYear}.`.trim()
+    let description = `${meta.seoDescription} ${ratingClause}Compare verified providers - pricing, reviews, features & alternatives. Updated ${monthYear}.`.trim()
+
+    /* ── Exact-match optimization for the "professional services directory"
+       target query. Scoped to this ONE sector via the slug guard — every
+       other L1 sector keeps the generic title/description built above. ── */
+    if (slug === 'professional-services') {
+      title = `Professional Services Directory (${year}) | InfoWebWorld`
+      description = `Professional services directory of verified accounting, legal, consulting, HR & financial firms - real client reviews, no pay-to-play. Updated ${monthYear}.`
+    }
 
     /* Keyword stack — sector name + buying-intent + comparative + temporal
        modifiers Google + AI engines reward. Includes sector-specific verticals
