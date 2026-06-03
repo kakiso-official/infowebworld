@@ -453,7 +453,11 @@ export async function generateMetadata({
     alternates: {
       canonical: url,
     },
-    robots: { index: false, follow: false },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true, 'max-snippet': -1, 'max-image-preview': 'large', 'max-video-preview': -1 },
+    },
     openGraph: {
       type: 'website',
       title,
