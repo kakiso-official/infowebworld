@@ -67,7 +67,7 @@ export default function ProServicesDirectorySeo({ firmCount = 0 }: { firmCount?:
           aria-label="Professional service fields"
           itemScope
           itemType="https://schema.org/ItemList"
-          style={{ '--sec': 'var(--c1, #003B2A)' } as CSSProperties}
+          style={{ '--sec': '#2FAE6A' } as CSSProperties}
         >
           <meta itemProp="numberOfItems" content={String(PRO_SERVICES_VERTICALS.length)} />
           {PRO_SERVICES_VERTICALS.map((v, i) => (
