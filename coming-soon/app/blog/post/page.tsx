@@ -1,14 +1,13 @@
-import { Suspense } from 'react'
-import Navbar from '../../components/Navbar'
-import Footer from '../../components/Footer'
-import BlogReader from './BlogReader'
+import { redirect } from 'next/navigation'
 
-export default function BlogPostPage() {
-  return (
-    <>
-      <Navbar />
-      <Suspense><BlogReader /></Suspense>
-      <Footer />
-    </>
-  )
+/* Legacy route. The canonical blog post URL is /blog/[slug]; this old
+   /blog/post?slug=… path now 301-redirects there (or to the blog index). */
+export default async function BlogPostRedirect({
+  searchParams,
+}: {
+  searchParams: Promise<{ slug?: string | string[] }>
+}) {
+  const sp = await searchParams
+  const slug = Array.isArray(sp.slug) ? sp.slug[0] : sp.slug
+  redirect(slug ? `/blog/${encodeURIComponent(slug)}` : '/blog')
 }
