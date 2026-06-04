@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
 
     const nowIso = new Date().toISOString()
     const bodyText = String(b.body || '')
-    const seo = b.seo || {}
+    const seo: Partial<BlogPost['seo']> = b.seo || {}
     const post: BlogPost = {
       id: slug,
       slug,
