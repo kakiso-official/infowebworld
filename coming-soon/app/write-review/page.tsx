@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: 'Write a Verified Review — InfoWebWorld',
   description:
     'Share your honest experience with a company. Speak your review and we will turn it into a clean English review automatically — or write it yourself. Verified, moderated, never paid.',
-  alternates: { canonical: 'https://infowebworld.com/write-review' },
+  alternates: { canonical: 'https://www.infowebworld.com/write-review' },
   robots: {
     index: true, follow: true,
     googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },

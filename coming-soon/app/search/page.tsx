@@ -12,7 +12,7 @@ import {
    dynamically (consistent with the rest of the post-quota-crisis app). */
 export const dynamic = 'force-dynamic'
 
-const DOMAIN = 'https://infowebworld.com'
+const DOMAIN = 'https://www.infowebworld.com'
 
 type SP = { [key: string]: string | string[] | undefined }
 type PageProps = { searchParams: Promise<SP> }

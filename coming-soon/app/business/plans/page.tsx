@@ -7,14 +7,14 @@ export const metadata: Metadata = {
   title: 'Plans & Pricing — Lifetime & Yearly Plans | InfoWebWorld',
   description:
     'Compare InfoWebWorld pricing plans — Lifetime and Yearly. Full feature comparison, transparent pricing, and everything you need to grow your business on the global discovery platform.',
-  alternates: { canonical: 'https://infowebworld.com/business/plans' },
+  alternates: { canonical: 'https://www.infowebworld.com/business/plans' },
 }
 
 const breadcrumbJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://infowebworld.com' },
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.infowebworld.com' },
     { '@type': 'ListItem', position: 2, name: 'Plans & Pricing' },
   ],
 }
@@ -34,14 +34,14 @@ const merchantReturnPolicy = {
   merchantReturnDays: 14,
   returnMethod: 'https://schema.org/ReturnByMail',
   returnFees: 'https://schema.org/FreeReturn',
-  merchantReturnLink: 'https://infowebworld.com/terms#payments',
+  merchantReturnLink: 'https://www.infowebworld.com/terms#payments',
 }
 
 const productJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Product',
   name: 'InfoWebWorld Business Listing',
-  image: 'https://infowebworld.com/og-image.png',
+  image: 'https://www.infowebworld.com/og-image.png',
   description: 'Premium business listing on the global discovery platform with verified reviews, dofollow backlinks, analytics, and lead generation.',
   brand: { '@type': 'Brand', name: 'InfoWebWorld' },
   offers: [
@@ -51,7 +51,7 @@ const productJsonLd = {
       price: '239',
       priceCurrency: 'USD',
       availability: 'https://schema.org/InStock',
-      url: 'https://infowebworld.com/business/plans',
+      url: 'https://www.infowebworld.com/business/plans',
       description: 'One-time payment for permanent access to all features. No renewals, no price increases.',
       hasMerchantReturnPolicy: merchantReturnPolicy,
     },
@@ -61,7 +61,7 @@ const productJsonLd = {
       price: '99',
       priceCurrency: 'USD',
       availability: 'https://schema.org/InStock',
-      url: 'https://infowebworld.com/business/plans',
+      url: 'https://www.infowebworld.com/business/plans',
       priceSpecification: {
         '@type': 'UnitPriceSpecification',
         price: '99',

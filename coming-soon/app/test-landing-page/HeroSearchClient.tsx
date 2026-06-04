@@ -124,7 +124,7 @@ export default function HeroSearchClient() {
           Find and compare the best business software, services, and agencies.
         </h1>
         <p className="tlp-hero-sub">
-          Verified buyer reviews across 14,000+ categories. Honest, moderated, and never paid for.
+          Verified buyer reviews across 8,000+ categories. Honest, moderated, and never paid for.
         </p>
 
         <div className="tlp-hero-search" ref={wrapRef}>

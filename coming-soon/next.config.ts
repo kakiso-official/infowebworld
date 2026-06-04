@@ -2,9 +2,16 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   devIndicators: false,
+  /* Ensure the markdown blog posts are bundled with the admin file API so it
+     can read them at runtime on Vercel (authoring/writing is local-only). */
+  outputFileTracingIncludes: {
+    '/api/admin/blog/files': ['./content/blog/**/*'],
+    '/api/admin/blog/ai': ['./content/blog/**/*'],
+  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'infowebworld.com' },
+      { protocol: 'https', hostname: 'www.infowebworld.com' },
       { protocol: 'https', hostname: 'flagcdn.com' },
     ],
   },

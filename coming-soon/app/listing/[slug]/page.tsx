@@ -442,8 +442,8 @@ export async function generateMetadata({
   ]
   const description = descParts.filter(Boolean).join(' ').slice(0, 160)
 
-  const url = `https://infowebworld.com/listing/${slug}`
-  const ogImage = L.logo_url || 'https://infowebworld.com/logo/infowebworldlogo-logoforlightbackgrounds.png'
+  const url = `https://www.infowebworld.com/listing/${slug}`
+  const ogImage = L.logo_url || 'https://www.infowebworld.com/logo/infowebworldlogo-logoforlightbackgrounds.png'
 
   return {
     title,
@@ -494,7 +494,7 @@ export async function generateMetadata({
 function buildJsonLd(listing: ListingRow, breadcrumb: BreadcrumbItem[]) {
   const L = listing
   const companyName = L.company_name
-  const url = `https://infowebworld.com/listing/${L.slug}`
+  const url = `https://www.infowebworld.com/listing/${L.slug}`
   const features = parseJson(L.features) as string[]
   const faqs = parseJson(L.faqs) as FaqItem[]
 
@@ -505,7 +505,7 @@ function buildJsonLd(listing: ListingRow, breadcrumb: BreadcrumbItem[]) {
     url,
     name: `${companyName} - ${L.category_name || 'Business'} | InfoWebWorld`,
     description: L.tagline || `${companyName} on InfoWebWorld`,
-    isPartOf: { '@id': 'https://infowebworld.com#website' },
+    isPartOf: { '@id': 'https://www.infowebworld.com#website' },
     about: { '@id': `${url}#business` },
     datePublished: L.created_at ? new Date(L.created_at).toISOString().split('T')[0] : undefined,
     dateModified: (L.updated_at || L.created_at) ? new Date(L.updated_at || L.created_at).toISOString().split('T')[0] : undefined,
@@ -515,12 +515,12 @@ function buildJsonLd(listing: ListingRow, breadcrumb: BreadcrumbItem[]) {
 
   // ── 2. BreadcrumbList schema ──
   const breadcrumbItems = [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://infowebworld.com' },
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.infowebworld.com' },
     ...breadcrumb.map((bc, i) => ({
       '@type': 'ListItem',
       position: i + 2,
       name: bc.name,
-      item: i === 0 ? `https://infowebworld.com/${bc.slug}` : `https://infowebworld.com/${breadcrumb[0].slug}/${bc.slug}`,
+      item: i === 0 ? `https://www.infowebworld.com/${bc.slug}` : `https://www.infowebworld.com/${breadcrumb[0].slug}/${bc.slug}`,
     })),
     { '@type': 'ListItem', position: breadcrumb.length + 2, name: companyName },
   ]
@@ -603,7 +603,7 @@ function buildJsonLd(listing: ListingRow, breadcrumb: BreadcrumbItem[]) {
 
   // Category
   if (L.category_name) {
-    business.additionalType = `https://infowebworld.com/${L.category_slug}`
+    business.additionalType = `https://www.infowebworld.com/${L.category_slug}`
   }
 
   // ── 4. FAQPage schema (CRITICAL for AI Overview — 3.2x more likely to appear) ──
@@ -626,22 +626,22 @@ function buildJsonLd(listing: ListingRow, breadcrumb: BreadcrumbItem[]) {
   // ── 5. WebSite reference ──
   const webSite = {
     '@type': 'WebSite',
-    '@id': 'https://infowebworld.com#website',
+    '@id': 'https://www.infowebworld.com#website',
     name: 'InfoWebWorld',
-    url: 'https://infowebworld.com',
+    url: 'https://www.infowebworld.com',
     description: 'The global business discovery platform. Search, compare, and review businesses across 80+ industries.',
-    publisher: { '@id': 'https://infowebworld.com#organization' },
+    publisher: { '@id': 'https://www.infowebworld.com#organization' },
   }
 
   // ── 6. Publisher Organization ──
   const publisher = {
     '@type': 'Organization',
-    '@id': 'https://infowebworld.com#organization',
+    '@id': 'https://www.infowebworld.com#organization',
     name: 'InfoWebWorld',
-    url: 'https://infowebworld.com',
+    url: 'https://www.infowebworld.com',
     logo: {
       '@type': 'ImageObject',
-      url: 'https://infowebworld.com/logo/infowebworldlogo-logoforlightbackgrounds.png',
+      url: 'https://www.infowebworld.com/logo/infowebworldlogo-logoforlightbackgrounds.png',
     },
     sameAs: [
       'https://twitter.com/infowebworld',

@@ -193,7 +193,7 @@ export default function FinalCTA() {
           </div>
         </div>
 
-        <a href="https://infowebworld.com" className="f2-brand" target="_blank" rel="noopener noreferrer">
+        <a href="https://www.infowebworld.com" className="f2-brand" target="_blank" rel="noopener noreferrer">
           InfoWebWorld.com
           <svg viewBox="0 0 24 24" className="f2-brand-arrow"><path d="M7 17L17 7M7 7h10v10" /></svg>
         </a>

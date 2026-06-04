@@ -7,13 +7,13 @@ const PUBLISHED_ISO   = '2026-04-21T00:00:00+10:00'
 const MODIFIED_ISO    = '2026-04-21T00:00:00+10:00'
 const UPDATED_DISPLAY = 'April 21, 2026'
 
-const URL_PAGE         = 'https://infowebworld.com/terms'
+const URL_PAGE         = 'https://www.infowebworld.com/terms'
 const ID_BREADCRUMB    = `${URL_PAGE}#breadcrumb`
 const ID_WEBPAGE       = `${URL_PAGE}#webpage`
 const ID_TERMS_DOC     = `${URL_PAGE}#document`
 const ID_FAQ           = `${URL_PAGE}#faq`
-const ID_WEBSITE       = 'https://infowebworld.com/#website'
-const ID_ORGANIZATION  = 'https://infowebworld.com/#organization'
+const ID_WEBSITE       = 'https://www.infowebworld.com/#website'
+const ID_ORGANIZATION  = 'https://www.infowebworld.com/#organization'
 
 export const metadata: Metadata = {
   title: 'Terms of Use — InfoWebWorld',
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     publishedTime: PUBLISHED_ISO,
     modifiedTime: MODIFIED_ISO,
     section: 'Legal',
-    authors: ['https://infowebworld.com'],
+    authors: ['https://www.infowebworld.com'],
     tags: [
       'terms of use',
       'terms of service',
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     ],
     images: [
       {
-        url: 'https://infowebworld.com/og-image.png',
+        url: 'https://www.infowebworld.com/og-image.png',
         width: 1200,
         height: 630,
         alt: 'InfoWebWorld — Terms of Use',
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Terms of Use — InfoWebWorld',
     description: 'The legal agreement governing your use of InfoWebWorld.',
-    images: ['https://infowebworld.com/og-image.png'],
+    images: ['https://www.infowebworld.com/og-image.png'],
   },
   robots: {
     index: true,
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
       'max-video-preview': -1,
     },
   },
-  authors: [{ name: 'InfoWebWorld', url: 'https://infowebworld.com' }],
+  authors: [{ name: 'InfoWebWorld', url: 'https://www.infowebworld.com' }],
   creator: 'InfoWebWorld',
   publisher: 'Brain Stream Australia Pty Ltd',
   category: 'legal',
@@ -129,7 +129,7 @@ const jsonLdGraph = {
       '@type': 'BreadcrumbList',
       '@id': ID_BREADCRUMB,
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home',         item: 'https://infowebworld.com' },
+        { '@type': 'ListItem', position: 1, name: 'Home',         item: 'https://www.infowebworld.com' },
         { '@type': 'ListItem', position: 2, name: 'Terms of Use', item: URL_PAGE },
       ],
     },
@@ -142,9 +142,9 @@ const jsonLdGraph = {
       inLanguage: 'en-US',
       datePublished: PUBLISHED_ISO,
       dateModified: MODIFIED_ISO,
-      isPartOf: { '@id': ID_WEBSITE, '@type': 'WebSite', name: 'InfoWebWorld', url: 'https://infowebworld.com' },
+      isPartOf: { '@id': ID_WEBSITE, '@type': 'WebSite', name: 'InfoWebWorld', url: 'https://www.infowebworld.com' },
       breadcrumb: { '@id': ID_BREADCRUMB },
-      primaryImageOfPage: { '@type': 'ImageObject', url: 'https://infowebworld.com/og-image.png', width: 1200, height: 630 },
+      primaryImageOfPage: { '@type': 'ImageObject', url: 'https://www.infowebworld.com/og-image.png', width: 1200, height: 630 },
       speakable: {
         '@type': 'SpeakableSpecification',
         cssSelector: ['.tm-title', '.tm-sub', '.tm-glance'],
@@ -175,8 +175,8 @@ const jsonLdGraph = {
         '@id': ID_ORGANIZATION,
         name: 'InfoWebWorld',
         legalName: 'Brain Stream Australia Pty Ltd',
-        url: 'https://infowebworld.com',
-        logo: 'https://infowebworld.com/logo/infowebworldlogo-logoforlightbackgrounds.png',
+        url: 'https://www.infowebworld.com',
+        logo: 'https://www.infowebworld.com/logo/infowebworldlogo-logoforlightbackgrounds.png',
         address: {
           '@type': 'PostalAddress',
           addressLocality: 'Parramatta',

@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   title: 'News \u2014 InfoWebWorld',
   description:
     'Latest world, business, technology, sports, entertainment, science and health headlines from leading international publishers. Updated hourly.',
-  alternates: { canonical: 'https://infowebworld.com/news' },
+  alternates: { canonical: 'https://www.infowebworld.com/news' },
   robots: { index: false, follow: false },
 }
 

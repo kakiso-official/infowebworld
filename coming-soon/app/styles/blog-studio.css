@@ -1,0 +1,231 @@
+/* ════════════════════════════════════════════════════════════════════════
+   Blog Studio — compact admin blog editor.  Namespace .bs-*
+   Renders inside the admin shell (.tp-root.adm-scope), so:
+   - text inherits Inter (from .tp-root)
+   - plain inputs/selects/textareas inherit admin-forms.css styling
+   Only the title field + markdown body get bespoke overrides.
+   ════════════════════════════════════════════════════════════════════════ */
+.bs {
+  --bs-accent: #E8553D;
+  --bs-line: #E8E3DE;
+  --bs-line-soft: #F0ECE8;
+  --bs-ink: #1A1A1A;
+  --bs-muted: #6B7280;
+  --bs-bg: #FAF7F4;
+  display: flex; flex-direction: column;
+  gap: 12px;
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+/* ── Sticky top bar ── */
+.bs-bar {
+  position: sticky; top: 0; z-index: 6;
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0 10px;
+  background: #fff;
+  border-bottom: 1px solid var(--bs-line);
+}
+.bs-title-input {
+  flex: 1; min-width: 0;
+  border: none !important; background: transparent !important;
+  font-size: 1.35rem !important; font-weight: 800 !important;
+  letter-spacing: -.02em; color: var(--bs-ink); padding: 4px 2px !important;
+  height: auto !important; outline: none;
+}
+.bs-title-input::placeholder { color: #C9C2BB }
+.bs-status {
+  flex-shrink: 0; font-size: .56rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .06em;
+  padding: .25rem .6rem; border-radius: 999px;
+}
+.bs-status--pub   { background: rgba(47,174,106,.12); color: #1F9D63 }
+.bs-status--draft { background: rgba(245,158,11,.14); color: #B45309 }
+.bs-bar-actions { display: flex; align-items: center; gap: 7px; flex-shrink: 0 }
+
+/* ── Buttons ── */
+.bs-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: .5rem .9rem; border-radius: 9px;
+  font-size: .72rem; font-weight: 700; cursor: pointer;
+  border: 1.5px solid var(--bs-line); background: #fff; color: var(--bs-ink);
+  transition: all .16s cubic-bezier(.16,1,.3,1); white-space: nowrap;
+}
+.bs-btn--sm { padding: .35rem .6rem; font-size: .66rem }
+.bs-btn--primary { background: var(--bs-accent); border-color: var(--bs-accent); color: #fff }
+.bs-btn--primary:hover { background: #D14430; border-color: #D14430 }
+.bs-btn--ghost:hover { background: var(--bs-bg); border-color: #D8D2CC }
+.bs-btn--ghost-danger { color: #DC2626; border-color: #F3C0BA; padding: .5rem .65rem }
+.bs-btn--ghost-danger:hover { background: #FEF2F2 }
+.bs-btn:disabled { opacity: .55; cursor: wait }
+
+.bs-icbtn {
+  width: 34px; height: 34px; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 8px; border: 1.5px solid var(--bs-line); background: #fff;
+  color: var(--bs-ink); cursor: pointer; transition: all .16s;
+}
+.bs-icbtn:hover { background: var(--bs-bg) }
+.bs-icbtn--sm { width: 30px; height: 30px; border-radius: 7px }
+
+/* ── Message banner ── */
+.bs-msg {
+  display: flex; align-items: center; gap: 8px;
+  padding: .55rem .8rem; border-radius: 9px; font-size: .72rem; font-weight: 600;
+}
+.bs-msg--ok  { background: rgba(47,174,106,.1); color: #1F9D63 }
+.bs-msg--err { background: rgba(220,38,38,.08); color: #DC2626 }
+
+/* ── Tabs ── */
+.bs-tabs {
+  display: flex; align-items: center; gap: 6px;
+  border-bottom: 1px solid var(--bs-line); padding-bottom: 2px;
+}
+.bs-tab {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: .5rem .85rem; border: none; background: transparent; cursor: pointer;
+  font-size: .74rem; font-weight: 700; color: var(--bs-muted);
+  border-bottom: 2px solid transparent; margin-bottom: -3px; transition: all .16s;
+}
+.bs-tab:hover { color: var(--bs-ink) }
+.bs-tab--on { color: var(--bs-accent); border-bottom-color: var(--bs-accent) }
+.bs-tabs-spacer { flex: 1 }
+.bs-stat {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: .62rem; font-weight: 700; color: var(--bs-muted);
+  padding: .25rem .55rem; border-radius: 999px; background: var(--bs-bg);
+}
+.bs-stat--score { background: rgba(232,85,61,.1); color: var(--bs-accent) }
+
+/* ── Layout grid ── */
+.bs-grid { display: grid; grid-template-columns: 1fr 300px; gap: 16px; align-items: start }
+.bs-main { display: flex; flex-direction: column; gap: 14px; min-width: 0 }
+.bs-side { display: flex; flex-direction: column; gap: 12px }
+@media (max-width: 900px) { .bs-grid { grid-template-columns: 1fr } }
+
+/* ── Fields ── */
+.bs-field { display: flex; flex-direction: column; gap: 5px }
+.bs-label {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: .72rem; font-weight: 700; color: var(--bs-ink);
+}
+.bs-label em { font-style: normal; font-weight: 600; color: var(--bs-muted); font-size: .64rem; margin-left: auto }
+.bs-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px }
+@media (max-width: 640px) { .bs-row2 { grid-template-columns: 1fr } }
+
+.bs-slug { display: flex; align-items: center; border: 1.5px solid var(--bs-line); border-radius: 10px; overflow: hidden; background: #fff }
+.bs-slug-prefix { padding: 0 4px 0 11px; font-size: .74rem; color: var(--bs-muted); font-weight: 600 }
+.bs-slug input { border: none !important; background: transparent !important; flex: 1 }
+.bs-url { font-size: .72rem !important }
+
+/* ── Markdown toolbar + body ── */
+.bs-toolbar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 3px;
+  padding: 6px; border: 1.5px solid var(--bs-line); border-bottom: none;
+  border-radius: 10px 10px 0 0; background: var(--bs-bg);
+}
+.bs-tb {
+  width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center;
+  border: none; background: transparent; border-radius: 7px; cursor: pointer;
+  color: #4B5563; font-size: .82rem; transition: all .14s;
+}
+.bs-tb:hover { background: #fff; color: var(--bs-accent); box-shadow: 0 1px 4px rgba(0,0,0,.06) }
+.bs-tb:disabled { opacity: .5; cursor: wait }
+.bs-tb-sep { width: 1px; height: 18px; background: var(--bs-line); margin: 0 3px }
+.bs-body {
+  border: 1.5px solid var(--bs-line) !important;
+  border-radius: 0 0 10px 10px !important;
+  padding: 14px !important; font-size: .82rem !important; line-height: 1.7 !important;
+  resize: vertical; min-height: 320px; color: var(--bs-ink);
+}
+.bs-body:focus { border-color: var(--bs-accent) !important; outline: none }
+.bs-substat { font-size: .6rem; color: var(--bs-muted); font-weight: 600; padding-top: 2px }
+
+/* ── Cards (side rail) ── */
+.bs-card { background: #fff; border: 1.5px solid var(--bs-line); border-radius: 14px; padding: 13px; display: flex; flex-direction: column; gap: 10px }
+.bs-card-h {
+  display: flex; align-items: center; gap: 7px;
+  font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em;
+  color: var(--bs-muted); padding-bottom: 8px; border-bottom: 1px solid var(--bs-line-soft);
+}
+.bs-score { margin-left: auto; color: var(--bs-accent); font-size: .72rem }
+
+.bs-toggle {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: .5rem .7rem; border-radius: 9px; cursor: pointer;
+  border: 1.5px solid var(--bs-line); background: #fff; color: var(--bs-muted);
+  font-size: .72rem; font-weight: 700; transition: all .16s;
+}
+.bs-toggle--on { border-color: var(--bs-accent); color: var(--bs-accent); background: rgba(232,85,61,.06) }
+
+/* ── Cover image ── */
+.bs-cover { position: relative; border-radius: 10px; overflow: hidden; aspect-ratio: 16/9; background: var(--bs-bg); border: 1px solid var(--bs-line) }
+.bs-cover img { width: 100%; height: 100%; object-fit: cover; display: block }
+.bs-cover--empty { display: flex; align-items: center; justify-content: center; color: #CBC4BD; font-size: 1.6rem }
+.bs-cover-x {
+  position: absolute; top: 6px; right: 6px; width: 26px; height: 26px;
+  border: none; border-radius: 7px; background: rgba(0,0,0,.55); color: #fff; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.bs-cover-actions { display: flex; gap: 6px }
+.bs-cover-actions .bs-btn { flex: 1; justify-content: center }
+.bs-stock { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px }
+.bs-stock button { border: 1px solid var(--bs-line); border-radius: 7px; overflow: hidden; cursor: pointer; padding: 0; background: none; aspect-ratio: 1 }
+.bs-stock img { width: 100%; height: 100%; object-fit: cover; display: block }
+.bs-stock button:hover { border-color: var(--bs-accent) }
+
+/* ── Tags / keyword chips ── */
+.bs-taginput { display: flex; gap: 6px }
+.bs-taginput input { flex: 1 }
+.bs-pills { display: flex; flex-wrap: wrap; gap: 5px }
+.bs-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: .22rem .25rem .22rem .55rem; border-radius: 999px;
+  background: rgba(232,85,61,.08); color: var(--bs-accent);
+  font-size: .66rem; font-weight: 700;
+}
+.bs-pill button { border: none; background: rgba(232,85,61,.16); color: var(--bs-accent); width: 16px; height: 16px; border-radius: 999px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: .56rem }
+
+/* ── SEO checklist + SERP ── */
+.bs-checks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 7px }
+.bs-checks li { display: flex; align-items: center; gap: 8px; font-size: .72rem; font-weight: 600 }
+.bs-checks .bs-ok { color: #1F9D63 }
+.bs-checks .bs-no { color: var(--bs-muted) }
+.bs-serp { display: flex; flex-direction: column; gap: 3px }
+.bs-serp-url { font-size: .66rem; color: #5F6368 }
+.bs-serp-title { font-size: .92rem; color: #1a0dab; font-weight: 600; line-height: 1.3 }
+.bs-serp-desc { font-size: .72rem; color: #4d5156; line-height: 1.5 }
+
+/* ── Preview ── */
+.bs-preview { max-width: 760px; margin: 8px auto 0 }
+.bs-preview-cover { border-radius: 14px; overflow: hidden; margin-bottom: 18px; aspect-ratio: 16/8; background: var(--bs-bg) }
+.bs-preview-cover img { width: 100%; height: 100%; object-fit: cover; display: block }
+.bs-preview-meta { font-size: .72rem; font-weight: 700; color: var(--bs-accent); text-transform: uppercase; letter-spacing: .04em }
+.bs-preview-title { font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 800; letter-spacing: -.02em; color: var(--bs-ink); margin: 6px 0 4px; line-height: 1.15 }
+.bs-preview-author { font-size: .8rem; color: var(--bs-muted); margin-bottom: 18px }
+
+/* ── AI assist bar (Gemini) ── */
+.bs-ai {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 7px;
+  padding: 8px 10px; margin-bottom: 8px;
+  border: 1.5px solid #E7E0F5; border-radius: 10px;
+  background: linear-gradient(180deg, #FAF8FF, #F3EFFB);
+}
+.bs-ai-lead {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: .64rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; color: #7C3AED;
+}
+.bs-ai-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: .42rem .8rem; border-radius: 8px; cursor: pointer;
+  border: 1.5px solid #E0D7F3; background: #fff; color: #4B3F6B;
+  font-size: .72rem; font-weight: 700; transition: all .16s;
+}
+.bs-ai-btn:hover { border-color: #7C3AED; color: #7C3AED; box-shadow: 0 2px 8px rgba(124, 58, 237, .12) }
+.bs-ai-btn:disabled { opacity: .6; cursor: wait }
+.bs-ai-undo {
+  border: none; background: transparent; color: #7C3AED; cursor: pointer;
+  font-size: .68rem; font-weight: 700; text-decoration: underline; text-underline-offset: 2px;
+}
+.bs-ai-hint { margin-left: auto; font-size: .62rem; color: #9089A3; font-weight: 500 }
+@media (max-width: 560px) { .bs-ai-hint { display: none } }

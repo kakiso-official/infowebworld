@@ -5,7 +5,7 @@ export default function BusinessCTA() {
     <section className="bcta">
       <div className="container">
         <p className="bcta-text">
-          <a href="https://infowebworld.com" className="bcta-link">infoWebWorld.com</a> for Business
+          <a href="https://www.infowebworld.com" className="bcta-link">infoWebWorld.com</a> for Business
         </p>
         <Link href="/business" className="bcta-btn">
           Get Listed

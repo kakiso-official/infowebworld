@@ -16,7 +16,7 @@ import nodemailer, { type Transporter } from 'nodemailer'
 
 const F_HEAD = "'Bricolage Grotesque',Georgia,'Times New Roman',serif"
 const F_BODY = "'Nunito',-apple-system,'Segoe UI',Roboto,sans-serif"
-const SITE = 'https://infowebworld.com'
+const SITE = 'https://www.infowebworld.com'
 
 export const EMAIL_FONTS = { F_HEAD, F_BODY }
 export const EMAIL_SITE = SITE

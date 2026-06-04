@@ -1,138 +1,84 @@
-/**
- * Blog storage — reads/writes from MySQL via api.php
- */
+/* Client-side blog storage — talks to the filesystem-backed admin API
+   (/api/admin/blog/files). Posts now live as markdown files in content/blog/;
+   `git push` builds them into static pages. (Previously MySQL via api.php.)
+
+   BlogPost is imported type-only from the admin types module (no node:fs), so
+   this stays safe to import from client components. */
 import type { BlogPost } from './blog-types'
 
-const API = '/api'
-
-/** Map DB snake_case row to BlogPost */
-function mapRow(r: Record<string, unknown>): BlogPost {
-  const tags = typeof r.tags === 'string' ? JSON.parse(r.tags || '[]') : (r.tags ?? [])
-  const seoKw = typeof r.seo_keywords === 'string' ? JSON.parse(r.seo_keywords || '[]') : (r.seo_keywords ?? [])
-
-  return {
-    id: String(r.id ?? ''),
-    slug: String(r.slug ?? ''),
-    title: String(r.title ?? ''),
-    excerpt: String(r.excerpt ?? ''),
-    body: String(r.body ?? ''),
-    coverImage: String(r.cover_image ?? ''),
-    author: String(r.author ?? 'InfoWebWorld Team'),
-    category: String(r.category ?? 'Business Tips'),
-    tags: Array.isArray(tags) ? tags : [],
-    status: (r.status as 'draft' | 'published') || 'draft',
-    featured: !!(r.is_featured ?? false),
-    readTime: Number(r.read_time ?? 1),
-    createdAt: String(r.created_at ?? new Date().toISOString()),
-    updatedAt: String(r.updated_at ?? new Date().toISOString()),
-    publishedAt: r.published_at ? String(r.published_at) : null,
-    seo: {
-      metaTitle: String(r.seo_title ?? ''),
-      metaDescription: String(r.seo_description ?? ''),
-      keywords: Array.isArray(seoKw) ? seoKw : [],
-      ogImage: String(r.seo_og_image ?? ''),
-      canonicalUrl: String(r.seo_canonical ?? ''),
-      noIndex: !!(r.seo_no_index ?? false),
-    },
-  }
-}
-
-/** Map BlogPost to API payload for saving */
-function toPayload(p: BlogPost): Record<string, unknown> {
-  return {
-    id: p.id && !p.id.includes('-') ? Number(p.id) : undefined, // numeric DB id only
-    slug: p.slug,
-    title: p.title,
-    excerpt: p.excerpt,
-    body: p.body,
-    bodyHtml: '',
-    coverImage: p.coverImage,
-    author: p.author,
-    category: p.category,
-    tags: p.tags,
-    status: p.status,
-    featured: p.featured ? 1 : 0,
-    readTime: p.readTime,
-    seoTitle: p.seo.metaTitle,
-    seoDescription: p.seo.metaDescription,
-    seoKeywords: p.seo.keywords,
-    seoOgImage: p.seo.ogImage,
-    seoCanonical: p.seo.canonicalUrl,
-    seoNoIndex: p.seo.noIndex ? 1 : 0,
-  }
-}
-
-export async function fetchAllPosts(): Promise<BlogPost[]> {
-  try {
-    const res = await fetch(`${API}/admin/blog`)
-    if (!res.ok) throw new Error('API error')
-    const json = await res.json()
-    const rows: Record<string, unknown>[] = json.posts ?? json.data ?? json
-    return rows.map(mapRow)
-  } catch {
-    return []
-  }
-}
-
-export async function fetchPublishedPosts(): Promise<BlogPost[]> {
-  try {
-    const res = await fetch(`${API}/blog`)
-    if (!res.ok) throw new Error('API error')
-    const json = await res.json()
-    const rows: Record<string, unknown>[] = json.data ?? json.posts ?? json
-    return rows.map(mapRow)
-  } catch {
-    return []
-  }
-}
-
-export async function fetchPostById(id: string): Promise<BlogPost | null> {
-  const posts = await fetchAllPosts()
-  return posts.find(p => p.id === id) || null
-}
-
-/** Fetch a single published post by slug (includes body) */
-export async function fetchPostBySlug(slug: string): Promise<BlogPost | null> {
-  try {
-    const res = await fetch(`${API}/blog/${encodeURIComponent(slug)}`)
-    if (!res.ok) return null
-    const json = await res.json()
-    if (json.error) return null
-    const data = json.data ?? json.post ?? json
-    return mapRow(data)
-  } catch { return null }
-}
-
-export async function apiSavePost(post: BlogPost): Promise<string> {
-  const res = await fetch(`${API}/admin/blog`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(toPayload(post)),
-  })
-  const data = await res.json()
-  return String(data.id ?? post.id)
-}
-
-export async function apiDeletePost(id: string): Promise<void> {
-  await fetch(`${API}/admin/blog/${id}`, {
-    method: 'DELETE',
-  })
-}
+const API = '/api/admin/blog/files'
 
 export function generateSlug(title: string): string {
-  return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60)
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/['"]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 90)
 }
 
 export function createEmptyPost(): BlogPost {
   return {
     id: '', slug: '', title: '', excerpt: '', body: '', coverImage: '',
     author: 'InfoWebWorld Team', category: 'Business Tips', tags: [], featured: false, readTime: 1,
-    status: 'draft', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), publishedAt: null,
+    status: 'draft', createdAt: '', updatedAt: '', publishedAt: null,
     seo: { metaTitle: '', metaDescription: '', keywords: [], ogImage: '', canonicalUrl: '', noIndex: false },
   }
 }
 
-// ── Sync wrappers for backwards compatibility (used by public blog page) ──
+export async function fetchAllPosts(): Promise<BlogPost[]> {
+  try {
+    const res = await fetch(API, { cache: 'no-store', credentials: 'same-origin' })
+    if (!res.ok) return []
+    const json = await res.json()
+    return Array.isArray(json.posts) ? json.posts : []
+  } catch { return [] }
+}
+
+export async function fetchPublishedPosts(): Promise<BlogPost[]> {
+  return (await fetchAllPosts()).filter(p => p.status === 'published')
+}
+
+export async function fetchPostById(id: string): Promise<BlogPost | null> {
+  if (!id) return null
+  try {
+    const res = await fetch(`${API}?slug=${encodeURIComponent(id)}`, { cache: 'no-store', credentials: 'same-origin' })
+    if (!res.ok) return null
+    const json = await res.json()
+    return json.post || null
+  } catch { return null }
+}
+
+/** In the file model the slug IS the id — alias kept for existing callers. */
+export const fetchPostBySlug = fetchPostById
+
+export async function apiSavePost(
+  post: BlogPost,
+): Promise<{ ok: boolean; slug?: string; post?: BlogPost; error?: string; readonly?: boolean }> {
+  try {
+    const res = await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      /* prevSlug lets the API clean up the old file after a slug rename. */
+      body: JSON.stringify({ ...post, prevSlug: post.id || post.slug }),
+    })
+    return await res.json()
+  } catch {
+    return { ok: false, error: 'Network error while saving.' }
+  }
+}
+
+export async function apiDeletePost(id: string): Promise<boolean> {
+  try {
+    const res = await fetch(`${API}?slug=${encodeURIComponent(id)}`, { method: 'DELETE', credentials: 'same-origin' })
+    const json = await res.json()
+    return !!json.ok
+  } catch { return false }
+}
+
+/* ── Legacy sync stubs (kept so any stray importer still compiles). ── */
 export function getAllPosts(): BlogPost[] { return [] }
 export function getPublishedPosts(): BlogPost[] { return [] }
 export function getPostById(_id: string): BlogPost | null { return null }

@@ -96,4 +96,4 @@ Disallow: /
 # Applebot) are intentionally NOT blocked — they power AEO citations. They inherit
 # the default * rules above, matching what Googlebot sees.
 
-Sitemap: https://infowebworld.com/sitemap.xml
+Sitemap: https://www.infowebworld.com/sitemap.xml

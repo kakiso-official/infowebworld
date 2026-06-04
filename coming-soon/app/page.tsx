@@ -28,7 +28,7 @@ import './styles/test-landing-page.css'
    ════════════════════════════════════════════════════════════════════════ */
 export const dynamic = 'force-dynamic'
 
-const SITE = 'https://infowebworld.com'
+const SITE = 'https://www.infowebworld.com'
 
 /* The 6 L1 sectors — these are exactly the pages we want Google to surface
    as sitelinks under the InfoWebWorld brand result. Each one becomes:
@@ -63,7 +63,7 @@ const organization = {
   '@id': `${SITE}#org`,
   name: 'InfoWebWorld',
   url: SITE,
-  logo: 'https://infowebworld.com/logo/infowebworldlogo-logoforlightbackgrounds.png',
+  logo: 'https://www.infowebworld.com/logo/infowebworldlogo-logoforlightbackgrounds.png',
   description: 'Global business discovery platform with verified reviews, dofollow backlinks, and lead generation across 80+ industries.',
   foundingDate: '2026',
   address: {
@@ -151,7 +151,7 @@ const webPage = {
 }
 
 export const metadata: Metadata = {
-  alternates: { canonical: 'https://infowebworld.com' },
+  alternates: { canonical: 'https://www.infowebworld.com' },
 }
 
 const faqJsonLd = {

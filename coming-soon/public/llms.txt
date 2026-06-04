@@ -6,40 +6,40 @@ InfoWebWorld is a human-curated directory and discovery engine. Every listing is
 
 ## About
 
-- [About InfoWebWorld](https://infowebworld.com/about): Mission, principles, company info, why businesses trust the platform, and Brain Stream HQ details.
-- [The Team](https://infowebworld.com/team): Remote-first team across AU/IN/EU, leadership, open roles in engineering, growth, design, and content.
-- [Team Alumni](https://infowebworld.com/team/past): Recognition for past contributors who shaped InfoWebWorld.
-- [Media & Press](https://infowebworld.com/media): Press kit, brand assets, company fact sheet, direct press contact.
-- [Insights](https://infowebworld.com/insights): Research on AI search trends, quarterly category reports, listing playbooks.
-- [Contact](https://infowebworld.com/contact): Get in touch with the team.
+- [About InfoWebWorld](https://www.infowebworld.com/about): Mission, principles, company info, why businesses trust the platform, and Brain Stream HQ details.
+- [The Team](https://www.infowebworld.com/team): Remote-first team across AU/IN/EU, leadership, open roles in engineering, growth, design, and content.
+- [Team Alumni](https://www.infowebworld.com/team/past): Recognition for past contributors who shaped InfoWebWorld.
+- [Media & Press](https://www.infowebworld.com/media): Press kit, brand assets, company fact sheet, direct press contact.
+- [Insights](https://www.infowebworld.com/insights): Research on AI search trends, quarterly category reports, listing playbooks.
+- [Contact](https://www.infowebworld.com/contact): Get in touch with the team.
 
 ## Browse the directory
 
-- [All Categories](https://infowebworld.com/categories): The complete InfoWebWorld taxonomy — 6 sectors, 211 categories, 13,843 subcategories. Search by keyword, browse by sector, drill into any subcategory to find verified businesses.
+- [All Categories](https://www.infowebworld.com/categories): The complete InfoWebWorld taxonomy — 6 sectors, 211 categories, 13,843 subcategories. Search by keyword, browse by sector, drill into any subcategory to find verified businesses.
 
 ## For businesses
 
-- [Get listed](https://infowebworld.com/business): How to submit a business for verified listing on the global discovery platform.
-- [Plans & pricing](https://infowebworld.com/business/plans): Free, Starter ($49 one-time), Yearly ($99/yr), Lifetime ($239 one-time). Founding member pricing during pre-launch.
-- [Agency Partner Program](https://infowebworld.com/agencies): Bulk listing tools, revenue share, dofollow at scale, white-label reporting for SEO agencies, PR firms, growth studios, and venture studios.
-- [Affiliate Program](https://infowebworld.com/affiliates): Earn 30% on first payment + 15% recurring with a 90-day cookie for newsletter writers, YouTubers, SEO bloggers, and B2B founders with audiences.
+- [Get listed](https://www.infowebworld.com/business): How to submit a business for verified listing on the global discovery platform.
+- [Plans & pricing](https://www.infowebworld.com/business/plans): Free, Starter ($49 one-time), Yearly ($99/yr), Lifetime ($239 one-time). Founding member pricing during pre-launch.
+- [Agency Partner Program](https://www.infowebworld.com/agencies): Bulk listing tools, revenue share, dofollow at scale, white-label reporting for SEO agencies, PR firms, growth studios, and venture studios.
+- [Affiliate Program](https://www.infowebworld.com/affiliates): Earn 30% on first payment + 15% recurring with a 90-day cookie for newsletter writers, YouTubers, SEO bloggers, and B2B founders with audiences.
 
 ## Help & Support
 
-- [Help Center](https://infowebworld.com/help): Listings, billing, reviews, analytics, security, policies — with 24-hour email support.
-- [FAQs](https://infowebworld.com/faqs): Frequently asked questions covering listings, plans, reviews, SEO backlinks, account and data.
-- [Glossary](https://infowebworld.com/glossary): Plain-English definitions of SEO, AEO, GEO, dofollow, schema markup, NAP, CTR, RFQ, and other directory terms.
-- [Category Guides](https://infowebworld.com/category-guides): How to pick the right sector and subcategory across 6 sectors, 80+ categories, 13,000+ subcategories.
-- [Write a Review](https://infowebworld.com/write-review): How to write a verified, moderated, unpaid review of a business on InfoWebWorld.
+- [Help Center](https://www.infowebworld.com/help): Listings, billing, reviews, analytics, security, policies — with 24-hour email support.
+- [FAQs](https://www.infowebworld.com/faqs): Frequently asked questions covering listings, plans, reviews, SEO backlinks, account and data.
+- [Glossary](https://www.infowebworld.com/glossary): Plain-English definitions of SEO, AEO, GEO, dofollow, schema markup, NAP, CTR, RFQ, and other directory terms.
+- [Category Guides](https://www.infowebworld.com/category-guides): How to pick the right sector and subcategory across 6 sectors, 80+ categories, 13,000+ subcategories.
+- [Write a Review](https://www.infowebworld.com/write-review): How to write a verified, moderated, unpaid review of a business on InfoWebWorld.
 
 ## Legal
 
-- [Terms of Use](https://infowebworld.com/terms): Account rules, 14-day refund window, intellectual property, prohibited conduct, governing law (NSW, Australia).
-- [Privacy Policy](https://infowebworld.com/privacy): Data practices, GDPR / CCPA / Australian Privacy Act rights, international transfers, retention.
-- [Cookies Policy](https://infowebworld.com/cookies): Strictly-necessary, preferences, analytics. No ad retargeting. Browser-specific opt-out.
-- [Do Not Sell or Share My Personal Information](https://infowebworld.com/do-not-sell): California CCPA / CPRA rights and opt-out path.
-- [Content Guidelines](https://infowebworld.com/content-guidelines): What we accept and reject for listings and reviews. Spam, fake-review, and incentivized-review policy.
-- [Request a Removal](https://infowebworld.com/removals): DMCA, trademark, PII, listing, and review removal process. 72-hour response.
+- [Terms of Use](https://www.infowebworld.com/terms): Account rules, 14-day refund window, intellectual property, prohibited conduct, governing law (NSW, Australia).
+- [Privacy Policy](https://www.infowebworld.com/privacy): Data practices, GDPR / CCPA / Australian Privacy Act rights, international transfers, retention.
+- [Cookies Policy](https://www.infowebworld.com/cookies): Strictly-necessary, preferences, analytics. No ad retargeting. Browser-specific opt-out.
+- [Do Not Sell or Share My Personal Information](https://www.infowebworld.com/do-not-sell): California CCPA / CPRA rights and opt-out path.
+- [Content Guidelines](https://www.infowebworld.com/content-guidelines): What we accept and reject for listings and reviews. Spam, fake-review, and incentivized-review policy.
+- [Request a Removal](https://www.infowebworld.com/removals): DMCA, trademark, PII, listing, and review removal process. 72-hour response.
 
 ## Quick facts
 
@@ -76,6 +76,6 @@ AI & Machine Learning · Software & SaaS · IT Services & Agencies · Startups &
 
 ## Optional
 
-- [Sitemap](https://infowebworld.com/sitemap.xml): Crawl index of all indexable URLs.
-- [Robots](https://infowebworld.com/robots.txt): Crawler policies (AI training bots blocked; AI search bots allowed).
-- [Full markdown manifest](https://infowebworld.com/llms-full.txt): Extended content for AI engines.
+- [Sitemap](https://www.infowebworld.com/sitemap.xml): Crawl index of all indexable URLs.
+- [Robots](https://www.infowebworld.com/robots.txt): Crawler policies (AI training bots blocked; AI search bots allowed).
+- [Full markdown manifest](https://www.infowebworld.com/llms-full.txt): Extended content for AI engines.

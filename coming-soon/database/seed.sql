@@ -63,7 +63,7 @@ INSERT INTO `plans` (`slug`, `name`, `tag_label`, `tag_color`, `price`, `period`
 -- ── Default Settings ──
 INSERT INTO `settings` (`key_name`, `value`, `type`, `description`) VALUES
 ('site_name',           'InfoWebWorld',           'string',  'Site display name'),
-('site_url',            'https://infowebworld.com', 'string', 'Canonical site URL'),
+('site_url',            'https://www.infowebworld.com', 'string', 'Canonical site URL'),
 ('pioneer_joined',      '15',                     'number',  'Number of pioneer members joined'),
 ('pioneer_total',       '200',                    'number',  'Total pioneer spots'),
 ('launch_date',         '2026-04-25',             'string',  'Target launch date'),

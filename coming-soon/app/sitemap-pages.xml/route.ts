@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-const BASE = 'https://infowebworld.com'
+const BASE = 'https://www.infowebworld.com'
 
 /* Indexable pages — mirrors middleware INDEXABLE_PATHS minus /investors
    (page-level metadata.robots = noindex even though it appears in the

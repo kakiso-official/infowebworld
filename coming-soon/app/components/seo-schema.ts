@@ -5,7 +5,7 @@
    Perplexity/ChatGPT crawlers.
    ──────────────────────────────────────────────────────────── */
 
-export const BASE_URL = 'https://infowebworld.com'
+export const BASE_URL = 'https://www.infowebworld.com'
 
 export const ID_ORG     = `${BASE_URL}/#organization`
 export const ID_WEBSITE = `${BASE_URL}/#website`

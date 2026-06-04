@@ -22,7 +22,7 @@ import { sendEmail, buildEmailShell, escapeHtml } from '../../../../lib/email'
 export const dynamic = 'force-dynamic'
 
 const MAX_COMPARE = 4
-const SITE = 'https://infowebworld.com'
+const SITE = 'https://www.infowebworld.com'
 
 type Row = {
   id: number

@@ -102,7 +102,7 @@ async function dismissOverlays(page) {
  * @param {string} filePath           Absolute path to the local .jpg file
  * @param {string} filename           Suggested filename for the upload
  * @param {string} [siteBase]         e.g. http://localhost:3000 (default)
- *                                    or https://infowebworld.com
+ *                                    or https://www.infowebworld.com
  * @returns {Promise<string>}         Public URL (e.g. /api/file/logos/abc.jpg)
  */
 export async function uploadScreenshot(filePath, filename, siteBase = 'http://localhost:3000') {

@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
     const m = raw.match(/\/infowebworld\/uploads\/(.+)$/)
     const url = m
       ? `/api/file/${m[1]}`
-      : (raw.startsWith('http') ? raw : `https://infowebworld.com${raw}`)
+      : (raw.startsWith('http') ? raw : `https://www.infowebworld.com${raw}`)
 
     return Response.json({ ok: true, url })
   } catch (err) {

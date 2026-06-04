@@ -4,7 +4,7 @@ import InfoPageShell, { IPSection, IPCardGrid, IPCard } from '../components/Info
 export const metadata: Metadata = {
   title: 'Investor Relations — InfoWebWorld',
   description: 'Investor relations at InfoWebWorld — company overview, vision, and how to get in touch with our founders for strategic partnerships and investment discussions.',
-  alternates: { canonical: 'https://infowebworld.com/investors' },
+  alternates: { canonical: 'https://www.infowebworld.com/investors' },
   robots: { index: false, follow: false },
 }
 

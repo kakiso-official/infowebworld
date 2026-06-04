@@ -95,7 +95,7 @@ export default function Hero() {
         </div>
         <p className="cs-desc">
           InfoWebWorld is the Global Platform to explore / search best trusted businesses worldwide. 
-          <strong>#find</strong> <strong>#compare</strong> <strong>#connect</strong> with great Local Businesses in AI & ML, SaaS & Software, Startups & Innovations, IT Services & Agencies, Professional Services in one place - <a href="https://infowebworld.com/" className="cs-brand">infoWebWorld.com</a>
+          <strong>#find</strong> <strong>#compare</strong> <strong>#connect</strong> with great Local Businesses in AI & ML, SaaS & Software, Startups & Innovations, IT Services & Agencies, Professional Services in one place - <a href="https://www.infowebworld.com/" className="cs-brand">infoWebWorld.com</a>
         </p>
 
         {/* <div className="cs-highlights">

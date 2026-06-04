@@ -426,8 +426,8 @@ export async function generateMetadata({
   const C = data.company
   const title = `${C.company_name} - Company Profile | InfoWebWorld`
   const desc = (C.tagline || `${C.company_name} on InfoWebWorld`).slice(0, 160)
-  const url = `https://infowebworld.com/profile/${slug}`
-  const ogImage = C.logo_url || 'https://infowebworld.com/logo/infowebworldlogo-logoforlightbackgrounds.png'
+  const url = `https://www.infowebworld.com/profile/${slug}`
+  const ogImage = C.logo_url || 'https://www.infowebworld.com/logo/infowebworldlogo-logoforlightbackgrounds.png'
 
   return {
     title,
@@ -450,7 +450,7 @@ export async function generateMetadata({
 }
 
 function buildJsonLd(c: CompanyRow, reviewsAgg: { avgRating: number; reviewCount: number }) {
-  const url = `https://infowebworld.com/profile/${c.slug}`
+  const url = `https://www.infowebworld.com/profile/${c.slug}`
   const sameAs: string[] = []
   if (c.website) sameAs.push(c.website)
   if (c.linkedin) sameAs.push(c.linkedin)

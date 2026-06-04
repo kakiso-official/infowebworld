@@ -178,9 +178,9 @@ function buildWelcomeEmail(): string {
           <td style="padding:40px 48px 44px;text-align:center">
             <div style="height:1px;background:#F0EDEA;margin-bottom:36px"></div>
             <p style="margin:0 0 24px;font-family:${F_HEAD};font-size:18px;font-weight:800;color:#1A1A1A;line-height:1.35;letter-spacing:-.15px">Ready to get discovered?</p>
-            <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="https://infowebworld.com/business" style="height:52px;v-text-anchor:middle;width:240px" arcsize="19%" fillcolor="#E8553D" stroke="f"><v:textbox inset="0,0,0,0"><center style="font-family:'Segoe UI',sans-serif;font-size:15px;font-weight:700;color:#ffffff">Get Listed Now &#8594;</center></v:textbox></v:roundrect><![endif]-->
+            <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="https://www.infowebworld.com/business" style="height:52px;v-text-anchor:middle;width:240px" arcsize="19%" fillcolor="#E8553D" stroke="f"><v:textbox inset="0,0,0,0"><center style="font-family:'Segoe UI',sans-serif;font-size:15px;font-weight:700;color:#ffffff">Get Listed Now &#8594;</center></v:textbox></v:roundrect><![endif]-->
             <!--[if !mso]><!-->
-            <a href="https://infowebworld.com/business" target="_blank" style="display:inline-block;background:#E8553D;color:#ffffff;text-decoration:none;font-family:${F_BODY};font-weight:700;font-size:15px;padding:16px 44px;border-radius:12px;letter-spacing:.2px;mso-hide:all">Get Listed Now &nbsp;&#8594;</a>
+            <a href="https://www.infowebworld.com/business" target="_blank" style="display:inline-block;background:#E8553D;color:#ffffff;text-decoration:none;font-family:${F_BODY};font-weight:700;font-size:15px;padding:16px 44px;border-radius:12px;letter-spacing:.2px;mso-hide:all">Get Listed Now &nbsp;&#8594;</a>
             <!--<![endif]-->
             <p style="margin:16px 0 0;font-family:${F_BODY};font-size:11.5px;font-weight:600;color:#C5C0BA;letter-spacing:.2px">6-month money-back guarantee &nbsp;&#183;&nbsp; Cancel anytime</p>
           </td>
@@ -233,16 +233,16 @@ function buildWelcomeEmail(): string {
       <tr>
         <td style="text-align:center;padding:32px 20px 12px">
           <p style="margin:0 0 10px;font-family:${F_BODY};font-size:13px;font-weight:700;color:#6B6560">
-            <a href="https://infowebworld.com" target="_blank" style="color:#E8553D;text-decoration:none">InfoWebWorld.com</a>
+            <a href="https://www.infowebworld.com" target="_blank" style="color:#E8553D;text-decoration:none">InfoWebWorld.com</a>
             <span style="color:#C5C0BA;font-weight:400"> &nbsp;&#8212;&nbsp; Global Growth Platform</span>
           </p>
           <p style="margin:0 0 14px;font-family:${F_BODY};font-size:11px;font-weight:400;color:#C5C0BA">Brain Stream Australia Pty Ltd &nbsp;&#183;&nbsp; Parramatta, NSW 2150</p>
           <p style="margin:0;font-family:${F_BODY};font-size:11px;font-weight:600;color:#D5D0CA">
-            <a href="https://infowebworld.com/business" target="_blank" style="color:#D5D0CA;text-decoration:none">Get Listed</a>
+            <a href="https://www.infowebworld.com/business" target="_blank" style="color:#D5D0CA;text-decoration:none">Get Listed</a>
             <span style="color:#E8E4DF"> &nbsp;&#183;&nbsp; </span>
-            <a href="https://infowebworld.com/business/plans" target="_blank" style="color:#D5D0CA;text-decoration:none">Plans</a>
+            <a href="https://www.infowebworld.com/business/plans" target="_blank" style="color:#D5D0CA;text-decoration:none">Plans</a>
             <span style="color:#E8E4DF"> &nbsp;&#183;&nbsp; </span>
-            <a href="https://infowebworld.com/contact" target="_blank" style="color:#D5D0CA;text-decoration:none">Contact</a>
+            <a href="https://www.infowebworld.com/contact" target="_blank" style="color:#D5D0CA;text-decoration:none">Contact</a>
           </p>
         </td>
       </tr>

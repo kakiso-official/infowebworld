@@ -139,7 +139,7 @@ export default function CategorySeoEditor() {
           </div>
           <div>
             <label style={labelStyle}>Canonical URL</label>
-            <input style={inputStyle} value={cat.seoCanonical} onChange={e => setSeo('seoCanonical', e.target.value)} placeholder={`https://infowebworld.com/${cat.slug}`} onFocus={focus} onBlur={blur} />
+            <input style={inputStyle} value={cat.seoCanonical} onChange={e => setSeo('seoCanonical', e.target.value)} placeholder={`https://www.infowebworld.com/${cat.slug}`} onFocus={focus} onBlur={blur} />
           </div>
           <label style={{ display: 'flex', alignItems: 'center', gap: '.5rem', cursor: 'pointer' }}>
             <input type="checkbox" checked={cat.seoNoIndex} onChange={e => setSeo('seoNoIndex', e.target.checked)} style={{ width: 16, height: 16, accentColor: '#E8553D' }} />

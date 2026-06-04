@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: 'Get Listed — Submit Your Business | InfoWebWorld',
   description:
     'List your business on InfoWebWorld and lock in founding pricing. Get dofollow backlinks, verified reviews, and leads across 80+ industries.',
-  alternates: { canonical: 'https://infowebworld.com/business' },
+  alternates: { canonical: 'https://www.infowebworld.com/business' },
   openGraph: {
     title: 'Get Listed on InfoWebWorld — Pre-Launch Business Listing',
     description:
@@ -19,7 +19,7 @@ const breadcrumbJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://infowebworld.com' },
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.infowebworld.com' },
     { '@type': 'ListItem', position: 2, name: 'Get Listed' },
   ],
 }

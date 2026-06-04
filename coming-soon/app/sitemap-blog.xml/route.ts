@@ -1,27 +1,16 @@
 import { NextResponse } from 'next/server'
-import { query } from '@/lib/db'
+import { getPublishedPosts } from '@/lib/blog'
 
-const BASE = 'https://infowebworld.com'
+const BASE = 'https://www.infowebworld.com'
 
-type PostRow = { slug: string; updated_at: string | null; published_at: string | null }
-
+/* Blog sitemap — built from the static markdown posts in content/blog/. */
 export async function GET() {
-  let rows: PostRow[] = []
-  try {
-    rows = await query<PostRow>(
-      `SELECT slug, updated_at, published_at
-         FROM blog_posts
-        WHERE status = 'published' AND slug IS NOT NULL AND slug <> ''
-        ORDER BY published_at DESC
-        LIMIT 5000`
-    )
-  } catch { /* blog_posts table may not exist yet — emit empty */ }
-
+  const posts = getPublishedPosts()
   const now = new Date().toISOString().split('T')[0]
-  const urls = rows.map(p => {
-    const lastmod = (p.updated_at || p.published_at)
-      ? new Date(String(p.updated_at || p.published_at)).toISOString().split('T')[0]
-      : now
+
+  const urls = posts.map(p => {
+    const src = p.updatedAt || p.publishedAt || p.createdAt
+    const lastmod = src ? new Date(src).toISOString().split('T')[0] : now
     return `  <url>
     <loc>${BASE}/blog/${p.slug}</loc>
     <lastmod>${lastmod}</lastmod>

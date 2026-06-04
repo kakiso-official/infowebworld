@@ -195,7 +195,10 @@ body {
   color: var(--h-heading);
   background: var(--h-bg);
   line-height: 1.6;
-  overflow-x: hidden;
+  /* `clip` prevents horizontal scroll WITHOUT creating a scroll container,
+     so position:sticky (blog ToC, sticky heads, etc.) keeps working. `hidden`
+     here used to break it. Matches the html rule above. */
+  overflow-x: clip;
 }
 ::selection { background: rgba(232, 85, 61, .2); color: #1A1A1A }
 ::-moz-selection { background: rgba(232, 85, 61, .2); color: #1A1A1A }

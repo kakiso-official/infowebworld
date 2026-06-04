@@ -10,7 +10,7 @@
      node scripts/indexnow-ping.mjs /faqs /glossary   # ping specific paths
 
    Key file lives at /public/<KEY>.txt and must be reachable
-   at https://infowebworld.com/<KEY>.txt before pings succeed.
+   at https://www.infowebworld.com/<KEY>.txt before pings succeed.
    ──────────────────────────────────────────────────────────── */
 
 const KEY = '8f3c4e2d6b914a5e87cd0192f6e4b3a7'

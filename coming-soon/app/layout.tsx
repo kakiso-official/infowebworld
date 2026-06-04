@@ -34,7 +34,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://infowebworld.com"),
+  metadataBase: new URL("https://www.infowebworld.com"),
   title: "InfoWebWorld.com - Global Growth Platform - AI, SaaS, Startups, Business - Get Leads, Reviews, GEO & SEO Backlinks",
   description:
     "Global Growth Platform for business discovery, leads, verified reviews, and SEO backlinks. Explore AI, SaaS, startups, IT services, and more on InfoWebWorld.",
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://infowebworld.com",
+    url: "https://www.infowebworld.com",
     siteName: "InfoWebWorld",
     title: "InfoWebWorld — The Global Business Discovery Platform",
     description:

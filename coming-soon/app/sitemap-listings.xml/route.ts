@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { query } from '@/lib/db'
 
-const BASE = 'https://infowebworld.com'
+const BASE = 'https://www.infowebworld.com'
 
 type ListingRow = {
   slug: string

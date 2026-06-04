@@ -132,7 +132,7 @@ function currentMonthYear() {
   return `${MONTHS[d.getMonth()]} ${d.getFullYear()}`
 }
 
-const DOMAIN = 'https://infowebworld.com'
+const DOMAIN = 'https://www.infowebworld.com'
 
 /** Single global URL space — country prefix removed */
 function canonicalUrl(_country: string, path: string) {

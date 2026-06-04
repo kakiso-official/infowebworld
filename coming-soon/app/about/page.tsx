@@ -6,7 +6,7 @@ import Footer from '../components/Footer'
    Canonical IDs — every schema cross-references
    these so Google reads one connected graph
    ──────────────────────────────────────────── */
-const URL_PAGE         = 'https://infowebworld.com/about'
+const URL_PAGE         = 'https://www.infowebworld.com/about'
 const ID_BREADCRUMB    = `${URL_PAGE}#breadcrumb`
 const ID_WEBPAGE       = `${URL_PAGE}#webpage`
 const ID_FAQ           = `${URL_PAGE}#faq`
@@ -15,9 +15,9 @@ const ID_SERVICE       = `${URL_PAGE}#service`
 const ID_GLOSSARY      = `${URL_PAGE}#glossary`
 const ID_QUOTE_MISSION = `${URL_PAGE}#quote-mission`
 const ID_QUOTE_TRUST   = `${URL_PAGE}#quote-trust`
-const ID_WEBSITE       = 'https://infowebworld.com/#website'
-const ID_ORGANIZATION  = 'https://infowebworld.com/#organization'
-const ID_ADDRESS       = 'https://infowebworld.com/#address'
+const ID_WEBSITE       = 'https://www.infowebworld.com/#website'
+const ID_ORGANIZATION  = 'https://www.infowebworld.com/#organization'
+const ID_ADDRESS       = 'https://www.infowebworld.com/#address'
 
 const FOUNDING_YEAR    = '2026'
 const FOUNDED_ISO      = '2026-01-01'
@@ -26,7 +26,7 @@ const FOUNDED_ISO      = '2026-01-01'
    Metadata (Next.js generates <head> tags)
    ──────────────────────────────────────────── */
 export const metadata: Metadata = {
-  metadataBase: new URL('https://infowebworld.com'),
+  metadataBase: new URL('https://www.infowebworld.com'),
   title: 'About InfoWebWorld — Our Story, Mission & Global Business Discovery Platform',
   description:
     'InfoWebWorld is the global business discovery platform for verified listings, real reviews, dofollow backlinks, and AI-era visibility — built by Brain Stream Australia (Parramatta, NSW), covering 80+ industries across 12+ countries.',
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
       'The story behind InfoWebWorld — a global growth platform where verified businesses get discovered by buyers and AI engines alike.',
     locale: 'en_US',
     images: [
-      { url: 'https://infowebworld.com/og-image.png', width: 1200, height: 630, alt: 'InfoWebWorld — Global Growth Platform', type: 'image/png' },
+      { url: 'https://www.infowebworld.com/og-image.png', width: 1200, height: 630, alt: 'InfoWebWorld — Global Growth Platform', type: 'image/png' },
     ],
   },
   twitter: {
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     creator: '@infowebworld_x',
     title: 'About InfoWebWorld',
     description: 'The global growth platform for verified business discovery.',
-    images: ['https://infowebworld.com/og-image.png'],
+    images: ['https://www.infowebworld.com/og-image.png'],
   },
   robots: {
     index: true, follow: true, nocache: false,
@@ -68,7 +68,7 @@ export const metadata: Metadata = {
       'max-snippet': -1, 'max-image-preview': 'large', 'max-video-preview': -1,
     },
   },
-  authors: [{ name: 'InfoWebWorld', url: 'https://infowebworld.com' }],
+  authors: [{ name: 'InfoWebWorld', url: 'https://www.infowebworld.com' }],
   creator: 'InfoWebWorld',
   publisher: 'Brain Stream Australia Pty Ltd',
   category: 'Business',
@@ -143,13 +143,13 @@ const ORG_NODE = {
   name: 'InfoWebWorld',
   alternateName: ['Info Web World', 'iWW'],
   legalName: 'Brain Stream Australia Pty Ltd',
-  url: 'https://infowebworld.com',
+  url: 'https://www.infowebworld.com',
   logo: {
     '@type': 'ImageObject',
-    url: 'https://infowebworld.com/logo/infowebworldlogo-logoforlightbackgrounds.png',
+    url: 'https://www.infowebworld.com/logo/infowebworldlogo-logoforlightbackgrounds.png',
     width: 1000, height: 270, caption: 'InfoWebWorld logo',
   },
-  image: 'https://infowebworld.com/og-image.png',
+  image: 'https://www.infowebworld.com/og-image.png',
   description:
     'Global business discovery platform with verified reviews, dofollow backlinks, lead generation, and AI-era visibility across 80+ industries and 12+ countries.',
   slogan: 'Global Growth Platform',
@@ -199,7 +199,7 @@ const ORG_NODE = {
       '@type': 'ContactPoint',
       contactType: 'customer support',
       email: 'iww@brainstream.com.au',
-      url: 'https://infowebworld.com/contact',
+      url: 'https://www.infowebworld.com/contact',
       availableLanguage: ['English'],
       areaServed: 'Worldwide',
     },
@@ -208,7 +208,7 @@ const ORG_NODE = {
     {
       '@type': 'ContactAction',
       name: 'Contact InfoWebWorld',
-      target: { '@type': 'EntryPoint', urlTemplate: 'https://infowebworld.com/contact' },
+      target: { '@type': 'EntryPoint', urlTemplate: 'https://www.infowebworld.com/contact' },
     },
   ],
   sameAs: [
@@ -228,7 +228,7 @@ const jsonLdGraph = {
     {
       '@type': 'WebSite',
       '@id': ID_WEBSITE,
-      url: 'https://infowebworld.com',
+      url: 'https://www.infowebworld.com',
       name: 'InfoWebWorld',
       alternateName: 'Info Web World',
       description: 'The global business discovery platform — verified listings, real reviews, and AI-era visibility.',
@@ -236,7 +236,7 @@ const jsonLdGraph = {
       publisher: { '@id': ID_ORGANIZATION },
       potentialAction: {
         '@type': 'SearchAction',
-        target: { '@type': 'EntryPoint', urlTemplate: 'https://infowebworld.com/search?q={search_term_string}' },
+        target: { '@type': 'EntryPoint', urlTemplate: 'https://www.infowebworld.com/search?q={search_term_string}' },
         'query-input': 'required name=search_term_string',
       },
     },
@@ -249,7 +249,7 @@ const jsonLdGraph = {
       '@type': 'BreadcrumbList',
       '@id': ID_BREADCRUMB,
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home',  item: 'https://infowebworld.com' },
+        { '@type': 'ListItem', position: 1, name: 'Home',  item: 'https://www.infowebworld.com' },
         { '@type': 'ListItem', position: 2, name: 'About', item: URL_PAGE },
       ],
     },
@@ -269,10 +269,10 @@ const jsonLdGraph = {
       breadcrumb: { '@id': ID_BREADCRUMB },
       primaryImageOfPage: {
         '@type': 'ImageObject',
-        url: 'https://infowebworld.com/og-image.png',
+        url: 'https://www.infowebworld.com/og-image.png',
         width: 1200, height: 630,
       },
-      image: 'https://infowebworld.com/og-image.png',
+      image: 'https://www.infowebworld.com/og-image.png',
       datePublished: FOUNDED_ISO,
       dateModified:  FOUNDED_ISO,
       author:    { '@id': ID_ORGANIZATION },
@@ -350,9 +350,9 @@ const jsonLdGraph = {
         '@type': 'BusinessAudience',
         audienceType: 'Businesses across 80+ industries seeking AI-era visibility, verified reviews, and lead generation',
       },
-      termsOfService: 'https://infowebworld.com/terms',
+      termsOfService: 'https://www.infowebworld.com/terms',
       category: 'Business directory',
-      offers: { '@type': 'AggregateOffer', url: 'https://infowebworld.com/business/plans', priceCurrency: 'USD', lowPrice: '0', highPrice: '239' },
+      offers: { '@type': 'AggregateOffer', url: 'https://www.infowebworld.com/business/plans', priceCurrency: 'USD', lowPrice: '0', highPrice: '239' },
     },
 
     /* 8 — DefinedTermSet (glossary — entity-clarifying for AI engines) */
@@ -451,7 +451,7 @@ export default function AboutPage() {
           <meta itemProp="datePublished"  content={FOUNDED_ISO} />
           <meta itemProp="dateModified"   content={FOUNDED_ISO} />
           <meta itemProp="url"            content={URL_PAGE} />
-          <meta itemProp="image"          content="https://infowebworld.com/og-image.png" />
+          <meta itemProp="image"          content="https://www.infowebworld.com/og-image.png" />
 
           <header className="ab-header">
             <nav className="ab-crumb" aria-label="Breadcrumb" itemScope itemType="https://schema.org/BreadcrumbList">
@@ -528,7 +528,7 @@ export default function AboutPage() {
             >
               <meta itemProp="legalName"    content="Brain Stream Australia Pty Ltd" />
               <meta itemProp="foundingDate" content={FOUNDED_ISO} />
-              <meta itemProp="url"          content="https://infowebworld.com" />
+              <meta itemProp="url"          content="https://www.infowebworld.com" />
               <h2 className="ab-h2" id="h-company">
                 Built by <span itemProp="name"><cite>Brain Stream Australia</cite></span>
               </h2>

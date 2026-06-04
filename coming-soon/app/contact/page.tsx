@@ -13,7 +13,7 @@ const breadcrumbJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://infowebworld.com' },
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.infowebworld.com' },
     { '@type': 'ListItem', position: 2, name: 'Contact' },
   ],
 }
@@ -22,12 +22,12 @@ const contactJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'InfoWebWorld',
-  url: 'https://infowebworld.com',
+  url: 'https://www.infowebworld.com',
   contactPoint: {
     '@type': 'ContactPoint',
     contactType: 'customer support',
     email: 'iww@brainstream.com.au',
-    url: 'https://infowebworld.com/contact',
+    url: 'https://www.infowebworld.com/contact',
     availableLanguage: 'English',
   },
   address: {

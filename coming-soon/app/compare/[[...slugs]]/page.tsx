@@ -31,7 +31,7 @@ import ComparePage from '../ComparePage'
 
 export const dynamic = 'force-dynamic'
 
-const SITE = 'https://infowebworld.com'
+const SITE = 'https://www.infowebworld.com'
 const YEAR = new Date().getFullYear()
 
 type Params = { slugs?: string[] }

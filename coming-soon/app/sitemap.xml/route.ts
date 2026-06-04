@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-const BASE = 'https://infowebworld.com'
+const BASE = 'https://www.infowebworld.com'
 
 /* Full sitemap index — references every sub-sitemap:
    - sitemap-pages.xml       static indexable pages (Home, About, Plans, etc.)

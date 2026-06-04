@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-const BASE = 'https://infowebworld.com'
+const BASE = 'https://www.infowebworld.com'
 
 /* The 6 L1 sector landings — top of the taxonomy, always indexable,
    highest priority after the homepage. */
