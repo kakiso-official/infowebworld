@@ -104,23 +104,14 @@ function applyHeaders(response: NextResponse, pathname: string, isVercelApp: boo
   response.headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300')
 }
 
-/* Bare country prefixes — exact matches only (paths under them are handled
-   by next.config.ts redirects, which work fine; only /:country with no trailing
-   path needs middleware because next.config.ts produces an empty Location
-   header when destination is '/'). */
-const BARE_COUNTRY_PATHS = new Set([
-  '/in', '/us', '/uk', '/ca', '/au', '/eu', '/global',
-])
-
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   const isVercelApp = request.headers.get('host')?.includes('vercel.app') ?? false
 
-  if (BARE_COUNTRY_PATHS.has(pathname)) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/'
-    return NextResponse.redirect(url, 308)
-  }
+  /* Country-prefixed paths (/uk, /us/ai-ml, …) are intentionally NOT handled
+     here — they fall through to the app/[...segments] catch-all, which 404s
+     any non-sector first segment. We want a hard 404 (de-index), not a
+     redirect, for the removed country URL space. */
 
   /* Forward the pathname to server components via a request header so the
      shared InfoPageShell can auto-generate per-page JSON-LD (canonical URL,

@@ -30,15 +30,12 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
-      // ── Country prefixes removed — single global URL space ──
-      // /{country}/path/* → /path/* (308 permanent). Uses `:path+` (one-or-more)
-      // so /:country alone falls through to middleware, which handles the
-      // bare-prefix case (next.config.ts emits an empty Location for '/' destinations).
-      {
-        source: '/:country(in|us|uk|ca|au|eu|global)/:path+',
-        destination: '/:path+',
-        permanent: true,
-      },
+      // ── Country prefixes are NOT valid URLs — do NOT redirect them. ──
+      // Legacy /{country}/* paths (/uk/blog, /us/ai-ml, bare /uk, …) are left
+      // to 404 through the app/[...segments] catch-all (notFound()) so Google
+      // de-indexes them instead of following a redirect. A previous version
+      // 308-redirected /:country/:path+ → /:path+; that was removed on purpose.
+      // Do NOT re-add a country redirect here.
 
       // Old /plans → /business/plans
       {
