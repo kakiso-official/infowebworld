@@ -6,8 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import {
   faGaugeHigh, faChartLine, faInbox, faStar, faShieldHalved, faUsers,
-  faNewspaper, faSitemap, faTags, faList, faMagnifyingGlassChart, faGear,
-  faRightFromBracket,
+  faUserGroup, faNewspaper, faSitemap, faTags, faList, faMagnifyingGlassChart,
+  faEnvelope, faGear, faRightFromBracket,
 } from '@fortawesome/free-solid-svg-icons'
 import { clearSession } from '../utils/hash'
 
@@ -29,6 +29,7 @@ const GROUPS: NavGroup[] = [
     { href: '/iww-hq/submissions', label: 'Submissions', icon: faInbox },
     { href: '/iww-hq/reviews', label: 'Reviews', icon: faStar },
     { href: '/iww-hq/verifications', label: 'Verifications', icon: faShieldHalved },
+    { href: '/iww-hq/users', label: 'Users', icon: faUserGroup },
     { href: '/iww-hq/waitlist', label: 'Waitlist', icon: faUsers },
   ] },
   { title: 'Content', items: [
@@ -37,6 +38,9 @@ const GROUPS: NavGroup[] = [
     { href: '/iww-hq/tags', label: 'Tags', icon: faTags },
     { href: '/iww-hq/listing-types', label: 'Listing Types', icon: faList },
     { href: '/iww-hq/seo-content', label: 'SEO Content', icon: faMagnifyingGlassChart },
+  ] },
+  { title: 'Marketing', items: [
+    { href: '/iww-hq/email-marketing', label: 'Email Marketing', icon: faEnvelope },
   ] },
   { title: 'System', items: [
     { href: '/iww-hq/settings', label: 'Settings', icon: faGear },
