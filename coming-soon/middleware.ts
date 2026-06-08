@@ -104,14 +104,64 @@ function applyHeaders(response: NextResponse, pathname: string, isVercelApp: boo
   response.headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300')
 }
 
+/* ── Removed country URL space ──
+   The site used to serve /{country}/* URLs (/uk/blog, /us/ai-ml, bare /uk, …).
+   Those are gone. We return a hard 404 for them straight from middleware,
+   because:
+     - a redirect would keep Google following/holding the old URL, and
+     - the app/[...segments] catch-all calls notFound() but, under
+       `dynamic = 'force-dynamic'`, the shell streams with a 200 status BEFORE
+       notFound() throws — producing a soft-404 (HTTP 200). Middleware is the
+       only place the 404 status is authoritative.
+   The (\/|$) boundary keeps real routes safe: /insights, /investors,
+   /categories, /glossary, /us... never match (they need a / or end after the
+   country code). */
+const COUNTRY_PREFIX_RE = /^\/(in|us|uk|ca|au|eu|global)(\/|$)/
+
+const GONE_404_HTML = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>404 - Page not found | InfoWebWorld</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#0b1020;color:#e8ecf4;text-align:center;padding:24px}
+.c{max-width:480px}
+.n{font-size:96px;font-weight:800;letter-spacing:-2px;line-height:1;margin:0 0 8px;background:linear-gradient(135deg,#6366f1,#22d3ee);-webkit-background-clip:text;background-clip:text;color:transparent}
+h1{font-size:22px;margin:0 0 10px}
+p{color:#9aa4bf;font-size:15px;line-height:1.6;margin:0 0 24px}
+a{display:inline-block;background:#6366f1;color:#fff;text-decoration:none;padding:12px 22px;border-radius:10px;font-weight:600;font-size:15px}
+</style>
+</head>
+<body>
+<div class="c">
+<p class="n">404</p>
+<h1>Page not found</h1>
+<p>This page doesn&rsquo;t exist. Country-specific URLs were removed - everything now lives on a single global address.</p>
+<a href="/">Go to InfoWebWorld home</a>
+</div>
+</body>
+</html>`
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   const isVercelApp = request.headers.get('host')?.includes('vercel.app') ?? false
 
-  /* Country-prefixed paths (/uk, /us/ai-ml, …) are intentionally NOT handled
-     here — they fall through to the app/[...segments] catch-all, which 404s
-     any non-sector first segment. We want a hard 404 (de-index), not a
-     redirect, for the removed country URL space. */
+  /* Removed country URL space → hard 404 (see COUNTRY_PREFIX_RE above). Set
+     the status here because the app catch-all's notFound() soft-404s (200)
+     under force-dynamic streaming. */
+  if (COUNTRY_PREFIX_RE.test(pathname)) {
+    return new NextResponse(GONE_404_HTML, {
+      status: 404,
+      headers: {
+        'content-type': 'text/html; charset=utf-8',
+        'x-robots-tag': 'noindex, nofollow',
+        'cache-control': 'no-store',
+      },
+    })
+  }
 
   /* Forward the pathname to server components via a request header so the
      shared InfoPageShell can auto-generate per-page JSON-LD (canonical URL,
