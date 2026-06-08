@@ -4,6 +4,7 @@
    reuses the .tlp-main product cards) so they no longer ship on every page. */
 import '../styles/listing.css'
 import '../styles/test-listing-page.css'
+import '../styles/claim-modal.css'
 
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
@@ -11,6 +12,7 @@ import type { ReactNode } from 'react'
 import type { RealSubmission, FaqItem, KeyFeature, Award } from '../iww-hq/data/submissions-storage'
 import WriteReviewModal from './WriteReviewModal'
 import LeadFormModal from './LeadFormModal'
+import ClaimListingModal from './ClaimListingModal'
 import SignupModal from '../components/auth/SignupModal'
 import { withInfoWebWorldUtm } from '../lib/utm'
 import { trackWebsiteClick } from '../lib/track-website-click'
@@ -1383,6 +1385,11 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
        badge in the hero. Preview mode shows verified to demo the visual. */
     verified:              isPreview ? true : Boolean(real?.verified),
     verifiedAt:            real?.verifiedAt || '',
+    /* Claimable = an unowned (no user_id), unverified listing — the scraped/
+       seeded majority. Drives the "Claim this listing" CTA in place of the
+       muted Unverified pill. */
+    claimable:             !isPreview && !real?.verified &&
+                           !Number((initialData?.listing as { user_id?: number | null } | undefined)?.user_id ?? 0),
   }
   /** Helper: replace literal "Mailchimp" inside sample-data strings so reviewer
    *  quotes, FAQ answers, etc. read with the real company name when one is set. */
@@ -1489,6 +1496,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
      (follow / react / bookmark / write a review). Replaces the old full-page
      redirect to /business so the user keeps their context on the listing. */
   const [authOpen, setAuthOpen] = useState(false)
+  const [claimOpen, setClaimOpen] = useState(false)
   /* Live mirror of the parent's review aggregate so the sticky head + insights
      reflect a just-published review without a full page reload. */
   const [reviewCount, setReviewCount] = useState(initialData?.reviews?.reviewCount ?? 0)
@@ -2050,6 +2058,29 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                     </span>
                   </span>
                 </div>
+              ) : view.claimable ? (
+                <button
+                  type="button"
+                  className="tlp-claim-cta"
+                  onClick={() => setClaimOpen(true)}
+                  aria-label={`Claim ${view.companyName}`}
+                >
+                  <span className="tlp-claim-cta-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 2 4 5.5v5c0 5.2 3.4 9.6 8 10.5 4.6-.9 8-5.3 8-10.5v-5L12 2Z" />
+                      <path d="m9 12 2 2 4-4" />
+                    </svg>
+                  </span>
+                  <span className="tlp-claim-cta-body">
+                    <span className="tlp-claim-cta-eyebrow">Is this your business?</span>
+                    <span className="tlp-claim-cta-title">Claim this listing</span>
+                    <span className="tlp-claim-cta-sub">
+                      Verify ownership of {view.companyName} to manage details, respond to reviews
+                      and get the Verified badge — free.
+                    </span>
+                  </span>
+                  <span className="tlp-claim-cta-arrow" aria-hidden="true">→</span>
+                </button>
               ) : (
                 <div className="tlp-vbadge tlp-vbadge--no" role="note" aria-label="Unverified by InfoWebWorld">
                   <span className="tlp-vbadge-shield tlp-vbadge-shield--muted" aria-hidden="true">
@@ -4073,6 +4104,16 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
         open={authOpen}
         onClose={() => setAuthOpen(false)}
         nextUrl={listingSlug ? `/listing/${listingSlug}` : undefined}
+      />
+
+      <ClaimListingModal
+        open={claimOpen}
+        onClose={() => setClaimOpen(false)}
+        listingSlug={listingSlug}
+        companyName={view.companyName}
+        website={view.website}
+        isAuthed={isAuthed}
+        onRequireAuth={() => { setClaimOpen(false); setAuthOpen(true) }}
       />
 
       <LeadFormModal

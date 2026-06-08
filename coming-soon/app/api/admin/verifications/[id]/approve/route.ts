@@ -39,11 +39,13 @@ export async function POST(
     listing_id: number
     user_id: number
     status: 'pending' | 'approved' | 'rejected'
+    request_type: 'verify' | 'claim' | string
     listing_slug: string
     listing_verified: number
     listing_mode: 'product' | 'company' | string
   }>(
     `SELECT r.id, r.listing_id, r.user_id, r.status,
+            COALESCE(r.request_type, 'verify') AS request_type,
             s.slug AS listing_slug,
             COALESCE(s.verified, 0) AS listing_verified,
             COALESCE(s.listing_mode, 'product') AS listing_mode
@@ -69,14 +71,30 @@ export async function POST(
         WHERE id = ?`,
       [adminNotes, admin.adminId, requestId]
     )
-    await execute(
-      `UPDATE submissions
-          SET verified = 1,
-              verified_at = NOW(),
-              verification_request_id = ?
-        WHERE id = ?`,
-      [requestId, row.listing_id]
-    )
+    /* A 'claim' approval also assigns ownership — but COALESCE(NULLIF(...))
+       only fills user_id when the listing is still unowned (NULL or 0), so
+       approving a claim can never steal an already-owned listing. A normal
+       'verify' approval leaves user_id untouched. */
+    if (row.request_type === 'claim') {
+      await execute(
+        `UPDATE submissions
+            SET verified = 1,
+                verified_at = NOW(),
+                verification_request_id = ?,
+                user_id = COALESCE(NULLIF(user_id, 0), ?)
+          WHERE id = ?`,
+        [requestId, row.user_id, row.listing_id]
+      )
+    } else {
+      await execute(
+        `UPDATE submissions
+            SET verified = 1,
+                verified_at = NOW(),
+                verification_request_id = ?
+          WHERE id = ?`,
+        [requestId, row.listing_id]
+      )
+    }
 
     if (!wasAlreadyApproved) {
       /* Fire-and-forget owner email — wrapped in its own try inside the

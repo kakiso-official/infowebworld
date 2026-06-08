@@ -23,7 +23,8 @@ export async function GET(request: NextRequest) {
   try {
     const rows = await query(
       `SELECT
-         r.id, r.status, r.created_at, r.updated_at, r.reviewed_at,
+         r.id, r.status, COALESCE(r.request_type, 'verify') AS request_type,
+         r.created_at, r.updated_at, r.reviewed_at,
          r.legal_name, r.business_email, r.business_phone,
          r.registration_number, r.owner_role, r.document_url,
          CAST(r.social_proof AS CHAR) AS social_proof,
