@@ -72,11 +72,11 @@ const norm = (u: string) => u.trim().split(/[#?]/)[0].replace(/\/+$/, '') || '/'
 
 type Cand = { url: string; name: string }
 
-function buildCandidates(content: string): Cand[] {
+function buildCandidates(content: string, pubPosts: Array<{ slug: string; title: string }>): Cand[] {
   const list: Cand[] = []
   for (const s of SECTORS) list.push({ url: `/${s.slug}`, name: s.name })
   for (const p of STATIC_PAGES) list.push(p)
-  try { for (const p of getPublishedPosts()) list.push({ url: `/blog/${p.slug}`, name: p.title }) } catch { /* dir missing */ }
+  for (const p of pubPosts) list.push({ url: `/blog/${p.slug}`, name: p.title })
 
   const text = content.toLowerCase()
   const tokens = new Set(text.split(/[^a-z0-9]+/).filter(w => w.length > 3 && !STOP.has(w)))
@@ -138,7 +138,8 @@ ${body}`
     }
 
     if (mode === 'internal-links') {
-      const cands = buildCandidates(body)
+      const pub = await getPublishedPosts().catch(() => [])
+      const cands = buildCandidates(body, pub)
       const allowed = new Set(cands.map(c => norm(c.url)))
       const listText = cands.map(c => `- ${c.name} → ${c.url}`).join('\n')
       const prompt = `You are an internal-linking assistant for the InfoWebWorld blog. Insert natural, helpful internal links into the article using ONLY the real pages listed below.

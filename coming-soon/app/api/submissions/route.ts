@@ -5,6 +5,7 @@ import { getClientIp } from '@/lib/tracking'
 import { getUserFromRequest } from '@/lib/user-auth'
 import { getUserHighestPaidPlan } from '@/lib/user-plan'
 import { TIER_RANK, type PlanTier } from '@/lib/user-plan-types'
+import { notifyOnNewSubmission } from '@/lib/notify-submission'
 
 export async function GET(request: NextRequest) {
   try {
@@ -358,6 +359,17 @@ export async function POST(request: NextRequest) {
         [categoryId]
       )
     }
+
+    /* Email the submitter ("we received your listing") + alert the admin
+       review inbox. Awaited so it completes in this serverless invocation;
+       never throws (sendEmail swallows failures), so it can't fail the POST. */
+    await notifyOnNewSubmission({
+      companyName: body.companyName.trim(),
+      contactName: typeof body.contactName === 'string' ? body.contactName.trim() : null,
+      contactEmail: body.email.trim().toLowerCase(),
+      category: (body.categorySlug || body.category || null) as string | null,
+      listingMode,
+    })
 
     return Response.json({ ok: true, uuid, slug, message: 'Submission received' }, { status: 201 })
   } catch (err) {

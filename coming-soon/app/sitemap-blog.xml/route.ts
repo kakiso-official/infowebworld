@@ -3,9 +3,9 @@ import { getPublishedPosts } from '@/lib/blog'
 
 const BASE = 'https://www.infowebworld.com'
 
-/* Blog sitemap — built from the static markdown posts in content/blog/. */
+/* Blog sitemap — built from published posts in the blog_posts table. */
 export async function GET() {
-  const posts = getPublishedPosts()
+  const posts = await getPublishedPosts()
   const now = new Date().toISOString().split('T')[0]
 
   const urls = posts.map(p => {

@@ -7,6 +7,7 @@ import { getUserFromRequest } from '@/lib/user-auth'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { getClientIp } from '@/lib/tracking'
 import { sendEmail, buildEmailShell, escapeHtml, EMAIL_FONTS } from '@/lib/email'
+import { notifyOnNewClaim } from '@/lib/notify-submission'
 
 /**
  * Listing claim endpoint — public-facing, one route, three modes.
@@ -308,6 +309,19 @@ async function manualClaim(user: SessionUser, listing: ListingRow, body: Record<
      VALUES (?, ?, 'pending', 'claim', ?, ?, ?, ?, ?, ?)`,
     [listing.id, user.id, legalName, businessEmail, registrationNumber, ownerRole, socialProofJson, applicantNotes]
   )
+
+  /* Confirm to the claimant + alert the admin review queue. Best-effort. */
+  await notifyOnNewClaim({
+    companyName: listing.company_name,
+    claimantName: user.name || null,
+    claimantEmail: businessEmail || user.email || null,
+    evidence: [
+      legalName,
+      ownerRole ? `role: ${ownerRole}` : '',
+      registrationNumber ? `reg: ${registrationNumber}` : '',
+      applicantNotes,
+    ].filter(Boolean).join(' · ').slice(0, 500) || null,
+  })
 
   return Response.json({ ok: true, pending: true, requestId: ins.insertId })
 }

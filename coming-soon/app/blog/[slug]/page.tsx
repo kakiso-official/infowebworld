@@ -6,21 +6,18 @@ import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import BlogReaderInteractions from '../post/BlogReaderInteractions'
 import BlogToc, { type TocItem } from '../BlogToc'
-import { getPublishedPostBySlug, getAllPublishedSlugs, getRelatedPosts } from '@/lib/blog'
+import { getPublishedPostBySlug, getRelatedPosts } from '@/lib/blog'
 
-/* Fully static post pages. generateStaticParams pre-builds one HTML page per
-   published markdown file; dynamicParams=false → unknown slugs 404. */
-export const dynamicParams = false
-
-export function generateStaticParams() {
-  return getAllPublishedSlugs().map(slug => ({ slug }))
-}
+/* Post pages render dynamically from the DB (force-dynamic, edge-cached ~1h via
+   middleware) so a post published in the admin panel is live immediately. An
+   unknown slug calls notFound() below. */
+export const dynamic = 'force-dynamic'
 
 const SITE = 'https://www.infowebworld.com'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
-  const post = getPublishedPostBySlug(slug)
+  const post = await getPublishedPostBySlug(slug)
   if (!post) return { title: 'Post Not Found | InfoWebWorld' }
   const url = `${SITE}/blog/${post.slug}`
   const img = post.seo.ogImage || post.coverImage
@@ -64,10 +61,10 @@ function buildToc(html: string): { html: string; toc: TocItem[] } {
 
 export default async function BlogPostRoute({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const post = getPublishedPostBySlug(slug)
+  const post = await getPublishedPostBySlug(slug)
   if (!post) notFound()
 
-  const related = getRelatedPosts(post.slug, post.category, 3)
+  const related = await getRelatedPosts(post.slug, post.category, 3)
   const rawHtml = marked.parse(post.body || '', { async: false }) as string
   const { html, toc } = buildToc(rawHtml)
   const hasToc = toc.length >= 2

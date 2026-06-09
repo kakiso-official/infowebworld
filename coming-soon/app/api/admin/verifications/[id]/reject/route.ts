@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { execute, queryOne } from '@/lib/db'
 import { requireAdmin } from '@/lib/auth'
 import { notifyOwnerOnVerificationRejected } from '@/lib/notify-owner'
+import { notifyApplicantOnClaimRejected } from '@/lib/notify-submission'
 
 /**
  * POST /api/admin/verifications/[id]/reject
@@ -39,9 +40,13 @@ export async function POST(
     listing_id: number
     user_id: number
     status: 'pending' | 'approved' | 'rejected'
+    request_type: 'verify' | 'claim' | string
+    company_name: string | null
     listing_slug: string
   }>(
-    `SELECT r.id, r.listing_id, r.user_id, r.status, s.slug AS listing_slug
+    `SELECT r.id, r.listing_id, r.user_id, r.status,
+            COALESCE(r.request_type, 'verify') AS request_type,
+            s.company_name, s.slug AS listing_slug
        FROM listing_verification_requests r
        LEFT JOIN submissions s ON s.id = r.listing_id
       WHERE r.id = ? LIMIT 1`,
@@ -65,11 +70,21 @@ export async function POST(
     )
 
     if (!wasAlreadyRejected) {
-      await notifyOwnerOnVerificationRejected({
-        listingId: row.listing_id,
-        applicantId: row.user_id,
-        adminNotes,
-      })
+      if (row.request_type === 'claim') {
+        /* A pending claim's listing is still unowned, so the owner-targeted
+           notifier would skip the applicant — email them directly instead. */
+        await notifyApplicantOnClaimRejected({
+          applicantId: row.user_id,
+          companyName: row.company_name || 'your listing',
+          adminNotes,
+        })
+      } else {
+        await notifyOwnerOnVerificationRejected({
+          listingId: row.listing_id,
+          applicantId: row.user_id,
+          adminNotes,
+        })
+      }
     }
 
     return Response.json({ ok: true, id: requestId, status: 'rejected' })

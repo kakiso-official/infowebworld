@@ -644,3 +644,184 @@ ${verifyUrl}
 Dashboard: ${dashUrl(a.listingUuid)}`,
   }
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+   Submission & claim lifecycle emails (the listing email flow). These events
+   don't all have a uuid/owner yet, so they take lightweight args.
+   ════════════════════════════════════════════════════════════════════════ */
+
+function txPara(html: string): string {
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td style="padding:0 48px 16px"><p style="margin:0;font-family:${F_BODY};font-size:15px;color:#5C5852;line-height:1.7">${html}</p></td></tr></table>`
+}
+function txNote(label: string, text: string): string {
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="padding:0 48px"><tr><td style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:14px;padding:16px 18px"><div style="font-family:${F_BODY};font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:#9A3412;margin-bottom:6px">${escapeHtml(label)}</div><p style="margin:0;font-family:${F_BODY};font-size:14.5px;color:#1A1A1A;line-height:1.6;white-space:pre-wrap">${escapeHtml(text)}</p></td></tr></table>`
+}
+function txKv(rows: Array<[string, string]>): string {
+  const trs = rows.filter(([, v]) => v).map(([k, v]) => `<tr><td style="padding:4px 0;font-family:${F_BODY};font-size:13px;color:#7A756F;width:120px;vertical-align:top">${escapeHtml(k)}</td><td style="padding:4px 0;font-family:${F_BODY};font-size:13.5px;color:#1A1A1A;font-weight:600;word-break:break-word">${escapeHtml(v)}</td></tr>`).join('')
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="padding:0 48px"><tr><td style="background:#FAFAF8;border:1px solid #F0EDEA;border-radius:14px;padding:16px 20px"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">${trs}</table></td></tr></table>`
+}
+function txListingUrl(slug: string, mode: 'product' | 'company'): string {
+  return `${SITE}/${mode === 'company' ? 'profile' : 'listing'}/${slug}`
+}
+
+export interface SubmissionReceivedArgs { recipientName: string | null; companyName: string; listingMode: 'product' | 'company' }
+export function submissionReceivedEmail(a: SubmissionReceivedArgs) {
+  const greet = greeting(a.recipientName)
+  const noun = a.listingMode === 'company' ? 'company profile' : 'listing'
+  const bodyHtml =
+    txPara(`Hi ${escapeHtml(greet)} — thanks for submitting <strong style="color:#1A1A1A">${escapeHtml(a.companyName)}</strong>. It's in our review queue now.`) +
+    txPara(`Our team checks new ${noun}s for quality and authenticity — usually within <strong>1–2 business days</strong>. We'll email you the moment it goes live. Nothing else needed from you right now.`)
+  return {
+    subject: `We received your ${noun}: ${a.companyName}`,
+    html: buildEmailShell({
+      preheader: `${a.companyName} is in the review queue — we'll email you when it's live.`,
+      eyebrow: 'Submission received',
+      title: `Thanks — ${a.companyName} is in the queue`,
+      bodyHtml,
+      ctaUrl: `${SITE}/dashboard/listings`,
+      ctaText: 'Track it in your dashboard',
+      footerNote: 'Sent because you submitted a listing on InfoWebWorld.',
+    }),
+    text: `Hi ${greet} — thanks for submitting ${a.companyName}. It's in our review queue and usually goes live within 1-2 business days. We'll email you when it's approved.\n\nDashboard: ${SITE}/dashboard/listings`,
+  }
+}
+
+export interface SubmissionApprovedArgs { recipientName: string | null; companyName: string; listingSlug: string; listingMode: 'product' | 'company' }
+export function submissionApprovedEmail(a: SubmissionApprovedArgs) {
+  const greet = greeting(a.recipientName)
+  const url = txListingUrl(a.listingSlug, a.listingMode)
+  const bodyHtml =
+    txPara(`Hi ${escapeHtml(greet)} — great news. <strong style="color:#1A1A1A">${escapeHtml(a.companyName)}</strong> has been approved and is <strong style="color:#0E8F6E">live on InfoWebWorld</strong>.`) +
+    txPara(`It's now discoverable in search and its category, and your dofollow backlink is active. Collect reviews, respond to leads, and track engagement from your dashboard.`)
+  return {
+    subject: `${a.companyName} is live on InfoWebWorld`,
+    html: buildEmailShell({
+      preheader: `${a.companyName} is approved and live.`,
+      eyebrow: 'Listing approved',
+      title: `${a.companyName} is approved & live`,
+      bodyHtml,
+      ctaUrl: url,
+      ctaText: 'View your live listing',
+      ctaSecondaryUrl: `${SITE}/dashboard/listings`,
+      ctaSecondaryText: 'Manage it in your dashboard →',
+      footerNote: 'Sent because your listing was approved on InfoWebWorld.',
+    }),
+    text: `Hi ${greet} — ${a.companyName} is approved and live on InfoWebWorld.\n\nView it: ${url}\nDashboard: ${SITE}/dashboard/listings`,
+  }
+}
+
+export interface SubmissionRejectedArgs { recipientName: string | null; companyName: string; reason: string | null }
+export function submissionRejectedEmail(a: SubmissionRejectedArgs) {
+  const greet = greeting(a.recipientName)
+  const reason = a.reason?.trim() || ''
+  const bodyHtml =
+    txPara(`Hi ${escapeHtml(greet)} — thanks for submitting <strong style="color:#1A1A1A">${escapeHtml(a.companyName)}</strong>. We couldn't approve it as-is. This isn't final — fix the point below and resubmit.`) +
+    (reason ? txNote('What to fix', reason) : txPara(`Common reasons: incomplete details, a name/category mismatch, or content that needs cleanup. Resubmit with the fixes and we'll take another look.`))
+  return {
+    subject: `Update on your ${a.companyName} listing`,
+    html: buildEmailShell({
+      preheader: `${a.companyName} needs a change before it can go live.`,
+      eyebrow: 'Listing update',
+      title: `${a.companyName} — a change is needed`,
+      bodyHtml,
+      ctaUrl: `${SITE}/business`,
+      ctaText: 'Resubmit your listing',
+      footerNote: 'Sent because you submitted a listing on InfoWebWorld.',
+    }),
+    text: `Hi ${greet} — we couldn't approve ${a.companyName} as-is.${reason ? `\n\nWhat to fix:\n${reason}` : ''}\n\nResubmit: ${SITE}/business`,
+  }
+}
+
+export interface ClaimReceivedArgs { recipientName: string | null; companyName: string }
+export function claimReceivedEmail(a: ClaimReceivedArgs) {
+  const greet = greeting(a.recipientName)
+  const bodyHtml =
+    txPara(`Hi ${escapeHtml(greet)} — we've received your request to claim <strong style="color:#1A1A1A">${escapeHtml(a.companyName)}</strong>.`) +
+    txPara(`Our team will review your evidence, usually within <strong>1–2 business days</strong>. If approved, the listing becomes yours to manage — edit details, respond to reviews, and capture leads.`)
+  return {
+    subject: `We received your claim for ${a.companyName}`,
+    html: buildEmailShell({
+      preheader: `Your claim for ${a.companyName} is under review.`,
+      eyebrow: 'Claim received',
+      title: `Your claim for ${a.companyName} is under review`,
+      bodyHtml,
+      ctaUrl: `${SITE}/dashboard/listings`,
+      ctaText: 'Go to your dashboard',
+      footerNote: 'Sent because you requested to claim a listing on InfoWebWorld.',
+    }),
+    text: `Hi ${greet} — we've received your request to claim ${a.companyName} and will review it within 1-2 business days.\n\nDashboard: ${SITE}/dashboard/listings`,
+  }
+}
+
+export interface ClaimRejectedArgs { recipientName: string | null; companyName: string; reason: string | null }
+export function claimRejectedEmail(a: ClaimRejectedArgs) {
+  const greet = greeting(a.recipientName)
+  const reason = a.reason?.trim() || ''
+  const bodyHtml =
+    txPara(`Hi ${escapeHtml(greet)} — we reviewed your request to claim <strong style="color:#1A1A1A">${escapeHtml(a.companyName)}</strong> but couldn't approve it with the evidence provided.`) +
+    (reason ? txNote('What we need', reason) : txPara(`The fastest path is a business email on the company's own domain — that verifies you instantly. You can also add a registration number or a document showing your role, then try again.`))
+  return {
+    subject: `Update on your claim for ${a.companyName}`,
+    html: buildEmailShell({
+      preheader: `We couldn't approve your claim for ${a.companyName} this round.`,
+      eyebrow: 'Claim update',
+      title: `We couldn't approve your claim for ${a.companyName}`,
+      bodyHtml,
+      ctaUrl: `${SITE}/dashboard/listings`,
+      ctaText: 'Try claiming again',
+      footerNote: 'Sent because you requested to claim a listing on InfoWebWorld.',
+    }),
+    text: `Hi ${greet} — we couldn't approve your claim for ${a.companyName}.${reason ? `\n\nWhat we need:\n${reason}` : ''}\n\nTry again: ${SITE}/dashboard/listings`,
+  }
+}
+
+export interface AdminNewSubmissionArgs { companyName: string; contactName: string | null; contactEmail: string; category: string | null; listingMode: 'product' | 'company' }
+export function adminNewSubmissionEmail(a: AdminNewSubmissionArgs) {
+  const bodyHtml =
+    txPara(`A new ${a.listingMode === 'company' ? 'company profile' : 'product listing'} was just submitted and is awaiting review.`) +
+    txKv([
+      ['Company', a.companyName],
+      ['Type', a.listingMode === 'company' ? 'Company profile' : 'Product listing'],
+      ['Category', a.category || '—'],
+      ['Contact', a.contactName || '—'],
+      ['Email', a.contactEmail],
+    ])
+  return {
+    subject: `New ${a.listingMode === 'company' ? 'profile' : 'listing'} to review: ${a.companyName}`,
+    html: buildEmailShell({
+      preheader: `${a.companyName} is awaiting review.`,
+      eyebrow: 'Admin · new submission',
+      title: `Review: ${a.companyName}`,
+      bodyHtml,
+      ctaUrl: `${SITE}/iww-hq/submissions`,
+      ctaText: 'Open the review queue',
+      footerNote: 'Internal admin notification from InfoWebWorld.',
+    }),
+    text: `New submission awaiting review.\n\nCompany: ${a.companyName}\nType: ${a.listingMode}\nCategory: ${a.category || '—'}\nContact: ${a.contactName || '—'} <${a.contactEmail}>\n\nQueue: ${SITE}/iww-hq/submissions`,
+  }
+}
+
+export interface AdminNewClaimArgs { companyName: string; claimantName: string | null; claimantEmail: string | null; evidence: string | null }
+export function adminNewClaimEmail(a: AdminNewClaimArgs) {
+  const bodyHtml =
+    txPara(`A new ownership claim was submitted for manual review.`) +
+    txKv([
+      ['Listing', a.companyName],
+      ['Claimant', a.claimantName || '—'],
+      ['Email', a.claimantEmail || '—'],
+      ['Evidence', a.evidence || '—'],
+    ])
+  return {
+    subject: `New claim to review: ${a.companyName}`,
+    html: buildEmailShell({
+      preheader: `${a.companyName} has a pending ownership claim.`,
+      eyebrow: 'Admin · new claim',
+      title: `Claim review: ${a.companyName}`,
+      bodyHtml,
+      ctaUrl: `${SITE}/iww-hq/verifications`,
+      ctaText: 'Open the claims queue',
+      footerNote: 'Internal admin notification from InfoWebWorld.',
+    }),
+    text: `New ownership claim for manual review.\n\nListing: ${a.companyName}\nClaimant: ${a.claimantName || '—'} <${a.claimantEmail || '—'}>\nEvidence: ${a.evidence || '—'}\n\nQueue: ${SITE}/iww-hq/verifications`,
+  }
+}

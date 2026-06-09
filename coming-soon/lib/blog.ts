@@ -1,27 +1,21 @@
 /* ════════════════════════════════════════════════════════════════════════
-   Blog content layer — STATIC, file-backed.
+   Blog content layer — DB-backed (MySQL `blog_posts`).
 
-   Posts live as markdown files at  content/blog/<slug>.md  with a JSON
-   front-matter block, e.g.
+   Authoring (admin) and reads (public) both go through this module against
+   the `blog_posts` table, so a post written in the LIVE admin panel appears
+   on the site immediately. The previous flow wrote markdown files to
+   content/blog/ — that only works where the repo is writable (your machine),
+   never on Vercel's read-only serverless filesystem, which is why live
+   authoring 500'd.
 
-     ---
-     { "title": "…", "slug": "…", "status": "published", … }
-     ---
+   The BlogPost shape is preserved from the file era so every consumer
+   (public pages, sitemap, AI route) keeps working unchanged — the only
+   difference for callers is that the readers are now async: await them.
 
-     # Markdown body …
-
-   JSON front-matter (not YAML) is deliberate: JSON.parse is built in and
-   handles arrays / nested objects / escaping with zero extra dependencies,
-   so parsing is 100% reliable.
-
-   The admin editor writes these files locally; `git push` builds them into
-   static pages (see app/blog/[slug]/page.tsx generateStaticParams). No DB,
-   no runtime fetch on the public side.
-
-   SERVER-ONLY: imports node:fs. Never import this from a client component.
+   SAFE on the server only — imports lib/db. Never import from a client
+   component (the public pages are server components, which is fine).
    ════════════════════════════════════════════════════════════════════════ */
-import fs from 'node:fs'
-import path from 'node:path'
+import { query, queryOne, execute } from './db'
 
 export type BlogSeo = {
   metaTitle: string
@@ -51,7 +45,7 @@ export type BlogPost = {
   seo: BlogSeo
 }
 
-/** Metadata persisted to the file (everything except the markdown body). */
+/** Metadata-only view (everything except the markdown body). */
 export type BlogMeta = Omit<BlogPost, 'body'>
 
 export const BLOG_CATEGORIES = [
@@ -59,9 +53,7 @@ export const BLOG_CATEGORIES = [
   'Product Updates', 'Case Studies', 'How-To Guides', 'Trends & Insights',
 ] as const
 
-export const BLOG_DIR = path.join(process.cwd(), 'content', 'blog')
-
-/* ── helpers ── */
+/* ── pure helpers (unchanged from the file era) ── */
 export function slugify(input: string): string {
   return input
     .toLowerCase()
@@ -77,141 +69,224 @@ export function calcReadTime(body: string): number {
   return Math.max(1, Math.ceil(words / 200))
 }
 
-const FENCE = '---'
+/* ── row → BlogPost mapping ── */
+interface BlogRow {
+  slug: string
+  title: string
+  excerpt: string | null
+  body: string | null
+  cover_image: string | null
+  author: string | null
+  category: string | null
+  tags: unknown
+  status: 'draft' | 'published' | 'archived'
+  is_featured: number
+  read_time: number
+  seo_title: string | null
+  seo_description: string | null
+  seo_keywords: unknown
+  seo_og_image: string | null
+  seo_canonical: string | null
+  seo_no_index: number
+  published_at: Date | string | null
+  created_at: Date | string | null
+  updated_at: Date | string | null
+}
 
-function normalize(meta: Record<string, unknown>, body: string, fallbackSlug: string): BlogPost {
-  const seo = (meta.seo ?? {}) as Record<string, unknown>
-  const title = String(meta.title ?? '')
-  const excerpt = String(meta.excerpt ?? '')
-  const cover = String(meta.coverImage ?? '')
+/** DATETIME → ISO string (mysql2 returns DATETIME as a JS Date by default). */
+function toIso(v: unknown): string {
+  if (!v) return ''
+  if (v instanceof Date) return v.toISOString()
+  const d = new Date(v as string)
+  return Number.isNaN(d.getTime()) ? String(v) : d.toISOString()
+}
+
+/** JSON column (tags / seo_keywords) → string[]. Tolerates already-parsed
+ *  arrays, JSON strings, and legacy comma strings. */
+function asStringArray(v: unknown): string[] {
+  if (Array.isArray(v)) return v.map(x => String(x))
+  if (typeof v === 'string' && v.trim()) {
+    try {
+      const p = JSON.parse(v)
+      return Array.isArray(p) ? p.map(String) : []
+    } catch {
+      return v.split(',').map(s => s.trim()).filter(Boolean)
+    }
+  }
+  return []
+}
+
+function rowToPost(r: BlogRow): BlogPost {
+  const title = r.title || ''
+  const excerpt = r.excerpt || ''
+  const cover = r.cover_image || ''
+  const body = r.body || ''
   return {
-    id: String(meta.id ?? meta.slug ?? fallbackSlug),
-    slug: String(meta.slug ?? fallbackSlug),
+    /* id mirrors slug — it's only ever used as a React key, and keeping
+       id === slug preserves the exact contract callers relied on before. */
+    id: r.slug,
+    slug: r.slug,
     title,
     excerpt,
     body,
     coverImage: cover,
-    author: String(meta.author ?? 'InfoWebWorld Team'),
-    category: String(meta.category ?? 'Business Tips'),
-    tags: Array.isArray(meta.tags) ? meta.tags.map(String) : [],
-    status: meta.status === 'published' ? 'published' : 'draft',
-    featured: Boolean(meta.featured),
-    readTime: Number(meta.readTime) || calcReadTime(body),
-    createdAt: String(meta.createdAt ?? ''),
-    updatedAt: String(meta.updatedAt ?? ''),
-    publishedAt: meta.publishedAt ? String(meta.publishedAt) : null,
+    author: r.author || 'InfoWebWorld Team',
+    category: r.category || 'Business Tips',
+    tags: asStringArray(r.tags),
+    status: r.status === 'published' ? 'published' : 'draft',
+    featured: Boolean(r.is_featured),
+    readTime: Number(r.read_time) || calcReadTime(body),
+    createdAt: toIso(r.created_at),
+    updatedAt: toIso(r.updated_at),
+    publishedAt: r.published_at ? toIso(r.published_at) : null,
     seo: {
-      metaTitle: String(seo.metaTitle ?? title),
-      metaDescription: String(seo.metaDescription ?? excerpt),
-      keywords: Array.isArray(seo.keywords) ? seo.keywords.map(String) : [],
-      ogImage: String(seo.ogImage ?? cover),
-      canonicalUrl: String(seo.canonicalUrl ?? ''),
-      noIndex: Boolean(seo.noIndex),
+      metaTitle: r.seo_title || title,
+      metaDescription: r.seo_description || excerpt,
+      keywords: asStringArray(r.seo_keywords),
+      ogImage: r.seo_og_image || cover,
+      canonicalUrl: r.seo_canonical || '',
+      noIndex: Boolean(r.seo_no_index),
     },
   }
 }
 
-/** Parse a raw .md file (JSON front-matter + body) into a BlogPost. */
-export function parsePost(raw: string, fallbackSlug = ''): BlogPost | null {
-  const text = raw.replace(/^﻿/, '') // strip BOM
-  const lines = text.split(/\r?\n/)
-  if ((lines[0] ?? '').trim() !== FENCE) return null
+const SELECT_COLS = `slug, title, excerpt, body, cover_image, author, category, tags,
+  status, is_featured, read_time, seo_title, seo_description, seo_keywords,
+  seo_og_image, seo_canonical, seo_no_index, published_at, created_at, updated_at`
 
-  const metaLines: string[] = []
-  let i = 1
-  for (; i < lines.length; i++) {
-    if (lines[i].trim() === FENCE) break
-    metaLines.push(lines[i])
-  }
-  if (i >= lines.length) return null // no closing fence
+/* ── readers (now async) ── */
 
-  let meta: Record<string, unknown>
-  try { meta = JSON.parse(metaLines.join('\n')) }
-  catch { return null }
-
-  const body = lines.slice(i + 1).join('\n').replace(/^\n+/, '')
-  return normalize(meta, body, fallbackSlug)
-}
-
-/** Serialise a BlogPost back to .md file contents (used by the save API). */
-export function serializePost(post: BlogPost): string {
-  const meta: BlogMeta = {
-    id: post.id,
-    slug: post.slug,
-    title: post.title,
-    excerpt: post.excerpt,
-    coverImage: post.coverImage,
-    author: post.author,
-    category: post.category,
-    tags: post.tags,
-    status: post.status,
-    featured: post.featured,
-    readTime: post.readTime,
-    createdAt: post.createdAt,
-    updatedAt: post.updatedAt,
-    publishedAt: post.publishedAt,
-    seo: post.seo,
-  }
-  return `${FENCE}\n${JSON.stringify(meta, null, 2)}\n${FENCE}\n\n${post.body.trim()}\n`
-}
-
-/* ── readers (build-time / server) ── */
-function dateVal(p: BlogPost): number {
-  const d = p.publishedAt || p.updatedAt || p.createdAt
-  const t = d ? Date.parse(d) : 0
-  return Number.isNaN(t) ? 0 : t
-}
-
-/** Every post (draft + published), newest first. */
-export function getAllPosts(): BlogPost[] {
-  let files: string[]
-  try { files = fs.readdirSync(BLOG_DIR) }
-  catch { return [] } // dir missing → no posts yet
-  const posts: BlogPost[] = []
-  for (const f of files) {
-    if (!f.endsWith('.md')) continue
-    try {
-      const raw = fs.readFileSync(path.join(BLOG_DIR, f), 'utf8')
-      const p = parsePost(raw, f.replace(/\.md$/, ''))
-      if (p && p.slug) posts.push(p)
-    } catch { /* skip unreadable file */ }
-  }
-  posts.sort((a, b) => dateVal(b) - dateVal(a))
-  return posts
-}
-
-export function getPublishedPosts(): BlogPost[] {
-  return getAllPosts().filter(p => p.status === 'published')
-}
-
-export function getPostBySlug(slug: string): BlogPost | null {
-  // fast path: direct filename match
+/** Every post (draft + published), newest-updated first. Admin list. */
+export async function getAllPosts(): Promise<BlogPost[]> {
   try {
-    const raw = fs.readFileSync(path.join(BLOG_DIR, `${slug}.md`), 'utf8')
-    const p = parsePost(raw, slug)
-    if (p && p.slug === slug) return p
-  } catch { /* fall through to scan */ }
-  return getAllPosts().find(p => p.slug === slug) || null
+    const rows = await query<BlogRow>(
+      `SELECT ${SELECT_COLS} FROM blog_posts ORDER BY updated_at DESC`
+    )
+    return rows.map(rowToPost)
+  } catch (err) {
+    console.error('[blog] getAllPosts failed:', err instanceof Error ? err.message : err)
+    return []
+  }
 }
 
-/** Published post for the public page (or null if it's a draft / missing). */
-export function getPublishedPostBySlug(slug: string): BlogPost | null {
-  const p = getPostBySlug(slug)
-  return p && p.status === 'published' ? p : null
+/** Published posts only, newest-published first. Public list. */
+export async function getPublishedPosts(): Promise<BlogPost[]> {
+  try {
+    const rows = await query<BlogRow>(
+      `SELECT ${SELECT_COLS} FROM blog_posts
+        WHERE status = 'published'
+        ORDER BY COALESCE(published_at, created_at) DESC`
+    )
+    return rows.map(rowToPost)
+  } catch (err) {
+    console.error('[blog] getPublishedPosts failed:', err instanceof Error ? err.message : err)
+    return []
+  }
 }
 
-export function getAllPublishedSlugs(): string[] {
-  return getPublishedPosts().map(p => p.slug)
+/** Any post by slug (any status). Admin edit load. */
+export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
+  try {
+    const row = await queryOne<BlogRow>(
+      `SELECT ${SELECT_COLS} FROM blog_posts WHERE slug = ? LIMIT 1`,
+      [slug]
+    )
+    return row ? rowToPost(row) : null
+  } catch (err) {
+    console.error('[blog] getPostBySlug failed:', err instanceof Error ? err.message : err)
+    return null
+  }
+}
+
+/** Published post for the public page (null if draft / missing). */
+export async function getPublishedPostBySlug(slug: string): Promise<BlogPost | null> {
+  try {
+    const row = await queryOne<BlogRow>(
+      `SELECT ${SELECT_COLS} FROM blog_posts
+        WHERE slug = ? AND status = 'published' LIMIT 1`,
+      [slug]
+    )
+    return row ? rowToPost(row) : null
+  } catch (err) {
+    console.error('[blog] getPublishedPostBySlug failed:', err instanceof Error ? err.message : err)
+    return null
+  }
+}
+
+export async function getAllPublishedSlugs(): Promise<string[]> {
+  try {
+    const rows = await query<{ slug: string }>(
+      `SELECT slug FROM blog_posts WHERE status = 'published'`
+    )
+    return rows.map(r => r.slug)
+  } catch (err) {
+    console.error('[blog] getAllPublishedSlugs failed:', err instanceof Error ? err.message : err)
+    return []
+  }
 }
 
 /** Related posts: same category first, topped up with the newest other posts
  *  so the "Recommended" row is never sparse. Published, excludes `slug`. */
-export function getRelatedPosts(slug: string, category: string, limit = 3): BlogPost[] {
-  const pub = getPublishedPosts().filter(p => p.slug !== slug)
-  const result = pub.filter(p => p.category === category)
-  for (const p of pub) {
-    if (result.length >= limit) break
-    if (!result.some(r => r.slug === p.slug)) result.push(p)
+export async function getRelatedPosts(slug: string, category: string, limit = 3): Promise<BlogPost[]> {
+  try {
+    const rows = await query<BlogRow>(
+      `SELECT ${SELECT_COLS} FROM blog_posts
+        WHERE status = 'published' AND slug <> ?
+        ORDER BY (category = ?) DESC, COALESCE(published_at, created_at) DESC
+        LIMIT ?`,
+      [slug, category, limit]
+    )
+    return rows.map(rowToPost)
+  } catch (err) {
+    console.error('[blog] getRelatedPosts failed:', err instanceof Error ? err.message : err)
+    return []
   }
-  return result.slice(0, limit)
+}
+
+/* ── writers (admin authoring) ── */
+
+/**
+ * Create or update a post (keyed on the UNIQUE slug). When `prevSlug` differs
+ * from the new slug the old row is removed first, so renaming a post never
+ * orphans a duplicate. `published_at` is stamped the first time a post goes
+ * live and preserved thereafter.
+ */
+export async function savePost(post: BlogPost, prevSlug?: string): Promise<void> {
+  if (prevSlug && prevSlug !== post.slug) {
+    await execute(`DELETE FROM blog_posts WHERE slug = ?`, [prevSlug])
+  }
+  const isPublished = post.status === 'published'
+  /* Interpolated, not a placeholder — `isPublished` is a server-side boolean,
+     never user input — which sidesteps DATETIME string-format quirks. */
+  const pubExpr = isPublished ? 'NOW()' : 'NULL'
+
+  await execute(
+    `INSERT INTO blog_posts
+       (slug, title, excerpt, body, body_html, cover_image, author, category, tags,
+        status, is_featured, read_time, seo_title, seo_description, seo_keywords,
+        seo_og_image, seo_canonical, seo_no_index, published_at, created_at, updated_at)
+     VALUES (?, ?, ?, ?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ${pubExpr}, NOW(), NOW())
+     ON DUPLICATE KEY UPDATE
+       title = VALUES(title), excerpt = VALUES(excerpt), body = VALUES(body),
+       cover_image = VALUES(cover_image), author = VALUES(author),
+       category = VALUES(category), tags = VALUES(tags), status = VALUES(status),
+       is_featured = VALUES(is_featured), read_time = VALUES(read_time),
+       seo_title = VALUES(seo_title), seo_description = VALUES(seo_description),
+       seo_keywords = VALUES(seo_keywords), seo_og_image = VALUES(seo_og_image),
+       seo_canonical = VALUES(seo_canonical), seo_no_index = VALUES(seo_no_index),
+       published_at = COALESCE(published_at, ${pubExpr}),
+       updated_at = NOW()`,
+    [
+      post.slug, post.title, post.excerpt, post.body, post.coverImage,
+      post.author, post.category, JSON.stringify(post.tags || []),
+      isPublished ? 'published' : 'draft', post.featured ? 1 : 0, post.readTime,
+      post.seo.metaTitle || null, post.seo.metaDescription || null,
+      JSON.stringify(post.seo.keywords || []), post.seo.ogImage || null,
+      post.seo.canonicalUrl || null, post.seo.noIndex ? 1 : 0,
+    ]
+  )
+}
+
+export async function deletePost(slug: string): Promise<void> {
+  await execute(`DELETE FROM blog_posts WHERE slug = ?`, [slug])
 }
