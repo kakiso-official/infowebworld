@@ -16,14 +16,44 @@ import type { BlogPost } from '../data/blog-types'
 type Tab = 'content' | 'seo' | 'preview'
 type Msg = { type: 'ok' | 'err'; text: string } | null
 
+/* Vercel rejects serverless request bodies over ~4.5 MB with a 413 — which is
+   what broke image uploads. Downscale + recompress large raster images in the
+   browser (to WebP, max 1920px on the long edge) so they land well under the
+   limit. SVG/GIF and already-small files pass through untouched. Bonus: smaller
+   images mean faster pages. */
+async function compressImage(file: File): Promise<File> {
+  if (file.type === 'image/svg+xml' || file.type === 'image/gif' || file.size < 1_000_000) return file
+  try {
+    const bitmap = await createImageBitmap(file)
+    const MAX = 1920
+    const scale = Math.min(1, MAX / Math.max(bitmap.width, bitmap.height))
+    const w = Math.round(bitmap.width * scale)
+    const h = Math.round(bitmap.height * scale)
+    const canvas = document.createElement('canvas')
+    canvas.width = w; canvas.height = h
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return file
+    ctx.drawImage(bitmap, 0, 0, w, h)
+    bitmap.close?.()
+    const blob = await new Promise<Blob | null>(res => canvas.toBlob(res, 'image/webp', 0.85))
+    if (!blob || blob.size >= file.size) return file
+    const base = file.name.replace(/\.[^.]+$/, '') || 'image'
+    return new File([blob], `${base}.webp`, { type: 'image/webp' })
+  } catch {
+    return file
+  }
+}
+
 async function uploadImage(file: File): Promise<{ url?: string; error?: string }> {
+  const upload = await compressImage(file)
   const fd = new FormData()
-  fd.append('file', file)
+  fd.append('file', upload)
   fd.append('type', 'blog')
   try {
     const res = await fetch('/api/upload', { method: 'POST', body: fd, credentials: 'same-origin' })
     const json = await res.json().catch(() => ({} as { url?: string; error?: string }))
     if (json.url) return { url: json.url }
+    if (res.status === 413) return { error: 'Image is too large even after compression — use one under ~4 MB.' }
     return { error: json.error || `Upload failed (HTTP ${res.status}).` }
   } catch {
     return { error: 'Network error — could not reach the upload server.' }
