@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { requireAdmin } from '@/lib/auth'
 import { CATEGORIES, type StaticCategoryRow } from '@/app/config/categories-data'
 import { getPublishedPosts } from '@/lib/blog'
+import { groqChat } from '@/lib/ai'
 
 /* ════════════════════════════════════════════════════════════════════════
    Blog AI assist (Gemini 2.5 Flash). Two modes:
@@ -15,32 +16,10 @@ import { getPublishedPosts } from '@/lib/blog'
    ════════════════════════════════════════════════════════════════════════ */
 export const dynamic = 'force-dynamic'
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent'
-const RETRY_CODES = new Set([429, 500, 503])
-
-async function callGemini(prompt: string, temperature = 0.3): Promise<string> {
-  const key = process.env.GEMINI_API_KEY
-  if (!key) throw new Error('GEMINI_API_KEY not set')
-  for (let attempt = 0; attempt <= 4; attempt++) {
-    const res = await fetch(`${GEMINI_API_URL}?key=${key}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature, maxOutputTokens: 8192 },
-      }),
-    })
-    if (res.ok) {
-      const json = await res.json()
-      return json.candidates?.[0]?.content?.parts?.[0]?.text || ''
-    }
-    if (RETRY_CODES.has(res.status) && attempt < 4) {
-      await new Promise(r => setTimeout(r, Math.min(1500 * 2 ** attempt, 20000)))
-      continue
-    }
-    throw new Error(`Gemini ${res.status}: ${(await res.text()).slice(0, 200)}`)
-  }
-  throw new Error('Gemini: max retries exceeded')
+/* Backed by Groq (Llama 3.3 70B). Thin wrapper so the call sites below read
+   unchanged — provider swapped from Gemini. */
+async function callAI(prompt: string, temperature = 0.3): Promise<string> {
+  return groqChat({ prompt, temperature, maxTokens: 8192 })
 }
 
 function stripFences(s: string): string {
@@ -133,7 +112,7 @@ STRICT RULES — follow exactly:
 
 ARTICLE:
 ${body}`
-      const out = stripFences(await callGemini(prompt, 0.2))
+      const out = stripFences(await callAI(prompt, 0.2))
       return Response.json({ ok: true, content: out || body })
     }
 
@@ -157,7 +136,7 @@ ${listText}
 
 ARTICLE:
 ${body}`
-      const raw = stripFences(await callGemini(prompt, 0.3))
+      const raw = stripFences(await callAI(prompt, 0.3))
       const { out, kept, stripped } = validateLinks(raw || body, allowed)
       return Response.json({ ok: true, content: out, kept, stripped })
     }
@@ -174,7 +153,7 @@ STRICT RULES:
 
 ARTICLE:
 ${body}`
-      const out = stripFences(await callGemini(prompt, 0.3))
+      const out = stripFences(await callAI(prompt, 0.3))
       return Response.json({ ok: true, content: out || body })
     }
 
@@ -182,6 +161,6 @@ ${body}`
   } catch (err) {
     console.error('blog ai error:', err)
     const msg = err instanceof Error ? err.message : 'AI request failed'
-    return Response.json({ ok: false, error: msg.includes('GEMINI_API_KEY') ? 'Gemini API key is not configured on the server.' : 'AI request failed. Try again.' }, { status: 500 })
+    return Response.json({ ok: false, error: msg.includes('GROQ_API_KEY') ? 'AI is not configured on the server.' : 'AI request failed. Try again.' }, { status: 500 })
   }
 }

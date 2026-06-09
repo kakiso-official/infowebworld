@@ -1,44 +1,12 @@
 import { NextRequest } from 'next/server'
 import { query, queryOne, execute } from '@/lib/db'
 import { requireAdmin } from '@/lib/auth'
+import { groqChat } from '@/lib/ai'
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent'
-
-const MAX_RETRIES = 4
-const RETRY_CODES = new Set([429, 500, 503])
-
-async function callGemini(prompt: string): Promise<string> {
-  const key = process.env.GEMINI_API_KEY
-  if (!key) throw new Error('GEMINI_API_KEY not set')
-
-  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-    const res = await fetch(`${GEMINI_API_URL}?key=${key}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.7, maxOutputTokens: 8192 },
-      }),
-    })
-
-    if (res.ok) {
-      const json = await res.json()
-      return json.candidates?.[0]?.content?.parts?.[0]?.text || ''
-    }
-
-    // Retry on 429/500/503 with exponential backoff
-    if (RETRY_CODES.has(res.status) && attempt < MAX_RETRIES) {
-      const wait = Math.min(2000 * Math.pow(2, attempt), 30000) // 2s, 4s, 8s, 16s
-      console.log(`Gemini ${res.status} — retrying in ${wait / 1000}s (attempt ${attempt + 1}/${MAX_RETRIES})`)
-      await new Promise(r => setTimeout(r, wait))
-      continue
-    }
-
-    const err = await res.text()
-    throw new Error(`Gemini API error ${res.status}: ${err}`)
-  }
-
-  throw new Error('Gemini API: max retries exceeded')
+/* Backed by Groq (Llama 3.3 70B); retry/backoff lives in lib/ai. Kept as a
+   single helper so the 15 call sites below stay simple. */
+async function callAI(prompt: string): Promise<string> {
+  return groqChat({ prompt, temperature: 0.7, maxTokens: 8192 })
 }
 
 function cleanJson(raw: string): string {
@@ -181,7 +149,7 @@ LINKING RULES:
 No markdown. No headers. No bullet points. No numbered lists. Just flowing editorial paragraphs.
 Return ONLY the description text.`
 
-  const richDescription = await callGemini(descPrompt)
+  const richDescription = await callAI(descPrompt)
 
   // ── 2. Buyer's Guide ──
   const guidePrompt = `You're a procurement consultant who's evaluated 100+ ${catName} vendors. A VP just asked you: "What should I actually look for?"
@@ -203,7 +171,7 @@ Create a brutally practical buyer's guide for ${catName}. No fluff — only thin
 Exactly 6 features, 5 questions, 4 pitfalls.
 EVERY item must be deeply specific to ${catName}. Test each item: if you could swap in a different category name and it still makes sense, rewrite it. Generic = useless.`
 
-  const guideRaw = await callGemini(guidePrompt)
+  const guideRaw = await callAI(guidePrompt)
   const buyersGuide = JSON.parse(cleanJson(guideRaw))
 
   // ── 3. Use Cases ──
@@ -222,7 +190,7 @@ RULES:
 - Do NOT mention any country, city, or region
 - Cover a diverse spread: at least one startup, one enterprise, one non-tech industry`
 
-  const useCaseRaw = await callGemini(useCasePrompt)
+  const useCaseRaw = await callAI(useCasePrompt)
   const useCases = JSON.parse(cleanJson(useCaseRaw))
 
   // ── 4. Comparisons ──
@@ -265,7 +233,7 @@ CRITICAL RULES:
 - Think: what would the buyer use if "${catName}" didn't exist? THAT is the real alternative
 - Write differences as decisive recommendations, not vague observations`
 
-  const compRaw = await callGemini(compPrompt)
+  const compRaw = await callAI(compPrompt)
   const comparisons = JSON.parse(cleanJson(compRaw))
 
   // ── 5. Long-tail Keywords ──
@@ -287,7 +255,7 @@ RULES:
 - Include the year "${year}" in at least 3 keywords across all groups
 - Focus on buyer-intent keywords (comparison, pricing, alternatives, reviews) not informational`
 
-  const kwRaw = await callGemini(kwPrompt)
+  const kwRaw = await callAI(kwPrompt)
   const longTailKeywords = JSON.parse(cleanJson(kwRaw))
 
   // ── 6. Complementary Categories ──
@@ -309,7 +277,7 @@ RULES:
 - Think real tech stack / vendor list pairings — what would you see together on a G2 or Gartner comparison
 - No geographic references`
 
-  const compCatRaw = await callGemini(compCatPrompt)
+  const compCatRaw = await callAI(compCatPrompt)
   const complementaryCategories = JSON.parse(cleanJson(compCatRaw))
 
   // ── 7. Extended FAQ ──
@@ -342,7 +310,7 @@ RULES:
 - Every answer must contain at least one specific number, price, timeframe, or named standard
 - The "vs" question (#7) must compare against a DIFFERENT category, not ${catName} itself`
 
-  const faqRaw = await callGemini(faqPrompt)
+  const faqRaw = await callAI(faqPrompt)
   const extendedFaq = JSON.parse(cleanJson(faqRaw))
 
   // ── Save to DB ──
@@ -353,7 +321,7 @@ RULES:
       `UPDATE category_seo_content SET
         rich_description = ?, buyers_guide = ?, use_cases = ?, comparisons = ?,
         long_tail_keywords = ?, complementary_categories = ?, extended_faq = ?,
-        generated_at = NOW(), model_version = 'gemini-2.5-flash'
+        generated_at = NOW(), model_version = 'llama-3.3-70b-versatile'
        WHERE category_id = ?`,
       [
         richDescription,
@@ -370,7 +338,7 @@ RULES:
     await execute(
       `INSERT INTO category_seo_content
         (category_id, rich_description, buyers_guide, use_cases, comparisons, long_tail_keywords, complementary_categories, extended_faq, generated_at, model_version)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), 'gemini-2.5-flash')`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), 'llama-3.3-70b-versatile')`,
       [
         categoryId,
         richDescription,
@@ -437,36 +405,36 @@ async function generateSection(categoryId: number, section: string) {
   if (section === 'ai_summary') {
     column = 'ai_summary'
     const prompt = `${ctx}\n\n${styleGuideShort}\n\nWrite a 2-3 sentence AI overview summary for "${catName}". This appears at the top of the category page as a quick snapshot for buyers. Be concise, specific, and actionable. Mention what the category covers, who it's for, and one key differentiator or trend. No markdown, no bullet points — just flowing text. Return ONLY the summary text.`
-    value = await callGemini(prompt)
+    value = await callAI(prompt)
   } else if (section === 'rich_description') {
     column = 'rich_description'
     const prompt = `You're a senior technology analyst writing a definitive category overview for InfoWebWorld.\n\n${ctx}\n\nINTERNAL LINKS — weave these using [LINK:slug:Display Text] format:\nSiblings: ${siblingList || 'none'}\nSubcategories: ${subcatList || 'none'}\nCousins: ${cousinList || 'none'}\n\n${styleGuideShort}\n\nWrite a 700-900 word editorial overview of "${catName}". Flowing paragraphs, 10-15 internal links, no headers/bullets. Return ONLY the text.`
-    value = await callGemini(prompt)
+    value = await callAI(prompt)
   } else if (section === 'buyers_guide') {
     column = 'buyers_guide'
     const prompt = `${ctx}\n${styleGuideShort}\n\nCreate a buyer's guide for ${catName}. Return valid JSON only:\n{"features":[{"title":"...","description":"..."}],"questions":["..."],"pitfalls":["..."],"pricing_info":"..."}\n6 features, 5 questions, 4 pitfalls. Every item specific to ${catName}.`
-    value = JSON.stringify(JSON.parse(cleanJson(await callGemini(prompt))))
+    value = JSON.stringify(JSON.parse(cleanJson(await callAI(prompt))))
   } else if (section === 'use_cases') {
     column = 'use_cases'
     const prompt = `${ctx}\n${styleGuideShort}\n\nGenerate 5 real-world use cases for ${catName}. Return valid JSON array:\n[{"title":"...","description":"2-3 sentences","icon":"building|heart|graduation|cart|code|briefcase|users|globe|chart|shield"}]\nDiverse industries, specific workflows.`
-    value = JSON.stringify(JSON.parse(cleanJson(await callGemini(prompt))))
+    value = JSON.stringify(JSON.parse(cleanJson(await callAI(prompt))))
   } else if (section === 'comparisons') {
     column = 'comparisons'
     const prompt = `The category is: "${catName}"\n${parent ? `Parent: ${parent.name}` : ''}\n${sector ? `Sector: ${sector.name}` : ''}\n\n${styleGuideShort}\n\nGenerate 3-4 "${catName} vs [Alternative]" comparisons. Alternatives must be FUNDAMENTALLY DIFFERENT approaches to the same buyer problem. Return valid JSON:\n[{"vs_name":"...","vs_slug":"...","summary":"2-3 sentences","differences":["..."]}]\nNever compare against same-sector subcategories.`
-    value = JSON.stringify(JSON.parse(cleanJson(await callGemini(prompt))))
+    value = JSON.stringify(JSON.parse(cleanJson(await callAI(prompt))))
   } else if (section === 'long_tail_keywords') {
     column = 'long_tail_keywords'
     const year = new Date().getFullYear()
     const prompt = `Generate long-tail keywords for ${catName}. Return valid JSON:\n{"by_industry":["8 keywords"],"by_size":["8 keywords"],"by_need":["10 keywords"]}\nNo geographic references. Include year ${year} in 3+ keywords.`
-    value = JSON.stringify(JSON.parse(cleanJson(await callGemini(prompt))))
+    value = JSON.stringify(JSON.parse(cleanJson(await callAI(prompt))))
   } else if (section === 'complementary_categories') {
     column = 'complementary_categories'
     const prompt = `A company just purchased ${catName}. What 5 other categories do they typically evaluate next? Return JSON array of names only:\n["Category 1","Category 2","Category 3","Category 4","Category 5"]`
-    value = JSON.stringify(JSON.parse(cleanJson(await callGemini(prompt))))
+    value = JSON.stringify(JSON.parse(cleanJson(await callAI(prompt))))
   } else if (section === 'extended_faq') {
     column = 'extended_faq'
     const prompt = `${ctx}\n${styleGuideShort}\n\nWrite 12 FAQ entries for "${catName}". Return valid JSON:\n[{"q":"Question as someone would Google it","a":"3-4 sentence direct answer with specific numbers/prices/timeframes"}]\nTopics: definition, pricing, must-have features, best for small teams, best for enterprise, implementation time, vs alternative, integrations, compliance, free/open-source options, red flags, trends.`
-    value = JSON.stringify(JSON.parse(cleanJson(await callGemini(prompt))))
+    value = JSON.stringify(JSON.parse(cleanJson(await callAI(prompt))))
   } else {
     throw new Error(`Unknown section: ${section}`)
   }
@@ -474,9 +442,9 @@ async function generateSection(categoryId: number, section: string) {
   // Upsert just this column
   const existing = await queryOne('SELECT id FROM category_seo_content WHERE category_id = ?', [categoryId])
   if (existing) {
-    await execute(`UPDATE category_seo_content SET ${column} = ?, generated_at = NOW(), model_version = 'gemini-2.5-flash' WHERE category_id = ?`, [value, categoryId])
+    await execute(`UPDATE category_seo_content SET ${column} = ?, generated_at = NOW(), model_version = 'llama-3.3-70b-versatile' WHERE category_id = ?`, [value, categoryId])
   } else {
-    await execute(`INSERT INTO category_seo_content (category_id, ${column}, generated_at, model_version) VALUES (?, ?, NOW(), 'gemini-2.5-flash')`, [categoryId, value])
+    await execute(`INSERT INTO category_seo_content (category_id, ${column}, generated_at, model_version) VALUES (?, ?, NOW(), 'llama-3.3-70b-versatile')`, [categoryId, value])
   }
 
   return { categoryId, name: catName, section, success: true }

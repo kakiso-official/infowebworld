@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { getClientIp } from '@/lib/tracking'
+import { groqChat, groqTranscribe } from '@/lib/ai'
 
 /* ═══════════════════════════════════════════════════════════════════════
    POST /api/review/transcribe
@@ -8,65 +9,58 @@ import { getClientIp } from '@/lib/tracking'
      - audio  : Blob (audio/webm | audio/mp4 | audio/ogg | audio/wav)
      - company: string  (display name, used for prompt context)
 
-   Pipeline:
-     1. Accept audio blob from the browser MediaRecorder (no file upload).
-     2. Base64-encode and pass to Gemini 2.5 Flash as `inlineData`.
-     3. Gemini transcribes + cleans + scores sentiment.
-     4. Return { rating, title, body, language } as JSON.
-     5. Discard the audio — never persisted.
+   Two-step pipeline on Groq:
+     1. Whisper (whisper-large-v3) transcribes the audio → raw text.
+     2. Llama 3.3 70B turns the transcript into a clean English review +
+        rating + detected language, returned as JSON.
+     3. Discard the audio — never persisted.
 
    The user then confirms/edits and submits via the existing review POST.
-   We don't store the recording — our promise is "voice in, English review
-   out". Privacy by design.
    ═══════════════════════════════════════════════════════════════════════ */
 
-const GEMINI_API_URL =
-  'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent'
-
-/* Max accepted audio size — generous enough for a 3-minute review at
-   high bitrate, small enough to keep base64 payloads under the inline
-   data cap (20MB after base64 inflation = ~14MB raw). */
+/* Max accepted audio size — generous for a 3-minute review. */
 const MAX_AUDIO_BYTES = 12 * 1024 * 1024  // 12 MB
 
-const ACCEPTED_MIME = new Set([
-  'audio/webm', 'audio/webm;codecs=opus',
-  'audio/ogg',  'audio/ogg;codecs=opus',
-  'audio/mp4',  'audio/mp4;codecs=mp4a',
-  'audio/mpeg', 'audio/mp3',
-  'audio/wav',  'audio/x-wav',
-])
+const ACCEPTED_BARE = new Set(['audio/webm', 'audio/ogg', 'audio/mp4', 'audio/wav', 'audio/x-wav', 'audio/mpeg', 'audio/mp3'])
+const EXT: Record<string, string> = {
+  'audio/webm': 'webm', 'audio/ogg': 'ogg', 'audio/mp4': 'm4a',
+  'audio/mpeg': 'mp3', 'audio/mp3': 'mp3', 'audio/wav': 'wav', 'audio/x-wav': 'wav',
+}
 
-function buildPrompt(companyName: string): string {
-  return `You are analysing a customer's spoken review of "${companyName}".
+function buildPrompt(companyName: string, transcript: string): string {
+  return `A customer recorded a spoken review of "${companyName}". Below is the raw transcript — it may be in any language and contain filler words, false starts, or errors.
 
-Listen to the attached audio carefully. Then return a JSON object with these EXACT fields:
+TRANSCRIPT:
+"""
+${transcript}
+"""
 
+Return ONLY a raw JSON object (no markdown fences, no preamble) with these EXACT fields:
 {
   "rating": integer 1-5 inferring overall sentiment (1 = furious, 2 = unhappy, 3 = neutral or mixed, 4 = positive, 5 = enthusiastic),
   "title": short one-line summary, max 80 characters, no quotes,
-  "body": a clean, well-written English review of 60-280 words. Preserve every key point the speaker made (pros, cons, specific incidents, comparisons). Do NOT invent details that were not said. If they spoke in a non-English language, faithfully translate to natural English. Fix filler words, false starts, and grammar — the user wants a polished review, not a literal transcript. Write in first person.
-  "language": ISO 639-1 code of the detected spoken language (e.g. "en", "es", "hi", "fr")
+  "body": a clean, well-written English review of 60-280 words in first person. Preserve every key point the speaker made (pros, cons, specific incidents, comparisons). Do NOT invent details. If the transcript is in another language, faithfully translate to natural English. Fix filler words and grammar — a polished review, not a literal transcript.
+  "language": ISO 639-1 code of the transcript's original language (e.g. "en", "es", "hi", "fr")
 }
 
 Rules:
-- Output ONLY the raw JSON. No markdown fences, no preamble, no trailing prose.
-- If the audio is silent, unintelligible, or under 3 seconds, return rating: 0 and body: "AUDIO_UNCLEAR" so the caller can handle it.
-- If the speaker does not actually review the company (talks about something else), return rating: 0 and body: "OFF_TOPIC".
+- Output ONLY the JSON object.
+- If the transcript is empty, nonsensical, or under ~5 words, return rating 0 and body "AUDIO_UNCLEAR".
+- If it is not actually a review of the company, return rating 0 and body "OFF_TOPIC".
 - Never include explicit content, slurs, or personally identifying info about third parties.`
 }
 
-interface GeminiDraft {
+interface Draft {
   rating: number
   title: string
   body: string
   language: string
 }
 
-function safeParseDraft(raw: string): GeminiDraft | null {
-  /* Strip any accidental markdown fences and trim. */
+function safeParseDraft(raw: string): Draft | null {
   const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim()
   try {
-    const obj = JSON.parse(cleaned) as Partial<GeminiDraft>
+    const obj = JSON.parse(cleaned) as Partial<Draft>
     if (typeof obj.title !== 'string') return null
     if (typeof obj.body !== 'string')  return null
     const rating = Number(obj.rating)
@@ -93,9 +87,8 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  const key = process.env.GEMINI_API_KEY
-  if (!key) {
-    console.error('[review/transcribe] GEMINI_API_KEY not set')
+  if (!process.env.GROQ_API_KEY) {
+    console.error('[review/transcribe] GROQ_API_KEY not set')
     return Response.json({ ok: false, error: 'Voice transcription is not configured on this server.' }, { status: 503 })
   }
 
@@ -120,74 +113,46 @@ export async function POST(request: NextRequest) {
     return Response.json({ ok: false, error: 'Recording is too long — please keep it under 3 minutes.' }, { status: 413 })
   }
 
-  /* Normalise the MIME type the browser reported. WebM/Opus is the most
-     common Chrome/Firefox default; Safari often sends audio/mp4. Strip
-     codec params for Gemini compatibility. */
-  let mime = (file.type || 'audio/webm').toLowerCase()
-  if (!ACCEPTED_MIME.has(mime)) {
-    /* Some browsers report "audio/webm;codecs=opus" — accept by prefix. */
-    const bare = mime.split(';')[0]
-    if (bare === 'audio/webm' || bare === 'audio/ogg' || bare === 'audio/mp4' || bare === 'audio/wav' || bare === 'audio/mpeg') {
-      mime = bare
-    } else {
-      return Response.json({ ok: false, error: `Unsupported audio format: ${mime}` }, { status: 415 })
-    }
+  const bare = (file.type || 'audio/webm').toLowerCase().split(';')[0]
+  if (!ACCEPTED_BARE.has(bare)) {
+    return Response.json({ ok: false, error: `Unsupported audio format: ${file.type}` }, { status: 415 })
   }
-
-  /* What the browser produced vs. what we tell Gemini.
-     Gemini's documented audio mimes are WAV/MP3/AIFF/AAC/OGG/FLAC.
-     Chrome's default MediaRecorder output (audio/webm;codecs=opus) is
-     a WebM container holding an Opus stream — the same Opus stream OGG
-     can hold. Relabeling as audio/ogg lets Gemini accept the inlineData
-     while we keep the original bytes intact. */
-  const browserMime = mime
-  const geminiMime = browserMime === 'audio/webm' ? 'audio/ogg' : browserMime
-
-  /* Base64 encode for inline transmission to Gemini. */
-  const buf = Buffer.from(await file.arrayBuffer())
-  const b64 = buf.toString('base64')
-
-  const prompt = buildPrompt(companyName)
+  const ext = EXT[bare] || 'webm'
 
   try {
-    const res = await fetch(`${GEMINI_API_URL}?key=${key}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{
-          parts: [
-            { inlineData: { mimeType: geminiMime, data: b64 } },
-            { text: prompt },
-          ],
-        }],
-        generationConfig: {
-          temperature: 0.35,
-          maxOutputTokens: 2048,
-          responseMimeType: 'application/json',
-        },
-      }),
-    })
-
-    if (!res.ok) {
-      const errText = await res.text().catch(() => '')
-      console.error('[review/transcribe] Gemini error', res.status, {
-        browserMime, geminiMime, bytes: file.size, body: errText.slice(0, 500),
+    /* 1 — Whisper: audio → transcript (in the spoken language). */
+    let transcript = ''
+    try {
+      transcript = await groqTranscribe(file, {
+        filename: `review.${ext}`,
+        prompt: `A spoken customer review of ${companyName}.`,
       })
-      const friendly = res.status === 429
-        ? 'Transcription service is busy — try again in a moment.'
-        : 'Transcription failed. You can still write your review manually.'
-      return Response.json({ ok: false, error: friendly }, { status: 502 })
+    } catch (err) {
+      console.error('[review/transcribe] Whisper error', err instanceof Error ? err.message : err)
+      return Response.json({ ok: false, error: 'Transcription failed. You can still write your review manually.' }, { status: 502 })
     }
 
-    const json = await res.json()
-    const text = json?.candidates?.[0]?.content?.parts?.[0]?.text || ''
-    if (!text) {
-      return Response.json({ ok: false, error: 'Empty response from transcription service.' }, { status: 502 })
+    if (transcript.trim().split(/\s+/).filter(Boolean).length < 5) {
+      return Response.json({ ok: false, code: 'audio_unclear', error: 'The audio was too short or unclear. Try recording again or write it manually.' }, { status: 400 })
+    }
+
+    /* 2 — Llama: transcript → polished English review + rating, as JSON. */
+    let text = ''
+    try {
+      text = await groqChat({
+        prompt: buildPrompt(companyName, transcript),
+        json: true,
+        temperature: 0.35,
+        maxTokens: 2048,
+      })
+    } catch (err) {
+      console.error('[review/transcribe] Groq chat error', err instanceof Error ? err.message : err)
+      return Response.json({ ok: false, error: 'Transcription failed. You can still write your review manually.' }, { status: 502 })
     }
 
     const draft = safeParseDraft(text)
     if (!draft) {
-      console.error('[review/transcribe] Could not parse Gemini output:', text.slice(0, 500))
+      console.error('[review/transcribe] Could not parse output:', text.slice(0, 500))
       return Response.json({ ok: false, error: 'Could not parse the transcription.' }, { status: 502 })
     }
 
