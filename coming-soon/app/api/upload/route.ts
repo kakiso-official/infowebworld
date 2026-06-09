@@ -98,16 +98,28 @@ export async function POST(request: NextRequest) {
 
     const cp = await postToCpanel(body, boundary)
 
-    if (cp.status >= 400) {
-      console.error('cPanel upload failed:', cp.status, cp.text.slice(0, 300))
-      return Response.json({ error: 'Upload to server failed' }, { status: 502 })
+    /* Surface the cPanel handler's ACTUAL message instead of a generic one,
+       so a failed upload is diagnosable from the admin UI / Network tab.
+       cPanel returns JSON like {"error":"..."} even on 4xx/5xx. */
+    let data: { ok?: boolean; url?: string; error?: string } | null = null
+    try { data = JSON.parse(cp.text) } catch { /* non-JSON handled just below */ }
+
+    if (!data) {
+      const snippet = cp.text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 180)
+      console.error('cPanel upload: non-JSON response', cp.status, cp.text.slice(0, 300))
+      return Response.json(
+        { error: `Upload server error (${cp.status})${snippet ? ': ' + snippet : ''}` },
+        { status: 502 }
+      )
     }
 
-    let data: { ok?: boolean; url?: string; error?: string }
-    try { data = JSON.parse(cp.text) }
-    catch { return Response.json({ error: 'Bad response from upload server' }, { status: 502 }) }
-
-    if (data.error) return Response.json({ error: data.error }, { status: 400 })
+    if (data.error || cp.status >= 400) {
+      console.error('cPanel upload failed:', cp.status, data.error)
+      return Response.json(
+        { error: data.error || `Upload server error (${cp.status})` },
+        { status: cp.status >= 400 ? cp.status : 400 }
+      )
+    }
 
     /* Rewrite the cPanel-returned path to go through our /api/file/ proxy.
        cPanel returns "/infowebworld/uploads/logos/abc.jpg".

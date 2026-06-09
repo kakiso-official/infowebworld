@@ -16,15 +16,18 @@ import type { BlogPost } from '../data/blog-types'
 type Tab = 'content' | 'seo' | 'preview'
 type Msg = { type: 'ok' | 'err'; text: string } | null
 
-async function uploadImage(file: File): Promise<string | null> {
+async function uploadImage(file: File): Promise<{ url?: string; error?: string }> {
   const fd = new FormData()
   fd.append('file', file)
   fd.append('type', 'blog')
   try {
     const res = await fetch('/api/upload', { method: 'POST', body: fd, credentials: 'same-origin' })
-    const json = await res.json()
-    return json.url || null
-  } catch { return null }
+    const json = await res.json().catch(() => ({} as { url?: string; error?: string }))
+    if (json.url) return { url: json.url }
+    return { error: json.error || `Upload failed (HTTP ${res.status}).` }
+  } catch {
+    return { error: 'Network error — could not reach the upload server.' }
+  }
 }
 
 export default function BlogStudio({ initial, isNew }: { initial: BlogPost; isNew: boolean }) {
@@ -85,21 +88,21 @@ export default function BlogStudio({ initial, isNew }: { initial: BlogPost; isNe
 
   const onInlineImage = async (file: File) => {
     setUploading('inline')
-    const url = await uploadImage(file)
+    const r = await uploadImage(file)
     setUploading(null)
-    if (!url) { setMsg({ type: 'err', text: 'Image upload failed.' }); return }
+    if (!r.url) { setMsg({ type: 'err', text: r.error || 'Image upload failed.' }); return }
     const ta = bodyRef.current
     const at = ta ? ta.selectionStart : post.body.length
-    const md = `\n![${file.name.replace(/\.[^.]+$/, '')}](${url})\n`
+    const md = `\n![${file.name.replace(/\.[^.]+$/, '')}](${r.url})\n`
     update({ body: post.body.slice(0, at) + md + post.body.slice(at) })
   }
 
   const onCover = async (file: File, which: 'cover' | 'og') => {
     setUploading(which)
-    const url = await uploadImage(file)
+    const r = await uploadImage(file)
     setUploading(null)
-    if (!url) { setMsg({ type: 'err', text: 'Image upload failed.' }); return }
-    if (which === 'cover') update({ coverImage: url }); else updateSeo({ ogImage: url })
+    if (!r.url) { setMsg({ type: 'err', text: r.error || 'Image upload failed.' }); return }
+    if (which === 'cover') update({ coverImage: r.url }); else updateSeo({ ogImage: r.url })
   }
 
   /* ── tags / keywords ── */
