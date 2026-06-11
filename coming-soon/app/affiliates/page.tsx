@@ -85,7 +85,7 @@ const howToJsonLd = howToNode({
 const faqJsonLd = faqNode(faqs, `${URL}#faq`, `${URL}#webpage`)
 
 export const metadata: Metadata = {
-  title: 'Affiliate Program — 30% First Payment + 15% Recurring | InfoWebWorld',
+  title: 'Affiliate Program - 30% First Payment + 15% Recurring | InfoWebWorld',
   description:
     'Earn 30% on first payment and 15% recurring on every Yearly renewal by referring businesses to InfoWebWorld. 90-day cookie, monthly payouts via PayPal/Wise/bank, transparent dashboard. Apply in 48 hours.',
   keywords: [
@@ -108,7 +108,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: URL },
   openGraph: {
-    title: 'Earn With InfoWebWorld — 30% First Payment, 15% Recurring',
+    title: 'Earn With InfoWebWorld - 30% First Payment, 15% Recurring',
     description:
       'Refer businesses to InfoWebWorld and earn 30% on first payment + 15% on every renewal. 90-day cookie. Monthly payouts.',
     url: URL,
@@ -121,7 +121,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Earn With InfoWebWorld — 30% + 15% Recurring',
+    title: 'Earn With InfoWebWorld - 30% + 15% Recurring',
     description: 'Refer businesses, earn 30% on first payment + 15% recurring. 90-day cookie. Monthly payouts.',
     images: [`${BASE_URL}/og-image.png`],
   },

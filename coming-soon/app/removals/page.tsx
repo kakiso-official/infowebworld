@@ -56,7 +56,7 @@ const removalTypesList = itemListNode(
 const faqJsonLd = faqNode(faqs, `${URL}#faq`, `${URL}#webpage`)
 
 export const metadata: Metadata = {
-  title: 'Request a Removal — DMCA, PII, Listings, Reviews | InfoWebWorld',
+  title: 'Request a Removal - DMCA, PII, Listings, Reviews | InfoWebWorld',
   description:
     'How to request removal of a business listing, a review, personal information, copyrighted content, or trademark violation on InfoWebWorld. Clear DMCA process. Response within 72 business hours.',
   keywords: [
@@ -77,7 +77,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: URL },
   openGraph: {
-    title: 'Request a Removal — DMCA, PII, Listings, Reviews',
+    title: 'Request a Removal - DMCA, PII, Listings, Reviews',
     description: 'Clear path to remove a listing, review, PII, copyright, or trademark from InfoWebWorld. 72-hour response.',
     url: URL,
     siteName: 'InfoWebWorld',
@@ -87,7 +87,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Request a Removal — InfoWebWorld',
+    title: 'Request a Removal - InfoWebWorld',
     description: 'DMCA, PII, listing & review removals. 72-hour response.',
     images: [`${BASE_URL}/og-image.png`],
   },

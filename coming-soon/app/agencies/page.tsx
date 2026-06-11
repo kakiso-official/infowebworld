@@ -73,7 +73,7 @@ const howToJsonLd = howToNode({
 const faqJsonLd = faqNode(faqs, `${URL}#faq`, `${URL}#webpage`)
 
 export const metadata: Metadata = {
-  title: 'Agency Partner Program — Bulk Listings + Revenue Share | InfoWebWorld',
+  title: 'Agency Partner Program - Bulk Listings + Revenue Share | InfoWebWorld',
   description:
     'White-label business directory partner program for SEO agencies, PR firms, growth studios, and venture studios. CSV bulk upload, revenue share, dofollow backlinks at scale, dedicated account lead, branded monthly reports. First 10 listings free for 30 days.',
   keywords: [
@@ -95,7 +95,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: URL },
   openGraph: {
-    title: 'Built for Agencies — Bulk Listings, Rev Share, White-Label Reporting',
+    title: 'Built for Agencies - Bulk Listings, Rev Share, White-Label Reporting',
     description:
       'Manage 5–500 client listings from one dashboard. Revenue share, dofollow at scale, branded reports. First 10 listings free for 30 days.',
     url: URL,
@@ -106,7 +106,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Agency Partner Program — Bulk Listings + Revenue Share',
+    title: 'Agency Partner Program - Bulk Listings + Revenue Share',
     description: 'CSV upload, revenue share, dofollow at scale, white-label reports. First 10 listings free.',
     images: [`${BASE_URL}/og-image.png`],
   },

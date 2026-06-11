@@ -71,7 +71,7 @@ const jobPostings = openRoles.map(role => ({
 const faqJsonLd = faqNode(faqs, `${URL}#faq`, `${URL}#webpage`)
 
 export const metadata: Metadata = {
-  title: 'The Team — InfoWebWorld · Remote-First Across AU, IN, EU',
+  title: 'The Team - InfoWebWorld · Remote-First Across AU, IN, EU',
   description:
     'Meet the small, remote-first team building InfoWebWorld — operators, designers, and engineers shipping daily across Australia, India, and the EU. Open roles in engineering, growth, design, and content.',
   keywords: [

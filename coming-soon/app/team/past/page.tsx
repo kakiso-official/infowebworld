@@ -33,7 +33,7 @@ const collectionPageJsonLd = {
 }
 
 export const metadata: Metadata = {
-  title: 'Team Alumni — Past Contributors | InfoWebWorld',
+  title: 'Team Alumni - Past Contributors | InfoWebWorld',
   description:
     'The people who helped shape InfoWebWorld in its early chapters — alumni wall recognizing past contributors, their projects, and the next chapter they moved on to.',
   keywords: [
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: URL },
   openGraph: {
-    title: 'Team Alumni — InfoWebWorld',
+    title: 'Team Alumni - InfoWebWorld',
     description: 'Recognition for past contributors who shaped InfoWebWorld.',
     url: URL,
     siteName: 'InfoWebWorld',
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Team Alumni — InfoWebWorld',
+    title: 'Team Alumni - InfoWebWorld',
     description: 'Recognition for past contributors who shaped InfoWebWorld.',
     images: [`${BASE_URL}/og-image.png`],
   },

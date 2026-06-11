@@ -67,13 +67,13 @@ export default function Hero() {
       <div className="cs-content">
 
         <h1 className="cs-h1">
-          Global Growth Platform to <br />
+          Global Business Directory to <br />
           <span className="cs-h1-line2">
             <span className={`cs-type-wrap${jsReady ? ' js-active' : ''}`}>
               <span className="cs-type-text">{displayed}</span>
               <span className="cs-type-cursor" />
             </span>{' '}
-            right Business <em>for your needs...</em>
+            the right business <em>for your needs...</em>
           </span>
         </h1>
 
@@ -94,7 +94,7 @@ export default function Hero() {
           </div>
         </div>
         <p className="cs-desc">
-          InfoWebWorld is the Global Platform to explore / search best trusted businesses worldwide. 
+          InfoWebWorld is the Global Business Directory to explore / search best trusted businesses worldwide.
           <strong>#find</strong> <strong>#compare</strong> <strong>#connect</strong> with great Local Businesses in AI & ML, SaaS & Software, Startups & Innovations, IT Services & Agencies, Professional Services in one place - <a href="https://www.infowebworld.com/" className="cs-brand">infoWebWorld.com</a>
         </p>
 
@@ -127,8 +127,8 @@ export default function Hero() {
       </div>
       <div className="cs-marquee-mobile" aria-hidden="true">
         <div className="cs-marquee-track">
-          <span>Launching Soon - Global Growth Platform - InfoWebWorld.com - Discover & Connect - Leads - Reviews - Compare - News - Thousands of Categories - 100+ Countries Traffic -&nbsp;</span>
-          <span>Launching Soon - Global Growth Platform - InfoWebWorld.com - Discover & Connect - Leads - Reviews - Compare - News - Thousands of Categories - 100+ Countries Traffic -&nbsp;</span>
+          <span>Launching Soon - Global Business Directory - InfoWebWorld.com - Discover & Connect - Leads - Reviews - Compare - News - Thousands of Categories - 100+ Countries Traffic -&nbsp;</span>
+          <span>Launching Soon - Global Business Directory - InfoWebWorld.com - Discover & Connect - Leads - Reviews - Compare - News - Thousands of Categories - 100+ Countries Traffic -&nbsp;</span>
         </div>
       </div>
     </section>

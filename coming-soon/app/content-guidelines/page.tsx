@@ -75,7 +75,7 @@ const rejectedListings = itemListNode(
 const faqJsonLd = faqNode(faqs, `${URL}#faq`, `${URL}#webpage`)
 
 export const metadata: Metadata = {
-  title: 'Content Guidelines — What We Accept, Reject, Moderate | InfoWebWorld',
+  title: 'Content Guidelines - What We Accept, Reject, Moderate | InfoWebWorld',
   description:
     'Plain-English content guidelines for InfoWebWorld business listings and verified user reviews. What is accepted, what is rejected, how moderation works, and how to appeal a decision.',
   keywords: [
@@ -96,7 +96,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: URL },
   openGraph: {
-    title: 'Content Guidelines — InfoWebWorld',
+    title: 'Content Guidelines - InfoWebWorld',
     description: 'Clear rules for listings and reviews. What we accept, reject, moderate, and how to appeal.',
     url: URL,
     siteName: 'InfoWebWorld',
@@ -106,7 +106,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Content Guidelines — InfoWebWorld',
+    title: 'Content Guidelines - InfoWebWorld',
     description: 'What we accept, reject, moderate, and how to appeal.',
     images: [`${BASE_URL}/og-image.png`],
   },

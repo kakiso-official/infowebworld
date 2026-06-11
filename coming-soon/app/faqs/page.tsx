@@ -53,7 +53,7 @@ const flatFaqs = faqs.flatMap(g => g.items)
 const faqJsonLd = faqNode(flatFaqs, `${URL}#faq`, `${URL}#webpage`)
 
 export const metadata: Metadata = {
-  title: 'FAQs — Listings · Plans · Reviews · SEO · Account | InfoWebWorld',
+  title: 'FAQs - Listings · Plans · Reviews · SEO · Account | InfoWebWorld',
   description:
     'Frequently asked questions about InfoWebWorld — submitting listings, plans and pricing, verified reviews, dofollow backlinks, refund policy, Google sign-in, account deletion, and more.',
   keywords: [
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: URL },
   openGraph: {
-    title: 'Frequently Asked Questions — InfoWebWorld',
+    title: 'Frequently Asked Questions - InfoWebWorld',
     description: 'Listings, plans, reviews, SEO backlinks, account & data — all answered.',
     url: URL,
     siteName: 'InfoWebWorld',
@@ -85,7 +85,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FAQs — InfoWebWorld',
+    title: 'FAQs - InfoWebWorld',
     description: 'Listings, plans, reviews, SEO backlinks, account & data — answered.',
     images: [`${BASE_URL}/og-image.png`],
   },

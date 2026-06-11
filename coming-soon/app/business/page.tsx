@@ -4,12 +4,12 @@ import Footer from './components/Footer'
 import GetListedLanding from './GetListedLanding'
 
 export const metadata: Metadata = {
-  title: 'Get Listed — Submit Your Business | InfoWebWorld',
+  title: 'Get Listed - Submit Your Business | InfoWebWorld',
   description:
     'List your business on InfoWebWorld and lock in founding pricing. Get dofollow backlinks, verified reviews, and leads across 80+ industries.',
   alternates: { canonical: 'https://www.infowebworld.com/business' },
   openGraph: {
-    title: 'Get Listed on InfoWebWorld — Pre-Launch Business Listing',
+    title: 'Get Listed on InfoWebWorld - Pre-Launch Business Listing',
     description:
       'Submit your business before launch. Founding member spots are limited — lock in lifetime pricing today.',
   },

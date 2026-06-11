@@ -168,7 +168,7 @@ function buildOtpEmail(code: string): string {
             </tr>
             <tr>
               <td style="padding:18px 28px 22px;border-top:1px solid #F0EBE6;font-size:11px;color:#9A9590;text-align:center;">
-                InfoWebWorld &middot; Global Growth Platform
+                InfoWebWorld &middot; Global Business Directory
               </td>
             </tr>
           </table>

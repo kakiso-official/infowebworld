@@ -187,7 +187,7 @@ export default function Benefits() {
                 Everything Your Business <em>Needs</em>
               </h2>
               <p className="section-desc">
-                More than a directory — a complete business growth platform with
+                More than just a listing - the global business directory with
                 tools that actually drive results.
               </p>
             </div>
@@ -236,7 +236,7 @@ export default function Benefits() {
               Everything Your Business <em>Needs</em>
             </h2>
             <p className="section-desc">
-              More than a directory — a complete business growth platform with
+              More than just a listing - the global business directory with
               tools that actually drive results.
             </p>
           </div>

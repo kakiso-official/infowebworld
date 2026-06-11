@@ -97,7 +97,7 @@ const glossaryJsonLd = {
 }
 
 export const metadata: Metadata = {
-  title: 'Glossary — SEO · AEO · GEO · Directory Terms Explained | InfoWebWorld',
+  title: 'Glossary - SEO · AEO · GEO · Directory Terms Explained | InfoWebWorld',
   description:
     'Plain-English glossary of directory, SEO, AEO (Answer Engine Optimization), GEO (Generative Engine Optimization), and business-discovery terminology — backlinks, dofollow vs nofollow, schema markup, NAP, CTR, RFQ, and more.',
   keywords: [
@@ -120,7 +120,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: URL },
   openGraph: {
-    title: 'Glossary — InfoWebWorld',
+    title: 'Glossary - InfoWebWorld',
     description: 'SEO, AEO, GEO, and directory terms in plain English.',
     url: URL,
     siteName: 'InfoWebWorld',
@@ -130,7 +130,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Glossary — InfoWebWorld',
+    title: 'Glossary - InfoWebWorld',
     description: 'SEO, AEO, GEO, and directory terms in plain English.',
     images: [`${BASE_URL}/og-image.png`],
   },

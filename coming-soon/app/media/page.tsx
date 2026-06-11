@@ -55,7 +55,7 @@ const factSheet = itemListNode(
 const faqJsonLd = faqNode(faqs, `${URL}#faq`, `${URL}#webpage`)
 
 export const metadata: Metadata = {
-  title: 'Media & Press Kit — InfoWebWorld',
+  title: 'Media & Press Kit - InfoWebWorld',
   description:
     'Press kit, brand assets, fact sheet, and direct press contact for InfoWebWorld — the global business discovery platform from Brain Stream Australia. Logos, headshots, executive interviews, expert commentary on AI search and directory economics.',
   keywords: [
@@ -76,7 +76,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: URL },
   openGraph: {
-    title: 'Media & Press — InfoWebWorld',
+    title: 'Media & Press - InfoWebWorld',
     description: 'Press kit, brand assets, fact sheet, and direct press contact.',
     url: URL,
     siteName: 'InfoWebWorld',
@@ -86,7 +86,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Media & Press — InfoWebWorld',
+    title: 'Media & Press - InfoWebWorld',
     description: 'Press kit, brand assets, fact sheet, direct contact.',
     images: [`${BASE_URL}/og-image.png`],
   },

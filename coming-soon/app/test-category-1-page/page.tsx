@@ -32,7 +32,7 @@ export const dynamic = 'force-dynamic'
  * listings yet the section simply doesn't render.
  */
 export const metadata: Metadata = {
-  title: 'AI & ML — Find and compare the best AI tools, agents, and models',
+  title: 'AI & ML - Find and compare the best AI tools, agents, and models',
   description: 'Verified buyer reviews across 1,295+ AI & ML categories. Discover AI assistants, agents, image and video tools, code copilots, and more — moderated and never paid for.',
   robots: { index: false, follow: false },
 }

@@ -60,7 +60,7 @@ export default function Hero() {
       <div className="gcs-content">
 
         <h1 className="gcs-h1">
-          Global Growth Platform where <br />
+          Global Business Directory where <br />
           <span className="gcs-h1-line2">
             <span className={`gcs-type-wrap${jsReady ? ' js-active' : ''}`}>
               <span className="gcs-type-text">{displayed}</span>

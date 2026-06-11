@@ -57,7 +57,7 @@ const rightsList = itemListNode(
 const faqJsonLd = faqNode(faqs, `${URL}#faq`, `${URL}#webpage`)
 
 export const metadata: Metadata = {
-  title: 'Do Not Sell or Share My Personal Information — CCPA & CPRA | InfoWebWorld',
+  title: 'Do Not Sell or Share My Personal Information - CCPA & CPRA | InfoWebWorld',
   description:
     'California residents: your CCPA and CPRA rights on InfoWebWorld — right to know, delete, correct, opt out of sale or sharing, limit use of sensitive personal information, and non-discrimination. 45-day response window.',
   keywords: [
@@ -78,7 +78,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: URL },
   openGraph: {
-    title: 'Do Not Sell or Share My Personal Information — InfoWebWorld',
+    title: 'Do Not Sell or Share My Personal Information - InfoWebWorld',
     description: 'California CCPA + CPRA rights. We do not sell or share personal information. Full opt-out path.',
     url: URL,
     siteName: 'InfoWebWorld',
@@ -88,7 +88,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Do Not Sell or Share — InfoWebWorld',
+    title: 'Do Not Sell or Share - InfoWebWorld',
     description: 'California CCPA + CPRA rights and opt-out path.',
     images: [`${BASE_URL}/og-image.png`],
   },

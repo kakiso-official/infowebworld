@@ -4,7 +4,7 @@ import Footer from '../../components/Footer'
 import PlansPage from './PlansPage'
 
 export const metadata: Metadata = {
-  title: 'Plans & Pricing — Lifetime & Yearly Plans | InfoWebWorld',
+  title: 'Plans & Pricing - Lifetime & Yearly Plans | InfoWebWorld',
   description:
     'Compare InfoWebWorld pricing plans — Lifetime and Yearly. Full feature comparison, transparent pricing, and everything you need to grow your business on the global discovery platform.',
   alternates: { canonical: 'https://www.infowebworld.com/business/plans' },

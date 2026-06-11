@@ -55,7 +55,7 @@ const cookieCategories = itemListNode(
 const faqJsonLd = faqNode(faqs, `${URL}#faq`, `${URL}#webpage`)
 
 export const metadata: Metadata = {
-  title: 'Cookies Policy — Authentication, Preferences, Analytics | InfoWebWorld',
+  title: 'Cookies Policy - Authentication, Preferences, Analytics | InfoWebWorld',
   description:
     'How and why InfoWebWorld uses cookies — strictly-necessary, preferences, and Google Analytics with anonymized IPs. No ad-retargeting, no cross-site tracking. Full opt-out instructions for Chrome, Safari, Firefox, and Edge.',
   keywords: [
@@ -76,7 +76,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: URL },
   openGraph: {
-    title: 'Cookies Policy — InfoWebWorld',
+    title: 'Cookies Policy - InfoWebWorld',
     description: 'Authentication, preferences, analytics. No ad retargeting. Full opt-out instructions.',
     url: URL,
     siteName: 'InfoWebWorld',
@@ -86,7 +86,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Cookies Policy — InfoWebWorld',
+    title: 'Cookies Policy - InfoWebWorld',
     description: 'Authentication, preferences, analytics. No ad retargeting.',
     images: [`${BASE_URL}/og-image.png`],
   },

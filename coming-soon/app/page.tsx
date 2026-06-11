@@ -62,9 +62,10 @@ const organization = {
   '@type': 'Organization',
   '@id': `${SITE}#org`,
   name: 'InfoWebWorld',
+  slogan: 'The global business directory for verified business discovery',
   url: SITE,
   logo: 'https://www.infowebworld.com/logo/infowebworldlogo-logoforlightbackgrounds.png',
-  description: 'Global business discovery platform with verified reviews, dofollow backlinks, and lead generation across 80+ industries.',
+  description: 'Global business directory with verified reviews, dofollow backlinks, and lead generation across 80+ industries.',
   foundingDate: '2026',
   address: {
     '@type': 'PostalAddress',
@@ -95,7 +96,7 @@ const website = {
   '@id': `${SITE}#website`,
   url: SITE,
   name: 'InfoWebWorld',
-  description: 'The global business discovery platform. Search, compare, and review businesses across 80+ industries in 12 countries.',
+  description: 'The global business directory to search, compare, and review businesses across 80+ industries in 12 countries.',
   publisher: { '@id': `${SITE}#org` },
   inLanguage: 'en-US',
   potentialAction: {
@@ -141,8 +142,8 @@ const webPage = {
   '@type': 'WebPage',
   '@id': `${SITE}#homepage`,
   url: SITE,
-  name: 'InfoWebWorld - Find, Compare & Review Verified Businesses',
-  description: 'Search verified businesses, tools, agencies, and professionals across 80+ industries — with real reviews, transparent pricing, and dofollow listings.',
+  name: 'Global Business Directory - Find, Compare & Review Verified Businesses',
+  description: 'Global business directory to search verified businesses, tools, agencies, and professionals across 80+ industries - with real reviews, transparent pricing, and dofollow listings.',
   isPartOf: { '@id': `${SITE}#website` },
   about: { '@id': `${SITE}#org` },
   mainEntity: { '@id': `${SITE}#primary-sections` },
@@ -161,7 +162,7 @@ const faqJsonLd = {
     {
       '@type': 'Question',
       name: 'What is InfoWebWorld?',
-      acceptedAnswer: { '@type': 'Answer', text: 'InfoWebWorld is a global business discovery platform where users can search, compare, and review businesses across 80+ industries in 12+ countries. It helps professionals find the best solutions through verified reviews and detailed company profiles.' },
+      acceptedAnswer: { '@type': 'Answer', text: 'InfoWebWorld is a global business directory where users can search, compare, and review businesses across 80+ industries in 12+ countries. It helps professionals find the best solutions through verified reviews and detailed company profiles.' },
     },
     {
       '@type': 'Question',

@@ -4,7 +4,7 @@ import Footer from '../components/Footer'
 import ContactPage from './ContactPage'
 
 export const metadata: Metadata = {
-  title: 'Contact InfoWebWorld — Business Inquiries & Support',
+  title: 'Contact InfoWebWorld - Business Inquiries & Support',
   description: 'Get in touch with the InfoWebWorld team. We respond within 24 hours — questions, partnerships, business inquiries, feedback, or technical support.',
   robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
 }

@@ -48,7 +48,7 @@ const topicsList = itemListNode(topics, `${URL}#topics`, 'Topics covered by Info
 const faqJsonLd = faqNode(faqs, `${URL}#faq`, `${URL}#webpage`)
 
 export const metadata: Metadata = {
-  title: 'Insights — AI Search · Category Reports · Playbooks | InfoWebWorld',
+  title: 'Insights - AI Search · Category Reports · Playbooks | InfoWebWorld',
   description:
     'Research, analysis, and commentary on the changing landscape of business discovery — AI search trends across Perplexity, ChatGPT Search, Claude, and Google AI Overviews; quarterly category reports; and tactical playbooks for listing owners.',
   keywords: [
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: URL },
   openGraph: {
-    title: 'Insights — InfoWebWorld',
+    title: 'Insights - InfoWebWorld',
     description: 'AI search trends, category reports, and listing playbooks.',
     url: URL,
     siteName: 'InfoWebWorld',
@@ -80,7 +80,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Insights — InfoWebWorld',
+    title: 'Insights - InfoWebWorld',
     description: 'AI search trends, category reports, and listing playbooks.',
     images: [`${BASE_URL}/og-image.png`],
   },

@@ -118,7 +118,7 @@ function buildWelcomeEmail(): string {
         <tr>
           <td style="padding:40px 48px 0">
             <p style="margin:0 0 14px;font-family:${F_HEAD};font-size:20px;font-weight:800;color:#1A1A1A;line-height:1.3;letter-spacing:-.2px">We're not just another directory.</p>
-            <p style="margin:0;font-family:${F_BODY};font-size:14.5px;font-weight:400;color:#5C5852;line-height:1.8"><strong style="color:#1A1A1A;font-weight:700">InfoWebWorld</strong> is a growth platform where real businesses get discovered by the right people. Verified reviews, qualified leads, dofollow backlinks, and visibility across 30+ countries &mdash; all in one place.</p>
+            <p style="margin:0;font-family:${F_BODY};font-size:14.5px;font-weight:400;color:#5C5852;line-height:1.8"><strong style="color:#1A1A1A;font-weight:700">InfoWebWorld</strong> is a global business directory where real businesses get discovered by the right people. Verified reviews, qualified leads, dofollow backlinks, and visibility across 30+ countries &mdash; all in one place.</p>
           </td>
         </tr>
       </table>
@@ -234,7 +234,7 @@ function buildWelcomeEmail(): string {
         <td style="text-align:center;padding:32px 20px 12px">
           <p style="margin:0 0 10px;font-family:${F_BODY};font-size:13px;font-weight:700;color:#6B6560">
             <a href="https://www.infowebworld.com" target="_blank" style="color:#E8553D;text-decoration:none">InfoWebWorld.com</a>
-            <span style="color:#C5C0BA;font-weight:400"> &nbsp;&#8212;&nbsp; Global Growth Platform</span>
+            <span style="color:#C5C0BA;font-weight:400"> &nbsp;&#8212;&nbsp; Global Business Directory</span>
           </p>
           <p style="margin:0 0 14px;font-family:${F_BODY};font-size:11px;font-weight:400;color:#C5C0BA">Brain Stream Australia Pty Ltd &nbsp;&#183;&nbsp; Parramatta, NSW 2150</p>
           <p style="margin:0;font-family:${F_BODY};font-size:11px;font-weight:600;color:#D5D0CA">

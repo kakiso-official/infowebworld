@@ -389,7 +389,7 @@ export default function Navbar(
         <div className="iw-util" aria-label="Secondary navigation">
           <div className="iw-util-inner">
             <span className="iw-util-tag">
-              Best Global Growth Platform
+              Best Global Business Directory
               <span className="iw-util-tag-sep" aria-hidden="true">·</span>
               <span className="iw-util-hash">#Discover</span>
               <span className="iw-util-hash">#Compare</span>

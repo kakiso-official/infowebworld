@@ -16,7 +16,7 @@ const ID_WEBSITE       = 'https://www.infowebworld.com/#website'
 const ID_ORGANIZATION  = 'https://www.infowebworld.com/#organization'
 
 export const metadata: Metadata = {
-  title: 'Terms of Use — InfoWebWorld',
+  title: 'Terms of Use - InfoWebWorld',
   description:
     'InfoWebWorld Terms of Use: account rules, 14-day refund policy, intellectual property, prohibited conduct, and Australian (NSW) governing law for our global business discovery platform.',
   alternates: { canonical: URL_PAGE },
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     type: 'article',
     url: URL_PAGE,
     siteName: 'InfoWebWorld',
-    title: 'Terms of Use — InfoWebWorld',
+    title: 'Terms of Use - InfoWebWorld',
     description:
       'The legal agreement governing your use of InfoWebWorld — refunds, IP, accounts, conduct, and governing law.',
     locale: 'en_US',
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Terms of Use — InfoWebWorld',
+    title: 'Terms of Use - InfoWebWorld',
     description: 'The legal agreement governing your use of InfoWebWorld.',
     images: ['https://www.infowebworld.com/og-image.png'],
   },

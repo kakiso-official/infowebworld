@@ -68,7 +68,7 @@ const howToPickJsonLd = howToNode({
 const faqJsonLd = faqNode(faqs, `${URL}#faq`, `${URL}#webpage`)
 
 export const metadata: Metadata = {
-  title: 'Category Guides — 6 Sectors · 80+ Categories · 13,000+ Subcategories | InfoWebWorld',
+  title: 'Category Guides - 6 Sectors · 80+ Categories · 13,000+ Subcategories | InfoWebWorld',
   description:
     'Pick the right business category on InfoWebWorld: 6 sectors (AI & ML, Software & SaaS, IT Services, Startups, Local Businesses, Professional Services), 80+ categories, 13,000+ subcategories. Plus a 4-step how-to for choosing the right placement.',
   keywords: [
@@ -90,7 +90,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: URL },
   openGraph: {
-    title: 'Category Guides — InfoWebWorld',
+    title: 'Category Guides - InfoWebWorld',
     description: '6 sectors · 80+ categories · 13,000+ subcategories. How to pick the right one.',
     url: URL,
     siteName: 'InfoWebWorld',
@@ -100,7 +100,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Category Guides — InfoWebWorld',
+    title: 'Category Guides - InfoWebWorld',
     description: '6 sectors · 80+ categories · 13,000+ subcategories.',
     images: [`${BASE_URL}/og-image.png`],
   },

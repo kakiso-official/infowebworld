@@ -176,7 +176,7 @@ export function buildEmailShell(args: ShellArgs): string {
         <td style="text-align:center;padding:28px 16px 12px">
           <p style="margin:0 0 10px;font-family:${F_BODY};font-size:13px;font-weight:700;color:#6B6560">
             <a href="${SITE}" target="_blank" style="color:#E8553D;text-decoration:none">InfoWebWorld.com</a>
-            <span style="color:#C5C0BA;font-weight:400"> &nbsp;&#8212;&nbsp; Global Growth Platform</span>
+            <span style="color:#C5C0BA;font-weight:400"> &nbsp;&#8212;&nbsp; Global Business Directory</span>
           </p>
           <p style="margin:0 0 12px;font-family:${F_BODY};font-size:11px;color:#C5C0BA">${escapeHtml(args.footerNote || "Sent because you're the listing owner.")}</p>
           <p style="margin:0;font-family:${F_BODY};font-size:11px;font-weight:600;color:#D5D0CA">

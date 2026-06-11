@@ -35,10 +35,11 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.infowebworld.com"),
-  title: "InfoWebWorld.com - Global Growth Platform - AI, SaaS, Startups, Business - Get Leads, Reviews, GEO & SEO Backlinks",
+  title: "Global Business Directory - AI, SaaS, Startups & More | InfoWebWorld",
   description:
-    "Global Growth Platform for business discovery, leads, verified reviews, and SEO backlinks. Explore AI, SaaS, startups, IT services, and more on InfoWebWorld.",
+    "Global business directory to discover, compare and review the best businesses in AI, SaaS, startups, IT services and more - with verified reviews, qualified leads and dofollow backlinks.",
   keywords: [
+    "global business directory",
     "business directory",
     "business listing",
     "company directory",
@@ -58,7 +59,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://www.infowebworld.com",
     siteName: "InfoWebWorld",
-    title: "InfoWebWorld — The Global Business Discovery Platform",
+    title: "Global Business Directory - Discover & Review Businesses Worldwide",
     description:
       "Dofollow backlinks, verified reviews, lead generation, and daily business insights. Join the waitlist for early bird pricing.",
     images: [
@@ -66,13 +67,13 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "InfoWebWorld — Discover & List the Best Businesses Worldwide",
+        alt: "InfoWebWorld - Discover & List the Best Businesses Worldwide",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "InfoWebWorld — Discover the Best Businesses Worldwide",
+    title: "Global Business Directory - Discover the Best Businesses Worldwide",
     description:
       "The first directory combining listings, reviews, backlinks, and daily business insights. Early access now open.",
     images: ["/og-image.png"],

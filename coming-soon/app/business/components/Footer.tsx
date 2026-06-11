@@ -97,7 +97,7 @@ export default function Footer() {
           <div className="ft-brand">
             <img src={`${bp}/logo/infowebworld-logofordarkbackgrounds.png`} alt="InfoWebWorld" className="ft-logo" />
             <p className="ft-tagline">
-              InfoWebWorld is the Global Growth Platform to explore / search best trusted businesses worldwide.
+              InfoWebWorld is the Global Business Directory to explore / search best trusted businesses worldwide.
             </p>
             <div className="ft-social">
               <a href="https://x.com/infowebworld_x" target="_blank" rel="noopener noreferrer" aria-label="X">

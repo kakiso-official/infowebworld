@@ -80,7 +80,7 @@ const privacyPolicyJsonLd = {
 const faqJsonLd = faqNode(faqs, `${URL}#faq`, `${URL}#webpage`)
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy — GDPR · CCPA · Australian Privacy Act | InfoWebWorld',
+  title: 'Privacy Policy - GDPR · CCPA · Australian Privacy Act | InfoWebWorld',
   description:
     'How InfoWebWorld collects, uses, stores, and protects your personal data. Compliant with GDPR, CCPA / CPRA, and the Australian Privacy Act. We do not sell your data.',
   keywords: [
@@ -102,7 +102,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: URL },
   openGraph: {
-    title: 'Privacy Policy — InfoWebWorld',
+    title: 'Privacy Policy - InfoWebWorld',
     description: 'GDPR · CCPA · Australian Privacy Act compliant. We do not sell your data.',
     url: URL,
     siteName: 'InfoWebWorld',
@@ -112,7 +112,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Privacy Policy — InfoWebWorld',
+    title: 'Privacy Policy - InfoWebWorld',
     description: 'GDPR · CCPA · Australian Privacy Act compliant.',
     images: [`${BASE_URL}/og-image.png`],
   },

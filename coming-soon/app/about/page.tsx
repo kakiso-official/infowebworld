@@ -27,9 +27,9 @@ const FOUNDED_ISO      = '2026-01-01'
    ──────────────────────────────────────────── */
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.infowebworld.com'),
-  title: 'About InfoWebWorld — Our Story, Mission & Global Business Discovery Platform',
+  title: 'About InfoWebWorld - Our Story, Mission & Global Business Directory',
   description:
-    'InfoWebWorld is the global business discovery platform for verified listings, real reviews, dofollow backlinks, and AI-era visibility — built by Brain Stream Australia (Parramatta, NSW), covering 80+ industries across 12+ countries.',
+    'InfoWebWorld is a global business directory for verified listings, real reviews, dofollow backlinks, and AI-era visibility - built by Brain Stream Australia (Parramatta, NSW), covering 80+ industries across 12+ countries.',
   keywords: [
     'InfoWebWorld', 'business discovery platform', 'verified business reviews',
     'global business directory', 'AI search visibility', 'AEO',
@@ -45,12 +45,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: URL_PAGE,
     siteName: 'InfoWebWorld',
-    title: 'About InfoWebWorld — Global Business Discovery Platform',
+    title: 'About InfoWebWorld - Global Business Directory',
     description:
-      'The story behind InfoWebWorld — a global growth platform where verified businesses get discovered by buyers and AI engines alike.',
+      'The story behind InfoWebWorld - a global business directory where verified businesses get discovered by buyers and AI engines alike.',
     locale: 'en_US',
     images: [
-      { url: 'https://www.infowebworld.com/og-image.png', width: 1200, height: 630, alt: 'InfoWebWorld — Global Growth Platform', type: 'image/png' },
+      { url: 'https://www.infowebworld.com/og-image.png', width: 1200, height: 630, alt: 'InfoWebWorld - Global Business Directory', type: 'image/png' },
     ],
   },
   twitter: {
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
     site: '@infowebworld_x',
     creator: '@infowebworld_x',
     title: 'About InfoWebWorld',
-    description: 'The global growth platform for verified business discovery.',
+    description: 'The global business directory for verified business discovery.',
     images: ['https://www.infowebworld.com/og-image.png'],
   },
   robots: {
@@ -86,7 +86,7 @@ export const metadata: Metadata = {
     'dc.creator':    'Brain Stream Australia Pty Ltd',
     'dc.publisher':  'Brain Stream Australia Pty Ltd',
     'dc.language':   'en-US',
-    'dc.subject':    'Business discovery platform, AI search visibility',
+    'dc.subject':    'Global business directory, AI search visibility',
     'dc.coverage':   'Worldwide',
   },
 }
@@ -105,7 +105,7 @@ const DIFFERENTIATORS = [
    ──────────────────────────────────────────── */
 const FAQ = [
   { q: 'What is InfoWebWorld?',
-    a: 'InfoWebWorld is a global business discovery platform where verified businesses get listed, reviewed, and discovered by buyers and AI engines across 80+ industries, 13,000+ categories, and 12+ countries.' },
+    a: 'InfoWebWorld is a global business directory where verified businesses get listed, reviewed, and discovered by buyers and AI engines across 80+ industries, 13,000+ categories, and 12+ countries.' },
   { q: 'Who runs InfoWebWorld?',
     a: 'InfoWebWorld is a product of Brain Stream Australia Pty Ltd — an Australian technology company with over two decades of experience building SEO, content, and directory products.' },
   { q: 'Where is InfoWebWorld headquartered?',
@@ -151,8 +151,8 @@ const ORG_NODE = {
   },
   image: 'https://www.infowebworld.com/og-image.png',
   description:
-    'Global business discovery platform with verified reviews, dofollow backlinks, lead generation, and AI-era visibility across 80+ industries and 12+ countries.',
-  slogan: 'Global Growth Platform',
+    'Global business directory with verified reviews, dofollow backlinks, lead generation, and AI-era visibility across 80+ industries and 12+ countries.',
+  slogan: 'Global Business Directory',
   foundingDate: FOUNDED_ISO,
   foundingLocation: {
     '@type': 'Place',
@@ -231,7 +231,7 @@ const jsonLdGraph = {
       url: 'https://www.infowebworld.com',
       name: 'InfoWebWorld',
       alternateName: 'Info Web World',
-      description: 'The global business discovery platform — verified listings, real reviews, and AI-era visibility.',
+      description: 'The global business directory - verified listings, real reviews, and AI-era visibility.',
       inLanguage: 'en-US',
       publisher: { '@id': ID_ORGANIZATION },
       potentialAction: {
@@ -259,11 +259,11 @@ const jsonLdGraph = {
       '@type': ['AboutPage', 'Article'],
       '@id': ID_WEBPAGE,
       url: URL_PAGE,
-      name: 'About InfoWebWorld — Global Business Discovery Platform',
+      name: 'About InfoWebWorld - Global Business Directory',
       alternateName: 'About InfoWebWorld',
-      headline: 'About InfoWebWorld — Built for the AI era of business discovery',
-      alternativeHeadline: 'About InfoWebWorld — our story, mission, and the team behind the platform',
-      description: 'InfoWebWorld is the global growth platform for verified business discovery, built by Brain Stream Australia for the AI era of search.',
+      headline: 'About InfoWebWorld - Built for the AI era of business discovery',
+      alternativeHeadline: 'About InfoWebWorld - our story, mission, and the team behind the platform',
+      description: 'InfoWebWorld is the global business directory for verified business discovery, built by Brain Stream Australia for the AI era of search.',
       inLanguage: 'en-US',
       isPartOf: { '@id': ID_WEBSITE },
       breadcrumb: { '@id': ID_BREADCRUMB },
@@ -307,7 +307,7 @@ const jsonLdGraph = {
         { '@id': ID_SERVICE },
         { '@id': ID_GLOSSARY },
       ],
-      keywords: 'business discovery, verified reviews, dofollow backlinks, AI visibility, AEO, GEO, business directory, global growth platform, InfoWebWorld, Brain Stream Australia',
+      keywords: 'business discovery, verified reviews, dofollow backlinks, AI visibility, AEO, GEO, business directory, global business directory, InfoWebWorld, Brain Stream Australia',
       wordCount: 380,
       articleSection: 'About',
     },
@@ -363,8 +363,8 @@ const jsonLdGraph = {
       hasDefinedTerm: [
         {
           '@type': 'DefinedTerm',
-          name: 'Global growth platform',
-          description: "InfoWebWorld's positioning: a global discovery platform combining verified listings, real reviews, and AI-era visibility into a single growth surface for businesses.",
+          name: 'Global business directory',
+          description: "InfoWebWorld's positioning: a global business directory combining verified listings, real reviews, and AI-era visibility into a single growth surface for businesses.",
           inDefinedTermSet: { '@id': ID_GLOSSARY },
         },
         {
@@ -469,7 +469,7 @@ export default function AboutPage() {
               <div className="ab-head-titles">
                 <span className="ab-kicker">About <cite>InfoWebWorld</cite></span>
                 <h1 className="ab-title" itemProp="headline">
-                  The <dfn title="A growth platform combining verified listings, real reviews, dofollow backlinks, and AI-era visibility">global growth platform</dfn> for verified business discovery.
+                  The <dfn title="A global business directory combining verified listings, real reviews, dofollow backlinks, and AI-era visibility">global business directory</dfn> for verified business discovery.
                 </h1>
               </div>
               <p className="ab-lede" itemProp="description">
@@ -486,7 +486,7 @@ export default function AboutPage() {
                 Business discovery online is broken — search results cluttered with ads, ranking pay-to-play, reviews not always trusted. We think buyers deserve better.
               </p>
               <p>
-                <strong><cite>InfoWebWorld</cite></strong> is the global growth platform where verified businesses get discovered on merit. <mark>Mission: help real buyers find real businesses, faster.</mark>
+                <strong><cite>InfoWebWorld</cite></strong> is the global business directory where verified businesses get discovered on merit. <mark>Mission: help real buyers find real businesses, faster.</mark>
               </p>
             </section>
 

@@ -43,7 +43,7 @@ const topicsList = itemListNode(
 const faqJsonLd = faqNode(faqs, `${URL}#faq`, `${URL}#webpage`)
 
 export const metadata: Metadata = {
-  title: 'Help & Support Center — InfoWebWorld',
+  title: 'Help & Support Center - InfoWebWorld',
   description:
     'Help center for InfoWebWorld — listings, plans, billing, reviews, analytics, account security, and policies. FAQs and direct support within 24 hours on business days.',
   keywords: [
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: URL },
   openGraph: {
-    title: 'Help & Support Center — InfoWebWorld',
+    title: 'Help & Support Center - InfoWebWorld',
     description: 'Listings, billing, reviews, analytics, security, policies — FAQs + 24-hour email support.',
     url: URL,
     siteName: 'InfoWebWorld',
@@ -74,7 +74,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Help & Support — InfoWebWorld',
+    title: 'Help & Support - InfoWebWorld',
     description: 'Browse topics, read FAQs, or email support within 24 hours.',
     images: [`${BASE_URL}/og-image.png`],
   },
