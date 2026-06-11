@@ -1399,6 +1399,10 @@ export async function generateMetadata({
       title = `Local Business Directory (${year}) | InfoWebWorld`
       description = `Local business directory of verified restaurants, home services, health, beauty & retail - real reviews, no pay-to-play. Find the best in your city or list your business free. Updated ${monthYear}.`
     }
+    if (slug === 'it-services-agencies') {
+      title = `IT & Digital Agency Directory (${year}) | InfoWebWorld`
+      description = `Agency directory of verified web, mobile, software, design & digital marketing agencies - real client reviews, no pay-to-play. Find or list your agency free. Updated ${monthYear}.`
+    }
 
     /* Keyword stack — sector name + buying-intent + comparative + temporal
        modifiers Google + AI engines reward. Includes sector-specific verticals
