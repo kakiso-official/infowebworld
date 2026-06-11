@@ -14,6 +14,7 @@ import TrustSection from '../test-landing-page/TrustSection'
 import CompareSection from '../test-landing-page/CompareSection'
 import FinalCtaSection from '../test-landing-page/FinalCtaSection'
 import ProServicesDirectorySeo from './ProServicesDirectorySeo'
+import AiToolsDirectorySeo from './AiToolsDirectorySeo'
 import {
   getPopularByL2, getLatestSectorReviews, getRecentSectorLaunches, getPopularSectorTools,
 } from './queries'
@@ -143,6 +144,7 @@ export default async function SectorLandingPage({
             sector, so their output is byte-identical. Uses the .cat-seo*
             classes already loaded by the /[...segments] route. */}
         {cfg.slug === 'professional-services' && <ProServicesDirectorySeo firmCount={totalListings} />}
+        {cfg.slug === 'ai-ml' && <AiToolsDirectorySeo firmCount={totalListings} />}
         <FinalCtaSection />
       </main>
       <Footer />

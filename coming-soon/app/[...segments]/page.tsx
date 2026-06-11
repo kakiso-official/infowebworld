@@ -1383,6 +1383,10 @@ export async function generateMetadata({
       title = `Professional Services Directory (${year}) | InfoWebWorld`
       description = `Professional services directory of verified accounting, legal, consulting, HR & financial firms - real client reviews, no pay-to-play. Updated ${monthYear}.`
     }
+    if (slug === 'ai-ml') {
+      title = `AI Tools Directory (${year}) | InfoWebWorld`
+      description = `AI tools directory of verified AI tools, agents & models with real user reviews - no pay-to-play. Submit your AI tool free. Updated ${monthYear}.`
+    }
 
     /* Keyword stack — sector name + buying-intent + comparative + temporal
        modifiers Google + AI engines reward. Includes sector-specific verticals
