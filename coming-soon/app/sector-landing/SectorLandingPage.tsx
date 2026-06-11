@@ -17,6 +17,7 @@ import ProServicesDirectorySeo from './ProServicesDirectorySeo'
 import AiToolsDirectorySeo from './AiToolsDirectorySeo'
 import StartupDirectorySeo from './StartupDirectorySeo'
 import SoftwareDirectorySeo from './SoftwareDirectorySeo'
+import LocalDirectorySeo from './LocalDirectorySeo'
 import {
   getPopularByL2, getLatestSectorReviews, getRecentSectorLaunches, getPopularSectorTools,
 } from './queries'
@@ -149,6 +150,7 @@ export default async function SectorLandingPage({
         {cfg.slug === 'ai-ml' && <AiToolsDirectorySeo firmCount={totalListings} />}
         {cfg.slug === 'startups-innovation' && <StartupDirectorySeo firmCount={totalListings} />}
         {cfg.slug === 'software-saas' && <SoftwareDirectorySeo firmCount={totalListings} />}
+        {cfg.slug === 'local-businesses' && <LocalDirectorySeo firmCount={totalListings} />}
         <FinalCtaSection />
       </main>
       <Footer />

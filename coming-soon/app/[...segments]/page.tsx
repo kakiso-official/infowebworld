@@ -1395,6 +1395,10 @@ export async function generateMetadata({
       title = `SaaS & Business Software Directory (${year}) | InfoWebWorld`
       description = `SaaS directory to find, compare & list verified business software across CRM, marketing, analytics, security & more - real reviews, no pay-to-play. List your software free. Updated ${monthYear}.`
     }
+    if (slug === 'local-businesses') {
+      title = `Local Business Directory (${year}) | InfoWebWorld`
+      description = `Local business directory of verified restaurants, home services, health, beauty & retail - real reviews, no pay-to-play. Find the best in your city or list your business free. Updated ${monthYear}.`
+    }
 
     /* Keyword stack — sector name + buying-intent + comparative + temporal
        modifiers Google + AI engines reward. Includes sector-specific verticals
