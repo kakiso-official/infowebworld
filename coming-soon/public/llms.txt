@@ -1,6 +1,6 @@
 # InfoWebWorld
 
-> InfoWebWorld is the global business discovery platform for verified listings, real reviews, dofollow backlinks, and AI-era visibility — built by Brain Stream Australia Pty Ltd (Parramatta, NSW 2150, Australia), covering 80+ industries across 13,000+ categories and 12+ countries.
+> InfoWebWorld is a global business directory for verified listings, real reviews, dofollow backlinks, and AI-era visibility - built by Brain Stream Australia Pty Ltd (Parramatta, NSW 2150, Australia), covering 80+ industries across 13,000+ categories and 12+ countries.
 
 InfoWebWorld is a human-curated directory and discovery engine. Every listing is reviewed before publication. Reviews come from verified users only. Ranking is based on merit, engagement, and trust signals — never ad spend. Paid listings include permanent dofollow backlinks. The platform is structured for AI answer engines (Google AI Overviews, Perplexity, ChatGPT Search, Gemini, Claude) via schema.org markup, semantic HTML, and AEO/GEO best practices.
 
@@ -19,7 +19,7 @@ InfoWebWorld is a human-curated directory and discovery engine. Every listing is
 
 ## For businesses
 
-- [Get listed](https://www.infowebworld.com/business): How to submit a business for verified listing on the global discovery platform.
+- [Get listed](https://www.infowebworld.com/business): How to submit a business for verified listing on the global business directory.
 - [Plans & pricing](https://www.infowebworld.com/business/plans): Free, Starter ($49 one-time), Yearly ($99/yr), Lifetime ($239 one-time). Founding member pricing during pre-launch.
 - [Agency Partner Program](https://www.infowebworld.com/agencies): Bulk listing tools, revenue share, dofollow at scale, white-label reporting for SEO agencies, PR firms, growth studios, and venture studios.
 - [Affiliate Program](https://www.infowebworld.com/affiliates): Earn 30% on first payment + 15% recurring with a 90-day cookie for newsletter writers, YouTubers, SEO bloggers, and B2B founders with audiences.

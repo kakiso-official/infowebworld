@@ -6,7 +6,7 @@ import PlansPage from './PlansPage'
 export const metadata: Metadata = {
   title: 'Plans & Pricing - Lifetime & Yearly Plans | InfoWebWorld',
   description:
-    'Compare InfoWebWorld pricing plans — Lifetime and Yearly. Full feature comparison, transparent pricing, and everything you need to grow your business on the global discovery platform.',
+    'Compare InfoWebWorld pricing plans — Lifetime and Yearly. Full feature comparison, transparent pricing, and everything you need to grow your business on the global business directory.',
   alternates: { canonical: 'https://www.infowebworld.com/business/plans' },
 }
 
@@ -42,7 +42,7 @@ const productJsonLd = {
   '@type': 'Product',
   name: 'InfoWebWorld Business Listing',
   image: 'https://www.infowebworld.com/og-image.png',
-  description: 'Premium business listing on the global discovery platform with verified reviews, dofollow backlinks, analytics, and lead generation.',
+  description: 'Premium business listing on the global business directory with verified reviews, dofollow backlinks, analytics, and lead generation.',
   brand: { '@type': 'Brand', name: 'InfoWebWorld' },
   offers: [
     {

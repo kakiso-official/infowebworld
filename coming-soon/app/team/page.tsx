@@ -38,7 +38,7 @@ const articleJsonLd = articleNode({
   id: `${URL}#article`,
   headline: 'The Team Building InfoWebWorld',
   description:
-    'Small, remote-first team of operators, designers, and engineers building the global business discovery platform. Distributed across Australia, India, and the EU.',
+    'Small, remote-first team of operators, designers, and engineers building the global business directory. Distributed across Australia, India, and the EU.',
   pageUrl: URL,
   datePublished: '2026-04-21',
   dateModified: '2026-05-17',

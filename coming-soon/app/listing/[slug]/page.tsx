@@ -629,7 +629,7 @@ function buildJsonLd(listing: ListingRow, breadcrumb: BreadcrumbItem[]) {
     '@id': 'https://www.infowebworld.com#website',
     name: 'InfoWebWorld',
     url: 'https://www.infowebworld.com',
-    description: 'The global business discovery platform. Search, compare, and review businesses across 80+ industries.',
+    description: 'The global business directory to search, compare, and review businesses across 80+ industries.',
     publisher: { '@id': 'https://www.infowebworld.com#organization' },
   }
 

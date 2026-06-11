@@ -18,7 +18,7 @@ const ID_ORGANIZATION  = 'https://www.infowebworld.com/#organization'
 export const metadata: Metadata = {
   title: 'Terms of Use - InfoWebWorld',
   description:
-    'InfoWebWorld Terms of Use: account rules, 14-day refund policy, intellectual property, prohibited conduct, and Australian (NSW) governing law for our global business discovery platform.',
+    'InfoWebWorld Terms of Use: account rules, 14-day refund policy, intellectual property, prohibited conduct, and Australian (NSW) governing law for our global business directory.',
   alternates: { canonical: URL_PAGE },
   openGraph: {
     type: 'article',

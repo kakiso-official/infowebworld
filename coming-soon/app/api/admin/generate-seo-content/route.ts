@@ -118,7 +118,7 @@ YOUR OUTPUT MUST SCORE <10% ON AI DETECTION TOOLS (Originality.ai, GPTZero, Copy
 `
 
   // ── 1. Rich Description ──
-  const descPrompt = `You're a senior technology analyst writing a definitive category overview for InfoWebWorld, a business discovery platform.
+  const descPrompt = `You're a senior technology analyst writing a definitive category overview for InfoWebWorld, a global business directory.
 
 ${ctx}
 

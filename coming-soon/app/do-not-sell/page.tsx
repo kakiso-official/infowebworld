@@ -7,7 +7,7 @@ const URL = `${BASE_URL}/do-not-sell`
 const faqs = [
   {
     q: 'Does InfoWebWorld sell my personal information under CCPA?',
-    a: 'No. InfoWebWorld does not sell your personal information for money. We also do not currently share personal information for cross-context behavioral advertising. We operate a directory and discovery platform, not an ad network.',
+    a: 'No. InfoWebWorld does not sell your personal information for money. We also do not currently share personal information for cross-context behavioral advertising. We operate a business directory, not an ad network.',
   },
   {
     q: 'What rights do California residents have over their data on InfoWebWorld?',

@@ -11,7 +11,7 @@ const faqs = [
   },
   {
     q: 'Does InfoWebWorld use ad-retargeting cookies?',
-    a: 'No. InfoWebWorld does not set ad-retargeting cookies and does not track you across unrelated sites. We are a directory and discovery platform, not an ad network.',
+    a: 'No. InfoWebWorld does not set ad-retargeting cookies and does not track you across unrelated sites. We are a business directory, not an ad network.',
   },
   {
     q: 'Can I opt out of InfoWebWorld analytics cookies?',

@@ -104,6 +104,8 @@ const DIFFERENTIATORS = [
    Expanded FAQ — 14 entries for AEO surface area
    ──────────────────────────────────────────── */
 const FAQ = [
+  { q: 'What is a global business directory?',
+    a: 'A global business directory is an online platform that lists and connects companies across industries and countries - with searchable company profiles, industry categories, key contacts, locations, and verified reviews - so buyers can discover, compare, and vet businesses worldwide. InfoWebWorld is a global business directory covering 80+ industries, 13,000+ categories, and 12+ countries.' },
   { q: 'What is InfoWebWorld?',
     a: 'InfoWebWorld is a global business directory where verified businesses get listed, reviewed, and discovered by buyers and AI engines across 80+ industries, 13,000+ categories, and 12+ countries.' },
   { q: 'Who runs InfoWebWorld?',
@@ -287,7 +289,7 @@ const jsonLdGraph = {
         cssSelector: ['.ab-title', '.ab-lede', '.ab-h2', '#mission p'],
       },
       about: [
-        { '@type': 'Thing', name: 'Business discovery platform' },
+        { '@type': 'Thing', name: 'Business directory' },
         { '@type': 'Thing', name: 'AI-powered search and discovery' },
         { '@type': 'Thing', name: 'Verified business reviews' },
         { '@type': 'Thing', name: 'Lead generation for businesses' },
@@ -342,8 +344,8 @@ const jsonLdGraph = {
     {
       '@type': 'Service',
       '@id': ID_SERVICE,
-      name: 'InfoWebWorld Business Discovery Platform',
-      serviceType: 'Business directory and discovery platform',
+      name: 'InfoWebWorld Global Business Directory',
+      serviceType: 'Global business directory',
       provider: { '@id': ID_ORGANIZATION },
       areaServed: { '@type': 'Place', name: 'Worldwide' },
       audience: {

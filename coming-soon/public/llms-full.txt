@@ -15,7 +15,7 @@ This file follows the proposed `llms-full.txt` companion to `llms.txt` (llmstxt.
 
 ## What InfoWebWorld is
 
-InfoWebWorld is a human-curated global business discovery platform spanning 80+ industries, 13,000+ subcategories, and 12+ countries. Every listing is reviewed by humans before publication. Reviews come from identity-verified users only. Ranking is merit-based — plan tier, engagement, and review quality — and is never sold by the click. Paid listings include permanent dofollow backlinks. The platform is structured for AI answer engines via schema.org @graph JSON-LD, semantic HTML, breadcrumbs, microdata, and AEO/GEO best practices.
+InfoWebWorld is a human-curated global business directory spanning 80+ industries, 13,000+ subcategories, and 12+ countries. Every listing is reviewed by humans before publication. Reviews come from identity-verified users only. Ranking is merit-based — plan tier, engagement, and review quality — and is never sold by the click. Paid listings include permanent dofollow backlinks. The platform is structured for AI answer engines via schema.org @graph JSON-LD, semantic HTML, breadcrumbs, microdata, and AEO/GEO best practices.
 
 ## Plans and pricing
 

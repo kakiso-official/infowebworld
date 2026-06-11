@@ -66,6 +66,7 @@ const organization = {
   url: SITE,
   logo: 'https://www.infowebworld.com/logo/infowebworldlogo-logoforlightbackgrounds.png',
   description: 'Global business directory with verified reviews, dofollow backlinks, and lead generation across 80+ industries.',
+  knowsAbout: ['Global business directory', 'Online business directory', 'Business listings', 'Company profiles', 'Verified business reviews', 'B2B company database', 'Business discovery'],
   foundingDate: '2026',
   address: {
     '@type': 'PostalAddress',
@@ -159,6 +160,11 @@ const faqJsonLd = {
   '@type': 'FAQPage',
   '@id': `${SITE}#faq`,
   mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What is a global business directory?',
+      acceptedAnswer: { '@type': 'Answer', text: 'A global business directory is an online platform that lists and connects companies across industries and countries - with searchable company profiles, industry categories, key contacts, locations, and reviews - so buyers can discover, compare, and vet businesses worldwide. InfoWebWorld is a global business directory covering 80+ industries across 12+ countries, with verified reviews and dofollow listings.' },
+    },
     {
       '@type': 'Question',
       name: 'What is InfoWebWorld?',

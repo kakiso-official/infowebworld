@@ -46,7 +46,7 @@ const factSheet = itemListNode(
     { name: 'Legal entity', description: 'Brain Stream Australia Pty Ltd, Parramatta, NSW 2150, Australia.' },
     { name: 'Founded', description: 'InfoWebWorld product launched 2026. Parent company operating since 2004.' },
     { name: 'Headquarters', description: 'Parramatta, Sydney — remote-first team across Australia, India, and the EU.' },
-    { name: 'Product', description: 'Global directory and discovery platform across 80+ industries, 12+ countries.' },
+    { name: 'Product', description: 'Global business directory across 80+ industries, 12+ countries.' },
   ],
   `${URL}#factsheet`,
   'InfoWebWorld company fact sheet for media',
@@ -57,7 +57,7 @@ const faqJsonLd = faqNode(faqs, `${URL}#faq`, `${URL}#webpage`)
 export const metadata: Metadata = {
   title: 'Media & Press Kit - InfoWebWorld',
   description:
-    'Press kit, brand assets, fact sheet, and direct press contact for InfoWebWorld — the global business discovery platform from Brain Stream Australia. Logos, headshots, executive interviews, expert commentary on AI search and directory economics.',
+    'Press kit, brand assets, fact sheet, and direct press contact for InfoWebWorld - the global business directory from Brain Stream Australia. Logos, headshots, executive interviews, expert commentary on AI search and directory economics.',
   keywords: [
     'InfoWebWorld press kit',
     'business directory press contact',
@@ -125,7 +125,7 @@ export default function MediaPage() {
             Parramatta, Sydney — remote-first team across Australia, India, and the EU.
           </IPCard>
           <IPCard title="Product">
-            Global directory + discovery platform across 80+ industries, 12+ countries.
+            Global business directory across 80+ industries, 12+ countries.
           </IPCard>
         </IPCardGrid>
       </IPSection>
