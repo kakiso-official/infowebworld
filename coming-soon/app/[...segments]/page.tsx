@@ -1391,6 +1391,10 @@ export async function generateMetadata({
       title = `Startup Directory (${year}) | InfoWebWorld`
       description = `Startup directory of verified startups across FinTech, HealthTech, EdTech, ClimateTech, AI & Web3 - real reviews, no pay-to-play. Submit your startup free. Updated ${monthYear}.`
     }
+    if (slug === 'software-saas') {
+      title = `SaaS & Business Software Directory (${year}) | InfoWebWorld`
+      description = `SaaS directory to find, compare & list verified business software across CRM, marketing, analytics, security & more - real reviews, no pay-to-play. List your software free. Updated ${monthYear}.`
+    }
 
     /* Keyword stack — sector name + buying-intent + comparative + temporal
        modifiers Google + AI engines reward. Includes sector-specific verticals

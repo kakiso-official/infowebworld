@@ -16,6 +16,7 @@ import FinalCtaSection from '../test-landing-page/FinalCtaSection'
 import ProServicesDirectorySeo from './ProServicesDirectorySeo'
 import AiToolsDirectorySeo from './AiToolsDirectorySeo'
 import StartupDirectorySeo from './StartupDirectorySeo'
+import SoftwareDirectorySeo from './SoftwareDirectorySeo'
 import {
   getPopularByL2, getLatestSectorReviews, getRecentSectorLaunches, getPopularSectorTools,
 } from './queries'
@@ -147,6 +148,7 @@ export default async function SectorLandingPage({
         {cfg.slug === 'professional-services' && <ProServicesDirectorySeo firmCount={totalListings} />}
         {cfg.slug === 'ai-ml' && <AiToolsDirectorySeo firmCount={totalListings} />}
         {cfg.slug === 'startups-innovation' && <StartupDirectorySeo firmCount={totalListings} />}
+        {cfg.slug === 'software-saas' && <SoftwareDirectorySeo firmCount={totalListings} />}
         <FinalCtaSection />
       </main>
       <Footer />
