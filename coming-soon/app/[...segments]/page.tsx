@@ -1387,6 +1387,10 @@ export async function generateMetadata({
       title = `AI Tools Directory (${year}) | InfoWebWorld`
       description = `AI tools directory of verified AI tools, agents & models with real user reviews - no pay-to-play. Submit your AI tool free. Updated ${monthYear}.`
     }
+    if (slug === 'startups-innovation') {
+      title = `Startup Directory (${year}) | InfoWebWorld`
+      description = `Startup directory of verified startups across FinTech, HealthTech, EdTech, ClimateTech, AI & Web3 - real reviews, no pay-to-play. Submit your startup free. Updated ${monthYear}.`
+    }
 
     /* Keyword stack — sector name + buying-intent + comparative + temporal
        modifiers Google + AI engines reward. Includes sector-specific verticals

@@ -15,6 +15,7 @@ import CompareSection from '../test-landing-page/CompareSection'
 import FinalCtaSection from '../test-landing-page/FinalCtaSection'
 import ProServicesDirectorySeo from './ProServicesDirectorySeo'
 import AiToolsDirectorySeo from './AiToolsDirectorySeo'
+import StartupDirectorySeo from './StartupDirectorySeo'
 import {
   getPopularByL2, getLatestSectorReviews, getRecentSectorLaunches, getPopularSectorTools,
 } from './queries'
@@ -145,6 +146,7 @@ export default async function SectorLandingPage({
             classes already loaded by the /[...segments] route. */}
         {cfg.slug === 'professional-services' && <ProServicesDirectorySeo firmCount={totalListings} />}
         {cfg.slug === 'ai-ml' && <AiToolsDirectorySeo firmCount={totalListings} />}
+        {cfg.slug === 'startups-innovation' && <StartupDirectorySeo firmCount={totalListings} />}
         <FinalCtaSection />
       </main>
       <Footer />
