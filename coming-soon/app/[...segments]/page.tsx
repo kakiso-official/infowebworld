@@ -59,6 +59,58 @@ function viewAllSlug(sectorSlug: string) {
   return `view-all-sub-categories-${sectorSlug}`
 }
 
+/* ── Per-sector keyword positioning for the 6 "view all" category-index pages.
+   Each index targets a WINNABLE browse keyword ("types of X" / "X categories")
+   that complements — never cannibalizes — its landing's "[sector] directory"
+   head. `lead` is the <title>/schema-name lead, `descLead` the meta-description
+   lead (a " Updated {month}." suffix is appended in code), `kw` the keyword
+   stack (winnable cluster first), `h1` the visible/skeleton H1, `tldrLead` the
+   bold answer-first opener. Picks from the June 2026 live-SERP study. ── */
+const VIEW_ALL_SEO: Record<string, { lead: string; descLead: string; kw: string[]; h1: string; tldrLead: string }> = {
+  'ai-ml': {
+    lead: 'AI Tools List by Category - Browse AI Tools, Agents & Models',
+    descLead: 'Browse the complete AI tools list by category on InfoWebWorld - every verified AI tool, agent, and model organized by use case, with real reviews',
+    kw: ['ai tools list', 'ai tools list by category', 'ai tools by category', 'list of ai tools', 'categories of ai tools', 'best ai tools by category', 'free ai tools list', 'ai tools directory'],
+    h1: 'AI Tools List by Category',
+    tldrLead: 'complete AI tools list, organized by category',
+  },
+  'software-saas': {
+    lead: 'SaaS Categories - Browse Business Software by Type',
+    descLead: 'Browse every SaaS category on InfoWebWorld - verified business software organized by type, from CRM and marketing to analytics and security, with real reviews',
+    kw: ['saas categories', 'saas categories list', 'saas product categories', 'types of saas', 'types of saas software', 'list of saas tools', 'business software by category', 'saas directory'],
+    h1: 'SaaS Categories',
+    tldrLead: 'complete SaaS categories, organized by type',
+  },
+  'it-services-agencies': {
+    lead: 'Types of Digital Agencies - Browse Agencies by Service',
+    descLead: 'Browse every type of digital and marketing agency on InfoWebWorld - web, app, software, design, SEO and IT providers organized by service, with real client reviews',
+    kw: ['types of digital agencies', 'types of marketing agencies', 'digital agency types', 'types of it services', 'it services categories', 'web development agencies', 'agency directory', 'list of digital agencies'],
+    h1: 'Types of Digital Agencies',
+    tldrLead: 'guide to the types of digital and marketing agencies, organized by service',
+  },
+  'startups-innovation': {
+    lead: 'Types of Startups - Browse Startups by Category & Industry',
+    descLead: 'Browse every type of startup on InfoWebWorld - FinTech, HealthTech, EdTech, ClimateTech, AI and Web3 ventures organized by category and industry, with reviews',
+    kw: ['types of startups', 'startup categories', 'categories of startups', 'types of tech startups', 'startups by industry', 'startup sectors', 'startup business categories', 'startup directory'],
+    h1: 'Types of Startups',
+    tldrLead: 'guide to the types of startups, organized by category and industry',
+  },
+  'local-businesses': {
+    lead: 'Types of Local Businesses - Browse Local Business Categories',
+    descLead: 'Browse every type of local business on InfoWebWorld - restaurants, home services, health, automotive, beauty and retail organized by category, with real customer reviews',
+    kw: ['types of local businesses', 'local business categories', 'categories of local businesses', 'list of local business types', 'small business categories', 'local business types', 'local business directory'],
+    h1: 'Types of Local Businesses',
+    tldrLead: 'guide to the types of local businesses, organized by category',
+  },
+  'professional-services': {
+    lead: 'Professional Services Categories - Browse Services by Type',
+    descLead: 'Browse every professional services category on InfoWebWorld - accounting, legal, consulting, HR and financial firms organized by type, with real client reviews',
+    kw: ['professional services categories', 'categories of professional services', 'types of professional services', 'professional services list', 'list of professional services', 'professional services firms', 'professional services directory'],
+    h1: 'Professional Services Categories',
+    tldrLead: 'complete professional services categories, organized by type',
+  },
+}
+
 /* generateStaticParams removed — was pre-building 72 pages that generated ISR writes on every revalidation cycle */
 
 /* ── Sector-scoped categories (only the L1 + its L2/L3 children, ~200-3K rows instead of 14K) ── */
@@ -1231,11 +1283,8 @@ export async function generateMetadata({
     const sectorRow = STATIC_CATEGORIES.find(r => r.slug === viewAllSector && r.level === 1)
     const sectorId = sectorRow ? sectorRow.id : 0
     const l2InSector = STATIC_CATEGORIES.filter(r => r.parent_id === sectorId && r.level === 2).length
-    const l2Ids = new Set(
-      STATIC_CATEGORIES.filter(r => r.parent_id === sectorId && r.level === 2).map(r => r.id)
-    )
     const l3InSector = STATIC_CATEGORIES.filter(
-      r => r.level === 3 && r.parent_id != null && l2Ids.has(r.parent_id)
+      r => r.level >= 3 && r.sector_slug === viewAllSector
     ).length
 
     /* Use the short, clean sector label (e.g., "AI & ML") for the title and
@@ -1244,27 +1293,39 @@ export async function generateMetadata({
        ("Categories") and buy ("Top Companies") search intents. */
     const shortName = meta.shortName
     const lcName = shortName.toLowerCase()
-    const title = `${shortName} Categories (${year}) - Find Top Companies | InfoWebWorld`
-    const description = `Every ${shortName} category on InfoWebWorld - browse top companies by topic, read verified reviews, compare pricing & features. Updated ${monthYear}.`
 
-    /* Keyword stack — sector + browse/discovery intent + comparative +
-       temporal modifiers that Google + AI engines reward. */
-    const autoKw = [
-      `${lcName} categories`,
-      `${lcName} subcategories`,
-      `${lcName} directory`,
-      `${lcName} companies list`,
-      `${lcName} taxonomy`,
-      `browse ${lcName}`,
-      `list of ${lcName} tools`,
-      `${lcName} ${year}`,
-      `find ${lcName}`,
-      `${lcName} comparison`,
-      `verified ${lcName} listings`,
-      `${lcName} marketplace`,
-      `top ${lcName} categories`,
-    ]
-    const keywords = [...new Set([...meta.seoKeywords.map(k => k.toLowerCase()), ...autoKw])].join(', ')
+    /* Per-sector keyword positioning (June 2026 live-SERP study) — see
+       VIEW_ALL_SEO. Targets a winnable browse keyword that complements the
+       landing's "[sector] directory" head. Generic fallback for any unmapped
+       sector. */
+    const va = VIEW_ALL_SEO[viewAllSector]
+    const title = va
+      ? `${va.lead} (${year}) | InfoWebWorld`
+      : `${shortName} Categories (${year}) - Find Top Companies | InfoWebWorld`
+    const description = va
+      ? `${va.descLead}. Updated ${monthYear}.`
+      : `Every ${shortName} category on InfoWebWorld - browse top companies by topic, read verified reviews, compare pricing & features. Updated ${monthYear}.`
+
+    /* Keyword stack — winnable per-sector cluster first, then browse/temporal
+       modifiers Google + AI engines reward. */
+    const autoKw = va
+      ? [...va.kw, `browse ${lcName}`, `verified ${lcName} listings`, `${lcName} ${year}`]
+      : [
+          `${lcName} categories`,
+          `${lcName} subcategories`,
+          `${lcName} directory`,
+          `${lcName} companies list`,
+          `${lcName} taxonomy`,
+          `browse ${lcName}`,
+          `list of ${lcName} tools`,
+          `${lcName} ${year}`,
+          `find ${lcName}`,
+          `${lcName} comparison`,
+          `verified ${lcName} listings`,
+          `${lcName} marketplace`,
+          `top ${lcName} categories`,
+        ]
+    const keywords = [...new Set([...autoKw, ...meta.seoKeywords.map(k => k.toLowerCase())])].join(', ')
 
     const sectorOgImage = `${DOMAIN}/api/og/${viewAllSector}`
 
@@ -1586,7 +1647,7 @@ export default async function CategoryDetailRoute({
     const l2InSector = l2RowsInSector.length
     const l2IdSet = new Set(l2RowsInSector.map(r => r.id))
     const l3InSector = STATIC_CATEGORIES.filter(
-      r => r.level === 3 && r.parent_id != null && l2IdSet.has(r.parent_id)
+      r => r.level >= 3 && r.sector_slug === viewAllSector2
     ).length
     const totalListingsInSector = STATIC_CATEGORIES.reduce((s, r) => {
       if (r.level === 1 && r.id === sectorId) return s + (r.listing_count || 0)
@@ -1599,6 +1660,7 @@ export default async function CategoryDetailRoute({
     const yearNow = new Date().getFullYear()
     const monthYearNow = currentMonthYear()
     const lcSectorName = sectorName.toLowerCase()
+    const vaSeo = VIEW_ALL_SEO[viewAllSector2]
 
     /* ── Schema graph IDs ── */
     const ID_BREADCRUMB = `${URL_VIEWALL}#breadcrumb`
@@ -1615,9 +1677,9 @@ export default async function CategoryDetailRoute({
       '@type': ['WebPage', 'CollectionPage'],
       '@id': ID_WEBPAGE,
       url: URL_VIEWALL,
-      name: `${sectorName} Categories ${yearNow}`,
-      headline: `${sectorName} Categories — ${l2InSector} Topics, ${l3InSector.toLocaleString()} Subcategories`,
-      description: `Every ${sectorName} category on InfoWebWorld — ${l2InSector} topics and ${l3InSector.toLocaleString()} subcategories inside ${fullSectorName}, every verified company. Updated ${monthYearNow}.`,
+      name: vaSeo ? `${vaSeo.lead} ${yearNow}` : `${sectorName} Categories ${yearNow}`,
+      headline: `${vaSeo ? vaSeo.h1 : `${sectorName} Categories`} - ${l2InSector} Categories, ${l3InSector.toLocaleString()} Subcategories`,
+      description: vaSeo ? `${vaSeo.descLead}. Updated ${monthYearNow}.` : `Every ${sectorName} category on InfoWebWorld - ${l2InSector} topics and ${l3InSector.toLocaleString()} subcategories inside ${fullSectorName}, every verified company. Updated ${monthYearNow}.`,
       inLanguage: 'en-US',
       isPartOf: { '@id': ID_WEBSITE },
       breadcrumb: { '@id': ID_BREADCRUMB },
@@ -1626,7 +1688,7 @@ export default async function CategoryDetailRoute({
         '@type': 'ImageObject',
         url: `${DOMAIN}/api/og/${viewAllSector2}`,
         width: 1200, height: 630,
-        caption: `${sectorName} Categories — InfoWebWorld`,
+        caption: `${sectorName} Categories - InfoWebWorld`,
       },
       about: [
         { '@type': 'Thing', name: sectorName },
@@ -1669,16 +1731,18 @@ export default async function CategoryDetailRoute({
         },
         'query-input': 'required name=search_term_string',
       },
-      keywords: [
-        `${lcSectorName} directory`,
-        `${lcSectorName} categories`,
-        `${lcSectorName} subcategories`,
-        `complete ${lcSectorName} directory`,
-        `browse ${lcSectorName}`,
-        `${lcSectorName} taxonomy`,
-        `${lcSectorName} ${yearNow}`,
-        `${fullSectorName.toLowerCase()} directory`,
-      ].join(', '),
+      keywords: (vaSeo
+        ? [...vaSeo.kw, `browse ${lcSectorName}`, `${lcSectorName} categories`, `${lcSectorName} ${yearNow}`]
+        : [
+            `${lcSectorName} directory`,
+            `${lcSectorName} categories`,
+            `${lcSectorName} subcategories`,
+            `complete ${lcSectorName} directory`,
+            `browse ${lcSectorName}`,
+            `${lcSectorName} taxonomy`,
+            `${lcSectorName} ${yearNow}`,
+            `${fullSectorName.toLowerCase()} directory`,
+          ]).join(', '),
     }
 
     /* ItemList of L2 categories in this sector — Google + LLM citation engines
@@ -1729,7 +1793,7 @@ export default async function CategoryDetailRoute({
       dateModified: new Date().toISOString().split('T')[0],
       variableMeasured: [
         { '@type': 'PropertyValue', name: 'Categories (Level 2)', value: l2InSector },
-        { '@type': 'PropertyValue', name: 'Subcategories (Level 3)', value: l3InSector },
+        { '@type': 'PropertyValue', name: 'Subcategories (Levels 3-5)', value: l3InSector },
         { '@type': 'PropertyValue', name: 'Verified listings', value: totalListingsInSector },
       ],
       spatialCoverage: { '@type': 'Place', name: 'Worldwide' },
@@ -1769,8 +1833,8 @@ export default async function CategoryDetailRoute({
           '@type': 'DefinedTerm',
           '@id': `${URL_VIEWALL}#term-subcategory`,
           name: 'Subcategory',
-          alternateName: 'L3',
-          description: `The precise niche where buyers compare alternatives inside ${sectorName}. ${l3InSector.toLocaleString()} subcategories total.`,
+          alternateName: 'L3-L5',
+          description: `The precise niche where buyers compare alternatives inside ${sectorName}. ${l3InSector.toLocaleString()} subcategories total, across levels 3 to 5.`,
           inDefinedTermSet: { '@id': ID_TERMSET },
         },
       ],
@@ -1799,11 +1863,11 @@ export default async function CategoryDetailRoute({
       },
       {
         q: `How do I find ${lcSectorName} businesses by category?`,
-        a: `Use the search bar on the ${sectorName} Categories page — it searches across every ${lcSectorName} category and subcategory instantly. Or browse the category grid: pick the L2 card closest to your need, then click any L3 subcategory to see all verified businesses listed under it.`,
+        a: `Use the search bar on the ${sectorName} Categories page - it searches across every ${lcSectorName} category and subcategory instantly. Or browse the category grid: pick the category card closest to your need, then drill into any subcategory to see all verified businesses listed under it.`,
       },
       {
-        q: `What's the difference between an L2 category and an L3 subcategory in ${sectorName}?`,
-        a: `An L2 category is a specific market inside ${sectorName} (${l2InSector} total). An L3 subcategory is the precise niche where buyers compare alternatives (${l3InSector.toLocaleString()} total). Listings are tagged to one primary L3 subcategory plus up to two secondary subcategories.`,
+        q: `What's the difference between a category and a subcategory in ${sectorName}?`,
+        a: `A category is a specific market inside ${sectorName} (${l2InSector} total). A subcategory is the precise niche where buyers compare alternatives (${l3InSector.toLocaleString()} total, across levels 3 to 5). Listings are tagged to one primary subcategory plus up to two secondary subcategories.`,
       },
       {
         q: `Are ${sectorName} listings on InfoWebWorld verified?`,
@@ -1857,10 +1921,10 @@ export default async function CategoryDetailRoute({
             <a href="/" aria-label="Home"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a><span> &gt; </span><span>{sectorName} Categories</span>
           </nav>
           <h1 className="cd-server-h1">
-            {sectorName} Categories — {l2InSector} Topics, {l3InSector.toLocaleString()} Subcategories
+            {vaSeo ? vaSeo.h1 : `${sectorName} Categories`} - {l2InSector} Categories, {l3InSector.toLocaleString()} Subcategories
           </h1>
           <p className="cd-server-desc">
-            Every {fullSectorName} category on InfoWebWorld — {l2InSector} topics and {l3InSector.toLocaleString()} subcategories inside {sectorName}. Every verified company, free to browse.
+            Every {fullSectorName} category on InfoWebWorld - {l2InSector} categories and {l3InSector.toLocaleString()} subcategories inside {sectorName}. Every verified company, free to browse.
           </p>
           <h2 className="cd-server-h2">Categories in {sectorName}</h2>
         </div>
@@ -1878,7 +1942,7 @@ export default async function CategoryDetailRoute({
             <div className="cat-seo-tldr-card">
               <span className="cat-seo-tldr-label">What is this page</span>
               <p className="cat-seo-tldr-body">
-                <strong>InfoWebWorld&apos;s complete {sectorName} taxonomy.</strong> {l2InSector}{' '}
+                <strong>InfoWebWorld&apos;s {vaSeo ? vaSeo.tldrLead : `complete ${sectorName} taxonomy`}.</strong> {l2InSector}{' '}
                 categories, {l3InSector.toLocaleString()} subcategories, and{' '}
                 {totalListingsInSector.toLocaleString()} verified businesses inside the{' '}
                 {lcSectorName} sector. Every listing is human-verified, every review is
@@ -1971,7 +2035,7 @@ export default async function CategoryDetailRoute({
                 </p>
               </article>
               <article className="cat-seo-hier-card" itemScope itemType="https://schema.org/DefinedTerm">
-                <span className="cat-seo-hier-level">Level 3</span>
+                <span className="cat-seo-hier-level">Levels 3-5</span>
                 <h3 itemProp="name">Subcategory</h3>
                 <p itemProp="description">
                   The precise niche where buyers compare alternatives inside {sectorName}.{' '}

@@ -70,10 +70,20 @@ const SECTOR_COPY: Record<string, { slug: string; icon: string; color: string; s
 
 const SECTOR_ORDER = ['ai-ml', 'it-services-agencies', 'local-businesses', 'professional-services', 'software-saas', 'startups-innovation'] as const
 
+/* Live taxonomy counts — derived from the generated data file (categories-data.ts)
+   so the advertised numbers never go stale when admin launches new categories.
+   "Subcategories" = every node below a category (Levels 3-5: the deep niches
+   buyers actually compare in). Header at file top: L1=6 L2=120 L3=3054 L4=4827
+   L5=842 → 8,723 subcategories, 8,843 categories+subcategories total. */
+const TAX_SECTORS = CATEGORIES.filter(r => r.level === 1).length        // 6
+const TAX_CATEGORIES = CATEGORIES.filter(r => r.level === 2).length     // 120
+const TAX_SUBCATEGORIES = CATEGORIES.filter(r => r.level >= 3).length   // 8,723 (L3+L4+L5)
+const TAX_TOTAL = TAX_CATEGORIES + TAX_SUBCATEGORIES                    // 8,843
+
 const faqs = [
   {
     q: 'How many business categories does InfoWebWorld cover?',
-    a: 'InfoWebWorld covers 6 top-level sectors, 120 Level-2 categories, and 3,054 Level-3 subcategories across 80+ industries and 12+ countries — for a total of 3,174 business categories. The taxonomy is human-curated and updated as new markets emerge.',
+    a: `InfoWebWorld covers ${TAX_SECTORS} top-level sectors, ${TAX_CATEGORIES} categories, and ${TAX_SUBCATEGORIES.toLocaleString()} subcategories (across three sub-levels) spanning 80+ industries and 12+ countries - for a total of ${TAX_TOTAL.toLocaleString()} categories and subcategories. The taxonomy is human-curated and updated as new markets emerge.`,
   },
   {
     q: 'What are the 6 main business sectors on InfoWebWorld?',
@@ -81,7 +91,7 @@ const faqs = [
   },
   {
     q: 'How is the InfoWebWorld category taxonomy organized?',
-    a: 'Three levels: Sector (L1) is the broad industry grouping like "AI & ML". Category (L2) is a specific market inside a sector, like "AI Chatbots". Subcategory (L3) is the precise niche, like "Customer Support Chatbots". Buyers can search broad or narrow.',
+    a: 'Sectors at the top (like "AI & ML"), then categories inside them (like "AI Chatbots"), then subcategories that drill down through several levels to the exact niche (like "Customer Support Chatbots"). Buyers can search as broad or as narrow as they like.',
   },
   {
     q: 'How do I find a business by category on InfoWebWorld?',
@@ -89,7 +99,7 @@ const faqs = [
   },
   {
     q: 'What is the difference between a sector, a category, and a subcategory?',
-    a: 'A sector is the top-level industry grouping (6 total on InfoWebWorld). A category is a specific market inside a sector (120 total). A subcategory is the precise niche where buyers compare alternatives side by side (3,054 total). Listings are tagged to one primary subcategory plus up to two secondary subcategories.',
+    a: `A sector is the top-level industry grouping (${TAX_SECTORS} total on InfoWebWorld). A category is a specific market inside a sector (${TAX_CATEGORIES} total). A subcategory is the precise niche where buyers compare alternatives side by side (${TAX_SUBCATEGORIES.toLocaleString()} total). Listings are tagged to one primary subcategory plus up to two secondary subcategories.`,
   },
   {
     q: 'Can a business list in more than one category?',
@@ -101,7 +111,7 @@ const faqs = [
   },
   {
     q: 'Are InfoWebWorld business categories country-specific?',
-    a: 'The taxonomy is global — the same 3,174 categories apply across every country. Listings themselves can be filtered by country and city for local discovery.',
+    a: `The taxonomy is global - the same ${TAX_TOTAL.toLocaleString()} categories and subcategories apply across every country. Listings themselves can be filtered by country and city for local discovery.`,
   },
   {
     q: 'How often is the InfoWebWorld category taxonomy updated?',
@@ -115,16 +125,18 @@ const faqs = [
 
 export async function generateMetadata(): Promise<Metadata> {
   const year = new Date().getFullYear()
-  const title = `Business Categories ${year} - 6 Sectors · 120 Categories · 3,054 Subcategories | InfoWebWorld`
-  const description = `Browse the complete InfoWebWorld business directory taxonomy: 6 sectors, 120 categories, 3,054 subcategories across AI & ML, SaaS, IT Services, Startups, Local Businesses, and Professional Services. Verified companies, real reviews, side-by-side comparison.`
+  const title = `Business Directory Categories ${year} - ${TAX_SECTORS} Sectors · ${TAX_CATEGORIES} Categories · ${TAX_SUBCATEGORIES.toLocaleString()} Subcategories | InfoWebWorld`
+  const description = `Browse all business directory categories on InfoWebWorld: ${TAX_SECTORS} sectors, ${TAX_CATEGORIES} categories, ${TAX_SUBCATEGORIES.toLocaleString()} subcategories across AI & ML, SaaS, IT Services, Startups, Local Businesses, and Professional Services. Verified companies, real reviews, side-by-side comparison.`
 
   return {
     title,
     description,
     keywords: [
-      'business categories',
       'business directory categories',
+      'business directory by category',
+      'business categories',
       'list of business categories',
+      'browse businesses by category',
       'complete business taxonomy',
       'industry classification list',
       'B2B business categories list',
@@ -160,8 +172,8 @@ export async function generateMetadata(): Promise<Metadata> {
     ],
     alternates: { canonical: URL_CAT },
     openGraph: {
-      title: `Business Categories - 3,174 Categories Across 6 Sectors`,
-      description: `Browse 6 sectors, 120 categories, and 3,054 subcategories of verified businesses. AI, SaaS, IT, Startups, Local, Professional Services.`,
+      title: `Business Directory Categories - ${TAX_TOTAL.toLocaleString()} Across ${TAX_SECTORS} Sectors`,
+      description: `Browse ${TAX_SECTORS} sectors, ${TAX_CATEGORIES} categories, and ${TAX_SUBCATEGORIES.toLocaleString()} subcategories of verified businesses. AI, SaaS, IT, Startups, Local, Professional Services.`,
       url: URL_CAT,
       siteName: 'InfoWebWorld',
       type: 'website',
@@ -170,8 +182,8 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: 'summary_large_image',
-      title: `Business Categories - 3,174 Categories Across 6 Sectors`,
-      description: `6 sectors · 120 categories · 3,054 subcategories. AI, SaaS, IT, Startups, Local, Pro Services.`,
+      title: `Business Directory Categories - ${TAX_TOTAL.toLocaleString()} Across ${TAX_SECTORS} Sectors`,
+      description: `${TAX_SECTORS} sectors · ${TAX_CATEGORIES} categories · ${TAX_SUBCATEGORIES.toLocaleString()} subcategories. AI, SaaS, IT, Startups, Local, Pro Services.`,
       images: [`${BASE_URL}/og-image.png`],
     },
     robots: {
@@ -192,8 +204,8 @@ export async function generateMetadata(): Promise<Metadata> {
       'article:published_time': '2026-04-24T11:11:04Z',
       'article:modified_time': new Date().toISOString(),
       /* Dublin Core — niche but parsed by academic + some news crawlers. */
-      'DC.title': `Business Categories — InfoWebWorld`,
-      'DC.description': `6 sectors, 120 categories, 3,054 subcategories of verified businesses.`,
+      'DC.title': `Business Directory Categories - InfoWebWorld`,
+      'DC.description': `${TAX_SECTORS} sectors, ${TAX_CATEGORIES} categories, ${TAX_SUBCATEGORIES.toLocaleString()} subcategories of verified businesses.`,
       'DC.creator': 'Brain Stream Australia Pty Ltd',
       'DC.publisher': 'InfoWebWorld',
       'DC.subject': 'business directory, industry taxonomy, SaaS, AI tools, IT services',
@@ -219,7 +231,7 @@ export default async function CategoriesPage() {
   const l1Rows = CATEGORIES.filter(r => r.level === 1)
   const sectors = l1Rows.length
   const l2Count = CATEGORIES.filter(r => r.level === 2).length
-  const l3Count = CATEGORIES.filter(r => r.level === 3).length
+  const l3Count = CATEGORIES.filter(r => r.level >= 3).length // L3+L4+L5 — every node below a category
   const totalListings = CATEGORIES.reduce((s, r) => s + (r.listing_count || 0), 0)
 
   /* Map L1 slug -> live data so the sector list reflects the actual taxonomy. */
@@ -236,14 +248,14 @@ export default async function CategoriesPage() {
         short: copy.short,
         long: copy.long,
         l2Children: CATEGORIES.filter(r => r.level === 2 && r.sector_slug === slug).length,
-        l3Children: CATEGORIES.filter(r => r.level === 3 && r.sector_slug === slug).length,
+        l3Children: CATEGORIES.filter(r => r.level >= 3 && r.sector_slug === slug).length,
       }
     })
     .filter((s): s is NonNullable<typeof s> => s !== null)
 
   const year = new Date().getFullYear()
-  const title = `Business Categories ${year} - 6 Sectors · 120 Categories · 3,054 Subcategories | InfoWebWorld`
-  const description = `Browse the complete InfoWebWorld business directory taxonomy: 6 sectors, 120 categories, 3,054 subcategories across AI & ML, SaaS, IT Services, Startups, Local Businesses, and Professional Services. Verified companies, real reviews, side-by-side comparison.`
+  const title = `Business Directory Categories ${year} - ${TAX_SECTORS} Sectors · ${TAX_CATEGORIES} Categories · ${TAX_SUBCATEGORIES.toLocaleString()} Subcategories | InfoWebWorld`
+  const description = `Browse all business directory categories on InfoWebWorld: ${TAX_SECTORS} sectors, ${TAX_CATEGORIES} categories, ${TAX_SUBCATEGORIES.toLocaleString()} subcategories across AI & ML, SaaS, IT Services, Startups, Local Businesses, and Professional Services. Verified companies, real reviews, side-by-side comparison.`
 
   /* ── Schema graph ── */
   const ID_BREADCRUMB = `${URL_CAT}#breadcrumb`
@@ -380,7 +392,7 @@ export default async function CategoriesPage() {
     variableMeasured: [
       { '@type': 'PropertyValue', name: 'Sectors', value: sectors },
       { '@type': 'PropertyValue', name: 'Categories (Level 2)', value: l2Count },
-      { '@type': 'PropertyValue', name: 'Subcategories (Level 3)', value: l3Count },
+      { '@type': 'PropertyValue', name: 'Subcategories (Levels 3-5)', value: l3Count },
       { '@type': 'PropertyValue', name: 'Total taxonomy rows', value: CATEGORIES.length },
     ],
     spatialCoverage: { '@type': 'Place', name: 'Worldwide' },
@@ -418,8 +430,8 @@ export default async function CategoriesPage() {
         '@type': 'DefinedTerm',
         '@id': `${URL_CAT}#term-subcategory`,
         name: 'Subcategory',
-        alternateName: 'L3',
-        description: 'A precise niche inside a category. Example: "Customer Support Chatbots" sits inside "AI Chatbots". InfoWebWorld has 3,054 subcategories.',
+        alternateName: 'L3-L5',
+        description: `A precise niche inside a category. Example: "Customer Support Chatbots" sits inside "AI Chatbots". InfoWebWorld has ${TAX_SUBCATEGORIES.toLocaleString()} subcategories across Levels 3 to 5.`,
         inDefinedTermSet: { '@id': ID_TERMSET },
       },
     ],
@@ -431,7 +443,7 @@ export default async function CategoriesPage() {
     description: 'Four steps to find verified businesses by industry category on InfoWebWorld — search by keyword, browse by sector, drill into a subcategory, and compare alternatives.',
     totalTime: 'PT2M',
     steps: [
-      { name: 'Open the categories page', text: 'Go to the InfoWebWorld categories page to see all 6 sectors and 3,054 subcategories.', url: URL_CAT },
+      { name: 'Open the categories page', text: `Go to the InfoWebWorld categories page to see all ${TAX_SECTORS} sectors and ${TAX_SUBCATEGORIES.toLocaleString()} subcategories.`, url: URL_CAT },
       { name: 'Search by keyword', text: 'Type a product, problem, or industry keyword in the search bar — for example "AI chatbot", "CRM", or "cybersecurity consultant". The search matches across all categories instantly.' },
       { name: 'Or browse by sector', text: 'Click any of the 6 sector cards to expand its categories and subcategories. Pick the subcategory closest to what you need.' },
       { name: 'Compare verified businesses', text: 'On the subcategory page, see all verified businesses listed there. Filter by location, plan tier, and rating; click any listing for the full profile, reviews, and direct contact.' },
@@ -478,7 +490,7 @@ export default async function CategoriesPage() {
           <a href="/">Home</a> / Business Categories
         </nav>
         <h1 className="cd-server-h1">
-          Business Categories — {sectors} Sectors, {l2Count.toLocaleString()} Categories, {l3Count.toLocaleString()} Subcategories
+          Business Directory Categories - {sectors} Sectors, {l2Count.toLocaleString()} Categories, {l3Count.toLocaleString()} Subcategories
         </h1>
         <p className="cd-server-desc">
           The complete InfoWebWorld business directory taxonomy. Browse {sectors} sectors,
@@ -549,7 +561,7 @@ export default async function CategoriesPage() {
           <header className="cat-seo-head">
             <h2 className="cat-seo-h2">How the Hierarchy Works</h2>
             <p className="cat-seo-section-desc">
-              InfoWebWorld uses a 3-level taxonomy so buyers can search broad or narrow without
+              InfoWebWorld uses a multi-level taxonomy so buyers can search broad or narrow without
               losing relevance.
             </p>
           </header>
@@ -572,7 +584,7 @@ export default async function CategoriesPage() {
               </p>
             </article>
             <article className="cat-seo-hier-card" itemScope itemType="https://schema.org/DefinedTerm">
-              <span className="cat-seo-hier-level">Level 3</span>
+              <span className="cat-seo-hier-level">Levels 3-5</span>
               <h3 itemProp="name">Subcategory</h3>
               <p itemProp="description">
                 The precise niche where buyers compare alternatives.{' '}

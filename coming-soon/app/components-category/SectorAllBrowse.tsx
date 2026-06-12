@@ -141,8 +141,7 @@ export default function SectorAllBrowse({ sectorSlug }: { sectorSlug: string }) 
 
   const stats = useMemo(() => ({
     l2: sectorCats.filter(c => c.level === 2).length,
-    l3: sectorCats.filter(c => c.level === 3).length,
-    deep: sectorCats.filter(c => c.level >= 4).length,
+    l3: sectorCats.filter(c => c.level >= 3).length, // every subcategory below a category (L3-L5)
   }), [sectorCats])
 
   /* Click outside closes dropdown — same UX as sector landing HeroSearch. */
@@ -236,9 +235,8 @@ export default function SectorAllBrowse({ sectorSlug }: { sectorSlug: string }) 
           {/* Stat pills */}
           <div className="cb-hero-pills">
             {[
-              { n: stats.l2, l: 'L1 Categories', c: meta.color },
-              { n: stats.l3, l: 'L2 sub categories', c: '#8B5CF6' },
-              { n: stats.deep, l: 'L3/L4/L5 sub categories', c: '#E8553D' },
+              { n: stats.l2, l: 'Categories', c: meta.color },
+              { n: stats.l3, l: 'Subcategories', c: '#8B5CF6' },
             ].filter(s => s.n > 0).map(s => (
               <span key={s.l} className="cb-hero-pill" style={{ '--pc': s.c } as React.CSSProperties}>
                 <strong>{s.n.toLocaleString()}</strong> {s.l}
