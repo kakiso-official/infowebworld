@@ -160,7 +160,14 @@ ${body}`
     return Response.json({ ok: false, error: 'Unknown mode.' }, { status: 400 })
   } catch (err) {
     console.error('blog ai error:', err)
-    const msg = err instanceof Error ? err.message : 'AI request failed'
-    return Response.json({ ok: false, error: msg.includes('GEMINI_API_KEY') ? 'AI is not configured on the server.' : 'AI request failed. Try again.' }, { status: 500 })
+    const msg = err instanceof Error ? err.message : String(err)
+    /* Admin-only route — surface the real upstream reason so a bad/missing key
+       or model issue is obvious without digging through Vercel logs. */
+    const friendly = msg.includes('GEMINI_API_KEY')
+      ? 'AI is not configured: GEMINI_API_KEY is missing on the server.'
+      : /api[_ ]?key|invalid|unauthor|401|403|permission|denied/i.test(msg)
+        ? `Gemini rejected the request - almost always a bad/incorrect API key. Upstream: ${msg.slice(0, 200)}`
+        : `AI request failed. Upstream: ${msg.slice(0, 200)}`
+    return Response.json({ ok: false, error: friendly }, { status: 500 })
   }
 }
