@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server'
 import { requireAdmin } from '@/lib/auth'
 import { CATEGORIES, type StaticCategoryRow } from '@/app/config/categories-data'
 import { getPublishedPosts } from '@/lib/blog'
-import { groqChat } from '@/lib/ai'
+import { geminiChat } from '@/lib/ai'
 
 /* ════════════════════════════════════════════════════════════════════════
    Blog AI assist (Gemini 2.5 Flash). Two modes:
@@ -16,10 +16,10 @@ import { groqChat } from '@/lib/ai'
    ════════════════════════════════════════════════════════════════════════ */
 export const dynamic = 'force-dynamic'
 
-/* Backed by Groq (Llama 3.3 70B). Thin wrapper so the call sites below read
-   unchanged — provider swapped from Gemini. */
+/* Backed by Google Gemini (gemini-2.5-flash). Thin wrapper so the call sites
+   below read unchanged. */
 async function callAI(prompt: string, temperature = 0.3): Promise<string> {
-  return groqChat({ prompt, temperature, maxTokens: 8192 })
+  return geminiChat({ prompt, temperature, maxTokens: 8192 })
 }
 
 function stripFences(s: string): string {
@@ -161,6 +161,6 @@ ${body}`
   } catch (err) {
     console.error('blog ai error:', err)
     const msg = err instanceof Error ? err.message : 'AI request failed'
-    return Response.json({ ok: false, error: msg.includes('GROQ_API_KEY') ? 'AI is not configured on the server.' : 'AI request failed. Try again.' }, { status: 500 })
+    return Response.json({ ok: false, error: msg.includes('GEMINI_API_KEY') ? 'AI is not configured on the server.' : 'AI request failed. Try again.' }, { status: 500 })
   }
 }
