@@ -184,6 +184,21 @@ async function getCompanyBySlug(slug: string) {
   }
   if (!company) return null
 
+  /* Breadcrumb — walk the category ancestry (L1 → leaf) so the company page
+     renders the same crumb trail as the product page. */
+  interface CrumbCat { id: number; name: string; slug: string; parent_id: number | null }
+  const breadcrumb: { name: string; slug: string }[] = []
+  let crumbId: number | null = company.category_id
+  for (let hop = 0; crumbId && hop < 8; hop++) {
+    const cat: CrumbCat | null = await queryOne<CrumbCat>(
+      'SELECT id, name, slug, parent_id FROM categories WHERE id = ? LIMIT 1',
+      [crumbId]
+    )
+    if (!cat) break
+    breadcrumb.unshift({ name: cat.name, slug: cat.slug })
+    crumbId = cat.parent_id
+  }
+
   /* Products made by this company — for the "Products by us" section.
      Match by parent_company_id (set automatically on submit since S36) OR
      by same user_id (covers legacy products created before the migration
@@ -396,6 +411,7 @@ async function getCompanyBySlug(slug: string) {
 
   return {
     company,
+    breadcrumb,
     products,
     similarCompanies,
     popularTools,
@@ -506,6 +522,7 @@ export default async function ProfilePage({
   const jsonLd = buildJsonLd(data.company, data.reviews)
   const initialData = serialize({
     company: data.company as unknown as Record<string, unknown>,
+    breadcrumb: data.breadcrumb,
     products: data.products as unknown as Record<string, unknown>[],
     similarCompanies: data.similarCompanies as unknown as Record<string, unknown>[],
     popularTools: data.popularTools as unknown as Record<string, unknown>[],

@@ -5,6 +5,8 @@ import { useEffect, useRef, useState } from 'react'
 export type CompanyHit = {
   id: number
   slug: string
+  /** 'product' → /listing/<slug> · 'company' → /profile/<slug>. */
+  mode: 'product' | 'company'
   companyName: string
   tagline: string | null
   logoUrl: string | null
@@ -32,7 +34,7 @@ export default function CompanyPicker({ onPick }: { onPick: (c: CompanyHit) => v
     setLoading(true)
     debounce.current = setTimeout(async () => {
       try {
-        const r = await fetch(`/api/search/companies?q=${encodeURIComponent(trimmed)}`)
+        const r = await fetch(`/api/search/companies?q=${encodeURIComponent(trimmed)}&mode=all`)
         const j = await r.json()
         if (j.ok) setResults(j.results || [])
         else setError(j.error || 'Search failed')

@@ -220,23 +220,43 @@
 .cmp-head-rating-count:hover { border-bottom-color: var(--cmp-line-mid); }
 /* "Be the first to review" link — quiet but tappable. Replaces 5 dead
    outline stars in the no-review state. */
-.cmp-head-rating-empty {
-  font-size: 12.5px; font-weight: 600;
-  color: var(--cmp-red);
+/* No-review CTA in the head — a clean accent pill (replaces the plain
+   "Be the first to review →" text link). */
+.cmp-head-rating-cta {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1.5px solid var(--cmp-accent-border);
+  background: var(--cmp-accent-soft);
+  color: var(--cmp-accent);
+  font-size: 12px; font-weight: 700;
   text-decoration: none;
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 2px 0;
+  transition: background .15s, border-color .15s, color .15s;
 }
-.cmp-head-rating-empty:hover { text-decoration: underline; }
+.cmp-head-rating-cta svg { font-size: 11px; }
+.cmp-head-rating-cta:hover {
+  background: var(--cmp-accent);
+  border-color: var(--cmp-accent);
+  color: #fff;
+}
 
-.cmp-head-awards { display: inline-flex; align-items: center; gap: 4px; color: var(--cmp-accent); }
-.cmp-head-award { display: inline-flex; align-items: center; }
-.cmp-head-award svg { display: block; }
-.cmp-head-award-more {
-  font-size: 11px; font-weight: 800;
-  color: var(--cmp-mute);
-  margin-left: 2px;
+/* Awards signal in the head — one compact gold pill that anchors down to
+   the full "Awards & recognition" strip in the body. Replaces the row of
+   anonymous trophy icons (which read as decoration, not information). */
+.cmp-head-awards {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px 3px 8px;
+  background: rgba(241, 181, 0, .12);
+  border: 1px solid rgba(241, 181, 0, .38);
+  border-radius: 999px;
+  color: #8A6D00;
+  font-size: 12px; font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background .15s, border-color .15s;
 }
+.cmp-head-awards svg { color: #E0A800; flex-shrink: 0; font-size: 13px; }
+.cmp-head-awards:hover { background: rgba(241, 181, 0, .2); border-color: rgba(241, 181, 0, .6); }
 .cmp-head-network {
   display: inline-flex; align-items: center; gap: 5px;
   font-size: 13px;
@@ -271,8 +291,8 @@
 }
 
 /* Stars — Clutch yellow */
-.cmp-stars { display: inline-flex; line-height: 1; letter-spacing: -1px; }
-.cmp-star { color: var(--cmp-line-mid); font-size: 14px; }
+.cmp-stars { display: inline-flex; align-items: center; gap: 1.5px; line-height: 1; font-size: 14px; }
+.cmp-star { color: var(--cmp-line-mid); }
 .cmp-star.is-on { color: #F1B500; }
 
 /* CTA row — wraps on narrow viewports without breaking button widths.
@@ -282,9 +302,11 @@
   gap: 8px;
 }
 .cmp-head-cta .cmp-btn { flex-shrink: 0; }
-@media (max-width: 480px) {
-  .cmp-head-cta { width: 100%; }
-  .cmp-head-cta .cmp-btn { flex: 1 1 auto; min-width: 130px; }
+@media (max-width: 600px) {
+  /* Stack the CTAs full-width — big tap targets, and "Join their Network"
+     never clips on narrow screens the way a 2-up row would. */
+  .cmp-head-cta { width: 100%; flex-direction: column; align-items: stretch; gap: 8px; }
+  .cmp-head-cta .cmp-btn { width: 100%; height: 44px; font-size: 13.5px; }
 }
 .cmp-contact-wrap { position: relative; }
 .cmp-contact-btn { padding: 0 14px; }
@@ -470,7 +492,6 @@
 .cmp-stat-val svg {
   color: var(--cmp-mute);
   flex-shrink: 0;
-  width: 14px; height: 14px;
 }
 .cmp-stat--hiring .cmp-stat-val { color: #0E8F6E; }
 .cmp-stat--hiring .cmp-stat-val svg { color: #0E8F6E; }
@@ -1065,6 +1086,7 @@
   border-radius: 8px;
   color: var(--cmp-mute);
   border: 1px solid var(--cmp-line);
+  font-size: 16px;
   transition: color .15s, border-color .15s;
 }
 .cmp-connect-socials a:hover { color: var(--cmp-ink); border-color: var(--cmp-line-strong); }
@@ -1368,3 +1390,326 @@
   color: var(--cmp-red);
 }
 .cmp-vs-foot svg { width: 12px; height: 12px; }
+
+/* ═══════════════════════════════════════════════════════════
+   Inline video — YouTube facade (poster → click → iframe).
+   16:9 responsive frame so it never overflows its column.
+   ═══════════════════════════════════════════════════════════ */
+.cmp-video { margin-top: 16px; max-width: 460px; }
+.cmp-video-head {
+  display: inline-flex; align-items: center; gap: 7px;
+  margin-bottom: 8px;
+  font-size: 13px; font-weight: 700;
+  color: var(--cmp-ink);
+}
+.cmp-video-head-ico {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px;
+  border-radius: 999px;
+  background: var(--cmp-red); color: #fff;
+  font-size: 9px;
+  padding-left: 2px;
+}
+.cmp-video-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+  border: 1px solid var(--cmp-line);
+}
+.cmp-video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.cmp-video-poster {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  padding: 0; border: 0; cursor: pointer;
+  background-color: #000;
+  background-size: cover; background-position: center;
+  display: flex; align-items: center; justify-content: center;
+}
+.cmp-video-poster::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: rgba(0, 0, 0, .16);
+  transition: background .15s;
+}
+.cmp-video-poster:hover::after { background: rgba(0, 0, 0, .04); }
+.cmp-video-play {
+  position: relative; z-index: 1;
+  width: 64px; height: 64px;
+  border-radius: 999px;
+  display: grid; place-items: center;
+  background: #E50914; color: #fff;
+  font-size: 24px;
+  padding-left: 4px; /* optical-center the play triangle */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .4);
+  transition: transform .15s, background .15s;
+}
+.cmp-video-poster:hover .cmp-video-play { transform: scale(1.08); background: #F6121D; }
+
+/* ═══════════════════════════════════════════════════════════
+   Awards & recognition — gold rosette medal cards (clean white
+   cards + gold rail, not muddy gold-on-gold tiles).
+   ═══════════════════════════════════════════════════════════ */
+.cmp-awards {
+  margin-top: clamp(18px, 2vw, 24px);
+  padding-top: clamp(16px, 2vw, 20px);
+  border-top: 1px solid var(--cmp-line);
+  scroll-margin-top: 84px;
+}
+.cmp-awards-head {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 12px;
+}
+.cmp-awards-head-ico { display: inline-flex; flex-shrink: 0; color: #E0A800; font-size: 15px; }
+.cmp-awards-head-title {
+  font-size: 11px; font-weight: 800;
+  letter-spacing: .09em; text-transform: uppercase;
+  color: var(--cmp-mute);
+}
+.cmp-awards-head-count {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 18px; height: 18px; padding: 0 5px;
+  border-radius: 999px;
+  background: rgba(241, 181, 0, .16);
+  color: #8A6D00;
+  font-size: 11px; font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+/* Big medallion row — circular gold coin badges, name + year under each. */
+.cmp-awards-row {
+  display: flex; flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px 22px;
+}
+.cmp-medal {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 8px;
+  width: 108px;
+  text-align: center;
+}
+.cmp-medal-badge {
+  width: 74px; height: 74px;
+  border-radius: 999px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: #B5800A; font-size: 30px;
+  background: radial-gradient(circle at 50% 33%, #FFF6D6 0%, #F6D982 46%, #E9BC4C 100%);
+  box-shadow:
+    0 6px 16px rgba(196, 146, 0, .26),
+    inset 0 0 0 2px rgba(255, 255, 255, .6),
+    inset 0 0 0 3.5px rgba(220, 164, 0, .5);
+  transition: transform .16s, box-shadow .16s;
+}
+.cmp-medal:hover .cmp-medal-badge {
+  transform: translateY(-3px);
+  box-shadow:
+    0 12px 24px rgba(196, 146, 0, .34),
+    inset 0 0 0 2px rgba(255, 255, 255, .6),
+    inset 0 0 0 3.5px rgba(220, 164, 0, .6);
+}
+.cmp-medal-badge svg { filter: drop-shadow(0 1px 1px rgba(140, 100, 0, .35)); }
+.cmp-medal-name {
+  font-size: 12px; font-weight: 700;
+  color: var(--cmp-ink); line-height: 1.3;
+  display: -webkit-box; -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3; overflow: hidden;
+}
+.cmp-medal-year { font-size: 11px; font-weight: 800; color: #8A6D00; }
+
+/* ═══════════════════════════════════════════════════════════
+   Reviews — rating summary + recent cards + empty state.
+   ═══════════════════════════════════════════════════════════ */
+.cmp-reviews { scroll-margin-top: 84px; }
+.cmp-reviews-head {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px 16px;
+  margin-bottom: clamp(16px, 2vw, 22px);
+}
+.cmp-reviews-head-l { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.cmp-reviews-agg { display: inline-flex; align-items: center; gap: 10px; }
+.cmp-reviews-agg-num {
+  font-size: 30px; font-weight: 800; letter-spacing: -.02em;
+  color: var(--cmp-ink); line-height: 1;
+}
+.cmp-reviews-agg-r { display: flex; flex-direction: column; gap: 3px; }
+.cmp-reviews-agg-r .cmp-stars { font-size: 15px; }
+.cmp-reviews-agg-count { font-size: 12.5px; font-weight: 600; color: var(--cmp-mute); }
+.cmp-reviews-cta { flex-shrink: 0; }
+
+.cmp-reviews-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.cmp-review {
+  display: flex; flex-direction: column; gap: 9px;
+  padding: 16px;
+  background: var(--cmp-bg);
+  border: 1px solid var(--cmp-line);
+  border-radius: 12px;
+}
+.cmp-review-top { display: flex; align-items: center; gap: 10px; }
+.cmp-review-avatar {
+  flex-shrink: 0;
+  width: 36px; height: 36px; border-radius: 999px; overflow: hidden;
+  background: var(--cmp-bg-soft); border: 1px solid var(--cmp-line);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; color: var(--cmp-accent);
+}
+.cmp-review-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.cmp-review-who { display: flex; flex-direction: column; min-width: 0; margin-right: auto; }
+.cmp-review-author { font-size: 13.5px; font-weight: 700; color: var(--cmp-ink); }
+.cmp-review-date { font-size: 11.5px; color: var(--cmp-mute); }
+.cmp-review-stars { flex-shrink: 0; }
+.cmp-review-stars .cmp-stars { font-size: 14px; }
+.cmp-review-title {
+  margin: 0;
+  font-size: 14.5px; font-weight: 800; letter-spacing: -.01em;
+  color: var(--cmp-ink); line-height: 1.3;
+}
+.cmp-review-body {
+  margin: 0;
+  font-size: 13.5px; line-height: 1.6; color: var(--cmp-ink-soft);
+  display: -webkit-box; -webkit-box-orient: vertical;
+  -webkit-line-clamp: 6; overflow: hidden;
+}
+
+.cmp-reviews-empty {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 6px; text-align: center;
+  padding: 36px 24px;
+  background: var(--cmp-bg-soft);
+  border: 1px dashed var(--cmp-line-mid);
+  border-radius: 14px;
+}
+.cmp-reviews-empty-ico {
+  display: grid; place-items: center;
+  width: 52px; height: 52px;
+  margin-bottom: 6px;
+  border-radius: 999px;
+  background: var(--cmp-accent-soft);
+  color: var(--cmp-accent);
+  font-size: 22px;
+}
+.cmp-reviews-empty-cta { margin-top: 4px; }
+.cmp-reviews-empty-title { margin: 0; font-size: 17px; font-weight: 800; color: var(--cmp-ink); }
+.cmp-reviews-empty-sub { margin: 0 0 10px; font-size: 13.5px; color: var(--cmp-mute); max-width: 420px; }
+
+/* ═══════════════════════════════════════════════════════════
+   MOBILE polish — phones get a first-class layout, not a
+   squeezed desktop. Layered after the per-section rules above.
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 720px) {
+  .cmp-reviews-list { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  /* Tighter heading + meta */
+  .cmp-head-name { font-size: 19px; gap: 8px; }
+  .cmp-head-meta { gap: 6px 12px; }
+
+  /* Video spans the column */
+  .cmp-video { max-width: 100%; }
+
+  /* Reviews: full-width CTA, summary keeps its line */
+  .cmp-reviews-head { gap: 12px; }
+  .cmp-reviews-cta { width: 100%; }
+
+  /* Range bar buckets breathe — wrap text + grow vertically instead of
+     clipping the dollar ranges into 4 tiny unreadable cells. */
+  .cmp-range-cell {
+    height: auto; min-height: 40px;
+    padding: 6px 6px;
+    font-size: 10px; line-height: 1.25;
+    white-space: normal;
+  }
+
+  /* Calmer section rhythm on small screens */
+  .cmp-section { padding-top: 26px; padding-bottom: 26px; }
+}
+@media (max-width: 420px) {
+  .cmp-head-grid { grid-template-columns: 56px 1fr; gap: 12px; }
+  .cmp-head-logo { width: 56px; height: 56px; }
+  .cmp-awards-row { gap: 16px 14px; }
+  .cmp-medal { width: 92px; }
+  .cmp-medal-badge { width: 64px; height: 64px; }
+  .cmp-reviews-agg-num { font-size: 26px; }
+  .cmp-pf-card-name { font-size: 19px; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Breadcrumb — L1 → … → leaf → company (mirrors the product page).
+   ═══════════════════════════════════════════════════════════ */
+.cmp-crumb-bar {
+  background: var(--cmp-bg-soft);
+  border-bottom: 1px solid var(--cmp-line);
+  padding: 10px 0;
+}
+.cmp-crumb-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 32px);
+}
+.cmp-crumb {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--cmp-mute);
+}
+.cmp-crumb a {
+  display: inline-flex; align-items: center;
+  color: var(--cmp-mute);
+  font-weight: 500;
+  text-decoration: none;
+}
+.cmp-crumb a:hover { color: var(--cmp-accent); }
+.cmp-crumb-sep { display: inline-flex; align-items: center; color: #9CA3AF; font-size: 10px; }
+.cmp-crumb-current {
+  color: var(--cmp-ink); font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px;
+}
+@media (max-width: 600px) {
+  .cmp-crumb { font-size: 12px; gap: 6px; }
+  .cmp-crumb-current { max-width: 180px; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Pricing Snapshot — hero band (headline numbers) + details.
+   ═══════════════════════════════════════════════════════════ */
+.cmp-snap-hero {
+  padding: clamp(18px, 2.4vw, 26px) clamp(18px, 2.5vw, 28px);
+  background:
+    linear-gradient(135deg, var(--cmp-accent-soft) 0%, rgba(255, 255, 255, 0) 62%),
+    linear-gradient(180deg, var(--cmp-bg-soft), var(--cmp-bg));
+  border-bottom: 1px solid var(--cmp-line);
+}
+.cmp-snap-hero-title {
+  margin: 0 0 16px;
+  font-size: 12px; font-weight: 800;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--cmp-mute);
+}
+.cmp-snap-hero-stats {
+  display: flex; flex-wrap: wrap;
+  gap: 16px 40px;
+  align-items: flex-end;
+}
+.cmp-snap-hstat { display: flex; flex-direction: column; gap: 5px; }
+.cmp-snap-hstat-val {
+  font-size: clamp(24px, 3.4vw, 34px); font-weight: 800;
+  letter-spacing: -.025em; line-height: 1;
+  color: var(--cmp-ink);
+  display: inline-flex; align-items: baseline; gap: 5px;
+}
+.cmp-snap-hstat-val small { font-size: 16px; font-weight: 700; color: var(--cmp-mute); }
+.cmp-snap-hstat-star { color: #F1B500; font-size: .68em; }
+.cmp-snap-hstat-lbl {
+  font-size: 11.5px; font-weight: 600;
+  letter-spacing: .02em;
+  color: var(--cmp-mute);
+}
+.cmp-snap-body {
+  padding: clamp(18px, 2.2vw, 24px);
+  display: flex; flex-direction: column;
+  gap: clamp(18px, 2.2vw, 24px);
+}

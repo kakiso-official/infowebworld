@@ -9,6 +9,14 @@ import LeadFormModal from '../listing/LeadFormModal'
 import SignupModal from '../components/auth/SignupModal'
 import { withInfoWebWorldUtm } from '../lib/utm'
 import { trackWebsiteClick } from '../lib/track-website-click'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faGlobe, faLocationDot, faUsers, faUserGroup, faCalendarDays, faEnvelope,
+  faArrowRight, faPlus, faCheck, faTrophy, faCircleInfo, faFolderOpen,
+  faRightLeft, faUserPlus, faClock, faPlay, faBookmark,
+  faCircleCheck, faAward, faStar, faHouse, faChevronRight, faPenToSquare,
+} from '@fortawesome/free-solid-svg-icons'
+import { faLinkedinIn, faXTwitter, faFacebookF } from '@fortawesome/free-brands-svg-icons'
 
 /* ═══════════════════════════════════════════════════════════════════════════
    /profile/[slug] — Clutch.co-style company profile.
@@ -91,6 +99,7 @@ interface ProductRow {
 
 interface InitialData {
   company: Record<string, unknown>
+  breadcrumb?: { name: string; slug: string }[]
   products: Record<string, unknown>[]
   similarCompanies?: Record<string, unknown>[]
   popularTools?: Record<string, unknown>[]
@@ -180,85 +189,31 @@ const PIE_PALETTE = [
   '#82CFA0', '#A6D86E', '#C8DC52', '#5BB39A', '#8BCBC1',
 ]
 
-const STAR_FULL = '★'
-const STAR_EMPTY = '☆'
+/* Stars render Font Awesome faStar — see the <Stars> component. */
 
-/* ── Inline icon set ─────────────────────────────────────────────── */
-const SI = (props: { d: string; size?: number; sw?: number }) => (
-  <svg viewBox="0 0 24 24" width={props.size || 16} height={props.size || 16}
-       fill="none" stroke="currentColor" strokeWidth={props.sw || 2}
-       strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d={props.d} />
-  </svg>
-)
-const Globe   = () => <SI d="M12 2a10 10 0 100 20 10 10 0 000-20zM2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20" />
-const MapPin  = () => <SI d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
-const Users   = () => <SI d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 7a4 4 0 100 8 4 4 0 000-8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
-const Calendar= () => <SI d="M19 4H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2zM3 10h18M16 2v4M8 2v4" />
-const Mail    = () => <SI d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zM22 6l-10 7L2 6" />
-const Phone   = () => <SI d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
-const Linkedin= () => <SI d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6zM2 9h4v12H2zM4 2a2 2 0 100 4 2 2 0 000-4z" />
-const Twitter = () => <SI d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z" />
-const Facebook= () => <SI d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
-const Arrow   = () => <SI d="M7 17L17 7M7 7h10v10" />
-const Plus    = () => <SI d="M12 5v14M5 12h14" />
-const Check   = () => <SI d="M5 12l5 5 9-11" />
-const Trophy  = () => (
-  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-    <path fill="currentColor" opacity=".18" d="M6 4h12v3a6 6 0 0 1-12 0V4Z"/>
-    <path fill="currentColor" d="M8 4h8v3a4 4 0 0 1-8 0V4Z"/>
-    <path fill="currentColor" d="M10 12h4l1 4H9l1-4Zm-3 5h10v2H7v-2Z"/>
-  </svg>
-)
-const PeopleSm= () => (
-  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M22 21v-2a4 4 0 0 0-3-3.87M9 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm7 .13a4 4 0 0 1 0 7.75"/>
-  </svg>
-)
-/* SVGs ported verbatim from ListingDetailPage.tsx — using the SAME
-   tlp-* class names so visually the cross-marketing sections match the
-   product page pixel-for-pixel. */
-function InfoIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="1.8" />
-      <path d="M12 11v5M12 7.5v.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    </svg>
-  )
-}
-function FolderIcon() {
-  return (
-    <svg viewBox="0 0 48 48" width="28" height="28" aria-hidden="true">
-      <path fill="none" stroke="#0C9A9A" strokeWidth="1.8" strokeLinejoin="round"
-        d="M6 14h12l3 4h21v22H6z" />
-      <path fill="none" stroke="#0C9A9A" strokeWidth="1.8" strokeLinejoin="round" opacity=".55"
-        d="M6 14l3 4h12l3 4h18" />
-    </svg>
-  )
-}
-function BracketIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
-      <path fill="none" stroke="#9CA3AF" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"
-        d="M9 5H6v14h3M15 5h3v14h-3" />
-    </svg>
-  )
-}
-const Spark   = () => <SI d="M12 2v6M12 16v6M2 12h6M16 12h6M5 5l4 4M15 15l4 4M5 19l4-4M15 9l4-4" sw={1.6} />
-const Play    = () => (
-  <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-    <path fill="currentColor" d="M8 5v14l11-7L8 5Z" />
-  </svg>
-)
-const ChevDown= () => <SI d="M6 9l6 6 6-6" />
-const Bookmark= ({ filled }: { filled?: boolean }) => filled ? (
-  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M6 3h12a1 1 0 011 1v17l-7-4-7 4V4a1 1 0 011-1Z" /></svg>
-) : <SI d="M19 21l-7-4-7 4V4a1 1 0 011-1h12a1 1 0 011 1v17z" />
-const VerifiedShield = ({ size = 18 }: { size?: number }) => (
-  <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">
-    <path fill="#0E8F6E" d="M12 2 4 5.5v5c0 5.2 3.4 9.6 8 10.5 4.6-.9 8-5.3 8-10.5v-5L12 2Zm-1.2 13.7-3.5-3.5 1.5-1.5 2 2 5-5 1.5 1.5-6.5 6.5Z"/>
-  </svg>
-)
+/* ── Icon set — Font Awesome only (solid + brands). Thin wrappers keep the
+   original call sites (<Globe/>, <MapPin/>, …) unchanged. ──────────── */
+const Globe       = () => <FontAwesomeIcon icon={faGlobe} />
+const MapPin      = () => <FontAwesomeIcon icon={faLocationDot} />
+const Users       = () => <FontAwesomeIcon icon={faUsers} />
+const Calendar    = () => <FontAwesomeIcon icon={faCalendarDays} />
+const Mail        = () => <FontAwesomeIcon icon={faEnvelope} />
+const Linkedin    = () => <FontAwesomeIcon icon={faLinkedinIn} />
+const Twitter     = () => <FontAwesomeIcon icon={faXTwitter} />
+const Facebook    = () => <FontAwesomeIcon icon={faFacebookF} />
+const Arrow       = () => <FontAwesomeIcon icon={faArrowRight} />
+const Plus        = () => <FontAwesomeIcon icon={faPlus} />
+const Check       = () => <FontAwesomeIcon icon={faCheck} />
+const Trophy      = () => <FontAwesomeIcon icon={faTrophy} />
+const PeopleSm    = () => <FontAwesomeIcon icon={faUserGroup} />
+const InfoIcon    = () => <FontAwesomeIcon icon={faCircleInfo} />
+const FolderIcon  = () => <FontAwesomeIcon icon={faFolderOpen} />
+const BracketIcon = () => <FontAwesomeIcon icon={faRightLeft} />
+const Spark       = () => <FontAwesomeIcon icon={faUserPlus} />
+const Play        = () => <FontAwesomeIcon icon={faPlay} />
+const Bookmark       = () => <FontAwesomeIcon icon={faBookmark} />
+const VerifiedShield = () => <FontAwesomeIcon icon={faCircleCheck} />
+const AwardMedal     = () => <FontAwesomeIcon icon={faAward} />
 
 /* ── Pie chart (pure SVG) ────────────────────────────────────────── */
 function PieChart({ slices, size = 220 }: { slices: ServiceShare[]; size?: number }) {
@@ -331,9 +286,82 @@ function Stars({ value, max = 5 }: { value: number; max?: number }) {
   return (
     <span className="cmp-stars" aria-label={`${value.toFixed(1)} out of ${max}`}>
       {Array.from({ length: max }, (_, i) =>
-        <span key={i} className={i < rounded ? 'cmp-star is-on' : 'cmp-star'}>{i < rounded ? STAR_FULL : STAR_EMPTY}</span>
+        <FontAwesomeIcon key={i} icon={faStar} className={i < rounded ? 'cmp-star is-on' : 'cmp-star'} />
       )}
     </span>
+  )
+}
+
+/* ── Review date — "Mar 2026" compact label ──────────────────────── */
+function fmtReviewDate(iso: string | null): string {
+  if (!iso) return ''
+  const d = new Date(iso)
+  if (isNaN(d.getTime())) return ''
+  return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+}
+
+/* ── YouTube id extractor — handles watch / youtu.be / embed / shorts /
+      live URL shapes plus a bare ?v= fallback. Returns null for anything
+      that isn't a recognisable YouTube link so the caller can fall back to
+      a plain outbound link (Vimeo, Loom, self-hosted, …). ───────────── */
+function youTubeId(url: string): string | null {
+  if (!url) return null
+  const m = url.match(
+    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([\w-]{11})/
+  )
+  if (m) return m[1]
+  try {
+    const u = new URL(/^https?:\/\//.test(url) ? url : `https://${url}`)
+    const v = u.searchParams.get('v')
+    if (v && /^[\w-]{11}$/.test(v)) return v
+  } catch { /* not a URL */ }
+  return null
+}
+
+/* ── Inline video — YouTube facade (poster + play, swaps to an iframe on
+      click so the heavy YT player never loads until the visitor asks).
+      Non-YouTube links degrade to the original outbound "Watch" link. ── */
+function VideoEmbed({ url }: { url: string }) {
+  const [playing, setPlaying] = useState(false)
+  const id = youTubeId(url)
+
+  if (!id) {
+    return (
+      <a href={url} target="_blank" rel="noopener noreferrer" className="cmp-watch">
+        <span className="cmp-watch-ico"><Play /></span>
+        Watch our Video
+      </a>
+    )
+  }
+
+  return (
+    <div className="cmp-video">
+      <div className="cmp-video-head">
+        <span className="cmp-video-head-ico"><Play /></span>
+        Watch our Video
+      </div>
+      <div className="cmp-video-frame">
+        {playing ? (
+          <iframe
+            src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`}
+            title="Company video"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            loading="lazy"
+          />
+        ) : (
+          <button
+            type="button"
+            className="cmp-video-poster"
+            onClick={() => setPlaying(true)}
+            aria-label="Play video"
+            style={{ backgroundImage: `url(https://i.ytimg.com/vi/${id}/hqdefault.jpg)` }}
+          >
+            <span className="cmp-video-play" aria-hidden="true"><FontAwesomeIcon icon={faPlay} /></span>
+          </button>
+        )}
+      </div>
+    </div>
   )
 }
 
@@ -350,8 +378,11 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
   const similarCompanies = (initialData.similarCompanies as unknown as SimilarCompanyRow[]) || []
   const popularTools = (initialData.popularTools as unknown as PopularToolRow[]) || []
   const relatedCategories = (initialData.relatedCategories as unknown as RelatedCategoryRow[]) || []
+  const breadcrumb = (initialData.breadcrumb as { name: string; slug: string }[] | undefined) || []
   const initialEngagement = initialData.engagement || { followers: 0, bookmarks: 0 }
   const reviewsData = initialData.reviews || { avgRating: 0, reviewCount: 0, recent: [] }
+  const reviews = (reviewsData.recent as unknown as ReviewRow[]) || []
+  const reviewHref = `/write-review?company=${encodeURIComponent(c.slug || propSlug || '')}&mode=company`
 
   const slug = c.slug || propSlug || ''
   const headerTags = useMemo(() => parseJsonArr(c.header_tags) as string[], [c.header_tags])
@@ -495,6 +526,31 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
     <main className="cmp-root" style={cssVars}>
 
       {/* ════════════════════════════════════════════════════════════
+          0. BREADCRUMB — L1 → … → leaf category → company name
+          ════════════════════════════════════════════════════════════ */}
+      {breadcrumb.length > 0 && (
+        <div className="cmp-crumb-bar">
+          <div className="cmp-crumb-inner">
+            <nav className="cmp-crumb" aria-label="Breadcrumb">
+              <a href="/" aria-label="Home"><FontAwesomeIcon icon={faHouse} /></a>
+              {breadcrumb.map((bc, i) => {
+                const sectorSlug = breadcrumb[0]?.slug
+                const href = i === 0 ? `/${bc.slug}` : `/${sectorSlug}/${bc.slug}`
+                return (
+                  <span key={bc.slug} style={{ display: 'contents' }}>
+                    <span className="cmp-crumb-sep"><FontAwesomeIcon icon={faChevronRight} /></span>
+                    <a href={href}>{bc.name}</a>
+                  </span>
+                )
+              })}
+              <span className="cmp-crumb-sep"><FontAwesomeIcon icon={faChevronRight} /></span>
+              <span className="cmp-crumb-current">{c.company_name}</span>
+            </nav>
+          </div>
+        </div>
+      )}
+
+      {/* ════════════════════════════════════════════════════════════
           1. STICKY HEAD
           ════════════════════════════════════════════════════════════ */}
       <section className="cmp-head">
@@ -507,7 +563,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
             aria-label={me.isBookmarked ? 'Remove from shortlist' : 'Add to shortlist'}
             title={me.isBookmarked ? 'Saved to your shortlist' : 'Save to shortlist'}
           >
-            <Bookmark filled={me.isBookmarked} />
+            <Bookmark />
             <span>{me.isBookmarked ? 'Saved' : 'Add to Shortlist'}</span>
           </button>
 
@@ -527,7 +583,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                 {c.company_name}
                 {isVerified && (
                   <span className="cmp-head-verified" title="Premier Verified by InfoWebWorld">
-                    <VerifiedShield size={14} />
+                    <VerifiedShield />
                     Premier Verified
                   </span>
                 )}
@@ -542,29 +598,23 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                     </a>
                   </span>
                 ) : (
-                  /* No-review state — single muted link instead of 5 dead
-                     outline stars (which read as "broken / unrated"). */
-                  <a href="#reviews" className="cmp-head-rating-empty">
-                    Be the first to review →
+                  /* No-review state — a clean accent pill linking straight to
+                     the write-review flow (one click). */
+                  <a href={reviewHref} className="cmp-head-rating-cta">
+                    <FontAwesomeIcon icon={faPenToSquare} />
+                    Be the first to review
                   </a>
                 )}
 
                 {awards.length > 0 && (
-                  <span className="cmp-head-awards">
-                    {awards.slice(0, 4).map((a, i) => (
-                      <span
-                        key={i}
-                        className="cmp-head-award"
-                        title={a.year ? `${a.name} (${a.year})` : a.name}
-                        aria-label={a.year ? `${a.name} ${a.year}` : a.name}
-                      >
-                        <Trophy />
-                      </span>
-                    ))}
-                    {awards.length > 4 && (
-                      <span className="cmp-head-award-more">+{awards.length - 4}</span>
-                    )}
-                  </span>
+                  <a
+                    href="#awards"
+                    className="cmp-head-awards"
+                    title={awards.map(a => a.year ? `${a.name} (${a.year})` : a.name).join(' · ')}
+                  >
+                    <Trophy />
+                    <span>{awards.length === 1 ? 'Award-winning' : `${awards.length} Awards`}</span>
+                  </a>
                 )}
 
                 {followerCount > 0 && (
@@ -621,7 +671,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                   onClick={toggleFollow}
                 >
                   {me.isFollowing ? <Check /> : <Plus />}
-                  {me.isFollowing ? 'Following' : 'Join their Network'}
+                  {me.isFollowing ? 'Following' : 'Follow'}
                 </button>
               </div>
             </div>
@@ -653,16 +703,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                 </div>
               )}
 
-              {c.intro_video_url && (
-                <a
-                  href={c.intro_video_url}
-                  target="_blank" rel="noopener noreferrer"
-                  className="cmp-watch"
-                >
-                  <span className="cmp-watch-ico"><Play /></span>
-                  Watch our Video
-                </a>
-              )}
+              {c.intro_video_url && <VideoEmbed url={c.intro_video_url} />}
 
               {/* Stats grid — 2 columns of compact rows */}
               <div className="cmp-stats">
@@ -810,6 +851,30 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
             </aside>
             )}
           </div>
+
+          {/* Awards + key facts live OUTSIDE the two-column grid so they span
+              the full content width — previously trapped in the 60% left
+              column, which left the right half of the desktop view empty. */}
+          {awards.length > 0 && (
+            <div className="cmp-awards" id="awards">
+              <div className="cmp-awards-head">
+                <span className="cmp-awards-head-ico"><AwardMedal /></span>
+                <span className="cmp-awards-head-title">Awards &amp; recognition</span>
+                <span className="cmp-awards-head-count">{awards.length}</span>
+              </div>
+              <div className="cmp-awards-row">
+                {awards.map((a, i) => (
+                  <div key={i} className="cmp-medal" title={a.year ? `${a.name} (${a.year})` : a.name}>
+                    <span className="cmp-medal-badge"><FontAwesomeIcon icon={faStar} /></span>
+                    <span className="cmp-medal-name">{a.name}</span>
+                    {a.year && <span className="cmp-medal-year">{a.year}</span>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Key facts render in the left column as the original cmp-stats list. */}
         </div>
       </section>
 
@@ -859,7 +924,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                   )}
                 </div>
 
-                {/* RIGHT column: most common project size + service pills */}
+                {/* RIGHT column: most common project size + range bar */}
                 <div className="cmp-snap-right">
                   {c.common_project_size && (
                     <div className="cmp-snap-common">
@@ -901,6 +966,71 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
           </div>
         </section>
       )}
+
+      {/* ════════════════════════════════════════════════════════════
+          REVIEWS — rating summary + recent review cards + write CTA.
+          Anchored #reviews so the head's rating / "Be the first to
+          review" links actually resolve (they previously pointed at a
+          target that didn't exist). Always renders so the empty state
+          gives anon visitors a clear way to leave the first review.
+          ════════════════════════════════════════════════════════════ */}
+      <section className="cmp-section cmp-reviews" id="reviews">
+        <div className="cmp-section-inner">
+          <header className="cmp-reviews-head">
+            <div className="cmp-reviews-head-l">
+              <h2 className="cmp-section-title">Reviews</h2>
+              {reviewsData.reviewCount > 0 && (
+                <div className="cmp-reviews-agg">
+                  <span className="cmp-reviews-agg-num">{reviewsData.avgRating.toFixed(1)}</span>
+                  <span className="cmp-reviews-agg-r">
+                    <Stars value={reviewsData.avgRating} />
+                    <span className="cmp-reviews-agg-count">
+                      {reviewsData.reviewCount} {reviewsData.reviewCount === 1 ? 'review' : 'reviews'}
+                    </span>
+                  </span>
+                </div>
+              )}
+            </div>
+            <a href={reviewHref} className="cmp-btn cmp-btn--primary cmp-reviews-cta">
+              <FontAwesomeIcon icon={faPenToSquare} /> Write a review
+            </a>
+          </header>
+
+          {reviews.length > 0 ? (
+            <div className="cmp-reviews-list">
+              {reviews.map(r => (
+                <article key={r.id} className="cmp-review">
+                  <div className="cmp-review-top">
+                    <span className="cmp-review-avatar">
+                      {r.user_avatar_url
+                        ? <img src={r.user_avatar_url} alt="" />
+                        : <span>{initialsOf(r.user_name)}</span>}
+                    </span>
+                    <div className="cmp-review-who">
+                      <span className="cmp-review-author">{r.user_name || 'Verified reviewer'}</span>
+                      {r.created_at && <span className="cmp-review-date">{fmtReviewDate(r.created_at)}</span>}
+                    </div>
+                    <span className="cmp-review-stars"><Stars value={r.rating} /></span>
+                  </div>
+                  {r.title && <h3 className="cmp-review-title">{r.title}</h3>}
+                  {r.body && <p className="cmp-review-body">{r.body}</p>}
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="cmp-reviews-empty">
+              <span className="cmp-reviews-empty-ico"><FontAwesomeIcon icon={faStar} /></span>
+              <h3 className="cmp-reviews-empty-title">No reviews yet</h3>
+              <p className="cmp-reviews-empty-sub">
+                Worked with {c.company_name}? Share your experience and help others choose with confidence.
+              </p>
+              <a href={reviewHref} className="cmp-btn cmp-btn--primary cmp-reviews-empty-cta">
+                <FontAwesomeIcon icon={faPenToSquare} /> Write the first review
+              </a>
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* ════════════════════════════════════════════════════════════
           4. PORTFOLIO — Products by us. Carry-over from previous design.
@@ -1015,10 +1145,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                             </div>
                           ) : (
                             <div className="tlp-alt-price tlp-alt-price--none">
-                              <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
-                                <circle cx="12" cy="12" r="9" fill="none" stroke="#D1D5DB" strokeWidth="1.8" />
-                                <path d="M12 7v5l3 3" fill="none" stroke="#9CA3AF" strokeWidth="1.8" strokeLinecap="round" />
-                              </svg>
+                              <FontAwesomeIcon icon={faClock} style={{ fontSize: 20, color: '#9CA3AF' }} />
                             </div>
                           )}
                           <div className="tlp-alt-period">

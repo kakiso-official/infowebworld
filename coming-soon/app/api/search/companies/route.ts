@@ -2,15 +2,19 @@ import { NextResponse } from 'next/server'
 import { query } from '../../../../lib/db'
 
 /* ─────────────────────────────────────────────────────────────
-   Company-only search for the /compare flow.
+   Listing search used by /compare AND the /write-review flow.
 
-   Mirrors /api/search but restricts to active/paid PRODUCT
-   submissions (no companies, no categories, no blog). Powers the
-   centered search bar on /compare and the right-rail "Add to
-   Compare" search inside the comparison page.
+   `mode` query param controls which listing modes are returned:
+     - (absent) / 'product'  → product listings only  (DEFAULT — keeps
+                                /compare and the product review flow exactly
+                                as they were)
+     - 'company'             → company profiles only   (company reviews)
+     - 'all'                 → both                     (universal picker)
 
-   Lighter response than /api/search since we only need slug + name
-   + tagline + logo + category + rating to render the dropdown rows.
+   An exact-slug match (`s.slug = q`) is included so /write-review?company=<slug>
+   resolves reliably even for multi-word hyphenated slugs that a name LIKE
+   would never match. Each result carries its `mode` so callers can build the
+   right URL (/listing vs /profile).
    ───────────────────────────────────────────────────────────── */
 
 export const dynamic = 'force-dynamic'
@@ -21,6 +25,7 @@ type CompanyHit = {
   company_name: string
   tagline: string | null
   logo_url: string | null
+  listing_mode: string | null
   category_name: string | null
   category_slug: string | null
   category_color: string | null
@@ -33,10 +38,16 @@ export async function GET(req: Request) {
   const q = (searchParams.get('q') || '').trim()
   const excludeRaw = (searchParams.get('exclude') || '').trim()
   const exclude = excludeRaw ? excludeRaw.split(',').map(s => s.trim().toLowerCase()).filter(Boolean) : []
-  // Optional L1-sector filter — when present, only products whose
-  // category walks up to this sector slug are returned. Lets /compare
-  // restrict the "Add to Compare" search to same-sector products.
+  // Optional L1-sector filter — when present, only listings whose category
+  // walks up to this sector slug are returned (used by /compare).
   const sectorFilter = (searchParams.get('sector') || '').trim().toLowerCase()
+  // Listing-mode filter — default 'product' preserves existing callers.
+  const modeParam = (searchParams.get('mode') || 'product').toLowerCase()
+  const modes = modeParam === 'all'
+    ? ['product', 'company']
+    : modeParam === 'company'
+      ? ['company']
+      : ['product']
 
   if (!q || q.length < 1) {
     return NextResponse.json(
@@ -47,10 +58,8 @@ export async function GET(req: Request) {
 
   const like = `%${q}%`
   const prefix = `${q}%`
+  const modesIn = modes.map(() => '?').join(',')
 
-  // exclude-slug placeholders inlined as a NOT IN list (slug strings only — they
-  // come from the URL but are normalised through `.trim().toLowerCase()` and
-  // bound as parameters so injection is not possible)
   const excludeSql = exclude.length > 0
     ? `AND s.slug NOT IN (${exclude.map(() => '?').join(',')})`
     : ''
@@ -63,10 +72,19 @@ export async function GET(req: Request) {
                  ELSE NULL END) = ?`
     : ''
 
+  // Param order mirrors the placeholders below: modes, (like, like, q),
+  // exclude, sector, then ORDER-BY (q, prefix).
+  const params = [
+    ...modes, like, like, q, ...exclude,
+    ...(sectorFilter ? [sectorFilter] : []),
+    q, prefix,
+  ]
+
   let rows: CompanyHit[]
   try {
     rows = await query<CompanyHit>(
       `SELECT s.id, s.slug, s.company_name, s.tagline, s.logo_url,
+              COALESCE(s.listing_mode, 'product') AS listing_mode,
               c.name AS category_name, c.slug AS category_slug, c.color AS category_color,
               (SELECT AVG(rating) FROM reviews WHERE listing_id = s.id AND status = 'approved') AS rating_avg,
               (SELECT COUNT(*) FROM reviews WHERE listing_id = s.id AND status = 'approved') AS rating_count
@@ -77,40 +95,42 @@ export async function GET(req: Request) {
        LEFT JOIN categories cggp  ON cggp.id  = cgp.parent_id
        LEFT JOIN categories cgggp ON cgggp.id = cggp.parent_id
        WHERE s.status IN ('active', 'paid')
-         AND COALESCE(s.listing_mode, 'product') = 'product'
-         AND (s.company_name LIKE ? OR s.tagline LIKE ?)
+         AND COALESCE(s.listing_mode, 'product') IN (${modesIn})
+         AND (s.company_name LIKE ? OR s.tagline LIKE ? OR s.slug = ?)
          ${excludeSql}
          ${sectorSql}
        ORDER BY
-         CASE WHEN s.company_name LIKE ? THEN 0 ELSE 1 END,
+         CASE WHEN s.slug = ? THEN 0 WHEN s.company_name LIKE ? THEN 1 ELSE 2 END,
          s.approved_at DESC
        LIMIT 8`,
-      [like, like, ...exclude, ...(sectorFilter ? [sectorFilter] : []), prefix]
+      params
     )
   } catch (err) {
-    // Pre-migration tolerance: if listing_mode column is missing the
-    // COALESCE evaluates fine, but `reviews` table may not exist on
-    // older installs. Fall back to a slimmer query without ratings.
+    // Pre-migration tolerance: older installs may lack the `reviews` table.
+    // Fall back to a slimmer query without the rating sub-selects.
     const msg = err instanceof Error ? err.message : ''
     if (msg.includes('reviews')) {
       rows = await query<CompanyHit>(
         `SELECT s.id, s.slug, s.company_name, s.tagline, s.logo_url,
+                COALESCE(s.listing_mode, 'product') AS listing_mode,
                 c.name AS category_name, c.slug AS category_slug, c.color AS category_color,
                 NULL AS rating_avg, 0 AS rating_count
          FROM submissions s
-         LEFT JOIN categories c ON c.id = s.category_id
-         LEFT JOIN categories cp ON cp.id = c.parent_id
-         LEFT JOIN categories cgp ON cgp.id = cp.parent_id
+         LEFT JOIN categories c     ON c.id     = s.category_id
+         LEFT JOIN categories cp    ON cp.id    = c.parent_id
+         LEFT JOIN categories cgp   ON cgp.id   = cp.parent_id
+         LEFT JOIN categories cggp  ON cggp.id  = cggp.parent_id
+         LEFT JOIN categories cgggp ON cgggp.id = cggp.parent_id
          WHERE s.status IN ('active', 'paid')
-           AND COALESCE(s.listing_mode, 'product') = 'product'
-           AND (s.company_name LIKE ? OR s.tagline LIKE ?)
+           AND COALESCE(s.listing_mode, 'product') IN (${modesIn})
+           AND (s.company_name LIKE ? OR s.tagline LIKE ? OR s.slug = ?)
            ${excludeSql}
            ${sectorSql}
          ORDER BY
-           CASE WHEN s.company_name LIKE ? THEN 0 ELSE 1 END,
+           CASE WHEN s.slug = ? THEN 0 WHEN s.company_name LIKE ? THEN 1 ELSE 2 END,
            s.approved_at DESC
          LIMIT 8`,
-        [like, like, ...exclude, ...(sectorFilter ? [sectorFilter] : []), prefix]
+        params
       )
     } else {
       throw err
@@ -123,6 +143,7 @@ export async function GET(req: Request) {
     companyName: r.company_name,
     tagline: r.tagline,
     logoUrl: r.logo_url,
+    mode: (r.listing_mode === 'company' ? 'company' : 'product') as 'company' | 'product',
     category: r.category_slug ? {
       name: r.category_name,
       slug: r.category_slug,

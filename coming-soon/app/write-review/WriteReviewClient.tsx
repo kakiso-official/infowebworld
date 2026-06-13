@@ -41,6 +41,10 @@ export default function WriteReviewClient() {
   const { user, loading: authLoading, refresh } = useAuth()
 
   const companyParam = (sp.get('company') || '').trim()
+  /* Listing mode of the thing being reviewed. Company profiles arrive from
+     /profile with ?mode=company; products omit it (default 'product'), so the
+     existing product review flow is byte-for-byte unchanged. */
+  const reviewMode = (sp.get('mode') || 'product').toLowerCase() === 'company' ? 'company' : 'product'
 
   const [step, setStep] = useState<Step>(companyParam ? 'pick-method' : 'pick-company')
   const [company, setCompany] = useState<CompanyHit | null>(null)
@@ -59,7 +63,7 @@ export default function WriteReviewClient() {
     fetchingRef.current = true
     ;(async () => {
       try {
-        const r = await fetch(`/api/search/companies?q=${encodeURIComponent(companyParam)}`)
+        const r = await fetch(`/api/search/companies?q=${encodeURIComponent(companyParam)}&mode=${reviewMode}`)
         const j = await r.json()
         const hit = (j.results as CompanyHit[] | undefined)?.find(c => c.slug === companyParam)
         if (hit) setCompany(hit)
@@ -270,13 +274,13 @@ export default function WriteReviewClient() {
             <h2 className="wr-success-title">Thanks — your review is in.</h2>
             <p className="wr-success-desc">
               We&apos;ll moderate it shortly. Once approved it appears on{' '}
-              <Link href={`/listing/${company.slug}`} className="wr-success-link">
+              <Link href={`/${company.mode === 'company' ? 'profile' : 'listing'}/${company.slug}`} className="wr-success-link">
                 {company.companyName}&apos;s page
               </Link>{' '}
               within a day.
             </p>
             <div className="wr-success-actions">
-              <Link href={`/listing/${company.slug}`} className="wr-btn wr-btn--ghost">
+              <Link href={`/${company.mode === 'company' ? 'profile' : 'listing'}/${company.slug}`} className="wr-btn wr-btn--ghost">
                 See the listing
               </Link>
               <Link href="/categories" className="wr-btn wr-btn--primary">
