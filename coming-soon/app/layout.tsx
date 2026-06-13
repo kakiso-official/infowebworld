@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Nunito, Bricolage_Grotesque, Inter } from "next/font/google";
+import { Nunito, Bricolage_Grotesque, Inter, Righteous, Tilt_Warp, Source_Serif_4, Staatliches } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import "./styles/chat-widget.css";
@@ -31,6 +31,43 @@ const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
+});
+
+/* Award-card display faces (from the owner's Figma): Righteous for the
+   award name, Rubik Doodle Shadow for the embossed year. Only used in the
+   /profile awards section, so don't preload-block the critical path. */
+const righteous = Righteous({
+  variable: "--font-righteous",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+  preload: false,
+});
+
+const tiltWarp = Tilt_Warp({
+  variable: "--font-tiltwarp",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+  preload: false,
+});
+
+/* Awards heading: Source Serif 4 (a.k.a. Source Serif Pro) for the title,
+   Staatliches for the count badge. */
+const sourceSerif = Source_Serif_4({
+  variable: "--font-source-serif",
+  subsets: ["latin"],
+  weight: ["600", "700"],
+  display: "swap",
+  preload: false,
+});
+
+const staatliches = Staatliches({
+  variable: "--font-staatliches",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -115,7 +152,7 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
         <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
       </head>
-      <body className={`${nunito.variable} ${bricolage.variable} ${inter.variable}`}>
+      <body className={`${nunito.variable} ${bricolage.variable} ${inter.variable} ${righteous.variable} ${tiltWarp.variable} ${sourceSerif.variable} ${staatliches.variable}`}>
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-C6LY2016NW" strategy="lazyOnload" />
         <Script id="gtag-init" strategy="lazyOnload">{`
           window.dataLayer = window.dataLayer || [];

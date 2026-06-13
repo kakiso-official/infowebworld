@@ -4,7 +4,7 @@
 import '../styles/profile-page.css'
 import '../styles/test-listing-page.css'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import LeadFormModal from '../listing/LeadFormModal'
 import SignupModal from '../components/auth/SignupModal'
 import { withInfoWebWorldUtm } from '../lib/utm'
@@ -14,7 +14,7 @@ import {
   faGlobe, faLocationDot, faUsers, faUserGroup, faCalendarDays, faEnvelope,
   faArrowRight, faPlus, faCheck, faTrophy, faCircleInfo, faFolderOpen,
   faRightLeft, faUserPlus, faClock, faPlay, faBookmark,
-  faCircleCheck, faAward, faStar, faHouse, faChevronRight, faPenToSquare,
+  faCircleCheck, faAward, faStar, faHouse, faChevronRight, faChevronDown, faPenToSquare,
 } from '@fortawesome/free-solid-svg-icons'
 import { faLinkedinIn, faXTwitter, faFacebookF } from '@fortawesome/free-brands-svg-icons'
 
@@ -138,6 +138,9 @@ interface MeState {
   hasReviewed: boolean
 }
 const ANON_ME: MeState = { isAuthed: false, isFollowing: false, isBookmarked: false, hasReviewed: false }
+
+/* Awards: show this many up front; the rest sit behind "View all". */
+const AWARDS_VISIBLE = 8
 
 /* ── Helpers ───────────────────────────────────────────────────────── */
 
@@ -433,6 +436,11 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
   const [bookmarkCount, setBookmarkCount] = useState(initialEngagement.bookmarks)
   const [contactOpen, setContactOpen] = useState(false)
   const [leadOpen, setLeadOpen] = useState(false)
+  /* Awards "View all" — extras mount on open and animate in; on close they
+     play the exit animation first, then unmount after it finishes. */
+  const [awardsOpen, setAwardsOpen] = useState(false)
+  const [awardsClosing, setAwardsClosing] = useState(false)
+  const awardsTimer = useRef<number | null>(null)
   /* Auth gate — when an anon user clicks Follow / Bookmark we open the
      site-wide SignupModal with nextUrl pointing back at this page so they
      land here after signing in. We also remember which action was
@@ -520,6 +528,42 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
   /* "Rating for cost" — derived from review aggregate when present, else
      a quiet placeholder. We don't fake a number when there's no data. */
   const ratingForCost = reviewsData.reviewCount > 0 ? reviewsData.avgRating : null
+
+  /* Toggle the awards "View all": open mounts the extras (they animate in);
+     close flips the closing flag (extras animate out) then unmounts them. */
+  function toggleAwards() {
+    if (awardsTimer.current) { clearTimeout(awardsTimer.current); awardsTimer.current = null }
+    if (awardsOpen) {
+      setAwardsClosing(true)
+      setAwardsOpen(false)
+      awardsTimer.current = window.setTimeout(() => { setAwardsClosing(false); awardsTimer.current = null }, 900)
+    } else {
+      setAwardsClosing(false)
+      setAwardsOpen(true)
+    }
+  }
+
+  /* One award card. extraIdx (set for cards beyond the first 8) tags it as
+     an animated "extra" and seeds its staggered reveal delay. */
+  const renderAwardCard = (a: Award, key: number, extraIdx?: number) => (
+    <article
+      key={key}
+      className={'cmp-award' + (extraIdx != null ? ' cmp-award--extra' : '')}
+      style={extraIdx != null ? ({ ['--d' as string]: `${Math.min(extraIdx, 10) * 0.05}s` } as React.CSSProperties) : undefined}
+      title={a.year ? `${a.name} (${a.year})` : a.name}
+    >
+      <div className="cmp-award-card">
+        <img src="/illustrations/award-trophy.png" alt="" className="cmp-award-trophy" />
+        <span className="cmp-award-logo">
+          {(c.logo_url || fallbackLogo)
+            ? <img src={c.logo_url || fallbackLogo} alt={`${c.company_name} logo`} />
+            : <span>{initialsOf(c.company_name)}</span>}
+        </span>
+        <h3 className="cmp-award-name">{a.name}</h3>
+        {a.year && <span className="cmp-award-year" aria-hidden="true">{a.year}</span>}
+      </div>
+    </article>
+  )
 
   /* ── RENDER ──────────────────────────────────────────────────────── */
   return (
@@ -693,8 +737,13 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
               )}
 
               {paragraphs.length > 0 && (
-                <div className={'cmp-desc' + (isLongDescription && !expandedDesc ? ' is-collapsed' : '')}>
-                  {paragraphs.map((p, i) => <p key={i}>{p}</p>)}
+                <div className="cmp-desc">
+                  {/* Clamp lives on the inner body only — keeping the Read more
+                      button a SIBLING (not a child) so the line-clamp's
+                      overflow:hidden never clips the toggle. */}
+                  <div className={'cmp-desc-body' + (isLongDescription && !expandedDesc ? ' is-collapsed' : '')}>
+                    {paragraphs.map((p, i) => <p key={i}>{p}</p>)}
+                  </div>
                   {isLongDescription && (
                     <button type="button" className="cmp-readmore" onClick={() => setExpandedDesc(e => !e)}>
                       {expandedDesc ? 'Read less' : 'Read more'}
@@ -859,18 +908,28 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
             <div className="cmp-awards" id="awards">
               <div className="cmp-awards-head">
                 <span className="cmp-awards-head-ico"><AwardMedal /></span>
-                <span className="cmp-awards-head-title">Awards &amp; recognition</span>
+                <span className="cmp-awards-head-title">Award &amp; Recognitions</span>
                 <span className="cmp-awards-head-count">{awards.length}</span>
               </div>
-              <div className="cmp-awards-row">
-                {awards.map((a, i) => (
-                  <div key={i} className="cmp-medal" title={a.year ? `${a.name} (${a.year})` : a.name}>
-                    <span className="cmp-medal-badge"><FontAwesomeIcon icon={faStar} /></span>
-                    <span className="cmp-medal-name">{a.name}</span>
-                    {a.year && <span className="cmp-medal-year">{a.year}</span>}
-                  </div>
-                ))}
+              <div className={'cmp-awards-grid' + (awardsClosing ? ' is-closing' : '')}>
+                {awards.slice(0, AWARDS_VISIBLE).map((a, i) => renderAwardCard(a, i))}
+                {(awardsOpen || awardsClosing) &&
+                  awards.slice(AWARDS_VISIBLE).map((a, i) => renderAwardCard(a, i + AWARDS_VISIBLE, i))}
               </div>
+
+              {awards.length > AWARDS_VISIBLE && (
+                <div className="cmp-awards-viewall">
+                  <button
+                    type="button"
+                    className="cmp-viewall-btn"
+                    onClick={toggleAwards}
+                    aria-expanded={awardsOpen}
+                  >
+                    <span>{awardsOpen ? 'Show less' : `View all ${awards.length} awards`}</span>
+                    <FontAwesomeIcon icon={faChevronDown} className="cmp-viewall-chev" />
+                  </button>
+                </div>
+              )}
             </div>
           )}
 
