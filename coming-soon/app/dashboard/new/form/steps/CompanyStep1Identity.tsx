@@ -49,7 +49,7 @@ export default function CompanyStep1Identity({ form, set, errors }: StepProps) {
             value={form.tagline}
             onChange={e => set('tagline', e.target.value)}
             placeholder="Building AI tools for marketing teams"
-            maxLength={150}
+            maxLength={255}
           />
         </Field>
       </div>

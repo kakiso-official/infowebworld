@@ -41,7 +41,7 @@ export default function Step1Identity({ form, set, errors }: StepProps) {
             value={form.tagline}
             onChange={e => set('tagline', e.target.value)}
             placeholder="AI customer support for SaaS teams"
-            maxLength={150}
+            maxLength={255}
           />
         </Field>
       </div>

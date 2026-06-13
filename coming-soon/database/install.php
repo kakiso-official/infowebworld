@@ -163,7 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 `category_id` SMALLINT UNSIGNED NOT NULL,
                 `country_id` SMALLINT UNSIGNED NOT NULL,
                 `city` VARCHAR(100) DEFAULT NULL,
-                `tagline` VARCHAR(100) NOT NULL,
+                `tagline` VARCHAR(255) NOT NULL,
                 `description` TEXT DEFAULT NULL,
                 `founded_year` SMALLINT UNSIGNED DEFAULT NULL,
                 `team_size` VARCHAR(20) DEFAULT NULL,
