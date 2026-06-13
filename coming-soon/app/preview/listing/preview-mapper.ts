@@ -7,6 +7,7 @@
  */
 import type { FormState } from '../../dashboard/new/form/types'
 import { CATEGORIES, type StaticCategoryRow } from '../../config/categories-data'
+import type { RealSubmission } from '../../iww-hq/data/submissions-storage'
 
 export type PreviewPayload = {
   plan: string
@@ -188,6 +189,181 @@ export function buildCompanyInitialData(form: FormState) {
     focus_breakdown: form.focusBreakdown,
     client_logos: form.clientLogos,
     clients_summary: form.clientsSummary,
+  }
+  return {
+    company,
+    products: [],
+    similarCompanies: [],
+    popularTools: [],
+    relatedCategories: [],
+    engagement: { followers: 0, bookmarks: 0 },
+    reviews: { avgRating: 0, reviewCount: 0, recent: [] },
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Admin submission preview — RealSubmission → initialData
+
+   The dashboard form preview above maps FormState. The /iww-hq/submissions
+   admin preview instead has a fully-saved RealSubmission (camelCase, already
+   joined with its category). These two builders produce the exact same
+   snake_case `initialData` shape the real ListingDetailPage / CompanyDetailPage
+   consume on /listing/[slug] and /profile/[slug] — so an admin sees precisely
+   how the public page will render after approval. Cross-marketing rails
+   (related / siblings / similar) populate from OTHER listings post-publish,
+   so they're intentionally left empty here.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/** Rebuild the L1→L3 breadcrumb from a leaf category slug by walking the
+ *  static taxonomy upward via parent_id. Mirrors the server-built crumb on
+ *  the live page so breadcrumb links match exactly. */
+function breadcrumbFromCategorySlug(categorySlug: string): { name: string; slug: string }[] {
+  if (!categorySlug) return []
+  let cur: StaticCategoryRow | undefined = CATEGORIES.find(c => c.slug === categorySlug)
+  const chain: { name: string; slug: string }[] = []
+  for (let guard = 0; cur && guard < 8; guard++) {
+    chain.unshift({ name: cur.name, slug: cur.slug })
+    cur = cur.parent_id != null ? CATEGORIES.find(c => c.id === cur!.parent_id) : undefined
+  }
+  return chain
+}
+
+/** Product/tool submission → ListingDetailPage initialData. */
+export function submissionToProductInitialData(sub: RealSubmission) {
+  const cat = CATEGORIES.find(c => c.slug === sub.categorySlug)
+  const stamp = sub.submittedAt || new Date().toISOString()
+  const listing: Record<string, unknown> = {
+    id: 0,
+    slug: sub.slug || slugifyPreview(sub.companyName),
+    company_name: sub.companyName || 'Your listing name',
+    contact_name: sub.contactName,
+    email: sub.email,
+    phone: sub.phone,
+    phone_code: sub.phoneCode,
+    website: sub.website,
+    tagline: sub.tagline || 'Add a tagline to summarize what you do',
+    description: sub.description,
+    logo_url: sub.logoUrl,
+    screenshots: sub.screenshots,
+    demo_video: sub.demoVideo,
+    features: sub.features,
+    integrations: sub.integrations,
+    pricing_model: sub.pricingModel,
+    pricing_tiers: sub.pricingTiers,
+    founded_year: sub.founded,
+    team_size: sub.employees,
+    funding: sub.funding,
+    hq_location: sub.hqLocation,
+    linkedin: sub.linkedin,
+    twitter: sub.twitter,
+    facebook: sub.facebook,
+    faqs: sub.faqs,
+    city: sub.city,
+    state: sub.state,
+    country_name: sub.country,
+    status: sub.status,
+    created_at: stamp,
+    updated_at: stamp,
+    category_id: cat?.id ?? null,
+    category_name: sub.category || cat?.name || '',
+    category_slug: sub.categorySlug || cat?.slug || '',
+    category_color: sub.categoryColor || cat?.color || '#E8553D',
+    plan_name: sub.planName,
+    plan_slug: sub.plan,
+    /* V3 fields */
+    header_tags: sub.headerTags,
+    pros: sub.pros,
+    cons: sub.cons,
+    industries_served: sub.industriesServed,
+    use_cases: sub.useCases,
+    target_company_sizes: sub.targetCompanySizes,
+    key_features: sub.keyFeatures,
+    starting_price: sub.startingPrice,
+    starting_price_period: sub.startingPricePeriod,
+    has_free_trial: sub.hasFreeTrial ? 1 : 0,
+    has_free_version: sub.hasFreeVersion ? 1 : 0,
+    support_channels: sub.supportChannels,
+    training_options: sub.trainingOptions,
+    languages: sub.languages,
+    has_ios_app: sub.hasIosApp ? 1 : 0,
+    has_android_app: sub.hasAndroidApp ? 1 : 0,
+    /* Show the real verified state — that's how it looks once live. */
+    verified: sub.verified ? 1 : 0,
+    verified_at: sub.verifiedAt || null,
+    compliance: sub.compliance,
+    awards: sub.awards,
+  }
+  return {
+    listing,
+    parentCompany: null,
+    breadcrumb: breadcrumbFromCategorySlug(sub.categorySlug),
+    related: [],
+    relatedCategories: [],
+    siblings: [],
+    engagement: { followers: 0, likes: 0, dislikes: 0, bookmarks: 0 },
+    reviews: { avgRating: 0, reviewCount: 0, recent: [] },
+    userState: {
+      isFollowing: false,
+      reaction: null as 'like' | 'dislike' | null,
+      isBookmarked: false,
+      hasReviewed: false,
+      currentUser: null,
+    },
+    isAuthed: false,
+  }
+}
+
+/** Company submission → CompanyDetailPage initialData. */
+export function submissionToCompanyInitialData(sub: RealSubmission) {
+  const cat = CATEGORIES.find(c => c.slug === sub.categorySlug)
+  const stamp = sub.submittedAt || new Date().toISOString()
+  const company: Record<string, unknown> = {
+    id: 0,
+    slug: sub.slug || slugifyPreview(sub.companyName),
+    uuid: 'preview',
+    company_name: sub.companyName || 'Your company name',
+    tagline: sub.tagline || 'Add a tagline to describe your company',
+    description: sub.description,
+    logo_url: sub.logoUrl,
+    website: sub.website,
+    email: sub.email,
+    phone: sub.phone,
+    phone_code: sub.phoneCode,
+    founded_year: sub.founded,
+    team_size: sub.employees,
+    hq_location: sub.hqLocation,
+    city: sub.city,
+    state: sub.state,
+    country_name: sub.country,
+    linkedin: sub.linkedin,
+    twitter: sub.twitter,
+    facebook: sub.facebook,
+    funding: sub.funding,
+    is_hiring: sub.isHiring ? 1 : 0,
+    header_tags: sub.headerTags,
+    status: sub.status,
+    created_at: stamp,
+    updated_at: stamp,
+    verified: sub.verified ? 1 : 0,
+    verified_at: sub.verifiedAt || null,
+    category_name: sub.category || cat?.name || '',
+    category_slug: sub.categorySlug || cat?.slug || '',
+    category_color: sub.categoryColor || cat?.color || '#0C9A9A',
+    plan_name: sub.planName,
+    plan_slug: sub.plan,
+    industries_served: sub.industriesServed,
+    target_company_sizes: sub.targetCompanySizes,
+    languages: sub.languages,
+    awards: sub.awards,
+    min_project_size: sub.minProjectSize,
+    hourly_rate: sub.hourlyRate,
+    common_project_size: sub.commonProjectSize,
+    intro_video_url: sub.introVideoUrl,
+    timezones: sub.timezones,
+    service_lines: sub.serviceLines,
+    focus_breakdown: sub.focusBreakdown,
+    client_logos: sub.clientLogos,
+    clients_summary: sub.clientsSummary,
   }
   return {
     company,

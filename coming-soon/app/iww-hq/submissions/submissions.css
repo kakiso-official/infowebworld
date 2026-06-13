@@ -345,6 +345,11 @@
 .sub-btn--ghost:hover:not(:disabled) { background: var(--bg-soft); border-color: var(--ink) }
 .sub-btn--ink     { background: var(--ink); color: #fff; border-color: var(--ink) }
 .sub-btn--ink:hover:not(:disabled) { background: #000 }
+/* Preview — the headline affordance. Teal so it reads as "view", distinct
+   from approve (green) / reject (red) / ghost (white) / ink (black). */
+.sub-btn--preview { background: var(--teal); color: #fff; border-color: var(--teal) }
+.sub-btn--preview:hover:not(:disabled) { background: #0A8585; border-color: #0A8585 }
+.sub-btn--preview svg { margin-left: -2px }
 .sub-btn.is-success { background: var(--green) !important; border-color: var(--green) !important; color: #fff !important }
 
 .sub-actions-spacer { flex: 1 }
@@ -461,4 +466,100 @@
   border-radius: 4px;
   font-size: 11.5px; font-weight: 600;
   color: var(--ink-2);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   "Preview as published" overlay — full-screen, floats above both panes.
+   Dark stage frames the white public page; the iframe inside renders the
+   real /listing or /profile page at the chosen device width.
+   ═══════════════════════════════════════════════════════════════════════ */
+.sub-pv {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; flex-direction: column;
+  background: #0B1220;
+  animation: sub-pv-in .16s ease;
+}
+@keyframes sub-pv-in { from { opacity: 0 } to { opacity: 1 } }
+
+/* Top context + actions bar */
+.sub-pv-bar {
+  flex-shrink: 0;
+  display: flex; align-items: center; gap: 16px;
+  padding: 10px 16px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+.sub-pv-bar-l { display: flex; align-items: center; gap: 10px; min-width: 0 }
+.sub-pv-logo {
+  width: 34px; height: 34px; flex-shrink: 0;
+  border-radius: 8px; overflow: hidden;
+  display: grid; place-items: center;
+  background: var(--bg-soft); border: 1px solid var(--border);
+  font-weight: 800; font-size: 14px; color: var(--ink);
+}
+.sub-pv-logo img { width: 100%; height: 100%; object-fit: cover }
+.sub-pv-titles { display: flex; flex-direction: column; min-width: 0; line-height: 1.25 }
+.sub-pv-name {
+  font-size: 14px; font-weight: 800; color: var(--ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 240px;
+}
+.sub-pv-sub { font-size: 11.5px; color: var(--mute); font-weight: 500 }
+
+/* Device-width segmented toggle, centered */
+.sub-pv-devices {
+  margin: 0 auto;
+  display: inline-flex; gap: 2px; padding: 3px;
+  background: var(--bg-soft); border: 1px solid var(--border); border-radius: 8px;
+}
+.sub-pv-device {
+  appearance: none; border: 0; background: transparent; cursor: pointer;
+  padding: 5px 14px; border-radius: 6px;
+  font: inherit; font-size: 12px; font-weight: 700; color: var(--body);
+  transition: background .12s ease, color .12s ease;
+}
+.sub-pv-device:hover { color: var(--ink) }
+.sub-pv-device.is-active {
+  background: var(--bg); color: var(--ink);
+  box-shadow: 0 1px 2px rgba(17, 24, 28, .12);
+}
+
+.sub-pv-bar-r { display: flex; align-items: center; gap: 8px; flex-shrink: 0 }
+.sub-pv-close {
+  appearance: none; cursor: pointer;
+  width: 34px; height: 34px; flex-shrink: 0;
+  border-radius: 8px; border: 1px solid var(--border); background: var(--bg);
+  font-size: 15px; color: var(--body);
+  display: grid; place-items: center;
+  transition: background .12s ease, color .12s ease;
+}
+.sub-pv-close:hover { background: var(--bg-soft); color: var(--ink) }
+
+/* Stage holds the device-framed iframe, centered on the dark backdrop */
+.sub-pv-stage {
+  flex: 1; min-height: 0;
+  display: flex; justify-content: center; align-items: stretch;
+  overflow: hidden;
+}
+.sub-pv-screen {
+  height: 100%;
+  width: 100%;
+  background: var(--bg);
+  transition: width .2s ease;
+}
+/* Tablet/mobile: float the device with a shadow + rounded bezel */
+.sub-pv-screen--tablet,
+.sub-pv-screen--mobile {
+  height: calc(100% - 28px);
+  margin: 14px 0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .45);
+  align-self: flex-start;
+}
+.sub-pv-frame { width: 100%; height: 100%; border: 0; display: block; background: var(--bg) }
+
+@media (max-width: 720px) {
+  .sub-pv-bar { flex-wrap: wrap; gap: 10px }
+  .sub-pv-devices { order: 3; margin: 0; width: 100% }
+  .sub-pv-sub { display: none }
 }

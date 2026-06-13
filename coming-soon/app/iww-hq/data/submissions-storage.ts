@@ -78,6 +78,8 @@ export type RealSubmission = {
   verifiedAt: string
   /** 'product' | 'company' — defaults to 'product' for legacy rows. */
   listingMode: 'product' | 'company'
+  /** Company-mode "we're hiring" flag — drives the Open Roles badge on /profile. */
+  isHiring: boolean
   /** Parent company FK on product rows; null on company rows / unlinked products. */
   parentCompanyId: string
   /* ── Company-mode Clutch-style fields. Only populated on listing_mode='company';
@@ -184,6 +186,7 @@ export function mapRow(r: Record<string, unknown>): RealSubmission {
     verified: Boolean(Number(r.verified ?? 0)),
     verifiedAt: String(r.verified_at ?? ''),
     listingMode: (r.listing_mode === 'company' ? 'company' : 'product'),
+    isHiring: Boolean(Number(r.is_hiring ?? 0)),
     parentCompanyId: r.parent_company_id != null ? String(r.parent_company_id) : '',
     /* ── Company-mode Clutch-style fields ── */
     minProjectSize: String(r.min_project_size ?? ''),

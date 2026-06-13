@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useRef, useCallback } from 'react'
 import './submissions.css'
 import {
   fetchAllSubmissions,
@@ -33,6 +33,15 @@ const STATUS_TABS: { key: Status | 'all'; label: string }[] = [
   { key: 'rejected',  label: 'Rejected'  },
   { key: 'all',       label: 'All'       },
 ]
+
+/* Preview overlay viewport presets. width 0 = fill the stage (true desktop);
+   fixed widths drive the page's real responsive breakpoints inside the iframe. */
+const DEVICES = [
+  { key: 'desktop', label: 'Desktop', w: 0 },
+  { key: 'tablet',  label: 'Tablet',  w: 834 },
+  { key: 'mobile',  label: 'Mobile',  w: 390 },
+] as const
+type DeviceKey = (typeof DEVICES)[number]['key']
 
 function formatDate(iso: string): string {
   if (!iso) return ''
@@ -88,6 +97,9 @@ export default function SubmissionsPage() {
   const [stats, setStats] = useState({ total: 0, pending: 0, confirmed: 0, paid: 0 })
   const [busy, setBusy] = useState(false)
   const [toast, setToast] = useState<{ kind: 'ok' | 'err'; msg: string } | null>(null)
+  /* When set, the full-screen "preview as published" overlay is open for this
+     submission. Held at page level so it floats above both panes. */
+  const [previewSub, setPreviewSub] = useState<RealSubmission | null>(null)
 
   const flash = (kind: 'ok' | 'err', msg: string) => {
     setToast({ kind, msg })
@@ -312,6 +324,7 @@ export default function SubmissionsPage() {
               onSetStatus={setStatus}
               onDelete={remove}
               onSaveFaqs={saveFaqs}
+              onPreview={setPreviewSub}
               flash={flash}
             />
           ) : (
@@ -322,6 +335,15 @@ export default function SubmissionsPage() {
           )}
         </section>
       </div>
+
+      {previewSub && (
+        <PreviewOverlay
+          sub={previewSub}
+          busy={busy}
+          onClose={() => setPreviewSub(null)}
+          onSetStatus={setStatus}
+        />
+      )}
 
       {toast && (
         <div className={`sub-toast ${toast.kind === 'ok' ? 'is-success' : 'is-error'}`}>
@@ -342,10 +364,11 @@ interface DetailProps {
   onSetStatus: (id: string, status: Status) => void | Promise<void>
   onDelete: (id: string) => void | Promise<void>
   onSaveFaqs: (id: string, faqs: FaqItem[]) => void | Promise<void>
+  onPreview: (sub: RealSubmission) => void
   flash: (kind: 'ok' | 'err', msg: string) => void
 }
 
-function SubmissionDetail({ sub, busy, onSetStatus, onDelete, onSaveFaqs, flash }: DetailProps) {
+function SubmissionDetail({ sub, busy, onSetStatus, onDelete, onSaveFaqs, onPreview, flash }: DetailProps) {
   const isLive = sub.status === 'active' || sub.status === 'paid'
   const isPending = sub.status === 'pending'
 
@@ -373,6 +396,19 @@ function SubmissionDetail({ sub, busy, onSetStatus, onDelete, onSaveFaqs, flash 
 
       {/* Sticky action bar */}
       <div className="sub-actions">
+        {/* Primary affordance: see the exact public page before deciding. */}
+        <button
+          className="sub-btn sub-btn--preview"
+          onClick={() => onPreview(sub)}
+          title="Open the exact public page this submission will render after approval"
+        >
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          Preview as published
+        </button>
+
         {isPending && (
           <>
             <button className="sub-btn sub-btn--primary" disabled={busy}
@@ -506,6 +542,135 @@ function SubmissionDetail({ sub, busy, onSetStatus, onDelete, onSaveFaqs, flash 
       {/* FAQ editor */}
       <FaqEditor sub={sub} onSave={onSaveFaqs} busy={busy} />
     </>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Preview overlay — full-screen, isolated render of the live public page.
+
+   Renders the real /listing or /profile page inside an <iframe> pointed at
+   /preview/submission, then pushes the selected RealSubmission to it via
+   postMessage. The iframe is the only faithful way to preview here: the
+   listing page mutates document.body and owns a navbar-bound sticky header,
+   so its own document keeps it from disturbing the admin layout — and the
+   iframe width exercises the page's real responsive breakpoints, so the
+   Desktop/Tablet/Mobile toggle shows true layouts.
+   ───────────────────────────────────────────────────────────────────── */
+function PreviewOverlay({
+  sub, busy, onClose, onSetStatus,
+}: {
+  sub: RealSubmission
+  busy: boolean
+  onClose: () => void
+  onSetStatus: (id: string, status: Status) => void | Promise<void>
+}) {
+  const [device, setDevice] = useState<DeviceKey>('desktop')
+  const frameRef = useRef<HTMLIFrameElement | null>(null)
+
+  /* Push the row into the iframe. Safe to call repeatedly — the child just
+     re-renders with the latest snapshot. */
+  const pushData = useCallback(() => {
+    frameRef.current?.contentWindow?.postMessage(
+      { type: 'iww-sub-preview-data', sub },
+      window.location.origin,
+    )
+  }, [sub])
+
+  /* The child posts 'ready' on mount; respond by pushing the row. Covers the
+     race where the iframe mounts after onLoad fires. */
+  useEffect(() => {
+    const onMessage = (e: MessageEvent) => {
+      if (e.origin !== window.location.origin) return
+      if ((e.data as { type?: string } | null)?.type === 'iww-sub-preview-ready') pushData()
+    }
+    window.addEventListener('message', onMessage)
+    return () => window.removeEventListener('message', onMessage)
+  }, [pushData])
+
+  /* Re-push whenever the row changes. */
+  useEffect(() => { pushData() }, [pushData])
+
+  /* Esc closes. */
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
+
+  const isPending = sub.status === 'pending'
+  const isLive = sub.status === 'active' || sub.status === 'paid'
+  const publicPath = sub.listingMode === 'company' ? `/profile/${sub.slug}` : `/listing/${sub.slug}`
+  const deviceW = DEVICES.find(d => d.key === device)?.w ?? 0
+
+  return (
+    <div className="sub-pv" role="dialog" aria-modal="true" aria-label={`Preview of ${sub.companyName}`}>
+      <div className="sub-pv-bar">
+        <div className="sub-pv-bar-l">
+          <span className="sub-pv-logo">
+            {sub.logoUrl
+              ? <img src={sub.logoUrl} alt="" />
+              : <span>{(sub.companyName || '?').slice(0, 1).toUpperCase()}</span>}
+          </span>
+          <span className="sub-pv-titles">
+            <span className="sub-pv-name">{sub.companyName}</span>
+            <span className="sub-pv-sub">
+              {sub.listingMode === 'company' ? 'Company profile' : 'Product listing'}
+              {' · exactly how the public page renders'}
+            </span>
+          </span>
+          <span className={`sub-pill sub-pill--${sub.status}`}>{STATUS_LABEL[sub.status]}</span>
+        </div>
+
+        <div className="sub-pv-devices" role="group" aria-label="Preview width">
+          {DEVICES.map(d => (
+            <button
+              key={d.key}
+              type="button"
+              className={`sub-pv-device ${device === d.key ? 'is-active' : ''}`}
+              onClick={() => setDevice(d.key)}
+            >
+              {d.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="sub-pv-bar-r">
+          {isPending && (
+            <>
+              <button className="sub-btn sub-btn--primary" disabled={busy}
+                onClick={async () => { await onSetStatus(sub.id, 'active'); onClose() }}>
+                Approve &amp; activate
+              </button>
+              <button className="sub-btn sub-btn--danger" disabled={busy}
+                onClick={async () => { await onSetStatus(sub.id, 'rejected'); onClose() }}>
+                Reject
+              </button>
+            </>
+          )}
+          {isLive && sub.slug && (
+            <a className="sub-btn sub-btn--ghost" href={publicPath} target="_blank" rel="noopener noreferrer">
+              Open live ↗
+            </a>
+          )}
+          <button className="sub-pv-close" onClick={onClose} aria-label="Close preview" title="Close (Esc)">✕</button>
+        </div>
+      </div>
+
+      <div className="sub-pv-stage">
+        <div
+          className={`sub-pv-screen sub-pv-screen--${device}`}
+          style={deviceW ? { width: deviceW } : undefined}
+        >
+          <iframe
+            ref={frameRef}
+            className="sub-pv-frame"
+            src="/preview/submission"
+            title={`Preview of ${sub.companyName}`}
+            onLoad={pushData}
+          />
+        </div>
+      </div>
+    </div>
   )
 }
 
