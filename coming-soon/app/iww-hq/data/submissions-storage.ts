@@ -286,6 +286,21 @@ export async function updateSubmission(
   return res.json()
 }
 
+/** Admin-only full update of ANY listing (PUT /api/admin/submissions/[id]).
+ *  Sends the admin session cookie; preserves status (no forced re-moderation). */
+export async function updateSubmissionAdmin(
+  idOrUuid: string,
+  data: Record<string, unknown>,
+) {
+  const res = await fetch(`${API}/admin/submissions/${encodeURIComponent(idOrUuid)}`, {
+    method: 'PUT',
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+  return res.json()
+}
+
 export async function uploadFile(file: File, type: 'logo' | 'screenshot'): Promise<string> {
   const form = new FormData()
   form.append('file', file)

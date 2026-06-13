@@ -1,4 +1,5 @@
 import type { NextRequest } from 'next/server'
+import { cookies } from 'next/headers'
 import { queryOne, execute } from './db'
 
 export const ADMIN_COOKIE_NAME = 'iww_adm_token'
@@ -16,10 +17,8 @@ export interface AdminSession {
  * Read the admin cookie, validate against admin_sessions table, return admin details.
  * Returns null for missing/expired/invalid sessions. Single indexed DB query.
  */
-export async function getAdminFromRequest(request: NextRequest): Promise<AdminSession | null> {
-  const token = request.cookies.get(ADMIN_COOKIE_NAME)?.value
+async function adminFromToken(token: string | undefined): Promise<AdminSession | null> {
   if (!token) return null
-
   const row = await queryOne<{
     admin_id: number
     display_name: string
@@ -32,15 +31,28 @@ export async function getAdminFromRequest(request: NextRequest): Promise<AdminSe
      LIMIT 1`,
     [token]
   )
-
   if (!row) return null
-
   return {
     adminId: row.admin_id,
     displayName: row.display_name,
     role: row.role,
     token,
   }
+}
+
+export async function getAdminFromRequest(request: NextRequest): Promise<AdminSession | null> {
+  return adminFromToken(request.cookies.get(ADMIN_COOKIE_NAME)?.value)
+}
+
+/**
+ * Server Component / Route Handler variant — reads the admin cookie from
+ * next/headers instead of a NextRequest. Use to gate admin-only RSC pages
+ * (the /iww-hq client layout only gates on the client, so server pages that
+ * load privileged data must check this themselves).
+ */
+export async function getAdminSession(): Promise<AdminSession | null> {
+  const store = await cookies()
+  return adminFromToken(store.get(ADMIN_COOKIE_NAME)?.value)
 }
 
 /**

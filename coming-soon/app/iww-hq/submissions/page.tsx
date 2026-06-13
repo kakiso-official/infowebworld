@@ -446,8 +446,11 @@ function SubmissionDetail({ sub, busy, onSetStatus, onDelete, onSaveFaqs, onPrev
             View live ↗
           </a>
         )}
-        <a className="sub-btn sub-btn--ghost" href={`/dashboard/listings/${sub.id}/edit`} target="_blank" rel="noopener noreferrer">
-          Edit ↗
+        <a className="sub-btn sub-btn--ink" href={`/iww-hq/submissions/${sub.id}/edit`}>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+          </svg>
+          Edit listing
         </a>
         <button className="sub-btn sub-btn--danger" disabled={busy}
           onClick={() => onDelete(sub.id)}>

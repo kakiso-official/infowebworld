@@ -11,7 +11,7 @@
  */
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { Country } from 'country-state-city'
-import { addSubmission, updateSubmission } from '../../../iww-hq/data/submissions-storage'
+import { addSubmission, updateSubmission, updateSubmissionAdmin } from '../../../iww-hq/data/submissions-storage'
 import { fetchLaunchedCategories } from '../../../iww-hq/data/category-storage'
 import type { Category } from '../../../iww-hq/data/category-storage'
 import { fetchAllTagGroups } from '../../../iww-hq/data/tag-storage'
@@ -32,7 +32,7 @@ import CompanyStep1Identity from './steps/CompanyStep1Identity'
 import CompanyStep2Details from './steps/CompanyStep2Details'
 import CompanyStep3Services from './steps/CompanyStep3Services'
 import CompanyStep4Review from './steps/CompanyStep4Review'
-import { useDashboardCtx } from '../../DashboardShell'
+import { useDashboardCtxOptional } from '../../DashboardShell'
 import Step1Identity from './steps/Step1Identity'
 import Step2Category from './steps/Step2Category'
 import Step3Contact from './steps/Step3Contact'
@@ -54,6 +54,9 @@ type Props = {
   plan?: PlanKey
   /** Edit mode props — when set, form preloads from initialFormState and submits PUT instead of POST. */
   editMode?: boolean
+  /** Admin override — submit to PUT /api/admin/submissions/[id] so an admin can
+   *  edit ANY user's listing (no owner gate, status preserved). */
+  adminMode?: boolean
   submissionUuid?: string
   initialFormState?: Partial<FormState>
   /** Snapshot of the user's existing listings — drives hero gating, sector
@@ -75,13 +78,14 @@ type Props = {
 export default function DashboardListingForm({
   plan = 'free',
   editMode = false,
+  adminMode = false,
   submissionUuid,
   initialFormState,
   existingContext,
 }: Props) {
   const caps = PLAN_CAPS[plan]
   const defaultIso = URL_COUNTRY_ISO['us']
-  const { user } = useDashboardCtx()
+  const _dashCtx = useDashboardCtxOptional()
 
   /* In edit mode, jump straight to Review so the user sees an overview of every
      field they're editing — they can dive into any earlier step from the rail.
@@ -186,7 +190,7 @@ export default function DashboardListingForm({
 
   /* Draft autosave — only for new listings. In edit mode the source of truth is
      the DB row; saving a draft would later overwrite the loaded values. */
-  const draftKey = `iww_listing_draft_${user.uuid}_${plan}`
+  const draftKey = `iww_listing_draft_${_dashCtx?.user?.uuid ?? 'admin'}_${plan}`
   useEffect(() => {
     if (editMode) return
     try {
@@ -397,7 +401,9 @@ export default function DashboardListingForm({
            mode. (Already handled above by the demoVideo line.) */
       }
       const res = editMode && submissionUuid
-        ? await updateSubmission(submissionUuid, payload)
+        ? (adminMode
+            ? await updateSubmissionAdmin(submissionUuid, payload)
+            : await updateSubmission(submissionUuid, payload))
         : await addSubmission(payload)
       if (res.ok) {
         if (!editMode) localStorage.removeItem(draftKey)

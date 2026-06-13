@@ -44,6 +44,13 @@ export function useDashboardCtx(): DashboardCtxValue {
   return v
 }
 
+/** Non-throwing variant — returns null outside <DashboardShell>. Used by the
+ *  admin listing editor, which reuses the dashboard form under /iww-hq where
+ *  there is no DashboardShell provider. */
+export function useDashboardCtxOptional(): DashboardCtxValue | null {
+  return useContext(DashboardCtx)
+}
+
 const SECTION_ICON: Record<string, IconKey> = {
   listing:   'building',
   discovery: 'search',
