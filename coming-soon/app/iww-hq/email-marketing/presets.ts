@@ -108,6 +108,25 @@ const p = (t: string) => `        <p style="margin:0 0 16px;font-size:15px;line-
 
 export const EMAIL_PRESETS: EmailPreset[] = [
   {
+    id: 'company-outreach',
+    name: 'Company outreach (with profile)',
+    category: 'Outreach',
+    subject: '{{company_name}}, we built your profile on InfoWebWorld 👀',
+    description: 'For the Companies audience — shows a live, browser-framed preview of the full /profile page built for each company, with a claim CTA. Tokens: {{company_name}}, {{listing_preview}}, {{claim_url}}.',
+    html: shell(
+      `        <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#C2410C;margin:0 0 10px">A profile, built for you</div>` +
+      h1('We built {{company_name}} a profile on InfoWebWorld') +
+      p('Hi {{company_name}} team — we feature standout companies across the technology and services world, and we’ve put together a complete, professional profile for you on InfoWebWorld, our global business directory. Here’s the full page, live:') +
+      `        <div style="margin:6px 0 24px">{{listing_preview}}</div>` +
+      p('It’s ready and working for you right now. Here’s what it gives {{company_name}}:') +
+      iconRow('2705', 'A verified, SEO-ready profile', 'Your services, awards, clients and reviews on one page that ranks — with a dofollow backlink to your website.') +
+      iconRow('1f4ac', 'Reviews &amp; qualified leads', 'Collect verified client reviews and receive enquiries from buyers browsing your category.') +
+      iconRow('1f6e1', 'Claim it free in under a minute', 'Verify with a work email on your domain and you instantly own the page — edit anything, anytime.') +
+      button('Claim your free profile', '{{claim_url}}') +
+      `        <p style="margin:22px 0 0;text-align:center;font-size:13.5px;line-height:1.6;color:#9A9590">Not the right person? Please forward this to whoever runs {{company_name}}’s marketing — or just reply and we’ll help.</p>`
+    ),
+  },
+  {
     id: 'welcome',
     name: 'Welcome',
     category: 'Onboarding',

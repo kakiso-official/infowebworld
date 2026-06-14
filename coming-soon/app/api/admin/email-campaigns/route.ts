@@ -40,5 +40,19 @@ export async function GET(request: NextRequest) {
     )
   } catch (e) { console.error('[email-campaigns] history failed (table may be missing):', e) }
 
-  return Response.json({ ok: true, campaigns, audienceCounts })
+  /* Company-outreach audience — the company listings the admin can target.
+     Their profile screenshot is generated live by the screenshot service at
+     send/preview time, so no per-company state is needed here. Degrades to []
+     if listing_mode doesn't exist yet. */
+  let companies: unknown[] = []
+  try {
+    companies = await query(
+      `SELECT id, slug, company_name, email
+         FROM submissions
+        WHERE listing_mode = 'company'
+        ORDER BY company_name ASC`
+    )
+  } catch (e) { console.error('[email-campaigns] companies list failed:', e) }
+
+  return Response.json({ ok: true, campaigns, audienceCounts, companies })
 }

@@ -1,7 +1,8 @@
 import { NextRequest } from 'next/server'
-import { query, execute } from '@/lib/db'
+import { query, queryOne, execute } from '@/lib/db'
 import { requireAdmin } from '@/lib/auth'
 import { sendEmail, escapeHtml } from '@/lib/email'
+import { applyCompanyTokens, type CompanyEmailData } from '@/lib/company-email'
 
 /**
  * POST /api/admin/email-campaigns/send
@@ -82,6 +83,73 @@ async function resolveRecipients(audience: string): Promise<Recipient[]> {
   return []
 }
 
+type CompanyRow = CompanyEmailData & { id: number; email: string | null }
+
+async function loadCompany(id: number): Promise<CompanyRow | null> {
+  if (!id) return null
+  return await queryOne<CompanyRow>(
+    `SELECT id, slug, company_name, email, tagline
+       FROM submissions WHERE id = ? AND listing_mode = 'company' LIMIT 1`,
+    [id]
+  )
+}
+
+/** Subject token substitution for the company audience (raw, not HTML-escaped). */
+function personalizeCompanySubject(subject: string, c: CompanyEmailData): string {
+  return subject
+    .replace(/\{\{\s*company_name\s*\}\}/gi, c.company_name)
+    .replace(/\{\{\s*name\s*\}\}/gi, c.company_name)
+    .replace(/\{\{\s*tagline\s*\}\}/gi, c.tagline || '')
+}
+
+/** Company outreach: per-company personalized send to the selected company
+    listings' emails. Each email gets that company's /profile screenshot + links
+    injected via applyCompanyTokens. Logs an email_campaigns row. */
+async function sendCompanyCampaign(
+  companyIds: unknown, subject: string, bodyHtml: string, adminId: number | null
+): Promise<Response> {
+  const ids = Array.isArray(companyIds) ? companyIds.map((x) => Number(x)).filter(Boolean) : []
+  if (!ids.length) return Response.json({ ok: false, error: 'Select at least one company.' }, { status: 400 })
+
+  const companies = await query<CompanyRow>(
+    `SELECT id, slug, company_name, email, tagline
+       FROM submissions
+      WHERE listing_mode = 'company' AND email IS NOT NULL AND email <> ''
+        AND id IN (${ids.map(() => '?').join(', ')})`,
+    ids
+  )
+  const seen = new Set<string>()
+  const unique = companies.filter((c) => {
+    const e = (c.email || '').toLowerCase()
+    if (!e || seen.has(e)) return false
+    seen.add(e); return true
+  })
+  if (!unique.length) return Response.json({ ok: false, error: 'None of the selected companies have a contact email.' }, { status: 400 })
+
+  const recipients = unique.slice(0, MAX_RECIPIENTS)
+  let sent = 0, failed = 0
+  for (let i = 0; i < recipients.length; i += BATCH) {
+    const chunk = recipients.slice(i, i + BATCH)
+    const results = await Promise.all(chunk.map((c) => {
+      const html = applyCompanyTokens(bodyHtml, c)
+      return sendEmail({ to: String(c.email), subject: personalizeCompanySubject(subject, c), html, text: toText(html) })
+    }))
+    for (const ok of results) ok ? sent++ : failed++
+  }
+
+  const status = failed === 0 ? 'sent' : (sent === 0 ? 'failed' : 'partial')
+  await execute(
+    `INSERT INTO email_campaigns
+       (subject, body_html, audience, recipient_count, sent_count, failed_count, status, sent_by_admin_id)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    [subject, bodyHtml, 'companies', recipients.length, sent, failed, status, adminId]
+  )
+  return Response.json({
+    ok: true, recipientCount: recipients.length, sentCount: sent, failedCount: failed,
+    truncated: unique.length > MAX_RECIPIENTS, totalAudience: unique.length,
+  })
+}
+
 export async function POST(request: NextRequest) {
   const guard = await requireAdmin(request)
   if (guard instanceof Response) return guard
@@ -101,11 +169,23 @@ export async function POST(request: NextRequest) {
       if (!EMAIL_RE.test(testEmail)) {
         return Response.json({ ok: false, error: 'Enter a valid test email.' }, { status: 400 })
       }
-      const testName = deriveName(null, testEmail)
-      const testHtml = personalize(bodyHtml, testName, testEmail)
+      /* Optional company context: when previewing the company-outreach email,
+         the admin passes a companyId so the [TEST] is personalized with a real
+         company (its profile screenshot, name and links). */
+      const testCompany = await loadCompany(Number(b.companyId || 0))
+      let testHtml: string
+      let testSubjectCore: string
+      if (testCompany) {
+        testHtml = applyCompanyTokens(bodyHtml, testCompany)
+        testSubjectCore = personalizeCompanySubject(subject, testCompany)
+      } else {
+        const testName = deriveName(null, testEmail)
+        testHtml = personalize(bodyHtml, testName, testEmail)
+        testSubjectCore = personalizeText(subject, testName, testEmail)
+      }
       const ok = await sendEmail({
         to: testEmail,
-        subject: `[TEST] ${personalizeText(subject, testName, testEmail)}`,
+        subject: `[TEST] ${testSubjectCore}`,
         html: testHtml,
         text: toText(testHtml),
       })
@@ -116,6 +196,13 @@ export async function POST(request: NextRequest) {
 
     /* ── Bulk send to an audience. ── */
     const audience = String(b.audience || '')
+
+    /* Company outreach has its own recipient resolution + per-company
+       personalization (profile screenshot, name, links). */
+    if (audience === 'companies') {
+      return await sendCompanyCampaign(b.companyIds, subject, bodyHtml, admin.adminId)
+    }
+
     if (!['all_users', 'verified_users', 'waitlist'].includes(audience)) {
       return Response.json({ ok: false, error: 'Pick a valid audience.' }, { status: 400 })
     }

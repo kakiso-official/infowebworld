@@ -1,6 +1,7 @@
 'use client'
-import { useState, useEffect, type CSSProperties } from 'react'
+import { useState, useEffect, useMemo, type CSSProperties } from 'react'
 import { EMAIL_PRESETS } from './presets'
+import { applyCompanyTokens } from '@/lib/company-email'
 
 /* Admin → Email Marketing. Compose + send broadcasts to signed-up users /
    waitlist, manage reusable templates, and review send history. Sends through
@@ -9,6 +10,8 @@ import { EMAIL_PRESETS } from './presets'
 type Template = { id: number; name: string; subject: string; body_html: string; updated_at: string }
 type Campaign = { id: number; subject: string; audience: string; recipient_count: number; sent_count: number; failed_count: number; status: string; created_at: string }
 type Counts = { all_users: number; verified_users: number; waitlist: number }
+type Company = { id: number; slug: string; company_name: string; email: string | null; email_preview_url: string | null; tagline?: string | null }
+type Audience = keyof Counts | 'companies'
 
 const AUDIENCES: { key: keyof Counts; label: string }[] = [
   { key: 'all_users', label: 'All signed-up users' },
@@ -43,7 +46,7 @@ function fmtDate(iso: string): string {
   const d = new Date(iso)
   return Number.isNaN(d.getTime()) ? iso : d.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })
 }
-const audLabel = (k: string) => AUDIENCES.find(a => a.key === k)?.label || k
+const audLabel = (k: string) => k === 'companies' ? 'Companies (outreach)' : (AUDIENCES.find(a => a.key === k)?.label || k)
 
 export default function EmailMarketing() {
   const [tab, setTab] = useState<'compose' | 'presets' | 'templates' | 'history'>('compose')
@@ -54,8 +57,13 @@ export default function EmailMarketing() {
   /* compose */
   const [subject, setSubject] = useState('')
   const [body, setBody] = useState(STARTER)
-  const [audience, setAudience] = useState<keyof Counts>('all_users')
+  const [audience, setAudience] = useState<Audience>('all_users')
   const [testEmail, setTestEmail] = useState('')
+  /* Companies audience — selectable company listings + per-company preview. */
+  const [companies, setCompanies] = useState<Company[]>([])
+  const [selectedIds, setSelectedIds] = useState<number[]>([])
+  const [companySearch, setCompanySearch] = useState('')
+  const [previewId, setPreviewId] = useState<number | null>(null)
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null)
 
@@ -67,7 +75,7 @@ export default function EmailMarketing() {
       .then(r => r.json()).then(j => { if (j?.ok) setTemplates(j.templates || []) }).catch(() => {})
   const loadHistory = () =>
     fetch('/api/admin/email-campaigns', { credentials: 'same-origin', cache: 'no-store' })
-      .then(r => r.json()).then(j => { if (j?.ok) { setCampaigns(j.campaigns || []); setCounts(j.audienceCounts || counts) } }).catch(() => {})
+      .then(r => r.json()).then(j => { if (j?.ok) { setCampaigns(j.campaigns || []); setCounts(j.audienceCounts || counts); setCompanies(j.companies || []) } }).catch(() => {})
 
   useEffect(() => { loadTemplates(); loadHistory() }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -80,12 +88,33 @@ export default function EmailMarketing() {
     return { ok: r.ok && j?.ok, j }
   }
 
+  /* ── Companies-audience derived state ── */
+  const selectedCompanies = useMemo(() => companies.filter(c => selectedIds.includes(c.id)), [companies, selectedIds])
+  const previewCompany = useMemo(
+    () => companies.find(c => c.id === previewId) || selectedCompanies[0] || companies[0] || null,
+    [companies, previewId, selectedCompanies]
+  )
+  const filteredCompanies = useMemo(() => {
+    const q = companySearch.trim().toLowerCase()
+    return q ? companies.filter(c => c.company_name.toLowerCase().includes(q)) : companies
+  }, [companies, companySearch])
+  const allFilteredSelected = filteredCompanies.length > 0 && filteredCompanies.every(c => selectedIds.includes(c.id))
+  const toggleCompany = (id: number) => setSelectedIds(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id])
+  const toggleAllFiltered = () => setSelectedIds(p => {
+    const ids = new Set(filteredCompanies.map(c => c.id))
+    if (allFilteredSelected) return p.filter(x => !ids.has(x))
+    const set = new Set(p); ids.forEach(id => set.add(id)); return [...set]
+  })
+  /* Preview body: for the Companies audience, substitute the selected company's
+     tokens (screenshot, name, links) so the admin sees the real email locally. */
+  const previewBody = (audience === 'companies' && previewCompany) ? applyCompanyTokens(body, previewCompany) : body
+
   const sendTest = async () => {
     if (busy) return
     if (!subject.trim() || !body.trim()) { setMsg({ ok: false, text: 'Add a subject and body first.' }); return }
     if (!testEmail.trim()) { setMsg({ ok: false, text: 'Enter a test email address.' }); return }
     setBusy(true); setMsg(null)
-    const { ok, j } = await post({ subject, bodyHtml: body, testEmail: testEmail.trim() })
+    const { ok, j } = await post({ subject, bodyHtml: body, testEmail: testEmail.trim(), companyId: audience === 'companies' ? (previewCompany?.id || 0) : 0 })
     setMsg(ok ? { ok: true, text: `Test sent to ${j.sentTo}. Check the inbox.` } : { ok: false, text: j?.error || 'Test send failed.' })
     setBusy(false)
   }
@@ -93,11 +122,15 @@ export default function EmailMarketing() {
   const sendBulk = async () => {
     if (busy) return
     if (!subject.trim() || !body.trim()) { setMsg({ ok: false, text: 'Add a subject and body first.' }); return }
-    const n = counts[audience]
-    if (!n) { setMsg({ ok: false, text: 'That audience has no recipients.' }); return }
-    if (!confirm(`Send "${subject}" to ${n} ${audLabel(audience)}? This sends real email and can't be undone.`)) return
+    const n = audience === 'companies' ? selectedIds.length : counts[audience]
+    if (!n) { setMsg({ ok: false, text: audience === 'companies' ? 'Select at least one company.' : 'That audience has no recipients.' }); return }
+    const who = audience === 'companies' ? `${n} ${n === 1 ? 'company' : 'companies'}` : `${n} ${audLabel(audience)}`
+    if (!confirm(`Send "${subject}" to ${who}? This sends real email and can't be undone.`)) return
     setBusy(true); setMsg(null)
-    const { ok, j } = await post({ subject, bodyHtml: body, audience })
+    const payload = audience === 'companies'
+      ? { subject, bodyHtml: body, audience, companyIds: selectedIds }
+      : { subject, bodyHtml: body, audience }
+    const { ok, j } = await post(payload)
     if (ok) {
       const extra = j.truncated ? ` (capped at ${j.recipientCount} of ${j.totalAudience} — Gmail's daily limit)` : ''
       setMsg({ ok: true, text: `Sent ${j.sentCount}/${j.recipientCount}${j.failedCount ? `, ${j.failedCount} failed` : ''}${extra}.` })
@@ -175,7 +208,41 @@ export default function EmailMarketing() {
                     <span style={{ marginLeft: 'auto', fontSize: 12, fontWeight: 700, color: 'var(--h-muted)' }}>{counts[a.key]} recipients</span>
                   </label>
                 ))}
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--h-heading)', cursor: 'pointer' }}>
+                  <input type="radio" name="aud" checked={audience === 'companies'} onChange={() => setAudience('companies')} />
+                  Companies (outreach)
+                  <span style={{ marginLeft: 'auto', fontSize: 12, fontWeight: 700, color: 'var(--h-muted)' }}>{selectedIds.length}/{companies.length} selected</span>
+                </label>
               </div>
+
+              {audience === 'companies' && (
+                <div style={{ marginTop: 10, border: '1.5px solid var(--h-border)', borderRadius: 12, overflow: 'hidden' }}>
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center', padding: '8px 10px', borderBottom: '1px solid var(--h-border-light)' }}>
+                    <input style={{ ...input, padding: '7px 10px', flex: 1 }} value={companySearch} onChange={e => setCompanySearch(e.target.value)} placeholder="Search companies…" />
+                    <button style={{ ...btnGhost, whiteSpace: 'nowrap' }} onClick={toggleAllFiltered}>{allFilteredSelected ? 'Clear' : 'Select all'}</button>
+                  </div>
+                  <div style={{ maxHeight: 210, overflowY: 'auto' }}>
+                    {companies.length === 0 ? (
+                      <div style={{ padding: 16, fontSize: 12.5, color: 'var(--h-muted)' }}>No company listings found yet.</div>
+                    ) : filteredCompanies.map(c => {
+                      const on = selectedIds.includes(c.id)
+                      return (
+                        <label key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '8px 11px', fontSize: 13, cursor: 'pointer', borderBottom: '1px solid var(--h-border-light)', background: on ? 'rgba(232,85,61,.05)' : '#fff' }}>
+                          <input type="checkbox" checked={on} onChange={() => toggleCompany(c.id)} />
+                          <span style={{ minWidth: 0, flex: 1 }}>
+                            <span style={{ fontWeight: 700, color: 'var(--h-heading)' }}>{c.company_name}</span>
+                            <span style={{ display: 'block', fontSize: 11, color: 'var(--h-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.email || 'no email'}</span>
+                          </span>
+                          <span title="The profile screenshot is generated automatically by a live screenshot service — no setup needed"
+                            style={{ fontSize: '.5rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.04em', padding: '.18rem .42rem', borderRadius: 999, whiteSpace: 'nowrap', background: 'rgba(14,143,110,.12)', color: '#0E8F6E' }}>
+                            ✓ auto preview
+                          </span>
+                        </label>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div>
@@ -199,7 +266,9 @@ export default function EmailMarketing() {
                 <button style={{ ...btnGhost, whiteSpace: 'nowrap' }} disabled={busy} onClick={sendTest}>Send test</button>
               </div>
               <button style={{ ...btnPrimary, opacity: busy ? 0.6 : 1 }} disabled={busy} onClick={sendBulk}>
-                {busy ? 'Working…' : `Send to ${counts[audience]} ${audLabel(audience)}`}
+                {busy ? 'Working…' : audience === 'companies'
+                  ? `Send to ${selectedIds.length} ${selectedIds.length === 1 ? 'company' : 'companies'}`
+                  : `Send to ${counts[audience]} ${audLabel(audience)}`}
               </button>
               {msg && (
                 <div style={{ fontSize: 13, fontWeight: 600, padding: '8px 12px', borderRadius: 10, background: msg.ok ? 'rgba(14,143,110,.1)' : '#FEF2F2', color: msg.ok ? '#0E8F6E' : '#B91C1C' }}>{msg.text}</div>
@@ -209,8 +278,22 @@ export default function EmailMarketing() {
 
           {/* right: live preview */}
           <div style={{ ...card, padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-            <div style={{ padding: '10px 14px', borderBottom: '1px solid var(--h-border-light)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.06em', color: 'var(--h-muted)' }}>Live preview</div>
-            <iframe title="preview" sandbox="" srcDoc={body} style={{ width: '100%', flex: 1, minHeight: 460, border: 'none', background: '#fff' }} />
+            <div style={{ padding: '8px 14px', borderBottom: '1px solid var(--h-border-light)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.06em', color: 'var(--h-muted)', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span>Live preview</span>
+              {audience === 'companies' && companies.length > 0 && (
+                <select
+                  value={previewCompany?.id ?? ''}
+                  onChange={e => setPreviewId(Number(e.target.value) || null)}
+                  style={{ marginLeft: 'auto', ...btnGhost, padding: '5px 8px', textTransform: 'none', letterSpacing: 0, fontWeight: 600 }}
+                  title="Preview the email as this company"
+                >
+                  {(selectedCompanies.length ? selectedCompanies : companies).map(c => (
+                    <option key={c.id} value={c.id}>Preview as: {c.company_name}</option>
+                  ))}
+                </select>
+              )}
+            </div>
+            <iframe title="preview" sandbox="" srcDoc={previewBody} style={{ width: '100%', flex: 1, minHeight: 460, border: 'none', background: '#fff' }} />
           </div>
         </div>
       )}
