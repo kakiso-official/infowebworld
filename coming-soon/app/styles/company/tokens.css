@@ -1,0 +1,48 @@
+/* ═════════════════════════════════════════════════════════════
+   /profile/[slug] — public company profile page (Clutch.co-style).
+
+   Layout from top: sticky head → main grid (left col + tab widget) →
+   pricing snapshot → portfolio (Products by us) → connect.
+
+   Sector accent (--cmp-accent) drives the Visit-Website primary pill,
+   inline accent dots, and award badge fills. Set on the root by the
+   React component from categories.color of the company's L1 sector.
+
+   Namespace: cmp-*
+   ═════════════════════════════════════════════════════════════ */
+
+.cmp-root {
+  --cmp-ink: #0F1419;
+  --cmp-ink-soft: #2A2F36;
+  --cmp-mute: #5C6470;
+  --cmp-mute-2: #8E96A1;
+  --cmp-line: #ECEEF1;
+  --cmp-line-mid: #D8DCE2;
+  --cmp-line-strong: #0F1419;
+  --cmp-bg: #FFFFFF;
+  --cmp-bg-soft: #FBFBFC;
+
+  --cmp-accent: #E8553D;
+  --cmp-accent-soft: rgba(232, 85, 61, .06);
+  --cmp-accent-border: rgba(232, 85, 61, .22);
+
+  /* Clutch-ish bright stat-card colors. Independent from --cmp-accent so a
+     blue-tinted page (IT Services sector) and a red-tinted one (AI/ML)
+     show the same Pricing Snapshot palette. */
+  --cmp-stat-mint: #A8E5C8;
+  --cmp-stat-blue: #BBD4F7;
+  --cmp-stat-yellow: #F7E083;
+
+  --cmp-red: #E8423B;
+
+  background: var(--cmp-bg);
+  color: var(--cmp-ink);
+  font-family: var(--font-inter), 'Inter', -apple-system, system-ui, sans-serif;
+  min-height: 100vh;
+}
+.cmp-root *,
+.cmp-root *::before,
+.cmp-root *::after {
+  font-family: var(--font-inter), 'Inter', -apple-system, system-ui, sans-serif !important;
+  box-sizing: border-box;
+}

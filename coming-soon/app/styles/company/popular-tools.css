@@ -1,0 +1,88 @@
+/* ═══════════════════════════════════════════════════════════
+   6. POPULAR TOOLS — products by other companies
+   ═══════════════════════════════════════════════════════════ */
+.cmp-tools {
+  background: var(--cmp-bg-soft);
+  border-top: 1px solid var(--cmp-line);
+}
+.cmp-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 920px) { .cmp-tools-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+@media (max-width: 560px) { .cmp-tools-grid { grid-template-columns: 1fr } }
+
+.cmp-tools-card {
+  display: flex; flex-direction: column;
+  gap: 10px;
+  padding: 14px 14px 12px;
+  background: var(--cmp-bg);
+  border: 1px solid var(--cmp-line);
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color .15s, transform .15s, box-shadow .15s;
+}
+.cmp-tools-card:hover {
+  border-color: var(--cmp-line-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(15, 20, 25, .06);
+}
+.cmp-tools-logo {
+  width: 44px; height: 44px;
+  background: var(--cmp-bg-soft);
+  border: 1px solid var(--cmp-line);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.cmp-tools-logo img { width: 100%; height: 100%; object-fit: contain; padding: 4px; box-sizing: border-box; }
+.cmp-tools-logo span { font-size: 18px; font-weight: 800; color: var(--cmp-accent); }
+.cmp-tools-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.cmp-tools-name {
+  margin: 0;
+  font-size: 14.5px; font-weight: 800;
+  letter-spacing: -.012em;
+  color: var(--cmp-ink);
+  text-overflow: ellipsis; white-space: nowrap; overflow: hidden;
+}
+.cmp-tools-tag {
+  margin: 0;
+  font-size: 12.5px; line-height: 1.45;
+  color: var(--cmp-mute);
+  display: -webkit-box; -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; overflow: hidden;
+}
+.cmp-tools-by {
+  margin: 4px 0 0;
+  font-size: 11.5px;
+  color: var(--cmp-mute);
+}
+.cmp-tools-by span { color: var(--cmp-ink); font-weight: 700; }
+.cmp-tools-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--cmp-line);
+  font-size: 12.5px;
+  margin-top: auto;
+}
+.cmp-tools-price {
+  font-weight: 700;
+  color: var(--cmp-ink);
+}
+.cmp-tools-price--quiet {
+  font-weight: 500;
+  color: var(--cmp-mute);
+}
+.cmp-tools-price span {
+  color: var(--cmp-mute);
+  font-weight: 500;
+  margin-left: 3px;
+}
+.cmp-tools-cta {
+  display: inline-flex; align-items: center;
+  color: var(--cmp-red);
+}

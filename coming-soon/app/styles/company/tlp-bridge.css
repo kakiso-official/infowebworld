@@ -1,0 +1,23 @@
+/* ═══════════════════════════════════════════════════════════
+   Bridge wrapper between cmp-* sections and the tlp-* cross-marketing
+   sections (Alternatives / Popular comparisons / Customers also viewed
+   / Related categories). The tlp-* CSS is scoped under .tlp-main, and
+   we want the same visual rhythm here as the product page.
+   ═══════════════════════════════════════════════════════════ */
+.cmp-tlp-bridge {
+  background: var(--cmp-bg);
+  border-top: 1px solid var(--cmp-line);
+  padding: 0;
+}
+/* Keep the section padding inside the wrapper consistent with the rest
+   of the page. tlp-sec already has padding:36px 0 — that gives clean
+   spacing without doubling. */
+.cmp-tlp-bridge .tlp-wrap {
+  max-width: 1100px;
+  padding: 0 clamp(20px, 4vw, 32px);
+}
+
+/* Following Connect section needs separation from the last tlp-sec. */
+.cmp-tlp-bridge + .cmp-section.cmp-connect {
+  border-top: 1px solid var(--cmp-line);
+}

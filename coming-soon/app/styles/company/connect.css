@@ -1,0 +1,47 @@
+/* ═══════════════════════════════════════════════════════════
+   5. CONNECT — single horizontal block, no card chrome
+   ═══════════════════════════════════════════════════════════ */
+.cmp-connect-inner {
+  display: flex; flex-direction: column;
+  gap: 24px;
+  align-items: flex-start;
+}
+.cmp-connect-copy { max-width: 640px }
+.cmp-connect-actions {
+  display: flex; flex-wrap: wrap; gap: 10px;
+}
+.cmp-connect-meta {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 16px 24px;
+  width: 100%;
+  padding-top: 24px;
+  border-top: 1px solid var(--cmp-line);
+  font-size: 13.5px;
+}
+.cmp-connect-meta-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--cmp-mute);
+  text-decoration: none;
+  font-weight: 600;
+}
+.cmp-connect-meta-link:hover { color: var(--cmp-ink); }
+.cmp-connect-meta-link svg { color: var(--cmp-mute-2); }
+
+.cmp-connect-socials {
+  display: flex; gap: 6px;
+  margin-left: auto;
+}
+.cmp-connect-socials a {
+  width: 36px; height: 36px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 8px;
+  color: var(--cmp-mute);
+  border: 1px solid var(--cmp-line);
+  font-size: 16px;
+  transition: color .15s, border-color .15s;
+}
+.cmp-connect-socials a:hover { color: var(--cmp-ink); border-color: var(--cmp-line-strong); }
+
+@media (max-width: 540px) {
+  .cmp-connect-socials { margin-left: 0 }
+}

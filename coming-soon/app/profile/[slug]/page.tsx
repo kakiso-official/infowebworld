@@ -389,6 +389,7 @@ async function getCompanyBySlug(slug: string) {
   /* Reviews aggregate + recent for "What clients have said" + ★ rating. */
   let avgRating = 0
   let reviewCount = 0
+  const reviewDist = [0, 0, 0, 0, 0] // approved counts: [1★, 2★, 3★, 4★, 5★]
   let recentReviews: Record<string, unknown>[] = []
   try {
     const agg = await queryOne<{ avg_rating: number | null; review_count: number }>(
@@ -398,6 +399,16 @@ async function getCompanyBySlug(slug: string) {
     )
     avgRating = agg?.avg_rating ? Number(agg.avg_rating) : 0
     reviewCount = Number(agg?.review_count || 0)
+    const distRows = await query<{ rating: number; c: number }>(
+      `SELECT rating, COUNT(*) AS c
+         FROM reviews WHERE listing_id = ? AND status = 'approved'
+        GROUP BY rating`,
+      [company.id]
+    )
+    for (const row of distRows) {
+      const s = Number(row.rating)
+      if (s >= 1 && s <= 5) reviewDist[s - 1] = Number(row.c)
+    }
     recentReviews = await query(
       `SELECT r.id, r.rating, r.title, r.body, r.created_at,
               u.name AS user_name, u.avatar_url AS user_avatar_url
@@ -417,7 +428,7 @@ async function getCompanyBySlug(slug: string) {
     popularTools,
     relatedCategories,
     engagement: { followers: followerCount, bookmarks: bookmarkCount },
-    reviews: { avgRating, reviewCount, recent: recentReviews },
+    reviews: { avgRating, reviewCount, distribution: reviewDist, recent: recentReviews },
   }
 }
 

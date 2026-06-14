@@ -1,0 +1,42 @@
+/* ═══════════════════════════════════════════════════════════
+   Buttons — global pill buttons used in head + connect
+   ═══════════════════════════════════════════════════════════ */
+.cmp-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  height: 38px;
+  padding: 0 16px;
+  border: 1.5px solid transparent;
+  border-radius: 6px;
+  font-size: 13.5px; font-weight: 700;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  cursor: pointer;
+  background: transparent;
+  color: var(--cmp-ink);
+  font-family: inherit;
+  transition: background .15s, color .15s, border-color .15s, transform .15s;
+  white-space: nowrap;
+}
+.cmp-btn:focus-visible {
+  outline: 2px solid var(--cmp-red);
+  outline-offset: 2px;
+}
+/* Primary CTA — Visit Website. Solid red filled (Clutch's default). */
+.cmp-btn--primary {
+  background: var(--cmp-red);
+  color: #FFFFFF;
+  border-color: var(--cmp-red);
+}
+.cmp-btn--primary:hover {
+  filter: brightness(.92);
+  transform: translateY(-1px);
+}
+.cmp-btn--outline {
+  border-color: var(--cmp-line-mid);
+  color: var(--cmp-ink);
+  background: var(--cmp-bg);
+}
+.cmp-btn--outline:hover {
+  border-color: var(--cmp-line-strong);
+  background: var(--cmp-bg-soft);
+}

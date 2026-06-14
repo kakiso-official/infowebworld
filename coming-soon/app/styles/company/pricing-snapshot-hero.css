@@ -1,0 +1,40 @@
+/* ═══════════════════════════════════════════════════════════
+   Pricing Snapshot — hero band (headline numbers) + details.
+   ═══════════════════════════════════════════════════════════ */
+.cmp-snap-hero {
+  padding: clamp(18px, 2.4vw, 26px) clamp(18px, 2.5vw, 28px);
+  background:
+    linear-gradient(135deg, var(--cmp-accent-soft) 0%, rgba(255, 255, 255, 0) 62%),
+    linear-gradient(180deg, var(--cmp-bg-soft), var(--cmp-bg));
+  border-bottom: 1px solid var(--cmp-line);
+}
+.cmp-snap-hero-title {
+  margin: 0 0 16px;
+  font-size: 12px; font-weight: 800;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--cmp-mute);
+}
+.cmp-snap-hero-stats {
+  display: flex; flex-wrap: wrap;
+  gap: 16px 40px;
+  align-items: flex-end;
+}
+.cmp-snap-hstat { display: flex; flex-direction: column; gap: 5px; }
+.cmp-snap-hstat-val {
+  font-size: clamp(24px, 3.4vw, 34px); font-weight: 800;
+  letter-spacing: -.025em; line-height: 1;
+  color: var(--cmp-ink);
+  display: inline-flex; align-items: baseline; gap: 5px;
+}
+.cmp-snap-hstat-val small { font-size: 16px; font-weight: 700; color: var(--cmp-mute); }
+.cmp-snap-hstat-star { color: #F1B500; font-size: .68em; }
+.cmp-snap-hstat-lbl {
+  font-size: 11.5px; font-weight: 600;
+  letter-spacing: .02em;
+  color: var(--cmp-mute);
+}
+.cmp-snap-body {
+  padding: clamp(18px, 2.2vw, 24px);
+  display: flex; flex-direction: column;
+  gap: clamp(18px, 2.2vw, 24px);
+}

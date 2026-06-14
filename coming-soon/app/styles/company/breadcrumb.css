@@ -1,0 +1,35 @@
+/* ═══════════════════════════════════════════════════════════
+   Breadcrumb — L1 → … → leaf → company (mirrors the product page).
+   ═══════════════════════════════════════════════════════════ */
+.cmp-crumb-bar {
+  background: var(--cmp-bg-soft);
+  border-bottom: 1px solid var(--cmp-line);
+  padding: 10px 0;
+}
+.cmp-crumb-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 32px);
+}
+.cmp-crumb {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--cmp-mute);
+}
+.cmp-crumb a {
+  display: inline-flex; align-items: center;
+  color: var(--cmp-mute);
+  font-weight: 500;
+  text-decoration: none;
+}
+.cmp-crumb a:hover { color: var(--cmp-accent); }
+.cmp-crumb-sep { display: inline-flex; align-items: center; color: #9CA3AF; font-size: 10px; }
+.cmp-crumb-current {
+  color: var(--cmp-ink); font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px;
+}
+@media (max-width: 600px) {
+  .cmp-crumb { font-size: 12px; gap: 6px; }
+  .cmp-crumb-current { max-width: 180px; }
+}

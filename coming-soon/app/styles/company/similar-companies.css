@@ -1,0 +1,96 @@
+/* ═══════════════════════════════════════════════════════════
+   5. SIMILAR AGENCIES — same-sector cards.
+      Reuses portfolio card silhouette but with a stat strip mid-card.
+   ═══════════════════════════════════════════════════════════ */
+.cmp-sib {
+  background: var(--cmp-bg);
+  border-top: 1px solid var(--cmp-line);
+}
+.cmp-sib-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 920px) { .cmp-sib-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+@media (max-width: 560px) { .cmp-sib-grid { grid-template-columns: 1fr } }
+
+.cmp-sib-card {
+  display: flex; flex-direction: column;
+  gap: 10px;
+  padding: 14px 14px 12px;
+  background: var(--cmp-bg);
+  border: 1px solid var(--cmp-line);
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color .15s, transform .15s, box-shadow .15s;
+  position: relative;
+}
+.cmp-sib-card:hover {
+  border-color: var(--cmp-line-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(15, 20, 25, .06);
+}
+.cmp-sib-top {
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.cmp-sib-logo {
+  flex-shrink: 0;
+  width: 44px; height: 44px;
+  background: var(--cmp-bg-soft);
+  border: 1px solid var(--cmp-line);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.cmp-sib-logo img { width: 100%; height: 100%; object-fit: contain; padding: 4px; box-sizing: border-box; }
+.cmp-sib-logo span { font-size: 18px; font-weight: 800; color: var(--cmp-accent); }
+.cmp-sib-id { min-width: 0; flex: 1; }
+.cmp-sib-name {
+  margin: 0 0 2px;
+  font-size: 14.5px; font-weight: 800;
+  letter-spacing: -.012em;
+  color: var(--cmp-ink);
+  line-height: 1.25;
+  text-overflow: ellipsis; white-space: nowrap; overflow: hidden;
+}
+.cmp-sib-tag {
+  margin: 0;
+  font-size: 12.5px; line-height: 1.45;
+  color: var(--cmp-mute);
+  display: -webkit-box; -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; overflow: hidden;
+}
+.cmp-sib-meta {
+  display: flex; flex-wrap: wrap;
+  gap: 6px 12px;
+  font-size: 11.5px;
+  color: var(--cmp-mute);
+}
+.cmp-sib-meta strong {
+  color: var(--cmp-mute-2);
+  font-weight: 700;
+  margin-right: 3px;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: .04em;
+}
+.cmp-sib-loc { display: inline-flex; align-items: center; gap: 4px; }
+.cmp-sib-loc svg { width: 11px; height: 11px; color: var(--cmp-mute-2); }
+.cmp-sib-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--cmp-line);
+  font-size: 12px;
+  margin-top: auto;
+}
+.cmp-sib-cat {
+  font-weight: 700;
+  letter-spacing: -.005em;
+}
+.cmp-sib-cta {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-weight: 700;
+  color: var(--cmp-red);
+}

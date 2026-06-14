@@ -1,7 +1,27 @@
 'use client'
 
-/* Profile styles + the reused .tlp-main listing-card styles — scoped here. */
-import '../styles/profile-page.css'
+/* Company-profile styles — split per page section under styles/company/.
+   THE IMPORT ORDER BELOW IS THE CASCADE ORDER — keep it. The reused
+   .tlp-* listing-card styles load last (unchanged from before). */
+import '../styles/company/tokens.css'
+import '../styles/company/buttons.css'
+import '../styles/company/head.css'
+import '../styles/company/main.css'
+import '../styles/company/tab-widget.css'
+import '../styles/company/pricing-snapshot.css'
+import '../styles/company/section.css'
+import '../styles/company/portfolio.css'
+import '../styles/company/connect.css'
+import '../styles/company/tlp-bridge.css'
+import '../styles/company/similar-companies.css'
+import '../styles/company/popular-tools.css'
+import '../styles/company/versus.css'
+import '../styles/company/video.css'
+import '../styles/company/awards.css'
+import '../styles/company/reviews.css'
+import '../styles/company/responsive-mobile.css'
+import '../styles/company/breadcrumb.css'
+import '../styles/company/pricing-snapshot-hero.css'
 import '../styles/test-listing-page.css'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -13,8 +33,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faGlobe, faLocationDot, faUsers, faUserGroup, faCalendarDays, faEnvelope,
   faArrowRight, faPlus, faCheck, faTrophy, faCircleInfo, faFolderOpen,
-  faRightLeft, faUserPlus, faClock, faPlay, faBookmark,
-  faCircleCheck, faAward, faStar, faHouse, faChevronRight, faChevronDown, faPenToSquare,
+  faRightLeft, faUserPlus, faClock, faSackDollar, faScaleBalanced, faPlay, faBookmark,
+  faCircleCheck, faMedal, faTags, faStar, faHouse, faChevronRight, faChevronDown, faPenToSquare,
+  faComments, faBoxOpen, faPaperPlane, faCodeCompare, faEye, faLayerGroup, faQuoteLeft, faMoneyBillWave, faBriefcase,
 } from '@fortawesome/free-solid-svg-icons'
 import { faLinkedinIn, faXTwitter, faFacebookF } from '@fortawesome/free-brands-svg-icons'
 
@@ -40,7 +61,8 @@ import { faLinkedinIn, faXTwitter, faFacebookF } from '@fortawesome/free-brands-
    the soft hero backdrop. Set on the root via --cmp-accent so descendants
    pick it up via var() without prop drilling.
 
-   CSS namespace: cmp-* (defined in app/styles/profile-page.css).
+   CSS namespace: cmp-* (split per section in app/styles/company/*.css,
+   imported in cascade order at the top of this file).
    ═══════════════════════════════════════════════════════════════════════════ */
 
 interface ServiceShare { name: string; percentage: number }
@@ -105,7 +127,7 @@ interface InitialData {
   popularTools?: Record<string, unknown>[]
   relatedCategories?: Record<string, unknown>[]
   engagement?: { followers: number; bookmarks: number }
-  reviews?: { avgRating: number; reviewCount: number; recent: Record<string, unknown>[] }
+  reviews?: { avgRating: number; reviewCount: number; distribution?: number[]; recent: Record<string, unknown>[] }
 }
 
 interface RelatedCategoryRow {
@@ -216,7 +238,8 @@ const Spark       = () => <FontAwesomeIcon icon={faUserPlus} />
 const Play        = () => <FontAwesomeIcon icon={faPlay} />
 const Bookmark       = () => <FontAwesomeIcon icon={faBookmark} />
 const VerifiedShield = () => <FontAwesomeIcon icon={faCircleCheck} />
-const AwardMedal     = () => <FontAwesomeIcon icon={faAward} />
+const AwardMedal     = () => <FontAwesomeIcon icon={faMedal} />
+const PriceTag       = () => <FontAwesomeIcon icon={faTags} />
 
 /* ── Pie chart (pure SVG) ────────────────────────────────────────── */
 function PieChart({ slices, size = 220 }: { slices: ServiceShare[]; size?: number }) {
@@ -244,45 +267,6 @@ function PieChart({ slices, size = 220 }: { slices: ServiceShare[]; size?: numbe
   )
 }
 
-/* ── Range bar for "Most Common Project Size" ──────────────────── */
-const PROJECT_SIZE_BUCKETS = [
-  { label: '< $10,000',         match: /(under|<).*10[,.]?000|<\s*\$?10/i },
-  { label: '$10,000 - $49,999', match: /10[,.]?000.*49[,.]?999/i },
-  { label: '$50,000 - $199,999', match: /50[,.]?000.*199[,.]?999/i },
-  { label: '> $200,000',        match: /200[,.]?000\+|>\s*\$?200/i },
-]
-function ProjectSizeBar({ value }: { value: string | null }) {
-  const idx = useMemo(() => {
-    if (!value) return -1
-    for (let i = 0; i < PROJECT_SIZE_BUCKETS.length; i++) {
-      if (PROJECT_SIZE_BUCKETS[i].match.test(value)) return i
-    }
-    return -1
-  }, [value])
-  /* "Custom" fallback — when the company's stated project size doesn't fit
-     any of the four standard buckets (e.g. "Contact us", "₹15,000",
-     "Enterprise"), show a single full-width custom cell instead of a row
-     of empty buckets that read as "no data". */
-  if (idx === -1 && value) {
-    return (
-      <div className="cmp-range cmp-range--custom">
-        <div className="cmp-range-cell is-on">
-          <span>Custom — {value}</span>
-        </div>
-      </div>
-    )
-  }
-  return (
-    <div className="cmp-range">
-      {PROJECT_SIZE_BUCKETS.map((b, i) => (
-        <div key={b.label} className={'cmp-range-cell' + (i === idx ? ' is-on' : '')} title={b.label}>
-          <span>{b.label}</span>
-        </div>
-      ))}
-    </div>
-  )
-}
-
 /* ── Stars row ──────────────────────────────────────────────────── */
 function Stars({ value, max = 5 }: { value: number; max?: number }) {
   const rounded = Math.max(0, Math.min(max, Math.round(value || 0)))
@@ -293,6 +277,64 @@ function Stars({ value, max = 5 }: { value: number; max?: number }) {
       )}
     </span>
   )
+}
+
+/* Fractional star meter — gray track + an accent fill clipped to value/max.
+   Drives the reviews summary: the big average AND each histogram row. */
+function StarMeter({ value, max = 5 }: { value: number; max?: number }) {
+  const pct = Math.max(0, Math.min(100, (value / max) * 100))
+  return (
+    <span className="cmp-starmeter" role="img" aria-label={`${value.toFixed(1)} out of ${max} stars`}>
+      <span className="cmp-starmeter-track" aria-hidden="true">
+        {Array.from({ length: max }, (_, i) => <FontAwesomeIcon key={i} icon={faStar} />)}
+      </span>
+      <span className="cmp-starmeter-fill" aria-hidden="true" style={{ width: `${pct}%` }}>
+        {Array.from({ length: max }, (_, i) => <FontAwesomeIcon key={i} icon={faStar} />)}
+      </span>
+    </span>
+  )
+}
+
+/* ── Pricing Snapshot helpers — derive a short qualitative tag from the
+   free-text pricing values. Each returns '' (caption hidden) when a value
+   can't be parsed, so nothing odd ever renders. ──────────────────────── */
+function prettyRange(s: string): string {
+  return String(s).replace(/\s*[-–—]\s*/g, '–') // "$20 - $50" → "$20–$50"
+}
+function parseMoney(s: string): number | null {
+  const m = String(s).match(/(\d[\d,.]*)\s*([kKmM])?/)
+  if (!m) return null
+  const n = parseFloat(m[1].replace(/,/g, ''))
+  if (isNaN(n)) return null
+  const u = (m[2] || '').toLowerCase()
+  return u === 'k' ? n * 1_000 : u === 'm' ? n * 1_000_000 : n
+}
+function minSizeCaption(s: string): string {
+  const n = parseMoney(s) // a "minimum" — the first number is the right anchor
+  if (n == null) return ''
+  if (n < 1_000) return 'Small projects OK'
+  if (n < 10_000) return 'SMB-friendly'
+  if (n < 50_000) return 'Mid-size projects'
+  return 'Enterprise scale'
+}
+function hourlyCaption(s: string): string {
+  const nums = (String(s).match(/\d[\d,.]*/g) || [])
+    .map(x => parseFloat(x.replace(/,/g, ''))).filter(n => !isNaN(n))
+  if (!nums.length) return ''
+  const avg = nums.reduce((a, b) => a + b, 0) / nums.length // midpoint of the range
+  if (avg < 25) return 'Budget rates'
+  if (avg < 50) return 'Affordable'
+  if (avg < 100) return 'Mid-market'
+  if (avg < 200) return 'Senior rate'
+  return 'Premium'
+}
+function costRatingCaption(v: number): string {
+  if (v >= 4.8) return 'Top-rated value'
+  if (v >= 4.5) return 'Excellent value'
+  if (v >= 4.0) return 'Great value'
+  if (v >= 3.5) return 'Good value'
+  if (v >= 2.5) return 'Fair value'
+  return ''
 }
 
 /* ── Review date — "Mar 2026" compact label ──────────────────────── */
@@ -383,9 +425,11 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
   const relatedCategories = (initialData.relatedCategories as unknown as RelatedCategoryRow[]) || []
   const breadcrumb = (initialData.breadcrumb as { name: string; slug: string }[] | undefined) || []
   const initialEngagement = initialData.engagement || { followers: 0, bookmarks: 0 }
-  const reviewsData = initialData.reviews || { avgRating: 0, reviewCount: 0, recent: [] }
+  const reviewsData = initialData.reviews || { avgRating: 0, reviewCount: 0, distribution: [0, 0, 0, 0, 0], recent: [] }
   const reviews = (reviewsData.recent as unknown as ReviewRow[]) || []
   const reviewHref = `/write-review?company=${encodeURIComponent(c.slug || propSlug || '')}&mode=company`
+  const reviewDist = reviewsData.distribution || [0, 0, 0, 0, 0] // [1★…5★] approved counts
+  const reviewMax = Math.max(1, ...reviewDist)                   // longest bar = the biggest bucket
 
   const slug = c.slug || propSlug || ''
   const headerTags = useMemo(() => parseJsonArr(c.header_tags) as string[], [c.header_tags])
@@ -945,6 +989,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
           <div className="cmp-snap-inner">
             <div className="cmp-snap-card">
               <header className="cmp-snap-head">
+                <span className="cmp-snap-head-ico"><PriceTag /></span>
                 <h2 className="cmp-snap-title">Pricing Snapshot</h2>
               </header>
 
@@ -954,27 +999,45 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                   <div className="cmp-snap-stats">
                     {c.min_project_size && (
                       <div className="cmp-snap-stat cmp-snap-stat--min">
+                        <span className="cmp-snap-stat-ico" aria-hidden="true"><FontAwesomeIcon icon={faSackDollar} /></span>
                         <span className="cmp-snap-stat-lbl">Min. project size</span>
-                        <span className="cmp-snap-stat-val">{c.min_project_size}</span>
+                        <span className="cmp-snap-stat-val">{prettyRange(c.min_project_size)}</span>
+                        {minSizeCaption(c.min_project_size) && (
+                          <span className="cmp-snap-stat-cap">{minSizeCaption(c.min_project_size)}</span>
+                        )}
                       </div>
                     )}
                     {c.hourly_rate && (
                       <div className="cmp-snap-stat cmp-snap-stat--rate">
+                        <span className="cmp-snap-stat-ico" aria-hidden="true"><FontAwesomeIcon icon={faClock} /></span>
                         <span className="cmp-snap-stat-lbl">Avg. hourly rate</span>
-                        <span className="cmp-snap-stat-val">{c.hourly_rate}</span>
+                        <span className="cmp-snap-stat-val">
+                          {prettyRange(c.hourly_rate)}
+                          {!/h(ou)?r/i.test(c.hourly_rate) && <small>/hr</small>}
+                        </span>
+                        {hourlyCaption(c.hourly_rate) && (
+                          <span className="cmp-snap-stat-cap">{hourlyCaption(c.hourly_rate)}</span>
+                        )}
                       </div>
                     )}
                     {ratingForCost != null && (
                       <div className="cmp-snap-stat cmp-snap-stat--rating">
+                        <span className="cmp-snap-stat-ico" aria-hidden="true"><FontAwesomeIcon icon={faScaleBalanced} /></span>
                         <span className="cmp-snap-stat-lbl">Rating for cost</span>
-                        <span className="cmp-snap-stat-val">{ratingForCost.toFixed(1)} <small>/ 5</small></span>
+                        <span className="cmp-snap-stat-val">
+                          {ratingForCost.toFixed(1)}
+                          <Stars value={ratingForCost} />
+                        </span>
+                        {costRatingCaption(ratingForCost) && (
+                          <span className="cmp-snap-stat-cap">{costRatingCaption(ratingForCost)}</span>
+                        )}
                       </div>
                     )}
                   </div>
 
                   {c.clients_summary && (
                     <div className="cmp-snap-says">
-                      <h3 className="cmp-snap-says-title">What Clients Have Said</h3>
+                      <h3 className="cmp-snap-says-title cmp-h3"><span className="cmp-h2-ico"><FontAwesomeIcon icon={faQuoteLeft} /></span>What Clients Have Said</h3>
                       <p className="cmp-snap-says-body">{c.clients_summary}</p>
                       {reviewsData.reviewCount > 0 && (
                         <p className="cmp-snap-says-foot">This summary is based on {reviewsData.reviewCount} verified InfoWebWorld {reviewsData.reviewCount === 1 ? 'review' : 'reviews'}.</p>
@@ -987,23 +1050,17 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                 <div className="cmp-snap-right">
                   {c.common_project_size && (
                     <div className="cmp-snap-common">
-                      <h3 className="cmp-snap-common-title">
-                        <span className="cmp-snap-common-ico" aria-hidden="true">●</span>
+                      <h3 className="cmp-snap-common-title cmp-h3">
+                        <span className="cmp-h2-ico"><FontAwesomeIcon icon={faMoneyBillWave} /></span>
                         Most Common Project Size
                       </h3>
-                      <div className="cmp-snap-common-val">
-                        {c.common_project_size}
-                        {reviewsData.reviewCount > 0 && (
-                          <span className="cmp-snap-common-meta"> based on {reviewsData.reviewCount} {reviewsData.reviewCount === 1 ? 'review' : 'reviews'}</span>
-                        )}
-                      </div>
-                      <ProjectSizeBar value={c.common_project_size} />
+                      <div className="cmp-snap-common-val">{c.common_project_size}</div>
                     </div>
                   )}
 
                   {services.length > 0 && (
                     <div className="cmp-snap-pills">
-                      <div className="cmp-snap-pills-title">Select a service to see pricing information <span className="cmp-snap-pills-hint" title="Pricing varies by service">ⓘ</span></div>
+                      <div className="cmp-snap-pills-title cmp-h3"><span className="cmp-h2-ico"><FontAwesomeIcon icon={faBriefcase} /></span>What {c.company_name} works on</div>
                       <div className="cmp-snap-pills-row">
                         <button type="button" className={'cmp-snap-pill' + (activeServicePill === 'All' ? ' is-on' : '')} onClick={() => setActiveServicePill('All')}>All</button>
                         {services.map((s, i) => (
@@ -1017,6 +1074,27 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                           </button>
                         ))}
                       </div>
+
+                      {/* Payload for the pill selection — the owner's service-line
+                          share (the lines sum to 100% across all services), shown as
+                          a bar. There is no per-service pricing in the data. */}
+                      {(() => {
+                        const sel = activeServicePill === 'All' ? null : services.find(s => s.name === activeServicePill)
+                        const pct = sel ? Math.round(Number(sel.percentage) || 0) : 0
+                        return (
+                          <div className="cmp-snap-svc" role="status" aria-live="polite">
+                            <div className="cmp-snap-svc-name">{sel ? sel.name : 'All services'}</div>
+                            {sel && pct > 0 && (
+                              <div className="cmp-snap-svc-bar"><span style={{ width: `${Math.min(100, pct)}%` }} /></div>
+                            )}
+                            <p className="cmp-snap-svc-foot">
+                              {sel
+                                ? <>Share of work: <strong>{pct}%</strong></>
+                                : `A breakdown of the ${services.length} ${services.length === 1 ? 'service' : 'services'} ${c.company_name} delivers. Select one to see its share of work.`}
+                            </p>
+                          </div>
+                        )
+                      })()}
                     </div>
                   )}
                 </div>
@@ -1036,24 +1114,41 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
       <section className="cmp-section cmp-reviews" id="reviews">
         <div className="cmp-section-inner">
           <header className="cmp-reviews-head">
-            <div className="cmp-reviews-head-l">
-              <h2 className="cmp-section-title">Reviews</h2>
-              {reviewsData.reviewCount > 0 && (
-                <div className="cmp-reviews-agg">
-                  <span className="cmp-reviews-agg-num">{reviewsData.avgRating.toFixed(1)}</span>
-                  <span className="cmp-reviews-agg-r">
-                    <Stars value={reviewsData.avgRating} />
-                    <span className="cmp-reviews-agg-count">
-                      {reviewsData.reviewCount} {reviewsData.reviewCount === 1 ? 'review' : 'reviews'}
-                    </span>
-                  </span>
-                </div>
-              )}
-            </div>
-            <a href={reviewHref} className="cmp-btn cmp-btn--primary cmp-reviews-cta">
-              <FontAwesomeIcon icon={faPenToSquare} /> Write a review
-            </a>
+            <h2 className="cmp-section-title cmp-h2"><span className="cmp-h2-ico"><FontAwesomeIcon icon={faComments} /></span>Reviews</h2>
           </header>
+
+          {reviewsData.reviewCount > 0 && (
+            <div className="cmp-rsum">
+              <div className="cmp-rsum-card">
+                <div className="cmp-rsum-score">{reviewsData.avgRating.toFixed(1)}</div>
+                <StarMeter value={reviewsData.avgRating} />
+                <div className="cmp-rsum-total">
+                  {reviewsData.reviewCount.toLocaleString()} {reviewsData.reviewCount === 1 ? 'review' : 'reviews'}
+                </div>
+                <a href={reviewHref} className="cmp-btn cmp-btn--primary cmp-rsum-cta">Leave a Review</a>
+              </div>
+              <div className="cmp-rsum-bars">
+                {[5, 4, 3, 2, 1].map(star => {
+                  const count = reviewDist[star - 1] || 0
+                  const pct = (count / reviewMax) * 100
+                  return (
+                    <div
+                      className="cmp-rsum-row"
+                      key={star}
+                      role="img"
+                      aria-label={`${star} stars: ${count.toLocaleString()} ${count === 1 ? 'review' : 'reviews'}`}
+                    >
+                      <span className="cmp-rsum-row-stars"><StarMeter value={star} /></span>
+                      <span className="cmp-rsum-bar">
+                        <span className="cmp-rsum-bar-fill" style={{ width: count > 0 ? `max(${pct.toFixed(1)}%, 8px)` : '0%' }} />
+                      </span>
+                      <span className="cmp-rsum-row-count">{count.toLocaleString()}</span>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
 
           {reviews.length > 0 ? (
             <div className="cmp-reviews-list">
@@ -1098,7 +1193,8 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
         <div className="cmp-section-inner">
           <header className="cmp-section-head cmp-section-head--portfolio">
             <div>
-              <h2 className="cmp-section-title">
+              <h2 className="cmp-section-title cmp-h2">
+                <span className="cmp-h2-ico"><FontAwesomeIcon icon={faBoxOpen} /></span>
                 Products by {c.company_name}
                 {products.length > 0 && (
                   <span className="cmp-section-count">{products.length}</span>
@@ -1171,7 +1267,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                 product page (tlp-alt-grid 4-up rich cards). ── */}
             {similarCompanies.length > 0 && (
               <section id="alternatives" className="tlp-sec">
-                <h2 className="tlp-sec-title">{c.company_name} alternatives</h2>
+                <h2 className="tlp-sec-title cmp-h2"><span className="cmp-h2-ico"><FontAwesomeIcon icon={faRightLeft} /></span>{c.company_name} alternatives</h2>
                 <div className="tlp-alt-grid">
                   {similarCompanies.slice(0, 4).map(s => {
                     const sLogo = s.logo_url || ''
@@ -1224,7 +1320,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                 bracket logo + name vs name pairings, 3×3 grid). ── */}
             {similarCompanies.length > 0 && (
               <section id="compare" className="tlp-sec">
-                <h2 className="tlp-sec-title">Popular comparisons with {c.company_name}</h2>
+                <h2 className="tlp-sec-title cmp-h2"><span className="cmp-h2-ico"><FontAwesomeIcon icon={faCodeCompare} /></span>Popular comparisons with {c.company_name}</h2>
                 <div className="tlp-cmp-grid">
                   {similarCompanies.slice(0, 9).map(s => {
                     const sLogo = s.logo_url || ''
@@ -1260,7 +1356,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
             {popularTools.length > 0 && (
               <section className="tlp-sec tlp-cav-sec">
                 <div className="tlp-cav-head">
-                  <h2 className="tlp-sec-title">Customers also viewed</h2>
+                  <h2 className="tlp-sec-title cmp-h2"><span className="cmp-h2-ico"><FontAwesomeIcon icon={faEye} /></span>Customers also viewed</h2>
                   <p className="tlp-cav-sub">Popular tools that businesses choose alongside {c.company_name}</p>
                 </div>
                 <div className="tlp-sib-grid">
@@ -1295,8 +1391,8 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                 the product page bottom section. ── */}
             {relatedCategories.length > 0 && (
               <section className="tlp-sec tlp-rc-sec">
-                <h2 className="tlp-sec-title tlp-rc-title">
-                  <span className="tlp-rc-accent" aria-hidden="true" />
+                <h2 className="tlp-sec-title tlp-rc-title cmp-h2">
+                  <span className="cmp-h2-ico"><FontAwesomeIcon icon={faLayerGroup} /></span>
                   Related categories
                 </h2>
                 <div className="tlp-rc-grid">
@@ -1320,7 +1416,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
       <section className="cmp-section cmp-connect">
         <div className="cmp-section-inner cmp-connect-inner">
           <div className="cmp-connect-copy">
-            <h2 className="cmp-section-title">Get in touch with {c.company_name}</h2>
+            <h2 className="cmp-section-title cmp-h2"><span className="cmp-h2-ico"><FontAwesomeIcon icon={faPaperPlane} /></span>Get in touch with {c.company_name}</h2>
             <p className="cmp-section-sub">
               Send a quote request, visit their website, or follow them around the web.
             </p>

@@ -1,0 +1,153 @@
+/* ═══════════════════════════════════════════════════════════
+   Reviews — rating summary + recent cards + empty state.
+   ═══════════════════════════════════════════════════════════ */
+.cmp-reviews { scroll-margin-top: 84px; }
+.cmp-reviews-head {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px 16px;
+  margin-bottom: clamp(16px, 2vw, 22px);
+}
+.cmp-reviews-head-l { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.cmp-reviews-agg { display: inline-flex; align-items: center; gap: 10px; }
+.cmp-reviews-agg-num {
+  font-size: 30px; font-weight: 800; letter-spacing: -.02em;
+  color: var(--cmp-ink); line-height: 1;
+}
+.cmp-reviews-agg-r { display: flex; flex-direction: column; gap: 3px; }
+.cmp-reviews-agg-r .cmp-stars { font-size: 15px; }
+.cmp-reviews-agg-count { font-size: 12.5px; font-weight: 600; color: var(--cmp-mute); }
+.cmp-reviews-cta { flex-shrink: 0; }
+
+/* ═══════════════════════════════════════════════════════════
+   Review summary widget — score card (left) + rating histogram
+   (right). Coral fill (var(--cmp-red)) matches the primary CTA.
+   ═══════════════════════════════════════════════════════════ */
+.cmp-rsum {
+  display: grid;
+  grid-template-columns: minmax(210px, 270px) 1fr;
+  gap: clamp(18px, 4vw, 44px);
+  align-items: center;
+  margin: 0 0 clamp(20px, 3vw, 30px);
+}
+@media (max-width: 720px) {
+  .cmp-rsum { grid-template-columns: 1fr; gap: 22px; }
+}
+.cmp-rsum-card {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 9px;
+  padding: clamp(20px, 3vw, 30px) clamp(16px, 3vw, 26px);
+  background: var(--cmp-bg-soft);
+  border: 1px solid var(--cmp-line);
+  border-radius: 16px;
+  text-align: center;
+}
+.cmp-rsum-score {
+  font-size: clamp(42px, 7vw, 60px); font-weight: 800;
+  line-height: 1; letter-spacing: -.025em; color: var(--cmp-ink);
+}
+.cmp-rsum-card .cmp-starmeter { font-size: 21px; }
+.cmp-rsum-total { font-size: 13.5px; font-weight: 600; color: var(--cmp-mute); }
+.cmp-rsum-cta {
+  margin-top: 10px; width: 100%;
+  height: 44px; border-radius: 999px;
+  font-size: 14.5px;
+}
+.cmp-rsum-bars { display: flex; flex-direction: column; gap: clamp(8px, 1.4vw, 13px); }
+.cmp-rsum-row { display: flex; align-items: center; gap: 12px; }
+.cmp-rsum-row-stars { flex: 0 0 auto; }
+.cmp-rsum-row-stars .cmp-starmeter { font-size: 15px; }
+.cmp-rsum-bar {
+  flex: 1 1 auto; min-width: 40px;
+  height: 11px; border-radius: 999px;
+  background: var(--cmp-line);
+  overflow: hidden;
+}
+.cmp-rsum-bar-fill {
+  display: block; height: 100%;
+  border-radius: 999px;
+  background: var(--cmp-red);
+  transition: width .5s cubic-bezier(.2, .7, .2, 1);
+}
+.cmp-rsum-row-count {
+  flex: 0 0 auto; min-width: 52px; text-align: right;
+  font-size: 13.5px; font-weight: 700; color: var(--cmp-ink);
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 420px) {
+  .cmp-rsum-row-stars .cmp-starmeter { font-size: 13px; }
+  .cmp-rsum-row-count { min-width: 42px; font-size: 12.5px; }
+}
+
+/* Fractional star meter — a gray star track with an accent fill clipped
+   to value/max %. Both layers share identical markup so they overlay
+   pixel-for-pixel; the fill's width reveals the coral portion. */
+.cmp-starmeter { position: relative; display: inline-flex; line-height: 1; vertical-align: middle; }
+.cmp-starmeter-track,
+.cmp-starmeter-fill { display: inline-flex; gap: 2px; }
+.cmp-starmeter-track svg,
+.cmp-starmeter-fill svg { flex: 0 0 auto; }
+.cmp-starmeter-track { color: var(--cmp-line-mid); }
+.cmp-starmeter-fill {
+  position: absolute; top: 0; left: 0; height: 100%;
+  overflow: hidden;
+  color: var(--cmp-red);
+}
+
+.cmp-reviews-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.cmp-review {
+  display: flex; flex-direction: column; gap: 9px;
+  padding: 16px;
+  background: var(--cmp-bg);
+  border: 1px solid var(--cmp-line);
+  border-radius: 12px;
+}
+.cmp-review-top { display: flex; align-items: center; gap: 10px; }
+.cmp-review-avatar {
+  flex-shrink: 0;
+  width: 36px; height: 36px; border-radius: 999px; overflow: hidden;
+  background: var(--cmp-bg-soft); border: 1px solid var(--cmp-line);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; color: var(--cmp-accent);
+}
+.cmp-review-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.cmp-review-who { display: flex; flex-direction: column; min-width: 0; margin-right: auto; }
+.cmp-review-author { font-size: 13.5px; font-weight: 700; color: var(--cmp-ink); }
+.cmp-review-date { font-size: 11.5px; color: var(--cmp-mute); }
+.cmp-review-stars { flex-shrink: 0; }
+.cmp-review-stars .cmp-stars { font-size: 14px; }
+.cmp-review-title {
+  margin: 0;
+  font-size: 14.5px; font-weight: 800; letter-spacing: -.01em;
+  color: var(--cmp-ink); line-height: 1.3;
+}
+.cmp-review-body {
+  margin: 0;
+  font-size: 13.5px; line-height: 1.6; color: var(--cmp-ink-soft);
+  display: -webkit-box; -webkit-box-orient: vertical;
+  -webkit-line-clamp: 6; overflow: hidden;
+}
+
+.cmp-reviews-empty {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 6px; text-align: center;
+  padding: 36px 24px;
+  background: var(--cmp-bg-soft);
+  border: 1px dashed var(--cmp-line-mid);
+  border-radius: 14px;
+}
+.cmp-reviews-empty-ico {
+  display: grid; place-items: center;
+  width: 52px; height: 52px;
+  margin-bottom: 6px;
+  border-radius: 999px;
+  background: var(--cmp-accent-soft);
+  color: var(--cmp-accent);
+  font-size: 22px;
+}
+.cmp-reviews-empty-cta { margin-top: 4px; }
+.cmp-reviews-empty-title { margin: 0; font-size: 17px; font-weight: 800; color: var(--cmp-ink); }
+.cmp-reviews-empty-sub { margin: 0 0 10px; font-size: 13.5px; color: var(--cmp-mute); max-width: 420px; }

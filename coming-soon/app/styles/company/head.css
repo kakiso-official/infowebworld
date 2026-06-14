@@ -1,0 +1,275 @@
+/* ═══════════════════════════════════════════════════════════
+   1. STICKY HEAD — compact, Clutch-style
+   ═══════════════════════════════════════════════════════════ */
+.cmp-head {
+  position: relative;
+  background: var(--cmp-bg);
+  border-bottom: 1px solid var(--cmp-line);
+  padding: clamp(14px, 2vw, 22px) clamp(16px, 4vw, 32px) clamp(14px, 2vw, 20px);
+}
+.cmp-head-inner {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* "Add to Shortlist" — pinned top-right of the head. Hover/focus get a
+   visible affordance (background tint) so the silhouette stops looking
+   like accidental text. */
+.cmp-shortlist {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: transparent;
+  border: 0;
+  font-family: inherit;
+  font-size: 13px; font-weight: 600;
+  color: var(--cmp-mute);
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: color .15s, background .15s;
+}
+.cmp-shortlist svg { color: var(--cmp-mute); transition: color .15s, fill .15s; }
+.cmp-shortlist:hover {
+  color: var(--cmp-red);
+  background: rgba(232, 66, 59, .06);
+}
+.cmp-shortlist:hover svg { color: var(--cmp-red); }
+.cmp-shortlist:focus-visible {
+  outline: 2px solid var(--cmp-red);
+  outline-offset: 2px;
+}
+
+/* Logo + identity grid */
+.cmp-head-grid {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  gap: 20px;
+  align-items: flex-start;
+  padding-right: 130px; /* Reserve space for the absolute Shortlist button. */
+}
+@media (max-width: 720px) {
+  .cmp-head-grid { grid-template-columns: 64px 1fr; gap: 14px; padding-right: 0; }
+  .cmp-shortlist { position: static; margin-bottom: 12px; align-self: flex-end; }
+  .cmp-head-inner { display: flex; flex-direction: column; }
+}
+
+.cmp-head-logo {
+  width: 88px; height: 88px;
+  background: #FFFFFF;
+  border: 1px solid var(--cmp-line);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(15, 20, 25, .04);
+  /* Soft chequered backdrop only visible behind transparent PNGs —
+     prevents logos with transparent backgrounds from looking like a
+     blank tile. The image padding covers it on opaque logos. */
+  background-image:
+    linear-gradient(45deg, #F4F5F7 25%, transparent 25%),
+    linear-gradient(-45deg, #F4F5F7 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #F4F5F7 75%),
+    linear-gradient(-45deg, transparent 75%, #F4F5F7 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+}
+.cmp-head-logo img { width: 100%; height: 100%; object-fit: contain; padding: 8px; box-sizing: border-box; background: #FFFFFF; }
+.cmp-head-logo span {
+  font-size: 24px; font-weight: 800;
+  color: var(--cmp-accent);
+  background: #FFFFFF;
+  width: 100%; height: 100%;
+  display: inline-flex; align-items: center; justify-content: center;
+  letter-spacing: -.02em;
+}
+@media (max-width: 720px) { .cmp-head-logo { width: 64px; height: 64px; border-radius: 10px; } }
+
+.cmp-head-body { min-width: 0 }
+
+/* Company name + Verified pill */
+.cmp-head-name {
+  margin: 0 0 8px;
+  font-size: clamp(20px, 2.4vw, 26px);
+  font-weight: 800;
+  letter-spacing: -.022em;
+  line-height: 1.18;
+  color: var(--cmp-ink);
+  display: inline-flex; align-items: center; gap: 10px;
+  flex-wrap: wrap;
+}
+.cmp-head-verified {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12.5px; font-weight: 700;
+  padding: 4px 10px 4px 8px;
+  background: rgba(14, 143, 110, .10);
+  color: #0E8F6E;
+  border-radius: 999px;
+  letter-spacing: 0;
+}
+
+/* Meta row — stars · award icons · network count. Items separated by
+   gap (no inline dot characters that wrap awkwardly on narrow screens). */
+.cmp-head-meta {
+  display: flex; align-items: center; flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: var(--cmp-mute);
+}
+.cmp-head-rating { display: inline-flex; align-items: center; gap: 6px; }
+.cmp-head-rating-count {
+  font-weight: 700;
+  color: var(--cmp-ink);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.cmp-head-rating-count:hover { border-bottom-color: var(--cmp-line-mid); }
+/* "Be the first to review" link — quiet but tappable. Replaces 5 dead
+   outline stars in the no-review state. */
+/* No-review CTA in the head — a clean accent pill (replaces the plain
+   "Be the first to review →" text link). */
+.cmp-head-rating-cta {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1.5px solid var(--cmp-accent-border);
+  background: var(--cmp-accent-soft);
+  color: var(--cmp-accent);
+  font-size: 12px; font-weight: 700;
+  text-decoration: none;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.cmp-head-rating-cta svg { font-size: 11px; }
+.cmp-head-rating-cta:hover {
+  background: var(--cmp-accent);
+  border-color: var(--cmp-accent);
+  color: #fff;
+}
+
+/* Awards signal in the head — one compact gold pill that anchors down to
+   the full "Awards & recognition" strip in the body. Replaces the row of
+   anonymous trophy icons (which read as decoration, not information). */
+.cmp-head-awards {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px 3px 8px;
+  background: rgba(241, 181, 0, .12);
+  border: 1px solid rgba(241, 181, 0, .38);
+  border-radius: 999px;
+  color: #8A6D00;
+  font-size: 12px; font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background .15s, border-color .15s;
+}
+.cmp-head-awards svg { color: #E0A800; flex-shrink: 0; font-size: 13px; }
+.cmp-head-awards:hover { background: rgba(241, 181, 0, .2); border-color: rgba(241, 181, 0, .6); }
+.cmp-head-network {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 13px;
+  color: var(--cmp-ink-soft);
+}
+.cmp-head-network svg { color: var(--cmp-mute-2); flex-shrink: 0; }
+.cmp-head-network strong {
+  color: var(--cmp-ink);
+  font-weight: 700;
+}
+
+/* Header tags — short descriptors row under the company name. Capped at 5
+   visible + "+N" overflow chip so wide tag lists don't push the CTAs down. */
+.cmp-head-tags {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-bottom: 12px;
+}
+.cmp-head-tag {
+  font-size: 11.5px; font-weight: 600;
+  letter-spacing: 0;
+  padding: 3px 9px;
+  background: var(--cmp-bg-soft);
+  border: 1px solid var(--cmp-line);
+  border-radius: 999px;
+  color: var(--cmp-ink-soft);
+  white-space: nowrap;
+}
+.cmp-head-tag--more {
+  background: var(--cmp-bg);
+  color: var(--cmp-mute);
+  cursor: default;
+}
+
+/* Stars — Clutch yellow */
+.cmp-stars { display: inline-flex; align-items: center; gap: 1.5px; line-height: 1; font-size: 14px; }
+.cmp-star { color: var(--cmp-line-mid); }
+.cmp-star.is-on { color: #F1B500; }
+
+/* CTA row — wraps on narrow viewports without breaking button widths.
+   On phones each button stretches to share the row evenly. */
+.cmp-head-cta {
+  display: flex; align-items: center; flex-wrap: wrap;
+  gap: 8px;
+}
+.cmp-head-cta .cmp-btn { flex-shrink: 0; }
+@media (max-width: 600px) {
+  /* Stack the CTAs full-width — big tap targets, and "Join their Network"
+     never clips on narrow screens the way a 2-up row would. */
+  .cmp-head-cta { width: 100%; flex-direction: column; align-items: stretch; gap: 8px; }
+  .cmp-head-cta .cmp-btn { width: 100%; height: 44px; font-size: 13.5px; }
+}
+.cmp-contact-wrap { position: relative; }
+.cmp-contact-btn { padding: 0 14px; }
+.cmp-contact-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 80;
+  min-width: 220px;
+  background: var(--cmp-bg);
+  border: 1px solid var(--cmp-line-mid);
+  border-radius: 8px;
+  box-shadow: 0 12px 32px rgba(15, 20, 25, .12);
+  padding: 6px;
+  display: flex; flex-direction: column;
+  gap: 2px;
+}
+.cmp-contact-menu-item {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 12px;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 13.5px; font-weight: 600;
+  color: var(--cmp-ink);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background .12s;
+}
+.cmp-contact-menu-item:hover { background: var(--cmp-bg-soft); }
+.cmp-contact-menu-item svg { color: var(--cmp-mute); flex-shrink: 0; }
+.cmp-contact-menu-item:focus-visible {
+  outline: 2px solid var(--cmp-red);
+  outline-offset: -2px;
+}
+
+.cmp-network-btn.is-on {
+  border-color: rgba(14, 143, 110, .35);
+  color: #0E8F6E;
+  background: rgba(14, 143, 110, .06);
+}
+.cmp-network-btn.is-on svg { color: #0E8F6E; stroke-width: 2.4; }
+.cmp-network-btn.is-on:hover {
+  background: rgba(14, 143, 110, .1);
+  border-color: rgba(14, 143, 110, .55);
+}
+
+/* Shortlist button — saved state stronger visual signal (filled red icon
+   + red text, not just a darker outline). */
+.cmp-shortlist.is-on {
+  color: var(--cmp-red);
+}
+.cmp-shortlist.is-on svg {
+  color: var(--cmp-red);
+  fill: var(--cmp-red);
+}

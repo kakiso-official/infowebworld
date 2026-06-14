@@ -1,0 +1,134 @@
+/* ═══════════════════════════════════════════════════════════
+   4. PORTFOLIO — Products by us. Carry-over.
+   ═══════════════════════════════════════════════════════════ */
+.cmp-portfolio {
+  background: var(--cmp-bg-soft);
+  border-top: 1px solid var(--cmp-line);
+  border-bottom: 1px solid var(--cmp-line);
+  margin-top: clamp(20px, 3vw, 32px);
+}
+.cmp-portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+@media (max-width: 720px) {
+  .cmp-portfolio-grid { grid-template-columns: 1fr }
+}
+
+.cmp-portfolio-card {
+  position: relative;
+  display: flex; flex-direction: column;
+  gap: 16px;
+  padding: 22px 22px 18px;
+  background: var(--cmp-bg);
+  border: 1px solid var(--cmp-line);
+  border-radius: 16px;
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+}
+.cmp-portfolio-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--cmp-accent);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.cmp-portfolio-card:hover {
+  border-color: var(--cmp-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(15, 20, 25, .06);
+}
+.cmp-portfolio-card:hover::before { opacity: 1; }
+
+.cmp-pf-card-top {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+}
+.cmp-pf-card-logo {
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  background: var(--cmp-bg-soft);
+  border: 1px solid var(--cmp-line);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.cmp-pf-card-logo img { width: 100%; height: 100%; object-fit: contain; padding: 6px; box-sizing: border-box; }
+.cmp-pf-card-logo span {
+  font-size: 18px; font-weight: 800;
+  color: var(--cmp-accent);
+}
+.cmp-pf-card-cat {
+  font-size: 11.5px; font-weight: 600;
+  padding: 4px 10px;
+  background: var(--cmp-bg-soft);
+  border: 1px solid var(--cmp-line);
+  border-radius: 999px;
+  color: var(--cmp-mute);
+  white-space: nowrap;
+}
+
+.cmp-pf-card-body { display: flex; flex-direction: column; gap: 4px; }
+.cmp-pf-card-name {
+  margin: 0;
+  font-size: 22px; font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.15;
+  color: var(--cmp-ink);
+}
+.cmp-pf-card-tag {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--cmp-mute);
+  display: -webkit-box; -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; overflow: hidden;
+}
+
+.cmp-pf-card-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px;
+  padding-top: 14px;
+  margin-top: auto;
+  border-top: 1px solid var(--cmp-line);
+  font-size: 13.5px;
+}
+.cmp-pf-card-price {
+  font-weight: 700;
+  color: var(--cmp-ink);
+}
+.cmp-pf-card-price span {
+  color: var(--cmp-mute);
+  font-weight: 500;
+  margin-left: 4px;
+}
+.cmp-pf-card-cta {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-weight: 700;
+  color: var(--cmp-accent);
+  letter-spacing: -.005em;
+}
+
+.cmp-portfolio-empty {
+  padding: 48px 32px;
+  background: var(--cmp-bg);
+  border: 1px dashed var(--cmp-line-mid);
+  border-radius: 16px;
+  text-align: center;
+}
+.cmp-portfolio-empty h3 {
+  margin: 0 0 6px;
+  font-size: 18px; font-weight: 800;
+  color: var(--cmp-ink);
+}
+.cmp-portfolio-empty p {
+  margin: 0;
+  font-size: 14px; color: var(--cmp-mute);
+  max-width: 480px;
+  margin: 0 auto;
+}
