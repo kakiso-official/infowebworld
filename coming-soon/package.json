@@ -12,7 +12,8 @@
     "lint": "eslint",
     "scrape:listing": "node scripts/scrape-listing.mjs",
     "scrape:worker": "node scripts/scrape-worker.mjs",
-    "scrape:seed-applied": "node scripts/seed-applied-jobs.mjs"
+    "scrape:seed-applied": "node scripts/seed-applied-jobs.mjs",
+    "check:country-404": "node scripts/check-country-404.mjs"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
