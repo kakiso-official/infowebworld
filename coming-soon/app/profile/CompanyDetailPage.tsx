@@ -23,10 +23,12 @@ import '../styles/company/responsive-mobile.css'
 import '../styles/company/breadcrumb.css'
 import '../styles/company/pricing-snapshot-hero.css'
 import '../styles/test-listing-page.css'
+import '../styles/claim-modal.css'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import LeadFormModal from '../listing/LeadFormModal'
 import SignupModal from '../components/auth/SignupModal'
+import ClaimListingModal from '../listing/ClaimListingModal'
 import { withInfoWebWorldUtm } from '../lib/utm'
 import { trackWebsiteClick } from '../lib/track-website-click'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -80,6 +82,7 @@ interface ReviewRow {
 
 interface CompanyData {
   id: number; slug: string; uuid: string
+  user_id?: number | null
   company_name: string; tagline: string; description: string | null
   logo_url: string | null; website: string | null
   email: string | null; phone: string | null; phone_code: string | null
@@ -443,6 +446,10 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
   const clients    = useMemo(() => (parseJsonArr(c.client_logos) as ClientLogo[]).filter(cl => cl && cl.name), [c.client_logos])
 
   const isVerified = Boolean(Number(c.verified ?? 0))
+  /* Claimable = an unowned (no user_id), unverified company — the seeded
+     majority. Drives the "Claim Now" CTA so a real owner can take over the
+     profile (instant domain-email OTP, or manual review). */
+  const isClaimable = !isVerified && !Number(c.user_id ?? 0)
   const accent = c.category_color || '#E8553D'
   const accentSoft = hexA(accent, 0.06)
   const accentBorder = hexA(accent, 0.22)
@@ -492,6 +499,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
      /me re-fetch resolves authed state — no need for them to click twice. */
   const [signupOpen, setSignupOpen] = useState(false)
   const [pendingAction, setPendingAction] = useState<null | 'follow' | 'bookmark' | 'contact'>(null)
+  const [claimOpen, setClaimOpen] = useState(false)
 
   useEffect(() => {
     if (!slug) return
@@ -761,6 +769,21 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                   {me.isFollowing ? <Check /> : <Plus />}
                   {me.isFollowing ? 'Following' : 'Follow'}
                 </button>
+
+                {/* Claim CTA — only on unowned, unverified company profiles
+                    (the seeded majority). Opens ClaimListingModal: instant
+                    domain-email OTP for owners, or manual review otherwise. */}
+                {isClaimable && (
+                  <button
+                    type="button"
+                    className="cmp-btn cmp-btn--outline cmp-btn--claim"
+                    style={{ background: 'var(--cmp-accent, #E8553D)', borderColor: 'var(--cmp-accent, #E8553D)', color: '#fff' }}
+                    onClick={() => setClaimOpen(true)}
+                    aria-label={`Claim ${c.company_name}`}
+                  >
+                    <FontAwesomeIcon icon={faCircleCheck} /> Claim Now
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -1472,6 +1495,19 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
           phone: c.phone || undefined,
           phoneCode: c.phone_code || undefined,
         }}
+      />
+
+      {/* Claim flow — unowned company profiles. Instant domain-email OTP for
+          owners (@company.com), or manual review for everyone else. Anon users
+          route through SignupModal first, then re-click Claim once authed. */}
+      <ClaimListingModal
+        open={claimOpen}
+        onClose={() => setClaimOpen(false)}
+        listingSlug={slug}
+        companyName={c.company_name}
+        website={c.website || ''}
+        isAuthed={me.isAuthed}
+        onRequireAuth={() => { setClaimOpen(false); setSignupOpen(true) }}
       />
 
       {/* Auth gate when an anon user clicks Follow / Bookmark — site-wide
