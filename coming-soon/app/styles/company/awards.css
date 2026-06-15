@@ -47,7 +47,9 @@
   padding: 36px 16px 18px 60px;   /* left room for the trophy burst; top/bottom trimmed so rows sit closer — the trophy overhangs up into the gap but keeps ~6px clearance from the row above */
   transition: transform .28s cubic-bezier(.2, .7, .2, 1);
 }
-.cmp-award:hover { transform: translateY(-4px); }
+/* Lift the hovered award above its neighbours so the zoom can overlap them. */
+.cmp-award { z-index: 1; }
+.cmp-award:hover { z-index: 6; }
 .cmp-award-card {
   position: relative;
   min-height: 134px;
@@ -57,7 +59,17 @@
   border: 3px solid #E4BB53;
   border-radius: 20px;
   box-shadow: 0 18px 40px -30px rgba(140, 109, 0, .5);
+  transform-origin: center;
+  transition: transform .3s cubic-bezier(.2, .7, .2, 1), box-shadow .3s ease;
 }
+/* Hover = a bigger, clearer view of the award: zoom in place (no sliding),
+   deeper shadow, and the whole card (trophy + logo + name + year) scales as one. */
+.cmp-award:hover .cmp-award-card {
+  transform: scale(1.14);
+  box-shadow: 0 30px 60px -26px rgba(140, 109, 0, .6);
+}
+/* Drop the 3-line clamp on hover so the full award name is readable when zoomed. */
+.cmp-award:hover .cmp-award-name { -webkit-line-clamp: unset; }
 .cmp-award-name {
   font-family: var(--font-righteous), 'Righteous', system-ui, sans-serif !important; font-weight: 400;
   font-size: clamp(13.5px, 1.3vw, 17px); line-height: 1.22; text-align: center;
@@ -73,16 +85,18 @@
   filter: drop-shadow(0 7px 11px rgba(140, 109, 0, .34));
   pointer-events: none; transition: transform .28s ease;
 }
-.cmp-award:hover .cmp-award-trophy { transform: scale(1.05) rotate(-3deg); }
+/* Trophy scales together with the whole card on hover — no separate transform. */
 /* Company-logo box — overhangs the top-right corner. */
 .cmp-award-logo {
   position: absolute; top: -26px; right: -10px; z-index: 3;
-  width: 60px; height: 56px;
+  box-sizing: border-box;
+  width: 58px; height: 58px;          /* square frame so square favicons sit evenly */
+  padding: 8px;                       /* inset so the logo never collides with the rounded edge */
   display: grid; place-items: center; overflow: hidden;
   background: #FFFFFF; border: 1.5px solid #EFE2C0; border-radius: 16px;
   box-shadow: 0 8px 18px -10px rgba(15, 20, 25, .25);
 }
-.cmp-award-logo img { width: 78%; height: 78%; object-fit: contain; }
+.cmp-award-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 8px; }
 .cmp-award-logo span { font-size: 17px; font-weight: 800; color: var(--cmp-mute-2); letter-spacing: -.01em; }
 /* Year — embossed doodle-shadow numerals breaking the bottom-right corner. */
 .cmp-award-year {
@@ -122,6 +136,8 @@
 @media (prefers-reduced-motion: reduce) {
   .cmp-award--extra, .cmp-awards-grid.is-closing .cmp-award--extra { animation: none; }
   .cmp-viewall-btn, .cmp-viewall-chev { transition: none; }
+  .cmp-award-card { transition: none; }
+  .cmp-award:hover .cmp-award-card { transform: none; box-shadow: 0 18px 40px -30px rgba(140, 109, 0, .5); }
 }
 
 /* 3-up on desktop → 2-up on tablet → 1-up on phone. */

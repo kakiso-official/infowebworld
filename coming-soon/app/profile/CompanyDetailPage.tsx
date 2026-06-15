@@ -1221,8 +1221,12 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
       </section>
 
       {/* ════════════════════════════════════════════════════════════
-          4. PORTFOLIO — Products by us. Carry-over from previous design.
+          4. PORTFOLIO — Products by us. Only rendered once the company has
+          at least one product listed; hidden entirely while empty (no
+          "No products listed yet" placeholder). Reappears automatically on
+          the next profile rebuild after a product is added.
           ════════════════════════════════════════════════════════════ */}
+      {products.length > 0 && (
       <section className="cmp-section cmp-portfolio">
         <div className="cmp-section-inner">
           <header className="cmp-section-head cmp-section-head--portfolio">
@@ -1240,8 +1244,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
             </div>
           </header>
 
-          {products.length > 0 ? (
-            <div className="cmp-portfolio-grid">
+          <div className="cmp-portfolio-grid">
               {products.map(p => {
                 const pLogo = p.logo_url || ''
                 return (
@@ -1279,14 +1282,9 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                 )
               })}
             </div>
-          ) : (
-            <div className="cmp-portfolio-empty">
-              <h3>No products listed yet</h3>
-              <p>{c.company_name} hasn&rsquo;t put any products on InfoWebWorld yet. When they do, you&rsquo;ll see them here.</p>
-            </div>
-          )}
         </div>
       </section>
+      )}
 
       {/* ════════════════════════════════════════════════════════════
           5-8. CROSS-MARKETING — wrapped in .tlp-main so the tlp-* CSS
