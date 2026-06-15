@@ -28,7 +28,7 @@ import {
      ┌────────────────────────────────────────────────────────────────────┐
      │                       Blog · Insights · News · Help · About         │  ← utility strip (#0F1419)
      ├────────────────────────────────────────────────────────────────────┤
-     │ Logo · Categories ▾ · Write a Review · Compare Tools ── 🔍 [Get]   │  ← main row
+     │ Logo · Categories ▾ · Write a Review · Compare Products · Compare Companies ── 🔍 [Get]   │  ← main row
      └────────────────────────────────────────────────────────────────────┘
 
    The utility strip is right-aligned, small uppercase white, hidden on
@@ -70,8 +70,9 @@ const SORTED_SECTORS = [...SECTORS].sort((a, b) => a.label.localeCompare(b.label
 
 /* Utility-strip links — the dark bar above the main header.
    Curated high-signal picks from the old Resources dropdown.
-   "Write a Review" and "Compare Tools" (originally in Find-by-Solutions)
-   live as direct items in the main nav beside Categories — see PRIMARY_*
+   "Write a Review", "Compare Products" and "Compare Companies" (originally
+   in Find-by-Solutions) live as direct items in the main nav beside
+   Categories — see PRIMARY_*
    below. "Industry News" merged into "News". FAQs / Glossary stay
    reachable from the footer and direct URL but are too long-tail
    for the header chrome. */
@@ -86,8 +87,9 @@ const UTILITY_LINKS: { label: string; href: string }[] = [
 /* Primary nav direct links — sit beside Categories in the main row.
    Sub-text feeds the `title` attribute (tooltip + a11y description). */
 const PRIMARY_LINKS: { label: string; href: string; sub: string }[] = [
-  { label: 'Write a Review', href: '/write-review', sub: 'Share your experience with a company' },
-  { label: 'Compare Tools',  href: '/compare',      sub: 'Side-by-side product comparisons'      },
+  { label: 'Write a Review',    href: '/write-review',      sub: 'Share your experience with a company' },
+  { label: 'Compare Products',  href: '/compare',           sub: 'Side-by-side product comparisons'      },
+  { label: 'Compare Companies', href: '/compare-companies', sub: 'Side-by-side company comparisons'       },
 ]
 
 /* ── L2 children of a sector, drawn synchronously from the static taxonomy.
@@ -427,9 +429,9 @@ export default function Navbar(
           </Link>
 
           {/* ── Center nav (hidden while search is expanded).
-                  Categories opens a mega; Write a Review and Compare Tools
-                  are direct links. Resources/Solutions moved to the utility
-                  strip above. */}
+                  Categories opens a mega; Write a Review, Compare Products and
+                  Compare Companies are direct links. Resources/Solutions moved
+                  to the utility strip above. */}
           {!searchOpen && (
             <nav className="iw-nav" aria-label="Primary">
               <div className="iw-nav-item">

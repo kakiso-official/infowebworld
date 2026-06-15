@@ -15,11 +15,16 @@ interface CompanyHit {
 
 interface Props {
   /** Slug of the listing initiating the compare flow — excluded from results
-   *  and used as the first slug in the resulting /compare URL. */
+   *  and used as the first slug in the resulting compare URL. */
   fromSlug: string
   /** L1 sector slug — restricts results so a SaaS listing never shows local
    *  businesses in its compare search. Required by product spec. */
   sectorSlug: string
+  /** Listing mode of the initiating card. 'product' (default) keeps the
+   *  original product behaviour exactly — searches products and routes to
+   *  /compare. 'company' searches companies (mode=company) and routes to
+   *  /compare-companies, so a product is never paired with a company. */
+  mode?: 'product' | 'company'
   /** Called when the user closes the search (clicks the X). */
   onClose: () => void
 }
@@ -33,7 +38,7 @@ interface Props {
  * (the endpoint already supports both filters). Up to 8 matches in the
  * dropdown; arrow-key navigation + Enter to pick the highlighted row.
  */
-export default function CompareSearchBar({ fromSlug, sectorSlug, onClose }: Props) {
+export default function CompareSearchBar({ fromSlug, sectorSlug, mode = 'product', onClose }: Props) {
   const router = useRouter()
   const [q, setQ] = useState('')
   const [results, setResults] = useState<CompanyHit[]>([])
@@ -65,7 +70,7 @@ export default function CompareSearchBar({ fromSlug, sectorSlug, onClose }: Prop
     setLoading(true)
     const t = setTimeout(async () => {
       try {
-        const params = new URLSearchParams({ q: trimmed, sector: sectorSlug, exclude: fromSlug })
+        const params = new URLSearchParams({ q: trimmed, sector: sectorSlug, exclude: fromSlug, mode })
         const res = await fetch(`/api/search/companies?${params.toString()}`)
         const data = await res.json()
         const list: CompanyHit[] = Array.isArray(data?.results) ? data.results : []
@@ -82,7 +87,8 @@ export default function CompareSearchBar({ fromSlug, sectorSlug, onClose }: Prop
 
   const pick = (hit: CompanyHit) => {
     if (!hit?.slug) return
-    router.push(`/compare/${fromSlug}-vs-${hit.slug}`)
+    const base = mode === 'company' ? '/compare-companies' : '/compare'
+    router.push(`${base}/${fromSlug}-vs-${hit.slug}`)
   }
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

@@ -7,13 +7,19 @@ import { sendEmail, buildEmailShell, escapeHtml } from '../../../../lib/email'
    POST /api/compare/email
    {
      email: string,
-     slugs: string[]        // 1–4 product slugs being compared
+     slugs: string[],            // 1–4 slugs being compared
+     mode?: 'product' | 'company' // default 'product'
    }
 
    Sends a branded HTML summary of the comparison to the visitor's
    inbox AND records the capture against each listing's inbox-email
    stream so owners get the "buyers comparing me" signal in their
    dashboard inbox.
+
+   `mode` keeps the product flow exactly as it was (default) while
+   letting /compare-companies email company comparisons — it scopes the
+   slug lookup to that listing_mode and builds the matching URLs
+   (/compare vs /compare-companies, /listing vs /profile) and wording.
 
    Rate-limited 3 / 5 min per IP. Same SMTP pipe as the rest of the
    site (lib/email.ts wraps nodemailer with shared shell + escape).
@@ -33,6 +39,8 @@ type Row = {
   website: string | null
   starting_price: string | null
   starting_price_period: string | null
+  min_project_size: string | null
+  hourly_rate: string | null
   category_name: string | null
 }
 
@@ -41,7 +49,7 @@ function isValidEmail(e: string): boolean {
 }
 
 export async function POST(req: Request) {
-  let body: { email?: unknown; slugs?: unknown }
+  let body: { email?: unknown; slugs?: unknown; mode?: unknown }
   try {
     body = await req.json()
   } catch {
@@ -54,11 +62,18 @@ export async function POST(req: Request) {
         .map(s => s.trim().toLowerCase())
     : []
 
+  // Mode gate — default 'product' preserves every existing caller exactly.
+  const mode = body.mode === 'company' ? 'company' : 'product'
+  const noun = mode === 'company' ? 'company' : 'product'
+  const nounPlural = mode === 'company' ? 'companies' : 'products'
+  const compareBase = mode === 'company' ? '/compare-companies' : '/compare'
+  const profileBase = mode === 'company' ? 'profile' : 'listing'
+
   if (!isValidEmail(email)) {
     return NextResponse.json({ ok: false, error: 'Enter a valid email address.' }, { status: 400 })
   }
   if (slugsIn.length < 1) {
-    return NextResponse.json({ ok: false, error: 'Pick at least one product to compare first.' }, { status: 400 })
+    return NextResponse.json({ ok: false, error: `Pick at least one ${noun} to compare first.` }, { status: 400 })
   }
   const slugs = Array.from(new Set(slugsIn)).slice(0, MAX_COMPARE)
 
@@ -71,22 +86,24 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: 'Too many requests. Try again in a few minutes.' }, { status: 429 })
   }
 
-  // Look up the listings — drop any that don't resolve (typos, deleted)
+  // Look up the listings — scoped to the requested mode; drop any that
+  // don't resolve (typos, deleted, wrong mode).
   const placeholders = slugs.map(() => '?').join(',')
   const rows = await query<Row>(
     `SELECT s.id, s.slug, s.company_name, s.tagline, s.logo_url, s.website,
             s.starting_price, s.starting_price_period,
+            s.min_project_size, s.hourly_rate,
             c.name AS category_name
      FROM submissions s
      LEFT JOIN categories c ON c.id = s.category_id
      WHERE s.slug IN (${placeholders})
        AND s.status IN ('active', 'paid')
-       AND COALESCE(s.listing_mode, 'product') = 'product'`,
-    slugs
+       AND COALESCE(s.listing_mode, 'product') = ?`,
+    [...slugs, mode]
   )
 
   if (rows.length === 0) {
-    return NextResponse.json({ ok: false, error: 'None of the selected products were found.' }, { status: 404 })
+    return NextResponse.json({ ok: false, error: `None of the selected ${nounPlural} were found.` }, { status: 404 })
   }
 
   // Re-order to match the user's input order, dropping unresolved
@@ -98,12 +115,18 @@ export async function POST(req: Request) {
     ? `Your saved comparison: ${ordered[0].company_name}`
     : `${ordered.map(r => r.company_name).join(' vs ')} — comparison`
 
-  const compareUrl = `${SITE}/compare/${ordered.map(r => r.slug).join('-vs-')}`
+  const compareUrl = `${SITE}${compareBase}/${ordered.map(r => r.slug).join('-vs-')}`
 
   const cardsHtml = ordered.map(r => {
-    const priceLine = r.starting_price
-      ? `Starting from $${escapeHtml(String(r.starting_price))}${r.starting_price_period ? ` ${escapeHtml(r.starting_price_period)}` : ''}`
-      : 'Pricing not shared'
+    const priceLine = mode === 'company'
+      ? (r.hourly_rate
+          ? escapeHtml(String(r.hourly_rate))
+          : r.min_project_size
+            ? `From ${escapeHtml(String(r.min_project_size))} min project`
+            : 'Pricing not shared')
+      : (r.starting_price
+          ? `Starting from $${escapeHtml(String(r.starting_price))}${r.starting_price_period ? ` ${escapeHtml(r.starting_price_period)}` : ''}`
+          : 'Pricing not shared')
     return `
       <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 12px">
         <tr>
@@ -118,7 +141,7 @@ export async function POST(req: Request) {
                 </td>
                 <td style="vertical-align:top;padding-left:12px">
                   <div style="font-family:'Bricolage Grotesque',Georgia,serif;font-size:17px;font-weight:800;color:#1A1A1A;line-height:1.25;margin-bottom:3px">
-                    <a href="${SITE}/listing/${escapeHtml(r.slug)}" target="_blank" style="color:#1A1A1A;text-decoration:none">${escapeHtml(r.company_name)}</a>
+                    <a href="${SITE}/${profileBase}/${escapeHtml(r.slug)}" target="_blank" style="color:#1A1A1A;text-decoration:none">${escapeHtml(r.company_name)}</a>
                   </div>
                   ${r.category_name ? `<div style="font-family:Nunito,sans-serif;font-size:12px;color:#8B847C;margin-bottom:6px">${escapeHtml(r.category_name)}</div>` : ''}
                   ${r.tagline ? `<div style="font-family:Nunito,sans-serif;font-size:13.5px;color:#5C5852;line-height:1.5;margin-bottom:8px">${escapeHtml(r.tagline)}</div>` : ''}
@@ -141,7 +164,7 @@ export async function POST(req: Request) {
         <tr>
           <td style="padding:0 48px 8px">
             <p style="margin:0 0 18px;font-family:Nunito,sans-serif;font-size:14.5px;line-height:1.65;color:#5C5852">
-              Here's the comparison you saved. Tap any product to open its full profile, or jump back into the side-by-side view anytime — your selection stays in the URL so you can share it with teammates.
+              Here's the comparison you saved. Tap any ${noun} to open its full profile, or jump back into the side-by-side view anytime — your selection stays in the URL so you can share it with teammates.
             </p>
             ${cardsHtml}
           </td>
@@ -150,8 +173,8 @@ export async function POST(req: Request) {
     `,
     ctaUrl: compareUrl,
     ctaText: 'Open comparison',
-    ctaSecondaryUrl: `${SITE}/compare`,
-    ctaSecondaryText: 'Compare more products',
+    ctaSecondaryUrl: `${SITE}${compareBase}`,
+    ctaSecondaryText: `Compare more ${nounPlural}`,
     footerNote: 'Sent because you requested this comparison summary.',
   })
 
@@ -164,7 +187,7 @@ export async function POST(req: Request) {
   })
 
   // Record the capture against each listing's inbox stream (best-effort)
-  // so owners can see which products are being compared and by whom.
+  // so owners can see which listings are being compared and by whom.
   void Promise.allSettled(ordered.map(r =>
     execute(
       `INSERT INTO listing_inbox_emails (listing_id, email, ip_address) VALUES (?, ?, ?)`,

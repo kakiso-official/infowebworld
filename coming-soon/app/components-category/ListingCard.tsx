@@ -216,8 +216,11 @@ export function RealListingCard({
   const portfolioCount = item.screenshots.length + item.clientLogos.length
   const locationParts = [item.city, item.state, item.country].filter(Boolean)
   /* Compare flow: click the gradient button → actions cluster collapses into
-     a sector-scoped search bar. Picking a result navigates to /compare/
-     {thisSlug}-vs-{picked}. CompareSearchBar handles the search + nav. */
+     a sector-scoped search bar. Picking a result navigates to the right
+     compare surface for this card's mode — products → /compare/{thisSlug}-vs-
+     {picked}, companies → /compare-companies/{thisSlug}-vs-{picked}. So a
+     company is only ever compared with another company (and vice-versa).
+     CompareSearchBar handles the mode-aware search + nav. */
   const [comparing, setComparing] = useState(false)
 
   /* Unified left-column data. Real serviceLines (agencies) come with real
@@ -312,6 +315,7 @@ export function RealListingCard({
             <CompareSearchBar
               fromSlug={item.slug}
               sectorSlug={sectorSlug}
+              mode={item.listingMode === 'company' ? 'company' : 'product'}
               onClose={() => setComparing(false)}
             />
           ) : (

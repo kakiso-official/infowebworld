@@ -1357,7 +1357,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                   {similarCompanies.slice(0, 9).map(s => {
                     const sLogo = s.logo_url || ''
                     return (
-                      <a key={s.id} href={`/profile/${s.slug}`} className="tlp-cmp">
+                      <a key={s.id} href={`/compare-companies/${slug}-vs-${s.slug}`} className="tlp-cmp">
                         <div className="tlp-cmp-row">
                           {c.logo_url
                             ? <img src={c.logo_url} alt={c.company_name} className="tlp-cmp-logo" />
