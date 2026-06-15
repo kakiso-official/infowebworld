@@ -123,7 +123,7 @@ function normalizeClients(raw: unknown): { name: string; logoUrl?: string; url?:
     return null
   }).filter((x): x is { name: string; logoUrl?: string; url?: string } => !!x)
 }
-function normalizeAwards(raw: unknown): { name: string; year?: number | null }[] {
+function normalizeAwards(raw: unknown): { name: string; year: number | null }[] {
   return parseJsonArray<unknown>(raw).map((item) => {
     if (typeof item === 'string') return item.trim() ? { name: item.trim(), year: null } : null
     if (item && typeof item === 'object') {
@@ -133,7 +133,7 @@ function normalizeAwards(raw: unknown): { name: string; year?: number | null }[]
       return { name, year: o.year == null ? null : Number(o.year) || null }
     }
     return null
-  }).filter((x): x is { name: string; year?: number | null } => !!x)
+  }).filter((x): x is { name: string; year: number | null } => !!x)
 }
 
 type SubRow = {
