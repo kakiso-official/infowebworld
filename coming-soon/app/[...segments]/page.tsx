@@ -367,6 +367,7 @@ async function fetchCategoryPageData(categorySlug: string) {
                 co.name as country_name,
                 c.name as category_name, c.slug as category_slug, c.color as category_color, c.icon as category_icon,
                 lt.name as listing_type_name, lt.slug as listing_type_slug,
+                p.slug as plan_slug,
                 (SELECT COUNT(*) FROM reviews r WHERE r.listing_id = s.id AND r.status = 'approved') AS review_count,
                 (SELECT AVG(r.rating) FROM reviews r WHERE r.listing_id = s.id AND r.status = 'approved') AS review_avg,
                 (SELECT r.title FROM reviews r WHERE r.listing_id = s.id AND r.status = 'approved' ORDER BY r.created_at DESC LIMIT 1) AS latest_review_title,
@@ -376,6 +377,7 @@ async function fetchCategoryPageData(categorySlug: string) {
          LEFT JOIN categories c ON c.id = s.category_id
          LEFT JOIN listing_types lt ON lt.id = s.listing_type_id
          LEFT JOIN countries co ON co.id = s.country_id
+         LEFT JOIN plans p ON p.id = s.plan_id
          WHERE s.status IN ('active','paid') AND ${descendantWhere}
          ORDER BY s.approved_at DESC, s.created_at DESC LIMIT 100`,
         [cid, cid, cid, cid, cid]

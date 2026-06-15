@@ -31,6 +31,7 @@ import SignupModal from '../components/auth/SignupModal'
 import ClaimListingModal from '../listing/ClaimListingModal'
 import { withInfoWebWorldUtm } from '../lib/utm'
 import { trackWebsiteClick } from '../lib/track-website-click'
+import { listingOutboundRel } from '@/lib/user-plan-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faGlobe, faLocationDot, faUsers, faUserGroup, faCalendarDays, faEnvelope,
@@ -97,6 +98,7 @@ interface CompanyData {
   verified?: number; verified_at?: string | null
   category_name: string | null; category_slug: string | null; category_color: string | null
   plan_name: string | null; plan_slug: string | null
+  backlink_status?: string | null
   /* Listings V3 shared with profile */
   industries_served: string | null
   target_company_sizes: string | null
@@ -683,6 +685,15 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                     Premier Verified
                   </span>
                 )}
+                {c.backlink_status === 'verified' && (
+                  <span
+                    className="cmp-head-verified"
+                    title="InfoWebWorld Partner — displays our badge"
+                    style={{ background: '#FFF3D9', color: '#8A6D1F' }}
+                  >
+                    &#9733; Partner
+                  </span>
+                )}
               </h1>
 
               <div className="cmp-head-meta">
@@ -739,7 +750,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                 {c.website && (
                   <a
                     href={withInfoWebWorldUtm(c.website, slug, 'profile')}
-                    target="_blank" rel="noopener noreferrer"
+                    target="_blank" rel={listingOutboundRel(c.plan_slug)}
                     className="cmp-btn cmp-btn--primary"
                     onClick={() => trackWebsiteClick(slug, 'profile')}
                   >
@@ -1451,7 +1462,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
             {c.website && (
               <a
                 href={withInfoWebWorldUtm(c.website, slug, 'profile')}
-                target="_blank" rel="noopener noreferrer"
+                target="_blank" rel={listingOutboundRel(c.plan_slug)}
                 className="cmp-btn cmp-btn--outline"
                 onClick={() => trackWebsiteClick(slug, 'profile')}
               >

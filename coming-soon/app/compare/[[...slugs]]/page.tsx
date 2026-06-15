@@ -183,6 +183,7 @@ type SubRow = {
   employees: string | null                  // mapped from team_size
   hq_location: string | null
   plan: string | null                       // joined from plans.name
+  plan_slug: string | null                  // joined from plans.slug
   verified: number | null
   header_tags?: unknown
   pros?: unknown
@@ -281,6 +282,7 @@ async function fetchCompareData(slugs: string[]): Promise<{
               s.team_size AS employees,
               s.hq_location,
               p.name AS plan,
+              p.slug AS plan_slug,
               COALESCE(s.verified, 0) AS verified,
               s.header_tags, s.pros, s.cons, s.features, s.key_features, s.integrations,
               s.pricing_tiers, s.screenshots, s.faqs,
@@ -326,6 +328,7 @@ async function fetchCompareData(slugs: string[]): Promise<{
                 s.hq_location,
                 s.screenshots, s.features, s.integrations, s.pricing_tiers, s.faqs,
                 p.name AS plan,
+                p.slug AS plan_slug,
                 c.id AS category_id, c.name AS category_name, c.slug AS category_slug, c.color AS category_color,
                 CASE WHEN c.level = 1 THEN c.slug
                      WHEN c.level = 2 THEN cp.slug
@@ -457,6 +460,7 @@ async function fetchCompareData(slugs: string[]): Promise<{
         employees: r.employees,
         hqLocation: r.hq_location,
         plan: r.plan || 'free',
+        planSlug: r.plan_slug || 'free',
         verified: tinyToBool(r.verified),
         category: r.category_id ? {
           id: r.category_id,

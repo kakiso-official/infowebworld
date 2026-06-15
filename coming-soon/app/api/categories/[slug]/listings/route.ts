@@ -68,10 +68,11 @@ export async function GET(
     // Get paginated listings
     const listingSql = `
       SELECT DISTINCT s.*, c.name as category_name, c.slug as category_slug, c.color as category_color, c.icon as category_icon,
-             ltype.name as listing_type_name, ltype.slug as listing_type_slug
+             ltype.name as listing_type_name, ltype.slug as listing_type_slug, p.slug as plan_slug
       FROM submissions s
       LEFT JOIN categories c ON c.id = s.category_id
       LEFT JOIN listing_types ltype ON ltype.id = s.listing_type_id
+      LEFT JOIN plans p ON p.id = s.plan_id
       ${joins.includes('submission_tags') ? 'INNER JOIN submission_tags st2 ON st2.submission_id = s.id INNER JOIN tags t2 ON t2.id = st2.tag_id' : ''}
       WHERE s.category_id IN (${catPlaceholders}) AND s.status IN ('active','paid')
       ${listingTypeSlug ? 'AND ltype.slug = ?' : ''}

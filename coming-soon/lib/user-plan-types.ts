@@ -53,3 +53,29 @@ export function canAccess(userTier: PlanTier, requiredTier: PlanTier): boolean {
 export function nextUnlockingTier(required: PlanTier): PlanTier {
   return required
 }
+
+/**
+ * Backlink policy. A listing earns a *dofollow* link to its own website only
+ * on the paid tiers (Starter and up) — exactly what the pricing/FAQ/glossary
+ * copy promises ("paid listings are dofollow; free listings get nofollow").
+ * Free, unclaimed/seeded (no plan), and unknown-slug listings are treated as
+ * free → nofollow.
+ */
+export function isPaidListingPlan(planSlug?: string | null): boolean {
+  if (!planSlug) return false
+  const tier = SLUG_TO_TIER[planSlug.trim().toLowerCase()]
+  return !!tier && TIER_RANK[tier] >= TIER_RANK.starter
+}
+
+/**
+ * rel attribute for an outbound link to a listing's OWN website. Paid listings
+ * keep the link followed (the sold dofollow backlink); free listings get
+ * `nofollow` appended so no link equity is passed. `base` preserves the
+ * existing rel (tab/referrer behaviour) untouched — we only toggle follow.
+ */
+export function listingOutboundRel(
+  planSlug?: string | null,
+  base = 'noopener noreferrer',
+): string {
+  return isPaidListingPlan(planSlug) ? base : `${base} nofollow`
+}

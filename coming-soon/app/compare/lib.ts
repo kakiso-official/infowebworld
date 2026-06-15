@@ -49,6 +49,8 @@ export type CompareCol = {
   employees: string | null
   hqLocation: string | null
   plan: string
+  /** plans.slug — drives the dofollow (paid) vs nofollow (free) outbound link. */
+  planSlug: string
   verified: boolean
   category: CompareCategory | null
   /** L1 sector slug (walked up from the product's category) — used to

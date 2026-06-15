@@ -15,6 +15,7 @@ import LeadFormModal from './LeadFormModal'
 import ClaimListingModal from './ClaimListingModal'
 import SignupModal from '../components/auth/SignupModal'
 import { withInfoWebWorldUtm } from '../lib/utm'
+import { listingOutboundRel } from '@/lib/user-plan-types'
 import { trackWebsiteClick } from '../lib/track-website-click'
 
 /* ═══════════════════════════════════════════
@@ -1961,7 +1962,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 <span className="tlp-btn-follow-count">{followers.toLocaleString()}</span>
               </button>
               {view.website && (
-                <a href={withInfoWebWorldUtm(view.website, listingSlug)} target="_blank" rel="noopener noreferrer" className="tlp-btn-primary" onClick={() => trackWebsiteClick(listingSlug, 'listing')}>Visit website <ExternalArrowIcon /></a>
+                <a href={withInfoWebWorldUtm(view.website, listingSlug)} target="_blank" rel={listingOutboundRel(real?.plan)} className="tlp-btn-primary" onClick={() => trackWebsiteClick(listingSlug, 'listing')}>Visit website <ExternalArrowIcon /></a>
               )}
               {(view.email || isPreview) && (
                 <button type="button" className="tlp-btn-outline" onClick={() => setLeadOpen(true)}>
@@ -3290,7 +3291,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                               <a
                                 href={withInfoWebWorldUtm(view.website, listingSlug)}
                                 target="_blank"
-                                rel="noopener noreferrer"
+                                rel={listingOutboundRel(real?.plan)}
                                 className="tlp-plan-cta"
                                 onClick={() => trackWebsiteClick(listingSlug, 'listing')}
                               >

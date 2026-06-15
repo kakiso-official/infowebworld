@@ -30,6 +30,7 @@ import Link from 'next/link'
 import { useRouter, usePathname } from 'next/navigation'
 import { withInfoWebWorldUtm } from '../lib/utm'
 import { trackWebsiteClick } from '../lib/track-website-click'
+import { listingOutboundRel } from '@/lib/user-plan-types'
 import {
   buildCompareUrl,
   MAX_COMPARE,
@@ -608,7 +609,7 @@ function ColumnHead({
           <a
             href={withInfoWebWorldUtm(col.website, col.slug, 'compare')}
             target="_blank"
-            rel="noopener noreferrer"
+            rel={listingOutboundRel(col.planSlug)}
             className="cpr-col-visit"
             onClick={() => trackWebsiteClick(col.slug, 'compare')}
           >
@@ -1179,7 +1180,7 @@ function CompanyInfoCell({ col }: { col: CompareCol }) {
                 ? <a
                     href={withInfoWebWorldUtm(r.href, col.slug, 'compare')}
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel={listingOutboundRel(col.planSlug)}
                     onClick={() => trackWebsiteClick(col.slug, 'compare')}
                   >{r.value} {Ico.external}</a>
                 : r.value}

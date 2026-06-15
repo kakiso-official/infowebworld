@@ -12,6 +12,7 @@ import CompareSearchBar from './CompareSearchBar'
 import { useAuth } from '@/lib/use-auth'
 import { withInfoWebWorldUtm } from '../lib/utm'
 import { trackWebsiteClick } from '../lib/track-website-click'
+import { listingOutboundRel } from '@/lib/user-plan-types'
 import type { RealSubmission } from '../iww-hq/data/submissions-storage'
 
 /* ════════════════════════════════════════════════════════════════════════
@@ -330,7 +331,7 @@ export function RealListingCard({
                 <a
                   href={withInfoWebWorldUtm(item.website, item.slug, 'category-card')}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel={listingOutboundRel(item.plan)}
                   className="cd-lc-btn cd-lc-btn--solid"
                   onClick={() => trackWebsiteClick(item.slug, 'category-card')}
                 >

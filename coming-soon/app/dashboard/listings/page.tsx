@@ -180,6 +180,15 @@ export default async function ListingsPage({
                   </svg>
                   Edit profile
                 </Link>
+                <Link
+                  href={`/dashboard/listings/${companyListing.uuid}/badge`}
+                  className="dash-list-btn dash-list-btn--ghost"
+                >
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 2 4 5.5v5c0 5.2 3.4 9.6 8 10.5 4.6-.9 8-5.3 8-10.5v-5L12 2Z" />
+                  </svg>
+                  Badge
+                </Link>
                 {(companyListing.status === 'active' || companyListing.status === 'paid') ? (
                   <Link href={`/profile/${companyListing.slug}`} className="dash-list-btn">
                     View profile
@@ -326,6 +335,12 @@ export default async function ListingsPage({
                       <path d="M7 14l4-4 4 4 5-5" />
                     </svg>
                     Engagement
+                  </Link>
+                  <Link href={`/dashboard/listings/${l.uuid}/badge`} className="dash-list-btn dash-list-btn--ghost">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 2 4 5.5v5c0 5.2 3.4 9.6 8 10.5 4.6-.9 8-5.3 8-10.5v-5L12 2Z" />
+                    </svg>
+                    Badge
                   </Link>
                   {(verifyState === 'none' || verifyState === 'rejected') && (
                     <Link
