@@ -128,3 +128,32 @@
 }
 .cmp-stat--hiring .cmp-stat-val { color: #0E8F6E; }
 .cmp-stat--hiring .cmp-stat-val svg { color: #0E8F6E; }
+
+/* Languages — shown in each language's own script (हिन्दी, Español, 日本語 …);
+   the English name crossfades in on hover. Pure CSS, dynamic on every profile.
+   Native + English names share one grid cell so the chip never reflows. */
+.cmp-stat--langs .cmp-stat-val { align-items: center; }
+.cmp-langs {
+  display: inline-flex; flex-wrap: wrap; align-items: center;
+  gap: 4px 14px; min-width: 0;
+}
+.cmp-lang {
+  display: inline-grid; line-height: 1.2;
+  font-size: 14px; font-weight: 700; color: var(--cmp-ink);
+}
+.cmp-lang > span {
+  grid-area: 1 / 1;
+  white-space: nowrap;
+  transition: opacity .24s ease, transform .24s ease;
+}
+.cmp-lang.is-swappable { cursor: help; }
+.cmp-lang .cmp-lang-en {
+  opacity: 0; transform: translateY(0.34em);
+  color: var(--cmp-accent, var(--cmp-ink)); font-weight: 800;
+}
+.cmp-lang.is-swappable:hover .cmp-lang-native { opacity: 0; transform: translateY(-0.34em); }
+.cmp-lang.is-swappable:hover .cmp-lang-en { opacity: 1; transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+  .cmp-lang.is-swappable:hover .cmp-lang-native,
+  .cmp-lang.is-swappable:hover .cmp-lang-en { transform: none; }
+}

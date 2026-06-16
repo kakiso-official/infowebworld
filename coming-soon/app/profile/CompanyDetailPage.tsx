@@ -350,6 +350,26 @@ function fmtReviewDate(iso: string | null): string {
   return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
 }
 
+/* ── Language endonyms — each English language name mapped to how it is
+      written in that language. The profile shows the native name, and reveals
+      the English name on hover. Unmapped names fall back to themselves. ─── */
+const LANG_NATIVE: Record<string, string> = {
+  English: 'English', French: 'Français', German: 'Deutsch', Dutch: 'Nederlands',
+  Swedish: 'Svenska', Danish: 'Dansk', Norwegian: 'Norsk', Finnish: 'Suomi',
+  Spanish: 'Español', Portuguese: 'Português', Italian: 'Italiano', Greek: 'Ελληνικά',
+  Arabic: 'العربية', Hebrew: 'עברית', Turkish: 'Türkçe', Russian: 'Русский',
+  Hindi: 'हिन्दी', Urdu: 'اردو', Bengali: 'বাংলা', Sinhala: 'සිංහල', Tamil: 'தமிழ்',
+  Nepali: 'नेपाली', Vietnamese: 'Tiếng Việt', Filipino: 'Filipino', Indonesian: 'Bahasa Indonesia',
+  Thai: 'ไทย', Malay: 'Bahasa Melayu', Chinese: '中文', Japanese: '日本語', Korean: '한국어',
+  Ukrainian: 'Українська', Polish: 'Polski', Romanian: 'Română', Bulgarian: 'Български',
+  Czech: 'Čeština', Serbian: 'Српски', Hungarian: 'Magyar', Slovak: 'Slovenčina',
+  Slovenian: 'Slovenščina', Croatian: 'Hrvatski', Estonian: 'Eesti', Latvian: 'Latviešu',
+  Lithuanian: 'Lietuvių', Swahili: 'Kiswahili',
+}
+function nativeLang(name: string): string {
+  return LANG_NATIVE[(name || '').trim()] || name
+}
+
 /* ── YouTube id extractor — handles watch / youtu.be / embed / shorts /
       live URL shapes plus a bare ?v= fallback. Returns null for anything
       that isn't a recognisable YouTube link so the caller can fall back to
@@ -865,9 +885,27 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                   </div>
                 )}
                 {languages.length > 0 && (
-                  <div className="cmp-stat" title={languages.join(', ')}>
+                  <div className="cmp-stat cmp-stat--langs" title={languages.join(', ')}>
                     <span className="cmp-stat-lbl">Languages</span>
-                    <span className="cmp-stat-val"><Globe /> {languages.length} {languages.length === 1 ? 'Language' : 'Languages'}</span>
+                    <span className="cmp-stat-val">
+                      <Globe />
+                      <span className="cmp-langs">
+                        {languages.map((lang) => {
+                          const native = nativeLang(lang)
+                          const swap = native !== lang
+                          return (
+                            <span
+                              key={lang}
+                              className={`cmp-lang${swap ? ' is-swappable' : ''}`}
+                              title={swap ? lang : undefined}
+                            >
+                              <span className="cmp-lang-native">{native}</span>
+                              {swap && <span className="cmp-lang-en" aria-hidden="true">{lang}</span>}
+                            </span>
+                          )
+                        })}
+                      </span>
+                    </span>
                   </div>
                 )}
                 {timezones.length > 0 && (
