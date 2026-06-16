@@ -1,0 +1,613 @@
+[
+  {
+    "company_name": "PopArt Studio",
+    "domain": "popwebdesign.net",
+    "website": "https://www.popwebdesign.net",
+    "category_slug": "full-service-digital",
+    "country_code": "RS",
+    "city": "Novi Sad",
+    "state": "",
+    "founded_year": 2009,
+    "team_size": "11-50",
+    "description": "PopArt Studio is a full-service digital agency founded in 2009 in Novi Sad, Serbia, with a second office in Belgrade. It provides graphic and web design, web development, branding, internet marketing and SEO for clients worldwide. The studio has delivered thousands of projects for brands across more than 50 countries.",
+    "linkedin": "https://www.linkedin.com/company/popart-studio",
+    "industries_served": ["Retail", "Technology", "Manufacturing", "Finance", "FMCG"],
+    "header_tags": ["Web Design", "Web Development", "Branding", "UX/UI", "SEO", "Digital Marketing"],
+    "email": "art@popwebdesign.net",
+    "intro_video_url": "https://www.youtube.com/watch?v=3zUctMQxmMw",
+    "awards": [
+      {"name": "Awwwards Site of the Day", "year": null},
+      {"name": "CSS Winner", "year": null},
+      {"name": "FWA (Favourite Website Awards)", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Decathlon", "domain": "decathlon.com"},
+      {"name": "Opel", "domain": "opel.com"},
+      {"name": "Nike", "domain": "nike.com"},
+      {"name": "Visa", "domain": "visa.com"},
+      {"name": "Schneider Electric", "domain": "se.com"},
+      {"name": "Daikin", "domain": "daikin.com"}
+    ]
+  },
+  {
+    "company_name": "LIMESODA Interactive Marketing",
+    "domain": "limesoda.com",
+    "website": "https://www.limesoda.com",
+    "category_slug": "full-service-digital",
+    "country_code": "AT",
+    "city": "Vienna",
+    "state": "",
+    "founded_year": 2002,
+    "team_size": "11-50",
+    "description": "LIMESODA Interactive Marketing is an Austrian digital agency founded in 2002, headquartered in Vienna with additional offices in St. Polten and Linz. It offers e-commerce, websites and apps, UX/UI design, branding, social media and online marketing, plus in-house video production. The agency serves Austrian and international brands across retail and industry.",
+    "linkedin": "https://www.linkedin.com/company/limesoda/",
+    "industries_served": ["Retail", "eCommerce", "Automotive", "Nonprofit", "Industrial"],
+    "header_tags": ["eCommerce", "Web Development", "UX/UI", "Branding", "Social Media", "Online Marketing"],
+    "email": "office@limesoda.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Anton Award - Best E-Commerce Agency", "year": null},
+      {"name": "German Design Award", "year": null},
+      {"name": "Google Partner", "year": null},
+      {"name": "Leitbetriebe Austria certification", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Skoda", "domain": "skoda-auto.com"},
+      {"name": "Red Bull Media House", "domain": "redbullmediahouse.com"},
+      {"name": "UNICEF Osterreich", "domain": "unicef.at"},
+      {"name": "Hofer", "domain": "hofer.at"},
+      {"name": "Gardena", "domain": "gardena.com"}
+    ]
+  },
+  {
+    "company_name": "GONG",
+    "domain": "gong.co",
+    "website": "https://www.gong.co",
+    "category_slug": "full-service-digital",
+    "country_code": "PL",
+    "city": "Warsaw",
+    "state": "",
+    "founded_year": 2001,
+    "team_size": "51-200",
+    "description": "GONG is an independent digital creative agency founded in 2001, headquartered in Warsaw with additional offices in Gliwice (Poland) and The Hague (Netherlands). It combines strategy, creativity and technology to build digital experiences, campaigns and interactive content for local and international brands. GONG was named Agency of the Year at the IAB Poland MIXX Awards.",
+    "linkedin": "https://pl.linkedin.com/company/gong-creative-agency",
+    "industries_served": ["Entertainment", "Automotive", "FMCG", "Technology", "Finance"],
+    "header_tags": ["Digital Creative", "Campaigns", "Content", "Web Development", "Advergaming", "Strategy"],
+    "email": "hello@gong.co",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "IAB Poland MIXX Awards - Agency of the Year", "year": null},
+      {"name": "IAB Poland MIXX Awards - Best in Show", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Netflix", "domain": "netflix.com"},
+      {"name": "BMW", "domain": "bmw.com"},
+      {"name": "Uber", "domain": "uber.com"},
+      {"name": "PlayStation", "domain": "playstation.com"},
+      {"name": "L'Oreal", "domain": "loreal.com"},
+      {"name": "ING", "domain": "ing.com"}
+    ]
+  },
+  {
+    "company_name": "MTA Digital",
+    "domain": "mta.digital",
+    "website": "https://mta.digital/en/",
+    "category_slug": "specialized-marketing",
+    "country_code": "PL",
+    "city": "Poznan",
+    "state": "",
+    "founded_year": 2014,
+    "team_size": "51-200",
+    "description": "MTA Digital (More Than an Agency) is a Polish performance marketing agency headquartered in Poznan. It helps B2C and e-commerce brands scale with a data-driven, full-funnel approach spanning paid advertising, creative strategy, SEO and web analytics. The agency is a Google and Meta partner and works with international SaaS and retail clients.",
+    "linkedin": "https://www.linkedin.com/company/mta-digital-sp--z-o-o-/",
+    "industries_served": ["eCommerce", "SaaS", "Retail", "Consumer Goods", "Entertainment"],
+    "header_tags": ["Performance Marketing", "Paid Ads", "Google Ads", "Meta Ads", "SEO", "Analytics"],
+    "email": "hello@mta.digital",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Google Partner", "year": null},
+      {"name": "Meta Business Partner", "year": null},
+      {"name": "European Search Awards (nominee)", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "GetResponse", "domain": "getresponse.com"},
+      {"name": "Hotjar", "domain": "hotjar.com"},
+      {"name": "GymBeam", "domain": "gymbeam.com"},
+      {"name": "Audioteka", "domain": "audioteka.com"},
+      {"name": "Novakid", "domain": "novakid.com"}
+    ]
+  },
+  {
+    "company_name": "Burocratik",
+    "domain": "burocratik.com",
+    "website": "https://www.burocratik.com",
+    "category_slug": "full-service-digital",
+    "country_code": "PT",
+    "city": "Coimbra",
+    "state": "",
+    "founded_year": 2005,
+    "team_size": "11-50",
+    "description": "Burocratik is a Portuguese digital branding and design studio founded in 2005 in Coimbra, with a second office in Porto. It specializes in brand identity, digital design, web development and creative campaigns for companies and startups internationally. The studio is one of Europe's most awarded, ranked #1 digital design studio by the European Design Awards agencies league.",
+    "linkedin": "https://www.linkedin.com/company/burocratik",
+    "industries_served": ["Technology", "Fintech", "Consumer Goods", "SaaS", "Hospitality"],
+    "header_tags": ["Branding", "Web Design", "Digital Design", "UX/UI", "Web Development", "Creative"],
+    "email": "hello@burocratik.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "European Design Awards - #1 Digital Studio in Europe (2021-2025)", "year": null},
+      {"name": "CSS Design Awards - Best Studio of the Year", "year": 2022},
+      {"name": "Clube de Criativos de Portugal - Best Digital Agency", "year": 2025}
+    ],
+    "notable_clients": [
+      {"name": "Unilever", "domain": "unilever.com"},
+      {"name": "Remote", "domain": "remote.com"},
+      {"name": "Clear Street", "domain": "clearstreet.io"},
+      {"name": "Selfbook", "domain": "selfbook.com"},
+      {"name": "Sogevinus", "domain": "sogevinus.com"}
+    ]
+  },
+  {
+    "company_name": "Humble",
+    "domain": "humble.gr",
+    "website": "https://humble.gr",
+    "category_slug": "full-service-digital",
+    "country_code": "GR",
+    "city": "Athens",
+    "state": "",
+    "founded_year": 2010,
+    "team_size": "51-200",
+    "description": "Humble is an award-winning digital agency founded in 2010 and based in Agia Paraskevi, Athens, Greece. It combines creative advertising with performance marketing, offering social media, PPC, digital strategy, content, web design and UX/UI. The agency is a Google Premier Partner and Meta preferred partner that has won dozens of national awards.",
+    "linkedin": "https://gr.linkedin.com/company/humble-digital-agency",
+    "industries_served": ["Retail", "FMCG", "Technology", "Finance", "eCommerce"],
+    "header_tags": ["Creative", "Social Media", "Performance Marketing", "PPC", "Content", "UX/UI"],
+    "email": "info@humble.gr",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Ermis Awards - Agency of the Year", "year": 2024},
+      {"name": "Clutch Top 100 Fast Growing Agencies Worldwide", "year": 2025},
+      {"name": "Google Premier Partner", "year": 2025},
+      {"name": "Meta Preferred Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Klarna", "domain": "klarna.com"},
+      {"name": "Wolt", "domain": "wolt.com"},
+      {"name": "Logitech", "domain": "logitech.com"},
+      {"name": "PwC", "domain": "pwc.com"},
+      {"name": "Vinted", "domain": "vinted.com"}
+    ]
+  },
+  {
+    "company_name": "Advengers",
+    "domain": "advengers.gr",
+    "website": "https://www.advengers.gr",
+    "category_slug": "social-media-marketing-services",
+    "country_code": "GR",
+    "city": "Athens",
+    "state": "",
+    "founded_year": 2017,
+    "team_size": "11-50",
+    "description": "Advengers is a full-service, digital-first communication agency founded in 2017 in Athens, Greece. It brings together strategy, creative, performance media and martech to run 360-degree campaigns, content marketing and social media management. The agency has been named Social Media Agency of the Year multiple times and is a Google Premier Partner and Meta Business Partner.",
+    "linkedin": "https://gr.linkedin.com/company/advengersgr",
+    "industries_served": ["Retail", "Automotive", "Media", "FMCG", "Entertainment"],
+    "header_tags": ["Social Media", "Creative", "Performance Media", "Content", "Strategy", "Analytics"],
+    "email": "info@advengers.gr",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Social Media Awards - Agency of the Year", "year": null},
+      {"name": "TikTok Grand Winner", "year": null},
+      {"name": "Google Premier Partner", "year": null},
+      {"name": "Meta Business Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Audi", "domain": "audi.com"},
+      {"name": "Curaprox", "domain": "curaprox.com"},
+      {"name": "Allwyn", "domain": "allwyn.com"},
+      {"name": "Kathimerini", "domain": "kathimerini.gr"},
+      {"name": "Papadopoulou", "domain": "papadopoulou.gr"}
+    ]
+  },
+  {
+    "company_name": "Not Found",
+    "domain": "notfound.es",
+    "website": "https://www.notfound.es",
+    "category_slug": "full-service-digital",
+    "country_code": "ES",
+    "city": "Barcelona",
+    "state": "",
+    "founded_year": 2011,
+    "team_size": "11-50",
+    "description": "Not Found (formerly Digital Dosis) is an independent branding and digital agency founded in 2011 in Barcelona, Spain. It studies brand context and objectives to create digital projects, campaigns and experiences combining creativity, strategy and technology. The studio's work has been recognized with Laus Awards (ADG-FAD) and Awwwards honorable mentions.",
+    "linkedin": "https://www.linkedin.com/company/notfound-agency/",
+    "industries_served": ["FMCG", "Finance", "Publishing", "Retail", "Nonprofit"],
+    "header_tags": ["Branding", "Digital", "Web Design", "Campaigns", "Strategy", "UX/UI"],
+    "email": "info@notfound.es",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Laus Awards (ADG-FAD)", "year": null},
+      {"name": "Awwwards Honorable Mention", "year": null},
+      {"name": "CSS Design Awards Site of the Day", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Danone", "domain": "danone.com"},
+      {"name": "CaixaBank", "domain": "caixabank.com"},
+      {"name": "National Geographic", "domain": "nationalgeographic.com"},
+      {"name": "Pull & Bear", "domain": "pullandbear.com"},
+      {"name": "Banco Sabadell", "domain": "bancsabadell.com"}
+    ]
+  },
+  {
+    "company_name": "Beet",
+    "domain": "beet.se",
+    "website": "https://www.beet.se/en",
+    "category_slug": "specialized-marketing",
+    "country_code": "SE",
+    "city": "Stockholm",
+    "state": "",
+    "founded_year": 2012,
+    "team_size": "11-50",
+    "description": "Beet is a Swedish digital strategy and performance marketing agency founded in 2012, headquartered in Stockholm with a second office in Pitea. It delivers data-driven marketing across SEM, SEO, social media, marketing automation, affiliate and display. Beet is a Google Premier Partner ranked among the top agencies in Sweden.",
+    "linkedin": "https://www.linkedin.com/company/beet-ab/",
+    "industries_served": ["Retail", "eCommerce", "Sports", "Healthcare", "B2B"],
+    "header_tags": ["SEM", "SEO", "Social Media", "Marketing Automation", "Affiliate", "Analytics"],
+    "email": "info@beet.se",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Google Premier Partner", "year": null},
+      {"name": "DI Gasell", "year": null},
+      {"name": "Superforetag", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Sail Racing", "domain": "sailracing.com"},
+      {"name": "Daily Sports", "domain": "dailysports.com"},
+      {"name": "MedHelp", "domain": "medhelp.se"},
+      {"name": "STIGA Sports", "domain": "stigasports.com"}
+    ]
+  },
+  {
+    "company_name": "Marketup",
+    "domain": "marketup.eu",
+    "website": "https://www.marketup.eu",
+    "category_slug": "full-service-digital",
+    "country_code": "CZ",
+    "city": "Prague",
+    "state": "",
+    "founded_year": 2010,
+    "team_size": "51-200",
+    "description": "Marketup is an independent full-service digital agency founded in 2010 and based in Prague, Czech Republic. It combines data, creativity and performance marketing, managing more than a thousand campaigns across paid media, SEO, analytics and creative for 70+ Czech and international clients. The agency is a Google Premier Partner and Meta Business Partner.",
+    "linkedin": "https://cz.linkedin.com/company/market-up-s-r-o",
+    "industries_served": ["Retail", "Finance", "Telecom", "Automotive", "FMCG"],
+    "header_tags": ["Performance Marketing", "Paid Media", "SEO", "Analytics", "Creative", "Strategy"],
+    "email": "info@marketup.cz",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Google Premier Partner", "year": null},
+      {"name": "Effie Awards Bronze", "year": 2022},
+      {"name": "Czech Superbrands", "year": null},
+      {"name": "Best Place to Work", "year": 2024}
+    ],
+    "notable_clients": [
+      {"name": "Skoda Auto", "domain": "skoda-auto.com"},
+      {"name": "Danone", "domain": "danone.com"},
+      {"name": "Decathlon", "domain": "decathlon.com"},
+      {"name": "AXA", "domain": "axa.com"},
+      {"name": "ABB", "domain": "abb.com"}
+    ]
+  },
+  {
+    "company_name": "PANORAMA3000",
+    "domain": "p3000.net",
+    "website": "https://www.panorama3000.com",
+    "category_slug": "social-media-marketing-services",
+    "country_code": "DE",
+    "city": "Berlin",
+    "state": "",
+    "founded_year": 2003,
+    "team_size": "11-50",
+    "description": "PANORAMA3000 is a digital and social media agency founded in 2003 and based in Berlin-Kreuzberg, Germany. With a team of around 40 strategists and creatives, it develops social media strategies, content, campaigns and digital communication for major brands. The agency has won multiple German communication and design awards over two decades.",
+    "linkedin": "https://de.linkedin.com/company/panorama3000",
+    "industries_served": ["Automotive", "Finance", "Media", "Manufacturing", "Entertainment"],
+    "header_tags": ["Social Media", "Content", "Digital Strategy", "Campaigns", "Creative", "Communication"],
+    "email": "info@p3000.net",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "German Prize for Online Communication", "year": null},
+      {"name": "German Brand Award", "year": null},
+      {"name": "German Design Award", "year": null},
+      {"name": "Digital Communications Award", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "STIHL", "domain": "stihl.com"},
+      {"name": "Deutsche Bank", "domain": "db.com"},
+      {"name": "ZDF", "domain": "zdf.de"},
+      {"name": "KfW", "domain": "kfw.de"},
+      {"name": "Universal Music", "domain": "universalmusic.com"}
+    ]
+  },
+  {
+    "company_name": "Delante",
+    "domain": "delante.co",
+    "website": "https://delante.co",
+    "category_slug": "specialized-marketing",
+    "country_code": "PL",
+    "city": "Krakow",
+    "state": "",
+    "founded_year": 2014,
+    "team_size": "11-50",
+    "description": "Delante is an international search marketing agency founded in 2014 and headquartered in Krakow, Poland, with offices in Italy, Spain and the US. It specializes in SEO, SEM, content and AI search optimization, helping companies in over 30 countries grow visibility and traffic. The agency has won multiple European and Global Search Awards.",
+    "linkedin": "https://www.linkedin.com/company/delante-online-marketing",
+    "industries_served": ["eCommerce", "SaaS", "Travel", "Healthcare", "Automotive"],
+    "header_tags": ["SEO", "SEM", "Content Marketing", "AI Search", "Paid Media", "Analytics"],
+    "email": "hello@delante.co",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "European Search Awards", "year": 2024},
+      {"name": "Global Search Awards", "year": 2024},
+      {"name": "Global Agency Awards", "year": 2024}
+    ],
+    "notable_clients": [
+      {"name": "Douglas", "domain": "douglas.de"},
+      {"name": "Jeep", "domain": "jeep.com"},
+      {"name": "Best Western", "domain": "bestwestern.com"},
+      {"name": "Madison Reed", "domain": "madison-reed.com"},
+      {"name": "Ovoko", "domain": "ovoko.com"}
+    ]
+  },
+  {
+    "company_name": "Caffeina",
+    "domain": "caffeina.com",
+    "website": "https://caffeina.com/en",
+    "category_slug": "full-service-digital",
+    "country_code": "IT",
+    "city": "Parma",
+    "state": "",
+    "founded_year": 2010,
+    "team_size": "201-500",
+    "description": "Caffeina is an Italian digital native agency headquartered in Parma, with offices in Milan and Rome. With a team of around 220 people it builds omnichannel campaigns, digital products, branded content, performance media and consumer research for major brands. Caffeina is a Meta Premier Partner and a certified Great Place to Work.",
+    "linkedin": "https://www.linkedin.com/company/caffeina-agency",
+    "industries_served": ["FMCG", "Entertainment", "Travel", "Insurance", "Nonprofit"],
+    "header_tags": ["Digital Strategy", "Branded Content", "Performance Media", "Social Media", "Digital Products", "Creative"],
+    "email": "info@caffeina.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Meta Premier Partner", "year": null},
+      {"name": "Great Place to Work certification", "year": null},
+      {"name": "ISO certification", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Nutella", "domain": "nutella.com"},
+      {"name": "Peroni Nastro Azzurro", "domain": "peroniitaly.com"},
+      {"name": "Paramount+", "domain": "paramountplus.com"},
+      {"name": "Frecciarossa", "domain": "trenitalia.com"},
+      {"name": "ActionAid", "domain": "actionaid.org"}
+    ]
+  },
+  {
+    "company_name": "s360",
+    "domain": "s360digital.com",
+    "website": "https://s360digital.com",
+    "category_slug": "specialized-marketing",
+    "country_code": "DK",
+    "city": "Aarhus",
+    "state": "",
+    "founded_year": 2011,
+    "team_size": "201-500",
+    "description": "s360 is a Danish digital marketing agency founded in 2011 and headquartered in Aarhus, with offices across eight European countries. It helps brands and retailers grow through strategic advisory and hands-on execution in marketing, creative, data and technology. s360 is one of Europe's most awarded digital agencies and the first Nordic agency to earn all Meta certifications.",
+    "linkedin": "https://dk.linkedin.com/company/s360digital",
+    "industries_served": ["Retail", "eCommerce", "Fashion", "Consumer Goods", "Beauty"],
+    "header_tags": ["Paid Media", "SEO", "Data & Analytics", "Creative", "Marketing Technology", "CRO"],
+    "email": "info@s360.dk",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "European Search Awards Winner (4x)", "year": null},
+      {"name": "European Paid Media Awards", "year": null},
+      {"name": "First Nordic agency with all Meta certifications", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Sephora", "domain": "sephora.com"},
+      {"name": "Wrangler", "domain": "wrangler.com"},
+      {"name": "Georg Jensen", "domain": "georgjensen.com"},
+      {"name": "Rains", "domain": "rains.com"},
+      {"name": "Biltema", "domain": "biltema.com"}
+    ]
+  },
+  {
+    "company_name": "SmartLinks",
+    "domain": "smartlinks.pt",
+    "website": "https://smartlinks.pt/en/",
+    "category_slug": "full-service-digital",
+    "country_code": "PT",
+    "city": "Lisbon",
+    "state": "",
+    "founded_year": null,
+    "team_size": "51-200",
+    "description": "SmartLinks is a Portuguese digital marketing and SEO agency based in Alfragide, in the Lisbon area. With 100+ specialists it delivers inbound marketing, SEO, paid advertising, web development, social media and CRM for Portuguese and international clients. The agency is a Google Premier Partner and HubSpot Platinum Solutions Partner.",
+    "linkedin": "https://www.linkedin.com/company/smartlinks-agencia-marketing-digital",
+    "industries_served": ["Hospitality", "Retail", "Education", "Manufacturing", "B2B"],
+    "header_tags": ["Inbound Marketing", "SEO", "Paid Ads", "Web Development", "Social Media", "CRM"],
+    "email": "geral@smartlinks.pt",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Google Premier Partner", "year": 2026},
+      {"name": "HubSpot Platinum Solutions Partner", "year": null},
+      {"name": "Clutch Top B2B Companies Portugal", "year": 2022}
+    ],
+    "notable_clients": [
+      {"name": "Domino's Pizza", "domain": "dominos.com"},
+      {"name": "SANA Hotels", "domain": "sanahotels.com"},
+      {"name": "Vista Alegre", "domain": "vistaalegre.com"},
+      {"name": "Bordallo Pinheiro", "domain": "bordallopinheiro.com"},
+      {"name": "UCI", "domain": "uci.it"}
+    ]
+  },
+  {
+    "company_name": "INTREN",
+    "domain": "intren.hu",
+    "website": "https://intren.hu/en/",
+    "category_slug": "specialized-marketing",
+    "country_code": "HU",
+    "city": "Budapest",
+    "state": "",
+    "founded_year": 2008,
+    "team_size": "51-200",
+    "description": "INTREN is a full-service digital marketing agency founded in 2008 and headquartered in Budapest, Hungary. With around 70 specialists it designs, runs and optimizes complex digital ecosystems spanning paid advertising, SEO, web analytics, social media and web development. INTREN is a Google Premier Partner and Google Analytics 360 certified.",
+    "linkedin": "https://hu.linkedin.com/company/intren",
+    "industries_served": ["Healthcare", "Retail", "FMCG", "Pharmaceutical", "Finance"],
+    "header_tags": ["Paid Advertising", "SEO", "Web Analytics", "Social Media", "Web Development", "Consulting"],
+    "email": "sales@intren.hu",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Google Premier Partner", "year": null},
+      {"name": "Google Analytics 360 certified", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Nestle", "domain": "nestle.com"},
+      {"name": "Bayer", "domain": "bayer.com"},
+      {"name": "Provident", "domain": "provident.hu"},
+      {"name": "Benu", "domain": "benu.hu"},
+      {"name": "Profession", "domain": "profession.hu"}
+    ]
+  },
+  {
+    "company_name": "Unic",
+    "domain": "unic.com",
+    "website": "https://www.unic.com/en",
+    "category_slug": "full-service-digital",
+    "country_code": "CH",
+    "city": "Zurich",
+    "state": "",
+    "founded_year": 1996,
+    "team_size": "201-500",
+    "description": "Unic is a Swiss full-service digital agency founded in 1996 and headquartered in Zurich, with offices in Bern, Germany and Poland. With around 300 employees it combines strategy and consulting with experience design, digital marketing and commerce solution development. Unic has won awards at Best of Swiss Web, the Digital Commerce Award and the Multimedia Award.",
+    "linkedin": "https://www.linkedin.com/company/unic",
+    "industries_served": ["Retail", "Finance", "Industrial", "Tourism", "Public Sector"],
+    "header_tags": ["Digital Strategy", "Experience Design", "eCommerce", "Digital Marketing", "Web Development", "Consulting"],
+    "email": "info@unic.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Best of Swiss Web", "year": null},
+      {"name": "Digital Commerce Award", "year": null},
+      {"name": "Multimedia Award", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "HORNBACH", "domain": "hornbach.com"},
+      {"name": "Betty Bossi", "domain": "bettybossi.ch"},
+      {"name": "20 Minuten", "domain": "20min.ch"},
+      {"name": "Bossard", "domain": "bossard.com"},
+      {"name": "ROSEN Group", "domain": "rosen-group.com"}
+    ]
+  },
+  {
+    "company_name": "Livepage",
+    "domain": "livepage.ua",
+    "website": "https://livepage.ua",
+    "category_slug": "specialized-marketing",
+    "country_code": "UA",
+    "city": "Kyiv",
+    "state": "",
+    "founded_year": 2011,
+    "team_size": "51-200",
+    "description": "Livepage is a Ukrainian digital marketing agency founded in 2011 and based in Kyiv. It provides SEO, PPC, email marketing, analytics, link building, content and web development, focusing on technology, SaaS and B2B companies globally. Livepage is a Google Premier Partner repeatedly recognized among the top SEO and PPC companies in Ukraine.",
+    "linkedin": "https://www.linkedin.com/company/12601476",
+    "industries_served": ["SaaS", "Technology", "B2B", "IT Services", "eCommerce"],
+    "header_tags": ["SEO", "PPC", "Email Marketing", "Link Building", "Content", "Web Development"],
+    "email": "contact@livepage.pro",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Google Premier Partner", "year": null},
+      {"name": "Top SEO Company in Ukraine", "year": 2025},
+      {"name": "Top International SEO Company", "year": 2024}
+    ],
+    "notable_clients": [
+      {"name": "Stripo", "domain": "stripo.email"},
+      {"name": "Yalantis", "domain": "yalantis.com"},
+      {"name": "Work.ua", "domain": "work.ua"},
+      {"name": "Apriorit", "domain": "apriorit.com"}
+    ]
+  },
+  {
+    "company_name": "denkwerk",
+    "domain": "denkwerk.com",
+    "website": "https://www.denkwerk.com/en/",
+    "category_slug": "full-service-digital",
+    "country_code": "DE",
+    "city": "Cologne",
+    "state": "",
+    "founded_year": 1998,
+    "team_size": "201-500",
+    "description": "denkwerk is an owner-run German digital agency founded in 1998 in Cologne, with studios in Berlin, Hamburg and Munich. A consulting and agency hybrid of around 220 people, it helps companies drive digital transformation and growth through strategy, experience design and development. denkwerk was named Red Dot: Agency of the Year 2021.",
+    "linkedin": "https://www.linkedin.com/company/denkwerk",
+    "industries_served": ["Retail", "Finance", "Technology", "Energy", "Hospitality"],
+    "header_tags": ["Digital Transformation", "Experience Design", "Web Development", "Strategy", "Design Systems", "Consulting"],
+    "email": "hello@denkwerk.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Red Dot: Agency of the Year", "year": 2021},
+      {"name": "Red Dot Award distinctions", "year": 2021}
+    ],
+    "notable_clients": [
+      {"name": "DeepL", "domain": "deepl.com"},
+      {"name": "Esprit", "domain": "esprit.com"},
+      {"name": "Santander", "domain": "santander.com"},
+      {"name": "Motel One", "domain": "motel-one.com"},
+      {"name": "Union Investment", "domain": "union-investment.com"}
+    ]
+  },
+  {
+    "company_name": "They Digital",
+    "domain": "they.pl",
+    "website": "https://they.pl/en/",
+    "category_slug": "full-service-digital",
+    "country_code": "PL",
+    "city": "Warsaw",
+    "state": "",
+    "founded_year": 2008,
+    "team_size": "201-500",
+    "description": "They Digital (They.pl) is a Polish 360-degree digital marketing agency headquartered in Warsaw, operating since 2008. It specializes in digital media, social media, eCRM and marketing automation, plus strategy and creative services for large national and international brands. The agency is a certified Salesforce, Google, Meta and Criteo partner.",
+    "linkedin": "https://www.linkedin.com/company/they-pl",
+    "industries_served": ["Retail", "FMCG", "Logistics", "Pharmaceutical", "Electronics"],
+    "header_tags": ["Digital Media", "Social Media", "Marketing Automation", "eCRM", "Strategy", "Creative"],
+    "email": "they@they.pl",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Salesforce Certified Partner", "year": null},
+      {"name": "Google Partner", "year": null},
+      {"name": "Meta Business Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "DHL", "domain": "dhl.com"},
+      {"name": "Merck", "domain": "merck.com"},
+      {"name": "Velux", "domain": "velux.com"},
+      {"name": "Bridgestone", "domain": "bridgestone.com"},
+      {"name": "Costa Coffee", "domain": "costacoffee.com"}
+    ]
+  },
+  {
+    "company_name": "Journey Agency",
+    "domain": "journeyagency.com",
+    "website": "https://journeyagency.com",
+    "category_slug": "full-service-digital",
+    "country_code": "NO",
+    "city": "Oslo",
+    "state": "",
+    "founded_year": null,
+    "team_size": "11-50",
+    "description": "Journey Agency is a full-service digital agency headquartered in Oslo, Norway, with an additional office in Stockholm. It designs, builds, communicates and markets brands and businesses, combining creative, SEO, paid media and e-commerce development. The agency is a Shopify partner and was named a DN Gaselle high-growth company.",
+    "linkedin": "https://www.linkedin.com/company/journey-agency",
+    "industries_served": ["Retail", "eCommerce", "Finance", "Consumer Goods", "Entertainment"],
+    "header_tags": ["Web Design", "Development", "SEO", "Paid Media", "eCommerce", "Branding"],
+    "email": "post@journeyagency.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "DN Gaselle high-growth company", "year": 2023},
+      {"name": "Shopify Partner", "year": null},
+      {"name": "Great Place To Work", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Volvo", "domain": "volvo.com"},
+      {"name": "PlayStation", "domain": "playstation.com"},
+      {"name": "Ikano Bank", "domain": "ikanobank.no"},
+      {"name": "Regatta", "domain": "regatta.no"},
+      {"name": "Tufte", "domain": "tuftewear.no"}
+    ]
+  }
+]

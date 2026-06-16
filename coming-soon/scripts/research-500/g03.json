@@ -1,0 +1,565 @@
+[
+  {
+    "company_name": "Saigon Technology",
+    "domain": "saigontechnology.com",
+    "website": "https://saigontechnology.com",
+    "category_slug": "custom-software-development",
+    "country_code": "VN",
+    "city": "Ho Chi Minh City",
+    "state": "",
+    "founded_year": 2012,
+    "team_size": "201-500",
+    "description": "Saigon Technology is an ISO-certified custom software development and outsourcing company headquartered in Ho Chi Minh City, Vietnam, with delivery offices serving the US, Australia, Singapore and Switzerland. It builds web, mobile, SaaS and AI solutions and provides dedicated teams and QA testing for clients across finance, healthcare, logistics and eCommerce.",
+    "linkedin": "https://www.linkedin.com/company/saigon-technology",
+    "industries_served": ["Fintech", "Healthcare", "Logistics", "eCommerce", "Real Estate"],
+    "header_tags": ["Custom Software", ".NET", "ReactJS", "NodeJS", "QA Testing", "AI Development"],
+    "email": "sales@saigontechnology.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=TmmzxEHtW-Y",
+    "awards": [
+      {"name": "ISO/IEC 27001 Certified (BSI)", "year": null},
+      {"name": "ISO 9001 Certified (BSI)", "year": null},
+      {"name": "Microsoft Gold Partner", "year": null},
+      {"name": "Sao Khue Award (VINASA)", "year": 2019},
+      {"name": "Best Workplaces in Asia", "year": 2023},
+      {"name": "Top Software Developers on Clutch", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Standard Chartered", "domain": "sc.com"},
+      {"name": "Abbott", "domain": "abbott.com"},
+      {"name": "Karcher", "domain": "kaercher.com"},
+      {"name": "RSM", "domain": "rsm.global"}
+    ]
+  },
+  {
+    "company_name": "Orient Software",
+    "domain": "orientsoftware.com",
+    "website": "https://www.orientsoftware.com",
+    "category_slug": "custom-software-development",
+    "country_code": "VN",
+    "city": "Ho Chi Minh City",
+    "state": "",
+    "founded_year": 2005,
+    "team_size": "201-500",
+    "description": "Orient Software is a Vietnam-based software outsourcing company founded in 2005 and headquartered in Ho Chi Minh City, with additional offices in Singapore and Japan. It delivers custom software development, QA and testing, cloud/DevOps, data and AI services, and offshore dedicated teams for global clients.",
+    "linkedin": "https://vn.linkedin.com/company/orient-software-development",
+    "industries_served": ["Hospitality", "Education", "Automotive", "Healthcare", "Finance"],
+    "header_tags": ["Custom Software", "QA Testing", "Cloud & DevOps", "AI Development", "Data Analytics", "Offshore Teams"],
+    "email": "contact@orientsoftware.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=Xwytfe_B5Tw",
+    "awards": [
+      {"name": "Microsoft Partner", "year": null},
+      {"name": "AWS Partner", "year": null},
+      {"name": "ISO 9001 Certified", "year": null},
+      {"name": "ISO/IEC 27001 Certified", "year": null},
+      {"name": "ISTQB Certified Testers", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "DEKRA", "domain": "dekra.com"},
+      {"name": "Excosoft", "domain": "excosoft.com"},
+      {"name": "VinHMS", "domain": "vinhms.com"}
+    ]
+  },
+  {
+    "company_name": "Lotus Quality Assurance",
+    "domain": "lotus-qa.com",
+    "website": "https://lotus-qa.com",
+    "category_slug": "quality-assurance-testing",
+    "country_code": "VN",
+    "city": "Hanoi",
+    "state": "",
+    "founded_year": 2016,
+    "team_size": "11-50",
+    "description": "Lotus Quality Assurance (LQA) is an independent software testing and QA company founded in 2016 and headquartered in Hanoi, Vietnam, with branches in Japan, the US and Korea. It provides manual, automated, mobile, embedded, game and accessibility testing, plus AI training data services, for clients in finance, gaming, automotive, healthcare and eCommerce.",
+    "linkedin": "https://www.linkedin.com/company/lqa",
+    "industries_served": ["Fintech", "Gaming", "Automotive", "Healthcare", "eCommerce"],
+    "header_tags": ["QA Testing", "Test Automation", "Mobile Testing", "Game Testing", "Embedded Testing"],
+    "email": "info@lotus-qa.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=6vNHAZZ0hNc",
+    "awards": [
+      {"name": "ISTQB Silver Partner", "year": null},
+      {"name": "Sao Khue Award for Software Testing (VINASA)", "year": 2022},
+      {"name": "Top 3 Software Testing Companies in Vietnam (Clutch)", "year": 2022}
+    ],
+    "notable_clients": [
+      {"name": "Qualcomm", "domain": "qualcomm.com"},
+      {"name": "Toshiba", "domain": "toshiba.com"},
+      {"name": "Twitch", "domain": "twitch.tv"},
+      {"name": "Techcombank", "domain": "techcombank.com.vn"}
+    ]
+  },
+  {
+    "company_name": "SHIFT ASIA",
+    "domain": "shiftasia.com",
+    "website": "https://shiftasia.com",
+    "category_slug": "quality-assurance-testing",
+    "country_code": "VN",
+    "city": "Ho Chi Minh City",
+    "state": "",
+    "founded_year": 2016,
+    "team_size": "201-500",
+    "description": "SHIFT ASIA is a software quality assurance and development company founded in 2016 in Ho Chi Minh City, Vietnam, and a group company of Japan's SHIFT Inc. It delivers Japanese-standard QA and testing (test automation, performance, security and usability testing) alongside web, mobile, ERP and offshore software development.",
+    "linkedin": "https://www.linkedin.com/company/shift-asia",
+    "industries_served": ["Fintech", "eCommerce", "Healthcare", "ERP", "Manufacturing"],
+    "header_tags": ["QA Testing", "Test Automation", "Software Development", "Security Testing", "Offshore Teams"],
+    "email": "contact@shiftasia.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=qmluKRgvRCo",
+    "awards": [
+      {"name": "ISTQB Platinum Partner", "year": null},
+      {"name": "ISO/IEC 27001 Certified", "year": 2021},
+      {"name": "Top Software Testing Companies on Clutch", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "FPT Software", "domain": "fpt-software.com"}
+    ]
+  },
+  {
+    "company_name": "Newwave Solutions",
+    "domain": "newwavesolution.com",
+    "website": "https://newwavesolution.com",
+    "category_slug": "custom-software-development",
+    "country_code": "VN",
+    "city": "Hanoi",
+    "state": "",
+    "founded_year": 2011,
+    "team_size": "201-500",
+    "description": "Newwave Solutions is a Vietnam-based IT development and consulting company founded in 2011 and headquartered in Hanoi, with a team of more than 300 professionals. It provides custom software development, mobile and web apps, blockchain, AI and digital transformation services for startups and enterprises worldwide.",
+    "linkedin": "https://www.linkedin.com/company/newwave-solutions",
+    "industries_served": ["Fintech", "Retail", "Healthcare", "Logistics", "Manufacturing"],
+    "header_tags": ["Custom Software", "Mobile Development", "Web Development", "Blockchain", "AI Development"],
+    "email": "sales@newwavesolution.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=b7tv4n1vh7o",
+    "awards": [
+      {"name": "Sao Khue Award", "year": 2022},
+      {"name": "GoodFirms Trusted Choice Award", "year": 2023},
+      {"name": "Vietnam Top 10 ICT Company", "year": 2022}
+    ],
+    "notable_clients": [
+      {"name": "VinID", "domain": "vinid.net"},
+      {"name": "UNDP", "domain": "undp.org"},
+      {"name": "Onkyo", "domain": "onkyo.com"}
+    ]
+  },
+  {
+    "company_name": "Kyanon Digital",
+    "domain": "kyanon.digital",
+    "website": "https://kyanon.digital",
+    "category_slug": "custom-software-development",
+    "country_code": "VN",
+    "city": "Ho Chi Minh City",
+    "state": "",
+    "founded_year": 2012,
+    "team_size": "501-1000",
+    "description": "Kyanon Digital is a Vietnam-based digital and technology company founded in 2012, headquartered in Ho Chi Minh City with regional offices in Singapore, Malaysia, Thailand and Australia. It delivers custom software, web and mobile development, data, AI and automation services for enterprises across the Asia-Pacific region.",
+    "linkedin": "https://www.linkedin.com/company/kyanon-digital",
+    "industries_served": ["Retail", "Fintech", "Logistics", "FMCG", "eCommerce"],
+    "header_tags": ["Custom Software", "Web Development", "Mobile Development", "Data & AI", "Automation", "Staff Augmentation"],
+    "email": "contact@kyanon.digital",
+    "intro_video_url": "https://www.youtube.com/watch?v=W2MWPvtdfT0",
+    "awards": [
+      {"name": "ISO/IEC 27001 Certified", "year": null},
+      {"name": "ISO 9001 Certified", "year": null},
+      {"name": "Top 10 Vietnam Digital Technology Companies (VINASA)", "year": 2024},
+      {"name": "Top Staff Augmentation Company in Vietnam (Clutch)", "year": 2024}
+    ],
+    "notable_clients": [
+      {"name": "AEON", "domain": "aeon.info"},
+      {"name": "NutriAsia", "domain": "nutriasia.com"},
+      {"name": "Asia Commercial Bank", "domain": "acb.com.vn"}
+    ]
+  },
+  {
+    "company_name": "Savvycom",
+    "domain": "savvycomsoftware.com",
+    "website": "https://savvycomsoftware.com",
+    "category_slug": "custom-software-development",
+    "country_code": "VN",
+    "city": "Hanoi",
+    "state": "",
+    "founded_year": 2009,
+    "team_size": "201-500",
+    "description": "Savvycom is a Vietnam-based software development and digital services company founded in 2009 and headquartered in Hanoi. It specializes in custom software, mobile and web app development, digital banking and e-wallet solutions, ERP, cloud/DevOps and AI for clients in banking, healthcare, retail and manufacturing.",
+    "linkedin": "https://www.linkedin.com/company/savvycom",
+    "industries_served": ["Banking", "Healthcare", "Retail", "Education", "Manufacturing"],
+    "header_tags": ["Custom Software", "Mobile Development", "Digital Banking", "ERP", "Cloud & DevOps", "AI Development"],
+    "email": "contact@savvycomsoftware.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=6Ue9rFDR4xM",
+    "awards": [
+      {"name": "Vietnam Top 10 Digital Technology Company (VINASA)", "year": null}
+    ],
+    "notable_clients": []
+  },
+  {
+    "company_name": "Designveloper",
+    "domain": "designveloper.com",
+    "website": "https://www.designveloper.com",
+    "category_slug": "custom-software-development",
+    "country_code": "VN",
+    "city": "Ho Chi Minh City",
+    "state": "",
+    "founded_year": 2013,
+    "team_size": "51-200",
+    "description": "Designveloper (DSV) is a custom software development company founded in 2013 and headquartered in Ho Chi Minh City, Vietnam, with a team of more than 100 engineers and designers. It provides web and mobile development, UX/UI design, VoIP, AI and cybersecurity services for clients across 20-plus industries.",
+    "linkedin": "https://vn.linkedin.com/company/designveloper",
+    "industries_served": ["Healthcare", "Fintech", "Education", "eCommerce", "SaaS"],
+    "header_tags": ["Custom Software", "Web Development", "Mobile Development", "UX/UI", "VoIP", "AI Development"],
+    "email": "sales@dgroup.co",
+    "intro_video_url": "https://www.youtube.com/watch?v=sCAhQQfP2nU",
+    "awards": [
+      {"name": "Top Software Developers on Clutch", "year": null},
+      {"name": "Listed on GoodFirms", "year": null}
+    ],
+    "notable_clients": []
+  },
+  {
+    "company_name": "MOR Software",
+    "domain": "morsoftware.com",
+    "website": "https://morsoftware.com",
+    "category_slug": "outsourced-offshore",
+    "country_code": "VN",
+    "city": "Ho Chi Minh City",
+    "state": "",
+    "founded_year": 2016,
+    "team_size": "501-1000",
+    "description": "MOR Software is a software outsourcing company founded in 2016 and headquartered in Ho Chi Minh City, Vietnam, with additional offices in Hanoi, Da Nang and Japan. It provides offshore software development, web and mobile apps, Salesforce, AI and dedicated teams for domestic and international clients including banks and enterprises.",
+    "linkedin": "https://vn.linkedin.com/company/mor-software-jsc",
+    "industries_served": ["Finance", "Telecom", "Retail", "Healthcare", "Logistics"],
+    "header_tags": ["Offshore Development", "Custom Software", "Salesforce", "Mobile Development", "AI Development"],
+    "email": "contact@morsoftware.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=OEehFsyVEXY",
+    "awards": [
+      {"name": "Sao Khue Award", "year": 2022},
+      {"name": "Top 10 ICT Companies in Vietnam (VINASA)", "year": 2023},
+      {"name": "ISO 9001:2015 Certified", "year": null},
+      {"name": "ISO/IEC 27001 Certified", "year": null}
+    ],
+    "notable_clients": []
+  },
+  {
+    "company_name": "VTI Cloud",
+    "domain": "vticloud.io",
+    "website": "https://vticloud.io",
+    "category_slug": "devops-sre",
+    "country_code": "VN",
+    "city": "Hanoi",
+    "state": "",
+    "founded_year": 2020,
+    "team_size": "51-200",
+    "description": "VTI Cloud is a cloud and DevOps consulting firm based in Hanoi, Vietnam, and an AWS Advanced Consulting Partner and Microsoft Gold Partner with a team of more than 100 certified engineers. It provides cloud migration, managed services, Well-Architected Reviews, CI/CD and infrastructure-as-code for clients in eCommerce, banking, retail and manufacturing.",
+    "linkedin": "https://vn.linkedin.com/company/vti-cloud",
+    "industries_served": ["eCommerce", "Banking", "Retail", "Manufacturing", "Finance"],
+    "header_tags": ["DevOps", "AWS", "Cloud Migration", "Managed Services", "CI/CD", "Infrastructure as Code"],
+    "email": "hello@vticloud.io",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "AWS Advanced Consulting Partner", "year": null},
+      {"name": "Microsoft Gold Partner (Data Analytics)", "year": null},
+      {"name": "First AWS Immersion Day Partner in Vietnam", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Panasonic", "domain": "panasonic.com"},
+      {"name": "Pomina", "domain": "pomina.com.vn"},
+      {"name": "CEN Group", "domain": "cengroup.vn"}
+    ]
+  },
+  {
+    "company_name": "Arcanys",
+    "domain": "arcanys.com",
+    "website": "https://www.arcanys.com",
+    "category_slug": "outsourced-offshore",
+    "country_code": "PH",
+    "city": "Cebu City",
+    "state": "",
+    "founded_year": 2010,
+    "team_size": "201-500",
+    "description": "Arcanys is a Swiss-founded software development outsourcing company established in 2010 with its main delivery center in Cebu City, Philippines. It builds dedicated, long-term software engineering teams and custom software for technology companies, startups and enterprises worldwide.",
+    "linkedin": "https://www.linkedin.com/company/arcanys",
+    "industries_served": ["Fintech", "PropTech", "Logistics", "SaaS", "Healthcare"],
+    "header_tags": ["Offshore Development", "Staff Augmentation", "Custom Software", "Dedicated Teams", "QA & DevOps"],
+    "email": "contact@arcanys.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Top 1% Custom Software Developers Worldwide (Clutch)", "year": null},
+      {"name": "Outsourcing Impact Awards Gold (Health and Wellness)", "year": 2024},
+      {"name": "Best Workplaces in the Philippines", "year": 2026}
+    ],
+    "notable_clients": [
+      {"name": "PostNord", "domain": "postnord.com"},
+      {"name": "Payment Logic", "domain": "paymentlogic.com.au"},
+      {"name": "Citilog", "domain": "citilog.com"}
+    ]
+  },
+  {
+    "company_name": "White Cloak Technologies",
+    "domain": "whitecloak.com",
+    "website": "https://www.whitecloak.com",
+    "category_slug": "custom-software-development",
+    "country_code": "PH",
+    "city": "Pasig",
+    "state": "Metro Manila",
+    "founded_year": 2014,
+    "team_size": "201-500",
+    "description": "White Cloak Technologies is a software development company founded in 2014 and headquartered in Pasig, Metro Manila, Philippines, with a team of more than 200 engineers. It builds custom software, mobile apps, fintech and blockchain solutions and provides staff augmentation for banks, conglomerates and enterprises in the Philippines.",
+    "linkedin": "https://www.linkedin.com/company/whitecloak",
+    "industries_served": ["Banking", "Fintech", "Real Estate", "Retail", "Media"],
+    "header_tags": ["Custom Software", "Mobile Development", "Fintech", "Blockchain", "Staff Augmentation", "AI"],
+    "email": "hello@whitecloak.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=UBMCuBL5F_A",
+    "awards": [
+      {"name": "Circle of Excellence, SME Company of the Year (Asia CEO Awards)", "year": 2020},
+      {"name": "Fast Enterprise Award (Asia Pacific Enterprise Awards)", "year": 2020}
+    ],
+    "notable_clients": [
+      {"name": "UnionBank", "domain": "unionbankph.com"},
+      {"name": "Ayala Land", "domain": "ayalaland.com.ph"},
+      {"name": "Aboitiz", "domain": "aboitiz.com"},
+      {"name": "ABS-CBN", "domain": "abs-cbn.com"},
+      {"name": "Robinsons Land", "domain": "robinsonsland.com"}
+    ]
+  },
+  {
+    "company_name": "Mugna Technologies",
+    "domain": "mugna.tech",
+    "website": "https://mugna.tech",
+    "category_slug": "custom-software-development",
+    "country_code": "PH",
+    "city": "Davao City",
+    "state": "",
+    "founded_year": 2019,
+    "team_size": "11-50",
+    "description": "Mugna Technologies is a software development and IT staff outsourcing company founded in 2019 in the Philippines. It provides custom web, software and mobile development, UX/UI design and dedicated team augmentation for startups and enterprises in the US, Australia, Europe and the Philippines.",
+    "linkedin": "https://www.linkedin.com/company/mugna-tech",
+    "industries_served": ["Advertising", "Real Estate", "Business Services", "Consumer Products", "SaaS"],
+    "header_tags": ["Custom Software", "Web Development", "Mobile Development", "UX/UI", "Staff Augmentation"],
+    "email": "hello@mugna.tech",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Top Software Developers on Clutch", "year": null}
+    ],
+    "notable_clients": []
+  },
+  {
+    "company_name": "iScale Solutions",
+    "domain": "iscale-solutions.com",
+    "website": "https://iscale-solutions.com",
+    "category_slug": "quality-assurance-testing",
+    "country_code": "PH",
+    "city": "Makati",
+    "state": "Metro Manila",
+    "founded_year": 2012,
+    "team_size": "501-1000",
+    "description": "iScale Solutions is an outsourcing company founded in 2012 and headquartered in Makati, Metro Manila, Philippines, with additional delivery centers in Vietnam and Madagascar. It specializes in QA and software testing outsourcing, building dedicated QA engineering and automation teams that integrate with clients' software operations.",
+    "linkedin": "https://www.linkedin.com/company/iscale-solutions",
+    "industries_served": ["SaaS", "eCommerce", "Events", "Technology", "Finance"],
+    "header_tags": ["QA Testing", "Test Automation", "Staff Augmentation", "Offshore Teams", "Software Testing"],
+    "email": "info@iscale-solutions.com",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "Comexposium", "domain": "comexposium.com"}
+    ]
+  },
+  {
+    "company_name": "GITS.ID",
+    "domain": "gits.id",
+    "website": "https://gits.id",
+    "category_slug": "custom-software-development",
+    "country_code": "ID",
+    "city": "Bandung",
+    "state": "",
+    "founded_year": 2008,
+    "team_size": "51-200",
+    "description": "GITS.ID (PT GITS Indonesia) is a software development company founded in 2008 and headquartered in Bandung, Indonesia. A Google Cloud Partner and Google certified agency, it builds enterprise mobile and web applications, AI solutions and custom software for clients in consumer goods, healthcare and government.",
+    "linkedin": "https://www.linkedin.com/company/gits-indonesia",
+    "industries_served": ["FMCG", "Automotive", "Healthcare", "Government", "Energy"],
+    "header_tags": ["Custom Software", "Mobile Development", "Web Development", "Google Cloud", "AI Development"],
+    "email": "connect@gits.id",
+    "intro_video_url": "https://www.youtube.com/watch?v=D4PbgBGwmak",
+    "awards": [
+      {"name": "Google Cloud Partner", "year": null},
+      {"name": "Google Certified Developer Agency", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Toyota", "domain": "toyota.com"},
+      {"name": "Danone", "domain": "danone.com"},
+      {"name": "Pertamina", "domain": "pertamina.com"},
+      {"name": "Kereta Api Indonesia", "domain": "kai.id"}
+    ]
+  },
+  {
+    "company_name": "Sagara Technology",
+    "domain": "sagaratechnology.com",
+    "website": "https://sagaratechnology.com",
+    "category_slug": "custom-software-development",
+    "country_code": "ID",
+    "city": "Jakarta",
+    "state": "",
+    "founded_year": 2014,
+    "team_size": "51-200",
+    "description": "Sagara Technology is a software development and venture-building company founded in 2014 with offices in South Jakarta and Bandung, Indonesia. It provides custom web and mobile application development, data engineering and analytics, UX/UI design and enterprise consulting for startups, SMEs, government and international institutions.",
+    "linkedin": "https://www.linkedin.com/company/sagara-technology",
+    "industries_served": ["Education", "Healthcare", "Government", "Media", "Transportation"],
+    "header_tags": ["Custom Software", "Web Development", "Mobile Development", "Data Engineering", "UX/UI"],
+    "email": "consult@sagara.asia",
+    "intro_video_url": "https://www.youtube.com/watch?v=lGQMBeNf5QQ",
+    "awards": [],
+    "notable_clients": [
+      {"name": "Ruangguru", "domain": "ruangguru.com"},
+      {"name": "Boston Consulting Group", "domain": "bcg.com"},
+      {"name": "Blue Bird", "domain": "bluebird.id"}
+    ]
+  },
+  {
+    "company_name": "Vinova",
+    "domain": "vinova.sg",
+    "website": "https://vinova.sg",
+    "category_slug": "custom-software-development",
+    "country_code": "SG",
+    "city": "Singapore",
+    "state": "",
+    "founded_year": 2010,
+    "team_size": "51-200",
+    "description": "Vinova is a Singapore-based software development company founded in 2010, building custom mobile, web and enterprise applications. Its services span mobile and web development, UX/UI design, cloud and DevOps, AI, blockchain and system integration for banks, government agencies, MNCs and startups.",
+    "linkedin": "https://sg.linkedin.com/company/vinova-sg",
+    "industries_served": ["Banking", "Finance", "Government", "Healthcare", "Real Estate"],
+    "header_tags": ["Custom Software", "Mobile Development", "Web Development", "Cloud & DevOps", "AI", "System Integration"],
+    "email": "hello@vinova.sg",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Top 10 Singaporean Mobile App Developers", "year": 2023}
+    ],
+    "notable_clients": [
+      {"name": "Samsung", "domain": "samsung.com"},
+      {"name": "OCBC", "domain": "ocbc.com"},
+      {"name": "AIA", "domain": "aia.com"},
+      {"name": "DHL", "domain": "dhl.com"},
+      {"name": "Razer", "domain": "razer.com"}
+    ]
+  },
+  {
+    "company_name": "Seven Peaks",
+    "domain": "sevenpeakssoftware.com",
+    "website": "https://sevenpeakssoftware.com",
+    "category_slug": "custom-software-development",
+    "country_code": "TH",
+    "city": "Bangkok",
+    "state": "",
+    "founded_year": 2014,
+    "team_size": "201-500",
+    "description": "Seven Peaks is a Norwegian-founded digital product and software company established in 2014 and headquartered in Bangkok, Thailand, with a team of more than 200 across 30-plus nationalities. It provides product design, software development, intelligent QA, cloud and data/AI services for enterprises and growth-stage organizations across Thailand, APAC and Europe.",
+    "linkedin": "https://www.linkedin.com/company/sevenpeakssoftware",
+    "industries_served": ["Banking", "Insurance", "Energy", "Retail", "Logistics"],
+    "header_tags": ["Custom Software", "Product Design", "Mobile Development", "QA Testing", "Cloud", "Data & AI"],
+    "email": "sales@sevenpeakssoftware.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=cpxTC_7qOKc",
+    "awards": [
+      {"name": "ISO/IEC 27001 Certified", "year": null},
+      {"name": "Thailand Board of Investment (BOI) Approved", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "SCB", "domain": "scb.co.th"},
+      {"name": "Mastercard", "domain": "mastercard.com"},
+      {"name": "Agoda", "domain": "agoda.com"},
+      {"name": "Bitkub", "domain": "bitkub.com"}
+    ]
+  },
+  {
+    "company_name": "Manao Software",
+    "domain": "manaosoftware.com",
+    "website": "https://manaosoftware.com",
+    "category_slug": "custom-software-development",
+    "country_code": "TH",
+    "city": "Chiang Mai",
+    "state": "",
+    "founded_year": 2007,
+    "team_size": "51-200",
+    "description": "Manao Software is a Danish-owned custom software development company founded in 2007, with offices in Chiang Mai and Bangkok, Thailand, and around 120 staff. It provides custom web and mobile development, software testing, IT staff augmentation, cloud migration and automation for startups and multinational enterprises.",
+    "linkedin": "https://www.linkedin.com/company/manaosoftware",
+    "industries_served": ["Fintech", "Insurance", "Enterprise", "Logistics", "SaaS"],
+    "header_tags": ["Custom Software", "Web Development", "Mobile Development", "QA Testing", "IT Staff Augmentation", "Cloud"],
+    "email": "info@manaosoftware.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=TvoRhz_d91s",
+    "awards": [
+      {"name": "First ISTQB Gold Partner in Thailand", "year": null},
+      {"name": "Top Software Developers on Clutch", "year": null}
+    ],
+    "notable_clients": []
+  },
+  {
+    "company_name": "VeecoTech",
+    "domain": "veecotech.com.my",
+    "website": "https://www.veecotech.com.my",
+    "category_slug": "custom-software-development",
+    "country_code": "MY",
+    "city": "Kuala Lumpur",
+    "state": "",
+    "founded_year": 2011,
+    "team_size": "51-200",
+    "description": "VeecoTech is a Malaysian software and digital solutions company founded in 2011 and headquartered in Kuala Lumpur, with additional offices in Penang and Singapore. It provides custom software and mobile app development, enterprise systems, eCommerce, web design, cybersecurity and digital marketing for enterprises, government agencies and SMEs across Southeast Asia.",
+    "linkedin": "https://www.linkedin.com/company/veecotech",
+    "industries_served": ["Healthcare", "Real Estate", "Retail", "Government", "eCommerce"],
+    "header_tags": ["Custom Software", "Mobile Development", "Web Development", "eCommerce", "Cybersecurity", "Digital Marketing"],
+    "email": "info@veecotech.com.my",
+    "intro_video_url": "https://www.youtube.com/watch?v=BSHXG0XHTds",
+    "awards": [
+      {"name": "MDEC Digital Partner", "year": null},
+      {"name": "TechBehemoths Award", "year": 2025}
+    ],
+    "notable_clients": [
+      {"name": "SP Setia", "domain": "spsetia.com"},
+      {"name": "Guardian Malaysia", "domain": "guardian.com.my"},
+      {"name": "Island Hospital", "domain": "islandhospital.com"},
+      {"name": "MCMC", "domain": "mcmc.gov.my"}
+    ]
+  },
+  {
+    "company_name": "Codigo",
+    "domain": "codigo.co",
+    "website": "https://www.codigo.co",
+    "category_slug": "custom-software-development",
+    "country_code": "SG",
+    "city": "Singapore",
+    "state": "",
+    "founded_year": 2010,
+    "team_size": "51-200",
+    "description": "Codigo is a Singapore-based mobile app and web development company founded in 2010, with additional offices in Vietnam, Myanmar and Indonesia. It provides UX/UI design, mobile and web application development and backend systems, having launched more than 300 apps for brands, government agencies and enterprises.",
+    "linkedin": "https://sg.linkedin.com/company/codigo-pte-ltd",
+    "industries_served": ["Retail", "Banking", "Tourism", "Insurance", "Government"],
+    "header_tags": ["Mobile Development", "Web Development", "UX/UI", "Backend Systems", "Custom Software"],
+    "email": "hello@codigo.co",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Mobile Marketing Agency of the Year", "year": 2015},
+      {"name": "MOB-EX Awards Best of Show", "year": 2015}
+    ],
+    "notable_clients": [
+      {"name": "OCBC", "domain": "ocbc.com"},
+      {"name": "FWD", "domain": "fwd.com"},
+      {"name": "Resorts World Sentosa", "domain": "rwsentosa.com"},
+      {"name": "Don Don Donki", "domain": "dondondonki.com"},
+      {"name": "Far East Organization", "domain": "fareast.com.sg"}
+    ]
+  },
+  {
+    "company_name": "CodeLink",
+    "domain": "codelink.io",
+    "website": "https://www.codelink.io",
+    "category_slug": "custom-software-development",
+    "country_code": "VN",
+    "city": "Ho Chi Minh City",
+    "state": "",
+    "founded_year": 2016,
+    "team_size": "51-200",
+    "description": "CodeLink is a Singapore-backed software development company founded in 2016 and headquartered in Ho Chi Minh City, Vietnam. It builds custom software products and AI solutions for startups and corporations across fintech, logistics, education, media, HR and healthcare, and is an official Google Cloud partner and one of Vietnam's first Stripe partners.",
+    "linkedin": "https://www.linkedin.com/company/codelink-io",
+    "industries_served": ["Fintech", "Logistics", "Education", "Media", "Healthcare"],
+    "header_tags": ["Custom Software", "Product Development", "AI Implementation", "Web Development", "Mobile Development"],
+    "email": "hello@codelink.io",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Google Cloud Partner", "year": 2021},
+      {"name": "Stripe Partner", "year": 2021},
+      {"name": "Game-Changing Software Developers in Vietnam (Clutch)", "year": null}
+    ],
+    "notable_clients": []
+  }
+]

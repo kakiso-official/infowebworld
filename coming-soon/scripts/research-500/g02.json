@@ -1,0 +1,579 @@
+[
+  {
+    "company_name": "VentureDive",
+    "domain": "venturedive.com",
+    "website": "https://www.venturedive.com",
+    "category_slug": "custom-software-development",
+    "country_code": "PK",
+    "city": "Karachi",
+    "state": "Sindh",
+    "founded_year": 2012,
+    "team_size": "201-500",
+    "description": "VentureDive is a technology development company based in Karachi, Pakistan that builds digital products, data and AI platforms, and cloud-native software for enterprises and startups. It is best known as the technology partner that built the tech stack for the ride-hailing unicorn Careem, and it serves clients across the Middle East, Europe, and North America. The firm offers digital solutions engineering, UX design, data engineering, and DevOps.",
+    "linkedin": "https://www.linkedin.com/company/venturedive",
+    "industries_served": ["Mobility & Logistics", "Financial Services", "Healthcare", "Retail", "Government"],
+    "header_tags": ["Custom Software", "Data & AI", "Cloud", "DevOps", "UX Design", "QA Automation"],
+    "email": "info@venturedive.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=usvpZE1txmo",
+    "awards": [
+      {"name": "Microsoft Partner", "year": null},
+      {"name": "AWS Partner", "year": null},
+      {"name": "Salesforce Partner", "year": null},
+      {"name": "NVIDIA Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Careem", "domain": "careem.com"},
+      {"name": "Unilever", "domain": "unilever.com"},
+      {"name": "McKinsey & Company", "domain": "mckinsey.com"},
+      {"name": "Roland Berger", "domain": "rolandberger.com"},
+      {"name": "Google", "domain": "google.com"}
+    ]
+  },
+  {
+    "company_name": "Confiz",
+    "domain": "confiz.com",
+    "website": "https://www.confiz.com",
+    "category_slug": "custom-software-development",
+    "country_code": "PK",
+    "city": "Lahore",
+    "state": "Punjab",
+    "founded_year": 2005,
+    "team_size": "501-1000",
+    "description": "Confiz is a global IT services and consulting company headquartered in Lahore, Pakistan with around 700 employees. It specializes in Microsoft Dynamics 365, cloud and data engineering, AI, and bespoke software development, with a strong focus on retail and consumer packaged goods. Confiz serves enterprises including Fortune 100 companies and maintains offices in the US, Dubai, and Estonia.",
+    "linkedin": "https://www.linkedin.com/company/confiz-solutions",
+    "industries_served": ["Retail", "FinTech", "CPG", "Automotive", "Hospitality"],
+    "header_tags": ["Custom Software", "Microsoft Dynamics 365", "Cloud", "Data & AI", "Power Platform", "DevOps"],
+    "email": "marketing@confiz.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=2HEUs6Xhjjs",
+    "awards": [
+      {"name": "Microsoft Solutions Partner", "year": null},
+      {"name": "ISO 9001 Certified", "year": null},
+      {"name": "ISO/IEC 27701 Certified", "year": null},
+      {"name": "Comparably Best Company for Diversity", "year": 2026}
+    ],
+    "notable_clients": [
+      {"name": "Macy's", "domain": "macys.com"},
+      {"name": "Lebara", "domain": "lebara.com"}
+    ]
+  },
+  {
+    "company_name": "Devsinc",
+    "domain": "devsinc.com",
+    "website": "https://www.devsinc.com",
+    "category_slug": "custom-software-development",
+    "country_code": "PK",
+    "city": "Lahore",
+    "state": "Punjab",
+    "founded_year": 2012,
+    "team_size": "1001-5000",
+    "description": "Devsinc is a software and product development agency headquartered in Lahore, Pakistan, employing roughly 2,000 people across offices in North America, Asia, and Europe. It provides custom software, web and mobile development, business applications (Dynamics 365, Salesforce, Power Apps), cloud, DevOps, and emerging-tech services. The firm works with startups through enterprises across travel, retail, fintech, and the public sector.",
+    "linkedin": "https://www.linkedin.com/company/developers-inc",
+    "industries_served": ["Travel & Hospitality", "Retail", "FinTech", "Telecom", "Healthcare"],
+    "header_tags": ["Custom Software", "Web Development", "Cloud", "DevOps", "Salesforce", "AI"],
+    "email": "sales@devsinc.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=29YH9EDep0U",
+    "awards": [
+      {"name": "Microsoft Partner", "year": null},
+      {"name": "Salesforce Partner", "year": null},
+      {"name": "AWS Partner", "year": null},
+      {"name": "Clutch Top Website Development Company", "year": 2022}
+    ],
+    "notable_clients": [
+      {"name": "Interwood", "domain": "interwood.pk"}
+    ]
+  },
+  {
+    "company_name": "Cubix",
+    "domain": "cubix.co",
+    "website": "https://www.cubix.co",
+    "category_slug": "custom-software-development",
+    "country_code": "PK",
+    "city": "Karachi",
+    "state": "Sindh",
+    "founded_year": 2008,
+    "team_size": "201-500",
+    "description": "Cubix is a software, mobile app, and game development company headquartered in Karachi, Pakistan, with additional offices in the US, UK, and Dubai. Founded in 2008, it builds custom software, enterprise apps, blockchain solutions, and games for a global client base. Cubix has delivered work for major brands across retail, automotive, and consumer sectors.",
+    "linkedin": "https://www.linkedin.com/company/cubix-inc",
+    "industries_served": ["Healthcare", "eCommerce", "Automotive", "Finance", "Travel"],
+    "header_tags": ["Custom Software", "Mobile App Development", "Game Development", "Blockchain", "Web Development", "Cloud"],
+    "email": "info@cubix.co",
+    "intro_video_url": "https://www.youtube.com/watch?v=66BcqYmOYFc",
+    "awards": [
+      {"name": "Google Developers Partner", "year": null},
+      {"name": "Adobe Solution Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Walmart", "domain": "walmart.com"},
+      {"name": "Sony", "domain": "sony.com"},
+      {"name": "Canon", "domain": "canon.com"},
+      {"name": "Unilever", "domain": "unilever.com"},
+      {"name": "PayPal", "domain": "paypal.com"}
+    ]
+  },
+  {
+    "company_name": "Brain Station 23",
+    "domain": "brainstation-23.com",
+    "website": "https://brainstation-23.com",
+    "category_slug": "custom-software-development",
+    "country_code": "BD",
+    "city": "Dhaka",
+    "state": "",
+    "founded_year": 2006,
+    "team_size": "501-1000",
+    "description": "Brain Station 23 is one of Bangladesh's largest software development companies, headquartered in Dhaka with around 1,000 employees. Founded in 2006, it delivers custom web and mobile applications, enterprise software, LMS, fintech, and AI solutions for international clients across 25+ countries. The firm builds long-term offshore engineering teams for clients ranging from startups to large enterprises like British Telecom.",
+    "linkedin": "https://www.linkedin.com/company/brain-station-23",
+    "industries_served": ["FinTech", "Telecom", "Pharma", "Retail", "Education"],
+    "header_tags": ["Custom Software", "Web Development", "Mobile Apps", "ERP", "LMS", "AI"],
+    "email": "info@brainstation-23.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=34pa47Nn8O8",
+    "awards": [
+      {"name": "BASIS Top Performer in IT Export", "year": 2025},
+      {"name": "BASIS Best Outsourcing Organization", "year": 2021},
+      {"name": "The Daily Star ICT Award", "year": 2017},
+      {"name": "HSBC Exporter of the Year", "year": 2013}
+    ],
+    "notable_clients": [
+      {"name": "British Telecom", "domain": "bt.com"},
+      {"name": "Grameenphone", "domain": "grameenphone.com"},
+      {"name": "Robi", "domain": "robi.com.bd"}
+    ]
+  },
+  {
+    "company_name": "Kaz Software",
+    "domain": "kaz.com.bd",
+    "website": "https://www.kaz.com.bd",
+    "category_slug": "outsourced-offshore",
+    "country_code": "BD",
+    "city": "Dhaka",
+    "state": "",
+    "founded_year": 2004,
+    "team_size": "51-200",
+    "description": "Kaz Software is a Dhaka-based custom software development and outsourcing company founded in 2004 by Wahid Choudhury. With around 150 specialists, it delivers software engineering, QA, digital design, and staff augmentation to more than 200 companies across 35+ countries. Kaz serves clients in tax and trade, manufacturing, healthcare, NGO, and fintech sectors.",
+    "linkedin": "https://www.linkedin.com/company/kaz-software-limited",
+    "industries_served": ["NGO", "Manufacturing", "Healthcare", "FinTech", "Publishing"],
+    "header_tags": ["Custom Software", "Software Engineering", "QA Testing", "Staff Augmentation", "Digital Design", "IT Consulting"],
+    "email": "info@kaz.com.bd",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "AWS Partner", "year": null},
+      {"name": "Microsoft Partner", "year": null},
+      {"name": "Best Asia Innovation Gold Award (Hong Kong)", "year": 2025}
+    ],
+    "notable_clients": [
+      {"name": "UNICEF", "domain": "unicef.org"},
+      {"name": "World Bank", "domain": "worldbank.org"},
+      {"name": "Thomson Reuters", "domain": "thomsonreuters.com"},
+      {"name": "British Red Cross", "domain": "redcross.org.uk"},
+      {"name": "Novo Nordisk", "domain": "novonordisk.com"}
+    ]
+  },
+  {
+    "company_name": "Vivasoft Limited",
+    "domain": "vivasoftltd.com",
+    "website": "https://vivasoftltd.com",
+    "category_slug": "outsourced-offshore",
+    "country_code": "BD",
+    "city": "Dhaka",
+    "state": "",
+    "founded_year": 2016,
+    "team_size": "201-500",
+    "description": "Vivasoft Limited is a Dhaka-based software development and IT staff augmentation company founded in 2016, with 200 to 300 software engineers. It provides team augmentation, end-to-end product development, MVP services, cloud, DevOps, and data science to over 50 global companies. Vivasoft supports clients across the Netherlands, Sweden, Singapore, Australia, and the USA.",
+    "linkedin": "https://www.linkedin.com/company/vivasoftltd",
+    "industries_served": ["Finance & Banking", "eCommerce", "Telecom", "Healthcare", "Gaming"],
+    "header_tags": ["Team Augmentation", "Custom Software", "Cloud", "DevOps", "Data Science", "Mobile Apps"],
+    "email": "contact@vivasoftltd.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Clutch Top Staff Augmentation Company", "year": null},
+      {"name": "Clutch Top Machine Learning Company", "year": null},
+      {"name": "GoodFirms Top Software Development Company", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Azerion", "domain": "azerion.com"},
+      {"name": "Goava", "domain": "goava.com"},
+      {"name": "Flarie", "domain": "flarie.com"}
+    ]
+  },
+  {
+    "company_name": "Enosis Solutions",
+    "domain": "enosisbd.com",
+    "website": "https://www.enosisbd.com",
+    "category_slug": "outsourced-offshore",
+    "country_code": "BD",
+    "city": "Dhaka",
+    "state": "",
+    "founded_year": 2006,
+    "team_size": "201-500",
+    "description": "Enosis Solutions is a software engineering and QA outsourcing company headquartered in the Gulshan area of Dhaka, Bangladesh, founded in 2006 with roughly 450 employees. It works as an extension of clients' development and testing teams, delivering custom software, web and mobile applications, and quality assurance. Enosis has collaborated with more than 140 global clients, primarily in the US and Canada.",
+    "linkedin": "https://www.linkedin.com/company/enosis-solutions",
+    "industries_served": ["Finance", "Healthcare", "eCommerce", "Education", "Software"],
+    "header_tags": ["Custom Software", "QA Testing", "Web Development", "Mobile Apps", "Cloud", "Staff Augmentation"],
+    "email": "info@enosisbd.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "BASIS Award", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "PlanetDDS", "domain": "planetdds.com"},
+      {"name": "MetaGeek", "domain": "metageek.com"}
+    ]
+  },
+  {
+    "company_name": "BJIT",
+    "domain": "bjitgroup.com",
+    "website": "https://bjitgroup.com",
+    "category_slug": "outsourced-offshore",
+    "country_code": "BD",
+    "city": "Dhaka",
+    "state": "",
+    "founded_year": 2001,
+    "team_size": "501-1000",
+    "description": "BJIT (Bangladesh Japan Information Technology) is an offshore software development company headquartered in Dhaka, Bangladesh, with over 750 engineers and offices across Japan, the US, and Europe. It provides dedicated offshore teams, custom software, QA and test automation, DevOps, and embedded engineering. BJIT serves a strong Japanese client base including Sony, Panasonic, and Qualcomm.",
+    "linkedin": "https://www.linkedin.com/company/bjit",
+    "industries_served": ["Telecom", "Consumer Electronics", "FinTech", "Automotive", "Manufacturing"],
+    "header_tags": ["Offshore Development", "Custom Software", "QA Automation", "DevOps", "Embedded", "Cyber Security"],
+    "email": "info@bjitgroup.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=c3WuP8A5Eqk",
+    "awards": [
+      {"name": "ISO 27001:2022 Certified", "year": null},
+      {"name": "AWS Partner", "year": null},
+      {"name": "Salesforce Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Sony", "domain": "sony.com"},
+      {"name": "Panasonic", "domain": "panasonic.com"},
+      {"name": "Qualcomm", "domain": "qualcomm.com"},
+      {"name": "Rakuten", "domain": "rakuten.com"},
+      {"name": "NTT DoCoMo", "domain": "docomo.ne.jp"}
+    ]
+  },
+  {
+    "company_name": "Riseup Labs",
+    "domain": "riseuplabs.com",
+    "website": "https://riseuplabs.com",
+    "category_slug": "outsourced-offshore",
+    "country_code": "BD",
+    "city": "Dhaka",
+    "state": "",
+    "founded_year": 2009,
+    "team_size": "201-500",
+    "description": "Riseup Labs is a Dhaka-based IT services and technology solutions company founded in 2009, serving over 100 clients in more than 20 countries. It offers custom software engineering, mobile and game development, managed services, BPO, automation, and digital transformation. Riseup Labs works with global organizations including UN agencies, BBC Media Action, and Gameloft.",
+    "linkedin": "https://www.linkedin.com/company/riseuplabs",
+    "industries_served": ["Non-Profit", "Telecom", "Gaming", "Education", "Healthcare"],
+    "header_tags": ["Custom Software", "Mobile Apps", "Game Development", "Managed Services", "Automation", "BPO"],
+    "email": "contact@riseuplabs.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=vqK2lptWdws",
+    "awards": [
+      {"name": "ISO 9001 Certified", "year": null},
+      {"name": "ISO 27001 Certified", "year": null},
+      {"name": "ASOCIO DX Award", "year": 2024},
+      {"name": "Clutch Global Award", "year": 2023}
+    ],
+    "notable_clients": [
+      {"name": "UNICEF", "domain": "unicef.org"},
+      {"name": "USAID", "domain": "usaid.gov"},
+      {"name": "BBC Media Action", "domain": "bbc.co.uk"},
+      {"name": "Gameloft", "domain": "gameloft.com"},
+      {"name": "Robi Axiata", "domain": "robi.com.bd"}
+    ]
+  },
+  {
+    "company_name": "Calcey Technologies",
+    "domain": "calcey.com",
+    "website": "https://calcey.com",
+    "category_slug": "custom-software-development",
+    "country_code": "LK",
+    "city": "Colombo",
+    "state": "",
+    "founded_year": 2006,
+    "team_size": "201-500",
+    "description": "Calcey is a Gartner-recognized software product engineering boutique headquartered in Colombo, Sri Lanka, with offices in the US, UK, and Singapore. It builds market-leading digital products for enterprise and startup clients, covering business analysis, UX design, development, QA, and support. Calcey has delivered products for clients including PayPal and Stanford University.",
+    "linkedin": "https://www.linkedin.com/company/calcey",
+    "industries_served": ["FinTech", "Wellness", "Media", "eCommerce", "Workspace"],
+    "header_tags": ["Product Engineering", "Custom Software", "UX Design", "QA", "Cloud", "Consulting"],
+    "email": "sales@calcey.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "ISO 27001:2022 Certified", "year": null},
+      {"name": "Gartner Recognized", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "PayPal", "domain": "paypal.com"},
+      {"name": "Stanford University", "domain": "stanford.edu"},
+      {"name": "Cisco", "domain": "cisco.com"},
+      {"name": "Dialog Axiata", "domain": "dialog.lk"},
+      {"name": "Westfield", "domain": "westfield.com"}
+    ]
+  },
+  {
+    "company_name": "99x",
+    "domain": "99x.io",
+    "website": "https://99x.io",
+    "category_slug": "custom-software-development",
+    "country_code": "LK",
+    "city": "Colombo",
+    "state": "",
+    "founded_year": 2000,
+    "team_size": "501-1000",
+    "description": "99x is a digital product engineering company with a major engineering base in Colombo, Sri Lanka and group operations across Norway, Portugal, Brazil, and Malaysia. With 600+ experts, it co-creates well-engineered software products primarily for the Scandinavian market, having delivered over 150 digital products. 99x is the first Sri Lankan tech company to be named a Great Place to Work Legend.",
+    "linkedin": "https://www.linkedin.com/company/99xio",
+    "industries_served": ["FinTech", "Food & Beverage", "Healthcare", "Logistics", "Real Estate"],
+    "header_tags": ["Product Engineering", "Custom Software", "Web Solutions", "AI", "Tech Talent", "Cloud"],
+    "email": "hello@99x.io",
+    "intro_video_url": "https://www.youtube.com/watch?v=YJIUqeI6YKA",
+    "awards": [
+      {"name": "Great Place to Work Legend (Sri Lanka)", "year": null},
+      {"name": "Great Place to Work Sri Lanka", "year": 2024}
+    ],
+    "notable_clients": [
+      {"name": "Kahoot!", "domain": "kahoot.com"},
+      {"name": "SuperOffice", "domain": "superoffice.com"},
+      {"name": "Interflora", "domain": "interflora.co.uk"},
+      {"name": "OBOS", "domain": "obos.no"}
+    ]
+  },
+  {
+    "company_name": "Rootcode",
+    "domain": "rootcode.io",
+    "website": "https://rootcode.io",
+    "category_slug": "custom-software-development",
+    "country_code": "LK",
+    "city": "Colombo",
+    "state": "",
+    "founded_year": 2015,
+    "team_size": "51-200",
+    "description": "Rootcode is a software product engineering company headquartered in Colombo, Sri Lanka, with corporate offices in Estonia and San Francisco. It helps startups, enterprises, and governments build web, mobile, and cloud products plus AI and UX solutions, with technology reaching tens of millions of users. Rootcode is a multiple-time winner at Sri Lanka's National ICT Awards and the Asia Pacific ICT Awards.",
+    "linkedin": "https://www.linkedin.com/company/rootcodeio",
+    "industries_served": ["Government", "AgriTech", "Manufacturing", "FinTech", "Energy"],
+    "header_tags": ["Product Engineering", "Custom Software", "Artificial Intelligence", "UX Design", "Cloud", "MVP"],
+    "email": "careers@rootcodelabs.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=e3NCt97dx48",
+    "awards": [
+      {"name": "Asia Pacific ICT Awards (APICTA) Gold", "year": 2025},
+      {"name": "National ICT Awards Gold", "year": 2025},
+      {"name": "ISO 9001 Certified", "year": null},
+      {"name": "ISO 27001 Certified", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "BRP Systems", "domain": "brpsystems.com"},
+      {"name": "Kendrion", "domain": "kendrion.com"},
+      {"name": "Agricam", "domain": "agricam.se"},
+      {"name": "Government of Estonia", "domain": "eesti.ee"},
+      {"name": "United Nations", "domain": "un.org"}
+    ]
+  },
+  {
+    "company_name": "Fortude",
+    "domain": "fortude.co",
+    "website": "https://fortude.co",
+    "category_slug": "custom-software-development",
+    "country_code": "LK",
+    "city": "Colombo",
+    "state": "",
+    "founded_year": 2012,
+    "team_size": "201-500",
+    "description": "Fortude is a global enterprise and digital services company headquartered in Colombo, Sri Lanka, with offices across eight countries. Founded in 2012, it specializes in end-to-end ERP implementations as an Infor and Microsoft partner, alongside data and analytics, intelligent automation, and enterprise software development. Fortude serves fashion, food and beverage, manufacturing, and retail clients worldwide.",
+    "linkedin": "https://www.linkedin.com/company/fortude",
+    "industries_served": ["Fashion", "Food & Beverage", "Manufacturing", "Retail", "Healthcare"],
+    "header_tags": ["ERP", "Custom Software", "Data & AI", "Automation", "Infor", "Microsoft Dynamics"],
+    "email": "talk-to-us@fortude.co",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Infor Partner", "year": null},
+      {"name": "Microsoft Partner", "year": null},
+      {"name": "UiPath Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Karl Lagerfeld", "domain": "karllagerfeld.com"},
+      {"name": "Steve Madden", "domain": "stevemadden.com"},
+      {"name": "Barbour", "domain": "barbour.com"},
+      {"name": "Brandix", "domain": "brandix.com"}
+    ]
+  },
+  {
+    "company_name": "Zone24x7",
+    "domain": "zone24x7.com",
+    "website": "https://zone24x7.com",
+    "category_slug": "custom-software-development",
+    "country_code": "LK",
+    "city": "Colombo",
+    "state": "",
+    "founded_year": 2003,
+    "team_size": "201-500",
+    "description": "Zone24x7 is a technology R&D and engineering services company with its advanced technology center in Colombo, Sri Lanka, founded in 2003. It offers end-to-end hardware and software engineering including data science and AI, embedded systems, IoT, quality engineering, and DevOps. Zone24x7 has served 50+ enterprise customers, with deep expertise in retail technology for Tier 1 US retailers.",
+    "linkedin": "https://www.linkedin.com/company/zone24x7",
+    "industries_served": ["Retail", "Logistics", "Banking", "Telecom", "Manufacturing"],
+    "header_tags": ["Custom Software", "Data Science & AI", "Embedded Systems", "IoT", "QA Engineering", "DevOps"],
+    "email": "marketing@zone24x7.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "ISO/IEC 27001:2022 Certified", "year": null},
+      {"name": "Google Cloud Partner", "year": null},
+      {"name": "Zebra Technology Partner", "year": null}
+    ],
+    "notable_clients": []
+  },
+  {
+    "company_name": "Leapfrog Technology",
+    "domain": "lftechnology.com",
+    "website": "https://www.lftechnology.com",
+    "category_slug": "outsourced-offshore",
+    "country_code": "NP",
+    "city": "Kathmandu",
+    "state": "",
+    "founded_year": 2010,
+    "team_size": "201-500",
+    "description": "Leapfrog Technology is a software product development company headquartered in Kathmandu, Nepal, with around 450 employees and a US presence. Founded in 2010, it offers product development, staff augmentation, design, AI and data, and DevOps and cloud services, with deep expertise in healthcare technology. Leapfrog has delivered over 250 products for clients including Microsoft and UCSF.",
+    "linkedin": "https://www.linkedin.com/company/lftechnology",
+    "industries_served": ["Healthcare", "EdTech", "FinTech", "Retail", "Public Health"],
+    "header_tags": ["Product Development", "Staff Augmentation", "AI & Data", "DevOps & Cloud", "Design", "Custom Software"],
+    "email": null,
+    "intro_video_url": null,
+    "awards": [
+      {"name": "AWS Generative AI Competency", "year": null},
+      {"name": "SOC 2 Compliant", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Microsoft", "domain": "microsoft.com"},
+      {"name": "LG", "domain": "lg.com"},
+      {"name": "Ping Identity", "domain": "pingidentity.com"},
+      {"name": "UCSF", "domain": "ucsf.edu"}
+    ]
+  },
+  {
+    "company_name": "YoungInnovations",
+    "domain": "yipl.com.np",
+    "website": "https://younginnovations.com.np",
+    "category_slug": "outsourced-offshore",
+    "country_code": "NP",
+    "city": "Lalitpur",
+    "state": "",
+    "founded_year": 2007,
+    "team_size": "51-200",
+    "description": "YoungInnovations (YIPL) is a software, web, and digital solutions company based in Lalitpur, Nepal, founded in 2007. It provides outsourcing and team augmentation, digital transformation, AI and data engineering, and web and software development for private and development-sector clients in Nepal and abroad. YIPL has worked extensively with international organizations including UNICEF, the World Bank, and WHO.",
+    "linkedin": "https://www.linkedin.com/company/younginnovations",
+    "industries_served": ["Civic & Government", "Non-Profit", "Aviation", "Education", "Corporate"],
+    "header_tags": ["Custom Software", "Outsourcing", "Web Development", "AI & Data", "DevOps", "Team Augmentation"],
+    "email": "info@yipl.com.np",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "UNICEF", "domain": "unicef.org"},
+      {"name": "World Bank", "domain": "worldbank.org"},
+      {"name": "WHO", "domain": "who.int"},
+      {"name": "ICIMOD", "domain": "icimod.org"},
+      {"name": "PwC", "domain": "pwc.com"}
+    ]
+  },
+  {
+    "company_name": "LogicaBeans",
+    "domain": "logicabeans.com",
+    "website": "https://logicabeans.com",
+    "category_slug": "outsourced-offshore",
+    "country_code": "NP",
+    "city": "Kathmandu",
+    "state": "",
+    "founded_year": 2017,
+    "team_size": "501-1000",
+    "description": "LogicaBeans is a software development and IT outsourcing company headquartered in Kathmandu, Nepal, with a large team of designers, developers, and business experts. It offers custom software, MVP development, staff augmentation, web and mobile app development, and QA, with particular strength in banking and fintech. LogicaBeans serves 300+ clients across more than 15 countries.",
+    "linkedin": "https://www.linkedin.com/company/logicabeans",
+    "industries_served": ["FinTech", "Banking", "Insurance", "Healthcare", "Government"],
+    "header_tags": ["Custom Software", "Outsourcing", "Staff Augmentation", "Web Development", "Mobile Apps", "QA"],
+    "email": "info@logicabeans.com",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "F1Soft", "domain": "f1soft.com"},
+      {"name": "Government of Nepal", "domain": "nepal.gov.np"},
+      {"name": "CareMetx", "domain": "caremetx.com"}
+    ]
+  },
+  {
+    "company_name": "Nascenia",
+    "domain": "nascenia.com",
+    "website": "https://nascenia.com",
+    "category_slug": "outsourced-offshore",
+    "country_code": "BD",
+    "city": "Dhaka",
+    "state": "",
+    "founded_year": 2010,
+    "team_size": "51-200",
+    "description": "Nascenia is a software outsourcing company headquartered in Lalmatia, Dhaka, Bangladesh, founded in 2010. It specializes in Ruby on Rails, web and mobile application development, QA, and AI chatbots, serving clients in more than 15 countries. Nascenia has built software for clients including Robi, Telenor Health, and UNDP.",
+    "linkedin": "https://www.linkedin.com/company/nascenia",
+    "industries_served": ["Telecom", "Financial Services", "Healthcare", "Education", "eCommerce"],
+    "header_tags": ["Custom Software", "Ruby on Rails", "Web Development", "Mobile Apps", "QA Testing", "AI Chatbots"],
+    "email": "mark@nascenia.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "BASIS Outsourcing Award", "year": 2015},
+      {"name": "Red Herring Top 100 Asia", "year": 2013},
+      {"name": "eAsia Award", "year": 2011}
+    ],
+    "notable_clients": [
+      {"name": "Robi", "domain": "robi.com.bd"},
+      {"name": "Telenor Health", "domain": "telenor.com"},
+      {"name": "UNDP", "domain": "undp.org"},
+      {"name": "PwC", "domain": "pwc.com"},
+      {"name": "Khan Academy", "domain": "khanacademy.org"}
+    ]
+  },
+  {
+    "company_name": "Arbisoft",
+    "domain": "arbisoft.com",
+    "website": "https://arbisoft.com",
+    "category_slug": "custom-software-development",
+    "country_code": "US",
+    "city": "Plano",
+    "state": "Texas",
+    "founded_year": 2007,
+    "team_size": "501-1000",
+    "description": "Arbisoft is a software and product development company founded in 2007, headquartered in Plano, Texas, with its largest engineering office in Lahore, Pakistan and over 750 staff. It builds custom software, SaaS, mobile apps, data engineering, and AI/ML solutions, and is a major contributor to open-source ecosystems like Open edX and Moodle. Arbisoft is the engineering partner behind platforms such as KAYAK, edX, and Careem.",
+    "linkedin": "https://www.linkedin.com/company/arbisoft",
+    "industries_served": ["Education", "Travel", "Healthcare", "Finance", "eCommerce"],
+    "header_tags": ["Custom Software", "SaaS", "Mobile Apps", "Data Engineering", "AI/ML", "DevOps"],
+    "email": "contact@arbisoft.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=doLrJ3A0ilk",
+    "awards": [
+      {"name": "ISO 27001 Certified", "year": null},
+      {"name": "AWS Partner", "year": null},
+      {"name": "Databricks Consulting Partner", "year": null},
+      {"name": "Clutch Global Award", "year": 2025}
+    ],
+    "notable_clients": [
+      {"name": "KAYAK", "domain": "kayak.com"},
+      {"name": "edX", "domain": "edx.org"},
+      {"name": "Careem", "domain": "careem.com"},
+      {"name": "The World Bank", "domain": "worldbank.org"},
+      {"name": "Indeed", "domain": "indeed.com"}
+    ]
+  },
+  {
+    "company_name": "Tkxel",
+    "domain": "tkxel.com",
+    "website": "https://tkxel.com",
+    "category_slug": "custom-software-development",
+    "country_code": "US",
+    "city": "Reston",
+    "state": "Virginia",
+    "founded_year": 2008,
+    "team_size": "501-1000",
+    "description": "Tkxel is a custom software development and AI engineering company founded in 2008, headquartered in Reston, Virginia, with its main delivery center in Lahore, Pakistan and around 800 staff. It provides AI and data innovation, digital product engineering, cloud and infrastructure, cybersecurity, and advisory services. Tkxel serves mid-market companies, growth-stage startups, and PE-backed businesses across manufacturing, retail, and financial services.",
+    "linkedin": "https://www.linkedin.com/company/tkxel",
+    "industries_served": ["Manufacturing", "Retail", "Financial Services", "Healthcare", "SaaS"],
+    "header_tags": ["Custom Software", "AI & Data", "Cloud", "DevOps", "Cybersecurity", "Product Engineering"],
+    "email": null,
+    "intro_video_url": "https://www.youtube.com/watch?v=FnC0mlcA8Sw",
+    "awards": [
+      {"name": "Inc. 5000", "year": 2025},
+      {"name": "ISO 27001 Certified", "year": null},
+      {"name": "CMMI DEV 3 Certified", "year": null},
+      {"name": "Microsoft Solutions Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "ABB", "domain": "abb.com"},
+      {"name": "Knowles", "domain": "knowles.com"},
+      {"name": "Groupon", "domain": "groupon.com"},
+      {"name": "Salesforce", "domain": "salesforce.com"}
+    ]
+  }
+]

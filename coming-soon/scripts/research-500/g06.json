@@ -1,0 +1,592 @@
+[
+  {
+    "company_name": "Eastside Co",
+    "domain": "eastsideco.com",
+    "website": "https://eastsideco.com",
+    "category_slug": "ecommerce-platforms-services",
+    "country_code": "GB",
+    "city": "London",
+    "state": "",
+    "founded_year": 2012,
+    "team_size": "51-200",
+    "description": "Eastside Co is a Shopify Platinum and Shopify Plus Partner agency offering design, development, app development and ecommerce marketing. Founded in 2012, it runs a fully in-house team across offices in London, Birmingham, New York and Dubai. It positions itself as one of the most experienced Shopify Plus partners in the UK.",
+    "linkedin": "https://www.linkedin.com/company/eastside-co",
+    "industries_served": ["Retail", "Fashion", "Beauty", "Food & Beverage", "Consumer Goods"],
+    "header_tags": ["Shopify Plus", "eCommerce", "Web Development", "UX/UI", "CRO", "App Development"],
+    "email": "info@eastsideco.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=fcavV2-R0s8",
+    "awards": [
+      {"name": "Shopify Platinum Partner", "year": null},
+      {"name": "Shopify Plus Partner", "year": null}
+    ],
+    "notable_clients": []
+  },
+  {
+    "company_name": "Avex",
+    "domain": "avexdesigns.com",
+    "website": "https://www.avexdesigns.com",
+    "category_slug": "ecommerce-platforms-services",
+    "country_code": "US",
+    "city": "New York",
+    "state": "NY",
+    "founded_year": 2015,
+    "team_size": "11-50",
+    "description": "Avex is a New York City ecommerce agency and Shopify Plus Partner for high-growth fashion and lifestyle brands. Founded in 2015, the team designs, builds and optimizes Shopify Plus storefronts and provides UX design, conversion rate optimization and Klaviyo email marketing. It also delivers headless commerce builds for mid-market and enterprise brands.",
+    "linkedin": "https://www.linkedin.com/company/avexdesigns",
+    "industries_served": ["Fashion", "Lifestyle", "Beauty", "Apparel", "Consumer Goods"],
+    "header_tags": ["Shopify Plus", "Headless Commerce", "UX/UI", "CRO", "eCommerce", "Klaviyo"],
+    "email": "newbusiness@avexdesigns.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Shopify Plus Partner", "year": null},
+      {"name": "Clutch 5.0 Rating", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "KITH", "domain": "kith.com"},
+      {"name": "Hugo Boss", "domain": "hugoboss.com"},
+      {"name": "Marchesa", "domain": "marchesa.com"},
+      {"name": "Undefeated", "domain": "undefeated.com"}
+    ]
+  },
+  {
+    "company_name": "Netalico Commerce",
+    "domain": "netalico.com",
+    "website": "https://netalico.com",
+    "category_slug": "ecommerce-platforms-services",
+    "country_code": "US",
+    "city": "Oakland",
+    "state": "CA",
+    "founded_year": 2013,
+    "team_size": "11-50",
+    "description": "Netalico Commerce is a full-service ecommerce agency and certified Shopify Premier Partner that also works on BigCommerce. Founded in 2013, it specializes in custom development, platform migrations, conversion rate optimization, email marketing and SEO. The team has delivered 100+ merchant projects across the US and Canada.",
+    "linkedin": "https://www.linkedin.com/company/netalico",
+    "industries_served": ["Food & Beverage", "Beauty", "Consumer Goods", "Electronics", "Retail"],
+    "header_tags": ["Shopify Plus", "BigCommerce", "eCommerce", "CRO", "Email Marketing", "Web Development"],
+    "email": "info@netalico.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Shopify Premier Partner", "year": null},
+      {"name": "Clutch 5.0 Rating", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Oatly", "domain": "oatly.com"},
+      {"name": "Feetures", "domain": "feetures.com"},
+      {"name": "Big Green Egg", "domain": "biggreenegg.com"}
+    ]
+  },
+  {
+    "company_name": "Foundation Commerce",
+    "domain": "foundationcommerce.co.uk",
+    "website": "https://foundationcommerce.co.uk",
+    "category_slug": "ecommerce-platforms-services",
+    "country_code": "GB",
+    "city": "Weybridge",
+    "state": "Surrey",
+    "founded_year": 2020,
+    "team_size": "11-50",
+    "description": "Foundation Commerce is a UK Adobe Commerce (Magento) and Hyva agency based in Weybridge, Surrey. Founded in 2020 by Ryan Copeland, the specialist team of around 11 builds, migrates and supports high-performance Magento and Hyva storefronts. It was one of the first UK agencies to deliver a Hyva Themes project and is a Hyva Platinum Partner.",
+    "linkedin": "https://www.linkedin.com/company/foundationcommerce",
+    "industries_served": ["Retail", "B2B", "Consumer Goods", "Fashion", "Sports & Fitness"],
+    "header_tags": ["Adobe Commerce", "Magento", "Hyva", "eCommerce", "Web Development", "Migrations"],
+    "email": null,
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Hyva Platinum Partner", "year": null},
+      {"name": "Adobe Commerce Solution Partner", "year": null},
+      {"name": "Klaviyo Master Gold Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Citizen Watch", "domain": "citizenwatch.com"},
+      {"name": "Peter Tyson", "domain": "petertyson.co.uk"},
+      {"name": "Again Faster", "domain": "againfaster.com"}
+    ]
+  },
+  {
+    "company_name": "acidgreen",
+    "domain": "acidgreen.com.au",
+    "website": "https://www.acidgreen.com.au",
+    "category_slug": "ecommerce-platforms-services",
+    "country_code": "AU",
+    "city": "Sydney",
+    "state": "NSW",
+    "founded_year": 2000,
+    "team_size": "51-200",
+    "description": "acidgreen is a full-service digital commerce agency based in Sydney, with a team of around 70 specialists. Founded in 2000, it builds and supports stores on Adobe Commerce/Magento, Shopify Plus, BigCommerce and OroCommerce, and offers strategy, design, systems integration and marketing. It is an Adobe Commerce, Shopify Plus and Google Premier Partner.",
+    "linkedin": "https://au.linkedin.com/company/acidgreen-pty.-ltd.",
+    "industries_served": ["Retail", "Fashion", "B2B", "Consumer Goods", "Health & Beauty"],
+    "header_tags": ["Adobe Commerce", "Shopify Plus", "BigCommerce", "eCommerce", "Magento", "Digital Marketing"],
+    "email": "contact@acidgreen.com.au",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Adobe Commerce Solution Partner", "year": null},
+      {"name": "Shopify Plus Partner", "year": null},
+      {"name": "Google Premier Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Birkenstock", "domain": "birkenstock.com"},
+      {"name": "GUESS", "domain": "guess.com"},
+      {"name": "Princess Polly", "domain": "princesspolly.com"},
+      {"name": "Dermalogica", "domain": "dermalogica.com"}
+    ]
+  },
+  {
+    "company_name": "Flux",
+    "domain": "flux.agency",
+    "website": "https://flux.agency",
+    "category_slug": "ecommerce-platforms-services",
+    "country_code": "AU",
+    "city": "Melbourne",
+    "state": "VIC",
+    "founded_year": 2012,
+    "team_size": "11-50",
+    "description": "Flux is a Shopify Plus agency for design and engineering, headquartered in Melbourne with additional presence in Los Angeles and London. Founded in 2012, it designs, builds and optimizes commerce infrastructure for Shopify Plus brands. The team reports having launched 150+ Shopify stores and driven over $1B in client revenue.",
+    "linkedin": "https://www.linkedin.com/company/flux-agency",
+    "industries_served": ["Retail", "Fashion", "Food & Beverage", "Automotive", "Consumer Goods"],
+    "header_tags": ["Shopify Plus", "eCommerce", "Web Development", "UX/UI", "Engineering", "Design"],
+    "email": "hello@flux.agency",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Shopify Plus Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "2XU", "domain": "2xu.com"},
+      {"name": "Quad Lock", "domain": "quadlockcase.com"},
+      {"name": "Starward Whisky", "domain": "starward.com.au"}
+    ]
+  },
+  {
+    "company_name": "Matter Design & Digital",
+    "domain": "matterdesign.com.au",
+    "website": "https://matterdesign.com.au",
+    "category_slug": "ecommerce-platforms-services",
+    "country_code": "AU",
+    "city": "Crows Nest",
+    "state": "NSW",
+    "founded_year": 2003,
+    "team_size": "11-50",
+    "description": "Matter Design & Digital is a CX-led ecommerce agency based in Crows Nest, Sydney, founded in 2003. With around 25 specialists across Australia and the Philippines, it helps fast-growing brands migrate to and grow on Shopify, Shopify Plus, BigCommerce, commercetools and VTEX. It is a trusted BigCommerce design and solutions partner and a Shopify partner.",
+    "linkedin": "https://www.linkedin.com/company/matter-design-digital",
+    "industries_served": ["Retail", "Fashion", "B2B", "Consumer Goods", "Homewares"],
+    "header_tags": ["Shopify Plus", "BigCommerce", "commercetools", "eCommerce", "Migrations", "CX Strategy"],
+    "email": "hello@matterdesign.com.au",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "BigCommerce Design & Solutions Partner", "year": null},
+      {"name": "Shopify Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Oroton", "domain": "oroton.com"},
+      {"name": "Wittner", "domain": "wittner.com.au"},
+      {"name": "Pillow Talk", "domain": "pillowtalk.com.au"}
+    ]
+  },
+  {
+    "company_name": "Classy Llama",
+    "domain": "classyllama.com",
+    "website": "https://classyllama.com",
+    "category_slug": "ecommerce-platforms-services",
+    "country_code": "US",
+    "city": "Springfield",
+    "state": "MO",
+    "founded_year": 2007,
+    "team_size": "51-200",
+    "description": "Classy Llama is an ecommerce agency in Springfield, Missouri, specializing in Adobe Commerce (Magento) with growing Shopify and BigCommerce practices. Founded in 2007, it focuses on manufacturing and B2B distributor replatforms and ERP-connected commerce. The team has delivered over 125 commerce sites and 400+ customizations and integrations.",
+    "linkedin": "https://www.linkedin.com/company/classy-llama",
+    "industries_served": ["B2B", "Manufacturing", "Automotive", "Agriculture", "Outdoor"],
+    "header_tags": ["Adobe Commerce", "Magento", "B2B", "eCommerce", "ERP Integration", "Shopify"],
+    "email": "info@classyllama.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Adobe Commerce Solution Partner (Silver)", "year": null},
+      {"name": "BigCommerce Certified Partner", "year": null},
+      {"name": "Shopify Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Tombow USA", "domain": "tombowusa.com"}
+    ]
+  },
+  {
+    "company_name": "Atwix",
+    "domain": "atwix.com",
+    "website": "https://www.atwix.com",
+    "category_slug": "ecommerce-platforms-services",
+    "country_code": "US",
+    "city": "Chicago",
+    "state": "IL",
+    "founded_year": 2006,
+    "team_size": "51-200",
+    "description": "Atwix is a global ecommerce agency specializing in Adobe Commerce (Magento) for B2B and complex commerce, headquartered in Chicago. Founded in 2006, it is a Gold Adobe Solution Partner and has ranked among the top Magento code contributors worldwide. The team holds over 300 certifications and serves retail, manufacturing and education clients.",
+    "linkedin": "https://www.linkedin.com/company/atwix",
+    "industries_served": ["B2B", "Manufacturing", "Retail", "Education", "Telecommunications"],
+    "header_tags": ["Adobe Commerce", "Magento", "B2B", "eCommerce", "Shopware", "Integrations"],
+    "email": "hello@atwix.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=zaPTqKM3eUU",
+    "awards": [
+      {"name": "Adobe Gold Solution Partner", "year": null},
+      {"name": "Magento #1 Contributor", "year": 2020}
+    ],
+    "notable_clients": []
+  },
+  {
+    "company_name": "IWD Agency",
+    "domain": "iwdagency.com",
+    "website": "https://www.iwdagency.com",
+    "category_slug": "ecommerce-platforms-services",
+    "country_code": "US",
+    "city": "Austin",
+    "state": "TX",
+    "founded_year": 2008,
+    "team_size": "11-50",
+    "description": "IWD Agency is an ecommerce development agency headquartered in Austin, Texas, building for B2B and DTC brands on Adobe Commerce, Shopify Plus, BigCommerce and Salesforce Commerce Cloud. Founded in 2008, it is a certified Adobe Commerce Solution Partner with offices in Austin, Barcelona, Sao Paulo and Warsaw. It reports shipping 300+ brand projects.",
+    "linkedin": "https://www.linkedin.com/company/iwd-agency",
+    "industries_served": ["B2B", "Retail", "Consumer Goods", "Apparel", "Manufacturing"],
+    "header_tags": ["Adobe Commerce", "Shopify Plus", "BigCommerce", "eCommerce", "Magento", "Web Development"],
+    "email": "hi@iwdagency.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=5XulzXEzhkg",
+    "awards": [
+      {"name": "Adobe Commerce Solution Partner", "year": null},
+      {"name": "CSSDA Best Innovation", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Penn State University", "domain": "psu.edu"},
+      {"name": "QC Supply", "domain": "qcsupply.com"}
+    ]
+  },
+  {
+    "company_name": "Human Element",
+    "domain": "human-element.com",
+    "website": "https://www.human-element.com",
+    "category_slug": "ecommerce-platforms-services",
+    "country_code": "US",
+    "city": "Ann Arbor",
+    "state": "MI",
+    "founded_year": 2004,
+    "team_size": "11-50",
+    "description": "Human Element is an ecommerce and digital marketing agency based in Ann Arbor, Michigan, founded in 2004. It builds B2B and B2C stores on Adobe Commerce/Magento, Shopify and BigCommerce, plus custom software. With more than 35 Adobe certifications on staff, it is an Adobe Bronze Solution Partner and a certified Shopify and BigCommerce partner.",
+    "linkedin": "https://www.linkedin.com/company/human-element-technology-consultants",
+    "industries_served": ["B2B", "Manufacturing", "Retail", "Consumer Goods", "Industrial"],
+    "header_tags": ["Adobe Commerce", "Magento", "Shopify", "BigCommerce", "B2B", "eCommerce"],
+    "email": "info@human-element.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Adobe Bronze Solution Partner", "year": null},
+      {"name": "BigCommerce Partner", "year": null},
+      {"name": "Inc. 5000", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "EOTECH", "domain": "eotechinc.com"},
+      {"name": "Roush Performance", "domain": "roushperformance.com"}
+    ]
+  },
+  {
+    "company_name": "Verbal+Visual",
+    "domain": "vpv.co",
+    "website": "https://www.vpv.co",
+    "category_slug": "ecommerce-platforms-services",
+    "country_code": "US",
+    "city": "New York",
+    "state": "NY",
+    "founded_year": 2009,
+    "team_size": "11-50",
+    "description": "Verbal+Visual is a New York digital commerce agency and Shopify Plus Partner focused on fashion and lifestyle brands. Founded in 2009, it pairs strategy and design with Shopify Plus development, optimization and retention. The agency has been named to the Inc. 5000 list for multiple consecutive years.",
+    "linkedin": "https://www.linkedin.com/company/verbal-visual",
+    "industries_served": ["Fashion", "Lifestyle", "Apparel", "Beauty", "Outdoor"],
+    "header_tags": ["Shopify Plus", "eCommerce", "UX/UI", "Web Development", "CRO", "Branding"],
+    "email": "hi@vpv.co",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Shopify Plus Partner", "year": null},
+      {"name": "Inc. 5000", "year": 2024}
+    ],
+    "notable_clients": [
+      {"name": "Carhartt WIP", "domain": "carhartt-wip.com"},
+      {"name": "Faherty", "domain": "fahertybrand.com"},
+      {"name": "A.P.C.", "domain": "apc.fr"},
+      {"name": "Outdoor Research", "domain": "outdoorresearch.com"}
+    ]
+  },
+  {
+    "company_name": "Juno Ecommerce",
+    "domain": "junoecommerce.com",
+    "website": "https://junoecommerce.com",
+    "category_slug": "ecommerce-platforms-services",
+    "country_code": "GB",
+    "city": "London",
+    "state": "",
+    "founded_year": 2006,
+    "team_size": "11-50",
+    "description": "Juno Ecommerce is a London-based Shopify Plus agency founded in 2006, with a team of 30+. It designs, builds, migrates and supports Shopify and Shopify Plus stores, integrating design, build and systems. It is an official Shopify Plus Partner and a UK eCommerce Awards winner.",
+    "linkedin": "https://www.linkedin.com/company/junoecommerce",
+    "industries_served": ["Retail", "Fashion", "Outdoor", "Beauty", "Homewares"],
+    "header_tags": ["Shopify Plus", "eCommerce", "Web Development", "Migrations", "UX/UI", "Integrations"],
+    "email": "enquiries@junoecommerce.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Shopify Plus Partner", "year": null},
+      {"name": "UK eCommerce Awards Winner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Montane", "domain": "montane.com"},
+      {"name": "Mountain Equipment", "domain": "mountain-equipment.co.uk"},
+      {"name": "ICONIC London", "domain": "iconiclondoninc.com"},
+      {"name": "Herman Miller", "domain": "hermanmiller.com"}
+    ]
+  },
+  {
+    "company_name": "blubolt",
+    "domain": "blubolt.com",
+    "website": "https://blubolt.com",
+    "category_slug": "ecommerce-platforms-services",
+    "country_code": "GB",
+    "city": "Bath",
+    "state": "",
+    "founded_year": 2006,
+    "team_size": "11-50",
+    "description": "blubolt is a UK ecommerce web design and development agency based in Bath, founded in 2006, with around 31 staff. A 100% certified Shopify Premier Partner, it designs, builds and supports Shopify Plus stores with a focus on journey-led growth. The fully in-house team has won multiple ecommerce and design awards.",
+    "linkedin": "https://uk.linkedin.com/company/blubolt-ltd",
+    "industries_served": ["Fashion", "Retail", "Food & Beverage", "Beauty", "Consumer Goods"],
+    "header_tags": ["Shopify Plus", "eCommerce", "Web Design", "UX/UI", "Web Development", "CRO"],
+    "email": "hello@blubolt.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=Az6LXgdvjwo",
+    "awards": [
+      {"name": "Shopify Premier Partner", "year": null},
+      {"name": "Best eComm Expert - EMEA", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Seasalt Cornwall", "domain": "seasaltcornwall.com"},
+      {"name": "Oliver Bonas", "domain": "oliverbonas.com"},
+      {"name": "RIXO", "domain": "rixo.co.uk"},
+      {"name": "Teapigs", "domain": "teapigs.co.uk"}
+    ]
+  },
+  {
+    "company_name": "Charle",
+    "domain": "charleagency.com",
+    "website": "https://www.charleagency.com",
+    "category_slug": "ecommerce-platforms-services",
+    "country_code": "GB",
+    "city": "London",
+    "state": "",
+    "founded_year": 2018,
+    "team_size": "11-50",
+    "description": "Charle is a Shopify and Shopify Plus agency based in London with additional presence in Manchester and New York. Founded in 2018, it designs, builds, migrates and grows high-performance Shopify stores with a search-first approach covering design, development, SEO and email/SMS. It is a Shopify Plus accredited agency.",
+    "linkedin": "https://uk.linkedin.com/company/wearecharle",
+    "industries_served": ["Fashion", "Beauty", "Food & Beverage", "Sports & Fitness", "Retail"],
+    "header_tags": ["Shopify Plus", "Headless Commerce", "eCommerce", "SEO", "Web Development", "Email Marketing"],
+    "email": "hello@charleagency.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=2J86Y3H0hMg",
+    "awards": [
+      {"name": "Shopify Plus Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "111SKIN", "domain": "111skin.com"},
+      {"name": "Doisy & Dam", "domain": "doisyanddam.com"},
+      {"name": "Gilbert Rugby", "domain": "gilbertrugby.com"},
+      {"name": "Cambridge Satchel", "domain": "cambridgesatchel.com"}
+    ]
+  },
+  {
+    "company_name": "BlueSwitch",
+    "domain": "blueswitch.com",
+    "website": "https://www.blueswitch.com",
+    "category_slug": "ecommerce-platforms-services",
+    "country_code": "US",
+    "city": "New York",
+    "state": "NY",
+    "founded_year": 1999,
+    "team_size": "11-50",
+    "description": "BlueSwitch is a New York ecommerce agency and Shopify Platinum Partner established in 1999. Its 100% in-house team specializes in Shopify Plus development, UX design, B2B integrations, replatforming and ecommerce marketing for D2C and B2B brands. The agency reports more than 600 websites delivered.",
+    "linkedin": "https://www.linkedin.com/company/blueswitch",
+    "industries_served": ["Beauty", "Fashion", "Wellness", "B2B", "Consumer Goods"],
+    "header_tags": ["Shopify Plus", "eCommerce", "B2B", "Migrations", "UX/UI", "Web Development"],
+    "email": "info@blueswitch.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Shopify Platinum Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Tata Harper", "domain": "tataharperskincare.com"},
+      {"name": "Gaiam", "domain": "gaiam.com"},
+      {"name": "To Boot New York", "domain": "tobootnewyork.com"}
+    ]
+  },
+  {
+    "company_name": "DigitlHaus Agency",
+    "domain": "digitlhaus.com",
+    "website": "https://digitlhaus.com",
+    "category_slug": "ecommerce-platforms-services",
+    "country_code": "US",
+    "city": "Miramar Beach",
+    "state": "FL",
+    "founded_year": 2014,
+    "team_size": "11-50",
+    "description": "DigitlHaus is a full-service BigCommerce and Shopify agency based in Miramar Beach, Florida, founded in 2014. It is recognized as one of a small group of Elite BigCommerce Agency Partners and serves B2B and D2C brands with design, custom development, replatforming and optimization. The agency reports 800+ sites launched and has won 50+ industry awards.",
+    "linkedin": "https://www.linkedin.com/company/digitlhaus-agency",
+    "industries_served": ["B2B", "Retail", "Consumer Goods", "Industrial", "Outdoor"],
+    "header_tags": ["BigCommerce", "Shopify", "eCommerce", "Web Development", "UX/UI", "Migrations"],
+    "email": "info@digitlhaus.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "BigCommerce Elite Partner", "year": null},
+      {"name": "Yotpo Best BigCommerce Agency", "year": null},
+      {"name": "Netty Awards Agency of the Year", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Revelry", "domain": "shoprevelry.com"},
+      {"name": "Got Protein", "domain": "gotprotein.com"},
+      {"name": "Dexter Outdoors", "domain": "dexteroutdoors.com"}
+    ]
+  },
+  {
+    "company_name": "Zyber",
+    "domain": "zyber.co.nz",
+    "website": "https://www.zyber.co.nz",
+    "category_slug": "ecommerce-platforms-services",
+    "country_code": "NZ",
+    "city": "Auckland",
+    "state": "",
+    "founded_year": 2009,
+    "team_size": "11-50",
+    "description": "Zyber is a Shopify Plus and Klaviyo agency based in Auckland, New Zealand, founded in 2009, with operations across NZ and Australia. It delivers ecommerce strategy, UX/UI design, development and conversion optimization, and is a Shopify Premier Partner and Klaviyo Master Platinum partner. The team also produces the Talk'n Shopify with Zyber podcast.",
+    "linkedin": "https://nz.linkedin.com/company/zyber",
+    "industries_served": ["Retail", "Furniture", "Consumer Goods", "Food & Beverage", "Hardware"],
+    "header_tags": ["Shopify Plus", "Klaviyo", "eCommerce", "UX/UI", "CRO", "Web Development"],
+    "email": null,
+    "intro_video_url": "https://www.youtube.com/watch?v=1WtzgBkfA3U",
+    "awards": [
+      {"name": "Shopify Premier Partner", "year": null},
+      {"name": "Klaviyo Master Platinum Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Nood", "domain": "nood.co.nz"},
+      {"name": "BedsRus", "domain": "bedsrus.co.nz"},
+      {"name": "Golf Warehouse", "domain": "golfwarehouse.co.nz"},
+      {"name": "Hammer Hardware", "domain": "hammerhardware.co.nz"}
+    ]
+  },
+  {
+    "company_name": "Roswell",
+    "domain": "roswell.nyc",
+    "website": "https://roswell.nyc",
+    "category_slug": "ecommerce-platforms-services",
+    "country_code": "US",
+    "city": "New York",
+    "state": "NY",
+    "founded_year": 2019,
+    "team_size": "11-50",
+    "description": "Roswell is a Webby Award-winning ecommerce agency based in New York City, founded in 2019, with a team of 40+. A Shopify Platinum Partner and Klaviyo Platinum Partner, it provides creative, technology and growth marketing services for mid-market and enterprise DTC and B2B brands. Its merchant roster represents a combined GMV of around a quarter of a billion dollars.",
+    "linkedin": "https://www.linkedin.com/company/roswell-studios",
+    "industries_served": ["Beauty", "Fashion", "Jewelry", "Wellness", "Consumer Goods"],
+    "header_tags": ["Shopify Plus", "Klaviyo", "eCommerce", "Creative", "Growth Marketing", "Web Development"],
+    "email": "contact@roswellstudios.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=Wkibj4J8ReQ",
+    "awards": [
+      {"name": "Webby Award Winner", "year": null},
+      {"name": "Shopify Platinum Partner", "year": null},
+      {"name": "Klaviyo Platinum Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Amika", "domain": "loveamika.com"},
+      {"name": "Kjaer Weis", "domain": "kjaerweis.com"},
+      {"name": "Jones New York", "domain": "jonesnewyork.com"}
+    ]
+  },
+  {
+    "company_name": "Stream Commerce",
+    "domain": "streamcommerce.com",
+    "website": "https://streamcommerce.com",
+    "category_slug": "ecommerce-platforms-services",
+    "country_code": "CA",
+    "city": "Toronto",
+    "state": "ON",
+    "founded_year": 2014,
+    "team_size": "11-50",
+    "description": "Stream Commerce is a full-service Shopify Plus ecommerce development and marketing agency based in the Toronto area, founded in 2014. It designs and builds online stores and supports growth through retail POS, international expansion and Klaviyo email and digital marketing. It is an independent, certified Shopify Plus Partner.",
+    "linkedin": "https://www.linkedin.com/company/stream-commerce",
+    "industries_served": ["Food & Beverage", "Fashion", "Consumer Goods", "Luxury", "Retail"],
+    "header_tags": ["Shopify Plus", "eCommerce", "Klaviyo", "Web Development", "Retail POS", "Digital Marketing"],
+    "email": "hello@streamcommerce.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Shopify Plus Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Molson Coors", "domain": "molsoncoors.com"},
+      {"name": "Derek Rose", "domain": "derek-rose.com"},
+      {"name": "Spin Master", "domain": "spinmaster.com"},
+      {"name": "818 Tequila", "domain": "drink818.com"}
+    ]
+  },
+  {
+    "company_name": "Groove Commerce",
+    "domain": "groovecommerce.com",
+    "website": "https://www.groovecommerce.com",
+    "category_slug": "ecommerce-platforms-services",
+    "country_code": "US",
+    "city": "Baltimore",
+    "state": "MD",
+    "founded_year": 2007,
+    "team_size": "11-50",
+    "description": "Groove Commerce is a full-service ecommerce agency headquartered in Baltimore, Maryland, founded in 2007. It is an Elite BigCommerce Partner and Diamond HubSpot Partner, and also delivers Shopify projects, covering UX/UI design, custom development, support, SEO, paid media and email marketing. The agency serves B2C and B2B brands, including manufacturers and distributors.",
+    "linkedin": "https://www.linkedin.com/company/groove-commerce",
+    "industries_served": ["Retail", "B2B", "Manufacturing", "Consumer Goods", "Apparel"],
+    "header_tags": ["BigCommerce", "Shopify", "eCommerce", "HubSpot", "Web Development", "Digital Marketing"],
+    "email": null,
+    "intro_video_url": "https://www.youtube.com/watch?v=AgaVYwRPaS0",
+    "awards": [
+      {"name": "BigCommerce Elite Partner", "year": null},
+      {"name": "HubSpot Diamond Partner", "year": null}
+    ],
+    "notable_clients": []
+  },
+  {
+    "company_name": "Blue Stout",
+    "domain": "bluestout.com",
+    "website": "https://bluestout.com",
+    "category_slug": "ecommerce-specializations",
+    "country_code": "US",
+    "city": "Portland",
+    "state": "OR",
+    "founded_year": 2011,
+    "team_size": "11-50",
+    "description": "Blue Stout is an ecommerce conversion rate optimization, design and development agency based in Portland, Oregon. Operating for over a decade and a Shopify Plus Partner since the program launched in 2015, it improves conversion rates, average order value and repeat purchases for DTC brands through messaging, site design and email. It works across Shopify, Shopify Plus, BigCommerce and Magento.",
+    "linkedin": "https://www.linkedin.com/company/blue-stout",
+    "industries_served": ["Consumer Goods", "Apparel", "Outdoor", "Beauty", "Food & Beverage"],
+    "header_tags": ["Shopify Plus", "CRO", "eCommerce", "Web Design", "Email Marketing", "Web Development"],
+    "email": null,
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Shopify Plus Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Mad Rabbit", "domain": "madrabbit.com"},
+      {"name": "BruMate", "domain": "brumate.com"},
+      {"name": "Mountain House", "domain": "mountainhouse.com"}
+    ]
+  },
+  {
+    "company_name": "Commerce-UI",
+    "domain": "commerce-ui.com",
+    "website": "https://commerce-ui.com",
+    "category_slug": "ecommerce-specializations",
+    "country_code": "PL",
+    "city": "Gdansk",
+    "state": "",
+    "founded_year": 2011,
+    "team_size": "11-50",
+    "description": "Commerce-UI is a design and technology focused headless ecommerce agency for luxury and premium brands, headquartered in Gdansk, Poland and founded in 2011. The senior team specializes in Shopify Plus and Hydrogen headless storefronts built with Next.js and Sanity CMS. It won a Shopify Build Award for Best Hydrogen Storefront.",
+    "linkedin": "https://www.linkedin.com/company/commerce-ui",
+    "industries_served": ["Luxury", "Fashion", "Lifestyle", "Beauty", "Consumer Electronics"],
+    "header_tags": ["Headless Commerce", "Shopify Plus", "Hydrogen", "Next.js", "Sanity", "eCommerce"],
+    "email": "hello@commerce-ui.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=FxN3K8IkUjA",
+    "awards": [
+      {"name": "Shopify Build Award - Best Hydrogen Storefront", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Carhartt WIP", "domain": "carhartt-wip.com"},
+      {"name": "Aether Apparel", "domain": "aetherapparel.com"},
+      {"name": "Magda Butrym", "domain": "magdabutrym.com"}
+    ]
+  }
+]

@@ -1,0 +1,548 @@
+[
+  {
+    "company_name": "Doxadigital",
+    "domain": "doxadigital.com",
+    "website": "https://doxadigital.com",
+    "category_slug": "full-service-digital",
+    "country_code": "ID",
+    "city": "Jakarta",
+    "state": "",
+    "founded_year": 2002,
+    "team_size": "11-50",
+    "description": "Doxadigital is a full-service creative and digital marketing agency founded in 2002 and headquartered in West Jakarta, Indonesia. It combines strategy, web and app development, creative and video production, SEO, and paid media across Google, Meta and TikTok into a single measurable growth system for Indonesian and regional brands. Founded by Viktor Iwan Kristanda, it has served more than 400 clients across automotive, retail, finance and e-commerce.",
+    "linkedin": "https://www.linkedin.com/company/doxadigital",
+    "industries_served": ["Automotive", "Retail", "Financial Services", "E-commerce", "FMCG"],
+    "header_tags": ["Digital Strategy", "Web Development", "SEO", "Paid Media", "Creative", "Branding"],
+    "email": "info@doxadigital.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=BELatB21dN0",
+    "awards": [
+      {"name": "Google Premier Partner (top 3% Indonesia)", "year": 2025},
+      {"name": "Meta Business Partner", "year": null},
+      {"name": "TikTok Agency Partner", "year": null},
+      {"name": "Brand Trusted Award - Digital Agency", "year": 2022},
+      {"name": "Google Agency Excellence Awards SEA Finalist", "year": 2024}
+    ],
+    "notable_clients": [
+      {"name": "IKEA Indonesia", "domain": "ikea.com"},
+      {"name": "Astra", "domain": "astra.co.id"},
+      {"name": "Pegadaian", "domain": "pegadaian.co.id"},
+      {"name": "Indomaret", "domain": "indomaret.co.id"},
+      {"name": "Bridgestone", "domain": "bridgestone.com"},
+      {"name": "OPPO", "domain": "oppo.com"}
+    ]
+  },
+  {
+    "company_name": "Twist",
+    "domain": "twist.com.br",
+    "website": "https://twist.com.br",
+    "category_slug": "full-service-digital",
+    "country_code": "BR",
+    "city": "Sao Paulo",
+    "state": "Sao Paulo",
+    "founded_year": 2008,
+    "team_size": "51-200",
+    "description": "Twist is a full-service 360 digital agency founded in 2008 by Mauro Palacios and headquartered in Sao Paulo, Brazil. It blends creativity, technology and data across branding, web and e-commerce development, content, performance media and social, under a Creative Performance approach. The firm serves large Brazilian operations and global brands across logistics, automotive, industrial and consumer sectors.",
+    "linkedin": "https://www.linkedin.com/company/agenciatwist",
+    "industries_served": ["Logistics", "Automotive", "Industrial", "Consumer Goods", "Technology"],
+    "header_tags": ["Branding", "Web Development", "eCommerce", "Performance Media", "Content", "Social"],
+    "email": "with@twist.com.br",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "Maersk", "domain": "maersk.com"},
+      {"name": "EY", "domain": "ey.com"},
+      {"name": "Canon", "domain": "canon.com"},
+      {"name": "Haribo", "domain": "haribo.com"},
+      {"name": "Honda", "domain": "honda.com"},
+      {"name": "Zeiss", "domain": "zeiss.com"}
+    ]
+  },
+  {
+    "company_name": "Agencia Mestre",
+    "domain": "agenciamestre.com",
+    "website": "https://www.agenciamestre.com",
+    "category_slug": "full-service-digital",
+    "country_code": "BR",
+    "city": "Sao Paulo",
+    "state": "Sao Paulo",
+    "founded_year": 2008,
+    "team_size": "51-200",
+    "description": "Agencia Mestre is a full-service digital marketing agency founded in 2008 and headquartered in Sao Paulo, Brazil. It offers SEO, inbound and content marketing, paid media, web development, e-commerce, analytics and marketing automation, and is the only Brazilian agency partner of RD Station. It has been voted the best digital agency in Brazil for four consecutive years among more than 1,500 agencies.",
+    "linkedin": "https://www.linkedin.com/company/ag%C3%AAncia-mestre",
+    "industries_served": ["E-commerce", "Healthcare", "Education", "Travel", "Manufacturing"],
+    "header_tags": ["SEO", "Inbound Marketing", "Paid Media", "Web Development", "Analytics", "Automation"],
+    "email": null,
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Best Digital Agency in Brazil (4 consecutive years)", "year": null},
+      {"name": "RD Station Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Sympla", "domain": "sympla.com.br"},
+      {"name": "Duratex", "domain": "duratex.com.br"},
+      {"name": "Unimed Campinas", "domain": "unimedcampinas.com.br"},
+      {"name": "Bemol", "domain": "bemol.com.br"}
+    ]
+  },
+  {
+    "company_name": "Agencia DIO",
+    "domain": "agenciadio.com.br",
+    "website": "https://agenciadio.com.br",
+    "category_slug": "full-service-digital",
+    "country_code": "BR",
+    "city": "Barueri",
+    "state": "Sao Paulo",
+    "founded_year": 2011,
+    "team_size": "11-50",
+    "description": "Agencia DIO is a full-service digital communication and marketing agency founded in 2011 and based in Barueri (Alphaville), Sao Paulo, Brazil. It creates websites and e-commerce, social media content, videos, branding and campaigns for major Brazilian and global brands. The firm has served more than 80 clients across food service, automotive, industrial and consumer sectors.",
+    "linkedin": "https://www.linkedin.com/company/agenciadio",
+    "industries_served": ["Food Service", "Automotive", "Industrial", "Consumer Goods", "Travel"],
+    "header_tags": ["Web Development", "Social Media", "Branding", "Video", "eCommerce", "Campaigns"],
+    "email": "bruno@agenciadio.com.br",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "Burger King", "domain": "burgerking.com.br"},
+      {"name": "Unilever", "domain": "unilever.com"},
+      {"name": "Volkswagen", "domain": "volkswagen.com"},
+      {"name": "LATAM Airlines", "domain": "latam.com"},
+      {"name": "Pirelli", "domain": "pirelli.com"},
+      {"name": "Jaguar", "domain": "jaguar.com"}
+    ]
+  },
+  {
+    "company_name": "Conversion",
+    "domain": "conversion.com.br",
+    "website": "https://www.conversion.com.br",
+    "category_slug": "full-service-digital",
+    "country_code": "BR",
+    "city": "Sao Paulo",
+    "state": "Sao Paulo",
+    "founded_year": 2011,
+    "team_size": "51-200",
+    "description": "Conversion is a digital marketing agency founded in 2011 by Diego Ivo and headquartered in Sao Paulo, Brazil, positioned as the largest SEO, GEO and digital PR agency in the country. With more than 100 specialists, it delivers SEO and generative-engine optimization, content production at scale, link building, digital PR and e-commerce growth. It serves large Brazilian retail, food and technology brands.",
+    "linkedin": "https://www.linkedin.com/company/agenciaconversion",
+    "industries_served": ["E-commerce", "Retail", "Food & Beverage", "Technology", "Logistics"],
+    "header_tags": ["SEO", "GEO", "Content Marketing", "Digital PR", "Link Building", "eCommerce"],
+    "email": "contato@conversion.com.br",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Great Place to Work - Best Agency to Work in Brazil", "year": 2025},
+      {"name": "ABComm Best Performance Agency", "year": 2018}
+    ],
+    "notable_clients": [
+      {"name": "iFood", "domain": "ifood.com.br"},
+      {"name": "Nestle", "domain": "nestle.com"},
+      {"name": "Localiza", "domain": "localiza.com"},
+      {"name": "Cobasi", "domain": "cobasi.com.br"},
+      {"name": "Americanas", "domain": "americanas.com.br"}
+    ]
+  },
+  {
+    "company_name": "IDA",
+    "domain": "ida.cl",
+    "website": "https://www.ida.cl",
+    "category_slug": "full-service-digital",
+    "country_code": "CL",
+    "city": "Santiago",
+    "state": "",
+    "founded_year": 2010,
+    "team_size": "51-200",
+    "description": "IDA (Ideas Digitales Aplicadas) is a digital experience agency founded in 2010 and headquartered in Providencia, Santiago, Chile. Its multidisciplinary team of journalists, designers and developers covers digital strategy and research, UX design, web and platform development, cloud infrastructure and AI integration. The firm has completed more than 1,000 digital projects for over 700 clients including banks, universities and large enterprises.",
+    "linkedin": "https://www.linkedin.com/company/ida---ideas-digitales-aplicadas",
+    "industries_served": ["Banking", "Education", "Government", "Non-Profit", "Culture"],
+    "header_tags": ["Digital Strategy", "UX Design", "Web Development", "Cloud", "AI", "Research"],
+    "email": "contacto@ida.cl",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "BancoEstado", "domain": "bancoestado.cl"},
+      {"name": "Universidad Catolica de Chile", "domain": "uc.cl"},
+      {"name": "Santo Tomas", "domain": "santotomas.cl"},
+      {"name": "Socovesa", "domain": "socovesa.cl"},
+      {"name": "Centro Cultural La Moneda", "domain": "cclm.cl"}
+    ]
+  },
+  {
+    "company_name": "Clockwork",
+    "domain": "clockworkmedia.co.za",
+    "website": "https://clockworkmedia.co.za",
+    "category_slug": "full-service-digital",
+    "country_code": "ZA",
+    "city": "Johannesburg",
+    "state": "Gauteng",
+    "founded_year": 2011,
+    "team_size": "51-200",
+    "description": "Clockwork is an independent full-service creative and communications agency founded in 2011 and headquartered in Johannesburg, with offices in Cape Town and London. It offers digital and social, strategy and data, design, public relations, web and app development, activations and video and animation. With a team of more than 150, it serves leading South African and global brands.",
+    "linkedin": "https://www.linkedin.com/company/clockwork-media-sa",
+    "industries_served": ["Technology", "Automotive", "Financial Services", "Retail", "Entertainment"],
+    "header_tags": ["Digital Strategy", "PR", "Web Development", "Design", "Social", "Video"],
+    "email": "hello@clockworkmedia.co.za",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "African Consultancy of the Year (Holmes Report)", "year": 2021},
+      {"name": "EMEA Sabre Awards African Consultancy", "year": 2021},
+      {"name": "Prism Awards Large Agency of the Year", "year": 2018}
+    ],
+    "notable_clients": [
+      {"name": "Disney+", "domain": "disneyplus.com"},
+      {"name": "BMW", "domain": "bmw.com"},
+      {"name": "Standard Bank", "domain": "standardbank.co.za"},
+      {"name": "Crocs", "domain": "crocs.com"},
+      {"name": "Hyundai", "domain": "hyundai.com"},
+      {"name": "Acer", "domain": "acer.com"}
+    ]
+  },
+  {
+    "company_name": "The Odd Number",
+    "domain": "theoddnumber.co.za",
+    "website": "https://www.theoddnumber.co.za",
+    "category_slug": "digital-creative",
+    "country_code": "ZA",
+    "city": "Johannesburg",
+    "state": "Gauteng",
+    "founded_year": 2015,
+    "team_size": "51-200",
+    "description": "The Odd Number is a 100% black-owned independent creative and communications agency founded in 2015 and headquartered in Sandton, Johannesburg, South Africa. It offers brand strategy, advertising, digital creative, content, production and sound design, and was named Independent Agency of the Year at the Loeries 2024. The firm works with major South African brands across food, finance, insurance and FMCG.",
+    "linkedin": "https://www.linkedin.com/company/the-odd-number",
+    "industries_served": ["FMCG", "Financial Services", "Insurance", "Food & Beverage", "Retail"],
+    "header_tags": ["Brand Strategy", "Advertising", "Digital Creative", "Content", "Production", "Design"],
+    "email": "info@theoddnumber.co.za",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Loeries Independent Agency of the Year", "year": 2024},
+      {"name": "Loeries (50 wins)", "year": null},
+      {"name": "Cannes Lions", "year": null},
+      {"name": "The One Show (3 wins)", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Sanlam", "domain": "sanlam.co.za"},
+      {"name": "Sasol", "domain": "sasol.com"},
+      {"name": "Makro", "domain": "makro.co.za"},
+      {"name": "Clover", "domain": "clover.co.za"},
+      {"name": "Aspen", "domain": "aspenpharma.com"}
+    ]
+  },
+  {
+    "company_name": "Wild Fusion",
+    "domain": "wildfusions.com",
+    "website": "https://wildfusions.com",
+    "category_slug": "full-service-digital",
+    "country_code": "NG",
+    "city": "Lagos",
+    "state": "Lagos",
+    "founded_year": 2010,
+    "team_size": "51-200",
+    "description": "Wild Fusion is a full-service digital marketing agency founded in 2010 by Abasiama Idaresit and headquartered in Lagos, Nigeria, with offices in Ghana and Kenya. It offers digital strategy, social media, mobile and performance marketing, creative, animation and brand growth across digital channels. It was the first Google certified partner in West Africa and works with leading blue-chip brands.",
+    "linkedin": "https://www.linkedin.com/company/wild-fusion-limited",
+    "industries_served": ["FMCG", "Financial Services", "Telecom", "Non-Profit", "Beverages"],
+    "header_tags": ["Digital Strategy", "Social Media", "Performance Marketing", "Mobile", "Creative", "Branding"],
+    "email": "info@wildfusions.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "First Google Certified Partner in West Africa", "year": 2010}
+    ],
+    "notable_clients": [
+      {"name": "Unilever", "domain": "unilever.com"},
+      {"name": "Diageo", "domain": "diageo.com"},
+      {"name": "British Council", "domain": "britishcouncil.org"},
+      {"name": "Access Bank", "domain": "accessbankplc.com"},
+      {"name": "Guinness", "domain": "guinness.com"},
+      {"name": "WorldRemit", "domain": "worldremit.com"}
+    ]
+  },
+  {
+    "company_name": "Tribal House Studios",
+    "domain": "tribalhousestudios.com",
+    "website": "https://tribalhousestudios.com",
+    "category_slug": "digital-creative",
+    "country_code": "GH",
+    "city": "Accra",
+    "state": "",
+    "founded_year": 2016,
+    "team_size": "11-50",
+    "description": "Tribal House Studios is a creative digital agency founded in 2016 and based in Accra, Ghana. It delivers brand identity and positioning, web design and development, digital products, motion and strategy for Ghanaian and pan-African clients. The studio positions itself as one of Ghana's leading creative digital agencies, telling brand stories and building digital experiences.",
+    "linkedin": "https://www.linkedin.com/company/tribal-house-studios",
+    "industries_served": ["Retail", "Automotive", "Non-Profit", "Hospitality", "Technology"],
+    "header_tags": ["Brand Identity", "Web Design", "Web Development", "Digital Products", "Motion", "Strategy"],
+    "email": "support@tribalhousestudios.com",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "TEDxAccra", "domain": "ted.com"},
+      {"name": "MaxMart", "domain": "maxmartghana.com"}
+    ]
+  },
+  {
+    "company_name": "Aquila East Africa",
+    "domain": "aquilaeastafrica.co.ke",
+    "website": "https://aquilaafrica.ke",
+    "category_slug": "full-service-digital",
+    "country_code": "KE",
+    "city": "Nairobi",
+    "state": "",
+    "founded_year": 2012,
+    "team_size": "51-200",
+    "description": "Aquila East Africa is a full-service marketing and communications agency headquartered in Nairobi, Kenya, with regional reach across East Africa. It offers digital marketing and social media, experiential and below-the-line, media planning and buying, branding and creative services. The agency works with local SMEs and global brands and has been recognized as a leading marketing agency in the region.",
+    "linkedin": "https://www.linkedin.com/company/aquilaeastafrica",
+    "industries_served": ["Automotive", "Telecom", "Healthcare", "FMCG", "Retail"],
+    "header_tags": ["Digital Marketing", "Social Media", "Experiential", "Media Buying", "Branding", "Creative"],
+    "email": "info@aquilaeastafrica.co.ke",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Best Marketing Agency - Digitally Fit", "year": 2024},
+      {"name": "Best Marketing Campaign (CFAO Kenya)", "year": 2022},
+      {"name": "Best Marketing Award Africa & Middle East", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Colgate", "domain": "colgate.com"},
+      {"name": "Airtel Kenya", "domain": "airtel.co.ke"},
+      {"name": "AstraZeneca", "domain": "astrazeneca.com"},
+      {"name": "Quickmart", "domain": "quickmart.co.ke"},
+      {"name": "Oxfam", "domain": "oxfam.org"}
+    ]
+  },
+  {
+    "company_name": "e-motion",
+    "domain": "e-motionagency.com",
+    "website": "https://e-motionagency.com",
+    "category_slug": "full-service-digital",
+    "country_code": "EG",
+    "city": "Cairo",
+    "state": "",
+    "founded_year": 1998,
+    "team_size": "51-200",
+    "description": "e-motion is a full-service digital creative agency founded in 1998 and headquartered in Heliopolis, Cairo, Egypt. It offers digital strategy, web design and development, mobile applications, e-commerce, branding and design, online marketing, AR/VR and games for clients across Egypt and the wider MENA region. It is a Google Partner and one of the longest-established digital agencies in Egypt.",
+    "linkedin": "https://www.linkedin.com/company/e-motionagency",
+    "industries_served": ["Food Service", "Aviation", "Real Estate", "Banking", "Retail"],
+    "header_tags": ["Web Development", "Mobile Apps", "eCommerce", "Branding", "Digital Marketing", "AR/VR"],
+    "email": "info@e-motionagency.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Google Partner", "year": null},
+      {"name": "CIT Best CMS Award", "year": 2010},
+      {"name": "Web Company of the Year", "year": 2009}
+    ],
+    "notable_clients": [
+      {"name": "McDonald's Egypt", "domain": "mcdonalds.com.eg"},
+      {"name": "EGYPTAIR", "domain": "egyptair.com"},
+      {"name": "Spinneys", "domain": "spinneys-egypt.com"},
+      {"name": "SODIC", "domain": "sodic.com"},
+      {"name": "Banque Misr", "domain": "banquemisr.com"}
+    ]
+  },
+  {
+    "company_name": "Digital Gravity",
+    "domain": "digitalgravity.ae",
+    "website": "https://www.digitalgravity.ae",
+    "category_slug": "full-service-digital",
+    "country_code": "AE",
+    "city": "Dubai",
+    "state": "",
+    "founded_year": 2014,
+    "team_size": "201-500",
+    "description": "Digital Gravity is a full-service digital transformation and web design agency founded in 2014 and headquartered in Dubai, UAE. Its 200-plus team covers web and mobile development, UI/UX design, branding, e-commerce, 360 digital marketing, SEO, social media and 2D/3D animation, with emerging work in AR, VR and AI. It serves corporations, government entities and SMEs across the UAE.",
+    "linkedin": "https://www.linkedin.com/company/dgravityagency",
+    "industries_served": ["Real Estate", "Government", "Healthcare", "Retail", "Logistics"],
+    "header_tags": ["Web Development", "UI/UX Design", "Branding", "Digital Marketing", "SEO", "Animation"],
+    "email": "info@digitalgravity.ae",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Google Partner", "year": null},
+      {"name": "Meta Business Partner", "year": null},
+      {"name": "HubSpot Elite Partner", "year": null},
+      {"name": "Microsoft Advertising Select Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Emaar", "domain": "emaar.com"},
+      {"name": "DP World", "domain": "dpworld.com"},
+      {"name": "Sephora", "domain": "sephora.com"},
+      {"name": "Suzuki", "domain": "suzuki.com"},
+      {"name": "Yamaha", "domain": "yamaha.com"}
+    ]
+  },
+  {
+    "company_name": "Element8",
+    "domain": "element8.ae",
+    "website": "https://www.element8.ae",
+    "category_slug": "full-service-digital",
+    "country_code": "AE",
+    "city": "Dubai",
+    "state": "",
+    "founded_year": 2010,
+    "team_size": "51-200",
+    "description": "Element8 is a full-service digital agency founded in 2010 and headquartered in Dubai Silicon Oasis, UAE. With around 85 in-house specialists it delivers web design and development, e-commerce, mobile apps, UI/UX, 3D web, digital marketing, SEO, social media and cyber security, positioning itself as an AI-first digital experience studio. It has completed 900-plus projects for government entities, listed companies and Fortune 500 brands.",
+    "linkedin": "https://www.linkedin.com/company/element-8",
+    "industries_served": ["Government", "Technology", "Retail", "Real Estate", "Financial Services"],
+    "header_tags": ["Web Development", "eCommerce", "UI/UX Design", "Digital Marketing", "SEO", "Cyber Security"],
+    "email": "info@element8.ae",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Sitecore Partner", "year": null},
+      {"name": "Optimizely Partner", "year": null},
+      {"name": "Microsoft Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Mitsubishi", "domain": "mitsubishi.com"},
+      {"name": "Hisense", "domain": "hisense.com"},
+      {"name": "Redington", "domain": "redingtongroup.com"},
+      {"name": "Union Coop", "domain": "unioncoop.ae"}
+    ]
+  },
+  {
+    "company_name": "Tomsher",
+    "domain": "tomsher.com",
+    "website": "https://www.tomsher.com",
+    "category_slug": "full-service-digital",
+    "country_code": "AE",
+    "city": "Dubai",
+    "state": "",
+    "founded_year": 2007,
+    "team_size": "51-200",
+    "description": "Tomsher is a full-service web design, development and digital agency founded in 2007 and headquartered in Dubai, UAE. With a fully in-house team it delivers custom web and CMS development, e-commerce, mobile apps, branding, corporate video, SEO and digital marketing, plus hosting and infrastructure. The firm has served more than 400 companies across retail, education and real estate.",
+    "linkedin": "https://www.linkedin.com/company/tomsher",
+    "industries_served": ["Retail", "Education", "Real Estate", "Food & Beverage", "Construction"],
+    "header_tags": ["Web Development", "eCommerce", "Branding", "Mobile Apps", "SEO", "Digital Marketing"],
+    "email": "contact@tomsher.com",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "Malabar Gold & Diamonds", "domain": "malabargoldanddiamonds.com"},
+      {"name": "Arla Foods", "domain": "arla.com"},
+      {"name": "De Montfort University Dubai", "domain": "dmu.ac.uk"},
+      {"name": "Emerald Palace Group", "domain": "emeraldpalacegroup.com"}
+    ]
+  },
+  {
+    "company_name": "Digitect",
+    "domain": "digitect.com",
+    "website": "https://digitect.com",
+    "category_slug": "digital-creative",
+    "country_code": "SA",
+    "city": "Jeddah",
+    "state": "",
+    "founded_year": 2019,
+    "team_size": "51-200",
+    "description": "Digitect is a 360 marketing communications and creative agency founded in 2019 with offices in Jeddah, Riyadh and Cairo. Its roughly 150-strong team covers strategy and research, creative and design, events and activations, social and digital media, media and PR, and technology services including UX, web and app development and CRM. It has served around 75 brands, with a strong automotive and retail focus.",
+    "linkedin": "https://www.linkedin.com/company/digitect",
+    "industries_served": ["Automotive", "Retail", "Government", "Hospitality", "Telecom"],
+    "header_tags": ["Strategy", "Creative", "Web Development", "Social Media", "Media & PR", "Events"],
+    "email": "info@digitect.com",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "Audi", "domain": "audi.com"},
+      {"name": "Porsche", "domain": "porsche.com"},
+      {"name": "KIA", "domain": "kia.com"},
+      {"name": "Lebara", "domain": "lebara.com"},
+      {"name": "Abdullah Al Othaim Markets", "domain": "othaimmarkets.com"}
+    ]
+  },
+  {
+    "company_name": "Istcode",
+    "domain": "istcode.com",
+    "website": "https://www.istcode.com",
+    "category_slug": "full-service-digital",
+    "country_code": "TR",
+    "city": "Istanbul",
+    "state": "",
+    "founded_year": 2013,
+    "team_size": "11-50",
+    "description": "Istcode is a 360 creative and digital agency founded in 2013 and based in Sariyer, Istanbul, Turkey. It connects brands to the digital world through branding, creative and content production, digital marketing with Meta and Google ads, SEO, and software including websites, e-commerce, mobile apps and AI consulting. It works with Turkish corporates and brands across telecom, healthcare, automotive and retail.",
+    "linkedin": "https://www.linkedin.com/company/istcode",
+    "industries_served": ["Telecom", "Healthcare", "Automotive", "Retail", "Real Estate"],
+    "header_tags": ["Branding", "Creative", "Web Development", "Digital Marketing", "SEO", "eCommerce"],
+    "email": "info@istcode.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Golden Spider Awards (AI & Technology)", "year": null},
+      {"name": "Horizon Interactive Awards (3 Gold)", "year": null},
+      {"name": "Google Partner", "year": null},
+      {"name": "Meta Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Turk Telekom", "domain": "turktelekom.com.tr"},
+      {"name": "Ford Otosan", "domain": "fordotosan.com.tr"},
+      {"name": "Sephora", "domain": "sephora.com"},
+      {"name": "Liv Hospital", "domain": "livhospital.com"},
+      {"name": "Medical Park", "domain": "medicalpark.com.tr"}
+    ]
+  },
+  {
+    "company_name": "GIGIL",
+    "domain": "gigil.com.ph",
+    "website": "https://gigil.com.ph",
+    "category_slug": "digital-creative",
+    "country_code": "PH",
+    "city": "Taguig",
+    "state": "Metro Manila",
+    "founded_year": 2017,
+    "team_size": "51-200",
+    "description": "GIGIL is an independent, creative-led and digital-dominant advertising agency founded in 2017 and based in Bonifacio Global City, Taguig, Philippines. It produces brand strategy, creative campaigns, digital and social content, film and AR experiences for major brands. It is one of the most globally awarded independent agencies in the Philippines, with multiple Cannes Lions wins.",
+    "linkedin": "https://www.linkedin.com/company/gigilmanila",
+    "industries_served": ["Food & Beverage", "Technology", "Entertainment", "Retail", "Telecom"],
+    "header_tags": ["Creative", "Brand Strategy", "Digital", "Social", "Film", "AR"],
+    "email": "hi@gigil.com.ph",
+    "intro_video_url": "https://www.youtube.com/watch?v=OrXgm5ChMZU",
+    "awards": [
+      {"name": "4As Philippines Independent Agency of the Year", "year": 2023},
+      {"name": "Campaign Brief Asia #1 Agency in the Philippines", "year": 2023},
+      {"name": "Cannes Lions winner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Jollibee", "domain": "jollibee.com.ph"},
+      {"name": "Netflix", "domain": "netflix.com"},
+      {"name": "Grab", "domain": "grab.com"},
+      {"name": "RC Cola", "domain": "rccola.com"}
+    ]
+  },
+  {
+    "company_name": "DHNN",
+    "domain": "dhnn.com",
+    "website": "https://dhnn.com",
+    "category_slug": "digital-creative",
+    "country_code": "AR",
+    "city": "Buenos Aires",
+    "state": "",
+    "founded_year": 2007,
+    "team_size": "11-50",
+    "description": "DHNN is an award-winning creative agency founded in 2007 and headquartered in Acassuso, Buenos Aires, Argentina, with a presence in Miami, Madrid, London and Lisbon. It specializes in product discovery, branding and strategy, UX/UI design, product design and development, data storytelling and blockchain innovation. The studio builds high-quality digital products for clients across banking, media, energy and technology.",
+    "linkedin": "https://www.linkedin.com/company/dhnn",
+    "industries_served": ["Banking", "Media", "Energy", "Technology", "Retail"],
+    "header_tags": ["Branding", "UX/UI Design", "Product Design", "Web Development", "Strategy", "Data Viz"],
+    "email": "info@dhnn.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Awwwards Honorable Mention", "year": null},
+      {"name": "Clutch Top UX/UI Agency", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "IBM", "domain": "ibm.com"},
+      {"name": "Turner", "domain": "turner.com"},
+      {"name": "Pluspetrol", "domain": "pluspetrol.net"},
+      {"name": "GMA Capital", "domain": "gmacapital.com"}
+    ]
+  },
+  {
+    "company_name": "Beau Agency",
+    "domain": "beau.vn",
+    "website": "https://beau.vn",
+    "category_slug": "digital-creative",
+    "country_code": "VN",
+    "city": "Hanoi",
+    "state": "",
+    "founded_year": 2012,
+    "team_size": "11-50",
+    "description": "Beau Agency is a full-service creative agency founded in 2012 and headquartered in Hanoi, Vietnam. Its team of strategists, designers and developers delivers digital strategy, user experience design, web and mobile app development, e-commerce, brand strategy and brand identity. The agency serves clients across real estate, finance, hospitality and consumer sectors in Vietnam.",
+    "linkedin": "https://www.linkedin.com/company/beauagency",
+    "industries_served": ["Real Estate", "Financial Services", "Hospitality", "Consumer Goods", "Education"],
+    "header_tags": ["Digital Strategy", "UX Design", "Web Development", "Branding", "Mobile Apps", "eCommerce"],
+    "email": "info@beau.vn",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "Lotte Finance", "domain": "lottefinance.vn"},
+      {"name": "NCB", "domain": "ncb-bank.vn"}
+    ]
+  }
+]

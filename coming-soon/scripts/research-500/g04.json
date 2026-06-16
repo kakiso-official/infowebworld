@@ -1,0 +1,579 @@
+[
+  {
+    "company_name": "Merixstudio",
+    "domain": "merixstudio.com",
+    "website": "https://www.merixstudio.com",
+    "category_slug": "javascript-frameworks",
+    "country_code": "PL",
+    "city": "Poznan",
+    "state": "",
+    "founded_year": 1999,
+    "team_size": "51-200",
+    "description": "Merixstudio is a Poznan-based software engineering company combining consultancy, product design and development for mid-size and enterprise clients. The team builds web and mobile platforms, data-rich products and IoT solutions using JavaScript, Python and cloud-native architectures. It has delivered work for 350+ clients worldwide and also runs an office in Dubai.",
+    "linkedin": "https://www.linkedin.com/company/merixstudio",
+    "industries_served": ["Fintech", "Energy", "Travel", "SaaS", "IoT"],
+    "header_tags": ["Web Development", "React", "Python", "Mobile", "Cloud", "Product Design"],
+    "email": "m.bien@merixstudio.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=3i8xvwBsc5g",
+    "awards": [
+      {"name": "Clutch 1000", "year": 2025},
+      {"name": "Clutch Global Fall", "year": 2025},
+      {"name": "AWS Partner (Select Tier Services)", "year": null},
+      {"name": "ISO 9001 (TUV NORD)", "year": null},
+      {"name": "ISO 27001 (TUV NORD)", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Volkswagen", "domain": "volkswagen.com"},
+      {"name": "Brevo", "domain": "brevo.com"},
+      {"name": "MoneyFarm", "domain": "moneyfarm.com"},
+      {"name": "Sensirion", "domain": "sensirion.com"},
+      {"name": "Six Flags", "domain": "sixflags.com"}
+    ]
+  },
+  {
+    "company_name": "Monterail",
+    "domain": "monterail.com",
+    "website": "https://www.monterail.com",
+    "category_slug": "javascript-frameworks",
+    "country_code": "PL",
+    "city": "Wroclaw",
+    "state": "",
+    "founded_year": 2010,
+    "team_size": "51-200",
+    "description": "Monterail is a Wroclaw-based software development company building web and mobile products for industry leaders. It is an official Vue.js partner and is known for Vue, Nuxt and Node.js engineering alongside product design. The firm has delivered 900+ projects and in 2025 acquired fellow Polish agency Untitled Kingdom.",
+    "linkedin": "https://www.linkedin.com/company/monterail",
+    "industries_served": ["Healthcare", "Manufacturing", "SaaS", "Fintech", "Pharma"],
+    "header_tags": ["Web Development", "Vue.js", "Node.js", "Mobile", "Product Design", "UX/UI"],
+    "email": "hello@monterail.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=nFmqia5LZXE",
+    "awards": [
+      {"name": "Official Vue.js Partner", "year": null},
+      {"name": "Financial Times FT1000", "year": null},
+      {"name": "Deloitte Technology Fast 50 CE", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Bosch", "domain": "bosch.com"},
+      {"name": "Merck", "domain": "merck.com"},
+      {"name": "EY", "domain": "ey.com"},
+      {"name": "Docplanner", "domain": "docplanner.com"},
+      {"name": "SharkNinja", "domain": "sharkninja.com"}
+    ]
+  },
+  {
+    "company_name": "EL Passion",
+    "domain": "elpassion.com",
+    "website": "https://www.elpassion.com",
+    "category_slug": "javascript-frameworks",
+    "country_code": "PL",
+    "city": "Warsaw",
+    "state": "",
+    "founded_year": 2011,
+    "team_size": "51-200",
+    "description": "EL Passion is a Warsaw-based product design and development agency that builds and scales digital products for startups, scale-ups and corporations. Its in-house team works across web, React Native mobile, Webflow and AI development. The agency serves clients in healthtech, digital entertainment and business services.",
+    "linkedin": "https://www.linkedin.com/company/el-passion",
+    "industries_served": ["Healthcare", "Entertainment", "Fintech", "SaaS", "Retail"],
+    "header_tags": ["Web Development", "React", "Mobile", "Product Design", "UX/UI", "AI"],
+    "email": "projects@elpassion.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Clutch 4.9/5 (50+ reviews)", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "EY", "domain": "ey.com"},
+      {"name": "Polaroid", "domain": "polaroid.com"},
+      {"name": "Varner", "domain": "varner.com"},
+      {"name": "Docplanner", "domain": "docplanner.com"}
+    ]
+  },
+  {
+    "company_name": "Sunscrapers",
+    "domain": "sunscrapers.com",
+    "website": "https://sunscrapers.com",
+    "category_slug": "python-frameworks",
+    "country_code": "PL",
+    "city": "Warsaw",
+    "state": "",
+    "founded_year": 2010,
+    "team_size": "51-200",
+    "description": "Sunscrapers is a Warsaw-based technology consultancy specializing in Python and JavaScript development, data engineering and AI. It builds full-stack web products, MVPs and data platforms primarily for finance and healthcare clients. The firm has delivered 200+ projects and is an AWS and dbt Labs partner.",
+    "linkedin": "https://www.linkedin.com/company/sunscrapers",
+    "industries_served": ["Fintech", "Healthcare", "HR Tech", "SaaS", "Data"],
+    "header_tags": ["Web Development", "Python", "Django", "React", "Data Engineering", "AI"],
+    "email": "hello@sunscrapers.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=_y3DsJ2PHxU",
+    "awards": [
+      {"name": "AWS Partner", "year": null},
+      {"name": "dbt Labs Partner", "year": null},
+      {"name": "Clutch 4.9/5", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "15Five", "domain": "15five.com"},
+      {"name": "Codility", "domain": "codility.com"},
+      {"name": "TrustedHousesitters", "domain": "trustedhousesitters.com"},
+      {"name": "Pollen", "domain": "pollen.co"}
+    ]
+  },
+  {
+    "company_name": "Selleo",
+    "domain": "selleo.com",
+    "website": "https://selleo.com",
+    "category_slug": "javascript-frameworks",
+    "country_code": "PL",
+    "city": "Bielsko-Biala",
+    "state": "",
+    "founded_year": 2005,
+    "team_size": "51-200",
+    "description": "Selleo is a software house in Bielsko-Biala, Poland, that has built custom software since 2005 for clients across Europe, the US, Canada and Australia. Its 100+ team works with React, React Native, Node.js, Ruby on Rails and Python, with a strong focus on SaaS and learning management platforms. It is recognized by Forbes Diamonds and holds ISO 27001 certification.",
+    "linkedin": "https://www.linkedin.com/company/selleo",
+    "industries_served": ["SaaS", "EdTech", "HR Tech", "Retail", "Logistics"],
+    "header_tags": ["Web Development", "React", "Node.js", "SaaS", "Mobile", "QA"],
+    "email": null,
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Forbes Diamonds", "year": 2025},
+      {"name": "ISO 27001 (TUV NORD)", "year": null},
+      {"name": "Clutch Top Company (4.7/5)", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Defined Learning", "domain": "definedlearning.com"},
+      {"name": "SquadLocker", "domain": "squadlocker.com"},
+      {"name": "Humly", "domain": "humly.io"}
+    ]
+  },
+  {
+    "company_name": "Espeo Software",
+    "domain": "espeo.eu",
+    "website": "https://espeo.eu",
+    "category_slug": "php-frameworks",
+    "country_code": "PL",
+    "city": "Poznan",
+    "state": "",
+    "founded_year": 2008,
+    "team_size": "51-200",
+    "description": "Espeo Software is a Poznan-based software lab founded in 2008 that builds web and mobile solutions mainly for the fintech, payments and banking sectors. It offers end-to-end development, team augmentation and blockchain consulting, with expertise in PHP, microservices and Hyperledger Fabric. The company also operates an office in Helsinki, Finland.",
+    "linkedin": "https://www.linkedin.com/company/espeo-software",
+    "industries_served": ["Fintech", "Banking", "Healthcare", "Payments", "Media"],
+    "header_tags": ["Web Development", "PHP", "Blockchain", "Fintech", "Microservices", "Mobile"],
+    "email": "hi@espeo.eu",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Clutch Top Development Partner (Poland)", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "The Guardian", "domain": "theguardian.com"},
+      {"name": "Schibsted", "domain": "schibsted.com"},
+      {"name": "Terveystalo", "domain": "terveystalo.com"},
+      {"name": "Ensto", "domain": "ensto.com"}
+    ]
+  },
+  {
+    "company_name": "Miquido",
+    "domain": "miquido.com",
+    "website": "https://www.miquido.com",
+    "category_slug": "javascript-frameworks",
+    "country_code": "PL",
+    "city": "Krakow",
+    "state": "",
+    "founded_year": 2011,
+    "team_size": "201-500",
+    "description": "Miquido is a Krakow-based software development company founded in 2011 that builds web and mobile products with a strong focus on AI and machine learning. Its 200+ team works with React, Node.js, Flutter and Python for startups and enterprises worldwide. Its apps have been recognized by Time Magazine, the Webby Awards and the UX Design Awards.",
+    "linkedin": "https://www.linkedin.com/company/miquido",
+    "industries_served": ["Fintech", "Entertainment", "Retail", "Travel", "Healthcare"],
+    "header_tags": ["Web Development", "React", "Node.js", "Mobile", "AI", "Machine Learning"],
+    "email": "hello@miquido.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=E1rGcxqJX8A",
+    "awards": [
+      {"name": "Time Magazine 50 Best Apps of the Year", "year": null},
+      {"name": "Financial Times Europe's Fastest Growing Companies", "year": null},
+      {"name": "Webby Awards Best Visual Design", "year": 2023},
+      {"name": "UX Design Awards Product Winner", "year": 2023}
+    ],
+    "notable_clients": [
+      {"name": "BNP Paribas", "domain": "bnpparibas.com"},
+      {"name": "Skyscanner", "domain": "skyscanner.net"},
+      {"name": "Dolby", "domain": "dolby.com"},
+      {"name": "TUI", "domain": "tui.com"},
+      {"name": "Brainly", "domain": "brainly.com"}
+    ]
+  },
+  {
+    "company_name": "Pragmatic Coders",
+    "domain": "pragmaticcoders.com",
+    "website": "https://www.pragmaticcoders.com",
+    "category_slug": "javascript-frameworks",
+    "country_code": "PL",
+    "city": "Krakow",
+    "state": "",
+    "founded_year": 2014,
+    "team_size": "51-200",
+    "description": "Pragmatic Coders is a Krakow-based software development company founded in 2014 with a 100+ team focused on fintech, healthcare and e-commerce products. It builds web, cloud and cross-platform mobile applications and offers AI development, product design and project-rescue services. The firm has won a Forbes Diamond Award and is a Clutch Champion.",
+    "linkedin": "https://www.linkedin.com/company/pragmatic-coders",
+    "industries_served": ["Fintech", "Healthcare", "eCommerce", "SaaS", "Blockchain"],
+    "header_tags": ["Web Development", "React", "Node.js", "Mobile", "AI", "Product Design"],
+    "email": "hello@pragmaticcoders.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Forbes Diamond Award", "year": 2024},
+      {"name": "Clutch Champion", "year": 2023},
+      {"name": "GoodFirms Top Software Development Company", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Atom Bank", "domain": "atombank.co.uk"},
+      {"name": "Kitopi", "domain": "kitopi.com"},
+      {"name": "Webinterpret", "domain": "webinterpret.com"},
+      {"name": "Kody", "domain": "kody.com"}
+    ]
+  },
+  {
+    "company_name": "Wolfpack Digital",
+    "domain": "wolfpack-digital.com",
+    "website": "https://www.wolfpack-digital.com",
+    "category_slug": "javascript-frameworks",
+    "country_code": "RO",
+    "city": "Cluj-Napoca",
+    "state": "",
+    "founded_year": 2015,
+    "team_size": "51-200",
+    "description": "Wolfpack Digital is a Cluj-Napoca-based agency that designs and builds web and mobile apps start-to-end for startups and innovative brands. The team works with Ruby on Rails, Node.js, Vue, Next.js, React Native and Flutter. It is ISO 9001 and ISO 27001 certified and has offices in Dublin and the US.",
+    "linkedin": "https://www.linkedin.com/company/wolfpack-digital",
+    "industries_served": ["Fintech", "Retail", "Healthcare", "Sustainability", "Travel"],
+    "header_tags": ["Web Development", "Node.js", "Vue.js", "Mobile", "Product Design", "AI"],
+    "email": "contact@wolfpack-digital.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=B0bh3kTzn3I",
+    "awards": [
+      {"name": "Clutch 1000", "year": 2023},
+      {"name": "Webby Awards", "year": null},
+      {"name": "ISO 27001:2013", "year": null},
+      {"name": "ISO 9001:2015", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Sephora", "domain": "sephora.com"},
+      {"name": "TerraCycle", "domain": "terracycle.com"},
+      {"name": "Deezer", "domain": "deezer.com"},
+      {"name": "Everton", "domain": "evertonfc.com"}
+    ]
+  },
+  {
+    "company_name": "Linnify",
+    "domain": "linnify.com",
+    "website": "https://www.linnify.com",
+    "category_slug": "custom-web-development",
+    "country_code": "RO",
+    "city": "Cluj-Napoca",
+    "state": "",
+    "founded_year": 2016,
+    "team_size": "51-200",
+    "description": "Linnify is a Cluj-Napoca-based digital product development partner founded in 2016 that uses a validation-driven approach to design, build and scale software. It offers full-stack web and mobile development, experience design, cloud and AI services. The firm has launched 80+ digital products across healthcare, education, logistics and wellbeing.",
+    "linkedin": "https://www.linkedin.com/company/linnify",
+    "industries_served": ["Healthcare", "Education", "Logistics", "Wellbeing", "SaaS"],
+    "header_tags": ["Web Development", "Mobile", "Product Strategy", "UX/UI", "Cloud", "AI"],
+    "email": "contact@linnify.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Clutch 5.0", "year": null},
+      {"name": "Financial Times FT1000", "year": 2025},
+      {"name": "Google Cloud Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Stailer", "domain": "stailer.ro"}
+    ]
+  },
+  {
+    "company_name": "Vega IT",
+    "domain": "vegaitglobal.com",
+    "website": "https://www.vegaitglobal.com",
+    "category_slug": "microsoft-net",
+    "country_code": "RS",
+    "city": "Novi Sad",
+    "state": "",
+    "founded_year": 2008,
+    "team_size": "501-1000",
+    "description": "Vega IT is a Novi Sad-based software development company founded in 2008 and the largest software firm in Serbia. Its 900+ engineers build digital products and enterprise systems using .NET, Java, React, Node.js and Flutter. The company is an AWS, Salesforce, Microsoft and Google Cloud partner serving clients across Europe and beyond.",
+    "linkedin": "https://www.linkedin.com/company/vegaitglobal",
+    "industries_served": ["Banking", "Retail", "Insurance", "Nonprofit", "Travel"],
+    "header_tags": ["Web Development", ".NET", "Java", "React", "Cloud", "Salesforce"],
+    "email": "contact@vegaitglobal.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=R-of0sBly08",
+    "awards": [
+      {"name": "AWS Select Tier Services Partner", "year": null},
+      {"name": "Microsoft Solutions Partner", "year": null},
+      {"name": "Salesforce Certified Partner", "year": null},
+      {"name": "Google Cloud Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Costa Coffee", "domain": "costa.co.uk"},
+      {"name": "UniCredit Bank", "domain": "unicreditgroup.eu"},
+      {"name": "Raiffeisen Bank", "domain": "raiffeisen.com"},
+      {"name": "UNICEF", "domain": "unicef.org"}
+    ]
+  },
+  {
+    "company_name": "Notch",
+    "domain": "wearenotch.com",
+    "website": "https://wearenotch.com",
+    "category_slug": "java",
+    "country_code": "HR",
+    "city": "Zagreb",
+    "state": "",
+    "founded_year": 2014,
+    "team_size": "51-200",
+    "description": "Notch is a Zagreb-based custom software development and consulting company founded in 2014 by pioneers of Agile in Croatia. It builds enterprise-grade digital products and platforms, with deep expertise in Java-based systems, platform engineering and modernization. The firm is a Deloitte Impact Star laureate and has offices in Split and Frankfurt.",
+    "linkedin": "https://www.linkedin.com/company/wearenotch",
+    "industries_served": ["Telecom", "Fintech", "Enterprise", "Retail", "Media"],
+    "header_tags": ["Web Development", "Java", "Platform Engineering", "Microservices", "UX/UI", "DevOps"],
+    "email": "info@wearenotch.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Deloitte Impact Star", "year": null},
+      {"name": "Clutch Top Custom Software Developer (Croatia)", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Iskon", "domain": "iskon.hr"}
+    ]
+  },
+  {
+    "company_name": "Infinum",
+    "domain": "infinum.com",
+    "website": "https://infinum.com",
+    "category_slug": "custom-web-development",
+    "country_code": "HR",
+    "city": "Zagreb",
+    "state": "",
+    "founded_year": 2005,
+    "team_size": "201-500",
+    "description": "Infinum is a digital product agency founded in Zagreb in 2005 that designs, builds and scales web and mobile software for global brands. Its 400+ team spans product strategy, design, engineering, data and AI. The company has offices across Europe and North America and works with major enterprises worldwide.",
+    "linkedin": "https://www.linkedin.com/company/infinum",
+    "industries_served": ["Healthcare", "Retail", "Sports", "Energy", "Media"],
+    "header_tags": ["Web Development", "Mobile", "Product Design", "AI", "Cloud", "UX/UI"],
+    "email": "hello@infinum.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Clutch 4.8/5", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Porsche", "domain": "porsche.com"},
+      {"name": "Philips", "domain": "philips.com"},
+      {"name": "Adidas", "domain": "adidas.com"},
+      {"name": "Shell", "domain": "shell.com"}
+    ]
+  },
+  {
+    "company_name": "Dreamix",
+    "domain": "dreamix.eu",
+    "website": "https://dreamix.eu",
+    "category_slug": "java",
+    "country_code": "BG",
+    "city": "Sofia",
+    "state": "",
+    "founded_year": 2006,
+    "team_size": "201-500",
+    "description": "Dreamix is a Sofia-based custom software development company founded in 2006 that serves enterprise clients across Europe, North America and the Middle East. Its 300+ engineers specialize in Java and Spring, alongside .NET, Node.js and React, with a focus on legacy modernization and AI. The firm has been recognized in the Financial Times FT1000 and as a Clutch Champion.",
+    "linkedin": "https://www.linkedin.com/company/dreamix-ltd",
+    "industries_served": ["Aviation", "Healthcare", "Fintech", "Transportation", "Manufacturing"],
+    "header_tags": ["Web Development", "Java", "Spring", ".NET", "Cloud", "AI"],
+    "email": "business@dreamix.eu",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Financial Times FT1000", "year": 2024},
+      {"name": "Clutch Champion", "year": 2025},
+      {"name": "Globee Awards Silver (IT Services)", "year": 2025},
+      {"name": "Stevie Award", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Ericsson", "domain": "ericsson.com"},
+      {"name": "VistaJet", "domain": "vistajet.com"},
+      {"name": "CERN", "domain": "cern.ch"},
+      {"name": "Coca-Cola HBC", "domain": "coca-colahellenic.com"},
+      {"name": "BNP Paribas", "domain": "bnpparibas.com"}
+    ]
+  },
+  {
+    "company_name": "STRV",
+    "domain": "strv.com",
+    "website": "https://www.strv.com",
+    "category_slug": "javascript-frameworks",
+    "country_code": "CZ",
+    "city": "Prague",
+    "state": "",
+    "founded_year": 2004,
+    "team_size": "201-500",
+    "description": "STRV is a software design and engineering company founded in 2004 with European headquarters in Prague and Brno, Czechia. Its 200+ engineers and designers build web and mobile products for venture-backed startups and established brands, mostly in the US market. Its work has won Apple Design Awards and Webby Awards.",
+    "linkedin": "https://www.linkedin.com/company/strv",
+    "industries_served": ["Fitness", "Media", "Fintech", "SaaS", "Social"],
+    "header_tags": ["Web Development", "Node.js", "React", "Mobile", "Product Design", "AI"],
+    "email": "hello@strv.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=ZmvOMXj-JM4",
+    "awards": [
+      {"name": "Apple Design Award", "year": null},
+      {"name": "Webby Design Award", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Barry's", "domain": "barrys.com"},
+      {"name": "The Athletic", "domain": "theathletic.com"},
+      {"name": "Autodesk", "domain": "autodesk.com"},
+      {"name": "Bumble", "domain": "bumble.com"}
+    ]
+  },
+  {
+    "company_name": "Moravio",
+    "domain": "moravio.com",
+    "website": "https://www.moravio.com",
+    "category_slug": "custom-web-development",
+    "country_code": "CZ",
+    "city": "Ostrava",
+    "state": "",
+    "founded_year": null,
+    "team_size": "51-200",
+    "description": "Moravio is a software development agency headquartered in Ostrava, Czechia, that crafts web and mobile applications and delivers digital transformation projects. Its 50+ team of developers, designers and project managers serves enterprise and mid-market clients. The firm holds multiple Clutch recognitions and has offices in Prague, the UK, Spain and the US.",
+    "linkedin": "https://www.linkedin.com/company/moravio",
+    "industries_served": ["Real Estate", "Manufacturing", "Retail", "Telecom", "SaaS"],
+    "header_tags": ["Web Development", "Mobile", "Digital Transformation", "AI", "UX/UI", "Maintenance"],
+    "email": "jakub.bily@moravio.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=orh6Ro9ONQs",
+    "awards": [
+      {"name": "Clutch Top 1000 Companies Global", "year": null},
+      {"name": "Clutch Top Software Developers (Czech Republic)", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Saint-Gobain", "domain": "saint-gobain.com"},
+      {"name": "Veolia", "domain": "veolia.com"},
+      {"name": "Notino", "domain": "notino.com"},
+      {"name": "Kofola", "domain": "kofola.cz"},
+      {"name": "Datart", "domain": "datart.cz"}
+    ]
+  },
+  {
+    "company_name": "Unicrew",
+    "domain": "unicrew.com",
+    "website": "https://unicrew.com",
+    "category_slug": "php-frameworks",
+    "country_code": "UA",
+    "city": "Lviv",
+    "state": "",
+    "founded_year": null,
+    "team_size": "51-200",
+    "description": "Unicrew (formerly Artelogic) is a Lviv-based software development firm with 100+ engineers and consultants across six countries. It delivers custom web and mobile development, software modernization and AI, with strong PHP/Laravel, .NET, Node.js and React capabilities. The company is ISO 9001 and ISO 27001 certified.",
+    "linkedin": "https://www.linkedin.com/company/unicrew",
+    "industries_served": ["Healthcare", "Travel", "Research", "Logistics", "SaaS"],
+    "header_tags": ["Web Development", "PHP", "Laravel", ".NET", "React", "AI"],
+    "email": null,
+    "intro_video_url": null,
+    "awards": [
+      {"name": "ISO 27001:2022", "year": null},
+      {"name": "ISO 9001:2015", "year": null},
+      {"name": "Clutch 5.0 (58 reviews)", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "GIATA", "domain": "giata.com"},
+      {"name": "quattro research", "domain": "quattro-research.com"},
+      {"name": "Triathlon Ireland", "domain": "triathlonireland.com"}
+    ]
+  },
+  {
+    "company_name": "Kindgeek",
+    "domain": "kindgeek.com",
+    "website": "https://www.kindgeek.com",
+    "category_slug": "custom-web-development",
+    "country_code": "UA",
+    "city": "Lviv",
+    "state": "",
+    "founded_year": null,
+    "team_size": "51-200",
+    "description": "Kindgeek is a Lviv-based fintech product engineering company with 11+ years of experience building regulated financial products. It develops white-label neobanks, e-wallets and PFM apps and provides dedicated fintech teams covering web, mobile, back-end and cloud. The firm is ISO 9001 and ISO 27001 certified and has processed over 10 billion euros across its projects.",
+    "linkedin": "https://www.linkedin.com/company/kindgeek",
+    "industries_served": ["Fintech", "Banking", "Payments", "Education", "Healthcare"],
+    "header_tags": ["Web Development", "Fintech", "Mobile", "Cloud", "Back-End", "AI"],
+    "email": "info@kindgeek.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=QtdTgZ5Y2M8",
+    "awards": [
+      {"name": "Clutch 1000", "year": 2024},
+      {"name": "ISO 9001:2015", "year": null},
+      {"name": "ISO 27001:2023", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Decta", "domain": "decta.com"},
+      {"name": "Payabl", "domain": "payabl.com"},
+      {"name": "Jaja Finance", "domain": "jaja.co.uk"}
+    ]
+  },
+  {
+    "company_name": "OTAKOYI",
+    "domain": "otakoyi.com",
+    "website": "https://otakoyi.software",
+    "category_slug": "php-frameworks",
+    "country_code": "UA",
+    "city": "Lviv",
+    "state": "",
+    "founded_year": 2011,
+    "team_size": "51-200",
+    "description": "OTAKOYI is a Lviv-based custom software development company founded in 2011 that designs and builds software products for startups, scale-ups and large enterprises worldwide. Its services span web and mobile development, AI/ML, cloud and UX/UI design, with expertise in Laravel, React, Spring and Flutter. The firm has additional offices in Warsaw, Hamburg, Dubai and the US.",
+    "linkedin": "https://www.linkedin.com/company/otakoyi",
+    "industries_served": ["Retail", "Healthcare", "Logistics", "Education", "Manufacturing"],
+    "header_tags": ["Web Development", "Laravel", "React", "Mobile", "AI", "UX/UI"],
+    "email": "info@otakoyi.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=p50D8Qz7bl8",
+    "awards": [
+      {"name": "Clutch 4.9/5", "year": null},
+      {"name": "Clutch Top Software Developers", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Lenovo", "domain": "lenovo.com"},
+      {"name": "HP", "domain": "hp.com"},
+      {"name": "Kia", "domain": "kia.com"},
+      {"name": "Kraft Heinz", "domain": "kraftheinzcompany.com"}
+    ]
+  },
+  {
+    "company_name": "Agiledrop",
+    "domain": "agiledrop.com",
+    "website": "https://www.agiledrop.com",
+    "category_slug": "php-frameworks",
+    "country_code": "SI",
+    "city": "Ljubljana",
+    "state": "",
+    "founded_year": 2013,
+    "team_size": "51-200",
+    "description": "Agiledrop is a Ljubljana-based web development company founded in 2013 that provides PHP and JavaScript developers as dedicated teams, staff augmentation and turn-key projects. The team specializes in Drupal, Laravel and Symfony alongside React, Vue and Node.js. It has delivered 500+ projects, including work for Fortune 500 firms, with offices in Ljubljana, Maribor and Celje.",
+    "linkedin": "https://www.linkedin.com/company/agiledrop",
+    "industries_served": ["Enterprise", "Government", "Education", "Media", "Nonprofit"],
+    "header_tags": ["Web Development", "Drupal", "Laravel", "PHP", "React", "Symfony"],
+    "email": "info@agiledrop.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "AAA Gold Creditworthiness", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "T-Systems", "domain": "t-systems.com"},
+      {"name": "WPP", "domain": "wpp.com"},
+      {"name": "Capgemini", "domain": "capgemini.com"},
+      {"name": "UNESCO", "domain": "unesco.org"}
+    ]
+  },
+  {
+    "company_name": "Baltic Amadeus",
+    "domain": "ba.lt",
+    "website": "https://www.ba.lt/en/",
+    "category_slug": "custom-web-development",
+    "country_code": "LT",
+    "city": "Vilnius",
+    "state": "",
+    "founded_year": null,
+    "team_size": "201-500",
+    "description": "Baltic Amadeus is a Vilnius-based software engineering and IT consulting company and one of the oldest private IT firms in Lithuania. Its 300+ experts deliver custom software development, digital experience platforms, cyber security and data services for enterprise clients across the EU. The company is a Microsoft partner and serves 150+ active clients annually.",
+    "linkedin": "https://www.linkedin.com/company/baltic-amadeus",
+    "industries_served": ["Banking", "Energy", "Insurance", "Logistics", "Manufacturing"],
+    "header_tags": ["Web Development", ".NET", "Java", "Drupal", "Cyber Security", "Data"],
+    "email": "info@ba.lt",
+    "intro_video_url": "https://www.youtube.com/watch?v=de73tIVLXMc",
+    "awards": [
+      {"name": "Microsoft Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "SEB", "domain": "seb.lt"},
+      {"name": "Luminor", "domain": "luminor.lt"},
+      {"name": "Carlsberg", "domain": "carlsberg.com"},
+      {"name": "Telia", "domain": "telia.lt"},
+      {"name": "Ignitis", "domain": "ignitis.lt"}
+    ]
+  }
+]

@@ -1,0 +1,550 @@
+[
+  {
+    "company_name": "Found",
+    "domain": "found.co.uk",
+    "website": "https://www.found.co.uk",
+    "category_slug": "paid-advertising-ppc",
+    "country_code": "GB",
+    "city": "London",
+    "state": "",
+    "founded_year": 2005,
+    "team_size": "51-200",
+    "description": "Found is a London-based digital performance agency built around its trademarked Everysearch approach, combining PPC, paid social, SEO and creative across searchable platforms. It is a Google Premier Partner and serves consumer and B2B brands from offices in London and New York.",
+    "linkedin": "https://uk.linkedin.com/company/found.co.uk",
+    "industries_served": ["Retail", "eCommerce", "Hospitality", "Travel", "Education"],
+    "header_tags": ["PPC", "Paid Social", "SEO", "Paid Media", "Performance", "Analytics"],
+    "email": "info@found.co.uk",
+    "intro_video_url": "https://www.youtube.com/watch?v=nxn31cpsBiE",
+    "awards": [
+      {"name": "UK Digital Excellence Awards - Standout PPC Agency of the Year", "year": 2026},
+      {"name": "Google Premier Partner", "year": 2026}
+    ],
+    "notable_clients": [
+      {"name": "Puma", "domain": "puma.com"},
+      {"name": "Toolstation", "domain": "toolstation.com"},
+      {"name": "Adecco", "domain": "adecco.com"},
+      {"name": "ManyPets", "domain": "manypets.com"}
+    ]
+  },
+  {
+    "company_name": "Moburst",
+    "domain": "moburst.com",
+    "website": "https://www.moburst.com",
+    "category_slug": "mobile-app-marketing",
+    "country_code": "US",
+    "city": "New York",
+    "state": "NY",
+    "founded_year": 2013,
+    "team_size": "51-200",
+    "description": "Moburst is a full-service, mobile-first digital marketing agency specializing in app marketing, ASO, user acquisition, media buying and creative production. Headquartered in New York with offices in San Francisco, London and Israel, it works with startups and global brands.",
+    "linkedin": "https://www.linkedin.com/company/moburst",
+    "industries_served": ["Mobile Apps", "SaaS", "Gaming", "Fintech", "Consumer Tech"],
+    "header_tags": ["App Marketing", "ASO", "User Acquisition", "Media Buying", "Mobile Strategy", "Creative"],
+    "email": "info@moburst.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=PQJeTEoekTU",
+    "awards": [
+      {"name": "MMA Smarties X Global Awards - Digital Marketing Agency of the Year", "year": 2023},
+      {"name": "Adweek Fastest Growing Agencies", "year": 2022}
+    ],
+    "notable_clients": [
+      {"name": "Samsung", "domain": "samsung.com"},
+      {"name": "Uber", "domain": "uber.com"},
+      {"name": "Reddit", "domain": "reddit.com"},
+      {"name": "Discovery", "domain": "discovery.com"},
+      {"name": "Calm", "domain": "calm.com"}
+    ]
+  },
+  {
+    "company_name": "OOm",
+    "domain": "oom.com.sg",
+    "website": "https://www.oom.com.sg",
+    "category_slug": "social-media-marketing-services",
+    "country_code": "SG",
+    "city": "Singapore",
+    "state": "",
+    "founded_year": 2006,
+    "team_size": "51-200",
+    "description": "OOm is a Singapore-based full-service digital marketing agency offering social media marketing, SEM, SEO and web development. It is a Google Premier Partner and Meta Business Partner with additional operations in the Philippines and Hong Kong.",
+    "linkedin": "https://sg.linkedin.com/company/oom-pte-ltd",
+    "industries_served": ["eCommerce", "Finance", "Healthcare", "B2B", "Retail"],
+    "header_tags": ["Social Media", "SEM", "SEO", "Google Ads", "Meta Ads", "Web Design"],
+    "email": "enquiry.agency@oom.com.sg",
+    "intro_video_url": "https://www.youtube.com/watch?v=dtOBTyRFEc4",
+    "awards": [
+      {"name": "Marketing Excellence Awards - Lead Generation Agency of the Year (Gold)", "year": 2024},
+      {"name": "Agency of the Year Awards - Search Agency of the Year (Bronze)", "year": 2025},
+      {"name": "Google Premier Partner", "year": null}
+    ],
+    "notable_clients": []
+  },
+  {
+    "company_name": "Yodel Mobile",
+    "domain": "yodelmobile.com",
+    "website": "https://yodelmobile.com",
+    "category_slug": "mobile-app-marketing",
+    "country_code": "GB",
+    "city": "London",
+    "state": "",
+    "founded_year": 2007,
+    "team_size": "11-50",
+    "description": "Yodel Mobile is a London-based app growth marketing consultancy specializing in App Store Optimization, paid user acquisition and creative for mobile apps. It has launched and scaled over 2,500 apps across global markets and is one of the most awarded app marketing agencies.",
+    "linkedin": "https://uk.linkedin.com/company/yodel-mobile",
+    "industries_served": ["Mobile Apps", "Gaming", "Entertainment", "Fintech", "Retail"],
+    "header_tags": ["App Marketing", "ASO", "User Acquisition", "Mobile Creative", "Paid UA", "Retention"],
+    "email": "info@yodelmobile.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=wBoZa12AT_0",
+    "awards": [
+      {"name": "App Growth Awards - App Marketing Agency of the Year", "year": 2024},
+      {"name": "UK Digital Growth Awards - Best Mobile Campaign", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Tinder", "domain": "tinder.com"},
+      {"name": "UKTV", "domain": "uktv.co.uk"},
+      {"name": "B&Q", "domain": "diy.com"}
+    ]
+  },
+  {
+    "company_name": "The Social Shepherd",
+    "domain": "thesocialshepherd.com",
+    "website": "https://thesocialshepherd.com",
+    "category_slug": "social-media-marketing-services",
+    "country_code": "GB",
+    "city": "Bath",
+    "state": "",
+    "founded_year": 2018,
+    "team_size": "51-200",
+    "description": "The Social Shepherd is a UK social-first marketing agency delivering organic social, paid social, paid search, influencer campaigns and social creative. Headquartered in Bath with offices in London, New York and Miami, it serves global consumer brands.",
+    "linkedin": "https://www.linkedin.com/company/the-social-shepherd",
+    "industries_served": ["Retail", "eCommerce", "Consumer Goods", "Hospitality", "Fashion"],
+    "header_tags": ["Social Media", "Paid Social", "Paid Search", "Influencer", "Social Creative", "TikTok"],
+    "email": "hello@thesocialshepherd.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=4b7bgiRGT9s",
+    "awards": [
+      {"name": "UK Social Media Awards - Best Large Social Media Agency", "year": 2024},
+      {"name": "UK Social Media Awards - Social Media Agency of the Year", "year": 2025}
+    ],
+    "notable_clients": [
+      {"name": "UNIQLO", "domain": "uniqlo.com"},
+      {"name": "ASICS", "domain": "asics.com"},
+      {"name": "Arla", "domain": "arla.com"},
+      {"name": "Bark", "domain": "bark.co"}
+    ]
+  },
+  {
+    "company_name": "Propelrr",
+    "domain": "propelrr.com",
+    "website": "https://propelrr.com",
+    "category_slug": "social-media-marketing-services",
+    "country_code": "PH",
+    "city": "Makati City",
+    "state": "Metro Manila",
+    "founded_year": 2008,
+    "team_size": "51-200",
+    "description": "Propelrr is an experimentation-led digital marketing agency in Makati, Philippines offering social media marketing, PPC, SEO, content marketing, analytics and UX design. It serves established brands and SMEs across fintech, real estate, FMCG and retail.",
+    "linkedin": "https://www.linkedin.com/company/propelrr",
+    "industries_served": ["Fintech", "Real Estate", "FMCG", "Retail", "eCommerce"],
+    "header_tags": ["Social Media", "PPC", "SEO", "Content Marketing", "Analytics", "UX Design"],
+    "email": "hello@propelrr.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=sKUYNTY_5qA",
+    "awards": [
+      {"name": "Asia-Pacific Stevie Awards (Gold & Silver)", "year": 2024},
+      {"name": "Netty Awards - UX Research Excellence", "year": 2024},
+      {"name": "Marketing Excellence Awards (Gold & Bronze)", "year": 2023}
+    ],
+    "notable_clients": [
+      {"name": "DMCI Homes", "domain": "dmcihomes.com"},
+      {"name": "Palawan Pawnshop", "domain": "palawanpawnshop.com"},
+      {"name": "AboitizPower", "domain": "aboitizpower.com"}
+    ]
+  },
+  {
+    "company_name": "Spiralytics",
+    "domain": "spiralytics.com",
+    "website": "https://www.spiralytics.com",
+    "category_slug": "paid-advertising-ppc",
+    "country_code": "PH",
+    "city": "Makati City",
+    "state": "Metro Manila",
+    "founded_year": 2013,
+    "team_size": "51-200",
+    "description": "Spiralytics is a performance-focused digital marketing agency based in Makati, Philippines specializing in PPC, SEO, content marketing, social media and marketing automation. It is a Google Premier Partner and HubSpot Platinum Partner serving clients globally.",
+    "linkedin": "https://www.linkedin.com/company/spiralytics-inc",
+    "industries_served": ["SaaS", "B2B", "eCommerce", "Legal", "Professional Services"],
+    "header_tags": ["PPC", "SEO", "Content Marketing", "Social Media", "Marketing Automation", "CRO"],
+    "email": "info@spiralytics.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Google Premier Partner", "year": null},
+      {"name": "HubSpot Platinum Partner", "year": null},
+      {"name": "Clutch Top PPC Agency", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Globe Telecom", "domain": "globe.com.ph"},
+      {"name": "First Circle", "domain": "firstcircle.ph"},
+      {"name": "Manila Recruitment", "domain": "manilarecruitment.com"}
+    ]
+  },
+  {
+    "company_name": "Prism Digital",
+    "domain": "prism-me.com",
+    "website": "https://www.prism-me.com",
+    "category_slug": "social-media-marketing-services",
+    "country_code": "AE",
+    "city": "Dubai",
+    "state": "",
+    "founded_year": 2006,
+    "team_size": "11-50",
+    "description": "Prism Digital is a Dubai-based social media and digital marketing agency offering social media management, paid media, content creation and SEO. A Meta Business Partner, it has worked with major UAE brands across hospitality, retail and real estate.",
+    "linkedin": "https://in.linkedin.com/company/prismmarketing",
+    "industries_served": ["Hospitality", "Retail", "Real Estate", "Automotive", "Healthcare"],
+    "header_tags": ["Social Media", "Paid Media", "Content Creation", "SEO", "Influencer", "Video"],
+    "email": "sales@prism-me.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=OgM_MaFODNQ",
+    "awards": [
+      {"name": "MENA Effie Awards - Best Corporate Social Responsibility Campaign", "year": 2020},
+      {"name": "Gulf Marketing Review Awards - Agency of the Year", "year": 2018}
+    ],
+    "notable_clients": [
+      {"name": "Emaar", "domain": "emaar.com"},
+      {"name": "L'Oreal", "domain": "loreal.com"},
+      {"name": "Jumeirah", "domain": "jumeirah.com"},
+      {"name": "Landmark Group", "domain": "landmarkgroup.com"}
+    ]
+  },
+  {
+    "company_name": "Dark Horse",
+    "domain": "darkhorse.co",
+    "website": "https://darkhorse.co",
+    "category_slug": "paid-advertising-ppc",
+    "country_code": "GB",
+    "city": "Altrincham",
+    "state": "",
+    "founded_year": 2020,
+    "team_size": "11-50",
+    "description": "Dark Horse is a Manchester-area PPC, paid social and SEO agency based in Altrincham, focused on driving ecommerce and lead-gen growth for ambitious businesses. It is a multi-year Google Premier Partner, placing it in the top 3% of UK agencies.",
+    "linkedin": "https://uk.linkedin.com/company/thisisdarkhorse",
+    "industries_served": ["eCommerce", "Retail", "Health & Fitness", "B2B", "Consumer Goods"],
+    "header_tags": ["PPC", "Paid Social", "SEO", "Google Ads", "Ecommerce", "Paid Media"],
+    "email": "hello@darkhorse.co",
+    "intro_video_url": "https://www.youtube.com/watch?v=dKP6rrwUfPM",
+    "awards": [
+      {"name": "Google Premier Partner", "year": 2026}
+    ],
+    "notable_clients": [
+      {"name": "Maximuscle", "domain": "maximuscle.com"},
+      {"name": "Avenue 85", "domain": "avenue85.co.uk"}
+    ]
+  },
+  {
+    "company_name": "Intent Farm",
+    "domain": "intentfarm.com",
+    "website": "https://intentfarm.com",
+    "category_slug": "paid-advertising-ppc",
+    "country_code": "IN",
+    "city": "Bengaluru",
+    "state": "Karnataka",
+    "founded_year": 2018,
+    "team_size": "51-200",
+    "description": "Intent Farm is a Bengaluru-based performance marketing agency specializing in Google Ads, Meta Ads, Amazon growth and in-house creative production. A Google Premier Partner and Meta and Amazon Ads Partner, it serves eCommerce, EdTech, fintech and D2C brands.",
+    "linkedin": "https://in.linkedin.com/company/intent-farm",
+    "industries_served": ["eCommerce", "EdTech", "Fintech", "Real Estate", "D2C"],
+    "header_tags": ["PPC", "Google Ads", "Meta Ads", "Amazon Ads", "Performance Marketing", "Creative"],
+    "email": "hello@intentfarm.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Google Premier Partner", "year": 2023},
+      {"name": "India Digital Awards (IAMAI) - Best Digital Campaign", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Vedantu", "domain": "vedantu.com"},
+      {"name": "Furlenco", "domain": "furlenco.com"},
+      {"name": "Drunken Monkey", "domain": "drunkenmonkey.co.in"}
+    ]
+  },
+  {
+    "company_name": "Unbundl",
+    "domain": "unbundl.com",
+    "website": "https://unbundl.com",
+    "category_slug": "paid-advertising-ppc",
+    "country_code": "IN",
+    "city": "New Delhi",
+    "state": "Delhi",
+    "founded_year": null,
+    "team_size": "11-50",
+    "description": "Unbundl is a New Delhi-based performance marketing and growth agency offering Google Ads, Meta Ads, Amazon Ads, SEO, CRO and Shopify development. It is a Meta Ads Partner and Amazon Ads Partner serving D2C and category-defining brands.",
+    "linkedin": "https://in.linkedin.com/company/unbundl",
+    "industries_served": ["D2C", "eCommerce", "Healthcare", "Retail", "Travel"],
+    "header_tags": ["Performance Marketing", "Google Ads", "Meta Ads", "Amazon Ads", "SEO", "CRO"],
+    "email": "hello@unbundl.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Meta Ads Partner", "year": null},
+      {"name": "Amazon Ads Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Clove Dental", "domain": "clovedental.in"},
+      {"name": "Faber Spa", "domain": "faberspa.com"}
+    ]
+  },
+  {
+    "company_name": "Doxadigital",
+    "domain": "doxadigital.com",
+    "website": "https://doxadigital.com",
+    "category_slug": "social-media-marketing-services",
+    "country_code": "ID",
+    "city": "Jakarta",
+    "state": "",
+    "founded_year": 2002,
+    "team_size": "11-50",
+    "description": "Doxadigital is a Jakarta-based digital marketing agency, originally a software house, offering social media marketing, Google Ads, Meta Ads, TikTok Ads, SEO and web development. It is a Google Premier Partner, Meta Business Partner and TikTok partner agency.",
+    "linkedin": "https://id.linkedin.com/company/doxadigital",
+    "industries_served": ["Automotive", "Retail", "Education", "FMCG", "Finance"],
+    "header_tags": ["Social Media", "Google Ads", "Meta Ads", "TikTok Ads", "SEO", "Web Development"],
+    "email": "hello@doxadigital.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=3X3tDpL8LYc",
+    "awards": [
+      {"name": "Indonesia Trusted Brand Award - Digital Agency Category", "year": 2022},
+      {"name": "Google Premier Partner", "year": 2025},
+      {"name": "Meta Business Partner", "year": 2018}
+    ],
+    "notable_clients": [
+      {"name": "Bridgestone", "domain": "bridgestone.com"},
+      {"name": "OPPO", "domain": "oppo.com"},
+      {"name": "Indomaret", "domain": "indomaret.co.id"},
+      {"name": "Superindo", "domain": "superindo.co.id"}
+    ]
+  },
+  {
+    "company_name": "Bytes Future",
+    "domain": "bytesfuture.com",
+    "website": "https://bytesfuture.com",
+    "category_slug": "social-media-marketing-services",
+    "country_code": "SA",
+    "city": "Riyadh",
+    "state": "",
+    "founded_year": 2008,
+    "team_size": "51-200",
+    "description": "Bytes Future is a Riyadh-based digital marketing and advertising agency offering social media marketing, SEO, PPC, web development and video production. It operates across Saudi Arabia, the UAE and Bahrain, serving enterprises and government bodies.",
+    "linkedin": "https://www.linkedin.com/company/bytes-future",
+    "industries_served": ["Healthcare", "Finance", "Government", "Automotive", "Hospitality"],
+    "header_tags": ["Social Media", "SEO", "PPC", "Web Development", "Video", "Branding"],
+    "email": "info@bytesfuture.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Most Innovative Digital Marketing Agency in Saudi Arabia", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Al Rajhi Bank", "domain": "alrajhibank.com.sa"},
+      {"name": "Ford", "domain": "ford.com"},
+      {"name": "Pepsi", "domain": "pepsi.com"},
+      {"name": "Philips", "domain": "philips.com"}
+    ]
+  },
+  {
+    "company_name": "EKO Innovations",
+    "domain": "ekoinnovations.com",
+    "website": "https://ekoinnovations.com",
+    "category_slug": "paid-advertising-ppc",
+    "country_code": "EG",
+    "city": "Giza",
+    "state": "",
+    "founded_year": null,
+    "team_size": "11-50",
+    "description": "EKO Innovations (Eko Agency) is a performance and creative marketing agency headquartered in Giza, Egypt running data-driven Meta, Google and TikTok campaigns across the MENA region. A Google Premier Partner, it also offers branding, UX design and video production.",
+    "linkedin": "https://eg.linkedin.com/company/ekoagency",
+    "industries_served": ["Aviation", "Fintech", "Retail", "Real Estate", "Automotive"],
+    "header_tags": ["Performance Marketing", "Meta Ads", "Google Ads", "TikTok Ads", "Branding", "Creative"],
+    "email": "hello@ekoads.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Google Premier Partner", "year": null},
+      {"name": "MENA Digital Excellence Award", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Audi", "domain": "audi.com"},
+      {"name": "Fawry", "domain": "fawry.com"},
+      {"name": "inDrive", "domain": "indrive.com"},
+      {"name": "Air Arabia", "domain": "airarabia.com"}
+    ]
+  },
+  {
+    "company_name": "PurpleClick Media",
+    "domain": "purpleclick.com",
+    "website": "https://www.purpleclick.com",
+    "category_slug": "paid-advertising-ppc",
+    "country_code": "SG",
+    "city": "Singapore",
+    "state": "",
+    "founded_year": 2006,
+    "team_size": "51-200",
+    "description": "PurpleClick Media is a Singapore-headquartered performance marketing agency offering SEM, SEO, social media marketing, programmatic advertising and digital out-of-home. One of Google's longest-standing premium partners in Southeast Asia, it also operates in the Philippines and Malaysia.",
+    "linkedin": "https://sg.linkedin.com/company/purpleclick-media",
+    "industries_served": ["Retail", "eCommerce", "Government", "Education", "B2B"],
+    "header_tags": ["SEM", "SEO", "Social Media", "Programmatic", "YouTube Ads", "Influencer"],
+    "email": "enquiries@purpleclick.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Markies Awards - Most Creative Integrated Media (Gold)", "year": 2024},
+      {"name": "Analytics Agency of the Year (Local Hero)", "year": 2022},
+      {"name": "Google Premier Partner", "year": null}
+    ],
+    "notable_clients": []
+  },
+  {
+    "company_name": "ConsultMyApp",
+    "domain": "consultmyapp.com",
+    "website": "https://www.consultmyapp.com",
+    "category_slug": "mobile-app-marketing",
+    "country_code": "GB",
+    "city": "London",
+    "state": "",
+    "founded_year": 2016,
+    "team_size": "11-50",
+    "description": "ConsultMyApp is a London-based mobile app marketing consultancy specializing in App Store Optimization, paid user acquisition, CRM and BI analytics. With offices in London, Vancouver and Germany, it works with leading global app and consumer brands.",
+    "linkedin": "https://uk.linkedin.com/company/consultmyapp",
+    "industries_served": ["Mobile Apps", "Gaming", "Fintech", "Retail", "Fitness"],
+    "header_tags": ["App Marketing", "ASO", "User Acquisition", "CRM", "BI Analytics", "Creative"],
+    "email": "hello@consultmyapp.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Clutch Global App Marketing Winner", "year": 2025},
+      {"name": "App Growth Awards - App Store Marketing Campaign of the Year", "year": 2024},
+      {"name": "App Growth Awards - ASO Company of the Year", "year": 2023}
+    ],
+    "notable_clients": [
+      {"name": "Macy's", "domain": "macys.com"},
+      {"name": "Grab", "domain": "grab.com"},
+      {"name": "PureGym", "domain": "puregym.com"},
+      {"name": "Chegg", "domain": "chegg.com"}
+    ]
+  },
+  {
+    "company_name": "FoxyMoron",
+    "domain": "foxymoron.in",
+    "website": "https://foxymoron.in",
+    "category_slug": "social-media-marketing-services",
+    "country_code": "IN",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "founded_year": 2008,
+    "team_size": "201-500",
+    "description": "FoxyMoron is an award-winning full-funnel creative and performance digital agency with offices in Mumbai, Gurugram and Bangalore. Part of the Zoo Media network, it combines content, technology and media for major Indian and global consumer brands.",
+    "linkedin": "https://www.linkedin.com/company/foxymoron",
+    "industries_served": ["Beauty", "FMCG", "Entertainment", "eCommerce", "QSR"],
+    "header_tags": ["Social Media", "Creative", "Performance Marketing", "Content", "Influencer", "Branding"],
+    "email": "business@foxymoron.in",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Shorty Industry Award", "year": null},
+      {"name": "e4m IDIA - Best Use of Social Media", "year": 2022}
+    ],
+    "notable_clients": [
+      {"name": "Netflix", "domain": "netflix.com"},
+      {"name": "L'Oreal", "domain": "loreal.com"},
+      {"name": "IKEA", "domain": "ikea.com"},
+      {"name": "Burger King", "domain": "burgerking.in"}
+    ]
+  },
+  {
+    "company_name": "Marcel Digital",
+    "domain": "marceldigital.com",
+    "website": "https://www.marceldigital.com",
+    "category_slug": "paid-advertising-ppc",
+    "country_code": "US",
+    "city": "Chicago",
+    "state": "IL",
+    "founded_year": 2003,
+    "team_size": "11-50",
+    "description": "Marcel Digital is a Chicago-based digital marketing and web development agency offering paid media, SEO, CRO and Umbraco development. It is a Google Premier Partner and Umbraco Platinum Partner serving B2B and enterprise clients.",
+    "linkedin": "https://www.linkedin.com/company/marcel-digital",
+    "industries_served": ["B2B", "Technology", "Healthcare", "Manufacturing", "Professional Services"],
+    "header_tags": ["Paid Media", "SEO", "CRO", "Web Development", "Umbraco", "Analytics"],
+    "email": "info@marceldigital.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=JTMuipIGbb0",
+    "awards": [
+      {"name": "Google Premier Partner", "year": null},
+      {"name": "Umbraco Platinum Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Absolute Software", "domain": "absolute.com"},
+      {"name": "PerkSpot", "domain": "perkspot.com"},
+      {"name": "Generali", "domain": "generali.com"}
+    ]
+  },
+  {
+    "company_name": "Direct Online Marketing",
+    "domain": "directom.com",
+    "website": "https://www.directom.com",
+    "category_slug": "paid-advertising-ppc",
+    "country_code": "US",
+    "city": "Pittsburgh",
+    "state": "PA",
+    "founded_year": 2006,
+    "team_size": "11-50",
+    "description": "Direct Online Marketing (DOM) is a Pittsburgh-based PPC and SEO agency providing paid search, paid social, SEO and analytics for B2B and global clients. It is a top-3% Google Premier Partner and Microsoft Advertising accredited partner.",
+    "linkedin": "https://www.linkedin.com/company/direct-online-marketing",
+    "industries_served": ["B2B", "Manufacturing", "Technology", "eCommerce", "Professional Services"],
+    "header_tags": ["PPC", "Paid Search", "SEO", "Paid Social", "Analytics", "CRO"],
+    "email": "info@directom.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Google Premier Partner", "year": 2026},
+      {"name": "Microsoft Advertising Accredited Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Corporate Visions", "domain": "corporatevisions.com"},
+      {"name": "Alsana", "domain": "alsana.com"}
+    ]
+  },
+  {
+    "company_name": "Element8",
+    "domain": "element8.ae",
+    "website": "https://www.element8.ae",
+    "category_slug": "social-media-marketing-services",
+    "country_code": "AE",
+    "city": "Dubai",
+    "state": "",
+    "founded_year": 2011,
+    "team_size": "51-200",
+    "description": "Element8 is a Dubai-based digital marketing and web design agency offering social media marketing, paid media, SEO and ecommerce development. With 85+ in-house specialists, it serves brands across the UAE and wider region.",
+    "linkedin": "https://www.linkedin.com/company/element-8",
+    "industries_served": ["Travel", "Retail", "Healthcare", "Real Estate", "Education"],
+    "header_tags": ["Social Media", "Paid Media", "SEO", "eCommerce", "Web Design", "Branding"],
+    "email": "info@element8.ae",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "Garmin", "domain": "garmin.com"},
+      {"name": "Hisense", "domain": "hisense.com"},
+      {"name": "Bank Muscat", "domain": "bankmuscat.com"},
+      {"name": "Al Hilal Bank", "domain": "alhilalbank.ae"}
+    ]
+  },
+  {
+    "company_name": "Techmagnate",
+    "domain": "techmagnate.com",
+    "website": "https://www.techmagnate.com",
+    "category_slug": "paid-advertising-ppc",
+    "country_code": "IN",
+    "city": "New Delhi",
+    "state": "Delhi",
+    "founded_year": 2006,
+    "team_size": "201-500",
+    "description": "Techmagnate is a New Delhi-based full-suite digital marketing agency offering PPC, SEO, app marketing (ASO), content marketing and CRO. A Google Premier Partner with 300+ specialists, it runs large-scale campaigns for enterprise clients in BFSI, healthcare, education and eCommerce.",
+    "linkedin": "https://in.linkedin.com/company/techmagnate",
+    "industries_served": ["BFSI", "Healthcare", "Education", "eCommerce", "Automotive"],
+    "header_tags": ["PPC", "SEO", "App Marketing", "ASO", "Content Marketing", "CRO"],
+    "email": "enquiry@techmagnate.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=FW8ZuLcv7So",
+    "awards": [
+      {"name": "Google Premier Partner", "year": 2023},
+      {"name": "Pitch BFSI Marketing Awards (2 Gold, 3 Silver)", "year": 2025}
+    ],
+    "notable_clients": [
+      {"name": "Apollo Hospitals", "domain": "apollohospitals.com"},
+      {"name": "Bajaj Finserv", "domain": "bajajfinserv.in"},
+      {"name": "Airtel", "domain": "airtel.in"},
+      {"name": "Honda", "domain": "honda.co.in"}
+    ]
+  }
+]

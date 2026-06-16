@@ -1,0 +1,555 @@
+[
+  {
+    "company_name": "Cheesecake Labs",
+    "domain": "cheesecakelabs.com",
+    "website": "https://cheesecakelabs.com",
+    "category_slug": "custom-software-development",
+    "country_code": "BR",
+    "city": "Florianopolis",
+    "state": "Santa Catarina",
+    "founded_year": 2013,
+    "team_size": "51-200",
+    "description": "Cheesecake Labs is a nearshore software product engineering company founded in 2013 with an engineering hub in Florianopolis, Brazil and a US office in San Francisco. It builds custom web, mobile, AI, data and blockchain applications for US startups and enterprises, offering dedicated teams and staff augmentation. The firm pairs Silicon Valley product thinking with Brazilian engineering talent.",
+    "linkedin": "https://www.linkedin.com/company/cheesecake-labs/",
+    "industries_served": ["Fintech", "Retail", "Healthcare", "SaaS", "Blockchain"],
+    "header_tags": ["Custom Software", "Mobile Apps", "AI", "React", "UX/UI", "Blockchain"],
+    "email": "info@cheesecakelabs.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Clutch Global Award (Spring 2025)", "year": 2025},
+      {"name": "Clutch Top Custom Software Developer", "year": null},
+      {"name": "Great Place to Work", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "MoneyGram", "domain": "moneygram.com"},
+      {"name": "Mercado Libre", "domain": "mercadolibre.com"},
+      {"name": "PepsiCo", "domain": "pepsico.com"},
+      {"name": "Tapcart", "domain": "tapcart.com"},
+      {"name": "Stellar Development Foundation", "domain": "stellar.org"}
+    ]
+  },
+  {
+    "company_name": "Abstracta",
+    "domain": "abstracta.us",
+    "website": "https://abstracta.us",
+    "category_slug": "quality-assurance-testing",
+    "country_code": "UY",
+    "city": "Montevideo",
+    "state": "",
+    "founded_year": 2008,
+    "team_size": "51-200",
+    "description": "Abstracta is a global software testing and quality engineering company that started in Uruguay around 2008 and is headquartered in Montevideo, with additional offices in the US, Canada, Chile, Colombia and Brazil. It provides test strategy, test automation, performance, accessibility and security testing, plus AI-driven quality engineering. The firm also creates open-source and commercial testing tools.",
+    "linkedin": "https://www.linkedin.com/company/abstracta",
+    "industries_served": ["Financial Services", "Healthcare", "Technology", "E-commerce", "Travel"],
+    "header_tags": ["QA", "Software Testing", "Test Automation", "Performance Testing", "Security Testing", "DevOps"],
+    "email": "info@abstracta.us",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Clutch Top B2B Companies", "year": 2024},
+      {"name": "DesignRush Top Software Testing Companies", "year": 2024},
+      {"name": "Great Place to Work Uruguay", "year": 2022}
+    ],
+    "notable_clients": [
+      {"name": "Shutterfly", "domain": "shutterfly.com"},
+      {"name": "BBVA", "domain": "bbva.com"},
+      {"name": "Santander", "domain": "santander.com"},
+      {"name": "PedidosYa", "domain": "pedidosya.com"}
+    ]
+  },
+  {
+    "company_name": "NaNLABS",
+    "domain": "nan-labs.com",
+    "website": "https://www.nan-labs.com",
+    "category_slug": "custom-software-development",
+    "country_code": "AR",
+    "city": "La Plata",
+    "state": "Buenos Aires",
+    "founded_year": 2013,
+    "team_size": "51-200",
+    "description": "NaNLABS is an agile software development studio founded in 2013 and headquartered in La Plata, Buenos Aires, Argentina, with additional presence in the US and France. It specializes in cloud data engineering, real-time data processing, AI/ML and full-stack development for US clients. The firm works as an embedded nearshore team and is an AWS partner.",
+    "linkedin": "https://www.linkedin.com/company/nan-labs/",
+    "industries_served": ["SaaS", "Cybersecurity", "Insurance", "Automotive", "Energy"],
+    "header_tags": ["Custom Software", "Cloud Data Engineering", "AI/ML", "Full-Stack", "AWS", "Staff Augmentation"],
+    "email": "ask@nan-labs.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "AWS Partner Network", "year": null},
+      {"name": "Clutch 1000", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Equinix", "domain": "equinix.com"},
+      {"name": "Symantec", "domain": "symantec.com"},
+      {"name": "Getaround", "domain": "getaround.com"},
+      {"name": "Netskope", "domain": "netskope.com"}
+    ]
+  },
+  {
+    "company_name": "Teravision Technologies",
+    "domain": "teravisiontech.com",
+    "website": "https://www.teravisiontech.com",
+    "category_slug": "outsourced-offshore",
+    "country_code": "CO",
+    "city": "Bogota",
+    "state": "",
+    "founded_year": 2003,
+    "team_size": "51-200",
+    "description": "Teravision Technologies is a nearshore software development company operating since 2003 with its main Latin American delivery center in Bogota, Colombia and a US office in Miami. It provides product engineering, staff augmentation, QA, cloud/DevOps and AI-powered teams for US companies. The firm is an AWS Advanced Consulting Partner.",
+    "linkedin": "https://www.linkedin.com/company/teravision-technologies",
+    "industries_served": ["Fintech", "SaaS", "Retail", "Media", "Healthcare"],
+    "header_tags": ["Custom Software", "Staff Augmentation", "Product Engineering", "QA", "Cloud", "DevOps"],
+    "email": "info@teravisiontech.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "AWS Advanced Consulting Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "McDonald's", "domain": "mcdonalds.com"},
+      {"name": "Versapay", "domain": "versapay.com"},
+      {"name": "PrimaryBid", "domain": "primarybid.com"},
+      {"name": "MoCaFi", "domain": "mocafi.com"}
+    ]
+  },
+  {
+    "company_name": "UruIT",
+    "domain": "uruit.com",
+    "website": "https://uruit.com",
+    "category_slug": "outsourced-offshore",
+    "country_code": "UY",
+    "city": "Montevideo",
+    "state": "",
+    "founded_year": 2007,
+    "team_size": "51-200",
+    "description": "UruIT is a nearshore software development company founded in 2007 and headquartered in Montevideo, Uruguay, with delivery centers in Colombia (Medellin and Bogota) and a US office. It builds custom web and mobile products and provides team augmentation, product design and machine learning consulting for US brands. UruIT is now part of Nortal.",
+    "linkedin": "https://www.linkedin.com/company/uruit-global-it-services/",
+    "industries_served": ["Fintech", "SaaS", "Real Estate", "E-learning", "Media"],
+    "header_tags": ["Custom Software", "Web Development", "Mobile Development", "Product Design", "Staff Augmentation", "Machine Learning"],
+    "email": "hello@uruit.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Clutch Top Developers Uruguay", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Bloomberg", "domain": "bloomberg.com"},
+      {"name": "Building Engines", "domain": "buildingengines.com"},
+      {"name": "Tony Robbins", "domain": "tonyrobbins.com"}
+    ]
+  },
+  {
+    "company_name": "ateliware",
+    "domain": "ateliware.com",
+    "website": "https://ateliware.com",
+    "category_slug": "custom-software-development",
+    "country_code": "BR",
+    "city": "Curitiba",
+    "state": "Parana",
+    "founded_year": 2011,
+    "team_size": "51-200",
+    "description": "ateliware is a custom software development company founded in 2011 and headquartered in Curitiba, Parana, Brazil, with additional presence in the US and Europe. It delivers end-to-end product discovery, design and engineering, technical consultancy and squad allocation, including AI development. The firm co-founded ventures such as Pipefy and Trio.",
+    "linkedin": "https://www.linkedin.com/company/ateliware/",
+    "industries_served": ["Finance", "Retail", "Mobility", "Technology", "Services"],
+    "header_tags": ["Custom Software", "Product Engineering", "AI Development", "Squad Allocation", "Service Design", "Consulting"],
+    "email": "hello@ateliware.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Clutch Top Company Brazil", "year": 2021}
+    ],
+    "notable_clients": [
+      {"name": "Pipefy", "domain": "pipefy.com"},
+      {"name": "Votorantim", "domain": "votorantim.com.br"},
+      {"name": "JCB", "domain": "jcb.com"},
+      {"name": "Banco BMG", "domain": "bancobmg.com.br"}
+    ]
+  },
+  {
+    "company_name": "NextAge",
+    "domain": "nextage.com.br",
+    "website": "https://nextage.com.br",
+    "category_slug": "outsourced-offshore",
+    "country_code": "BR",
+    "city": "Curitiba",
+    "state": "Parana",
+    "founded_year": 2007,
+    "team_size": "51-200",
+    "description": "NextAge is a nearshore software development company founded in 2007 and headquartered in Curitiba, Parana, Brazil, with additional offices in Portugal and the US. It provides custom software development, managed squads, staff augmentation and QA/test automation for North American, European and Latin American clients. The firm has been recognized by Clutch and GoodFirms.",
+    "linkedin": "https://www.linkedin.com/company/nextage-agile-development/",
+    "industries_served": ["Financial Services", "Telecom", "Insurance", "Retail", "Technology"],
+    "header_tags": ["Custom Software", "Staff Augmentation", "Managed Squads", "QA", "App Development", "Java"],
+    "email": null,
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Clutch Top Java Developers", "year": 2024},
+      {"name": "GoodFirms Top Mobile App Developer", "year": null},
+      {"name": "Softex Certified", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "XP Inc.", "domain": "xpinc.com"},
+      {"name": "WEG", "domain": "weg.net"},
+      {"name": "Scania", "domain": "scania.com"},
+      {"name": "Sicredi", "domain": "sicredi.com.br"}
+    ]
+  },
+  {
+    "company_name": "sophilabs",
+    "domain": "sophilabs.com",
+    "website": "https://www.sophilabs.com",
+    "category_slug": "custom-software-development",
+    "country_code": "UY",
+    "city": "Montevideo",
+    "state": "",
+    "founded_year": 2012,
+    "team_size": "51-200",
+    "description": "sophilabs is a software design and development agency founded in 2012 and rooted in Montevideo, Uruguay, with a US office in Brooklyn and additional Latin American offices in Argentina, Colombia, Peru and Ecuador. It provides custom software outsourcing, dedicated teams, staff augmentation and product discovery for US companies. The firm operates fully on US time zones.",
+    "linkedin": "https://www.linkedin.com/company/sophilabs/",
+    "industries_served": ["SaaS", "Fintech", "Healthcare", "Technology", "Media"],
+    "header_tags": ["Custom Software", "Staff Augmentation", "Software Outsourcing", "Product Discovery", "Python", "React"],
+    "email": "hi@sophilabs.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Clutch Top Software Developers", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "SAP", "domain": "sap.com"},
+      {"name": "Auth0", "domain": "auth0.com"},
+      {"name": "Amgen", "domain": "amgen.com"},
+      {"name": "Oxford Economics", "domain": "oxfordeconomics.com"}
+    ]
+  },
+  {
+    "company_name": "Koombea",
+    "domain": "koombea.com",
+    "website": "https://www.koombea.com",
+    "category_slug": "custom-software-development",
+    "country_code": "CO",
+    "city": "Barranquilla",
+    "state": "Atlantico",
+    "founded_year": 2007,
+    "team_size": "201-500",
+    "description": "Koombea is a software and AI development company founded in 2007 and headquartered in Barranquilla, Colombia, with US offices in New York, San Francisco, Miami and Chicago. It builds custom web, mobile and AI applications for startups and enterprises, offering product discovery, QA and IT staff augmentation. The firm holds AWS, Stripe and Shopify Plus partner status.",
+    "linkedin": "https://www.linkedin.com/company/koombea/",
+    "industries_served": ["Fintech", "Healthcare", "EdTech", "Retail", "IoT"],
+    "header_tags": ["Custom Software", "Mobile Apps", "Web Development", "AI", "QA", "Staff Augmentation"],
+    "email": null,
+    "intro_video_url": null,
+    "awards": [
+      {"name": "AWS Partner Network", "year": null},
+      {"name": "Stripe Verified Partner", "year": null},
+      {"name": "Shopify Plus Partner", "year": null},
+      {"name": "Inc. Power Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Motorola Solutions", "domain": "motorolasolutions.com"},
+      {"name": "Payix", "domain": "payix.com"},
+      {"name": "Linc", "domain": "linc.com"}
+    ]
+  },
+  {
+    "company_name": "Clarika",
+    "domain": "clarikagroup.com",
+    "website": "https://clarikagroup.com",
+    "category_slug": "custom-software-development",
+    "country_code": "AR",
+    "city": "Cordoba",
+    "state": "Cordoba",
+    "founded_year": 2007,
+    "team_size": "51-200",
+    "description": "Clarika is a custom software development company founded in 2007 and headquartered in Cordoba, Argentina, with offices in the US and Chile. It provides custom software development, AI process automation, conversational assistants, staff augmentation and dedicated teams. The firm is certified as a Great Place to Work in Argentina.",
+    "linkedin": "https://www.linkedin.com/company/clarikagroup/",
+    "industries_served": ["Retail", "Fintech", "Healthcare", "Utilities", "Consumer Goods"],
+    "header_tags": ["Custom Software", "AI Automation", "Staff Augmentation", "Dedicated Teams", "Web Development", "Mobile"],
+    "email": "hello@clarika.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Great Place to Work Argentina", "year": null},
+      {"name": "Clutch Top Custom Software Developers", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "McDonald's", "domain": "mcdonalds.com"},
+      {"name": "AB InBev", "domain": "ab-inbev.com"},
+      {"name": "Grundfos", "domain": "grundfos.com"},
+      {"name": "Aguas Cordobesas", "domain": "aguascordobesas.com.ar"}
+    ]
+  },
+  {
+    "company_name": "Luby",
+    "domain": "luby.com.br",
+    "website": "https://luby.com.br",
+    "category_slug": "custom-software-development",
+    "country_code": "BR",
+    "city": "Sao Paulo",
+    "state": "Sao Paulo",
+    "founded_year": 2002,
+    "team_size": "201-500",
+    "description": "Luby is a custom software development and IT outsourcing company founded in 2002 and headquartered in Sao Paulo, Brazil, with a US office in Miami. It offers custom software, AI, data and BI, cloud modernization, QA/testing and staff augmentation across more than a dozen industries. The firm is ISO 27001/27701 certified and an AWS and Google Cloud partner.",
+    "linkedin": "https://www.linkedin.com/company/luby/",
+    "industries_served": ["Financial Services", "Retail", "Healthcare", "Insurance", "Logistics"],
+    "header_tags": ["Custom Software", "IT Outsourcing", "AI", "QA", "Cloud", "Staff Augmentation"],
+    "email": "comercial@luby.com.br",
+    "intro_video_url": "https://www.youtube.com/watch?v=6oRqoNzWBdw",
+    "awards": [
+      {"name": "ISO/IEC 27001 Certified", "year": null},
+      {"name": "ISO/IEC 27701 Certified", "year": null},
+      {"name": "AWS Partner", "year": null},
+      {"name": "Google Cloud Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Toyota", "domain": "toyota.com"},
+      {"name": "PwC", "domain": "pwc.com"},
+      {"name": "Siemens", "domain": "siemens.com"},
+      {"name": "Bridgestone", "domain": "bridgestone.com"}
+    ]
+  },
+  {
+    "company_name": "Axented",
+    "domain": "axented.com",
+    "website": "https://www.axented.com",
+    "category_slug": "custom-software-development",
+    "country_code": "MX",
+    "city": "Mexico City",
+    "state": "",
+    "founded_year": 2010,
+    "team_size": "51-200",
+    "description": "Axented is a custom software development company founded around 2010 and headquartered in Mexico City, with an additional office in Monterrey and a US office in Miami. It provides custom software, AI solutions, team augmentation and IT recruitment for fintech, proptech and enterprise clients. The firm is an AWS-certified and official Anthropic (Claude) partner.",
+    "linkedin": "https://www.linkedin.com/company/axented/",
+    "industries_served": ["Fintech", "Financial Services", "PropTech", "Marketplace", "Technology"],
+    "header_tags": ["Custom Software", "AI Solutions", "Team Augmentation", "Web", "Mobile", "Cloud"],
+    "email": "contact@axented.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Claude (Anthropic) Partner Network", "year": null},
+      {"name": "Clutch Top B2B Tech Company LATAM", "year": null},
+      {"name": "AWS Certified", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "CEMEX", "domain": "cemex.com"},
+      {"name": "Alpek", "domain": "alpek.com"},
+      {"name": "SWIFT", "domain": "swift.com"},
+      {"name": "Banregio", "domain": "banregio.com"}
+    ]
+  },
+  {
+    "company_name": "DB1 Global Software",
+    "domain": "db1.com.br",
+    "website": "https://www.db1.com.br",
+    "category_slug": "outsourced-offshore",
+    "country_code": "BR",
+    "city": "Maringa",
+    "state": "Parana",
+    "founded_year": 2000,
+    "team_size": "201-500",
+    "description": "DB1 Global Software is a software engineering and IT outsourcing company founded around 2000 and headquartered in Maringa, Parana, Brazil, with operations across the Americas and Europe. It provides tech talent outsourcing, legacy modernization and open finance solutions for large Brazilian and global brands. The firm is CMMI DEV Level 3 and ISO 27001/27701 certified.",
+    "linkedin": "https://www.linkedin.com/company/db1globalsoftware",
+    "industries_served": ["Financial Services", "Retail", "E-commerce", "Logistics", "Technology"],
+    "header_tags": ["Software Outsourcing", "Tech Talent", "Legacy Modernization", "Open Finance", "CMMI", "Agile"],
+    "email": "comercial@db1.com.br",
+    "intro_video_url": "https://www.youtube.com/watch?v=3Dt8DGzukYk",
+    "awards": [
+      {"name": "CMMI DEV Level 3", "year": null},
+      {"name": "ISO/IEC 27001 Certified", "year": null},
+      {"name": "Financial Times Americas' Fastest-Growing Companies", "year": 2025}
+    ],
+    "notable_clients": [
+      {"name": "iFood", "domain": "ifood.com.br"},
+      {"name": "EBANX", "domain": "ebanx.com"},
+      {"name": "XP Inc.", "domain": "xpinc.com"},
+      {"name": "O Boticario", "domain": "boticario.com.br"},
+      {"name": "DASA", "domain": "dasa.com.br"}
+    ]
+  },
+  {
+    "company_name": "Labcodes",
+    "domain": "labcodes.com.br",
+    "website": "https://labcodes.com.br",
+    "category_slug": "custom-software-development",
+    "country_code": "BR",
+    "city": "Recife",
+    "state": "Pernambuco",
+    "founded_year": null,
+    "team_size": "11-50",
+    "description": "Labcodes is a boutique custom software design and development studio headquartered in Recife, Pernambuco, Brazil. It builds web and mobile products with a focus on design systems, software engineering, product discovery and consulting for fintech and e-commerce clients. The firm has been repeatedly recognized by Clutch and The Manifest in Brazil.",
+    "linkedin": "https://www.linkedin.com/company/labcodes/",
+    "industries_served": ["Fintech", "E-commerce", "SaaS", "Technology"],
+    "header_tags": ["Custom Software", "Web Development", "Design Systems", "Product Discovery", "Mobile", "Consulting"],
+    "email": "contact@labcodes.com.br",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Clutch Top Web Developers Brazil", "year": 2024},
+      {"name": "Clutch Top User Experience Company Brazil", "year": 2024},
+      {"name": "The Manifest Most Reviewed UX Company Brazil", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Liber Capital", "domain": "libercapital.com.br"},
+      {"name": "Splendid Spoon", "domain": "splendidspoon.com"},
+      {"name": "GetDynasty", "domain": "getdynasty.com"}
+    ]
+  },
+  {
+    "company_name": "Novacomp",
+    "domain": "crnova.com",
+    "website": "https://www.crnova.com",
+    "category_slug": "quality-assurance-testing",
+    "country_code": "CR",
+    "city": "San Jose",
+    "state": "",
+    "founded_year": 1998,
+    "team_size": "501-1000",
+    "description": "Novacomp is a technology consulting and IT services firm founded in 1998 and headquartered in San Jose, Costa Rica, with operations across Latin America. It specializes in QA and software testing, IT staffing, custom software development and data analytics, acting as the quality gatekeeper for banks and enterprises. The firm is ISO 9001 certified and an ISTQB, Microsoft and Oracle Gold partner.",
+    "linkedin": "https://www.linkedin.com/company/novacomp",
+    "industries_served": ["Financial Services", "Banking", "Insurance", "Retail", "Technology"],
+    "header_tags": ["QA", "Software Testing", "IT Staffing", "Custom Software", "Data Analytics", "App Development"],
+    "email": "marketing@crnova.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=GnySLAJ3OCE",
+    "awards": [
+      {"name": "ISO 9001:2015 Certified", "year": null},
+      {"name": "ISTQB Gold Partner", "year": null},
+      {"name": "Microsoft Gold Partner", "year": null},
+      {"name": "Best Places to Work Central America", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "BAC Credomatic", "domain": "baccredomatic.com"},
+      {"name": "Intel", "domain": "intel.com"},
+      {"name": "Scotiabank", "domain": "scotiabank.com"},
+      {"name": "DHL", "domain": "dhl.com"},
+      {"name": "Del Monte", "domain": "delmonte.com"}
+    ]
+  },
+  {
+    "company_name": "POSSUMUS",
+    "domain": "possumus.tech",
+    "website": "https://possumus.tech",
+    "category_slug": "custom-software-development",
+    "country_code": "AR",
+    "city": "San Rafael",
+    "state": "Mendoza",
+    "founded_year": 2005,
+    "team_size": "51-200",
+    "description": "POSSUMUS is a custom software development and IT staff augmentation company founded in 2005 and headquartered in San Rafael, Mendoza, Argentina, with a US office in Colorado. It builds custom software, e-commerce and mobile applications and provides cloud and CRM consulting, with a strong .NET and Microsoft focus. The firm is a Microsoft Gold Partner.",
+    "linkedin": "https://www.linkedin.com/company/possumustech",
+    "industries_served": ["Financial Services", "Telecom", "Retail", "Mining", "Logistics"],
+    "header_tags": ["Custom Software", "Staff Augmentation", ".NET", "Cloud", "CRM", "Mobile"],
+    "email": "info@possumus.tech",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Microsoft Gold Partner", "year": null},
+      {"name": "Clutch Award", "year": 2022},
+      {"name": "Clutch Top Staff Augmentation Company Argentina", "year": 2026}
+    ],
+    "notable_clients": [
+      {"name": "IPLAN", "domain": "iplan.com.ar"},
+      {"name": "Crown Linen", "domain": "crownlinen.com"},
+      {"name": "Palta", "domain": "palta.com"}
+    ]
+  },
+  {
+    "company_name": "Tekton Labs",
+    "domain": "tektonlabs.com",
+    "website": "https://www.tektonlabs.com",
+    "category_slug": "custom-software-development",
+    "country_code": "PE",
+    "city": "Lima",
+    "state": "",
+    "founded_year": 2007,
+    "team_size": "51-200",
+    "description": "Tekton Labs is a technology consultancy and custom software development company founded in 2007 and headquartered in Lima, Peru, with a US office in San Francisco. It provides AI-native software development, agile delivery, managed IT services and talent-as-a-service for enterprises across many industries. The firm has delivered hundreds of products to financial, retail and security clients.",
+    "linkedin": "https://www.linkedin.com/company/tekton-labs",
+    "industries_served": ["Financial Services", "Retail", "Insurance", "Technology", "Security"],
+    "header_tags": ["Custom Software", "AI Development", "Agile Delivery", "Managed IT", "Talent as a Service", "Cloud"],
+    "email": "hi@tektonlabs.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=2ShZxvBA7z8",
+    "awards": [
+      {"name": "ANDA Award", "year": 2015},
+      {"name": "Entrepreneurial Internationalization Award", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Visa", "domain": "visa.com"},
+      {"name": "Prosegur", "domain": "prosegur.com"},
+      {"name": "Banco de Credito del Peru", "domain": "viabcp.com"},
+      {"name": "Interbank", "domain": "interbank.pe"}
+    ]
+  },
+  {
+    "company_name": "Ceiba Software",
+    "domain": "ceiba.com.co",
+    "website": "https://www.ceiba.com.co",
+    "category_slug": "custom-software-development",
+    "country_code": "CO",
+    "city": "Medellin",
+    "state": "Antioquia",
+    "founded_year": 2005,
+    "team_size": "501-1000",
+    "description": "Ceiba Software is a custom software development company founded in 2005 and headquartered in Medellin, Colombia, with a US office in Florida. It provides custom software, nearshore dedicated teams, staff augmentation and AI solutions for banks, insurers, utilities and universities. The firm is a Microsoft Gold, Google Cloud, AWS and Salesforce partner and is certified as a Great Place to Work.",
+    "linkedin": "https://www.linkedin.com/company/ceiba-software-house/",
+    "industries_served": ["Financial Services", "Banking", "Insurance", "Utilities", "Education"],
+    "header_tags": ["Custom Software", "Dedicated Teams", "Staff Augmentation", "AI Solutions", "Cloud", "Salesforce"],
+    "email": "comercial@ceiba.com.co",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Microsoft Gold Partner", "year": null},
+      {"name": "Google Cloud Partner", "year": null},
+      {"name": "AWS Partner Network", "year": null},
+      {"name": "Great Place to Work", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Bancolombia", "domain": "bancolombia.com"},
+      {"name": "Mercado Libre", "domain": "mercadolibre.com"},
+      {"name": "Scotiabank", "domain": "scotiabank.com"},
+      {"name": "Grupo Sura", "domain": "gruposura.com"},
+      {"name": "EPM", "domain": "epm.com.co"}
+    ]
+  },
+  {
+    "company_name": "e-Core",
+    "domain": "e-core.com",
+    "website": "https://www.e-core.com",
+    "category_slug": "outsourced-offshore",
+    "country_code": "BR",
+    "city": "Porto Alegre",
+    "state": "Rio Grande do Sul",
+    "founded_year": 1999,
+    "team_size": "501-1000",
+    "description": "e-Core is a software engineering and IT services company founded in 1999 and headquartered in Porto Alegre, Brazil, with offices in Mexico and the US. It provides extended teams, technical modernization, DevOps, data-driven solutions, AI-native engineering and Atlassian cloud migration for global clients. The firm is an Atlassian Solution Partner, Google Cloud Partner and AWS Advanced Tier partner.",
+    "linkedin": "https://www.linkedin.com/company/e-core",
+    "industries_served": ["Retail", "E-commerce", "Banking", "Logistics", "Agriculture"],
+    "header_tags": ["Software Engineering", "Extended Teams", "DevOps", "Atlassian", "Cloud Migration", "Modernization"],
+    "email": null,
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Atlassian Solution Partner", "year": null},
+      {"name": "Google Cloud Partner", "year": null},
+      {"name": "AWS Partner (Advanced Tier)", "year": null},
+      {"name": "Tempo Platinum Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Priceline", "domain": "priceline.com"},
+      {"name": "Seton Hall University", "domain": "shu.edu"},
+      {"name": "Tempo", "domain": "tempo.io"},
+      {"name": "Acuity Knowledge Partners", "domain": "acuitykp.com"}
+    ]
+  },
+  {
+    "company_name": "MJV Technology & Innovation",
+    "domain": "mjvinnovation.com",
+    "website": "https://www.mjvinnovation.com",
+    "category_slug": "custom-software-development",
+    "country_code": "BR",
+    "city": "Rio de Janeiro",
+    "state": "Rio de Janeiro",
+    "founded_year": 1997,
+    "team_size": "1001-5000",
+    "description": "MJV Technology & Innovation is a technology and innovation consultancy founded in 1997 and headquartered in Rio de Janeiro, Brazil, with additional offices across Latin America, the US and Europe. It delivers custom software development, data, AI, design and business innovation services for large enterprises and banks. The firm has built digital products and platforms for global brands across many sectors.",
+    "linkedin": "https://www.linkedin.com/company/mjv-tech-and-innovation/",
+    "industries_served": ["Financial Services", "Insurance", "Consumer Goods", "Telecom", "Healthcare"],
+    "header_tags": ["Custom Software", "Data", "AI", "Product Design", "Digital Transformation", "Innovation"],
+    "email": "rio@mjvinnovation.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Clutch Listed Software Developer", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Santander", "domain": "santander.com"},
+      {"name": "Bradesco", "domain": "bradesco.com.br"},
+      {"name": "The Coca-Cola Company", "domain": "coca-colacompany.com"},
+      {"name": "Sanofi", "domain": "sanofi.com"},
+      {"name": "L'Oreal", "domain": "loreal.com"}
+    ]
+  }
+]

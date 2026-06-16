@@ -1,0 +1,580 @@
+[
+  {
+    "company_name": "1xINTERNET",
+    "domain": "1xinternet.com",
+    "website": "https://www.1xinternet.com/en",
+    "category_slug": "cms-development",
+    "country_code": "DE",
+    "city": "Frankfurt",
+    "state": "",
+    "founded_year": 2013,
+    "team_size": "51-200",
+    "description": "1xINTERNET is a full-service digital agency specialising in Drupal and open-source web solutions, headquartered in Frankfurt with additional offices in Iceland, Spain, the Netherlands and the UK. The firm of over 90 experts delivers strategy, design, development, DevOps and CMS/commerce platforms for enterprise and public-sector clients across Europe. It is a Diamond (top-tier) Drupal Certified Partner and a founding sponsor of Drupal AI.",
+    "linkedin": "https://www.linkedin.com/company/1xinternet",
+    "industries_served": ["Public Sector", "Food & Beverage", "Hospitality", "Pharmaceuticals", "Membership Organizations"],
+    "header_tags": ["Drupal", "Web Development", "React", "CMS", "DevOps", "eCommerce"],
+    "email": "office@1xinternet.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=BdFk2D0aWzQ",
+    "awards": [
+      {"name": "Drupal Diamond Certified Partner", "year": null},
+      {"name": "Drupal AI Founding Sponsor", "year": null},
+      {"name": "MemberWise Recognised Supplier", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Jagermeister", "domain": "jaegermeister.com"},
+      {"name": "Sharp Europe", "domain": "sharp.eu"},
+      {"name": "SENEC", "domain": "senec.com"},
+      {"name": "Transgourmet", "domain": "transgourmet.com"}
+    ]
+  },
+  {
+    "company_name": "Factorial",
+    "domain": "factorial.io",
+    "website": "https://www.factorial.io/en",
+    "category_slug": "cms-development",
+    "country_code": "DE",
+    "city": "Hamburg",
+    "state": "",
+    "founded_year": 2015,
+    "team_size": "11-50",
+    "description": "Factorial is a founder-led software agency based in Hamburg that designs and builds digital ecosystems and high-performance websites, with deep roots in Drupal and the open-source community since 2015. The team of around 50 experts works at the intersection of technology, design and strategy and is ranked among the top Drupal agencies in Germany. Services span custom development, customer experience design, web audits, DAM and AI workflow automation.",
+    "linkedin": "https://www.linkedin.com/company/factorial-io",
+    "industries_served": ["Healthcare", "Manufacturing", "Non-profit", "Media", "Consumer Goods"],
+    "header_tags": ["Drupal", "Web Development", "PHP", "CMS", "UX/UI", "DevOps"],
+    "email": "hello@factorial.io",
+    "intro_video_url": "https://www.youtube.com/watch?v=hl3Tvpv1wwA",
+    "awards": [
+      {"name": "Splash Awards Germany (3 winning projects)", "year": 2025},
+      {"name": "Splash Award Healthcare (Boehringer Ingelheim)", "year": 2023},
+      {"name": "BITV Accessibility Certified", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Dole", "domain": "dole.com"},
+      {"name": "Occhio", "domain": "occhio.com"},
+      {"name": "RTL", "domain": "rtl.de"},
+      {"name": "Finstral", "domain": "finstral.com"}
+    ]
+  },
+  {
+    "company_name": "TheCodingMachine",
+    "domain": "thecodingmachine.com",
+    "website": "https://thecodingmachine.com/en/",
+    "category_slug": "php-frameworks",
+    "country_code": "FR",
+    "city": "Paris",
+    "state": "",
+    "founded_year": 2005,
+    "team_size": "51-200",
+    "description": "TheCodingMachine is a Paris-based web, mobile and software development agency founded in 2005, with a team of 80+ salaried engineers and additional presence in Hong Kong and Portugal. The firm builds bespoke web and business applications across the full lifecycle, with strong expertise in PHP/Symfony, Laravel, Node.js and modern JavaScript frameworks. It serves clients in insurance, banking, energy, real estate and HR.",
+    "linkedin": "https://www.linkedin.com/company/thecodingmachine",
+    "industries_served": ["Insurance", "Banking & Finance", "Energy", "Real Estate", "HR & Training"],
+    "header_tags": ["PHP", "Laravel", "Symfony", "React", "Web Development", "Mobile"],
+    "email": "contact@thecodingmachine.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=RWu7OQOyKa4",
+    "awards": [],
+    "notable_clients": [
+      {"name": "GRDF", "domain": "grdf.fr"},
+      {"name": "Credit Agricole", "domain": "credit-agricole.com"},
+      {"name": "Moet & Chandon", "domain": "moet.com"},
+      {"name": "TotalEnergies", "domain": "totalenergies.com"}
+    ]
+  },
+  {
+    "company_name": "Actency",
+    "domain": "actency.fr",
+    "website": "https://www.actency.fr",
+    "category_slug": "cms-development",
+    "country_code": "FR",
+    "city": "Strasbourg",
+    "state": "",
+    "founded_year": 2007,
+    "team_size": "201-500",
+    "description": "Actency is a French Drupal agency founded in 2007 and headquartered in Strasbourg, with offices in Paris, Lyon, Toulouse and Bordeaux and a wider group of 200+ experts. It specialises in Drupal site factories, mission-critical web portals and headless Drupal/Next.js architectures, having delivered more than 1,200 projects. The firm is recognised as a top-three French Drupal certified partner and co-founded the Alliance Of Digital Builders.",
+    "linkedin": "https://www.linkedin.com/company/actency",
+    "industries_served": ["Public Sector", "Media", "Insurance", "Healthcare", "Industry"],
+    "header_tags": ["Drupal", "React", "Next.js", "Headless", "Web Development", "DevOps"],
+    "email": null,
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Drupal Certified Partner (Top 3 France)", "year": null},
+      {"name": "Co-founder, Alliance Of Digital Builders", "year": 2018}
+    ],
+    "notable_clients": [
+      {"name": "France Televisions", "domain": "francetelevisions.fr"},
+      {"name": "Federation Francaise de Tennis", "domain": "fft.fr"},
+      {"name": "Marine Nationale", "domain": "defense.gouv.fr"}
+    ]
+  },
+  {
+    "company_name": "Immersive Garden",
+    "domain": "immersive-g.com",
+    "website": "https://immersive-g.com",
+    "category_slug": "javascript-frameworks",
+    "country_code": "FR",
+    "city": "Paris",
+    "state": "",
+    "founded_year": 2011,
+    "team_size": "11-50",
+    "description": "Immersive Garden is a Paris-based digital production studio specialising in design, animation and creative front-end development, building immersive 3D and WebGL experiences for luxury and global brands. The studio is one of the most awarded agencies on Awwwards, recognised as Studio of the Year multiple times. Its work spans luxury fashion and watchmaking, hospitality and corporate storytelling.",
+    "linkedin": "https://www.linkedin.com/company/immersive-garden",
+    "industries_served": ["Luxury Fashion", "Watches & Jewelry", "Hospitality", "Corporate", "Blockchain"],
+    "header_tags": ["WebGL", "Three.js", "Creative Development", "3D", "Interactive", "Web Design"],
+    "email": "inquiries@immersive-g.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Awwwards Studio of the Year", "year": 2020},
+      {"name": "Awwwards Studio of the Year", "year": 2018},
+      {"name": "Awwwards Studio of the Year", "year": 2017}
+    ],
+    "notable_clients": [
+      {"name": "Louis Vuitton", "domain": "louisvuitton.com"},
+      {"name": "Cartier", "domain": "cartier.com"},
+      {"name": "Dior", "domain": "dior.com"},
+      {"name": "Omega", "domain": "omegawatches.com"},
+      {"name": "Longines", "domain": "longines.com"}
+    ]
+  },
+  {
+    "company_name": "Four Digits",
+    "domain": "fourdigits.nl",
+    "website": "https://www.fourdigits.nl/en",
+    "category_slug": "python-frameworks",
+    "country_code": "NL",
+    "city": "Arnhem",
+    "state": "",
+    "founded_year": 2010,
+    "team_size": "11-50",
+    "description": "Four Digits is a Dutch software and web development firm based in Arnhem that builds custom web applications and content-driven sites, with a strong Python stack using Django, FastAPI, React and Wagtail CMS. It focuses on business process digitisation and automation for non-profits, government and manufacturing clients. The company holds ISO 9001, ISO 27001 and NEN 7510 certifications.",
+    "linkedin": "https://www.linkedin.com/company/four-digits",
+    "industries_served": ["Non-profit", "Government", "Manufacturing", "Public Sector"],
+    "header_tags": ["Django", "Python", "Wagtail CMS", "React", "Web Development", "Automation"],
+    "email": "info@fourdigits.nl",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "ISO 9001 Certified", "year": null},
+      {"name": "ISO 27001 Certified", "year": null},
+      {"name": "NEN 7510 Certified", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Humanitas", "domain": "humanitas.nl"},
+      {"name": "Hoogheemraadschap van Rijnland", "domain": "rijnland.net"}
+    ]
+  },
+  {
+    "company_name": "WeAreBrain",
+    "domain": "wearebrain.com",
+    "website": "https://wearebrain.com",
+    "category_slug": "custom-web-development",
+    "country_code": "NL",
+    "city": "Amsterdam",
+    "state": "",
+    "founded_year": 2015,
+    "team_size": "51-200",
+    "description": "WeAreBrain is an Amsterdam-headquartered digital product agency of 60+ creators founded in 2015, building AI-native products, software, eCommerce and digital experiences for enterprise clients. The firm combines software engineering, UX/UI design and data/AI, and runs a venture studio that co-builds new digital businesses. It works with international brands and organisations across retail, FMCG, finance and logistics.",
+    "linkedin": "https://www.linkedin.com/company/wearebrain",
+    "industries_served": ["Retail", "FMCG", "Finance", "Logistics", "Healthcare"],
+    "header_tags": ["Web Development", "AI", "Software Engineering", "UX/UI", "eCommerce", "Product"],
+    "email": "sayhello@wearebrain.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "AI Breakthrough Award", "year": null},
+      {"name": "SAP Silver Partner", "year": null},
+      {"name": "Framer Expert", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "HEINEKEN", "domain": "heineken.com"},
+      {"name": "Domino's", "domain": "dominos.com"},
+      {"name": "Praxis", "domain": "praxis.nl"},
+      {"name": "tonies", "domain": "tonies.com"}
+    ]
+  },
+  {
+    "company_name": "Q42",
+    "domain": "q42.nl",
+    "website": "https://www.q42.nl/en/",
+    "category_slug": "javascript-frameworks",
+    "country_code": "NL",
+    "city": "Amsterdam",
+    "state": "",
+    "founded_year": 2000,
+    "team_size": "51-200",
+    "description": "Q42 is a Dutch digital product studio of 120+ engineers with offices in Amsterdam and Rotterdam, designing and building apps, websites, connected devices and AI applications since 2000. The team works primarily with React, Vue and Svelte and guides products from concept through launch and scaling. It is known for high-profile work with cultural institutions, retailers and consumer-technology brands.",
+    "linkedin": "https://www.linkedin.com/company/q42",
+    "industries_served": ["Retail", "Logistics", "Culture & Museums", "Consumer Electronics", "Entertainment"],
+    "header_tags": ["Web Development", "React", "Vue", "Svelte", "AI", "Connected Devices"],
+    "email": "info@q42.nl",
+    "intro_video_url": "https://www.youtube.com/watch?v=I_Amn5Crsbk",
+    "awards": [],
+    "notable_clients": [
+      {"name": "HEMA", "domain": "hema.nl"},
+      {"name": "PostNL", "domain": "postnl.nl"},
+      {"name": "Rijksmuseum", "domain": "rijksmuseum.nl"},
+      {"name": "Philips Hue", "domain": "philips-hue.com"}
+    ]
+  },
+  {
+    "company_name": "De Voorhoede",
+    "domain": "voorhoede.nl",
+    "website": "https://www.voorhoede.nl/en/",
+    "category_slug": "javascript-frameworks",
+    "country_code": "NL",
+    "city": "Amsterdam",
+    "state": "",
+    "founded_year": 2013,
+    "team_size": "11-50",
+    "description": "De Voorhoede is a Dutch front-end web development agency with offices in Amsterdam and Delft, specialising in custom web applications, design systems and high-performance websites. The team works with Vue.js, React, Svelte and Nuxt and is a certified B Corporation. Clients span financial services, logistics, government, energy and public-sector organisations.",
+    "linkedin": "https://www.linkedin.com/company/de-voorhoede",
+    "industries_served": ["Finance", "Logistics", "Government", "Energy", "Education"],
+    "header_tags": ["Frontend", "Vue", "React", "Svelte", "Design Systems", "Web Performance"],
+    "email": "hello@voorhoede.nl",
+    "intro_video_url": "https://www.youtube.com/watch?v=q5zVH_KSqoo",
+    "awards": [
+      {"name": "Certified B Corporation", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "PostNL", "domain": "postnl.nl"},
+      {"name": "NS", "domain": "ns.nl"},
+      {"name": "TU Delft", "domain": "tudelft.nl"},
+      {"name": "Deltares", "domain": "deltares.nl"},
+      {"name": "StartMail", "domain": "startmail.com"}
+    ]
+  },
+  {
+    "company_name": "Calibrate",
+    "domain": "calibrate.be",
+    "website": "https://www.calibrate.be/en",
+    "category_slug": "cms-development",
+    "country_code": "BE",
+    "city": "Kontich",
+    "state": "",
+    "founded_year": 2004,
+    "team_size": "51-200",
+    "description": "Calibrate is one of Belgium's largest Drupal agencies, founded in 2004 and headquartered in Kontich (Antwerp) with offices in Ghent, Leuven and Kortrijk. The full-service team of 50+ developers, UX designers and marketers builds Drupal websites, digital experience platforms and commerce solutions for enterprise and public-sector clients. It is a Drupal Association partner.",
+    "linkedin": "https://www.linkedin.com/company/calibrate",
+    "industries_served": ["Government", "Financial Services", "Logistics", "Media", "Non-profit"],
+    "header_tags": ["Drupal", "DXP", "Web Development", "Digital Strategy", "eCommerce", "CMS"],
+    "email": "hello@calibrate.be",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Drupal Association Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "VRT", "domain": "vrt.be"},
+      {"name": "Q8", "domain": "q8.be"},
+      {"name": "VDAB", "domain": "vdab.be"},
+      {"name": "Jan De Nul", "domain": "jandenul.com"}
+    ]
+  },
+  {
+    "company_name": "Dropsolid",
+    "domain": "dropsolid.com",
+    "website": "https://dropsolid.com/en",
+    "category_slug": "web-hosting-devops",
+    "country_code": "BE",
+    "city": "Ghent",
+    "state": "",
+    "founded_year": 2013,
+    "team_size": "51-200",
+    "description": "Dropsolid is a Belgian digital experience company founded in 2013 and headquartered in Ghent, with around 90 staff and additional offices in Hasselt, Antwerp and New York. It helps organisations design, build, host and deliver secure, scalable digital experiences through its open Drupal-powered Digital Experience Platform combining CMS, hosting, marketing automation and AI. The firm is a Diamond Drupal Certified Partner and ISO 27001 certified.",
+    "linkedin": "https://www.linkedin.com/company/dropsolid",
+    "industries_served": ["Government", "Healthcare", "Banking & Insurance", "Tourism", "Education"],
+    "header_tags": ["Drupal", "Hosting", "DevOps", "DXP", "Marketing Automation", "AI"],
+    "email": "info@dropsolid.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=YezkiKwjvKI",
+    "awards": [
+      {"name": "Diamond Drupal Certified Partner", "year": null},
+      {"name": "ISO 27001 Certified", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Soudal", "domain": "soudal.com"},
+      {"name": "Touring", "domain": "touring.be"},
+      {"name": "Beobank", "domain": "beobank.be"},
+      {"name": "Acerta", "domain": "acerta.be"}
+    ]
+  },
+  {
+    "company_name": "Liip",
+    "domain": "liip.ch",
+    "website": "https://www.liip.ch/en",
+    "category_slug": "custom-web-development",
+    "country_code": "CH",
+    "city": "Zurich",
+    "state": "",
+    "founded_year": 2007,
+    "team_size": "201-500",
+    "description": "Liip is a leading Swiss web and software agency with offices in Zurich, Bern, Basel, Lausanne, Fribourg and St. Gallen, operating in self-organised teams using Holacracy. It builds custom web applications, mobile apps, online shops and CMS platforms (including Drupal) for retail, mobility, public-sector and cultural clients. Liip is a certified B Corporation and a multiple Best of Swiss Web winner.",
+    "linkedin": "https://www.linkedin.com/company/liip-ag",
+    "industries_served": ["Retail", "Public Sector", "Mobility", "Insurance", "Culture"],
+    "header_tags": ["Web Development", "PHP", "Symfony", "React", "Drupal", "Mobile"],
+    "email": "contact@liip.ch",
+    "intro_video_url": "https://www.youtube.com/watch?v=h-Tia5rsM4I",
+    "awards": [
+      {"name": "Certified B Corporation", "year": null},
+      {"name": "Best of Swiss Web (75 awards)", "year": null},
+      {"name": "German Design Award", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Migros", "domain": "migros.ch"},
+      {"name": "FREITAG", "domain": "freitag.ch"},
+      {"name": "Bobst", "domain": "bobst.com"},
+      {"name": "Zoo Zurich", "domain": "zoo.ch"}
+    ]
+  },
+  {
+    "company_name": "Divio",
+    "domain": "divio.com",
+    "website": "https://www.divio.com",
+    "category_slug": "web-hosting-devops",
+    "country_code": "CH",
+    "city": "Zurich",
+    "state": "",
+    "founded_year": 2001,
+    "team_size": "11-50",
+    "description": "Divio is a Zurich-based cloud and web technology company founded in 2001, providing a developer-first Platform-as-a-Service that handles hosting, DevOps and deployment for digital agencies and development teams. Built by the original creators of django CMS, the platform offers scalable, Django-friendly infrastructure with AWS and Cloudflare integrations. The company holds ISO certifications and serves agencies and organisations internationally.",
+    "linkedin": "https://www.linkedin.com/company/divio-ag",
+    "industries_served": ["Digital Agencies", "Software", "Web Development", "SaaS"],
+    "header_tags": ["Cloud PaaS", "DevOps", "Hosting", "Django", "AWS", "Infrastructure"],
+    "email": null,
+    "intro_video_url": null,
+    "awards": [
+      {"name": "ISO Certified", "year": null},
+      {"name": "Cloudflare Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Allink", "domain": "allink.ch"},
+      {"name": "Dreipol", "domain": "dreipol.ch"},
+      {"name": "What.", "domain": "what.digital"}
+    ]
+  },
+  {
+    "company_name": "mindnow",
+    "domain": "mindnow.io",
+    "website": "https://www.mindnow.io",
+    "category_slug": "custom-web-development",
+    "country_code": "CH",
+    "city": "Lenzburg",
+    "state": "",
+    "founded_year": 2017,
+    "team_size": "11-50",
+    "description": "mindnow AG is a Swiss digital product agency founded in 2017 and based in Lenzburg, with a team of around 28 specialists in UX/UI design, web and app development and AI/data engineering. The firm builds intuitive, future-proof digital products for eCommerce, banking and financial-services clients. Its Thomus 3D bike configurator won recognition at Best of Swiss Web.",
+    "linkedin": "https://www.linkedin.com/company/mindnow-ag",
+    "industries_served": ["eCommerce", "Banking", "Financial Services", "Retail"],
+    "header_tags": ["Web Development", "UX/UI", "React", "AI", "Product", "App Development"],
+    "email": "hello@mindnow.io",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Best of Swiss Web (Thomus configurator)", "year": 2023}
+    ],
+    "notable_clients": [
+      {"name": "Thomus", "domain": "thoemus.ch"},
+      {"name": "Corner Banca", "domain": "corner.ch"}
+    ]
+  },
+  {
+    "company_name": "Dotbite",
+    "domain": "dotbite.at",
+    "website": "https://dotbite.at",
+    "category_slug": "custom-web-development",
+    "country_code": "AT",
+    "city": "Vienna",
+    "state": "",
+    "founded_year": null,
+    "team_size": "11-50",
+    "description": "Dotbite GmbH is a Vienna-based digital product agency that builds custom web applications and software for startups and enterprises across Europe. The team works full-stack across Laravel, Vue.js, React, .NET Core, AWS and Docker, covering UX/UI design, legacy modernisation, cloud migration and MVP development. Clients include UNIQA, Zurich Insurance, TU Vienna and the City of Vienna.",
+    "linkedin": "https://www.linkedin.com/company/dotbite",
+    "industries_served": ["Financial Services", "Education", "Healthcare", "Recruitment", "eCommerce"],
+    "header_tags": ["Web Development", "Laravel", "Vue", "React", ".NET", "AWS"],
+    "email": "hi@dotbite.at",
+    "intro_video_url": "https://www.youtube.com/watch?v=ZL2TodP26Pc",
+    "awards": [],
+    "notable_clients": [
+      {"name": "UNIQA", "domain": "uniqa.at"},
+      {"name": "Zurich Insurance", "domain": "zurich.com"},
+      {"name": "TU Wien", "domain": "tuwien.at"},
+      {"name": "epunkt", "domain": "epunkt.com"}
+    ]
+  },
+  {
+    "company_name": "Significa",
+    "domain": "significa.co",
+    "website": "https://significa.co",
+    "category_slug": "custom-web-development",
+    "country_code": "PT",
+    "city": "Porto",
+    "state": "",
+    "founded_year": 2014,
+    "team_size": "11-50",
+    "description": "Significa is a digital product design and development agency founded in 2014 and based in Porto, with a team of around 30 designers, developers and product specialists. The firm researches, designs, builds and launches tailored web and eCommerce products, and is a certified B Corporation. Its work has been recognised by the Red Dot, iF Design, German Design and European Design awards.",
+    "linkedin": "https://www.linkedin.com/company/significadotco",
+    "industries_served": ["eCommerce", "Health Tech", "Insurance", "Consumer Goods", "SaaS"],
+    "header_tags": ["Web Development", "Product Design", "UX/UI", "eCommerce", "Strategy", "React"],
+    "email": null,
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Certified B Corporation", "year": null},
+      {"name": "Red Dot Award", "year": null},
+      {"name": "German Design Award (Gold)", "year": null},
+      {"name": "European Design Award (Gold)", "year": null},
+      {"name": "iF Design Award", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Hey Harper", "domain": "heyharper.com"},
+      {"name": "Backercamp", "domain": "backercamp.com"}
+    ]
+  },
+  {
+    "company_name": "Altar.io",
+    "domain": "altar.io",
+    "website": "https://altar.io",
+    "category_slug": "custom-web-development",
+    "country_code": "PT",
+    "city": "Lisbon",
+    "state": "",
+    "founded_year": 2015,
+    "team_size": "11-50",
+    "description": "Altar.io is a product and custom software development company founded in 2015, headquartered in Lisbon with offices in London and Milan and run by experienced second-time founders. It helps entrepreneurs and business leaders build and launch web, mobile and AI products, from product scoping and UX/UI design to MVP and full custom development. The firm focuses on fintech, regtech and other regulated, data-heavy industries.",
+    "linkedin": "https://www.linkedin.com/company/altar.io",
+    "industries_served": ["Fintech", "RegTech", "MarTech", "Real Estate", "SaaS"],
+    "header_tags": ["Web Development", "MVP", "Product Design", "Custom Software", "AI", "UX/UI"],
+    "email": "altar@altar.io",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Clutch Global", "year": 2024},
+      {"name": "Clutch 1000", "year": 2023},
+      {"name": "Top Company for Product Design", "year": 2024}
+    ],
+    "notable_clients": [
+      {"name": "Apiax", "domain": "apiax.com"},
+      {"name": "GSMA", "domain": "gsma.com"},
+      {"name": "Quartal Financial Solutions", "domain": "quartalfs.com"}
+    ]
+  },
+  {
+    "company_name": "Twistag",
+    "domain": "twistag.com",
+    "website": "https://www.twistag.com",
+    "category_slug": "custom-web-development",
+    "country_code": "PT",
+    "city": "Lisbon",
+    "state": "",
+    "founded_year": 2016,
+    "team_size": "11-50",
+    "description": "Twistag is a Lisbon-based product and software engineering agency founded in 2016, building web and mobile applications, data platforms and cloud-native products. The team delivers enterprise-grade solutions from architecture through production deployment, increasingly focused on AI agents, LLM integration and data engineering. It serves SaaS, fintech, hospitality and consumer-electronics clients.",
+    "linkedin": "https://www.linkedin.com/company/twistag",
+    "industries_served": ["SaaS", "Fintech", "Hospitality", "Consumer Electronics", "RegTech"],
+    "header_tags": ["Web Development", "Product Engineering", "React", "Cloud", "AI", "Data Platforms"],
+    "email": "hello@twistag.com",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "Defined.ai", "domain": "defined.ai"},
+      {"name": "NVISO", "domain": "nviso.ai"}
+    ]
+  },
+  {
+    "company_name": "Pixelmatters",
+    "domain": "pixelmatters.com",
+    "website": "https://www.pixelmatters.com",
+    "category_slug": "custom-web-development",
+    "country_code": "PT",
+    "city": "Porto",
+    "state": "",
+    "founded_year": 2014,
+    "team_size": "51-200",
+    "description": "Pixelmatters is a digital product studio founded in 2014 and headquartered in Porto, with a team of around 70 strategists, designers and developers serving clients worldwide. The studio designs and develops web products and applications, with a strong front-end practice in React and modern JavaScript. Its work has been recognised by Awwwards and CSS Design Awards.",
+    "linkedin": "https://www.linkedin.com/company/pixelmatters",
+    "industries_served": ["SaaS", "Enterprise Software", "Telecom", "Cloud", "Fintech"],
+    "header_tags": ["Web Development", "React", "Product Design", "UX/UI", "Frontend", "Strategy"],
+    "email": "hello@pixelmatters.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=VNoCoa0WTac",
+    "awards": [
+      {"name": "Awwwards Honorable Mention", "year": 2025},
+      {"name": "Awwwards Honorable Mention", "year": 2024},
+      {"name": "CSS Design Awards Site of the Day", "year": 2016}
+    ],
+    "notable_clients": [
+      {"name": "VMware", "domain": "vmware.com"},
+      {"name": "Rubrik", "domain": "rubrik.com"},
+      {"name": "Vodafone", "domain": "vodafone.com"},
+      {"name": "OneSignal", "domain": "onesignal.com"}
+    ]
+  },
+  {
+    "company_name": "SparkFabrik",
+    "domain": "sparkfabrik.com",
+    "website": "https://www.sparkfabrik.com/en/",
+    "category_slug": "web-hosting-devops",
+    "country_code": "IT",
+    "city": "Milan",
+    "state": "",
+    "founded_year": 2015,
+    "team_size": "11-50",
+    "description": "SparkFabrik is an Italian cloud-native software company founded in 2015 and based in Milan, building custom web applications, modernising legacy systems and delivering cloud and DevOps infrastructure. Originally a Drupal company, it is the first Gold Drupal Certified Partner in Italy and a Kubernetes Certified Service Provider. The firm serves healthcare, financial-services, education and enterprise clients and is ISO 27001 certified.",
+    "linkedin": "https://www.linkedin.com/company/sparkfabrik",
+    "industries_served": ["Healthcare & Pharma", "Financial Services", "Education", "Media", "Enterprise"],
+    "header_tags": ["Drupal", "Cloud Native", "Kubernetes", "DevOps", "Web Development", "AI"],
+    "email": null,
+    "intro_video_url": "https://www.youtube.com/watch?v=XZvMgEyvrR0",
+    "awards": [
+      {"name": "Drupal Certified Partner Gold (first in Italy)", "year": null},
+      {"name": "Kubernetes Certified Service Provider", "year": null},
+      {"name": "ISO 27001 Certified", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Sky", "domain": "sky.it"},
+      {"name": "UniCredit", "domain": "unicredit.it"},
+      {"name": "Loro Piana", "domain": "loropiana.com"},
+      {"name": "Borsa Italiana", "domain": "borsaitaliana.it"}
+    ]
+  },
+  {
+    "company_name": "CodiTramuntana",
+    "domain": "coditramuntana.com",
+    "website": "https://www.coditramuntana.com/en",
+    "category_slug": "ruby-on-rails",
+    "country_code": "ES",
+    "city": "Barcelona",
+    "state": "",
+    "founded_year": null,
+    "team_size": "11-50",
+    "description": "CodiTramuntana is a Barcelona-based custom software development firm specialising in complex, enterprise-scale web projects. The team builds bespoke web platforms, native mobile apps and outsourced software with particular expertise in Ruby on Rails and Laravel. Clients include FC Barcelona, Festina and the Sonar festival, and the company holds the Spanish ENS security certification.",
+    "linkedin": "https://www.linkedin.com/company/coditramuntana",
+    "industries_served": ["Sports", "Events & Entertainment", "Luxury", "Construction", "Technology"],
+    "header_tags": ["Ruby on Rails", "Laravel", "Web Development", "Mobile", "UX/UI", "Custom Software"],
+    "email": "info@coditramuntana.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "ENS (National Security Scheme) Certified", "year": null},
+      {"name": "Samsung Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "FC Barcelona", "domain": "fcbarcelona.com"},
+      {"name": "Festina", "domain": "festina.com"},
+      {"name": "Sonar", "domain": "sonar.es"}
+    ]
+  },
+  {
+    "company_name": "Secuoyas",
+    "domain": "secuoyas.com",
+    "website": "https://www.secuoyas.com",
+    "category_slug": "custom-web-development",
+    "country_code": "ES",
+    "city": "Madrid",
+    "state": "",
+    "founded_year": 2001,
+    "team_size": "11-50",
+    "description": "Secuoyas is a Madrid-based digital innovation and product studio founded in 2001, with a team of around 38 designers, engineers, strategists and data specialists. The firm offers end-to-end strategy, design, web development and data services to build digital brands and products. Clients include Inditex, Bankinter, Iberia and IE University.",
+    "linkedin": "https://www.linkedin.com/company/secuoyas",
+    "industries_served": ["Retail & Fashion", "Banking", "Education", "Travel", "Healthcare"],
+    "header_tags": ["Web Development", "Product Design", "Engineering", "Branding", "Strategy", "Data"],
+    "email": "hola@secuoyas.com",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "Inditex", "domain": "inditex.com"},
+      {"name": "Bankinter", "domain": "bankinter.com"},
+      {"name": "Iberia", "domain": "iberia.com"},
+      {"name": "Carrefour", "domain": "carrefour.es"}
+    ]
+  }
+]

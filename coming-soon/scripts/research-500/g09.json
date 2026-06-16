@@ -1,0 +1,561 @@
+[
+  {
+    "company_name": "Punchcut",
+    "domain": "punchcut.com",
+    "website": "https://punchcut.com",
+    "category_slug": "product-design-services",
+    "country_code": "US",
+    "city": "San Francisco",
+    "state": "CA",
+    "founded_year": 2002,
+    "team_size": "51-200",
+    "description": "Punchcut is a human interface design and innovation studio in San Francisco focused on digital product and UX design for mobile apps, connected devices and enterprise software. They specialize in human-centered AI experiences and design systems for technology and consumer-electronics companies.",
+    "linkedin": "https://www.linkedin.com/company/punchcut",
+    "industries_served": ["Consumer Electronics", "Automotive", "Healthcare", "Enterprise Software", "SaaS"],
+    "header_tags": ["Product Design", "UX/UI", "Design Systems", "UX Research", "Mobile"],
+    "email": "hello@punchcut.com",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "Fitbit", "domain": "fitbit.com"},
+      {"name": "Samsung", "domain": "samsung.com"},
+      {"name": "Amazon Web Services", "domain": "aws.amazon.com"},
+      {"name": "Nissan", "domain": "nissan.com"},
+      {"name": "Medtronic", "domain": "medtronic.com"}
+    ]
+  },
+  {
+    "company_name": "Grand Studio",
+    "domain": "grandstudio.com",
+    "website": "https://www.grandstudio.com",
+    "category_slug": "product-design-services",
+    "country_code": "US",
+    "city": "Chicago",
+    "state": "IL",
+    "founded_year": 2018,
+    "team_size": "11-50",
+    "description": "Grand Studio is a Chicago-based digital product and strategic design consultancy specializing in UX/UI design, product strategy and qualitative research. They turn complex enterprise problems into usable digital products for large brands across finance, healthcare, retail and sports.",
+    "linkedin": "https://www.linkedin.com/company/grandstudio",
+    "industries_served": ["Finance", "Healthcare", "Retail", "Sports", "Enterprise"],
+    "header_tags": ["Product Design", "UX Research", "Service Design", "Product Strategy", "UX/UI"],
+    "email": "hello@grandstudio.com",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "Amazon", "domain": "amazon.com"},
+      {"name": "McDonald's", "domain": "mcdonalds.com"},
+      {"name": "Chase", "domain": "chase.com"},
+      {"name": "Johnson & Johnson", "domain": "jnj.com"},
+      {"name": "NBA", "domain": "nba.com"}
+    ]
+  },
+  {
+    "company_name": "DD.NYC",
+    "domain": "dd.nyc",
+    "website": "https://dd.nyc",
+    "category_slug": "web-design",
+    "country_code": "US",
+    "city": "New York",
+    "state": "NY",
+    "founded_year": 2015,
+    "team_size": "11-50",
+    "description": "DD.NYC (DigitalDesign.NYC) is an award-winning creative agency in New York specializing in branding, web design, packaging and video storytelling. The studio designs digital experiences and brand systems for global consumer brands, real estate and sports clients.",
+    "linkedin": "https://www.linkedin.com/company/digital-design-nyc",
+    "industries_served": ["Real Estate", "Consumer Goods", "Sports", "Beauty", "Retail"],
+    "header_tags": ["Web Design", "Branding", "UX/UI", "Packaging", "Creative"],
+    "email": "hello@dd.nyc",
+    "intro_video_url": "https://www.youtube.com/watch?v=nw2tXLn-q5Q",
+    "awards": [
+      {"name": "Awwwards Honorable Mention (11x)", "year": null},
+      {"name": "CSS Design Awards - Best Innovation & UX", "year": null},
+      {"name": "Webby Nomination", "year": null},
+      {"name": "Inc. 5000", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Match Group", "domain": "mtch.com"},
+      {"name": "The North Face", "domain": "thenorthface.com"},
+      {"name": "Vans", "domain": "vans.com"},
+      {"name": "Forbes", "domain": "forbes.com"},
+      {"name": "L'Oreal", "domain": "loreal.com"}
+    ]
+  },
+  {
+    "company_name": "Plank",
+    "domain": "plank.co",
+    "website": "https://plank.co",
+    "category_slug": "web-design",
+    "country_code": "CA",
+    "city": "Montreal",
+    "state": "QC",
+    "founded_year": 1998,
+    "team_size": "11-50",
+    "description": "Plank is a B Corp certified web design and development studio in Montreal building user-centered, accessible websites for arts, culture and mission-driven organizations. They specialize in custom WordPress and Laravel builds, ticketing integrations and digital storytelling.",
+    "linkedin": "https://www.linkedin.com/company/plank-multimedia",
+    "industries_served": ["Arts & Culture", "Non-Profit", "Education", "Theatre", "Museums"],
+    "header_tags": ["Web Design", "WordPress", "Accessibility", "UX/UI", "Development"],
+    "email": "info@plank.co",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "B Corp Certified", "year": null},
+      {"name": "CSS Design Awards - Best UX / UI / Innovation", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Ford's Theatre", "domain": "fords.org"},
+      {"name": "Centaur Theatre", "domain": "centaurtheatre.com"}
+    ]
+  },
+  {
+    "company_name": "Idea Theorem",
+    "domain": "ideatheorem.com",
+    "website": "https://ideatheorem.com",
+    "category_slug": "ui-ux-design",
+    "country_code": "CA",
+    "city": "Toronto",
+    "state": "ON",
+    "founded_year": null,
+    "team_size": "11-50",
+    "description": "Idea Theorem is a Toronto-based UX research, UI/UX design and development agency building human-centered digital products for web and mobile. They serve government, healthcare, finance and insurance clients across North America, with a second office in Austin.",
+    "linkedin": "https://www.linkedin.com/company/idea-theorem",
+    "industries_served": ["Government", "Healthcare", "Finance", "Insurance", "Public Sector"],
+    "header_tags": ["UX/UI", "UX Research", "Product Strategy", "Prototyping", "Development"],
+    "email": "hello@ideatheorem.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=KsKta6D5EDU",
+    "awards": [],
+    "notable_clients": [
+      {"name": "City of Toronto", "domain": "toronto.ca"},
+      {"name": "Aviva", "domain": "aviva.com"},
+      {"name": "LifeLabs", "domain": "lifelabs.com"},
+      {"name": "IBM", "domain": "ibm.com"},
+      {"name": "Empire Life", "domain": "empire.ca"}
+    ]
+  },
+  {
+    "company_name": "Locomotive",
+    "domain": "locomotive.ca",
+    "website": "https://locomotive.ca",
+    "category_slug": "web-design",
+    "country_code": "CA",
+    "city": "Montreal",
+    "state": "QC",
+    "founded_year": 2008,
+    "team_size": "11-50",
+    "description": "Locomotive is a Montreal digital-first design agency crafting bespoke brand identities and immersive web experiences. The studio has been named Awwwards Agency of the Year multiple years running and works with ambitious brands, corporations and foundations.",
+    "linkedin": "https://www.linkedin.com/company/locomotive-mtl",
+    "industries_served": ["Automotive", "Technology", "Consumer Goods", "Sports", "Culture"],
+    "header_tags": ["Web Design", "Branding", "Creative", "Art Direction", "UX/UI"],
+    "email": "info@locomotive.ca",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Awwwards Agency of the Year", "year": 2025},
+      {"name": "Webby Award", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Scout Motors", "domain": "scoutmotors.com"},
+      {"name": "Populous", "domain": "populous.com"},
+      {"name": "Mate Libre", "domain": "matelibre.com"}
+    ]
+  },
+  {
+    "company_name": "KOTA",
+    "domain": "kota.co.uk",
+    "website": "https://kota.co.uk",
+    "category_slug": "web-design",
+    "country_code": "GB",
+    "city": "London",
+    "state": "",
+    "founded_year": 2013,
+    "team_size": "11-50",
+    "description": "KOTA is an award-winning creative digital agency in London and New York specializing in brand-led web design, development, branding and digital marketing. They build distinctive digital experiences for food, drink, retail and lifestyle brands.",
+    "linkedin": "https://www.linkedin.com/company/kota-creative/",
+    "industries_served": ["Food & Drink", "Retail", "Lifestyle", "Hospitality", "Charity"],
+    "header_tags": ["Web Design", "Branding", "Development", "UX/UI", "Digital Marketing"],
+    "email": "hello@kota.co.uk",
+    "intro_video_url": "https://www.youtube.com/watch?v=IjA2dMgnnEs",
+    "awards": [
+      {"name": "Awwwards", "year": null},
+      {"name": "CSS Design Awards", "year": null},
+      {"name": "Clutch Global Winner", "year": 2024},
+      {"name": "Lovie Award - Best Web Design Aesthetic", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Jamie Oliver", "domain": "jamieoliver.com"},
+      {"name": "British Red Cross", "domain": "redcross.org.uk"},
+      {"name": "Penguin", "domain": "penguin.co.uk"},
+      {"name": "Diageo", "domain": "diageo.com"},
+      {"name": "Penhaligon's", "domain": "penhaligons.com"}
+    ]
+  },
+  {
+    "company_name": "Phantom",
+    "domain": "phantom.land",
+    "website": "https://www.phantom.land",
+    "category_slug": "digital-creative",
+    "country_code": "GB",
+    "city": "London",
+    "state": "",
+    "founded_year": 2013,
+    "team_size": "51-200",
+    "description": "Phantom is an independent, digitally-led creative studio in London (with a second studio in Auckland) working at the intersection of technology and creativity. They craft immersive websites, interactive installations and digital products for global brands in music, tech and media.",
+    "linkedin": "https://www.linkedin.com/company/phantom",
+    "industries_served": ["Music & Entertainment", "Technology", "Media", "Drinks", "Travel"],
+    "header_tags": ["Digital Design", "Creative Technology", "UX/UI", "WebGL", "Product Design"],
+    "email": "collab@phantom.land",
+    "intro_video_url": "https://www.youtube.com/watch?v=ZxLmSfmh8JM",
+    "awards": [
+      {"name": "Awwwards", "year": null},
+      {"name": "D&AD", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Sony Music", "domain": "sonymusic.com"},
+      {"name": "Google", "domain": "google.com"},
+      {"name": "Netflix", "domain": "netflix.com"},
+      {"name": "Financial Times", "domain": "ft.com"},
+      {"name": "Skyscanner", "domain": "skyscanner.net"}
+    ]
+  },
+  {
+    "company_name": "COBE",
+    "domain": "cobeisfresh.com",
+    "website": "https://www.cobeisfresh.com",
+    "category_slug": "ui-ux-design",
+    "country_code": "DE",
+    "city": "Munich",
+    "state": "",
+    "founded_year": 2012,
+    "team_size": "51-200",
+    "description": "COBE is a UX/UI design and software development agency headquartered in Munich, with a development hub in Osijek, Croatia. The studio delivers UX research, product design, design systems and app development for enterprise and consumer products across automotive, retail and telecom.",
+    "linkedin": "https://www.linkedin.com/company/cobeisfresh",
+    "industries_served": ["Automotive", "Retail", "Telecom", "Insurance", "Media"],
+    "header_tags": ["UX/UI", "UX Research", "Design Systems", "Product Design", "App Development"],
+    "email": "hello@cobeisfresh.com",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "BMW Group", "domain": "bmwgroup.com"},
+      {"name": "Vodafone", "domain": "vodafone.com"},
+      {"name": "Porsche Holding", "domain": "porsche.com"},
+      {"name": "REWE", "domain": "rewe.de"},
+      {"name": "Munich Re", "domain": "munichre.com"}
+    ]
+  },
+  {
+    "company_name": "Bonanza Studios",
+    "domain": "bonanza-studios.com",
+    "website": "https://www.bonanza-studios.com",
+    "category_slug": "product-design-services",
+    "country_code": "DE",
+    "city": "Berlin",
+    "state": "",
+    "founded_year": 2020,
+    "team_size": "11-50",
+    "description": "Bonanza Studios is a Berlin-based UX and product design studio focused on enterprise digital transformation and AI-native products. The senior-only team ships rapid prototypes and live products for finance, retail and SaaS organizations across Europe.",
+    "linkedin": "https://www.linkedin.com/company/bonanza-design",
+    "industries_served": ["Finance", "Retail", "SaaS", "Health", "Enterprise"],
+    "header_tags": ["Product Design", "UX/UI", "Prototyping", "Design Sprints", "Digital Transformation"],
+    "email": "contact@bonanza.design",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Clutch Top UX Agency", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "UniCredit", "domain": "unicredit.eu"},
+      {"name": "Zalando", "domain": "zalando.com"},
+      {"name": "Wefox", "domain": "wefox.com"},
+      {"name": "Grover", "domain": "grover.com"}
+    ]
+  },
+  {
+    "company_name": "Boana Studio",
+    "domain": "boanastudio.com",
+    "website": "https://boanastudio.com",
+    "category_slug": "ui-ux-design",
+    "country_code": "DE",
+    "city": "Berlin",
+    "state": "",
+    "founded_year": 2020,
+    "team_size": "11-50",
+    "description": "Boana Studio is a Berlin UX/UI design agency specializing in product discovery, product-led growth and branding for tech companies. They work with B2B, fintech, legaltech and SaaS clients to design and grow digital products.",
+    "linkedin": "https://www.linkedin.com/company/boana/",
+    "industries_served": ["Fintech", "SaaS", "LegalTech", "PropTech", "B2B"],
+    "header_tags": ["UX/UI", "Product Discovery", "Product-Led Growth", "Branding", "Web Design"],
+    "email": "legal@boanastudio.com",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "Proton", "domain": "proton.me"},
+      {"name": "MakerDAO", "domain": "makerdao.com"}
+    ]
+  },
+  {
+    "company_name": "Soda Studio",
+    "domain": "sodastudio.nl",
+    "website": "https://www.sodastudio.nl",
+    "category_slug": "product-design-services",
+    "country_code": "NL",
+    "city": "Amsterdam",
+    "state": "",
+    "founded_year": 2012,
+    "team_size": "11-50",
+    "description": "Soda Studio is a strategic product design agency in Amsterdam offering product strategy, UX/UI design and user research. The team of designers, researchers and strategists works with leading Dutch and international brands in finance, telecom and retail.",
+    "linkedin": "https://nl.linkedin.com/company/soda-studio-nl",
+    "industries_served": ["Finance", "Telecom", "Retail", "Energy", "FMCG"],
+    "header_tags": ["Product Design", "UX/UI", "UX Research", "Product Strategy", "Design Ops"],
+    "email": "info@sodastudio.nl",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "DIA Award (Gold, e-commerce)", "year": 2022}
+    ],
+    "notable_clients": [
+      {"name": "ING", "domain": "ing.com"},
+      {"name": "Heineken", "domain": "heineken.com"},
+      {"name": "KPN", "domain": "kpn.com"},
+      {"name": "Mastercard", "domain": "mastercard.com"},
+      {"name": "Fairphone", "domain": "fairphone.com"}
+    ]
+  },
+  {
+    "company_name": "Okapion",
+    "domain": "okapion.com",
+    "website": "https://www.okapion.com",
+    "category_slug": "ui-ux-design",
+    "country_code": "NL",
+    "city": "Rotterdam",
+    "state": "",
+    "founded_year": 2010,
+    "team_size": "11-50",
+    "description": "Okapion is a Rotterdam-based enterprise UX and digital product design studio that simplifies complex workflows for large organizations. They design data-heavy interfaces and digital products for aviation, energy and industrial clients.",
+    "linkedin": "https://www.linkedin.com/company/okapion/",
+    "industries_served": ["Aviation", "Energy", "Industrial", "Logistics", "Enterprise"],
+    "header_tags": ["UX/UI", "Enterprise UX", "Product Design", "Design Systems", "UX Research"],
+    "email": "hello@okapion.com",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "Siemens Gamesa", "domain": "siemensgamesa.com"},
+      {"name": "Huisman", "domain": "huismanequipment.com"}
+    ]
+  },
+  {
+    "company_name": "ANTI",
+    "domain": "anti.as",
+    "website": "https://anti.as",
+    "category_slug": "digital-creative",
+    "country_code": "NO",
+    "city": "Oslo",
+    "state": "",
+    "founded_year": 2008,
+    "team_size": "51-200",
+    "description": "ANTI (A New Type of Interference) is a multi-disciplinary creative agency in Oslo offering design, strategy, advertising, digital and content services. The studio creates brand-led digital experiences and identities for major Norwegian and international organizations.",
+    "linkedin": "https://www.linkedin.com/company/anti-inc-as/",
+    "industries_served": ["Media", "Culture", "Public Sector", "Retail", "Technology"],
+    "header_tags": ["Branding", "Digital Design", "Creative", "UX/UI", "Art Direction"],
+    "email": "osl@anti.as",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "NRK", "domain": "nrk.no"},
+      {"name": "Nasjonalbiblioteket", "domain": "nb.no"},
+      {"name": "DEFA", "domain": "defa.com"}
+    ]
+  },
+  {
+    "company_name": "Bakken & Baeck",
+    "domain": "bakkenbaeck.com",
+    "website": "https://bakkenbaeck.com",
+    "category_slug": "product-design-services",
+    "country_code": "NO",
+    "city": "Oslo",
+    "state": "",
+    "founded_year": 2011,
+    "team_size": "51-200",
+    "description": "Bakken & Baeck is a design and technology studio founded in Oslo with offices in Amsterdam, Bonn, London and Barcelona. They build digital products from concept to launch, combining strategy, branding, product design and engineering for technology and AI companies.",
+    "linkedin": "https://www.linkedin.com/company/bakken-&-b%C3%A6ck-as",
+    "industries_served": ["Technology", "AI", "Fintech", "SaaS", "Media"],
+    "header_tags": ["Product Design", "UX/UI", "Branding", "Development", "AI"],
+    "email": "hello@bakkenbaeck.com",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "Google DeepMind", "domain": "deepmind.com"},
+      {"name": "Snap Inc", "domain": "snap.com"},
+      {"name": "Bloomberg", "domain": "bloomberg.com"},
+      {"name": "Foursquare", "domain": "foursquare.com"},
+      {"name": "reMarkable", "domain": "remarkable.com"}
+    ]
+  },
+  {
+    "company_name": "Most Studios",
+    "domain": "moststudios.com",
+    "website": "https://moststudios.com",
+    "category_slug": "ui-ux-design",
+    "country_code": "SE",
+    "city": "Stockholm",
+    "state": "",
+    "founded_year": 2015,
+    "team_size": "11-50",
+    "description": "Most Studios is a brand, UX and web design agency in Stockholm creating digital products, websites, design systems and brand experiences. They combine strategy, UX/UI and branding to help technology and growth companies stand out.",
+    "linkedin": "https://www.linkedin.com/company/most-studios/",
+    "industries_served": ["Technology", "SaaS", "Mobility", "Fintech", "B2B"],
+    "header_tags": ["UX/UI", "Product Design", "Branding", "Design Systems", "Web Design"],
+    "email": "hello@moststudios.com",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "Einride", "domain": "einride.tech"},
+      {"name": "Instabridge", "domain": "instabridge.com"},
+      {"name": "Legora", "domain": "legora.com"}
+    ]
+  },
+  {
+    "company_name": "Varvet",
+    "domain": "varvet.com",
+    "website": "https://www.varvet.com",
+    "category_slug": "product-design-services",
+    "country_code": "SE",
+    "city": "Gothenburg",
+    "state": "",
+    "founded_year": 2008,
+    "team_size": "11-50",
+    "description": "Varvet is a digital product studio in Gothenburg and Stockholm that designs and builds applications and digital experiences. The team focuses on product design, user experience and software development for startups and established companies.",
+    "linkedin": "https://www.linkedin.com/company/varvet",
+    "industries_served": ["Fintech", "Insurance", "SaaS", "Consumer", "Technology"],
+    "header_tags": ["Product Design", "UX/UI", "Development", "Mobile", "Web"],
+    "email": "hello@varvet.com",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "Bestow", "domain": "bestow.com"},
+      {"name": "Alumni Ventures", "domain": "av.vc"}
+    ]
+  },
+  {
+    "company_name": "Stoked",
+    "domain": "thisisstoked.com",
+    "website": "https://thisisstoked.com",
+    "category_slug": "product-design-services",
+    "country_code": "DK",
+    "city": "Aarhus",
+    "state": "",
+    "founded_year": 2017,
+    "team_size": "11-50",
+    "description": "Stoked is a digital product agency in Aarhus, Denmark combining product strategy, UX/UI design, software development and product marketing. They ship and grow digital products for B2B and industrial clients and are one of Denmark's fastest-growing UX providers.",
+    "linkedin": "https://www.linkedin.com/company/thisisstoked",
+    "industries_served": ["Energy", "Industrial", "Manufacturing", "B2B", "SaaS"],
+    "header_tags": ["Product Design", "UX/UI", "Development", "Product Strategy", "UX Research"],
+    "email": "hello@thisisstoked.com",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "Grundfos", "domain": "grundfos.com"},
+      {"name": "Danske Commodities", "domain": "danskecommodities.com"},
+      {"name": "Marel", "domain": "marel.com"},
+      {"name": "Techem", "domain": "techem.com"}
+    ]
+  },
+  {
+    "company_name": "Werklig",
+    "domain": "werklig.com",
+    "website": "https://www.werklig.com",
+    "category_slug": "branding-identity",
+    "country_code": "FI",
+    "city": "Helsinki",
+    "state": "",
+    "founded_year": 2008,
+    "team_size": "11-50",
+    "description": "Werklig is an independent brand design agency in Helsinki specializing in brand strategy, identity design and digital products. They create cohesive brand systems and digital experiences for cultural institutions, consumer brands and the city of Helsinki.",
+    "linkedin": "https://www.linkedin.com/company/werklig",
+    "industries_served": ["Culture", "Consumer Goods", "Technology", "Food & Drink", "Public Sector"],
+    "header_tags": ["Branding", "Brand Strategy", "UX/UI", "Digital Products", "Identity"],
+    "email": "clients@werklig.com",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "Vaisala", "domain": "vaisala.com"},
+      {"name": "Amos Rex", "domain": "amosrex.fi"},
+      {"name": "Kyro Distillery", "domain": "kyrodistillery.com"},
+      {"name": "City of Helsinki", "domain": "hel.fi"}
+    ]
+  },
+  {
+    "company_name": "Akaru",
+    "domain": "akaru.fr",
+    "website": "https://www.akaru.fr",
+    "category_slug": "web-design",
+    "country_code": "FR",
+    "city": "Lyon",
+    "state": "",
+    "founded_year": 2008,
+    "team_size": "11-50",
+    "description": "Akaru is a creative web studio in Lyon, France specializing in website creation, art direction, UI/UX design and WebGL 3D development. The studio is heavily awarded by Awwwards and FWA for immersive digital experiences for sport, retail and lifestyle brands.",
+    "linkedin": "https://www.linkedin.com/company/agence-akaru/",
+    "industries_served": ["Sports", "Retail", "Real Estate", "Lifestyle", "Outdoor"],
+    "header_tags": ["Web Design", "UX/UI", "WebGL", "Art Direction", "Shopify"],
+    "email": "contact@akaru.fr",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Awwwards (35x incl. Site of the Day / Month)", "year": null},
+      {"name": "FWA (19x)", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Asics", "domain": "asics.com"},
+      {"name": "Quechua (Decathlon)", "domain": "decathlon.com"},
+      {"name": "Ubac", "domain": "ubac.fr"},
+      {"name": "Richard Orlinski", "domain": "richardorlinski.fr"}
+    ]
+  },
+  {
+    "company_name": "Significa",
+    "domain": "significa.co",
+    "website": "https://significa.co",
+    "category_slug": "product-design-services",
+    "country_code": "PT",
+    "city": "Porto",
+    "state": "",
+    "founded_year": 2016,
+    "team_size": "11-50",
+    "description": "Significa is a digital product design and development agency in Porto, Portugal with a team of about thirty designers, developers and product specialists. They think, design, develop and launch digital products and are recognized with Red Dot, iF Design and Awwwards awards.",
+    "linkedin": "https://www.linkedin.com/company/significadotco/",
+    "industries_served": ["SaaS", "eCommerce", "Fintech", "Sports", "Health"],
+    "header_tags": ["Product Design", "UX/UI", "Development", "Branding", "Design Systems"],
+    "email": "hello@significa.co",
+    "intro_video_url": "https://www.youtube.com/watch?v=s160q5A3nsM",
+    "awards": [
+      {"name": "Red Dot Award", "year": null},
+      {"name": "iF Design Award", "year": null},
+      {"name": "German Design Award (Gold)", "year": null},
+      {"name": "Awwwards Distinction", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Hey Harper", "domain": "heyharper.com"},
+      {"name": "CometChat", "domain": "cometchat.com"},
+      {"name": "Emma", "domain": "emma-sleep.com"},
+      {"name": "Zoko", "domain": "zoko.io"}
+    ]
+  },
+  {
+    "company_name": "Adchitects",
+    "domain": "adchitects.co",
+    "website": "https://adchitects.co",
+    "category_slug": "web-design",
+    "country_code": "PL",
+    "city": "Poznan",
+    "state": "",
+    "founded_year": null,
+    "team_size": "11-50",
+    "description": "Adchitects is a full-cycle digital product design and development agency in Poznan, Poland specializing in custom websites built on WordPress and HubSpot. They deliver web design, development and SEO for technology, finance and non-profit clients and are recognized by Awwwards and CSS Design Awards.",
+    "linkedin": "https://www.linkedin.com/company/adchitects-co",
+    "industries_served": ["Technology", "Finance", "Non-Profit", "SaaS", "Food & Beverage"],
+    "header_tags": ["Web Design", "UX/UI", "Development", "WordPress", "HubSpot"],
+    "email": "hello@adchitects.co",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Awwwards (4x)", "year": null},
+      {"name": "CSS Design Awards (8x)", "year": null},
+      {"name": "Clutch Award (12x)", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Pathlock", "domain": "pathlock.com"},
+      {"name": "Kynetec", "domain": "kynetec.com"}
+    ]
+  }
+]

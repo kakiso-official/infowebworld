@@ -1,0 +1,592 @@
+[
+  {
+    "company_name": "Humaan",
+    "domain": "humaan.com",
+    "website": "https://www.humaan.com",
+    "category_slug": "digital-creative",
+    "country_code": "AU",
+    "city": "Perth",
+    "state": "WA",
+    "founded_year": 2010,
+    "team_size": "11-50",
+    "description": "Humaan is an internationally recognised digital agency founded in 2010 and headquartered in Perth, Western Australia, with an additional office in Los Angeles. It designs and builds websites, custom software, mobile apps, eCommerce and data visualisation experiences with a strong focus on design and UX craft. The studio is one of the most awarded digital agencies in Australia.",
+    "linkedin": "https://www.linkedin.com/company/humaan/",
+    "industries_served": ["Healthcare", "Education", "Retail", "Government", "Nonprofit"],
+    "header_tags": ["Web Development", "UX/UI", "Mobile Apps", "eCommerce", "Software", "Data Viz"],
+    "email": "contact@humaan.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=QjWsnTxi1jk",
+    "awards": [
+      {"name": "Good Design Award (Web Design and Development)", "year": 2021},
+      {"name": "Australian Web Awards - Site of the Year", "year": null},
+      {"name": "Awwwards Honorable Mention", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "National Breast Cancer Foundation", "domain": "nbcf.org.au"},
+      {"name": "Cancer Council WA", "domain": "cancerwa.asn.au"},
+      {"name": "Pharmacy 777", "domain": "pharmacy777.com.au"},
+      {"name": "Pentanet", "domain": "pentanet.com.au"},
+      {"name": "Scotch College", "domain": "scotch.wa.edu.au"}
+    ]
+  },
+  {
+    "company_name": "Luminary",
+    "domain": "luminary.com",
+    "website": "https://www.luminary.com",
+    "category_slug": "full-service-digital",
+    "country_code": "AU",
+    "city": "Melbourne",
+    "state": "VIC",
+    "founded_year": 1999,
+    "team_size": "51-200",
+    "description": "Luminary is an independent full-service digital agency founded in 1999 and headquartered in Melbourne, with offices in Sydney, Brisbane and Indonesia. It delivers digital strategy and transformation, UX design, web development, hosting and digital marketing across major DXP platforms for more than 700 brands. The agency is a Certified B Corporation.",
+    "linkedin": "https://www.linkedin.com/company/luminaryhq/",
+    "industries_served": ["Government", "Retail", "Nonprofit", "Sports", "Financial Services"],
+    "header_tags": ["Digital Strategy", "UX/UI", "Web Development", "Digital Transformation", "DXP", "SEO"],
+    "email": "hi@luminary.com",
+    "intro_video_url": "https://www.youtube.com/watch?v=xTJbzxpTBg8",
+    "awards": [
+      {"name": "Certified B Corporation", "year": 2021},
+      {"name": "Webby Award", "year": null},
+      {"name": "Australian Web Award", "year": null},
+      {"name": "Good Design Award", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Nintendo", "domain": "nintendo.com"},
+      {"name": "Adobe", "domain": "adobe.com"},
+      {"name": "Ryobi", "domain": "ryobi.com.au"},
+      {"name": "Melbourne Airport", "domain": "melbourneairport.com.au"},
+      {"name": "Penfolds", "domain": "penfolds.com"}
+    ]
+  },
+  {
+    "company_name": "Frank Digital",
+    "domain": "frankdigital.com.au",
+    "website": "https://www.frankdigital.com.au",
+    "category_slug": "digital-creative",
+    "country_code": "AU",
+    "city": "Sydney",
+    "state": "NSW",
+    "founded_year": null,
+    "team_size": "11-50",
+    "description": "Frank Digital is a digital agency with offices in Sydney and Melbourne specialising in UX, web design, web development, eCommerce and mobile apps for some of Australia's biggest brands. It focuses on growing conversion and digital product design with an all-senior team. The agency has been recognised as one of Australasia's most innovative digital agencies.",
+    "linkedin": "https://www.linkedin.com/company/2247982/",
+    "industries_served": ["Financial Services", "Education", "Government", "Media", "Retail"],
+    "header_tags": ["UX/UI", "Web Design", "Web Development", "eCommerce", "Mobile Apps", "Digital Product"],
+    "email": null,
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Best Large Integrated Agency (APAC)", "year": 2024},
+      {"name": "Performance Agency of the Year", "year": 2023}
+    ],
+    "notable_clients": [
+      {"name": "Employment Hero", "domain": "employmenthero.com"},
+      {"name": "AMP Capital", "domain": "ampcapital.com"},
+      {"name": "City of Sydney", "domain": "cityofsydney.nsw.gov.au"},
+      {"name": "Western Sydney University", "domain": "westernsydney.edu.au"},
+      {"name": "Merivale", "domain": "merivale.com"}
+    ]
+  },
+  {
+    "company_name": "N4 Studio",
+    "domain": "n4.studio",
+    "website": "https://www.n4.studio",
+    "category_slug": "web-design",
+    "country_code": "AU",
+    "city": "Sydney",
+    "state": "NSW",
+    "founded_year": 2016,
+    "team_size": "11-50",
+    "description": "N4 Studio is a web design agency headquartered in Sydney with offices in Auckland, San Francisco and London, ranked as a leading Webflow Enterprise Partner. It provides strategy and content, web and motion design, Webflow development and migrations, and CRO/SEO optimisation for enterprise brands, startups and scaleups. The studio is a Webflow Enterprise Partner and HubSpot Platinum Partner.",
+    "linkedin": "https://www.linkedin.com/company/n4studioglobal",
+    "industries_served": ["SaaS", "Technology", "Fitness", "Media", "Startups"],
+    "header_tags": ["Webflow", "Web Design", "Motion Design", "Strategy", "CRO", "SEO"],
+    "email": null,
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Webflow Enterprise Partner", "year": null},
+      {"name": "HubSpot Platinum Partner", "year": null},
+      {"name": "Awwwards Site of the Day", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Webflow", "domain": "webflow.com"},
+      {"name": "Les Mills", "domain": "lesmills.com"},
+      {"name": "You.com", "domain": "you.com"},
+      {"name": "Business Insider", "domain": "businessinsider.com"},
+      {"name": "Surfline", "domain": "surfline.com"}
+    ]
+  },
+  {
+    "company_name": "Pollen",
+    "domain": "pollen.com.au",
+    "website": "https://www.pollen.com.au",
+    "category_slug": "digital-creative",
+    "country_code": "AU",
+    "city": "Sydney",
+    "state": "NSW",
+    "founded_year": null,
+    "team_size": "11-50",
+    "description": "Pollen is a Sydney-based digital product and experience studio in Surry Hills offering product design and development, digital strategy, UX/UI design, content strategy and AI consulting. It creates websites, digital products and brand experiences for enterprise, government and startup clients. The studio is a multiple Good Design Award winner.",
+    "linkedin": "https://www.linkedin.com/company/pollen-digital",
+    "industries_served": ["Government", "Financial Services", "Automotive", "Cultural", "Startups"],
+    "header_tags": ["Product Design", "UX/UI", "Web Development", "Digital Strategy", "AI", "Content Strategy"],
+    "email": "info@pollen.com.au",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Good Design Award", "year": 2024}
+    ],
+    "notable_clients": [
+      {"name": "Gumtree", "domain": "gumtree.com.au"},
+      {"name": "CarsGuide", "domain": "carsguide.com.au"},
+      {"name": "Autotrader", "domain": "autotrader.com.au"},
+      {"name": "Mortgage Choice", "domain": "mortgagechoice.com.au"},
+      {"name": "Australian National Maritime Museum", "domain": "sea.museum"}
+    ]
+  },
+  {
+    "company_name": "Not Another",
+    "domain": "na.studio",
+    "website": "https://www.na.studio",
+    "category_slug": "digital-creative",
+    "country_code": "AU",
+    "city": "Sydney",
+    "state": "NSW",
+    "founded_year": 2019,
+    "team_size": "11-50",
+    "description": "Not Another is a B Corp-certified creative agency founded in 2019 with studios in Sydney, Australia and Christchurch, New Zealand. It provides branding, campaigns, content production and Webflow website development as a certified Webflow Enterprise Partner. The agency focuses on building global brands that drive positive change for people and planet.",
+    "linkedin": "https://www.linkedin.com/company/not-another-company",
+    "industries_served": ["Automotive", "Fintech", "Nonprofit", "Government", "Retail"],
+    "header_tags": ["Branding", "Webflow", "Web Design", "Campaigns", "Content", "Creative"],
+    "email": "hello@na.studio",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Certified B Corporation", "year": null},
+      {"name": "Webflow Enterprise Partner", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Polestar", "domain": "polestar.com"},
+      {"name": "ArchiPro", "domain": "archipro.co.nz"},
+      {"name": "Swanndri", "domain": "swanndri.co.nz"},
+      {"name": "Bayleys", "domain": "bayleys.co.nz"},
+      {"name": "Evnex", "domain": "evnex.com"}
+    ]
+  },
+  {
+    "company_name": "Resn",
+    "domain": "resn.co.nz",
+    "website": "https://resn.co.nz",
+    "category_slug": "digital-creative",
+    "country_code": "NZ",
+    "city": "Wellington",
+    "state": "",
+    "founded_year": 2004,
+    "team_size": "11-50",
+    "description": "Resn is a creative digital agency and production studio founded in 2004 and headquartered in Wellington, New Zealand, with an additional studio in Amsterdam. It specialises in ideation, design and development of high-end interactive digital experiences for the world's leading advertising agencies and brands. Resn has been named Awwwards Agency of the Year twice and is a member of the FWA Hall of Fame.",
+    "linkedin": "https://www.linkedin.com/company/resnglobal",
+    "industries_served": ["Entertainment", "Automotive", "Technology", "Media", "Consumer Goods"],
+    "header_tags": ["Creative", "Interactive", "WebGL", "Design", "Development", "Experiential"],
+    "email": "hello@resn.co.nz",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Awwwards Agency of the Year", "year": null},
+      {"name": "CSS Design Awards Agency of the Year", "year": null},
+      {"name": "FWA Hall of Fame", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "YouTube", "domain": "youtube.com"},
+      {"name": "Netflix", "domain": "netflix.com"},
+      {"name": "Spotify", "domain": "spotify.com"},
+      {"name": "Airbnb", "domain": "airbnb.com"},
+      {"name": "Maserati", "domain": "maserati.com"}
+    ]
+  },
+  {
+    "company_name": "NV Interactive",
+    "domain": "nvinteractive.com",
+    "website": "https://nvinteractive.com",
+    "category_slug": "digital-creative",
+    "country_code": "NZ",
+    "city": "Auckland",
+    "state": "",
+    "founded_year": null,
+    "team_size": "11-50",
+    "description": "NV Interactive is a digital experience agency with offices in Auckland, Wellington and Christchurch, New Zealand. It offers strategy, brand, design, build and optimisation services, creating websites and digital experiences for government, sport, cultural and commercial clients. The agency works with national bodies and councils across Aotearoa.",
+    "linkedin": "https://www.linkedin.com/company/nv-interactive",
+    "industries_served": ["Government", "Sports", "Nonprofit", "Cultural", "Logistics"],
+    "header_tags": ["Strategy", "Brand", "Web Design", "Web Development", "UX/UI", "Digital Experience"],
+    "email": "hello@nvinteractive.com",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "NZ Post", "domain": "nzpost.co.nz"},
+      {"name": "Fire and Emergency NZ", "domain": "fireandemergency.nz"},
+      {"name": "Heritage New Zealand", "domain": "heritage.org.nz"},
+      {"name": "Christchurch City Council", "domain": "ccc.govt.nz"},
+      {"name": "Oceania Football Confederation", "domain": "oceaniafootball.com"}
+    ]
+  },
+  {
+    "company_name": "Catch Design",
+    "domain": "catchdesign.co.nz",
+    "website": "https://www.catchdesign.co.nz",
+    "category_slug": "digital-creative",
+    "country_code": "NZ",
+    "city": "Auckland",
+    "state": "",
+    "founded_year": 2005,
+    "team_size": "11-50",
+    "description": "Catch Design is an award-winning digital experience agency founded in 2005 with offices in Auckland and Wellington, New Zealand. It helps clients establish, grow and nurture customer connections through strategy, design, user research, accessibility, technology development and performance marketing. The agency works with major New Zealand utilities, retailers and brands.",
+    "linkedin": "https://www.linkedin.com/company/catchdesign",
+    "industries_served": ["Energy", "Retail", "Telecom", "Financial Services", "Government"],
+    "header_tags": ["Strategy", "Web Design", "UX Research", "Accessibility", "Development", "Performance Marketing"],
+    "email": "hello@catchdesign.co.nz",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "Mercury", "domain": "mercury.co.nz"},
+      {"name": "Trustpower", "domain": "trustpower.co.nz"},
+      {"name": "Burger King", "domain": "burgerking.co.nz"}
+    ]
+  },
+  {
+    "company_name": "Assembly",
+    "domain": "assemblyltd.com",
+    "website": "https://assemblyltd.com",
+    "category_slug": "digital-creative",
+    "country_code": "NZ",
+    "city": "Auckland",
+    "state": "",
+    "founded_year": null,
+    "team_size": "11-50",
+    "description": "Assembly is a creative and digital agency based in Auckland, New Zealand producing branded content, commercials, video and digital work. It partners with brands, agencies and public bodies to create campaigns and digital experiences. The studio works with major New Zealand and international brands.",
+    "linkedin": "https://www.linkedin.com/company/assemblyltd",
+    "industries_served": ["Consumer Goods", "Government", "Nonprofit", "Entertainment", "Food and Beverage"],
+    "header_tags": ["Creative", "Branded Content", "Video", "Digital", "Campaigns", "Production"],
+    "email": "jane@assemblyltd.com",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "Deloitte", "domain": "deloitte.com"},
+      {"name": "Anchor", "domain": "anchordairy.com"},
+      {"name": "Heinz", "domain": "heinz.com"},
+      {"name": "UN Women", "domain": "unwomen.org"}
+    ]
+  },
+  {
+    "company_name": "Kooba",
+    "domain": "kooba.ie",
+    "website": "https://www.kooba.ie",
+    "category_slug": "web-design",
+    "country_code": "IE",
+    "city": "Dublin",
+    "state": "",
+    "founded_year": 2005,
+    "team_size": "11-50",
+    "description": "Kooba is an award-winning web design and digital agency founded around 2005 with offices in Dublin, London and Berlin. It specialises in web design, development, UX and accessibility for leading global brands, national bodies, regulators and educational institutions. The agency was named Large Agency of the Year at the 2025 Spider Awards.",
+    "linkedin": "https://www.linkedin.com/company/kooba",
+    "industries_served": ["Education", "Government", "Healthcare", "Tourism", "Nonprofit"],
+    "header_tags": ["Web Design", "Web Development", "UX/UI", "Accessibility", "Digital Strategy", "CMS"],
+    "email": "sales@kooba.ie",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Spider Awards - Large Agency of the Year", "year": 2025},
+      {"name": "Spider Awards - Best in Universal Design", "year": 2025},
+      {"name": "Digital Media Awards - Best Website", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Screen Ireland", "domain": "screenireland.ie"},
+      {"name": "Bon Secours", "domain": "bonsecours.ie"},
+      {"name": "South East Technological University", "domain": "setu.ie"},
+      {"name": "Skillnet Ireland", "domain": "skillnetireland.ie"}
+    ]
+  },
+  {
+    "company_name": "Webtrade",
+    "domain": "webtrade.ie",
+    "website": "https://www.webtrade.ie",
+    "category_slug": "full-service-digital",
+    "country_code": "IE",
+    "city": "Dublin",
+    "state": "",
+    "founded_year": 1998,
+    "team_size": "11-50",
+    "description": "Webtrade is a full-service digital agency founded in 1998 and based in Temple Bar, Dublin, Ireland. It provides website design, web development, its own Siternity content management system, digital marketing and web hosting for over 800 organisations including SMEs, PLCs and state agencies. The agency is a multiple eircom Spider Awards winner and Deloitte Technology Fast 50 finalist.",
+    "linkedin": "https://www.linkedin.com/company/webtrade-limited",
+    "industries_served": ["Government", "Food and Beverage", "Membership Bodies", "Technology", "Nonprofit"],
+    "header_tags": ["Web Design", "Web Development", "CMS", "Digital Marketing", "SEO", "Web Hosting"],
+    "email": "sales@webtrade.ie",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "eircom Spider Awards - Best Irish Web Design and Development Agency", "year": null},
+      {"name": "Deloitte Technology Fast 50 Ireland Finalist", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Vhi", "domain": "vhi.ie"},
+      {"name": "Manor Farm", "domain": "manorfarm.ie"},
+      {"name": "Evros Technology", "domain": "evros.ie"},
+      {"name": "Institute of Public Administration", "domain": "ipa.ie"}
+    ]
+  },
+  {
+    "company_name": "All human",
+    "domain": "allhuman.com",
+    "website": "https://allhuman.com",
+    "category_slug": "digital-creative",
+    "country_code": "IE",
+    "city": "Dublin",
+    "state": "",
+    "founded_year": null,
+    "team_size": "11-50",
+    "description": "All human is an award-winning digital agency based in Dublin, Ireland that has been delivering digital transformations for more than 20 years. It combines human insight with AI-powered innovation to design and build customer journeys, user experiences and digital products. The agency works with major Irish institutions, banks and state bodies.",
+    "linkedin": "https://www.linkedin.com/company/allhumanagency",
+    "industries_served": ["Government", "Financial Services", "Tourism", "Consumer Goods", "Utilities"],
+    "header_tags": ["UX/UI", "Digital Transformation", "Web Design", "Product Design", "Research", "AI"],
+    "email": "hi@allhuman.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Global Business Tech Awards - Digital Agency of the Year Shortlist", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "An Post", "domain": "anpost.ie"},
+      {"name": "Bank of Ireland", "domain": "bankofireland.com"},
+      {"name": "Irish Life", "domain": "irishlife.ie"},
+      {"name": "Failte Ireland", "domain": "failteireland.ie"},
+      {"name": "Energia", "domain": "energia.ie"}
+    ]
+  },
+  {
+    "company_name": "noise",
+    "domain": "noiseagency.ie",
+    "website": "https://noiseagency.ie",
+    "category_slug": "digital-creative",
+    "country_code": "IE",
+    "city": "Cork",
+    "state": "",
+    "founded_year": null,
+    "team_size": "11-50",
+    "description": "noise is a full-service creative digital agency based in Cork, Ireland specialising in web design, branding and digital marketing. It builds bespoke websites and eCommerce stores and runs paid social campaigns for Irish businesses. The agency has won an Awwward and multiple CSS Design Awards.",
+    "linkedin": "https://www.linkedin.com/company/noise-marketing-agency/",
+    "industries_served": ["Hospitality", "Healthcare", "Sports", "Food and Beverage", "Retail"],
+    "header_tags": ["Web Design", "Branding", "Digital Marketing", "eCommerce", "Paid Social", "Creative"],
+    "email": "newbusiness@noiseagency.ie",
+    "intro_video_url": "https://www.youtube.com/watch?v=og76hFOFCVU",
+    "awards": [
+      {"name": "Awwwards", "year": null},
+      {"name": "CSS Design Awards", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Liss Ard Estate", "domain": "lissardestate.ie"},
+      {"name": "Lignum", "domain": "lignum.ie"},
+      {"name": "Mahers Coffee", "domain": "maherscoffee.ie"}
+    ]
+  },
+  {
+    "company_name": "KOTA",
+    "domain": "kota.co.uk",
+    "website": "https://kota.co.uk",
+    "category_slug": "web-design",
+    "country_code": "GB",
+    "city": "London",
+    "state": "",
+    "founded_year": 2013,
+    "team_size": "11-50",
+    "description": "KOTA is an international award-winning creative agency founded in 2013 with offices in London and New York. It specialises in web design and development, branding, visual identity and digital marketing for brands that want to stand out. The agency is a Clutch Global winner and a Great Place to Work certified company.",
+    "linkedin": "https://www.linkedin.com/company/kota-creative/",
+    "industries_served": ["Food and Beverage", "Nonprofit", "Publishing", "Technology", "Hospitality"],
+    "header_tags": ["Web Design", "Web Development", "Branding", "Visual Identity", "Digital Marketing", "Strategy"],
+    "email": "hello@kota.co.uk",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Clutch Global Winner", "year": 2024},
+      {"name": "Lovie Award - Best Web Design (Aesthetic)", "year": null},
+      {"name": "Great Place to Work Certified", "year": 2025}
+    ],
+    "notable_clients": [
+      {"name": "Jamie Oliver", "domain": "jamieoliver.com"},
+      {"name": "British Red Cross", "domain": "redcross.org.uk"},
+      {"name": "Penguin Books", "domain": "penguin.co.uk"},
+      {"name": "Diageo", "domain": "diageo.com"},
+      {"name": "Comptoir Libanais", "domain": "comptoirlibanais.com"}
+    ]
+  },
+  {
+    "company_name": "Parallax",
+    "domain": "parall.ax",
+    "website": "https://parall.ax",
+    "category_slug": "full-service-digital",
+    "country_code": "GB",
+    "city": "Leeds",
+    "state": "",
+    "founded_year": 2009,
+    "team_size": "11-50",
+    "description": "Parallax is an award-winning digital agency founded in 2009 with offices in Leeds and London, UK. It delivers strategy, design and engineering for websites, software, mobile apps, IoT and AI solutions through rapid iteration for the world's leading brands. The agency is ISO 9001 and ISO 27001 certified and carbon-neutral.",
+    "linkedin": "https://www.linkedin.com/company/parallax-agency/",
+    "industries_served": ["Financial Services", "Technology", "Media", "Government", "Consumer Goods"],
+    "header_tags": ["Strategy", "Web Development", "Software Engineering", "Design", "AI", "Webflow"],
+    "email": "info@parall.ax",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "iF Design Award", "year": 2024},
+      {"name": "ISO 9001:2015 Certified", "year": null},
+      {"name": "ISO 27001:2022 Certified", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Visa", "domain": "visa.com"},
+      {"name": "American Express", "domain": "americanexpress.com"},
+      {"name": "Nike", "domain": "nike.com"},
+      {"name": "Unilever", "domain": "unilever.com"},
+      {"name": "NHS", "domain": "nhs.uk"}
+    ]
+  },
+  {
+    "company_name": "Edifian",
+    "domain": "edifian.com",
+    "website": "https://edifian.com",
+    "category_slug": "digital-creative",
+    "country_code": "CA",
+    "city": "Toronto",
+    "state": "ON",
+    "founded_year": 2019,
+    "team_size": "11-50",
+    "description": "Edifian is a multi-award-winning creative digital agency founded in 2019 with offices in Toronto, Canada and Auckland, New Zealand. It specialises in branding, web design and development, eCommerce, SEO and digital strategy for clients across finance, automotive, fashion and other sectors. The agency has been recognised by Awwwards and CSS Design Awards.",
+    "linkedin": "https://www.linkedin.com/company/edifianagency/",
+    "industries_served": ["Financial Services", "Automotive", "Retail", "Manufacturing", "Professional Services"],
+    "header_tags": ["Branding", "Web Design", "Web Development", "eCommerce", "SEO", "Digital Strategy"],
+    "email": "hello@edifian.com",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Awwwards Honoree", "year": 2023},
+      {"name": "CSS Design Awards - Best Innovation", "year": 2020},
+      {"name": "DesignRush Top 30 B2B Web Design Agencies", "year": 2021}
+    ],
+    "notable_clients": [
+      {"name": "BlackBull Markets", "domain": "blackbull.com"}
+    ]
+  },
+  {
+    "company_name": "Locomotive",
+    "domain": "locomotive.ca",
+    "website": "https://locomotive.ca",
+    "category_slug": "digital-creative",
+    "country_code": "CA",
+    "city": "Montreal",
+    "state": "QC",
+    "founded_year": 2006,
+    "team_size": "11-50",
+    "description": "Locomotive is a digital-first design agency founded in 2006 and based in Montreal, Canada. It creates bespoke digital-first brand identities and web experiences from strategy through deployment. The agency has been named Awwwards Agency of the Year for seven consecutive years and has won multiple Webby Awards.",
+    "linkedin": "https://www.linkedin.com/company/locomotive-mtl",
+    "industries_served": ["Automotive", "Architecture", "Technology", "Retail", "Consumer Goods"],
+    "header_tags": ["Web Design", "Branding", "Digital Strategy", "Creative", "Development", "Brand Identity"],
+    "email": "info@locomotive.ca",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Awwwards Agency of the Year", "year": 2025},
+      {"name": "Webby Award", "year": null},
+      {"name": "CSS Design Awards", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Scout Motors", "domain": "scoutmotors.com"},
+      {"name": "Populous", "domain": "populous.com"},
+      {"name": "Lowe's", "domain": "lowes.com"}
+    ]
+  },
+  {
+    "company_name": "Studiothink",
+    "domain": "studiothink.com",
+    "website": "https://www.studiothink.com",
+    "category_slug": "web-design",
+    "country_code": "CA",
+    "city": "Vancouver",
+    "state": "BC",
+    "founded_year": 1997,
+    "team_size": "11-50",
+    "description": "Studiothink is a web design and branding agency founded in 1997 and based in Vancouver, British Columbia, Canada. It creates bold, story-driven web design, branding and marketing for B2B and professional service companies. The studio has nearly three decades of experience serving Canadian businesses and organisations.",
+    "linkedin": "https://www.linkedin.com/company/studiothink/",
+    "industries_served": ["Professional Services", "Legal", "Manufacturing", "Construction", "Nonprofit"],
+    "header_tags": ["Web Design", "Branding", "Marketing", "Strategy", "B2B", "Creative"],
+    "email": "hello@studiothink.com",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "MYR Group", "domain": "myrgroup.com"},
+      {"name": "Morgan Creek Golf Course", "domain": "morgancreekgolf.com"},
+      {"name": "Surrey Board of Trade", "domain": "businessinsurrey.com"}
+    ]
+  },
+  {
+    "company_name": "Akendi",
+    "domain": "akendi.com",
+    "website": "https://www.akendi.com",
+    "category_slug": "digital-creative",
+    "country_code": "CA",
+    "city": "Toronto",
+    "state": "ON",
+    "founded_year": null,
+    "team_size": "11-50",
+    "description": "Akendi is a user experience and design agency with offices in Toronto and Ottawa, Canada, plus Cambridge and London in the UK. With more than 18 years of experience it delivers UX strategy, user research, digital product design, UX training and usability testing through an Experience Thinking framework. The agency works with major Canadian banks, government and enterprise clients.",
+    "linkedin": "https://www.linkedin.com/company/akendi",
+    "industries_served": ["Financial Services", "Government", "Healthcare", "Telecom", "Utilities"],
+    "header_tags": ["UX Strategy", "User Research", "Product Design", "Usability Testing", "UX Training", "Service Design"],
+    "email": "contact@akendi.com",
+    "intro_video_url": null,
+    "awards": [],
+    "notable_clients": [
+      {"name": "RBC Global Asset Management", "domain": "rbcgam.com"},
+      {"name": "FortisBC", "domain": "fortisbc.com"},
+      {"name": "SickKids", "domain": "sickkids.ca"},
+      {"name": "Aviva", "domain": "aviva.ca"},
+      {"name": "Kijiji", "domain": "kijiji.ca"}
+    ]
+  },
+  {
+    "company_name": "Alphero",
+    "domain": "alphero.com",
+    "website": "https://www.alphero.com",
+    "category_slug": "digital-creative",
+    "country_code": "NZ",
+    "city": "Wellington",
+    "state": "",
+    "founded_year": 2011,
+    "team_size": "51-200",
+    "description": "Alphero is an award-winning digital agency founded in 2011 with offices in Wellington and Auckland, New Zealand, and a team of more than 70 designers and developers. It delivers mobile apps, websites, experience design, digital strategy, service design and software development. The agency is a multiple winner at the Designers Institute of New Zealand Best Design Awards.",
+    "linkedin": "https://www.linkedin.com/company/alphero/",
+    "industries_served": ["Financial Services", "Government", "Healthcare", "Telecom", "Media"],
+    "header_tags": ["Mobile Apps", "UX/UI", "Web Development", "Digital Strategy", "Service Design", "Software"],
+    "email": null,
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Designers Institute of New Zealand Best Design Awards", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Westpac", "domain": "westpac.co.nz"},
+      {"name": "2degrees", "domain": "2degrees.nz"},
+      {"name": "MetService", "domain": "metservice.com"},
+      {"name": "The Co-operative Bank", "domain": "co-operativebank.co.nz"},
+      {"name": "Powershop", "domain": "powershop.co.nz"}
+    ]
+  },
+  {
+    "company_name": "Parachute Design",
+    "domain": "parachutedesign.ca",
+    "website": "https://parachutedesign.ca",
+    "category_slug": "web-design",
+    "country_code": "CA",
+    "city": "Toronto",
+    "state": "ON",
+    "founded_year": 2003,
+    "team_size": "11-50",
+    "description": "Parachute Design is an award-winning web design and branding agency founded in 2003 and based in Toronto, Canada. It specialises in custom web design, WordPress development, branding, eCommerce and SEO for businesses across Canada. The studio is RGD Ontario and GDC accredited and a multiple 2025 Clutch top-agency awardee.",
+    "linkedin": "https://www.linkedin.com/company/parachute-design/",
+    "industries_served": ["Construction", "Professional Services", "Manufacturing", "Nonprofit", "Retail"],
+    "header_tags": ["Web Design", "WordPress", "Branding", "eCommerce", "SEO", "Graphic Design"],
+    "email": "hello@parachutedesign.ca",
+    "intro_video_url": null,
+    "awards": [
+      {"name": "Clutch Top Web Designers in Canada", "year": 2025},
+      {"name": "Clutch Top WordPress Developers in Canada", "year": 2025},
+      {"name": "RGD Ontario Accredited", "year": null}
+    ],
+    "notable_clients": [
+      {"name": "Ingenuity", "domain": "ingenuity.ca"}
+    ]
+  }
+]
