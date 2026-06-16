@@ -232,7 +232,8 @@ export function mapRow(r: Record<string, unknown>): RealSubmission {
 
 export async function fetchAllSubmissions(): Promise<RealSubmission[]> {
   try {
-    const res = await fetch(`${API}/submissions`)
+    /* Admin-gated endpoint — send the iww_adm_token cookie (same-origin). */
+    const res = await fetch(`${API}/submissions`, { credentials: 'same-origin', cache: 'no-store' })
     if (!res.ok) return []
     const rows: Record<string, unknown>[] = await res.json()
     return rows.map(mapRow)

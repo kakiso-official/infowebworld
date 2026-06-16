@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server'
 import { query, queryOne, execute } from '@/lib/db'
+import { requireAdmin } from '@/lib/auth'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { getClientIp } from '@/lib/tracking'
 import { getUserFromRequest } from '@/lib/user-auth'
@@ -7,7 +8,16 @@ import { getUserHighestPaidPlan } from '@/lib/user-plan'
 import { TIER_RANK, type PlanTier } from '@/lib/user-plan-types'
 import { notifyOnNewSubmission } from '@/lib/notify-submission'
 
+/**
+ * GET /api/submissions — admin moderation feed.
+ * Admin-only: returns every submission with full columns (emails, IPs, etc.),
+ * so it must be gated. The admin console loads the whole set and does its own
+ * search / filtering / sorting client-side. High LIMIT is a runaway guard only.
+ */
 export async function GET(request: NextRequest) {
+  const guard = await requireAdmin(request)
+  if (guard instanceof Response) return guard
+
   try {
     const rows = await query(`
       SELECT s.*, p.name as plan_name, p.slug as plan_slug,
@@ -17,7 +27,7 @@ export async function GET(request: NextRequest) {
       LEFT JOIN plans p ON p.id = s.plan_id
       LEFT JOIN categories c ON c.id = s.category_id
       LEFT JOIN countries co ON co.id = s.country_id
-      ORDER BY s.created_at DESC LIMIT 200
+      ORDER BY s.created_at DESC LIMIT 5000
     `)
     return Response.json(rows)
   } catch (err) {

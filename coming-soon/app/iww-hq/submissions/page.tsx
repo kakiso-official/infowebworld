@@ -1,21 +1,21 @@
 'use client'
 
-import { useEffect, useMemo, useState, useRef, useCallback } from 'react'
+import { useEffect, useMemo, useState, useRef, useCallback, type ReactNode } from 'react'
 import './submissions.css'
 import {
   fetchAllSubmissions,
   updateSubmissionStatus,
   deleteSubmission,
-  fetchSubmissionStats,
   type RealSubmission,
   type FaqItem,
 } from '../data/submissions-storage'
 
 /* ───────────────────────────────────────────────────────────────────
    /iww-hq/submissions
-   Two-pane moderation UI styled to match the public listing page.
-   Left: filterable list. Right: detail panel with action bar +
-   sectioned content. Top bar has the manual Vercel Deploy button.
+   Moderation console. Full-width filter toolbar (search · status ·
+   mode · category · country · plan · sort) over a two-pane master/detail
+   with bulk select + bulk actions. Fills the admin content area exactly
+   (no 100vh overflow). Top bar carries the manual Vercel Deploy button.
    ─────────────────────────────────────────────────────────────────── */
 
 type Status = RealSubmission['status']
@@ -27,12 +27,21 @@ const STATUS_LABEL: Record<Status, string> = {
 
 const STATUS_TABS: { key: Status | 'all'; label: string }[] = [
   { key: 'pending',   label: 'Pending'   },
-  { key: 'confirmed', label: 'Confirmed' },
-  { key: 'paid',      label: 'Paid'      },
   { key: 'active',    label: 'Active'    },
+  { key: 'paid',      label: 'Paid'      },
+  { key: 'confirmed', label: 'Confirmed' },
   { key: 'rejected',  label: 'Rejected'  },
   { key: 'all',       label: 'All'       },
 ]
+
+const SORTS = [
+  { key: 'newest', label: 'Newest first' },
+  { key: 'oldest', label: 'Oldest first' },
+  { key: 'az',     label: 'Name A–Z' },
+  { key: 'za',     label: 'Name Z–A' },
+  { key: 'status', label: 'By status' },
+] as const
+type SortKey = (typeof SORTS)[number]['key']
 
 /* Preview overlay viewport presets. width 0 = fill the stage (true desktop);
    fixed widths drive the page's real responsive breakpoints inside the iframe. */
@@ -85,20 +94,27 @@ function planShort(name: string, slug: string): string {
   return 'Free'
 }
 
+/* Run async work in bounded-concurrency chunks so a bulk action over hundreds
+   of rows never fires hundreds of simultaneous requests. */
+async function runChunked<T>(items: T[], size: number, fn: (t: T) => Promise<unknown>) {
+  for (let i = 0; i < items.length; i += size) {
+    await Promise.all(items.slice(i, i + size).map(fn))
+  }
+}
+
 export default function SubmissionsPage() {
   const [subs, setSubs] = useState<RealSubmission[]>([])
   const [search, setSearch] = useState('')
-  const [tab, setTab] = useState<Status | 'all'>('pending')
-  /* Listing-mode filter — independent from the status tabs. Lets admins
-     focus the queue on Companies vs Products without losing the status
-     bucket. Defaults to 'all' so behavior matches the pre-feature page. */
+  const [statusFilter, setStatusFilter] = useState<Status | 'all'>('pending')
   const [modeFilter, setModeFilter] = useState<'all' | 'product' | 'company'>('all')
+  const [categoryFilter, setCategoryFilter] = useState('all')
+  const [countryFilter, setCountryFilter] = useState('all')
+  const [planFilter, setPlanFilter] = useState('all')
+  const [sort, setSort] = useState<SortKey>('newest')
   const [selectedId, setSelectedId] = useState<string | null>(null)
-  const [stats, setStats] = useState({ total: 0, pending: 0, confirmed: 0, paid: 0 })
+  const [checked, setChecked] = useState<Set<string>>(new Set())
   const [busy, setBusy] = useState(false)
   const [toast, setToast] = useState<{ kind: 'ok' | 'err'; msg: string } | null>(null)
-  /* When set, the full-screen "preview as published" overlay is open for this
-     submission. Held at page level so it floats above both panes. */
   const [previewSub, setPreviewSub] = useState<RealSubmission | null>(null)
 
   const flash = (kind: 'ok' | 'err', msg: string) => {
@@ -108,8 +124,7 @@ export default function SubmissionsPage() {
 
   const reload = async () => {
     try {
-      const [s, st] = await Promise.all([fetchAllSubmissions(), fetchSubmissionStats()])
-      setSubs(s); setStats(st)
+      setSubs(await fetchAllSubmissions())
     } catch (err) {
       console.error(err)
       flash('err', 'Could not load submissions.')
@@ -118,51 +133,102 @@ export default function SubmissionsPage() {
 
   useEffect(() => { reload() }, [])
 
-  /* Counts per status — drives the tab badges. */
-  const counts = useMemo(() => {
-    const out: Record<string, number> = { all: subs.length }
-    for (const s of subs) out[s.status] = (out[s.status] || 0) + 1
-    return out
-  }, [subs])
+  /* Global totals for the top bar — derived from the loaded set (no 2nd fetch). */
+  const stats = useMemo(() => ({
+    total: subs.length,
+    pending: subs.filter(s => s.status === 'pending').length,
+    active: subs.filter(s => s.status === 'active').length,
+    paid: subs.filter(s => s.status === 'paid').length,
+  }), [subs])
 
-  const modeCounts = useMemo(() => {
-    let companies = 0, products = 0
-    for (const s of subs) {
-      if (s.listingMode === 'company') companies++
-      else products++
-    }
-    return { all: subs.length, product: products, company: companies }
-  }, [subs])
+  /* Distinct filter option lists (with counts), built once from the full set so
+     every value is reachable regardless of the current filter. */
+  const catOptions = useMemo(() => tally(subs, s => s.category), [subs])
+  const countryOptions = useMemo(() => tally(subs, s => s.country), [subs])
+  const planOptions = useMemo(() => tally(subs, s => planShort(s.planName, s.plan)), [subs])
 
-  /* Filter + search. Keeps the most recent submission first. */
-  const filtered = useMemo(() => {
+  /* Everything EXCEPT the status filter — so the status tab badges reflect the
+     other active filters (e.g. "Pending (12)" when Mode = Companies). */
+  const base = useMemo(() => {
     const q = search.trim().toLowerCase()
-    return subs
-      .filter(s => tab === 'all' ? true : s.status === tab)
-      .filter(s => modeFilter === 'all' ? true : s.listingMode === modeFilter)
-      .filter(s => !q
+    return subs.filter(s =>
+      (modeFilter === 'all' || s.listingMode === modeFilter) &&
+      (categoryFilter === 'all' || s.category === categoryFilter) &&
+      (countryFilter === 'all' || s.country === countryFilter) &&
+      (planFilter === 'all' || planShort(s.planName, s.plan) === planFilter) &&
+      (!q
         || s.companyName.toLowerCase().includes(q)
         || s.email.toLowerCase().includes(q)
         || s.contactName.toLowerCase().includes(q)
         || s.category.toLowerCase().includes(q)
-        || s.slug.toLowerCase().includes(q)
-      )
-      .sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime())
-  }, [subs, tab, modeFilter, search])
+        || s.country.toLowerCase().includes(q)
+        || s.slug.toLowerCase().includes(q)),
+    )
+  }, [subs, modeFilter, categoryFilter, countryFilter, planFilter, search])
+
+  const counts = useMemo(() => {
+    const out: Record<string, number> = { all: base.length }
+    for (const s of base) out[s.status] = (out[s.status] || 0) + 1
+    return out
+  }, [base])
+
+  const filtered = useMemo(() => {
+    /* While searching, look across every status so a query like "siren" always
+       surfaces the listing no matter which status tab is active. */
+    const searching = search.trim().length > 0
+    const out = (searching || statusFilter === 'all') ? [...base] : base.filter(s => s.status === statusFilter)
+    out.sort((a, b) => {
+      const ta = new Date(a.submittedAt).getTime() || 0
+      const tb = new Date(b.submittedAt).getTime() || 0
+      switch (sort) {
+        case 'oldest': return ta - tb
+        case 'az':     return a.companyName.localeCompare(b.companyName)
+        case 'za':     return b.companyName.localeCompare(a.companyName)
+        case 'status': return a.status.localeCompare(b.status) || tb - ta
+        default:       return tb - ta
+      }
+    })
+    return out
+  }, [base, statusFilter, sort, search])
 
   const selected = useMemo(
     () => filtered.find(s => s.id === selectedId) || subs.find(s => s.id === selectedId) || null,
-    [filtered, subs, selectedId]
+    [filtered, subs, selectedId],
   )
 
-  /* When switching tabs, auto-select the first row in that bucket so the
-     detail pane never goes blank for too long. */
+  /* Keep the detail pane populated as the filtered set changes. */
   useEffect(() => {
     if (filtered.length === 0) { setSelectedId(null); return }
-    if (!selectedId || !filtered.find(f => f.id === selectedId)) {
-      setSelectedId(filtered[0].id)
-    }
+    if (!selectedId || !filtered.find(f => f.id === selectedId)) setSelectedId(filtered[0].id)
   }, [filtered, selectedId])
+
+  const filtersDirty =
+    !!search || statusFilter !== 'pending' || modeFilter !== 'all' ||
+    categoryFilter !== 'all' || countryFilter !== 'all' || planFilter !== 'all' || sort !== 'newest'
+
+  const clearFilters = () => {
+    setSearch(''); setStatusFilter('pending'); setModeFilter('all')
+    setCategoryFilter('all'); setCountryFilter('all'); setPlanFilter('all'); setSort('newest')
+  }
+
+  /* ── selection (bulk) ── */
+  const filteredIds = useMemo(() => filtered.map(f => f.id), [filtered])
+  const allChecked = filteredIds.length > 0 && filteredIds.every(id => checked.has(id))
+  const toggleOne = (id: string) =>
+    setChecked(prev => {
+      const n = new Set(prev)
+      if (n.has(id)) n.delete(id)
+      else n.add(id)
+      return n
+    })
+  const toggleAll = () =>
+    setChecked(prev => {
+      const n = new Set(prev)
+      if (filteredIds.every(id => n.has(id))) filteredIds.forEach(id => n.delete(id))
+      else filteredIds.forEach(id => n.add(id))
+      return n
+    })
+  const clearChecked = () => setChecked(new Set())
 
   const setStatus = async (id: string, status: Status) => {
     setBusy(true)
@@ -170,11 +236,7 @@ export default function SubmissionsPage() {
       await updateSubmissionStatus(id, status)
       flash('ok', `Marked ${STATUS_LABEL[status].toLowerCase()}.`)
       await reload()
-    } catch {
-      flash('err', 'Status change failed.')
-    } finally {
-      setBusy(false)
-    }
+    } catch { flash('err', 'Status change failed.') } finally { setBusy(false) }
   }
 
   const remove = async (id: string) => {
@@ -185,15 +247,34 @@ export default function SubmissionsPage() {
       flash('ok', 'Deleted.')
       if (selectedId === id) setSelectedId(null)
       await reload()
-    } catch {
-      flash('err', 'Delete failed.')
-    } finally {
-      setBusy(false)
-    }
+    } catch { flash('err', 'Delete failed.') } finally { setBusy(false) }
+  }
+
+  const bulkStatus = async (status: Status) => {
+    const ids = [...checked]
+    if (!ids.length) return
+    if (!confirm(`Mark ${ids.length} listing${ids.length > 1 ? 's' : ''} as ${STATUS_LABEL[status].toLowerCase()}?`)) return
+    setBusy(true)
+    try {
+      await runChunked(ids, 6, id => updateSubmissionStatus(id, status))
+      flash('ok', `${ids.length} listing${ids.length > 1 ? 's' : ''} marked ${STATUS_LABEL[status].toLowerCase()}.`)
+      clearChecked(); await reload()
+    } catch { flash('err', 'Bulk update failed.') } finally { setBusy(false) }
+  }
+
+  const bulkDelete = async () => {
+    const ids = [...checked]
+    if (!ids.length) return
+    if (!confirm(`Permanently delete ${ids.length} listing${ids.length > 1 ? 's' : ''}? This cannot be undone.`)) return
+    setBusy(true)
+    try {
+      await runChunked(ids, 6, id => deleteSubmission(id))
+      flash('ok', `${ids.length} deleted.`)
+      clearChecked(); await reload()
+    } catch { flash('err', 'Bulk delete failed.') } finally { setBusy(false) }
   }
 
   const saveFaqs = async (id: string, faqs: FaqItem[]) => {
-    /* PUT /api/submissions/[id] handles full updates, including FAQs. */
     setBusy(true)
     try {
       const res = await fetch(`/api/submissions/${id}`, {
@@ -204,117 +285,162 @@ export default function SubmissionsPage() {
       })
       if (!res.ok) throw new Error()
       flash('ok', 'FAQs saved.')
-      /* Optimistically merge into local state so the panel updates immediately. */
       setSubs(prev => prev.map(s => s.id === id ? { ...s, faqs } : s))
-    } catch {
-      flash('err', 'Could not save FAQs.')
-    } finally {
-      setBusy(false)
-    }
+    } catch { flash('err', 'Could not save FAQs.') } finally { setBusy(false) }
   }
 
   return (
     <div className="sub-scope">
+      {/* ─── Top bar ─────────────────────────── */}
       <header className="sub-top">
         <h1>Submissions</h1>
         <div className="sub-stats">
           <span className="sub-stat"><strong>{stats.total}</strong> total</span>
-          <span className="sub-stat"><strong>{stats.pending}</strong> pending</span>
-          <span className="sub-stat"><strong>{stats.paid}</strong> paid</span>
+          <span className="sub-stat sub-stat--amber"><strong>{stats.pending}</strong> pending</span>
+          <span className="sub-stat sub-stat--teal"><strong>{stats.active}</strong> active</span>
+          <span className="sub-stat sub-stat--green"><strong>{stats.paid}</strong> paid</span>
         </div>
         <div className="sub-top-spacer" />
         <DeployButton />
       </header>
 
-      <div className="sub-layout">
-        {/* ─── List pane ───────────────────────── */}
-        <aside className="sub-list">
-          <div className="sub-search">
-            <input
-              type="search"
-              placeholder="Search company, contact, email, slug…"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-            />
-          </div>
-          <div className="sub-tabs">
-            {STATUS_TABS.map(t => {
-              const n = counts[t.key] ?? 0
-              const active = tab === t.key
-              return (
-                <button
-                  key={t.key}
-                  className={`sub-tab ${active ? 'is-active' : ''}`}
-                  onClick={() => setTab(t.key)}
-                >
-                  {t.label}
-                  <span className="sub-tab-count">{n}</span>
-                </button>
-              )
-            })}
-          </div>
+      {/* ─── Filter toolbar ──────────────────── */}
+      <div className="sub-toolbar">
+        <div className="sub-tb-search">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" />
+          </svg>
+          <input
+            type="search"
+            placeholder="Search company, contact, email, country, slug…"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+        </div>
 
-          {/* Listing-mode filter — orthogonal to the status tabs above. */}
-          <div className="sub-mode-filter" role="group" aria-label="Listing mode filter">
-            {(['all', 'product', 'company'] as const).map(m => {
-              const active = modeFilter === m
-              const label = m === 'all' ? 'All' : m === 'product' ? 'Products' : 'Companies'
-              return (
-                <button
-                  key={m}
-                  type="button"
-                  className={`sub-mode-chip ${active ? 'is-active' : ''}`}
-                  onClick={() => setModeFilter(m)}
-                >
-                  {label}
-                  <span className="sub-mode-chip-count">{modeCounts[m]}</span>
-                </button>
-              )
-            })}
-          </div>
+        <div className="sub-seg" role="group" aria-label="Status">
+          {STATUS_TABS.map(t => (
+            <button
+              key={t.key}
+              className={`sub-seg-btn ${statusFilter === t.key ? 'is-active' : ''}`}
+              onClick={() => setStatusFilter(t.key)}
+            >
+              {t.label}
+              <span className="sub-seg-count">{counts[t.key] ?? 0}</span>
+            </button>
+          ))}
+        </div>
+
+        <div className="sub-tb-filters">
+          <FilterSelect title="Listing mode" value={modeFilter} onChange={v => setModeFilter(v as typeof modeFilter)}>
+            <option value="all">All types</option>
+            <option value="company">Companies</option>
+            <option value="product">Products</option>
+          </FilterSelect>
+
+          <FilterSelect title="Category" value={categoryFilter} onChange={setCategoryFilter}>
+            <option value="all">All categories</option>
+            {catOptions.map(([name, n]) => <option key={name} value={name}>{name} ({n})</option>)}
+          </FilterSelect>
+
+          <FilterSelect title="Country" value={countryFilter} onChange={setCountryFilter}>
+            <option value="all">All countries</option>
+            {countryOptions.map(([name, n]) => <option key={name} value={name}>{name} ({n})</option>)}
+          </FilterSelect>
+
+          <FilterSelect title="Plan" value={planFilter} onChange={setPlanFilter}>
+            <option value="all">All plans</option>
+            {planOptions.map(([name, n]) => <option key={name} value={name}>{name} ({n})</option>)}
+          </FilterSelect>
+
+          <FilterSelect title="Sort" value={sort} onChange={v => setSort(v as SortKey)}>
+            {SORTS.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
+          </FilterSelect>
+
+          {filtersDirty && (
+            <button className="sub-clear" onClick={clearFilters} title="Reset all filters">
+              ✕ Clear
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* ─── Two-pane ────────────────────────── */}
+      <div className="sub-layout">
+        <aside className="sub-list">
+          {/* List header / bulk bar */}
+          {checked.size > 0 ? (
+            <div className="sub-bulkbar">
+              <span className="sub-bulk-n">{checked.size} selected</span>
+              <div className="sub-bulk-actions">
+                <button className="sub-bulk-btn sub-bulk-btn--go" disabled={busy} onClick={() => bulkStatus('active')}>Activate</button>
+                <button className="sub-bulk-btn" disabled={busy} onClick={() => bulkStatus('rejected')}>Reject</button>
+                <button className="sub-bulk-btn sub-bulk-btn--del" disabled={busy} onClick={bulkDelete}>Delete</button>
+              </div>
+              <button className="sub-bulk-x" onClick={clearChecked} title="Clear selection">✕</button>
+            </div>
+          ) : (
+            <div className="sub-list-head">
+              <label className="sub-check" title="Select all">
+                <input type="checkbox" checked={allChecked} onChange={toggleAll} />
+              </label>
+              <span className="sub-list-count">
+                {filtered.length} {filtered.length === 1 ? 'listing' : 'listings'}
+              </span>
+            </div>
+          )}
 
           <div className="sub-rows">
             {filtered.length === 0 ? (
               <div className="sub-empty">
-                {tab === 'pending'
+                {statusFilter === 'pending' && !filtersDirty
                   ? 'Inbox zero — no pending submissions.'
-                  : 'No matches.'}
+                  : 'No listings match these filters.'}
               </div>
             ) : filtered.map(s => {
               const isActive = s.id === selectedId
+              const isChecked = checked.has(s.id)
               return (
-                <button
-                  key={s.id}
-                  className={`sub-row ${isActive ? 'is-active' : ''}`}
-                  onClick={() => setSelectedId(s.id)}
-                >
-                  <span className="sub-row-logo">
-                    {s.logoUrl
-                      ? <img src={s.logoUrl} alt="" />
-                      : <span>{(s.companyName || '?').slice(0, 1).toUpperCase()}</span>}
-                  </span>
-                  <span className="sub-row-text">
-                    <span className="sub-row-name">{s.companyName}</span>
-                    <span className="sub-row-meta">
-                      <span className={`sub-plan ${planClass(s.plan)}`}>
-                        {planShort(s.planName, s.plan)}
-                      </span>
-                      <span className="sub-dot">·</span>
-                      <span>{s.category || '—'}</span>
-                      <span className="sub-dot">·</span>
-                      <span>{relativeAge(s.submittedAt)}</span>
+                <div key={s.id} className={`sub-row ${isActive ? 'is-active' : ''} ${isChecked ? 'is-checked' : ''}`}>
+                  <label className="sub-check" onClick={e => e.stopPropagation()}>
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={() => toggleOne(s.id)}
+                      aria-label={`Select ${s.companyName}`}
+                    />
+                  </label>
+                  <button className="sub-row-main" onClick={() => setSelectedId(s.id)}>
+                    <span className="sub-row-logo">
+                      {s.logoUrl
+                        ? <img src={s.logoUrl} alt="" />
+                        : <span>{(s.companyName || '?').slice(0, 1).toUpperCase()}</span>}
                     </span>
-                  </span>
-                  <span className="sub-row-aside">
-                    <span className={`sub-pill sub-pill--${s.status}`}>{STATUS_LABEL[s.status]}</span>
-                  </span>
-                </button>
+                    <span className="sub-row-text">
+                      <span className="sub-row-name">
+                        {s.companyName}
+                        {s.verified && <span className="sub-row-verified" title="Verified">✓</span>}
+                      </span>
+                      <span className="sub-row-meta">
+                        <span className={`sub-tag sub-tag--${s.listingMode}`}>{s.listingMode === 'company' ? 'Company' : 'Product'}</span>
+                        <span className="sub-dot">·</span>
+                        <span className="sub-row-cat">{s.category || '—'}</span>
+                        {s.country && <><span className="sub-dot">·</span><span>{s.country}</span></>}
+                        <span className="sub-dot">·</span>
+                        <span>{relativeAge(s.submittedAt)}</span>
+                      </span>
+                    </span>
+                    <span className="sub-row-aside">
+                      <span className={`sub-pill sub-pill--${s.status}`}>{STATUS_LABEL[s.status]}</span>
+                      <span className={`sub-plan ${planClass(s.plan)}`}>{planShort(s.planName, s.plan)}</span>
+                    </span>
+                  </button>
+                </div>
               )
             })}
           </div>
         </aside>
 
-        {/* ─── Detail pane ─────────────────────── */}
         <section className="sub-detail">
           {selected ? (
             <SubmissionDetail
@@ -354,6 +480,32 @@ export default function SubmissionsPage() {
   )
 }
 
+/* Distinct values + counts, sorted alphabetically, blanks dropped. */
+function tally(subs: RealSubmission[], pick: (s: RealSubmission) => string): [string, number][] {
+  const m = new Map<string, number>()
+  for (const s of subs) {
+    const v = (pick(s) || '').trim()
+    if (v) m.set(v, (m.get(v) || 0) + 1)
+  }
+  return [...m.entries()].sort((a, b) => a[0].localeCompare(b[0]))
+}
+
+/* Styled native select with a chevron. */
+function FilterSelect({
+  value, onChange, title, children,
+}: { value: string; onChange: (v: string) => void; title: string; children: ReactNode }) {
+  return (
+    <div className="sub-select">
+      <select value={value} onChange={e => onChange(e.target.value)} aria-label={title} title={title}>
+        {children}
+      </select>
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="m6 9 6 6 6-6" />
+      </svg>
+    </div>
+  )
+}
+
 /* ─────────────────────────────────────────────────────────────────────
    Detail panel — hero + sticky action bar + sectioned content
    ───────────────────────────────────────────────────────────────────── */
@@ -386,6 +538,7 @@ function SubmissionDetail({ sub, busy, onSetStatus, onDelete, onSaveFaqs, onPrev
           {sub.tagline && <p className="sub-hero-tagline">{sub.tagline}</p>}
           <div className="sub-hero-meta">
             <span className={`sub-pill sub-pill--${sub.status}`}>{STATUS_LABEL[sub.status]}</span>
+            <span className={`sub-tag sub-tag--${sub.listingMode}`}>{sub.listingMode === 'company' ? 'Company' : 'Product'}</span>
             <span className={`sub-plan ${planClass(sub.plan)}`}>{planShort(sub.planName, sub.plan)}</span>
             {sub.category && <><span className="sub-dot">·</span><span style={{ fontSize: 12, color: 'var(--mute)' }}>{sub.category}</span></>}
             <span className="sub-dot">·</span>
@@ -396,7 +549,6 @@ function SubmissionDetail({ sub, busy, onSetStatus, onDelete, onSaveFaqs, onPrev
 
       {/* Sticky action bar */}
       <div className="sub-actions">
-        {/* Primary affordance: see the exact public page before deciding. */}
         <button
           className="sub-btn sub-btn--preview"
           onClick={() => onPreview(sub)}
@@ -542,22 +694,14 @@ function SubmissionDetail({ sub, busy, onSetStatus, onDelete, onSaveFaqs, onPrev
         </dl>
       </section>
 
-      {/* FAQ editor */}
-      <FaqEditor sub={sub} onSave={onSaveFaqs} busy={busy} />
+      {/* FAQ editor — keyed by id so it re-inits per submission (no reset effect). */}
+      <FaqEditor key={sub.id} sub={sub} onSave={onSaveFaqs} busy={busy} />
     </>
   )
 }
 
 /* ─────────────────────────────────────────────────────────────────────
    Preview overlay — full-screen, isolated render of the live public page.
-
-   Renders the real /listing or /profile page inside an <iframe> pointed at
-   /preview/submission, then pushes the selected RealSubmission to it via
-   postMessage. The iframe is the only faithful way to preview here: the
-   listing page mutates document.body and owns a navbar-bound sticky header,
-   so its own document keeps it from disturbing the admin layout — and the
-   iframe width exercises the page's real responsive breakpoints, so the
-   Desktop/Tablet/Mobile toggle shows true layouts.
    ───────────────────────────────────────────────────────────────────── */
 function PreviewOverlay({
   sub, busy, onClose, onSetStatus,
@@ -570,8 +714,6 @@ function PreviewOverlay({
   const [device, setDevice] = useState<DeviceKey>('desktop')
   const frameRef = useRef<HTMLIFrameElement | null>(null)
 
-  /* Push the row into the iframe. Safe to call repeatedly — the child just
-     re-renders with the latest snapshot. */
   const pushData = useCallback(() => {
     frameRef.current?.contentWindow?.postMessage(
       { type: 'iww-sub-preview-data', sub },
@@ -579,8 +721,6 @@ function PreviewOverlay({
     )
   }, [sub])
 
-  /* The child posts 'ready' on mount; respond by pushing the row. Covers the
-     race where the iframe mounts after onLoad fires. */
   useEffect(() => {
     const onMessage = (e: MessageEvent) => {
       if (e.origin !== window.location.origin) return
@@ -590,10 +730,8 @@ function PreviewOverlay({
     return () => window.removeEventListener('message', onMessage)
   }, [pushData])
 
-  /* Re-push whenever the row changes. */
   useEffect(() => { pushData() }, [pushData])
 
-  /* Esc closes. */
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
     window.addEventListener('keydown', onKey)
@@ -694,14 +832,12 @@ function KV({
   )
 }
 
-/* ─────────────────────────────────────────────────────────────────────
-   Status switcher (used for non-pending listings to flip between states)
-   ───────────────────────────────────────────────────────────────────── */
+/* ── Status switcher (non-pending listings) ────────────────────────── */
 function StatusSwitcher({
   status, disabled, onChange,
 }: { status: Status; disabled: boolean; onChange: (s: Status) => void }) {
   return (
-    <div style={{ display: 'inline-flex', gap: 4, padding: 3, border: '1px solid var(--border)', borderRadius: 6, background: '#fff' }}>
+    <div className="sub-switch">
       {(['pending', 'confirmed', 'paid', 'active', 'rejected'] as Status[]).map(s => {
         const active = s === status
         return (
@@ -709,16 +845,7 @@ function StatusSwitcher({
             key={s}
             disabled={disabled || active}
             onClick={() => onChange(s)}
-            style={{
-              padding: '4px 10px',
-              border: 0, borderRadius: 4,
-              background: active ? 'var(--ink)' : 'transparent',
-              color: active ? '#fff' : 'var(--body)',
-              fontSize: 11, fontWeight: 700,
-              textTransform: 'uppercase', letterSpacing: '.04em',
-              cursor: active ? 'default' : 'pointer',
-              opacity: disabled && !active ? .5 : 1,
-            }}
+            className={`sub-switch-btn ${active ? 'is-active' : ''}`}
           >{s}</button>
         )
       })}
@@ -726,9 +853,7 @@ function StatusSwitcher({
   )
 }
 
-/* ─────────────────────────────────────────────────────────────────────
-   Rebuild button — calls /api/admin/listings/[slug]/revalidate
-   ───────────────────────────────────────────────────────────────────── */
+/* ── Rebuild button — /api/admin/listings/[slug]/revalidate ────────── */
 function RebuildButton({ slug, flash }: { slug: string; flash: (k: 'ok' | 'err', m: string) => void }) {
   const [busy, setBusy] = useState(false)
   const [done, setDone] = useState(false)
@@ -748,11 +873,7 @@ function RebuildButton({ slug, flash }: { slug: string; flash: (k: 'ok' | 'err',
         flash('ok', 'Static page rebuilt.')
         window.setTimeout(() => setDone(false), 2400)
       }
-    } catch {
-      flash('err', 'Network error.')
-    } finally {
-      setBusy(false)
-    }
+    } catch { flash('err', 'Network error.') } finally { setBusy(false) }
   }
 
   return (
@@ -767,10 +888,7 @@ function RebuildButton({ slug, flash }: { slug: string; flash: (k: 'ok' | 'err',
   )
 }
 
-/* ─────────────────────────────────────────────────────────────────────
-   Deploy button — fires the Vercel deploy hook (manual, not on every approve).
-   Lets pending-approved listings go live whenever the admin decides.
-   ───────────────────────────────────────────────────────────────────── */
+/* ── Deploy button — fires the Vercel deploy hook ──────────────────── */
 function DeployButton() {
   const [busy, setBusy] = useState(false)
   const [done, setDone] = useState(false)
@@ -789,11 +907,7 @@ function DeployButton() {
         setDone(true)
         window.setTimeout(() => setDone(false), 4000)
       }
-    } catch {
-      setError('Network error.')
-    } finally {
-      setBusy(false)
-    }
+    } catch { setError('Network error.') } finally { setBusy(false) }
   }
 
   return (
@@ -815,9 +929,7 @@ function DeployButton() {
   )
 }
 
-/* ─────────────────────────────────────────────────────────────────────
-   FAQ editor — inline rows of question / answer pairs.
-   ───────────────────────────────────────────────────────────────────── */
+/* ── FAQ editor ────────────────────────────────────────────────────── */
 function FaqEditor({
   sub, busy, onSave,
 }: { sub: RealSubmission; busy: boolean; onSave: (id: string, faqs: FaqItem[]) => void | Promise<void> }) {
@@ -825,12 +937,6 @@ function FaqEditor({
     sub.faqs?.length > 0 ? sub.faqs : [{ question: '', answer: '' }]
   )
   const [dirty, setDirty] = useState(false)
-
-  /* Reset whenever the selected submission changes. */
-  useEffect(() => {
-    setFaqs(sub.faqs?.length > 0 ? sub.faqs : [{ question: '', answer: '' }])
-    setDirty(false)
-  }, [sub.id, sub.faqs])
 
   const update = (idx: number, key: keyof FaqItem, val: string) => {
     setFaqs(prev => prev.map((f, i) => i === idx ? { ...f, [key]: val } : f))
