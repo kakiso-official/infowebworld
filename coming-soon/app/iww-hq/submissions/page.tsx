@@ -451,6 +451,7 @@ export default function SubmissionsPage() {
               onDelete={remove}
               onSaveFaqs={saveFaqs}
               onPreview={setPreviewSub}
+              onEnriched={reload}
               flash={flash}
             />
           ) : (
@@ -517,10 +518,11 @@ interface DetailProps {
   onDelete: (id: string) => void | Promise<void>
   onSaveFaqs: (id: string, faqs: FaqItem[]) => void | Promise<void>
   onPreview: (sub: RealSubmission) => void
+  onEnriched: () => void | Promise<void>
   flash: (kind: 'ok' | 'err', msg: string) => void
 }
 
-function SubmissionDetail({ sub, busy, onSetStatus, onDelete, onSaveFaqs, onPreview, flash }: DetailProps) {
+function SubmissionDetail({ sub, busy, onSetStatus, onDelete, onSaveFaqs, onPreview, onEnriched, flash }: DetailProps) {
   const isLive = sub.status === 'active' || sub.status === 'paid'
   const isPending = sub.status === 'pending'
 
@@ -598,6 +600,7 @@ function SubmissionDetail({ sub, busy, onSetStatus, onDelete, onSaveFaqs, onPrev
             View live ↗
           </a>
         )}
+        <GeminiEnrichButton id={sub.id} hasWebsite={!!sub.website} flash={flash} onDone={onEnriched} />
         <a className="sub-btn sub-btn--ink" href={`/iww-hq/submissions/${sub.id}/edit`}>
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
@@ -884,6 +887,40 @@ function RebuildButton({ slug, flash }: { slug: string; flash: (k: 'ok' | 'err',
       title="Force-rebuild this listing's static page right now (skips the 48h auto-refresh)."
     >
       {busy ? 'Rebuilding…' : done ? '✓ Rebuilt' : 'Rebuild static'}
+    </button>
+  )
+}
+
+/* ── Gemini enrich — reads the company's own website and fills ONLY the
+   empty fields with real info found there (never overwrites, never invents). ── */
+function GeminiEnrichButton({
+  id, hasWebsite, flash, onDone,
+}: { id: string; hasWebsite: boolean; flash: (k: 'ok' | 'err', m: string) => void; onDone: () => void | Promise<void> }) {
+  const [busy, setBusy] = useState(false)
+
+  const click = async () => {
+    if (busy) return
+    if (!hasWebsite) { flash('err', 'No website on this listing for Gemini to read.'); return }
+    setBusy(true)
+    try {
+      const res = await fetch(`/api/admin/submissions/${id}/ai-enrich`, { method: 'POST', credentials: 'same-origin' })
+      const j = await res.json().catch(() => ({}))
+      if (!res.ok || !j?.ok) { flash('err', j?.error || 'Gemini enrich failed.'); return }
+      const filled = (j.filled || []) as { field: string; value: string }[]
+      if (!filled.length) { flash('ok', j.message || 'Gemini found nothing new to add.'); return }
+      flash('ok', `Gemini filled ${filled.length} field${filled.length > 1 ? 's' : ''}: ${filled.map(f => f.field).join(', ')}`)
+      await onDone()
+    } catch { flash('err', 'Network error.') } finally { setBusy(false) }
+  }
+
+  return (
+    <button
+      className="sub-btn sub-btn--ink"
+      onClick={click}
+      disabled={busy}
+      title="Gemini reads this company's website and fills ONLY the empty fields with real info found there — it never overwrites existing data and never invents."
+    >
+      {busy ? 'Asking Gemini…' : '✨ Gemini fill'}
     </button>
   )
 }
