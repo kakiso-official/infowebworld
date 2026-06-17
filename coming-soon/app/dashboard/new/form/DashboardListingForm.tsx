@@ -492,6 +492,14 @@ export default function DashboardListingForm({
               <SectorPickHero
                 categories={allCategories}
                 onPick={(l1Id) => {
+                  /* Local Businesses get their own dedicated, COMPANY-ONLY
+                     form (the Yelp-style /profile). Bypass the product/company
+                     flow entirely — no product option for this sector. */
+                  const picked = allCategories.find(c => c.id === l1Id && c.level === 1)
+                  if (picked?.slug === 'local-businesses') {
+                    window.location.assign('/dashboard/new/local-business')
+                    return
+                  }
                   set('l1Id', l1Id)
                   set('l2Id', '')
                   set('l3Id', '')

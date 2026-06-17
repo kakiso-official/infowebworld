@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { query, queryOne, execute } from '@/lib/db'
 import { requireAdmin } from '@/lib/auth'
+import { saveLocalBusinessFields } from '@/lib/local-business'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { getClientIp } from '@/lib/tracking'
 import { getUserFromRequest } from '@/lib/user-auth'
@@ -350,6 +351,12 @@ export async function POST(request: NextRequest) {
         ip
       ]
     )
+
+    /* Local-business profile fields. Written as an ADDITIVE update so the big
+       INSERT above stays untouched (zero risk of column/value desync), and
+       wrapped in try/catch so a pre-migration DB (columns absent) can never
+       fail the submission. NULL for every non-local-business listing. */
+    await saveLocalBusinessFields(uuid, body, 'uuid')
 
     // Insert submission tags if provided
     if (Array.isArray(body.tagIds) && body.tagIds.length > 0) {

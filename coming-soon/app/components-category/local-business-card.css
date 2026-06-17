@@ -1,0 +1,65 @@
+/* LocalBusinessCard — `.lbc-*`. Yelp-style local-business row card rendered on
+   category pages for the `local-businesses` sector ONLY. Self-contained; amber
+   accent (#F59E0B) to match the local-business profile page. */
+.lbc, .lbc * { box-sizing: border-box; }
+.lbc {
+  --lbc-amber: #F59E0B; --lbc-amber-d: #B45309; --lbc-ink: #1f2937;
+  --lbc-mute: #6b7280; --lbc-line: #e5e7eb;
+  display: flex; gap: 18px; background: #fff; border: 1px solid var(--lbc-line);
+  border-radius: 16px; padding: 16px; margin-bottom: 16px;
+  font-family: var(--font-inter), -apple-system, system-ui, sans-serif;
+  transition: box-shadow .15s ease, transform .15s ease, border-color .15s ease;
+}
+.lbc:hover { box-shadow: 0 10px 28px rgba(17, 24, 39, .10); transform: translateY(-2px); border-color: #e2c089; }
+
+.lbc-photo { position: relative; flex-shrink: 0; width: 220px; aspect-ratio: 4 / 3; border-radius: 12px; overflow: hidden; background: #f3f4f6; display: block; }
+.lbc-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
+.lbc:hover .lbc-photo img { transform: scale(1.05); }
+.lbc-photo-ph { width: 100%; height: 100%; display: grid; place-items: center; font-size: 48px; font-weight: 800; color: #fff; background: linear-gradient(135deg, #F59E0B, #B45309); }
+.lbc-open { position: absolute; left: 10px; bottom: 10px; display: inline-flex; align-items: center; gap: 6px; padding: 4px 9px; border-radius: 999px; background: rgba(16, 185, 129, .95); color: #fff; font-size: 11.5px; font-weight: 700; }
+.lbc-open-dot { width: 7px; height: 7px; border-radius: 50%; background: #fff; }
+
+.lbc-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 7px; }
+.lbc-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.lbc-name { margin: 0; font-size: 19px; font-weight: 800; letter-spacing: -.01em; line-height: 1.2; min-width: 0; }
+.lbc-name a { color: var(--lbc-ink); text-decoration: none; }
+.lbc-name a:hover { color: var(--lbc-amber-d); text-decoration: underline; }
+
+.lbc-save { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; height: 34px; padding: 0 13px; border: 1px solid var(--lbc-line); border-radius: 9px; background: #fff; font: inherit; font-size: 13px; font-weight: 700; color: var(--lbc-ink); cursor: pointer; transition: border-color .12s ease, color .12s ease, background .12s ease; }
+.lbc-save:hover { border-color: var(--lbc-amber); color: var(--lbc-amber-d); }
+.lbc-save--on { background: var(--lbc-amber); border-color: var(--lbc-amber); color: #fff; }
+.lbc-save--on:hover { color: #fff; }
+.lbc-save:disabled { opacity: .6; cursor: default; }
+
+.lbc-rate { display: flex; align-items: center; gap: 8px; }
+.lbc-stars { display: inline-flex; gap: 2px; }
+.lbc-star { font-size: 15px; }
+.lbc-star--on { color: var(--lbc-amber); }
+.lbc-star--off { color: #e2e2e2; }
+.lbc-rate-num { font-weight: 800; font-size: 14px; color: var(--lbc-ink); }
+.lbc-rate-count { font-size: 13px; color: var(--lbc-mute); text-decoration: none; }
+.lbc-rate-count:hover { text-decoration: underline; color: var(--lbc-amber-d); }
+
+.lbc-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; font-size: 13.5px; color: var(--lbc-ink); }
+.lbc-price { font-weight: 800; color: #15803d; }
+.lbc-dot { color: #cbd5e1; }
+.lbc-cat { color: var(--lbc-mute); font-weight: 600; }
+.lbc-loc { display: inline-flex; align-items: center; gap: 5px; color: var(--lbc-mute); }
+.lbc-loc-ic { font-size: 12px; color: var(--lbc-amber); }
+
+.lbc-blurb { margin: 2px 0 0; font-size: 13.5px; line-height: 1.5; color: #4b5563; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+.lbc-actions { display: flex; gap: 10px; margin-top: auto; padding-top: 8px; }
+.lbc-btn { display: inline-flex; align-items: center; gap: 7px; height: 38px; padding: 0 16px; border-radius: 9px; font: inherit; font-size: 13.5px; font-weight: 700; text-decoration: none; cursor: pointer; transition: background .12s ease, border-color .12s ease, color .12s ease; }
+.lbc-btn--outline { border: 1px solid var(--lbc-line); color: var(--lbc-ink); background: #fff; }
+.lbc-btn--outline:hover { border-color: var(--lbc-amber); color: var(--lbc-amber-d); }
+.lbc-btn--solid { border: 1px solid var(--lbc-amber); background: var(--lbc-amber); color: #fff; }
+.lbc-btn--solid:hover { background: var(--lbc-amber-d); border-color: var(--lbc-amber-d); }
+.lbc-btn-ic { font-size: 12px; }
+
+@media (max-width: 640px) {
+  .lbc { flex-direction: column; gap: 14px; }
+  .lbc-photo { width: 100%; aspect-ratio: 16 / 9; }
+  .lbc-actions { flex-wrap: wrap; }
+  .lbc-btn { flex: 1; justify-content: center; }
+}

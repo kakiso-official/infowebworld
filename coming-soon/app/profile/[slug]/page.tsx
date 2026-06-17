@@ -5,6 +5,7 @@ import { query, queryOne } from '@/lib/db'
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import CompanyDetailPage from '../CompanyDetailPage'
+import LocalBusinessProfilePage from '../LocalBusinessProfilePage'
 
 /* ─── Static-only config ──────────────────────────────────────────────
    Same delivery model as /company/[slug]: every active/paid company
@@ -542,6 +543,10 @@ export default async function ProfilePage({
     reviews: data.reviews,
   })
 
+  /* Local-business companies get the Yelp-style page; every other sector keeps
+     the Clutch-style CompanyDetailPage. Sector = the breadcrumb root (L1). */
+  const isLocalBusiness = data.breadcrumb.some((b: { slug: string }) => b.slug === 'local-businesses')
+
   return (
     <>
       <script
@@ -549,7 +554,11 @@ export default async function ProfilePage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
       <Navbar />
-      <Suspense><CompanyDetailPage slug={slug} initialData={initialData} /></Suspense>
+      <Suspense>
+        {isLocalBusiness
+          ? <LocalBusinessProfilePage slug={slug} initialData={initialData} />
+          : <CompanyDetailPage slug={slug} initialData={initialData} />}
+      </Suspense>
       <Footer />
     </>
   )

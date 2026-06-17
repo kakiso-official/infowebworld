@@ -98,6 +98,12 @@ export type RealSubmission = {
   reviewAvg: number
   latestReviewTitle: string
   latestReviewAuthor: string
+  /* ── Local-business (Yelp-style) fields — only populated for listings in the
+     `local-businesses` sector; empty/[] for every other listing. Drives the
+     LocalBusinessCard on category pages. ── */
+  lbPriceRange: string
+  lbPhotos: string[]
+  lbHours: { day: string; time: string; closed?: boolean; openNow?: boolean }[]
   /* Tag slugs attached via submission_tags — drives the filter bar's
      tag-group dropdowns. */
   tagSlugs: string[]
@@ -224,6 +230,21 @@ export function mapRow(r: Record<string, unknown>): RealSubmission {
     reviewAvg: r.review_avg != null ? Number(r.review_avg) : 0,
     latestReviewTitle: String(r.latest_review_title ?? ''),
     latestReviewAuthor: String(r.latest_review_author ?? ''),
+    /* ── Local-business fields (NULL for every non-local-business listing) ── */
+    lbPriceRange: String(r.lb_price_range ?? ''),
+    lbPhotos: (parseJson(r.lb_photos) as unknown[]).filter((x): x is string => typeof x === 'string'),
+    lbHours: (parseJson(r.lb_hours) as unknown[])
+      .map((it) => {
+        if (!it || typeof it !== 'object') return { day: '', time: '' }
+        const o = it as Record<string, unknown>
+        return {
+          day: String(o.day ?? ''),
+          time: String(o.time ?? ''),
+          closed: Boolean(o.closed),
+          openNow: Boolean(o.openNow),
+        }
+      })
+      .filter((h) => h.day) as RealSubmission['lbHours'],
     tagSlugs: typeof r.tag_slugs === 'string' && r.tag_slugs
       ? r.tag_slugs.split(',').map((s: string) => s.trim()).filter(Boolean)
       : [],

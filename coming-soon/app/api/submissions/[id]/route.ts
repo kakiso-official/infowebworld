@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { execute, queryOne } from '@/lib/db'
 import { getUserFromRequest } from '@/lib/user-auth'
+import { saveLocalBusinessFields } from '@/lib/local-business'
 
 export async function PATCH(
   request: NextRequest,
@@ -214,6 +215,9 @@ export async function PUT(
         subId,
       ]
     )
+
+    /* Local-business fields — additive, same helper the POST uses. */
+    await saveLocalBusinessFields(subId, body, 'id')
 
     /* Replace submission_tags pivot — clean delete + re-insert. */
     if (Array.isArray(body.tagIds)) {

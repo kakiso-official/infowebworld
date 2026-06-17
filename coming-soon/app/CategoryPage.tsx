@@ -17,6 +17,7 @@ import { I, ic } from './components-category/icons'
 import CategoryHero from './components-category/CategoryHero'
 import SubcategoryList from './components-category/SubcategoryList'
 import { RealListingCard } from './components-category/ListingCard'
+import LocalBusinessCard from './components-category/LocalBusinessCard'
 import Pagination from './components-category/Pagination'
 
 /* Heavy / below-fold components — loaded on demand with loading placeholders */
@@ -526,7 +527,11 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
             {/* Listing cards */}
             <div>
               {filteredReal.length > 0 ? (
-                filteredReal.map(item => <RealListingCard key={item.id} item={item} color={color} sectorSlug={sectorSlug || ''} />)
+                /* Local-businesses sector ONLY → Yelp-style card; every other
+                   sector keeps the Magneto-style RealListingCard untouched. */
+                sectorSlug === 'local-businesses'
+                  ? filteredReal.map(item => <LocalBusinessCard key={item.id} item={item} />)
+                  : filteredReal.map(item => <RealListingCard key={item.id} item={item} color={color} sectorSlug={sectorSlug || ''} />)
               ) : hasAnyFilter ? (
                 <div className="cd-empty">
                   <I d={ic.search} size={32} color="var(--h-muted)" sw={1.5} />
