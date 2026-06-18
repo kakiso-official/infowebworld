@@ -1,0 +1,149 @@
+/* ══════════════════════════════════════════════════════════════
+   Sectors block under the hero — 3×2 grid of L1 cards.
+   Pattern adapted from the GoodFirms "Choose the right development
+   partner …" reference.
+   ══════════════════════════════════════════════════════════════ */
+.tlp-cats {
+  background: #FFFFFF;
+  padding: clamp(48px, 7vw, 84px) clamp(18px, 4vw, 32px);
+}
+.tlp-cats-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+/* Header */
+.tlp-cats-head {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto clamp(28px, 4vw, 44px);
+}
+.tlp-cats-title {
+  font-size: clamp(1.5rem, 2.6vw, 1.95rem);
+  font-weight: 800;
+  letter-spacing: -.022em;
+  color: #0A1B33;
+  margin: 0 0 8px;
+  line-height: 1.18;
+}
+.tlp-cats-sub {
+  font-size: clamp(13.5px, 1.2vw, 15px);
+  color: #4B5563;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* Grid — 3 cols on desktop, 2 on tablet, 1 on phone */
+.tlp-cats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+@media (max-width: 980px) { .tlp-cats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .tlp-cats-grid { grid-template-columns: 1fr; } }
+
+/* Card */
+.tlp-cat-card {
+  display: flex; flex-direction: column;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 22px 22px 18px;
+  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+.tlp-cat-card:hover {
+  border-color: rgba(0, 59, 42, .35);
+  box-shadow: 0 14px 32px -16px rgba(10, 27, 51, .14);
+  transform: translateY(-1px);
+}
+.tlp-cat-card-ico {
+  display: inline-flex; align-items: center;
+  color: #003B2A;
+  margin-bottom: 14px;
+}
+.tlp-cat-card-name {
+  display: inline-block;
+  font-size: 18px; font-weight: 800;
+  letter-spacing: -.014em;
+  color: #0A1B33;
+  text-decoration: none;
+  margin-bottom: 14px;
+  line-height: 1.2;
+}
+.tlp-cat-card-name:hover { color: #003B2A; }
+
+.tlp-cat-card-pill {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: #F1F2F4;
+  color: #4B5563;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0;
+  margin: 6px 0 8px;
+}
+
+.tlp-cat-card-tags {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 6px;
+  display: flex; flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 0;
+  line-height: 1.7;
+}
+.tlp-cat-card-tags li {
+  display: inline-flex; align-items: center;
+}
+.tlp-cat-card-tag {
+  display: inline-block;
+  color: #003B2A;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -.003em;
+  text-decoration: none;
+  padding: 0 6px 0 0;
+}
+.tlp-cat-card-tag:hover { color: #0C5A40; text-decoration: underline; }
+.tlp-cat-card-tag--static {
+  color: #003B2A;
+  font-weight: 500;
+  cursor: default;
+}
+.tlp-cat-card-tag--static:hover { text-decoration: none; }
+.tlp-cat-card-bar {
+  color: #D1D5DB;
+  font-size: 12px;
+  padding-right: 6px;
+  user-select: none;
+}
+
+.tlp-cat-card-foot {
+  margin-top: auto;
+  padding-top: 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #6B7280;
+}
+
+/* CTA below the grid */
+.tlp-cats-cta {
+  display: flex; justify-content: center;
+  margin-top: clamp(28px, 4vw, 40px);
+}
+.tlp-cats-cta-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 12px 26px;
+  background: #003B2A;
+  color: #FFFFFF;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  transition: background .12s ease, transform .15s ease;
+}
+.tlp-cats-cta-btn:hover { background: #0C5A40; }
+.tlp-cats-cta-btn:active { transform: translateY(1px); }
+

@@ -1,0 +1,205 @@
+/* ══════════════════════════════════════════════════════════════
+   New reviews block — white section under the dark "top firms".
+   Reference: GoodFirms "New reviews from verified customers" —
+   horizontal scrollable strip of review cards + centered CTA.
+   ══════════════════════════════════════════════════════════════ */
+.tlp-revs {
+  background: #FFFFFF;
+  padding: clamp(56px, 9vw, 100px) 0;
+}
+.tlp-revs-inner {
+  display: flex; flex-direction: column;
+  gap: clamp(28px, 4vw, 44px);
+}
+.tlp-revs-title {
+  font-size: clamp(1.55rem, 2.8vw, 2.15rem);
+  font-weight: 800;
+  letter-spacing: -.024em;
+  color: #0A1B33;
+  margin: 0;
+  text-align: center;
+  padding: 0 clamp(18px, 4vw, 32px);
+  line-height: 1.15;
+}
+
+/* Marquee outer — clipped viewport; the rail inside translates left
+   continuously, with cards duplicated so the loop reads seamless.
+   Subtle fade-out masks at the edges hint at more content. */
+.tlp-revs-track {
+  position: relative;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg,
+    transparent 0%, #000 4%, #000 96%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg,
+    transparent 0%, #000 4%, #000 96%, transparent 100%);
+}
+.tlp-revs-rail {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  width: max-content;
+  /* Pace: ~55s per loop — leisurely so eyes can catch each card. */
+  animation: tlp-revs-marquee 55s linear infinite;
+  will-change: transform;
+}
+.tlp-revs-track:hover .tlp-revs-rail,
+.tlp-revs-track:focus-within .tlp-revs-rail {
+  animation-play-state: paused;
+}
+@keyframes tlp-revs-marquee {
+  from { transform: translate3d(0, 0, 0); }
+  /* -50% lands the second-copy of the first card right where the
+     first-copy started — the rail repeats invisibly. */
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tlp-revs-rail { animation: none; }
+}
+
+.tlp-rev {
+  flex: 0 0 320px;
+  /* Heights vary by content length on purpose — short reviews get short
+     cards, long ones grow. The rail's align-items:flex-start anchors
+     them all to the top edge. */
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  padding: 22px;
+  display: flex; flex-direction: column;
+  gap: 14px;
+  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+.tlp-rev:hover {
+  border-color: rgba(0, 59, 42, .35);
+  box-shadow: 0 14px 32px -16px rgba(10, 27, 51, .14);
+  transform: translateY(-1px);
+}
+.tlp-rev-head {
+  display: flex; align-items: center;
+  gap: 12px;
+}
+.tlp-rev-logo {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #FAFBFC;
+  display: inline-flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  border: 1px solid #E5E7EB;
+}
+.tlp-rev-logo--ph {
+  font-size: 13px; font-weight: 800;
+  color: #0A1B33;
+  background: linear-gradient(180deg, #F1F2F4, #E5E7EB);
+}
+.tlp-rev-cname {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: #0A1B33;
+  text-decoration: none;
+  letter-spacing: -.014em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  min-width: 0;
+  line-height: 1.25;
+}
+.tlp-rev-cname:hover { color: #003B2A; }
+
+.tlp-rev-body {
+  font-size: 14px;
+  color: #4B5563;
+  line-height: 1.55;
+  margin: 0;
+  /* No line-clamp — let the review text flow at its natural length
+     so each card sizes to its own content. */
+}
+
+.tlp-rev-foot {
+  display: flex; flex-direction: column;
+  gap: 10px;
+  padding-top: 4px;
+}
+.tlp-rev-author {
+  display: flex; align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.tlp-rev-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  object-fit: cover;
+  background: #FAFBFC;
+  border: 1px solid #E5E7EB;
+  display: inline-flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  color: #6B7280;
+}
+.tlp-rev-avatar--ph { color: #9CA3AF; }
+.tlp-rev-author-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0A1B33;
+  letter-spacing: -.008em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  min-width: 0;
+}
+.tlp-rev-rating {
+  display: inline-flex; align-items: center;
+  gap: 6px;
+}
+.tlp-rev-stars-row {
+  display: inline-flex; align-items: center;
+  gap: 2px;
+}
+.tlp-rev-star {
+  width: 14px !important; height: 14px !important;
+  color: #E5E7EB;
+}
+.tlp-rev-star.is-on { color: #F5A623; }
+.tlp-rev-rating-n {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0A1B33;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Empty state when there are no approved reviews yet */
+.tlp-revs-empty {
+  text-align: center;
+  padding: 32px clamp(18px, 4vw, 32px);
+  color: #4B5563;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 16px;
+}
+.tlp-revs-empty p {
+  font-size: 14.5px;
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* Centered mint CTA */
+.tlp-revs-cta {
+  display: flex; justify-content: center;
+  padding: 0 clamp(18px, 4vw, 32px);
+}
+.tlp-revs-cta-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 13px 28px;
+  background: #34D89A;
+  color: #003B2A;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  transition: background .12s ease, transform .15s ease;
+}
+.tlp-revs-cta-btn:hover { background: #2DC78A; }
+.tlp-revs-cta-btn:active { transform: translateY(1px); }
+
+@media (max-width: 520px) {
+  .tlp-rev { flex-basis: 280px; padding: 18px; }
+  .tlp-revs-rail { animation-duration: 45s; }
+}
+

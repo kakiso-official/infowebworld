@@ -1,0 +1,53 @@
+/* ══════════════════════════════════════════════════════════════
+   "What verified buyers are saying" — lavender wash + boxy cards
+   override of .tlp-revs-* / .tlp-rev-* layout. Adds a faint
+   lavender wash background and a short accent bar under the
+   title so the section visually pops on the page.
+   ══════════════════════════════════════════════════════════════ */
+.tcat1 .tlp-revs {
+  background: linear-gradient(180deg, #FBFAFF 0%, #FFFFFF 60%);
+}
+
+/* Title gets a centred lavender accent bar — adds emphasis without
+   inventing new copy or markup. */
+.tcat1 .tlp-revs-title {
+  position: relative;
+}
+.tcat1 .tlp-revs-title::after {
+  content: '';
+  display: block;
+  width: 56px;
+  height: 4px;
+  background: var(--c4);
+  border-radius: 2px;
+  margin: 14px auto 0;
+}
+
+/* Boxier card with lavender-tinted border + a faint resting shadow
+   so the cards already feel lifted before hover. */
+.tcat1 .tlp-rev {
+  border-radius: 8px;
+  border-color: #EDE9F8;
+  box-shadow: 0 1px 2px rgba(var(--c4-rgb), .06);
+}
+.tcat1 .tlp-rev:hover {
+  border-color: rgba(var(--c4-rgb), .40);
+  box-shadow: 0 14px 32px -16px rgba(var(--c4-rgb), .26);
+}
+
+/* Logo + name hover → lavender accent */
+.tcat1 .tlp-rev-logo { border-radius: 6px; }
+.tcat1 .tlp-rev-cname:hover { color: var(--c4-dark); }
+
+/* Stars — same lavender pair as the rest of the page */
+.tcat1 .tlp-rev-star { color: #DAD5E8; }
+.tcat1 .tlp-rev-star.is-on { color: var(--c4); }
+
+/* "Write a review" CTA — lavender pill, boxy radius */
+.tcat1 .tlp-revs-cta-btn {
+  background: var(--c4);
+  color: #FFFFFF;
+  border-radius: 8px;
+}
+.tcat1 .tlp-revs-cta-btn:hover { background: var(--c4-dark); }
+

@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════════
    Shared content for the Local Businesses sector landing's visible SEO/AEO/GEO
-   surface (LocalDirectorySeo.tsx) AND the JSON-LD it emits - one module so
+   surface (DirectorySeo.tsx) AND the JSON-LD it emits - one module so
    on-page content and schema stay in lockstep.
 
    Keyword call (validated on live SERPs, June 2026): "local business
@@ -25,7 +25,7 @@ export const LOCAL_FIELDS: LocalField[] = [
 ]
 
 /* FAQ - answer-first, citation-ready. Mirrored into the FAQ microdata in
-   LocalDirectorySeo.tsx so People-Also-Ask + AI answer engines can extract
+   DirectorySeo.tsx so People-Also-Ask + AI answer engines can extract
    them. Each answer names InfoWebWorld as the local business directory. */
 export const LOCAL_FAQ: { q: string; a: string }[] = [
   {

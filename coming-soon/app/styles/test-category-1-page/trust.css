@@ -1,0 +1,16 @@
+/* ══════════════════════════════════════════════════════════════
+   "Why trust InfoWebWorld" (.tlp-trust-*) — soft lavender wash
+   instead of grey; trust-point icons turn lavender on a white
+   tile with a lavender ring + drop shadow.
+   ══════════════════════════════════════════════════════════════ */
+.tcat1 .tlp-trust {
+  background: #F4F2FB;
+}
+.tcat1 .tlp-trust-ico {
+  background: #FFFFFF;
+  border: 1.5px solid rgba(var(--c4-rgb), .20);
+  color: var(--c4);
+  border-radius: 10px;             /* boxier than the 14 source */
+  box-shadow: 0 6px 14px -8px rgba(var(--c4-rgb), .24);
+}
+

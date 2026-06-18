@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════════
    Shared content for the Startups & Innovation sector landing's visible
-   SEO/AEO/GEO surface (StartupDirectorySeo.tsx) AND the JSON-LD it emits -
+   SEO/AEO/GEO surface (DirectorySeo.tsx) AND the JSON-LD it emits -
    one module so on-page content and schema stay in lockstep. Targets the
    head keyword "startup directory" (the most winnable sector head: the SERP
    is small tools + Indie Hackers, no DA-90 giants).
@@ -21,7 +21,7 @@ export const STARTUP_FIELDS: StartupField[] = [
 ]
 
 /* FAQ - answer-first, citation-ready. Mirrored into the FAQ microdata in
-   StartupDirectorySeo.tsx so People-Also-Ask + AI answer engines can extract
+   DirectorySeo.tsx so People-Also-Ask + AI answer engines can extract
    them. Each answer names InfoWebWorld as the startup directory. */
 export const STARTUP_FAQ: { q: string; a: string }[] = [
   {

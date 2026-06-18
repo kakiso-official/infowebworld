@@ -1,0 +1,271 @@
+/* ══════════════════════════════════════════════════════════════
+   Top-rated companies block — dark section under the categories.
+   Reference: GoodFirms "Find the top-rated companies in every
+   service category" tabbed dark hero.
+   ══════════════════════════════════════════════════════════════ */
+.tlp-firms {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  /* Rich dark navy with a slight bluish undertone — reads as sophisticated
+     "dark" rather than the flat black of #0A0E14. Layered radial glow on
+     top adds brand-mint warmth so the section feels alive. */
+  background: #0E1A2E;
+  color: #FFFFFF;
+  padding: clamp(56px, 9vw, 100px) clamp(18px, 4vw, 32px);
+}
+/* Subtle top-center mint radial — ties this section to the hero's glow
+   without bringing any heavy color into the dark surface. */
+.tlp-firms::before {
+  content: '';
+  position: absolute;
+  top: -220px; left: 50%;
+  width: min(1200px, 110vw);
+  height: 640px;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse,
+    rgba(52, 216, 154, .14) 0%,
+    rgba(14, 143, 110, .06) 35%,
+    transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(12px);
+}
+/* Faint vignette at the bottom edges so cards float on a graded
+   background instead of a flat slab. */
+.tlp-firms::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 100%,
+      rgba(0, 0, 0, .35) 0%,
+      transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+.tlp-firms-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header */
+.tlp-firms-head {
+  text-align: center;
+  max-width: 780px;
+  margin: 0 auto clamp(28px, 4vw, 44px);
+}
+.tlp-firms-title {
+  font-size: clamp(1.55rem, 2.8vw, 2.15rem);
+  font-weight: 800;
+  letter-spacing: -.024em;
+  color: #FFFFFF;
+  margin: 0 0 10px;
+  line-height: 1.15;
+}
+.tlp-firms-sub {
+  font-size: clamp(13.5px, 1.2vw, 15px);
+  color: rgba(255, 255, 255, .68);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* Tabs */
+.tlp-firms-tabs {
+  display: flex; flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: clamp(24px, 3vw, 36px);
+}
+.tlp-firms-tab {
+  padding: 10px 18px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, .85);
+  font-family: inherit;
+  font-size: 13.5px; font-weight: 600;
+  letter-spacing: -.005em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .12s ease, border-color .12s ease, color .12s ease;
+}
+.tlp-firms-tab:hover {
+  border-color: rgba(255, 255, 255, .35);
+  color: #FFFFFF;
+}
+.tlp-firms-tab.is-on {
+  background: #FFFFFF;
+  color: #0A1B33;
+  border-color: #FFFFFF;
+}
+
+/* Grid */
+.tlp-firms-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+@media (max-width: 980px) { .tlp-firms-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .tlp-firms-grid { grid-template-columns: 1fr; } }
+
+/* Card — rounded rectangle (NOT pill). Outer wrapper is a flex row
+   with two click regions:
+     · .tlp-firm-main → logo + name + stars (→ listing page)
+     · .tlp-firm-rev  → right-aligned link (→ listing reviews OR write-review)
+   Two separate <Link>s instead of one wrapper avoid nested anchors. */
+.tlp-firm {
+  display: flex; align-items: center;
+  gap: 16px;
+  padding: 14px 22px 14px 14px;
+  background: #FFFFFF;
+  border-radius: 14px;
+  transition: transform .15s ease, box-shadow .15s ease;
+  min-height: 92px;
+}
+.tlp-firm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 36px -16px rgba(0, 0, 0, .5);
+}
+.tlp-firm-main {
+  display: flex; align-items: center;
+  gap: 14px;
+  flex: 1; min-width: 0;
+  text-decoration: none;
+  color: inherit;
+}
+.tlp-firm-logo {
+  width: 64px; height: 64px;
+  border-radius: 12px;
+  background: #FAFBFC;
+  display: inline-flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.tlp-firm-logo img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.tlp-firm-logo span {
+  font-size: 18px; font-weight: 800;
+  color: #0A1B33;
+  letter-spacing: -.012em;
+}
+.tlp-firm-mid {
+  min-width: 0;
+  display: flex; flex-direction: column;
+  gap: 5px;
+}
+.tlp-firm-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: #0A1B33;
+  letter-spacing: -.014em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  line-height: 1.2;
+}
+.tlp-firm-meta {
+  display: inline-flex; align-items: center;
+  gap: 8px;
+}
+.tlp-firm-stars {
+  display: inline-flex; align-items: center;
+  gap: 3px;
+}
+.tlp-firm-star {
+  width: 18px !important;
+  height: 18px !important;
+  color: #E5E7EB;
+}
+.tlp-firm-star.is-on {
+  color: #F5A623;
+}
+.tlp-firm-rating {
+  font-weight: 700;
+  color: #0A1B33;
+  font-variant-numeric: tabular-nums;
+  font-size: 13.5px;
+}
+.tlp-firm-rev {
+  display: inline-flex; align-items: center;
+  gap: 4px;
+  color: #2563EB;
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.tlp-firm-rev:hover { text-decoration: underline; }
+/* "Be the first to review" — distinct CTA color so it reads as an
+   action, not a passive review-count link. Brand dark-green. */
+.tlp-firm-rev--new {
+  color: #003B2A;
+  font-weight: 700;
+}
+.tlp-firm-rev--new:hover { color: #0C5A40; }
+
+/* Empty state when a sector has zero listings yet */
+.tlp-firms-empty {
+  background: rgba(255, 255, 255, .04);
+  border: 1px dashed rgba(255, 255, 255, .15);
+  border-radius: 14px;
+  padding: 36px 24px;
+  text-align: center;
+  color: rgba(255, 255, 255, .72);
+  font-size: 14px;
+  line-height: 1.55;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 12px;
+}
+.tlp-firms-empty strong { color: #FFFFFF; font-weight: 700; }
+.tlp-firms-empty-cta {
+  display: inline-block;
+  padding: 9px 18px;
+  background: #FFFFFF;
+  color: #0A1B33;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  transition: background .12s ease;
+}
+.tlp-firms-empty-cta:hover { background: #F1F2F4; }
+
+/* Bottom CTA */
+.tlp-firms-cta {
+  display: flex; justify-content: center;
+  margin-top: clamp(28px, 4vw, 44px);
+}
+.tlp-firms-cta-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 13px 28px;
+  background: #34D89A;
+  color: #003B2A;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  transition: background .12s ease, transform .15s ease;
+}
+.tlp-firms-cta-btn:hover { background: #2DC78A; }
+.tlp-firms-cta-btn:active { transform: translateY(1px); }
+
+@media (max-width: 520px) {
+  .tlp-firm {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 14px;
+    min-height: 0;
+  }
+  .tlp-firm-main { flex-basis: 100%; }
+  .tlp-firm-logo { width: 52px; height: 52px; }
+  .tlp-firm-rev {
+    margin-left: auto;
+  }
+}
+

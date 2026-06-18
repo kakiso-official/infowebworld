@@ -1,0 +1,203 @@
+/* ══════════════════════════════════════════════════════════════
+   "Just launched on InfoWebWorld" — 2-col grid of horizontal
+   cards listing the most recently approved AI/ML listings.
+   Boxy radii, lavender palette, slight lavender-tinted resting
+   shadow so the cards already feel "fresh" / lifted.
+   ══════════════════════════════════════════════════════════════ */
+.tcat1 .tcat-new {
+  background: #FFFFFF;
+  padding: clamp(48px, 7vw, 84px) clamp(18px, 4vw, 32px);
+}
+.tcat1 .tcat-new-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+/* Header — same centred title + lavender accent bar as the reviews
+   section, sub-copy below. */
+.tcat1 .tcat-new-head {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto clamp(28px, 4vw, 44px);
+}
+.tcat1 .tcat-new-title {
+  position: relative;
+  font-size: clamp(1.55rem, 2.6vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -.024em;
+  color: #0A1B33;
+  margin: 0 0 10px;
+  line-height: 1.15;
+}
+.tcat1 .tcat-new-title::after {
+  content: '';
+  display: block;
+  width: 56px;
+  height: 4px;
+  background: var(--c4);
+  border-radius: 2px;
+  margin: 14px auto 0;
+}
+.tcat1 .tcat-new-sub {
+  font-size: clamp(13.5px, 1.2vw, 15px);
+  color: #4B5563;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* 2-col grid of horizontal cards, drops to 1 col on phones. */
+.tcat1 .tcat-new-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 720px) {
+  .tcat1 .tcat-new-grid { grid-template-columns: 1fr; }
+}
+
+/* Card — horizontal flex (logo left, content right). Boxy 8px
+   radius + lavender-tinted resting shadow so the cards already
+   look "live" before hover. */
+.tcat1 .tcat-new-card {
+  display: flex;
+  gap: 14px;
+  padding: 14px 16px;
+  background: #FFFFFF;
+  border: 1px solid #EDE9F8;
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 1px 2px rgba(var(--c4-rgb), .06);
+  transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease;
+  min-width: 0;
+}
+.tcat1 .tcat-new-card:hover {
+  border-color: rgba(var(--c4-rgb), .42);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -12px rgba(var(--c4-rgb), .26);
+}
+
+/* Logo column */
+.tcat1 .tcat-new-card-logo {
+  width: 56px; height: 56px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: #FAFBFC;
+  border: 1px solid #EDE9F8;
+  display: inline-flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.tcat1 .tcat-new-card-logo img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  padding: 4px;
+}
+.tcat1 .tcat-new-card-mark {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--c4-dark);
+  letter-spacing: -.5px;
+}
+
+/* Content column */
+.tcat1 .tcat-new-card-main {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column;
+  gap: 4px;
+}
+.tcat1 .tcat-new-card-top {
+  display: flex; align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.tcat1 .tcat-new-card-name {
+  margin: 0;
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: -.012em;
+  color: #0A1B33;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  flex: 1; min-width: 0;
+  line-height: 1.25;
+}
+.tcat1 .tcat-new-card-cat {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  background: var(--c1);
+  color: var(--c4-dark);
+  border-radius: 4px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .005em;
+  white-space: nowrap;
+  max-width: 50%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tcat1 .tcat-new-card-tag {
+  margin: 0;
+  font-size: 13px;
+  color: #4B5563;
+  line-height: 1.5;
+  /* Single-line clamp so card heights stay uniform across the grid. */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Meta row — time + rating, small */
+.tcat1 .tcat-new-card-meta {
+  display: inline-flex; align-items: center;
+  gap: 12px;
+  margin-top: 2px;
+  font-size: 12px;
+  color: #6B7280;
+  font-variant-numeric: tabular-nums;
+}
+.tcat1 .tcat-new-card-time {
+  display: inline-flex; align-items: center; gap: 5px;
+  white-space: nowrap;
+}
+.tcat1 .tcat-new-card-time-ico {
+  width: 11px; height: 11px;
+  color: var(--c4);
+}
+.tcat1 .tcat-new-card-rate {
+  display: inline-flex; align-items: center; gap: 4px;
+  white-space: nowrap;
+}
+.tcat1 .tcat-new-card-star {
+  width: 12px; height: 12px;
+  color: var(--c4);
+}
+.tcat1 .tcat-new-card-rate-num {
+  font-weight: 700;
+  color: #0A1B33;
+}
+.tcat1 .tcat-new-card-rate-count { color: #9CA3AF; }
+
+/* Bottom CTA — same lavender pill style as the rest */
+.tcat1 .tcat-new-cta {
+  display: flex; justify-content: center;
+  margin-top: clamp(28px, 4vw, 40px);
+}
+.tcat1 .tcat-new-cta-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 22px;
+  background: var(--c4);
+  color: #FFFFFF;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  transition: background .12s ease, transform .15s ease;
+}
+.tcat1 .tcat-new-cta-btn:hover { background: var(--c4-dark); transform: translateY(-1px); }
+.tcat1 .tcat-new-cta-btn:active { transform: translateY(0); }
+.tcat1 .tcat-new-cta-ico {
+  width: 11px; height: 11px;
+  transition: transform .15s ease;
+}
+.tcat1 .tcat-new-cta-btn:hover .tcat-new-cta-ico { transform: translateX(3px); }
+

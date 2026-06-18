@@ -1,0 +1,51 @@
+/* ══════════════════════════════════════════════════════════════
+   "Most popular AI tools" — dark pricing-card section
+   (.tlp-pop-*). Re-themes from mint-on-navy to lavender-on-deep-
+   purple, keeps the white cards but recolours their accents.
+   ══════════════════════════════════════════════════════════════ */
+.tcat1 .tlp-pop {
+  background:
+    linear-gradient(180deg,
+      #2B2466 0%,
+      #1E1A4E 40%,
+      #14112F 100%);
+}
+.tcat1 .tlp-pop::before {
+  background: radial-gradient(ellipse,
+    rgba(var(--c3-rgb), .28) 0%,
+    rgba(var(--c4-rgb), .10) 35%,
+    transparent 70%);
+}
+
+.tcat1 .tlp-pop-card {
+  border-radius: 8px;
+}
+.tcat1 .tlp-pop-card:hover {
+  border-color: rgba(var(--c4-rgb), .42);
+  box-shadow: 0 18px 36px -16px rgba(0, 0, 0, .38);
+}
+.tcat1 .tlp-pop-card-logo { border-radius: 6px; }
+.tcat1 .tlp-pop-card-name:hover { color: var(--c4-dark); }
+
+/* Stars — match the rest of the AI/ML page's lavender pair */
+.tcat1 .tlp-pop-star { color: #DAD5E8; }
+.tcat1 .tlp-pop-star.is-on { color: var(--c4); }
+
+/* Reviews count + "Be the first to review" — lavender */
+.tcat1 .tlp-pop-card-rev { color: var(--c4-dark); }
+.tcat1 .tlp-pop-card-rev:hover { color: var(--c4); }
+.tcat1 .tlp-pop-card-rev--new { color: var(--c4-dark); }
+.tcat1 .tlp-pop-card-rev--new:hover { color: var(--c4); }
+
+/* Bottom CTA — lavender pill, white text */
+.tcat1 .tlp-pop-cta-btn {
+  background: var(--c4);
+  color: #FFFFFF;
+  border-radius: 8px;
+}
+.tcat1 .tlp-pop-cta-btn:hover { background: var(--c4-dark); }
+
+/* Empty-state CTA on the dark bg — keep light card, lavender text */
+.tcat1 .tlp-pop-empty .tlp-pop-cta-btn { background: var(--c4); }
+.tcat1 .tlp-pop-empty .tlp-pop-cta-btn:hover { background: var(--c4-dark); }
+

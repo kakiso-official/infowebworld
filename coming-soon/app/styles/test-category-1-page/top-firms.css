@@ -1,0 +1,66 @@
+/* ══════════════════════════════════════════════════════════════
+   "Find the top-rated companies in every category" — dark
+   lavender-themed override of .tlp-firms-* layout. Background is
+   a 2-stop linear gradient with a soft lavender radial glow on
+   top; cards stay white and pop against the deep purple. Tabs,
+   CTA, and "Be the first to review" link shift to the AI/ML
+   lavender palette.
+   ══════════════════════════════════════════════════════════════ */
+.tcat1 .tlp-firms {
+  /* Deep purple → near-black at the bottom. Reads brand-on but
+     dark enough to make the white cards float convincingly. */
+  background:
+    linear-gradient(180deg,
+      #2B2466 0%,
+      #1E1A4E 40%,
+      #14112F 100%);
+}
+/* Top-centre lavender glow — replaces the mint glow */
+.tcat1 .tlp-firms::before {
+  background: radial-gradient(ellipse,
+    rgba(var(--c3-rgb), .28) 0%,
+    rgba(var(--c4-rgb), .10) 35%,
+    transparent 70%);
+}
+
+/* Tabs — boxier radius, lavender accent on the active pill */
+.tcat1 .tlp-firms-tab { border-radius: 8px; }
+.tcat1 .tlp-firms-tab.is-on {
+  background: #FFFFFF;
+  color: var(--c4-dark);
+  border-color: #FFFFFF;
+}
+
+/* Firm cards — slightly boxier than the source 14px */
+.tcat1 .tlp-firm { border-radius: 8px; }
+.tcat1 .tlp-firm-logo { border-radius: 6px; }
+
+/* Stars on the firm cards — repaint from gold to the AI/ML
+   lavender palette, matching PopularSection's stars. */
+.tcat1 .tlp-firm-star { color: #DAD5E8; }     /* empty */
+.tcat1 .tlp-firm-star.is-on { color: var(--c4); } /* filled */
+
+/* Right-aligned "X Reviews" → lavender (was blue #2563EB) */
+.tcat1 .tlp-firm-rev { color: var(--c4-dark); }
+.tcat1 .tlp-firm-rev:hover { color: var(--c4); }
+/* "Be the first to review" CTA → lavender derived darker */
+.tcat1 .tlp-firm-rev--new { color: var(--c4-dark); }
+.tcat1 .tlp-firm-rev--new:hover { color: var(--c4); }
+
+/* Empty-state card on the dark bg — match boxy radius */
+.tcat1 .tlp-firms-empty { border-radius: 8px; }
+.tcat1 .tlp-firms-empty-cta {
+  border-radius: 6px;
+  color: var(--c4-dark);
+}
+.tcat1 .tlp-firms-empty-cta:hover { background: var(--c1); }
+
+/* Bottom CTA — lavender pill, white text. Matches hero submit
+   style for visual continuity. */
+.tcat1 .tlp-firms-cta-btn {
+  background: var(--c4);
+  color: #FFFFFF;
+  border-radius: 8px;
+}
+.tcat1 .tlp-firms-cta-btn:hover { background: var(--c4-dark); }
+

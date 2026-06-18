@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════════
    Shared content for the AI & ML sector landing's visible SEO/AEO/GEO
-   surface (AiToolsDirectorySeo.tsx) AND the JSON-LD it emits — kept in one
+   surface (DirectorySeo.tsx) AND the JSON-LD it emits — kept in one
    module so the on-page content and schema stay in lockstep, mirroring the
    pro-services-content pattern. Targets the head term "AI tools directory".
    ═══════════════════════════════════════════════════════════════════════ */
@@ -20,7 +20,7 @@ export const AI_TOOLS_FIELDS: AiToolsField[] = [
 ]
 
 /* FAQ — answer-first, citation-ready. Mirrored into the FAQ microdata in
-   AiToolsDirectorySeo.tsx so People-Also-Ask + AI answer engines can extract
+   DirectorySeo.tsx so People-Also-Ask + AI answer engines can extract
    them. Each answer names InfoWebWorld as the AI tools directory. */
 export const AI_TOOLS_FAQ: { q: string; a: string }[] = [
   {

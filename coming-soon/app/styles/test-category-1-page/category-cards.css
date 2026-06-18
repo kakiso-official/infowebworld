@@ -1,0 +1,41 @@
+/* ══════════════════════════════════════════════════════════════
+   "Find verified AI tools across every category" — overrides for
+   the .tlp-cats-* / .tlp-cat-card-* layout defined in
+   test-landing-page.css. Only colour + radius shift here; layout,
+   typography sizing, padding rules stay inherited so the section
+   matches /test-landing-page 1:1.
+   ══════════════════════════════════════════════════════════════ */
+.tcat1 .tlp-cat-card {
+  border-radius: 8px;                /* boxy theme — was 12px */
+}
+.tcat1 .tlp-cat-card:hover {
+  border-color: rgba(var(--c4-rgb), .40);
+  box-shadow: 0 14px 32px -16px rgba(var(--c4-rgb), .22);
+}
+.tcat1 .tlp-cat-card-ico { color: var(--c4); }
+.tcat1 .tlp-cat-card-name:hover { color: var(--c4-dark); }
+
+/* "Services" / "Locations" pills — lavender-tinted chip instead
+   of grey, matches the rest of the AI/ML palette. */
+.tcat1 .tlp-cat-card-pill {
+  background: var(--c1);
+  color: var(--c4-dark);
+  border-radius: 5px;
+}
+
+/* Linked services chips */
+.tcat1 .tlp-cat-card-tag { color: var(--c4-dark); }
+.tcat1 .tlp-cat-card-tag:hover { color: var(--c4); }
+.tcat1 .tlp-cat-card-tag--static { color: var(--c4-dark); }
+
+/* Separator bar between tags */
+.tcat1 .tlp-cat-card-bar { color: var(--c2); }
+
+/* Bottom CTA — matches the hero submit + empty-state pill (boxy
+   8px radius, solid lavender, darker on hover). */
+.tcat1 .tlp-cats-cta-btn {
+  background: var(--c4);
+  border-radius: 8px;
+}
+.tcat1 .tlp-cats-cta-btn:hover { background: var(--c4-dark); }
+

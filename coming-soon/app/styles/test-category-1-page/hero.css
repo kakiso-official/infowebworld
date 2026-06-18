@@ -1,0 +1,99 @@
+
+/* ── Background wash + decorative orbs ──────────────────────── */
+.tcat1 .tlp-hero {
+  background: linear-gradient(180deg,
+    var(--c1) 0%,
+    color-mix(in srgb, var(--c1) 45%, #FFFFFF) 38%,
+    color-mix(in srgb, var(--c1) 18%, #FFFFFF) 75%,
+    #FFFFFF 100%);
+  border-bottom: 1px solid rgba(var(--c4-rgb), .12);
+}
+
+/* Top-left orb — primary lavender */
+.tcat1 .tlp-hero-bg::before {
+  background: radial-gradient(circle,
+    rgba(var(--c4-rgb), .22) 0%,
+    rgba(var(--c4-rgb), .06) 45%,
+    transparent 70%);
+}
+/* Bottom-right orb — secondary mid-tone */
+.tcat1 .tlp-hero-bg::after {
+  background: radial-gradient(circle,
+    rgba(var(--c3-rgb), .18) 0%,
+    rgba(var(--c3-rgb), .05) 45%,
+    transparent 70%);
+}
+/* Central top glow — primary lavender */
+.tcat1 .tlp-hero-glow {
+  background:
+    radial-gradient(ellipse at center,
+      rgba(var(--c4-rgb), .18) 0%,
+      rgba(var(--c4-rgb), .05) 35%,
+      transparent 70%);
+}
+
+/* ── Eyebrow (if/when used) ─────────────────────────────────── */
+.tcat1 .tlp-hero-eyebrow {
+  background: rgba(var(--c4-rgb), .10);
+  border: 1px solid rgba(var(--c4-rgb), .22);
+  color: var(--c4-dark);
+  border-radius: 6px;       /* less pill, more chip — matches the boxy pass */
+}
+
+/* ── Search bar shell ───────────────────────────────────────── */
+.tcat1 .tlp-hsr {
+  border-radius: 10px;
+}
+.tcat1 .tlp-hsr--on {
+  border-color: var(--c4);
+  box-shadow:
+    0 16px 40px -16px rgba(var(--c4-rgb), .30),
+    0 0 0 5px rgba(var(--c4-rgb), .10);
+}
+.tcat1 .tlp-hsr--on .tlp-hsr-ico { color: var(--c4); }
+
+/* Spinner — lavender accents */
+.tcat1 .tlp-hsr-spin {
+  border-color: rgba(var(--c4-rgb), .20);
+  border-top-color: var(--c4);
+}
+
+/* Clear (×) button */
+.tcat1 .tlp-hsr-clear {
+  border-radius: 4px;
+}
+.tcat1 .tlp-hsr-clear:hover {
+  background: var(--c1);
+  color: var(--c4-dark);
+}
+
+/* Submit button — primary lavender */
+.tcat1 .tlp-hsr-go {
+  border-radius: 8px;
+  background: var(--c4);
+}
+.tcat1 .tlp-hsr-go:hover {
+  background: var(--c4-dark);       /* derived darker for hover */
+}
+
+/* ── Results dropdown ───────────────────────────────────────── */
+.tcat1 .tlp-hsr-pop {
+  border-radius: 8px;
+  border-color: var(--c2);
+}
+.tcat1 .tlp-hsr-row {
+  border-radius: 4px;
+}
+.tcat1 .tlp-hsr-row:hover {
+  background: var(--c1);
+}
+.tcat1 .tlp-hsr-row-logo {
+  border-radius: 4px;
+}
+
+/* Inline highlight under the search query — lavender wash */
+.tcat1 .tlp-hl {
+  background: var(--c2);
+  color: var(--c4-dark);
+}
+

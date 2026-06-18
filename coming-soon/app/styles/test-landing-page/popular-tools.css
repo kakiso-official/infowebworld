@@ -1,0 +1,237 @@
+/* ══════════════════════════════════════════════════════════════
+   Popular AI tools — dark section under the reviews marquee.
+   3×2 grid of cards each with logo + name + stars + reviews link,
+   divider, and 2-column meta (Free Trial · Entry Level Price).
+   ══════════════════════════════════════════════════════════════ */
+.tlp-pop {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: #0E1A2E;
+  color: #FFFFFF;
+  padding: clamp(56px, 9vw, 100px) clamp(18px, 4vw, 32px);
+}
+/* Same top-center mint radial as .tlp-firms — visual continuity between
+   the two dark sections. */
+.tlp-pop::before {
+  content: '';
+  position: absolute;
+  top: -220px; left: 50%;
+  width: min(1200px, 110vw);
+  height: 640px;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse,
+    rgba(52, 216, 154, .14) 0%,
+    rgba(14, 143, 110, .06) 35%,
+    transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(12px);
+}
+/* Bottom vignette so cards float on a graded surface. */
+.tlp-pop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 100%,
+      rgba(0, 0, 0, .35) 0%,
+      transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+.tlp-pop-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header */
+.tlp-pop-head {
+  text-align: center;
+  max-width: 820px;
+  margin: 0 auto clamp(28px, 4vw, 44px);
+}
+.tlp-pop-title {
+  font-size: clamp(1.55rem, 2.8vw, 2.15rem);
+  font-weight: 800;
+  letter-spacing: -.024em;
+  color: #FFFFFF;
+  margin: 0 0 10px;
+  line-height: 1.15;
+}
+.tlp-pop-sub {
+  font-size: clamp(13.5px, 1.2vw, 15px);
+  color: rgba(255, 255, 255, .68);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* Grid — 3 cols on desktop, 2 on tablet, 1 on phone */
+.tlp-pop-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+@media (max-width: 980px) { .tlp-pop-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .tlp-pop-grid { grid-template-columns: 1fr; } }
+
+/* Card — WHITE surface with DARK text on the dark section.
+   Matches image #18: the card itself is light, text is dark, labels are
+   muted gray, only the reviews link uses brand blue. */
+.tlp-pop-card {
+  display: flex; flex-direction: column;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  padding: 20px 22px;
+  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+.tlp-pop-card:hover {
+  border-color: rgba(0, 59, 42, .35);
+  box-shadow: 0 18px 36px -16px rgba(0, 0, 0, .35);
+  transform: translateY(-1px);
+}
+
+/* Top row: logo · (name + stars) · reviews link */
+.tlp-pop-card-head {
+  display: flex; align-items: center;
+  gap: 14px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #F1F2F4;
+  margin-bottom: 16px;
+}
+.tlp-pop-card-logo {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 52px; height: 52px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #FAFBFC;
+  border: 1px solid #E5E7EB;
+  text-decoration: none;
+}
+.tlp-pop-card-logo img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.tlp-pop-card-logo span {
+  font-size: 16px; font-weight: 800;
+  color: #0A1B33;
+}
+.tlp-pop-card-id {
+  display: flex; flex-direction: column;
+  gap: 5px;
+  flex: 1; min-width: 0;
+}
+.tlp-pop-card-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0A1B33;
+  letter-spacing: -.014em;
+  text-decoration: none;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  line-height: 1.2;
+}
+.tlp-pop-card-name:hover { color: #003B2A; }
+.tlp-pop-card-meta {
+  display: inline-flex; align-items: center;
+  gap: 8px;
+}
+.tlp-pop-stars {
+  display: inline-flex; align-items: center;
+  gap: 2px;
+}
+.tlp-pop-star {
+  width: 14px !important; height: 14px !important;
+  color: #E5E7EB;
+}
+.tlp-pop-star.is-on { color: #F5A623; }
+.tlp-pop-card-rating {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0A1B33;
+  font-variant-numeric: tabular-nums;
+}
+.tlp-pop-card-new {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #6B7280;
+}
+.tlp-pop-card-rev {
+  display: inline-flex; align-items: center;
+  gap: 4px;
+  color: #2563EB;
+  font-weight: 600;
+  font-size: 12.5px;
+  white-space: nowrap;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.tlp-pop-card-rev:hover { text-decoration: underline; }
+.tlp-pop-card-rev--new {
+  color: #003B2A;
+  font-weight: 700;
+}
+.tlp-pop-card-rev--new:hover { color: #0C5A40; }
+
+/* Bottom row: 2 columns (Free Trial · Entry Level Price) */
+.tlp-pop-card-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.tlp-pop-card-col {
+  display: flex; flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.tlp-pop-card-lbl {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #6B7280;
+  letter-spacing: 0;
+}
+.tlp-pop-card-val {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0A1B33;
+  letter-spacing: -.008em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* Bottom CTA — mint, matching the firms section */
+.tlp-pop-cta {
+  display: flex; justify-content: center;
+  margin-top: clamp(28px, 4vw, 44px);
+}
+.tlp-pop-cta-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 13px 28px;
+  background: #34D89A;
+  color: #003B2A;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  transition: background .12s ease, transform .15s ease;
+}
+.tlp-pop-cta-btn:hover { background: #2DC78A; }
+.tlp-pop-cta-btn:active { transform: translateY(1px); }
+
+/* Empty state */
+.tlp-pop-empty {
+  text-align: center;
+  padding: 36px 22px;
+  color: rgba(255, 255, 255, .68);
+  display: flex; flex-direction: column; align-items: center;
+  gap: 16px;
+}
+.tlp-pop-empty p {
+  font-size: 14.5px;
+  margin: 0;
+}
+

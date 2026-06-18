@@ -608,7 +608,7 @@ async function buildSectorJsonLd(
       }))
 
   /* ── Professional Services directory enrichments (scoped to this sector).
-     FAQ + field list mirror the visible block (ProServicesDirectorySeo.tsx)
+     FAQ + field list mirror the visible block (DirectorySeo.tsx)
      via the shared pro-services-content module, so schema and on-page
      content stay in lockstep. Every other sector skips this entirely. ── */
   const isProServices = sectorSlug === 'professional-services'

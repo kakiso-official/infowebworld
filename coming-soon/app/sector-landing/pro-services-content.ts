@@ -3,7 +3,7 @@
  *
  * SINGLE SOURCE OF TRUTH for the /professional-services landing page's
  * directory-specific content. Both the visible block
- * (ProServicesDirectorySeo.tsx) AND the JSON-LD graph
+ * (DirectorySeo.tsx) AND the JSON-LD graph
  * (buildSectorJsonLd in app/[...segments]/page.tsx) import from here, so
  * the on-page FAQ + category list can never drift out of sync with the
  * FAQPage / ItemList schema (Google flags schema that isn't reflected in

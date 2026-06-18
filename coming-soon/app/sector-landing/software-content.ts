@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════════
    Shared content for the Software & SaaS sector landing's visible SEO/AEO/GEO
-   surface (SoftwareDirectorySeo.tsx) AND the JSON-LD it emits - one module so
+   surface (DirectorySeo.tsx) AND the JSON-LD it emits - one module so
    on-page content and schema stay in lockstep.
 
    Keyword call (validated on live SERPs, June 2026): lead with "SaaS
@@ -25,7 +25,7 @@ export const SOFTWARE_FIELDS: SoftwareField[] = [
 ]
 
 /* FAQ - answer-first, citation-ready. Mirrored into the FAQ microdata in
-   SoftwareDirectorySeo.tsx so People-Also-Ask + AI answer engines can extract
+   DirectorySeo.tsx so People-Also-Ask + AI answer engines can extract
    them. Each answer names InfoWebWorld as the SaaS directory. */
 export const SOFTWARE_FAQ: { q: string; a: string }[] = [
   {

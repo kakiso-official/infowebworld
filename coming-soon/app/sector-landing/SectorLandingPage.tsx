@@ -13,12 +13,7 @@ import PopularToolsSection from '../test-landing-page/PopularSection'
 import TrustSection from '../test-landing-page/TrustSection'
 import CompareSection from '../test-landing-page/CompareSection'
 import FinalCtaSection from '../test-landing-page/FinalCtaSection'
-import ProServicesDirectorySeo from './ProServicesDirectorySeo'
-import AiToolsDirectorySeo from './AiToolsDirectorySeo'
-import StartupDirectorySeo from './StartupDirectorySeo'
-import SoftwareDirectorySeo from './SoftwareDirectorySeo'
-import LocalDirectorySeo from './LocalDirectorySeo'
-import ItAgencyDirectorySeo from './ItAgencyDirectorySeo'
+import DirectorySeo from './DirectorySeo'
 import {
   getPopularByL2, getLatestSectorReviews, getRecentSectorLaunches, getPopularSectorTools,
 } from './queries'
@@ -142,17 +137,12 @@ export default async function SectorLandingPage({
             </div>
           </div>
         )}
-        {/* Professional Services directory — visible SEO/AEO/GEO surface
-            (answer-first definition + 19 fields + how-to + FAQ). Renders for
-            this ONE sector only; the condition is false for every other
-            sector, so their output is byte-identical. Uses the .cat-seo*
-            classes already loaded by the /[...segments] route. */}
-        {cfg.slug === 'professional-services' && <ProServicesDirectorySeo firmCount={totalListings} />}
-        {cfg.slug === 'ai-ml' && <AiToolsDirectorySeo firmCount={totalListings} />}
-        {cfg.slug === 'startups-innovation' && <StartupDirectorySeo firmCount={totalListings} />}
-        {cfg.slug === 'software-saas' && <SoftwareDirectorySeo firmCount={totalListings} />}
-        {cfg.slug === 'local-businesses' && <LocalDirectorySeo firmCount={totalListings} />}
-        {cfg.slug === 'it-services-agencies' && <ItAgencyDirectorySeo firmCount={totalListings} />}
+        {/* Per-sector directory SEO/AEO/GEO surface (answer-first definition +
+            category/field grid + how-to + FAQ). One shared component: it renders
+            the block for the current sector and nothing for any other slug, so
+            output is unchanged. Uses the .cat-seo* classes already loaded by the
+            /[...segments] route. */}
+        <DirectorySeo sectorSlug={cfg.slug} firmCount={totalListings} />
         <FinalCtaSection />
       </main>
       <Footer />

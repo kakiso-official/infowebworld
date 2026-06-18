@@ -1,0 +1,24 @@
+/* ══════════════════════════════════════════════════════════════
+   Final CTA (.tlp-fcta-*) — lavender gradient pill card with a
+   single lavender corner glow; "List your business" CTA goes
+   solid var(--c4) to match the rest of the page.
+   ══════════════════════════════════════════════════════════════ */
+.tcat1 .tlp-fcta-card {
+  background: linear-gradient(135deg,
+    var(--c1) 0%,
+    #F0EDFB 55%,
+    #FCF7FE 100%);
+  border-color: rgba(var(--c4-rgb), .20);
+  border-radius: 12px;             /* boxier than 20 */
+}
+.tcat1 .tlp-fcta-card::before {
+  background: radial-gradient(circle,
+    rgba(var(--c4-rgb), .20) 0%,
+    rgba(var(--c4-rgb), .04) 45%,
+    transparent 70%);
+}
+.tcat1 .tlp-fcta-btn {
+  background: var(--c4);
+  border-radius: 8px;
+}
+.tcat1 .tlp-fcta-btn:hover { background: var(--c4-dark); }

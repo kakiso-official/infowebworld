@@ -1,0 +1,88 @@
+/* ══════════════════════════════════════════════════════════════
+   Sector L1 landing pages — shared rules.
+
+   All rules scope under .tcat1 (a marker class added by every sector
+   landing) so the base .tlp-* component styles in test-landing-page.css
+   remain untouched on the /test-landing-page demo.
+
+   Each sector also adds its own .tcat-<slug> class which redefines the
+   five palette custom properties (--c1..--c4-dark). The shared rules
+   below reference those vars, so the entire landing re-skins by just
+   swapping that one class.
+
+   Palette mapping (from the brand sheet):
+     01 AI & ML              Lavender Neural   var(--c1) var(--c2) var(--c3) var(--c4)
+     02 Software & SaaS      Sky Interface     #DDF0FB #B5D9F4 #7DBDE9 #3F8FD4
+     03 IT Services          Mint Circuit      #D8F5EE #9EE1CF #5DC9AB #1D9E75
+     04 Startups & Innov.    Peach Ignite      #FAEEE3 #F5C4A8 #F09A72 #D96236
+     05 Local Business       Sage Community    #EEF7DE #C9E49A #9ACE5D #659A22
+     06 Professional Svc.    Blush Authority   #FAEEF4 #F2C1D3 #E694B4 #C85580
+
+   Box style — "a bit less rounded" pass:
+     .tlp-hsr        16  → 10
+     .tlp-hsr-go     12  →  8
+     .tlp-hsr-clear   8  →  4
+     .tlp-hsr-pop    14  →  8
+     .tlp-hsr-row     8  →  4
+     .tlp-hsr-row-logo 8 →  4
+   Logic: roughly halved, never square. Architectural, not pillowy.
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Per-sector palette overrides ────────────────────────────── */
+/* Default palette = AI & ML (Lavender Neural). Sector pages combine
+   .tcat1 with .tcat-<slug>; the per-slug rule below redefines the vars
+   and the shared .tcat1 rules pick them up via var() refs. */
+.tcat1, .tcat-ai-ml {
+  --c1: #E8E4F8;
+  --c2: #CBBFF2;
+  --c3: #A899E8;
+  --c4: #7C6DD4;
+  --c4-dark: #5B4DBE;
+  --c3-rgb: 168, 153, 232;
+  --c4-rgb: 124, 109, 212;
+}
+.tcat-software-saas {
+  --c1: #DDF0FB;
+  --c2: #B5D9F4;
+  --c3: #7DBDE9;
+  --c4: #3F8FD4;
+  --c4-dark: #2B6FB5;
+  --c3-rgb: 125, 189, 233;
+  --c4-rgb: 63, 143, 212;
+}
+.tcat-it-services-agencies {
+  --c1: #D8F5EE;
+  --c2: #9EE1CF;
+  --c3: #5DC9AB;
+  --c4: #1D9E75;
+  --c4-dark: #156B50;
+  --c3-rgb: 93, 201, 171;
+  --c4-rgb: 29, 158, 117;
+}
+.tcat-startups-innovation {
+  --c1: #FAEEE3;
+  --c2: #F5C4A8;
+  --c3: #F09A72;
+  --c4: #D96236;
+  --c4-dark: #B14820;
+  --c3-rgb: 240, 154, 114;
+  --c4-rgb: 217, 98, 54;
+}
+.tcat-local-businesses {
+  --c1: #EEF7DE;
+  --c2: #C9E49A;
+  --c3: #9ACE5D;
+  --c4: #659A22;
+  --c4-dark: #487014;
+  --c3-rgb: 154, 206, 93;
+  --c4-rgb: 101, 154, 34;
+}
+.tcat-professional-services {
+  --c1: #FAEEF4;
+  --c2: #F2C1D3;
+  --c3: #E694B4;
+  --c4: #C85580;
+  --c4-dark: #A93D63;
+  --c3-rgb: 230, 148, 180;
+  --c4-rgb: 200, 85, 128;
+}

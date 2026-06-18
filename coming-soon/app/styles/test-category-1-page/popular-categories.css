@@ -1,0 +1,271 @@
+/* ══════════════════════════════════════════════════════════════
+   Most Popular AI Categories section (.tcat-pop-*)
+   Layout: 320px left rail (heading + L2 list) + 1fr right (cards
+   grid + see-all link). Single class namespace, scoped only to
+   this page via the parent .tcat1 (mounted on <main>).
+   ══════════════════════════════════════════════════════════════ */
+.tcat1 .tcat-pop {
+  padding: clamp(28px, 4vw, 52px) clamp(16px, 3vw, 28px);
+  background: #FFFFFF;
+}
+.tcat1 .tcat-pop-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 36px);
+  /* Default grid `align-items: stretch` so the right column matches
+     the left rail height — empty-state mascot then centres in that
+     full height via flex:1 + justify-content:center inside. */
+}
+@media (max-width: 880px) {
+  .tcat1 .tcat-pop-inner {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+/* ── Left rail ─────────────────────────────────────────────── */
+.tcat1 .tcat-pop-left {
+  display: flex; flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+.tcat1 .tcat-pop-title {
+  margin: 0;
+  font-size: clamp(1.35rem, 2.1vw, 1.75rem);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.15;
+  color: #0A1B33;
+}
+.tcat1 .tcat-pop-cats {
+  list-style: none;
+  margin: 0; padding: 0;
+  display: flex; flex-direction: column;
+  gap: 2px;
+}
+/* Click-only tabs — no hover swap, no hover visual. The active row
+   shifts text colour + reveals a thicker lavender border, no fill.
+   Border-width sits at 2px on every row (transparent when inactive)
+   so the active state can't reflow the layout. */
+.tcat1 .tcat-pop-cat {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  text-align: left;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  color: #1A1A1A;
+  cursor: pointer;
+  transition: border-color .15s ease, color .15s ease;
+}
+.tcat1 .tcat-pop-cat:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(var(--c4-rgb), .35);
+}
+.tcat1 .tcat-pop-cat--on {
+  border-color: var(--c4);
+  color: var(--c4-dark);
+}
+
+/* ── Right area — see-all + grid ──────────────────────────── */
+.tcat1 .tcat-pop-right {
+  display: flex; flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.tcat1 .tcat-pop-head {
+  display: flex; justify-content: flex-end;
+  padding: 0 2px;
+}
+.tcat1 .tcat-pop-seeall {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  color: var(--c4);
+  text-decoration: none;
+  transition: color .12s ease, transform .12s ease;
+}
+.tcat1 .tcat-pop-seeall:hover { color: var(--c4-dark); }
+
+/* 3-column product grid — drops to 2 then 1 on narrow widths. */
+.tcat1 .tcat-pop-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+@media (max-width: 1100px) {
+  .tcat1 .tcat-pop-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 520px) {
+  .tcat1 .tcat-pop-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Product card ─────────────────────────────────────────── */
+.tcat1 .tcat-pop-card {
+  display: flex; flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;          /* boxy theme — was the rounded 8/10 */
+  min-height: 150px;
+  transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+.tcat1 .tcat-pop-card:hover {
+  border-color: var(--c4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px -10px rgba(var(--c4-rgb), .26);
+}
+.tcat1 .tcat-pop-card-meta {
+  display: flex; flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.tcat1 .tcat-pop-card-name {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  color: #0A1B33;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.tcat1 .tcat-pop-card-rate {
+  display: inline-flex; align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: #6B7280;
+  font-variant-numeric: tabular-nums;
+}
+.tcat1 .tcat-pop-card-count { font-weight: 600; }
+
+/* ── Stars (filled / half / empty) — using FA glyphs ────────
+   The FA icon already draws clean half-stroke geometry; we just
+   colour-route via .--on / .--off. No clip-path tricks. */
+.tcat1 .tcat-pop-stars {
+  display: inline-flex; align-items: center;
+  gap: 2px;
+  line-height: 0;
+}
+.tcat1 .tcat-pop-star {
+  width: 14px;
+  height: 14px;
+}
+.tcat1 .tcat-pop-star--off { color: #DAD5E8; }   /* faded lavender = "empty" */
+.tcat1 .tcat-pop-star--on  { color: var(--c4); }
+
+/* ── Card link reset — the card is wrapped in <Link>, so kill
+      default underline + text colour inheritance. */
+.tcat1 a.tcat-pop-card { text-decoration: none; color: inherit; }
+
+/* ── Logo (real image first, monogram fallback) ──────────── */
+.tcat1 .tcat-pop-card-logo {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center;
+  min-height: 56px;
+}
+.tcat1 .tcat-pop-card-logo-img {
+  max-width: 88%;
+  max-height: 58px;
+  width: auto; height: auto;
+  object-fit: contain;
+  display: block;
+}
+.tcat1 .tcat-pop-card-mark {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 54px; height: 54px;
+  border-radius: 7px;          /* matches the boxy card radius */
+  background: var(--c1);
+  color: var(--c4-dark);
+  font-size: 16.5px;
+  font-weight: 800;
+  letter-spacing: -.5px;
+}
+.tcat1 .tcat-pop-card:hover .tcat-pop-card-mark {
+  background: var(--c2);
+}
+
+/* See-all arrow shifts on hover for a subtle nudge cue. */
+.tcat1 .tcat-pop-seeall-ico {
+  width: 11px; height: 11px;
+  transition: transform .15s ease;
+}
+.tcat1 .tcat-pop-seeall:hover .tcat-pop-seeall-ico { transform: translateX(3px); }
+
+/* ── Empty-state (no listings in active L2) ──────────────────
+   Shown in place of the cards grid when the selected category
+   has zero active/paid listings. B.O.B builder-bot mascot
+   centred above a lavender "Be the first to list…" CTA pill. */
+.tcat1 .tcat-pop-empty {
+  flex: 1;                     /* fill the right column's full height */
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 16px;
+  padding: 16px 12px 24px;
+  min-height: 320px;
+  text-align: center;
+}
+.tcat1 .tcat-pop-empty-bot {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 220px;
+  max-height: clamp(160px, 28vh, 240px);
+  user-select: none;
+  pointer-events: none;
+  filter: drop-shadow(0 12px 22px rgba(var(--c4-rgb), .18));
+}
+/* Quiet line below the mascot — single muted sentence with the
+   category name in dark bold. No card, no CTA pill. */
+.tcat1 .tcat-pop-empty-line {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #6B7280;
+  letter-spacing: -.005em;
+}
+.tcat1 .tcat-pop-empty-line strong {
+  color: #1A1A1A;
+  font-weight: 800;
+}
+/* Solid lavender pill — same boxy radius (8px) as the hero submit
+   button. White text on var(--c4), hover deepens to var(--c4-dark). */
+.tcat1 .tcat-pop-empty-link {
+  display: inline-flex; align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: var(--c4);
+  color: #FFFFFF;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  margin-top: 2px;
+  transition: background .15s ease, transform .15s ease;
+}
+.tcat1 .tcat-pop-empty-link:hover {
+  background: var(--c4-dark);
+  transform: translateY(-1px);
+}
+.tcat1 .tcat-pop-empty-link:active { transform: translateY(0); }
+.tcat1 .tcat-pop-empty-link-ico {
+  width: 11px; height: 11px;
+  transition: transform .15s ease;
+}
+.tcat1 .tcat-pop-empty-link:hover .tcat-pop-empty-link-ico {
+  transform: translateX(3px);
+}
+
+@media (max-width: 640px) {
+  .tcat1 .tcat-pop-empty { min-height: 280px; padding: 16px 12px 24px; gap: 12px; }
+  .tcat1 .tcat-pop-empty-bot { max-height: clamp(140px, 24vh, 200px); }
+}
+

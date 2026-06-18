@@ -1,0 +1,22 @@
+/* ══════════════════════════════════════════════════════════════
+   "Compare the Top-Rated Tools & Services" (.tlp-comp-*) — soft
+   lavender gradient banner replaces the mint one. Cards become
+   boxier and lift with a lavender-tinted shadow on hover.
+   ══════════════════════════════════════════════════════════════ */
+.tcat1 .tlp-comp {
+  background: linear-gradient(180deg,
+    var(--c1) 0%,
+    #F0EDFB 55%,
+    #FFFFFF 100%);
+}
+.tcat1 .tlp-comp-card {
+  border-radius: 8px;              /* boxy theme — was 12 */
+}
+.tcat1 .tlp-comp-card:hover {
+  color: var(--c4-dark);
+  box-shadow:
+    0 2px 0 rgba(var(--c4-rgb), .05),
+    0 22px 40px -18px rgba(var(--c4-rgb), .26);
+}
+.tcat1 .tlp-comp-card:hover .tlp-comp-card-ico { color: var(--c4-dark); }
+

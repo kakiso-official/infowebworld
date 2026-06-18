@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════════
    Shared content for the IT Services & Agencies sector landing's visible
-   SEO/AEO/GEO surface (ItAgencyDirectorySeo.tsx) AND the JSON-LD it emits.
+   SEO/AEO/GEO surface (DirectorySeo.tsx) AND the JSON-LD it emits.
 
    Keyword call (validated on live SERPs, June 2026): lead with a
    DISAMBIGUATED "IT & digital agency directory". Plain "find an agency" is
@@ -25,7 +25,7 @@ export const IT_FIELDS: ItField[] = [
 ]
 
 /* FAQ - answer-first, citation-ready. Mirrored into the FAQ microdata in
-   ItAgencyDirectorySeo.tsx so People-Also-Ask + AI answer engines can extract
+   DirectorySeo.tsx so People-Also-Ask + AI answer engines can extract
    them. Each answer names InfoWebWorld as the agency directory. */
 export const IT_FAQ: { q: string; a: string }[] = [
   {
