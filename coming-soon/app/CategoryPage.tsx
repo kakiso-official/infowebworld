@@ -527,10 +527,14 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
             {/* Listing cards */}
             <div>
               {filteredReal.length > 0 ? (
-                /* Local-businesses sector ONLY → Yelp-style card; every other
-                   sector keeps the Magneto-style RealListingCard untouched. */
+                /* Local-businesses sector → Yelp-style card by default; an admin
+                   can flip a single listing to the standard RealListingCard via
+                   the design toggle (item.lbDesignMode === 'classic'). Every
+                   other sector is untouched. */
                 sectorSlug === 'local-businesses'
-                  ? filteredReal.map(item => <LocalBusinessCard key={item.id} item={item} />)
+                  ? filteredReal.map(item => item.lbDesignMode === 'classic'
+                      ? <RealListingCard key={item.id} item={item} color={color} sectorSlug={sectorSlug} />
+                      : <LocalBusinessCard key={item.id} item={item} />)
                   : filteredReal.map(item => <RealListingCard key={item.id} item={item} color={color} sectorSlug={sectorSlug || ''} />)
               ) : hasAnyFilter ? (
                 <div className="cd-empty">

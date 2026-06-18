@@ -543,9 +543,13 @@ export default async function ProfilePage({
     reviews: data.reviews,
   })
 
-  /* Local-business companies get the Yelp-style page; every other sector keeps
-     the Clutch-style CompanyDetailPage. Sector = the breadcrumb root (L1). */
+  /* Local-business companies get the Yelp-style page by default; every other
+     sector keeps the Clutch-style CompanyDetailPage. Sector = the breadcrumb
+     root (L1). Admins can flip a single local-business listing to the standard
+     CompanyDetailPage via lb_design_mode = 'classic' (default 'yelp'). */
   const isLocalBusiness = data.breadcrumb.some((b: { slug: string }) => b.slug === 'local-businesses')
+  const designClassic = String((data.company as unknown as { lb_design_mode?: string }).lb_design_mode ?? 'yelp') === 'classic'
+  const useYelpDesign = isLocalBusiness && !designClassic
 
   return (
     <>
@@ -555,7 +559,7 @@ export default async function ProfilePage({
       />
       <Navbar />
       <Suspense>
-        {isLocalBusiness
+        {useYelpDesign
           ? <LocalBusinessProfilePage slug={slug} initialData={initialData} />
           : <CompanyDetailPage slug={slug} initialData={initialData} />}
       </Suspense>

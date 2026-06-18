@@ -104,6 +104,10 @@ export type RealSubmission = {
   lbPriceRange: string
   lbPhotos: string[]
   lbHours: { day: string; time: string; closed?: boolean; openNow?: boolean }[]
+  /** Local-business design mode (admin-controlled). 'yelp' = Yelp-style card +
+   *  LocalBusinessProfilePage (default); 'classic' = standard card + the
+   *  /profile CompanyDetailPage. Honored only in the local-businesses sector. */
+  lbDesignMode: 'yelp' | 'classic'
   /* Tag slugs attached via submission_tags — drives the filter bar's
      tag-group dropdowns. */
   tagSlugs: string[]
@@ -245,6 +249,7 @@ export function mapRow(r: Record<string, unknown>): RealSubmission {
         }
       })
       .filter((h) => h.day) as RealSubmission['lbHours'],
+    lbDesignMode: r.lb_design_mode === 'classic' ? 'classic' : 'yelp',
     tagSlugs: typeof r.tag_slugs === 'string' && r.tag_slugs
       ? r.tag_slugs.split(',').map((s: string) => s.trim()).filter(Boolean)
       : [],
@@ -319,6 +324,31 @@ export async function updateSubmissionAdmin(
     credentials: 'same-origin',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
+  })
+  return res.json()
+}
+
+/** Admin-only category reassignment (PATCH /api/admin/submissions/[id]/category).
+ *  Updates ONLY the listing's category_id — status and every other field are
+ *  left untouched. `idOrUuid` may be the numeric id or the uuid. */
+export async function updateSubmissionCategory(idOrUuid: string, categoryId: number) {
+  const res = await fetch(`${API}/admin/submissions/${encodeURIComponent(idOrUuid)}/category`, {
+    method: 'PATCH',
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ categoryId }),
+  })
+  return res.json()
+}
+
+/** Admin-only local-business design switch (PATCH .../[id]/design). Updates
+ *  ONLY lb_design_mode ('yelp' | 'classic'); nothing else changes. */
+export async function updateSubmissionDesignMode(idOrUuid: string, mode: 'yelp' | 'classic') {
+  const res = await fetch(`${API}/admin/submissions/${encodeURIComponent(idOrUuid)}/design`, {
+    method: 'PATCH',
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ mode }),
   })
   return res.json()
 }

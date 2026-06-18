@@ -9,6 +9,8 @@ import {
   type RealSubmission,
   type FaqItem,
 } from '../data/submissions-storage'
+import CategoryReassign from './CategoryReassign'
+import DesignModeToggle from './DesignModeToggle'
 
 /* ───────────────────────────────────────────────────────────────────
    /iww-hq/submissions
@@ -656,6 +658,26 @@ function SubmissionDetail({ sub, busy, onSetStatus, onDelete, onSaveFaqs, onPrev
           </>
         )}
       </section>
+
+      {/* Category & hierarchy — admin reassignment (L1 sector → deepest level) */}
+      <CategoryReassign
+        submissionId={sub.id}
+        currentSlug={sub.categorySlug}
+        currentName={sub.category}
+        isLive={isLive}
+        busy={busy}
+        onSaved={onEnriched}
+        flash={flash}
+      />
+
+      <DesignModeToggle
+        submissionId={sub.id}
+        categorySlug={sub.categorySlug}
+        current={sub.lbDesignMode}
+        busy={busy}
+        onSaved={onEnriched}
+        flash={flash}
+      />
 
       {/* Highlights — features + integrations */}
       {(sub.features?.length > 0 || sub.integrations?.length > 0) && (
