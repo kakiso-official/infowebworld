@@ -17,6 +17,7 @@ No new migration is required — every column used already exists (S34/S35 produ
 | `seed-xlsx-local-businesses.sql` | INSERT 10 local businesses + `lb_*` (pending) |
 | `screenshots-xlsx-aiml.sql` | UPDATE the 10 products with 2 real website screenshots each (already captured + uploaded to the file store) |
 | `golive-xlsx.sql` | Flip all 60 `pending → active` (scoped to these slugs + `user_id IS NULL`) |
+| `fix-xlsx-aiml-key-features.sql` | **Only if you loaded the first seed before this fix:** rewrites the 10 products' `key_features` from plain strings to the `[{name, description}]` shape the listing page expects (the "Key features" section was rendering blank). Touches only `key_features`. A fresh load of the regenerated seed already has the right shape. |
 
 Every file is **re-runnable** (the seeds `DELETE` their own unclaimed slugs first; go-live/screenshots are idempotent).
 
