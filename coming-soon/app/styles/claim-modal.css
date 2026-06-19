@@ -4,49 +4,79 @@
    .claim-* (modal). Palette matches the brand: coral #E8553D, cream #FAF5F0.
    ────────────────────────────────────────────────────────────────────────── */
 
-/* ── CTA card — replaces the muted "Unverified" pill on unowned listings ── */
-.tlp-claim-cta {
-  display: flex;
-  align-items: center;
-  gap: 14px;
+/* ── Claim banner — full-width clickable illustration that opens the claim
+   modal. The artwork carries the "Claim Your Listing" heading; a real CTA
+   button is overlaid in its empty left zone. The whole banner is clickable. ── */
+.tlp-claim-banner {
+  position: relative;
+  display: block;
   width: 100%;
-  text-align: left;
+  max-width: 540px;              /* keeps the banner compact + short (height scales with width) */
+  padding: 0;
+  margin: 0;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #F4F7FF;            /* artwork's light base - no flash before the PNG loads */
   cursor: pointer;
-  padding: 14px 16px;
-  border-radius: 14px;
-  border: 1.5px solid #F3C8BD;
-  background: linear-gradient(180deg, #FFF7F4 0%, #FFEFE9 100%);
-  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
   font: inherit;
+  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
 }
-.tlp-claim-cta:hover {
-  border-color: #E8553D;
-  box-shadow: 0 6px 20px -8px rgba(232, 85, 61, .45);
-  transform: translateY(-1px);
+.tlp-claim-banner img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
-.tlp-claim-cta:focus-visible { outline: 2px solid #E8553D; outline-offset: 2px; }
+.tlp-claim-banner:hover {
+  border-color: #2D6BFF;
+  box-shadow: 0 16px 38px -18px rgba(45, 107, 255, .5);
+  transform: translateY(-2px);
+}
+.tlp-claim-banner:focus-visible { outline: 2px solid #2D6BFF; outline-offset: 2px; }
 
-.tlp-claim-cta-icon {
-  flex: 0 0 auto;
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 11px;
-  background: #E8553D;
+/* Real CTA button in the artwork's empty left zone, just below the heading.
+   Visual only (aria-hidden) - the parent <button> handles the click. % position
+   tracks the image because the banner's height equals the image's. */
+.tlp-claim-banner-btn {
+  position: absolute;
+  left: 4%;
+  top: 65%;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: linear-gradient(180deg, #3D78FF 0%, #2667F5 100%);
   color: #fff;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -.01em;
+  white-space: nowrap;
+  box-shadow: 0 10px 22px -8px rgba(38, 103, 245, .6), 0 2px 5px -1px rgba(38, 103, 245, .5), inset 0 1px 0 rgba(255, 255, 255, .25);
+  transition: transform .18s cubic-bezier(.2, .7, .2, 1), box-shadow .18s ease, background .18s ease;
 }
-.tlp-claim-cta-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.tlp-claim-cta-eyebrow {
-  font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #C2410C;
+.tlp-cbb-arrow { transition: transform .2s ease; }
+.tlp-claim-banner:hover .tlp-claim-banner-btn {
+  background: linear-gradient(180deg, #2D6BFF 0%, #1B5AE6 100%);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 16px 32px -8px rgba(38, 103, 245, .8), inset 0 1px 0 rgba(255, 255, 255, .25);
 }
-.tlp-claim-cta-title { font-size: 15.5px; font-weight: 800; color: #1A1A1A; line-height: 1.2; }
-.tlp-claim-cta-sub { font-size: 12.5px; color: #6B6560; line-height: 1.45; }
-.tlp-claim-cta-arrow {
-  flex: 0 0 auto; margin-left: auto; font-size: 20px; font-weight: 700; color: #E8553D;
-  transition: transform .15s ease;
+.tlp-claim-banner:hover .tlp-cbb-arrow { transform: translateX(4px); }
+@media (max-width: 560px) {
+  /* Stack on mobile: the overlay would crowd the short, narrow banner, so the
+     button drops below the artwork as a full-width tap target. */
+  .tlp-claim-banner { display: flex; flex-direction: column; max-width: none; }
+  .tlp-claim-banner-btn {
+    position: static;
+    top: auto; left: auto;
+    align-self: stretch;
+    justify-content: center;
+    margin: 12px;
+    font-size: 13.5px;
+    padding: 11px 16px;
+    gap: 7px;
+  }
 }
-.tlp-claim-cta:hover .tlp-claim-cta-arrow { transform: translateX(3px); }
 
 /* ── Modal overlay + card ── */
 .claim-ov {

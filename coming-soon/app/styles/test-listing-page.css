@@ -84,10 +84,14 @@ html, body { overflow-x: clip }
 }
 .tlp-crumb-current { color: var(--tlp-ink); font-weight: 600 }
 
-/* Push the site's main navbar (.nh) off-screen ONLY while this page's
-   sub-header is active — class is added/removed by /test-listing-page's
-   scroll handler, so no other page is affected. */
-body.tlp-subheader-active .nh {
+/* Push the site's main navbar off-screen ONLY while this page's sub-header
+   is active — the class is added/removed by the listing page's scroll handler,
+   so no other page is affected. The current navbar is .iw-head (.nh is the
+   legacy nav, kept just in case). Without .iw-head here the navbar followed
+   its own hide-on-down/show-on-up logic and popped back in on scroll-up,
+   fighting the pinned sticky sub-header. */
+body.tlp-subheader-active .nh,
+body.tlp-subheader-active .iw-head {
   transform: translateY(-100%) !important;
   transition: transform .25s cubic-bezier(.16,1,.3,1) !important;
 }
@@ -833,7 +837,7 @@ body.tlp-subheader-active .tlp-write-review {
 
 /* ─── Sections ─── */
 .tlp-sec {
-  padding: 36px 0;
+  padding: 26px 0;
   border-bottom: 1px solid var(--tlp-border);
 }
 .tlp-sec:last-child { border-bottom: 0 }
@@ -843,17 +847,138 @@ body.tlp-subheader-active .tlp-write-review {
   border: 1px solid var(--tlp-border);
   border-radius: 6px;
   background: var(--tlp-bg);
-  padding: 28px 32px;
-  margin: 28px 0;
+  padding: 24px 28px;
+  margin: 18px 0;
   box-shadow: 0 1px 2px rgba(17, 24, 39, .03), 0 1px 1px rgba(17, 24, 39, .02);
 }
 .tlp-card > .tlp-sec-title:first-child { margin-top: 0 }
 .tlp-sec-title {
-  font-size: 22px;
-  font-weight: 700;
+  /* Match the company /profile page section headings - Source Serif 4. */
+  font-family: var(--font-source-serif), 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  font-size: 25px;
+  font-weight: 600;
   color: var(--tlp-ink);
   margin: 0 0 20px;
-  letter-spacing: -.01em;
+  letter-spacing: -.012em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* Section-heading icon (Font Awesome) before each title, accent-colored -
+   same treatment as the company page's .cmp-h2-ico. */
+.tlp-sec-ico {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--tlp-accent, #0066CC);
+  font-size: .9em;
+}
+
+/* ─── Screenshot showcase: one large featured shot + a thumbnail rail.
+   Click the hero to open the lightbox; click a thumb to swap the hero. ─── */
+.tlp-shots { display: flex; flex-direction: column; gap: 12px; }
+.tlp-shots-hero {
+  position: relative;
+  display: block; width: 100%; padding: 0; margin: 0;
+  border: 1px solid var(--tlp-line, #E5E7EB);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--tlp-bg-soft, #F8FAFC);
+  cursor: zoom-in;
+  aspect-ratio: 16 / 10;
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+.tlp-shots-hero img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: top center;
+  display: block;
+}
+.tlp-shots-hero:hover {
+  border-color: var(--tlp-accent, #0066CC);
+  box-shadow: 0 16px 40px -22px rgba(15, 20, 25, .42);
+}
+.tlp-shots-zoom {
+  position: absolute; top: 12px; right: 12px;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 9px;
+  background: rgba(17, 24, 39, .6); color: #fff; font-size: 14px;
+  opacity: 0; transform: scale(.9);
+  transition: opacity .18s ease, transform .18s ease;
+}
+.tlp-shots-hero:hover .tlp-shots-zoom,
+.tlp-shots-hero:focus-visible .tlp-shots-zoom { opacity: 1; transform: scale(1); }
+
+.tlp-shots-thumbs {
+  display: flex; gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+.tlp-shots-thumb {
+  flex: 0 0 auto;
+  width: 108px; height: 68px;
+  padding: 0; margin: 0;
+  border: 2px solid transparent;
+  border-radius: 9px;
+  overflow: hidden;
+  background: var(--tlp-bg-soft, #F8FAFC);
+  cursor: pointer;
+  opacity: .6;
+  transition: opacity .15s ease, border-color .15s ease, transform .15s ease;
+}
+.tlp-shots-thumb img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: top center;
+  display: block;
+}
+.tlp-shots-thumb:hover { opacity: .92; transform: translateY(-1px); }
+.tlp-shots-thumb.is-active {
+  opacity: 1;
+  border-color: var(--tlp-accent, #0066CC);
+}
+@media (max-width: 560px) {
+  .tlp-shots-thumb { width: 88px; height: 56px; }
+}
+
+/* ─── Lightbox overlay ─── */
+.tlp-lb {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  padding: clamp(16px, 4vw, 56px);
+  background: rgba(8, 11, 18, .82);
+  backdrop-filter: blur(4px);
+  animation: tlpLbIn .18s ease;
+}
+@keyframes tlpLbIn { from { opacity: 0 } to { opacity: 1 } }
+.tlp-lb-img {
+  max-width: 100%; max-height: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .6);
+  cursor: default;
+}
+.tlp-lb-close,
+.tlp-lb-arrow {
+  position: absolute;
+  border: 0; cursor: pointer;
+  background: rgba(255, 255, 255, .14); color: #fff;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 999px;
+  transition: background .15s ease;
+}
+.tlp-lb-close:hover,
+.tlp-lb-arrow:hover { background: rgba(255, 255, 255, .28); }
+.tlp-lb-close { top: 18px; right: 20px; width: 44px; height: 44px; font-size: 18px; }
+.tlp-lb-arrow { top: 50%; transform: translateY(-50%); width: 48px; height: 48px; font-size: 18px; }
+.tlp-lb-arrow--prev { left: clamp(12px, 3vw, 32px); }
+.tlp-lb-arrow--next { right: clamp(12px, 3vw, 32px); }
+.tlp-lb-count {
+  position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%);
+  padding: 6px 14px; border-radius: 999px;
+  background: rgba(255, 255, 255, .16); color: #fff;
+  font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums;
+}
+@media (max-width: 560px) {
+  .tlp-lb-arrow { width: 40px; height: 40px; font-size: 16px; }
 }
 .tlp-sec-title--compact { margin-bottom: 0 }
 .tlp-sec-lead { color: var(--tlp-body); font-size: 14.5px; margin-bottom: 18px }
@@ -925,9 +1050,11 @@ body.tlp-subheader-active .tlp-write-review {
 @media (max-width: 820px) { .tlp-ovw-grid { grid-template-columns: 1fr; gap: 24px } }
 
 .tlp-ovw-title {
-  font-size: 20px; font-weight: 700;
-  color: var(--tlp-ink); letter-spacing: -.01em;
+  font-family: var(--font-source-serif), 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  font-size: 22px; font-weight: 600;
+  color: var(--tlp-ink); letter-spacing: -.012em;
   margin: 0 0 8px;
+  display: flex; align-items: center; gap: 8px;
 }
 .tlp-ovw-verify {
   display: flex; align-items: center; gap: 10px;
@@ -1910,7 +2037,7 @@ body.tlp-subheader-active .tlp-write-review {
   align-items: flex-end;
   justify-content: space-between;
   gap: 24px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
 }
 .tlp-wu-head .tlp-sec-title { margin: 0 }
@@ -1923,144 +2050,137 @@ body.tlp-subheader-active .tlp-write-review {
 
 .tlp-wu-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 28px;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  gap: 20px 30px;
+  align-items: start;
 }
-@media (max-width: 860px) { .tlp-wu-grid { grid-template-columns: 1fr; gap: 32px } }
+@media (max-width: 860px) { .tlp-wu-grid { grid-template-columns: 1fr; gap: 30px } }
 
-.tlp-wu-col { display: flex; flex-direction: column }
+.tlp-wu-col { display: flex; flex-direction: column; min-width: 0 }
+.tlp-wu-fullspan { grid-column: 1 / -1 }
 .tlp-wu-h3 {
+  display: flex; align-items: center; gap: 9px;
   font-size: 15px; font-weight: 700;
   color: var(--tlp-ink);
-  margin: 0 0 16px;
+  margin: 0 0 13px;
 }
+.tlp-wu-h3-ico { display: inline-flex; color: var(--tlp-teal); font-size: 14px }
 
-/* ─── Column 1: Company size — 3 vertical capsules ─── */
-.tlp-wu-bars {
-  display: flex;
-  gap: 24px;
-  align-items: flex-end;
-  justify-content: flex-start;
-  padding-top: 16px;
-}
-.tlp-wu-bar {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  width: 74px;
-}
-.tlp-wu-bar-track {
-  position: relative;
-  width: 30px;
-  height: 140px;
-  border: 1.5px solid #B7E6E6;
-  border-radius: 18px;
-  padding: 3px;
-  display: flex;
-  align-items: flex-end;
-}
-.tlp-wu-bar-fill {
-  width: 100%;
-  background: #0C9A9A;
-  border-radius: 14px;
-  min-height: 8px;
-  transition: height .4s ease;
-}
-.tlp-wu-bar-label {
-  font-size: 12.5px;
-  color: var(--tlp-ink-2);
-  text-align: center;
-  line-height: 1.3;
-  font-weight: 500;
-  max-width: 90px;
-}
+@keyframes wuRise { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
+@keyframes wuPop  { from { opacity: 0; transform: scale(.92) } to { opacity: 1; transform: none } }
 
-/* ─── Column 2: Industries — donut + legend + tooltip ─── */
+/* ─── Company size — building "size scale" (served highlighted) ─── */
+.tlp-wu-sizes { display: flex; gap: 10px; align-items: flex-start; padding-top: 2px }
+.tlp-wu-size {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column; align-items: center; gap: 9px; text-align: center;
+  animation: wuRise .5s cubic-bezier(.2,.7,.2,1) both; animation-delay: var(--d, 0ms);
+}
+.tlp-wu-size-img {
+  display: block; width: 100%; aspect-ratio: 3 / 2;
+  border-radius: 12px; overflow: hidden;
+  border: 1.5px solid var(--tlp-border); background: #fff;
+  transition: transform .22s cubic-bezier(.2,.7,.2,1), box-shadow .22s ease, border-color .22s ease, filter .22s ease;
+}
+.tlp-wu-size-img img { width: 100%; height: 100%; object-fit: cover; display: block }
+.tlp-wu-size.is-on .tlp-wu-size-img { border-color: var(--tlp-teal) }
+.tlp-wu-size.is-on:hover .tlp-wu-size-img { transform: translateY(-3px); box-shadow: 0 14px 24px -12px rgba(12, 154, 154, .6) }
+.tlp-wu-size.is-off { opacity: .85 }
+.tlp-wu-size.is-off .tlp-wu-size-img { filter: grayscale(1); border-style: dashed }
+.tlp-wu-size.is-off .tlp-wu-size-label { color: var(--tlp-mute) }
+.tlp-wu-size-label { font-size: 12px; font-weight: 600; color: var(--tlp-ink); line-height: 1.3 }
+
+/* ─── Industries — donut + center label + synced legend ─── */
 .tlp-wu-donut-wrap {
   display: grid;
-  grid-template-columns: 130px 1fr;
-  gap: 16px;
+  grid-template-columns: 150px 1fr;
+  gap: 18px;
   align-items: center;
 }
 .tlp-wu-donut-box {
   position: relative;
-  width: 130px; height: 130px;
+  width: 150px; height: 150px;
+  animation: wuPop .55s cubic-bezier(.2,.7,.2,1) both;
 }
-.tlp-wu-donut { width: 130px; height: 130px; display: block }
-.tlp-wu-tooltip {
-  position: absolute;
-  top: -14px;
-  left: 44%;
-  transform: translateX(-50%);
-  background: #1F2937;
-  color: #fff;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-size: 11.5px;
-  font-weight: 600;
-  white-space: nowrap;
-  box-shadow: 0 2px 6px rgba(0,0,0,.15);
-  z-index: 2;
+.tlp-wu-donut { width: 150px; height: 150px; display: block; transition: transform .25s ease }
+.tlp-wu-donut-wrap:hover .tlp-wu-donut { transform: scale(1.03) }
+.tlp-wu-donut-center {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; pointer-events: none; padding: 0 30px;
 }
+.tlp-wu-donut-center-num { font-size: 30px; font-weight: 800; color: var(--tlp-ink); line-height: 1 }
+.tlp-wu-donut-center-lbl { font-size: 11px; font-weight: 600; color: var(--tlp-mute); margin-top: 3px }
+.tlp-wu-donut-center-name { font-size: 12.5px; font-weight: 700; color: var(--tlp-teal); line-height: 1.25 }
 
 .tlp-wu-legend {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  font-size: 12px;
+  gap: 3px;
+  font-size: 12.5px;
 }
 .tlp-wu-legend li {
   display: grid;
-  grid-template-columns: 10px 1fr;
-  gap: 8px;
-  align-items: flex-start;
-  color: #9CA3AF;
+  grid-template-columns: 12px 1fr;
+  gap: 9px;
+  align-items: center;
+  color: var(--tlp-ink-2);
   line-height: 1.35;
   cursor: pointer;
-  transition: color .15s ease;
+  padding: 5px 9px;
+  border-radius: 8px;
+  transition: color .15s ease, background .15s ease, transform .15s ease;
 }
-.tlp-wu-legend li.is-active { color: var(--tlp-teal); font-weight: 500 }
+.tlp-wu-legend li:hover, .tlp-wu-legend li.is-active { color: var(--tlp-ink); background: #EEF8F8; transform: translateX(3px) }
 .tlp-wu-dot {
-  width: 10px; height: 10px;
+  width: 11px; height: 11px;
   border-radius: 50%;
-  margin-top: 4px;
+  transition: transform .15s ease;
 }
-.tlp-wu-dot--sq { border-radius: 2px }
+.tlp-wu-legend li:hover .tlp-wu-dot, .tlp-wu-legend li.is-active .tlp-wu-dot { transform: scale(1.35) }
+.tlp-wu-dot--sq { border-radius: 3px }
 .tlp-wu-lbl { display: block }
-
-/* ─── Column 3: Use cases — diamond cluster + legend ─── */
-.tlp-wu-uc-wrap {
+/* Industries legend in 2 columns so the block isn't tall + lopsided beside the
+   short company-size column. */
+.tlp-wu-donut-wrap .tlp-wu-legend {
   display: grid;
-  grid-template-columns: 130px 1fr;
-  gap: 16px;
-  align-items: center;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 3px 10px;
+  font-size: 11.5px;
+}
+
+/* ─── Use cases — diamond cluster + list (full-width row) ─── */
+.tlp-wu-uc-wrap {
+  display: grid; grid-template-columns: 124px 1fr; gap: 22px; align-items: center;
 }
 .tlp-wu-diamonds {
-  position: relative;
-  width: 130px;
-  height: 130px;
+  position: relative; width: 124px; height: 124px; flex-shrink: 0;
+  animation: wuPop .55s cubic-bezier(.2,.7,.2,1) both;
 }
-.tlp-wu-d {
-  position: absolute;
-  transform: rotate(45deg);
-  border-radius: 4px;
+.tlp-wu-d { position: absolute; transform: rotate(45deg); border-radius: 5px; transition: transform .28s cubic-bezier(.2,.7,.2,1) }
+.tlp-wu-uc-wrap:hover .tlp-wu-d { transform: rotate(45deg) scale(1.07) }
+.tlp-wu-d--big { width: 52px; height: 52px; left: 18px; top: 36px }
+.tlp-wu-d--top { width: 22px; height: 22px; left: 74px; top: 18px }
+.tlp-wu-d--rt  { width: 33px; height: 33px; left: 70px; top: 47px }
+.tlp-wu-d--bot { width: 27px; height: 27px; left: 50px; top: 80px }
+.tlp-wu-d--tr  { width: 19px; height: 19px; left: 92px; top: 78px }
+/* List laid out multi-column to fill the full-width row */
+.tlp-wu-uc-list {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(258px, 1fr));
+  gap: 5px 24px;
 }
-/* Center big dark-teal diamond */
-.tlp-wu-d--big { width: 56px; height: 56px; left: 20px; top: 38px }
-/* Small lightest top-right */
-.tlp-wu-d--top { width: 22px; height: 22px; left: 78px; top: 20px }
-/* Medium right */
-.tlp-wu-d--rt  { width: 34px; height: 34px; left: 72px; top: 50px }
-/* Medium bottom */
-.tlp-wu-d--bot { width: 28px; height: 28px; left: 54px; top: 84px }
-/* Small top */
-.tlp-wu-d--tr  { width: 20px; height: 20px; left: 94px; top: 82px }
+.tlp-wu-uc-list li { color: var(--tlp-ink-2); align-items: flex-start }
+.tlp-wu-uc-list .tlp-wu-dot { margin-top: 4px }
 
-.tlp-wu-uc-wrap .tlp-wu-legend li { color: var(--tlp-ink-2) }
+.tlp-wu-empty {
+  font-size: 13px; color: var(--tlp-mute);
+  padding: 16px; border: 1px dashed var(--tlp-border); border-radius: 12px; background: #FAFBFC;
+}
 
 @media (max-width: 520px) {
-  .tlp-wu-donut-wrap, .tlp-wu-uc-wrap { grid-template-columns: 1fr; justify-items: center }
+  .tlp-wu-donut-wrap { grid-template-columns: 1fr; justify-items: center }
+  .tlp-wu-uc-grid { grid-template-columns: 1fr }
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -2083,78 +2203,47 @@ body.tlp-subheader-active .tlp-write-review {
 }
 .tlp-kf-intro a { color: var(--tlp-teal); font-weight: 500 }
 
-/* Spec-sheet layout — name | description, hairline rules between rows.
-   No cards, no markers; precision via typography + restrained hover. */
-.tlp-kf-list {
-  margin: 0 0 8px;
-  border-top: 1px solid var(--tlp-border);
-  font-feature-settings: "ss01", "cv11", "cv05";
-}
-.tlp-kf-row {
+/* Feature cards — icon chip + name + optional description, responsive grid. */
+.tlp-kf-grid {
   display: grid;
-  grid-template-columns: minmax(160px, 26%) 1fr;
-  column-gap: 36px;
-  padding: 13px 14px 14px;
-  margin: 0 -14px;
-  border-bottom: 1px solid var(--tlp-border);
-  align-items: baseline;
-  border-radius: 6px;
-  transition: background-color .18s ease;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
+  margin: 0 0 8px;
 }
-/* Drop the divider on the last row for a clean termination. */
-.tlp-kf-row:last-child { border-bottom: 0 }
-/* Subtle row hover — barely-there teal tint, no transform. */
-.tlp-kf-row:hover {
-  background-color: rgba(12, 154, 154, .025);
+.tlp-kf-card {
+  position: relative;
+  display: grid; grid-template-columns: auto 1fr; align-items: start; gap: 14px;
+  padding: 15px 17px;
+  border: 1px solid var(--tlp-border); border-radius: 14px; background: #fff;
+  animation: wuRise .5s cubic-bezier(.2, .7, .2, 1) both; animation-delay: var(--d, 0ms);
+  transition: transform .22s cubic-bezier(.2, .7, .2, 1), box-shadow .22s ease, border-color .22s ease;
 }
-.tlp-kf-row:hover .tlp-kf-name {
-  color: var(--tlp-teal);
+.tlp-kf-card::before {
+  content: ''; position: absolute; left: 0; top: 14px; bottom: 14px; width: 3px;
+  border-radius: 0 3px 3px 0; background: var(--tlp-teal);
+  transform: scaleY(0); transition: transform .25s ease;
 }
-
-/* Feature name — left column */
-.tlp-kf-name {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--tlp-ink);
-  letter-spacing: -.012em;
-  line-height: 1.4;
-  margin: 0;
-  transition: color .18s ease;
-  font-variant-numeric: lining-nums tabular-nums;
+.tlp-kf-card:hover { transform: translateY(-3px); box-shadow: 0 16px 32px -18px rgba(15, 20, 25, .42); border-color: #A4DFDF }
+.tlp-kf-card:hover::before { transform: scaleY(1) }
+.tlp-kf-card-ico {
+  display: grid; place-items: center; width: 42px; height: 42px; flex-shrink: 0;
+  border-radius: 12px; font-size: 18px;
+  background: var(--tlp-teal-50, #E6F6F5); color: var(--tlp-teal);
+  transition: transform .55s cubic-bezier(.34, 1.56, .64, 1), background .25s ease, color .25s ease, border-radius .4s ease;
 }
-
-/* Body cell wraps description + optional rating chip */
-.tlp-kf-body {
-  margin: 0;
-  padding: 0;
-  min-width: 0;
+/* Wild hover: the chip spins a full turn, pops, fills teal and morphs to a circle. */
+.tlp-kf-card:hover .tlp-kf-card-ico {
+  transform: rotate(360deg) scale(1.16);
+  background: var(--tlp-teal); color: #fff;
+  border-radius: 50%;
 }
-
-/* Feature description */
-.tlp-kf-desc {
-  color: var(--tlp-ink-2);
-  font-size: 13.5px;
-  line-height: 1.6;
-  letter-spacing: -.003em;
-  margin: 0;
-  padding: 0;
-}
-
-/* Rating chip — sits beneath the description, only when a rating exists */
-.tlp-kf-rate {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 7px;
-  margin-top: 6px;
-  background: #FFF8E6;
-  border: 1px solid rgba(252, 211, 77, .45);
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--tlp-ink);
-  line-height: 1;
-  width: max-content;
+.tlp-kf-card-body { min-width: 0 }
+.tlp-kf-card-name { font-size: 14px; font-weight: 700; color: var(--tlp-ink); line-height: 1.35; letter-spacing: -.01em }
+.tlp-kf-card-desc { font-size: 12.5px; line-height: 1.55; color: var(--tlp-mute); margin: 5px 0 0 }
+.tlp-kf-card-rate {
+  display: inline-flex; align-items: center; gap: 4px; margin-top: 8px;
+  padding: 2px 8px; background: #FFF8E6; border: 1px solid rgba(252, 211, 77, .45);
+  border-radius: 999px; font-size: 11px; font-weight: 700; color: var(--tlp-ink); line-height: 1; width: max-content;
 }
 
 /* View more / Show less toggle for the key features list */
@@ -4780,46 +4869,57 @@ html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nh-h, 112px) + 12
   text-align: center;
 }
 
-/* Insights empty state (right column when no reviews). */
+/* Insights empty state (right column when no reviews) — illustrated, centered,
+   inviting: art + "Be the first to review" + tappable hover-fill stars + CTA. */
 .tlp-in-empty {
-  display: flex; flex-direction: column; align-items: flex-start;
-  gap: 10px;
-  padding: 28px 24px;
-  border: 1px dashed #D1D5DB;
-  border-radius: 14px;
-  background: #FAFBFC;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: 11px;
+  padding: 36px 28px;
+  border: 1px solid #EAEDF2;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #FBFCFE 0%, #F2F8FF 100%);
 }
-.tlp-in-empty-ico {
-  display: grid; place-items: center;
-  width: 56px; height: 56px;
-  border-radius: 14px;
-  background: #fff;
-  border: 1px solid #E5E7EB;
-  color: var(--tlp-teal);
+.tlp-in-empty-art {
+  width: 132px; height: auto; display: block; margin-bottom: 2px;
+  filter: drop-shadow(0 12px 18px rgba(45, 107, 255, .16));
 }
 .tlp-in-empty-title {
-  font-size: 16px; font-weight: 700;
-  color: var(--tlp-ink);
-  margin: 4px 0 0;
+  font-size: 19px; font-weight: 800; letter-spacing: -.012em;
+  color: var(--tlp-ink); margin: 0;
 }
 .tlp-in-empty-sub {
   font-size: 13.5px; line-height: 1.6;
   color: var(--tlp-mute);
-  margin: 0 0 4px;
-  max-width: 480px;
+  margin: 0; max-width: 360px;
 }
+/* Tappable stars — row-reverse so :hover fills the hovered star + all to its
+   left; the whole row opens the review modal. */
+.tlp-in-empty-stars {
+  display: inline-flex; flex-direction: row-reverse; gap: 5px;
+  margin: 3px 0; padding: 2px; cursor: pointer; border: 0; background: none;
+}
+.tlp-in-empty-star { fill: #DCE2EC; transition: fill .12s ease, transform .12s ease; }
+.tlp-in-empty-star:hover,
+.tlp-in-empty-star:hover ~ .tlp-in-empty-star { fill: #FFB100; }
+.tlp-in-empty-star:hover { transform: scale(1.14); }
+.tlp-in-empty-stars:focus-visible { outline: 2px solid var(--tlp-teal); outline-offset: 3px; border-radius: 8px; }
 .tlp-in-empty-cta {
-  display: inline-flex; align-items: center;
-  padding: 10px 18px;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 24px;
   border-radius: 999px;
   background: var(--tlp-teal);
   color: #fff;
-  font-size: 13.5px; font-weight: 700;
+  font-size: 14px; font-weight: 700;
   border: 0;
   cursor: pointer;
-  transition: background .15s ease, transform .15s ease;
+  box-shadow: 0 10px 22px -8px rgba(12, 154, 154, .5);
+  transition: background .15s ease, transform .15s ease, box-shadow .15s ease;
 }
-.tlp-in-empty-cta:hover { background: var(--tlp-teal-dark, #086666); transform: translateY(-1px) }
+.tlp-in-empty-cta:hover {
+  background: var(--tlp-teal-600, #087070);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px -10px rgba(12, 154, 154, .65);
+}
 
 /* Insights left-column tweaks for real mode. */
 .tlp-in-rate-num--muted { color: #9CA3AF !important }

@@ -17,6 +17,43 @@ import SignupModal from '../components/auth/SignupModal'
 import { withInfoWebWorldUtm } from '../lib/utm'
 import { listingOutboundRel } from '@/lib/user-plan-types'
 import { trackWebsiteClick } from '../lib/track-website-click'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faCircleInfo, faImage, faStar, faScaleBalanced, faUsers, faListCheck,
+  faRightLeft, faTags, faPuzzlePiece, faHeadset, faCircleQuestion,
+  faCodeCompare, faEye, faLayerGroup, faExpand, faXmark, faChevronLeft, faChevronRight,
+  faObjectGroup, faWandMagicSparkles, faDiagramProject, faDatabase, faPlug, faCodeBranch,
+  faRocket, faFileCode, faPenNib, faShieldHalved, faChartLine, faArrowsRotate, faBell,
+  faCreditCard, faLanguage, faMobileScreen, faGlobe, faBolt, faCircleCheck,
+} from '@fortawesome/free-solid-svg-icons'
+
+/* Pick a fitting Font Awesome icon for a feature by keyword. Falls back to a
+   check so any unknown feature still gets a clean icon. */
+function iconForFeature(name: string) {
+  const s = String(name).toLowerCase()
+  const has = (...k: string[]) => k.some((x) => s.includes(x))
+  if (has('drag', 'wysiwyg', 'canvas', 'no-code', 'no code', 'builder', 'component', 'widget')) return faObjectGroup
+  if (has(' ai', 'ai-', 'a.i', 'smart', 'generat', 'assist', 'humaniz', 'summar', 'magic')) return faWandMagicSparkles
+  if (has('action', 'logic', 'flow', 'workflow', 'rule', 'automat', 'pipeline')) return faDiagramProject
+  if (has('firebase', 'supabase', 'database', 'firestore', 'postgres', 'sql', 'storage', 'backend')) return faDatabase
+  if (has('api', 'rest', 'graphql', 'swagger', 'openapi', 'webhook', 'sdk', 'endpoint')) return faPlug
+  if (has('github', 'gitlab', 'git ', 'branch', 'version control', 'repo')) return faCodeBranch
+  if (has('deploy', 'app store', 'play store', 'publish', 'launch', 'hosting', 'one-click', 'ci/cd')) return faRocket
+  if (has('source code', 'export', ' code', 'developer', 'self-host', 'open source')) return faFileCode
+  if (has('figma', 'design', 'import', 'template', 'theme', 'layout', 'ui kit', 'sketch')) return faPenNib
+  if (has('auth', 'login', 'sso', 'security', 'permission', 'encrypt', 'compliance', 'gdpr', 'soc 2')) return faShieldHalved
+  if (has('analytic', 'insight', 'report', 'dashboard', 'metric', 'track', 'chart')) return faChartLine
+  if (has('integrat', 'connect', 'sync')) return faArrowsRotate
+  if (has('team', 'collaborat', 'share', 'multi-user', 'member', 'role')) return faUsers
+  if (has('notif', 'push', 'alert', 'email', 'message', 'chat', 'inbox')) return faBell
+  if (has('payment', 'billing', 'invoice', 'checkout', 'subscription', 'pricing', 'stripe')) return faCreditCard
+  if (has('translat', 'language', 'multi-lang', 'localiz', 'i18n')) return faLanguage
+  if (has('plugin', 'extension', 'add-on', 'addon', 'marketplace')) return faPuzzlePiece
+  if (has('mobile', 'ios', 'android')) return faMobileScreen
+  if (has('web', 'website', 'browser', 'pwa')) return faGlobe
+  if (has('speed', 'fast', 'performance', 'real-time', 'realtime', 'instant', 'scal')) return faBolt
+  return faCircleCheck
+}
 
 /* ═══════════════════════════════════════════
    Listing Detail Page — GetApp-style company listing.
@@ -1566,16 +1603,28 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
   ]
   // Use real screenshots from DB when present, otherwise fall back to sample UI images.
   const UI_IMAGES = view.realScreenshots || UI_IMAGES_FALLBACK
-  const [uiSlide, setUiSlide] = useState(0)
-  // 2 images visible per view → last reachable position is length - 2
-  const uiSlideCount = Math.max(1, UI_IMAGES.length - 1)
-  const uiPrev = () => setUiSlide(i => (i - 1 + uiSlideCount) % uiSlideCount)
-  const uiNext = () => setUiSlide(i => (i + 1) % uiSlideCount)
-  // Keyboard arrow nav while focused inside the carousel
-  const uiKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'ArrowLeft')  { e.preventDefault(); uiPrev() }
-    if (e.key === 'ArrowRight') { e.preventDefault(); uiNext() }
-  }
+  // Screenshot showcase: one shot is "featured" (large); thumbnails swap it.
+  // Clicking the featured shot opens the full-screen lightbox.
+  const [featuredIdx, setFeaturedIdx] = useState(0)
+  const [lightboxIdx, setLightboxIdx] = useState<number | null>(null)
+  const lbPrev = () => setLightboxIdx(i => i === null ? i : (i - 1 + UI_IMAGES.length) % UI_IMAGES.length)
+  const lbNext = () => setLightboxIdx(i => i === null ? i : (i + 1) % UI_IMAGES.length)
+  useEffect(() => {
+    if (lightboxIdx === null) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setLightboxIdx(null)
+      else if (e.key === 'ArrowLeft') lbPrev()
+      else if (e.key === 'ArrowRight') lbNext()
+    }
+    window.addEventListener('keydown', onKey)
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prevOverflow
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lightboxIdx])
 
   /* Reactions: like + dislike share one DB row (UNIQUE listing+user), so we
      compute the next reaction state, fire one request (POST upserts, DELETE
@@ -2062,25 +2111,21 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
               ) : view.claimable ? (
                 <button
                   type="button"
-                  className="tlp-claim-cta"
+                  className="tlp-claim-banner"
                   onClick={() => setClaimOpen(true)}
-                  aria-label={`Claim ${view.companyName}`}
+                  aria-label={`Claim ${view.companyName} on InfoWebWorld`}
                 >
-                  <span className="tlp-claim-cta-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <img src="/illustrations/claim-listing-cta.png" alt="" loading="lazy" />
+                  <span className="tlp-claim-banner-btn" aria-hidden="true">
+                    <svg className="tlp-cbb-shield" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M12 2 4 5.5v5c0 5.2 3.4 9.6 8 10.5 4.6-.9 8-5.3 8-10.5v-5L12 2Z" />
                       <path d="m9 12 2 2 4-4" />
                     </svg>
+                    <span className="tlp-cbb-txt">Claim This Listing</span>
+                    <svg className="tlp-cbb-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M5 12h14M13 6l6 6-6 6" />
+                    </svg>
                   </span>
-                  <span className="tlp-claim-cta-body">
-                    <span className="tlp-claim-cta-eyebrow">Is this your business?</span>
-                    <span className="tlp-claim-cta-title">Claim this listing</span>
-                    <span className="tlp-claim-cta-sub">
-                      Verify ownership of {view.companyName} to manage details, respond to reviews
-                      and get the Verified badge — free.
-                    </span>
-                  </span>
-                  <span className="tlp-claim-cta-arrow" aria-hidden="true">→</span>
                 </button>
               ) : (
                 <div className="tlp-vbadge tlp-vbadge--no" role="note" aria-label="Unverified by InfoWebWorld">
@@ -2124,7 +2169,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 {/* ── Left column: Q&A blocks (now full-width — overview
                        sidebar removed entirely per design) ── */}
                 <div className="tlp-ovw-main">
-                  <h2 className="tlp-ovw-title">{view.companyName} overview</h2>
+                  <h2 className="tlp-ovw-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faCircleInfo} /></span>{view.companyName} overview</h2>
                   {isPreview && (
                     <div className="tlp-ovw-verify">
                       <span className="tlp-verify-avatars" aria-hidden="true">
@@ -2212,7 +2257,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             {(view.realScreenshots || isPreview) && (
             <section id="ui" className="tlp-card">
               <div className="tlp-ui-head-row">
-                <h2 className="tlp-sec-title">{view.companyName}&apos;s user interface</h2>
+                <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faImage} /></span>{view.companyName}&apos;s user interface</h2>
                 {isPreview && (
                   <div className="tlp-ui-head">
                     <span className="tlp-ui-ease">Ease of use:</span>
@@ -2227,47 +2272,77 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 )}
               </div>
 
-              <div
-                className="tlp-car"
-                role="region"
-                aria-roledescription="carousel"
-                aria-label="User interface screenshots"
-                tabIndex={0}
-                onKeyDown={uiKeyDown}
-              >
-                <div className="tlp-car-stage">
-                  <button type="button" className="tlp-car-arrow tlp-car-arrow--prev" onClick={uiPrev} aria-label="Previous">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
-                  </button>
-
-                  {/* Track — each slide is 50% wide so 2 are always visible */}
-                  <div className="tlp-car-track" style={{ transform: `translateX(-${uiSlide * 50}%)` }}>
+              <div className="tlp-shots">
+                <button
+                  type="button"
+                  className="tlp-shots-hero"
+                  onClick={() => setLightboxIdx(featuredIdx)}
+                  aria-label={`View screenshot ${featuredIdx + 1} larger`}
+                >
+                  <img src={UI_IMAGES[featuredIdx] ?? UI_IMAGES[0]} alt={`${view.companyName} screenshot ${featuredIdx + 1}`} />
+                  <span className="tlp-shots-zoom" aria-hidden="true"><FontAwesomeIcon icon={faExpand} /></span>
+                </button>
+                {UI_IMAGES.length > 1 && (
+                  <div className="tlp-shots-thumbs" role="tablist" aria-label="Screenshots">
                     {UI_IMAGES.map((src, i) => (
-                      <div key={i} className="tlp-car-slide tlp-car-slide--img">
-                        <img src={src} alt={`Screenshot ${i + 1}`} loading="lazy" className="tlp-car-img" />
-                      </div>
+                      <button
+                        key={i}
+                        type="button"
+                        role="tab"
+                        aria-selected={i === featuredIdx}
+                        className={`tlp-shots-thumb${i === featuredIdx ? ' is-active' : ''}`}
+                        onClick={() => setFeaturedIdx(i)}
+                        aria-label={`Show screenshot ${i + 1}`}
+                      >
+                        <img src={src} alt="" loading="lazy" />
+                      </button>
                     ))}
                   </div>
-
-                  <button type="button" className="tlp-car-arrow tlp-car-arrow--next" onClick={uiNext} aria-label="Next">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 6l6 6-6 6" /></svg>
-                  </button>
-                </div>
-
-                <div className="tlp-car-dots" role="tablist" aria-label="Position">
-                  {Array.from({ length: uiSlideCount }).map((_, i) => (
-                    <button
-                      key={i}
-                      type="button"
-                      role="tab"
-                      aria-selected={i === uiSlide}
-                      className={`tlp-car-dot ${i === uiSlide ? 'is-active' : ''}`}
-                      onClick={() => setUiSlide(i)}
-                      aria-label={`Position ${i + 1}`}
-                    />
-                  ))}
-                </div>
+                )}
               </div>
+
+              {lightboxIdx !== null && (
+                <div
+                  className="tlp-lb"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="Screenshot viewer"
+                  onClick={() => setLightboxIdx(null)}
+                >
+                  <button type="button" className="tlp-lb-close" onClick={() => setLightboxIdx(null)} aria-label="Close viewer">
+                    <FontAwesomeIcon icon={faXmark} />
+                  </button>
+                  {UI_IMAGES.length > 1 && (
+                    <button
+                      type="button"
+                      className="tlp-lb-arrow tlp-lb-arrow--prev"
+                      onClick={(e) => { e.stopPropagation(); lbPrev() }}
+                      aria-label="Previous screenshot"
+                    >
+                      <FontAwesomeIcon icon={faChevronLeft} />
+                    </button>
+                  )}
+                  <img
+                    className="tlp-lb-img"
+                    src={UI_IMAGES[lightboxIdx]}
+                    alt={`${view.companyName} screenshot ${lightboxIdx + 1}`}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                  {UI_IMAGES.length > 1 && (
+                    <button
+                      type="button"
+                      className="tlp-lb-arrow tlp-lb-arrow--next"
+                      onClick={(e) => { e.stopPropagation(); lbNext() }}
+                      aria-label="Next screenshot"
+                    >
+                      <FontAwesomeIcon icon={faChevronRight} />
+                    </button>
+                  )}
+                  {UI_IMAGES.length > 1 && (
+                    <div className="tlp-lb-count">{lightboxIdx + 1} / {UI_IMAGES.length}</div>
+                  )}
+                </div>
+              )}
             </section>
             )}
 
@@ -2278,7 +2353,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
               <section id="insights" className="tlp-card">
                 {!isPreview && (
                   <>
-                    <h2 className="tlp-sec-title">{view.companyName} reviews and insights</h2>
+                    <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faStar} /></span>{view.companyName} reviews and insights</h2>
                     <div className="tlp-in-grid">
                       {/* ── Left sidebar: overall rating + insights placeholder ── */}
                       <aside className="tlp-in-left">
@@ -2339,21 +2414,35 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                           </>
                         ) : (
                           <div className="tlp-in-empty">
-                            <span className="tlp-in-empty-ico" aria-hidden="true">
-                              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-                              </svg>
-                            </span>
-                            <h4 className="tlp-in-empty-title">No reviews yet for {view.companyName}</h4>
+                            <img className="tlp-in-empty-art" src="/illustrations/no-reviews.png" alt="" />
+                            <h4 className="tlp-in-empty-title">Be the first to review {view.companyName}</h4>
                             <p className="tlp-in-empty-sub">
-                              Be the first to share your experience — your review will appear here and help other buyers compare.
+                              No reviews yet. Share your experience to help others decide. It only takes a minute.
                             </p>
+                            <div
+                              className="tlp-in-empty-stars"
+                              role="button"
+                              tabIndex={0}
+                              aria-label={`Write a review for ${view.companyName}`}
+                              onClick={openReview}
+                              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openReview() } }}
+                            >
+                              {[0, 1, 2, 3, 4].map((i) => (
+                                <svg key={i} className="tlp-in-empty-star" viewBox="0 0 24 24" width="30" height="30" aria-hidden="true">
+                                  <path d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
+                                </svg>
+                              ))}
+                            </div>
                             <button
                               type="button"
                               className="tlp-in-empty-cta"
                               onClick={openReview}
                             >
-                              Write the first review
+                              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M12 20h9" />
+                                <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+                              </svg>
+                              Write a review
                             </button>
                           </div>
                         )}
@@ -2364,7 +2453,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
 
                 {/* Sample-only chrome below — only renders in preview mode. */}
                 {isPreview && (<>
-              <h2 className="tlp-sec-title">{view.companyName} pros, cons and reviews insights</h2>
+              <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faScaleBalanced} /></span>{view.companyName} pros, cons and reviews insights</h2>
 
               <div className="tlp-in-grid">
                 {/* ── Left sidebar ── */}
@@ -2529,7 +2618,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             {(view.realIndustries || view.realUseCases || view.realCompanySizes || isPreview) && (
             <section id="who-uses" className="tlp-card">
               <div className="tlp-wu-head">
-                <h2 className="tlp-sec-title">Who uses {view.companyName}?</h2>
+                <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faUsers} /></span>Who uses {view.companyName}?</h2>
                 {isPreview && (
                   <div className="tlp-wu-meta">
                     Based on {reviewsCount.toLocaleString()} verified user reviews.{' '}
@@ -2553,24 +2642,25 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 const inds        = (view.realIndustries || []).slice(0, 8)
                   .map((label, idx) => ({ label, color: TEAL_PALETTE[idx % TEAL_PALETTE.length] }))
                 const ucs         = (view.realUseCases || [])
-                const ucsTop5     = ucs.slice(0, 5)
-                  .map((label, idx) => ({ label, color: TEAL_PALETTE[idx] }))
                 const diamondSlots = ['tlp-wu-d--big', 'tlp-wu-d--top', 'tlp-wu-d--rt', 'tlp-wu-d--bot', 'tlp-wu-d--tr']
                 return (
                   <div className="tlp-wu-grid">
                     {/* ── Column 1: Company size bars ── */}
                     <div className="tlp-wu-col">
-                      <h3 className="tlp-wu-h3">Company size</h3>
+                      <h3 className="tlp-wu-h3"><span className="tlp-wu-h3-ico"><FontAwesomeIcon icon={faUsers} /></span>Company size</h3>
                       {sizesPicked.length > 0 ? (
-                        <div className="tlp-wu-bars">
-                          {SIZE_BARS.map(({ label, match }) => {
+                        <div className="tlp-wu-sizes">
+                          {SIZE_BARS.map(({ label, match }, idx) => {
                             const picked = sizesPicked.some(s => s.startsWith(match))
+                            const tierImg = ['/illustrations/size-small.png', '/illustrations/size-mid.png', '/illustrations/size-enterprise.png'][idx]
                             return (
-                              <div key={label} className={`tlp-wu-bar ${picked ? '' : 'is-faded'}`}>
-                                <div className="tlp-wu-bar-track">
-                                  <div className="tlp-wu-bar-fill" style={{ height: picked ? '100%' : '12%' }} />
-                                </div>
-                                <div className="tlp-wu-bar-label">{label}</div>
+                              <div
+                                key={label}
+                                className={`tlp-wu-size ${picked ? 'is-on' : 'is-off'}`}
+                                style={{ '--d': `${idx * 90}ms` } as React.CSSProperties}
+                              >
+                                <span className="tlp-wu-size-img"><img src={tierImg} alt="" loading="lazy" /></span>
+                                <span className="tlp-wu-size-label">{label}</span>
                               </div>
                             )
                           })}
@@ -2582,7 +2672,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
 
                     {/* ── Column 2: Industries donut (equal-share slices) ── */}
                     <div className="tlp-wu-col">
-                      <h3 className="tlp-wu-h3">Industries</h3>
+                      <h3 className="tlp-wu-h3"><span className="tlp-wu-h3-ico"><FontAwesomeIcon icon={faLayerGroup} /></span>Industries</h3>
                       {inds.length > 0 ? (() => {
                         const total  = inds.length
                         const r      = 52
@@ -2616,11 +2706,16 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                                   )
                                 })}
                               </svg>
-                              {industryHover !== null && (
-                                <div className="tlp-wu-tooltip" aria-hidden="true">
-                                  {inds[industryHover].label}
-                                </div>
-                              )}
+                              <div className="tlp-wu-donut-center" aria-hidden="true">
+                                {industryHover !== null ? (
+                                  <span className="tlp-wu-donut-center-name">{inds[industryHover].label}</span>
+                                ) : (
+                                  <>
+                                    <span className="tlp-wu-donut-center-num">{inds.length}</span>
+                                    <span className="tlp-wu-donut-center-lbl">{inds.length === 1 ? 'industry' : 'industries'}</span>
+                                  </>
+                                )}
+                              </div>
                             </div>
                             <ul className="tlp-wu-legend">
                               {inds.map((i, idx) => (
@@ -2643,26 +2738,19 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                     </div>
 
                     {/* ── Column 3: Use cases diamond cluster ── */}
-                    <div className="tlp-wu-col">
-                      <h3 className="tlp-wu-h3">Use cases</h3>
+                    <div className="tlp-wu-col tlp-wu-fullspan">
+                      <h3 className="tlp-wu-h3"><span className="tlp-wu-h3-ico"><FontAwesomeIcon icon={faListCheck} /></span>Use cases</h3>
                       {ucs.length > 0 ? (
                         <div className="tlp-wu-uc-wrap">
                           <div className="tlp-wu-diamonds" aria-hidden="true">
-                            {ucsTop5.map((u, idx) => (
-                              <span
-                                key={u.label}
-                                className={`tlp-wu-d ${diamondSlots[idx]}`}
-                                style={{ background: u.color }}
-                              />
+                            {ucs.slice(0, 5).map((u, idx) => (
+                              <span key={u} className={`tlp-wu-d ${diamondSlots[idx]}`} style={{ background: TEAL_PALETTE[idx] }} />
                             ))}
                           </div>
-                          <ul className="tlp-wu-legend">
+                          <ul className="tlp-wu-legend tlp-wu-uc-list">
                             {ucs.map((u, idx) => (
                               <li key={u}>
-                                <span
-                                  className="tlp-wu-dot tlp-wu-dot--sq"
-                                  style={{ background: idx < 5 ? TEAL_PALETTE[idx] : '#9CA3AF' }}
-                                />
+                                <span className="tlp-wu-dot tlp-wu-dot--sq" style={{ background: idx < 5 ? TEAL_PALETTE[idx] : '#9CA3AF' }} />
                                 <span className="tlp-wu-lbl">{u}</span>
                               </li>
                             ))}
@@ -2681,24 +2769,22 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
 
               <div className="tlp-wu-grid">
 
-                {/* ── Column 1: Company size (vertical capsule bars) ── */}
+                {/* ── Column 1: Company size (tier cards) ── */}
                 <div className="tlp-wu-col">
-                  <h3 className="tlp-wu-h3">Company size</h3>
-                  <div className="tlp-wu-bars">
-                    {COMPANY_SIZE.map(c => (
-                      <div key={c.label} className="tlp-wu-bar">
-                        <div className="tlp-wu-bar-track">
-                          <div className="tlp-wu-bar-fill" style={{ height: `${c.pct}%` }} />
-                        </div>
-                        <div className="tlp-wu-bar-label">{c.label}</div>
+                  <h3 className="tlp-wu-h3"><span className="tlp-wu-h3-ico"><FontAwesomeIcon icon={faUsers} /></span>Company size</h3>
+                  <div className="tlp-wu-sizes">
+                    {COMPANY_SIZE.map((c, idx) => (
+                      <div key={c.label} className="tlp-wu-size is-on" style={{ '--d': `${idx * 90}ms` } as React.CSSProperties}>
+                        <span className="tlp-wu-size-img"><img src={['/illustrations/size-small.png', '/illustrations/size-mid.png', '/illustrations/size-enterprise.png'][idx] || '/illustrations/size-mid.png'} alt="" loading="lazy" /></span>
+                        <span className="tlp-wu-size-label">{c.label}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* ── Column 2: Industries (teal-shade donut + legend, hover-driven tooltip) ── */}
+                {/* ── Column 2: Industries (teal-shade donut + legend + center label) ── */}
                 <div className="tlp-wu-col">
-                  <h3 className="tlp-wu-h3">Industries</h3>
+                  <h3 className="tlp-wu-h3"><span className="tlp-wu-h3-ico"><FontAwesomeIcon icon={faLayerGroup} /></span>Industries</h3>
                   <div className="tlp-wu-donut-wrap">
                     <div className="tlp-wu-donut-box">
                       <svg viewBox="0 0 140 140" className="tlp-wu-donut">
@@ -2734,11 +2820,16 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                           })
                         })()}
                       </svg>
-                      {industryHover !== null && (
-                        <div className="tlp-wu-tooltip" aria-hidden="true">
-                          {INDUSTRY[industryHover].value}% ({INDUSTRY[industryHover].reviews.toLocaleString()} reviews)
-                        </div>
-                      )}
+                      <div className="tlp-wu-donut-center" aria-hidden="true">
+                        {industryHover !== null ? (
+                          <span className="tlp-wu-donut-center-name">{INDUSTRY[industryHover].label}</span>
+                        ) : (
+                          <>
+                            <span className="tlp-wu-donut-center-num">{INDUSTRY.length}</span>
+                            <span className="tlp-wu-donut-center-lbl">industries</span>
+                          </>
+                        )}
+                      </div>
                     </div>
                     <ul className="tlp-wu-legend">
                       {INDUSTRY.map((i, idx) => (
@@ -2756,9 +2847,9 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                   </div>
                 </div>
 
-                {/* ── Column 3: Use cases (diamond cluster + legend) ── */}
-                <div className="tlp-wu-col">
-                  <h3 className="tlp-wu-h3">Use cases</h3>
+                {/* ── Column 3: Use cases (animated numbered cards) ── */}
+                <div className="tlp-wu-col tlp-wu-fullspan">
+                  <h3 className="tlp-wu-h3"><span className="tlp-wu-h3-ico"><FontAwesomeIcon icon={faListCheck} /></span>Use cases</h3>
                   <div className="tlp-wu-uc-wrap">
                     <div className="tlp-wu-diamonds" aria-hidden="true">
                       <span className="tlp-wu-d tlp-wu-d--big"  style={{ background: USE_CASES[0].color }} />
@@ -2767,7 +2858,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                       <span className="tlp-wu-d tlp-wu-d--bot"  style={{ background: USE_CASES[1].color }} />
                       <span className="tlp-wu-d tlp-wu-d--tr"   style={{ background: USE_CASES[3].color }} />
                     </div>
-                    <ul className="tlp-wu-legend">
+                    <ul className="tlp-wu-legend tlp-wu-uc-list">
                       {USE_CASES.map(u => (
                         <li key={u.label}>
                           <span className="tlp-wu-dot tlp-wu-dot--sq" style={{ background: u.color }} />
@@ -2786,7 +2877,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             {/* ========== KEY FEATURES — always render section (empty-state when
                 neither realKeyFeatures nor realFeatures is provided). ========== */}
             <section id="key-features" className="tlp-sec tlp-kf-sec">
-              <h2 className="tlp-sec-title tlp-kf-title">{view.companyName}&apos;s key features</h2>
+              <h2 className="tlp-sec-title tlp-kf-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faListCheck} /></span>{view.companyName}&apos;s key features</h2>
 
               {isPreview ? (
                 <p className="tlp-kf-intro">
@@ -2831,24 +2922,29 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 const visible = keyFeaturesExpanded ? list : list.slice(0, KEY_FEATURES_VISIBLE)
                 return (
                   <>
-                    <dl className="tlp-kf-list">
-                      {visible.map(f => (
-                        <div key={f.name} className="tlp-kf-row">
-                          <dt className="tlp-kf-name">{f.name}</dt>
-                          <dd className="tlp-kf-body">
-                            {f.desc && <p className="tlp-kf-desc">{swap(f.desc)}</p>}
+                    <div className="tlp-kf-grid">
+                      {visible.map((f, i) => (
+                        <div
+                          key={f.name}
+                          className="tlp-kf-card"
+                          style={{ '--d': `${i * 45}ms` } as React.CSSProperties}
+                        >
+                          <span className="tlp-kf-card-ico" aria-hidden="true"><FontAwesomeIcon icon={iconForFeature(f.name)} /></span>
+                          <div className="tlp-kf-card-body">
+                            <div className="tlp-kf-card-name">{f.name}</div>
+                            {f.desc && <p className="tlp-kf-card-desc">{swap(f.desc)}</p>}
                             {f.rating > 0 && (
-                              <span className="tlp-kf-rate">
+                              <span className="tlp-kf-card-rate">
                                 <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true">
                                   <path fill="#FFA91C" d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.5 6.8L12 17l-6.2 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
                                 </svg>
                                 <span>{f.rating.toFixed(1)}</span>
                               </span>
                             )}
-                          </dd>
+                          </div>
                         </div>
                       ))}
-                    </dl>
+                    </div>
                     {list.length > KEY_FEATURES_VISIBLE && (
                       <button
                         type="button"
@@ -2995,7 +3091,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 falls back to the rich ALTERNATIVES sample in preview mode. ========== */}
             {(siblings.length > 0 || isPreview) && (
             <section id="alternatives" className="tlp-sec">
-              <h2 className="tlp-sec-title">{view.companyName} alternatives</h2>
+              <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faRightLeft} /></span>{view.companyName} alternatives</h2>
 
               {/* Real mode: rich card grid matching the test-page visual. Uses
                   ONLY submitter data — no fake ratings, no fake free-trial flags. */}
@@ -3195,7 +3291,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             {/* ========== PRICING ========== */}
             {(view.realPricing || isPreview) && (
             <section id="pricing" className="tlp-sec">
-              <h2 className="tlp-sec-title">{view.companyName} pricing</h2>
+              <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faTags} /></span>{view.companyName} pricing</h2>
 
               {isPreview && (
                 <div className="tlp-price-meta">
@@ -3438,7 +3534,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             {(view.realIntegrations || isPreview) && (
             <section id="integrations" className="tlp-sec">
               <div className="tlp-int-title-row">
-                <h2 className="tlp-sec-title" style={{ margin: 0 }}>
+                <h2 className="tlp-sec-title" style={{ margin: 0 }}><span className="tlp-sec-ico"><FontAwesomeIcon icon={faPuzzlePiece} /></span>
                   {view.companyName} integrations
                   {view.realIntegrations ? ` (${view.realIntegrations.length})` : (isPreview ? ' (2,089)' : '')}
                 </h2>
@@ -3591,7 +3687,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 BELOW: review-snippet quote cards with "Highly Relevant" tag
                 ============================================================ */}
             <section id="support" className="tlp-sec">
-              <h2 className="tlp-sec-title">{view.companyName} customer support</h2>
+              <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faHeadset} /></span>{view.companyName} customer support</h2>
 
               <div className="tlp-cs-grid">
                 {/* ── LEFT column ── */}
@@ -3800,7 +3896,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             {/* ========== FAQS — always render section. Empty state when the
                 owner has not added any. ========== */}
             <section id="faqs" className="tlp-sec">
-              <h2 className="tlp-sec-title">{view.companyName} FAQs</h2>
+              <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faCircleQuestion} /></span>{view.companyName} FAQs</h2>
               <p className="tlp-sec-lead">Here are some of the questions we get asked most often.</p>
 
               {(() => {
@@ -3879,7 +3975,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 Clean two-row card: logos + TrendIcon, then names + "vs". ========== */}
             {(siblings.length > 0 || isPreview) && (
             <section id="compare" className="tlp-sec tlp-cmp-sec">
-              <h2 className="tlp-sec-title">Popular comparisons with {view.companyName}</h2>
+              <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faCodeCompare} /></span>Popular comparisons with {view.companyName}</h2>
 
               <div className="tlp-cmp-grid">
                 {!isPreview && siblings.length > 0
@@ -3945,7 +4041,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             {(siblings.length > 4 || isPreview) && (
             <section className="tlp-sec tlp-cav-sec">
               <div className="tlp-cav-head">
-                <h2 className="tlp-sec-title">Customers also viewed</h2>
+                <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faEye} /></span>Customers also viewed</h2>
                 <p className="tlp-cav-sub">Popular tools that businesses choose alongside {view.companyName}</p>
               </div>
 
@@ -4055,7 +4151,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
               return (
                 <section className="tlp-sec tlp-rc-sec">
                   <h2 className="tlp-sec-title tlp-rc-title">
-                    <span className="tlp-rc-accent" aria-hidden="true" />
+                    <span className="tlp-sec-ico"><FontAwesomeIcon icon={faLayerGroup} /></span>
                     Related categories
                   </h2>
                   <div className="tlp-rc-grid">
