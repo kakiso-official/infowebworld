@@ -1,0 +1,757 @@
+[
+  {
+    "name": "Olive Garden",
+    "slug": "olive-garden",
+    "category_slug": "american-restaurants",
+    "vertical": "food",
+    "listing_mode": "company",
+    "website": "https://www.olivegarden.com",
+    "email": "info@olivegarden.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Orlando",
+    "state": "FL",
+    "hq_location": "Orlando, FL, US",
+    "tagline": "Italian-American casual dining - unlimited breadsticks, soups, and salads since 1982.",
+    "description": "Olive Garden is the largest Italian-themed full-service casual dining chain in the United States, with over 900 locations nationwide. Founded in Orlando, Florida in 1982 and part of Darden Restaurants since 1995, the chain is known for its unlimited breadsticks, soups, and salads served with every meal. The menu features a wide range of Italian-American pasta, seafood, and chicken dishes prepared fresh daily.",
+    "founded_year": 1982,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/olivegarden",
+    "twitter": "https://twitter.com/olivegarden",
+    "header_tags": ["Italian-American Cuisine", "Casual Dining", "Family Friendly", "Dine-In & Takeout"],
+    "languages": ["English", "Spanish"],
+    "faqs": [
+      {
+        "question": "Does Olive Garden offer takeout and delivery?",
+        "answer": "Yes, Olive Garden offers curbside takeout and delivery through their website and app, including family-style meals and catering options."
+      },
+      {
+        "question": "Are reservations accepted at Olive Garden?",
+        "answer": "Olive Garden accepts reservations for large parties. Walk-ins are welcome for standard dining."
+      },
+      {
+        "question": "Does Olive Garden have vegetarian options?",
+        "answer": "Yes, Olive Garden offers several vegetarian pasta and salad options, including the Eggplant Parmigiana and cheese ravioli dishes."
+      },
+      {
+        "question": "Does Olive Garden offer a lunch menu?",
+        "answer": "Yes, lunch specials are available Monday through Friday before 3:00 PM with smaller portions at reduced prices starting around $13-$15."
+      },
+      {
+        "question": "Is there parking at Olive Garden locations?",
+        "answer": "Most Olive Garden locations are in shopping centers or standalone buildings with ample free parking available."
+      }
+    ],
+    "source_urls": [
+      "https://en.wikipedia.org/wiki/Olive_Garden",
+      "https://www.olivegarden.com",
+      "https://usafoodjournal.com/olive-garden-menu-with-prices"
+    ],
+    "facebook": "https://www.facebook.com/OliveGarden/",
+    "is_hiring": 0,
+    "lb_price_range": "$$",
+    "lb_hours": [
+      { "day": "Mon", "time": "11:00 AM - 10:00 PM", "closed": false },
+      { "day": "Tue", "time": "11:00 AM - 10:00 PM", "closed": false },
+      { "day": "Wed", "time": "11:00 AM - 10:00 PM", "closed": false },
+      { "day": "Thu", "time": "11:00 AM - 10:00 PM", "closed": false },
+      { "day": "Fri", "time": "11:00 AM - 11:00 PM", "closed": false },
+      { "day": "Sat", "time": "11:00 AM - 11:00 PM", "closed": false },
+      { "day": "Sun", "time": "11:00 AM - 10:00 PM", "closed": false }
+    ],
+    "lb_amenities": ["takeout", "delivery", "credit_cards", "wifi", "vegetarian", "outdoor_seating", "reservations", "parking", "wheelchair"],
+    "lb_menu": [
+      { "name": "Chicken Alfredo", "price": "$20.49", "photo": "" },
+      { "name": "Lasagna Classico", "price": "$18.49", "photo": "" },
+      { "name": "Tour of Italy (Chicken Parmigiana, Lasagna, Fettuccine Alfredo)", "price": "$23.99", "photo": "" },
+      { "name": "Shrimp Scampi", "price": "$22.49", "photo": "" },
+      { "name": "Never Ending Pasta Bowl", "price": "$14.99", "photo": "" },
+      { "name": "Unlimited Soup, Salad & Breadsticks", "price": "$13.49", "photo": "" },
+      { "name": "Eggplant Parmigiana", "price": "$18.49", "photo": "" }
+    ],
+    "lb_photos": [],
+    "lb_videos": [],
+    "lb_lat": null,
+    "lb_lng": null
+  },
+  {
+    "name": "Roto-Rooter",
+    "slug": "roto-rooter",
+    "category_slug": "plumbers",
+    "vertical": "home-services",
+    "listing_mode": "company",
+    "website": "https://www.rotorooter.com",
+    "email": "info@rotorooter.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Cincinnati",
+    "state": "OH",
+    "hq_location": "Cincinnati, OH, US",
+    "tagline": "North America's largest plumbing and drain service - available 24/7/365 since 1935.",
+    "description": "Roto-Rooter is North America's largest provider of plumbing, drain cleaning, and water damage cleanup services, operating over 600 service locations across the US and Canada. Founded in 1935 in Des Moines, Iowa, the company pioneered the mechanical drain-cleaning machine and has since expanded into full-service plumbing repair, sewer inspection, and water damage restoration. A subsidiary of Chemed Corporation, Roto-Rooter dispatches licensed technicians 24 hours a day, 7 days a week with no extra charge for nights, weekends, or holidays.",
+    "founded_year": 1935,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/roto-rooter",
+    "twitter": "https://twitter.com/rotorooter",
+    "header_tags": ["Plumbing Repair", "Drain Cleaning", "Water Damage Cleanup", "Emergency Service", "24/7 Availability"],
+    "languages": ["English", "Spanish"],
+    "faqs": [
+      {
+        "question": "Is Roto-Rooter available for emergencies around the clock?",
+        "answer": "Yes, Roto-Rooter offers 24/7/365 emergency plumbing service with no extra charge for nights, weekends, or holidays, and typically dispatches a technician within two hours."
+      },
+      {
+        "question": "Does Roto-Rooter provide free estimates?",
+        "answer": "Roto-Rooter provides upfront pricing before work begins. Dispatch fees ($70-$200 depending on location) may apply and are often deducted if you proceed with the work."
+      },
+      {
+        "question": "What types of drains can Roto-Rooter service?",
+        "answer": "Roto-Rooter clears kitchen sinks, bathroom drains, floor drains, main sewer lines, and conducts camera inspections to pinpoint the source of clogs."
+      },
+      {
+        "question": "Does Roto-Rooter handle water damage cleanup?",
+        "answer": "Yes, Roto-Rooter offers water damage cleanup and restoration services in addition to standard plumbing and drain cleaning."
+      },
+      {
+        "question": "Are Roto-Rooter technicians licensed and insured?",
+        "answer": "Roto-Rooter employs licensed, insured plumbers and service technicians in all markets it serves across North America."
+      }
+    ],
+    "source_urls": [
+      "https://en.wikipedia.org/wiki/Roto-Rooter",
+      "https://www.rotorooter.com/about-us/",
+      "https://homeguide.com/costs/roto-rooter-prices"
+    ],
+    "facebook": null,
+    "is_hiring": 0,
+    "lb_price_range": "$$",
+    "lb_hours": [
+      { "day": "Mon", "time": "Open 24 Hours", "closed": false },
+      { "day": "Tue", "time": "Open 24 Hours", "closed": false },
+      { "day": "Wed", "time": "Open 24 Hours", "closed": false },
+      { "day": "Thu", "time": "Open 24 Hours", "closed": false },
+      { "day": "Fri", "time": "Open 24 Hours", "closed": false },
+      { "day": "Sat", "time": "Open 24 Hours", "closed": false },
+      { "day": "Sun", "time": "Open 24 Hours", "closed": false }
+    ],
+    "lb_amenities": ["free_estimates", "licensed_insured", "emergency_service", "financing", "warranty", "credit_cards"],
+    "lb_menu": [
+      { "name": "Drain Cleaning (Sink or Tub)", "price": "$180 - $450", "photo": "" },
+      { "name": "Main Sewer Line Cleaning", "price": "$350 - $600", "photo": "" },
+      { "name": "Sewer Camera Inspection", "price": "$295 - $350", "photo": "" },
+      { "name": "Hydro Jetting", "price": "$500 - $900", "photo": "" },
+      { "name": "Water Heater Repair or Replacement", "price": "$$", "photo": "" },
+      { "name": "Water Damage Cleanup", "price": "$$", "photo": "" },
+      { "name": "Emergency Plumbing Service", "price": "$$", "photo": "" }
+    ],
+    "lb_photos": [],
+    "lb_videos": [],
+    "lb_lat": null,
+    "lb_lng": null
+  },
+  {
+    "name": "Mr. Electric",
+    "slug": "mr-electric",
+    "category_slug": "electricians",
+    "vertical": "home-services",
+    "listing_mode": "company",
+    "website": "https://www.mrelectric.com",
+    "email": "info@mrelectric.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Waco",
+    "state": "TX",
+    "hq_location": "Waco, TX, US",
+    "tagline": "Residential and commercial electrical services from licensed technicians - upfront pricing, no surprises.",
+    "description": "Mr. Electric is a global franchise network of licensed electricians providing residential and commercial electrical installation and repair services at approximately 200 locations across North America. Founded in 1994 and headquartered in Waco, Texas, Mr. Electric is part of Neighborly, the world's largest home services franchise group. The company offers upfront flat-rate pricing, 24/7 emergency dispatch, and guaranteed workmanship on every job.",
+    "founded_year": 1994,
+    "team_size": "51-200",
+    "linkedin": "https://www.linkedin.com/company/mr--electric",
+    "twitter": "https://twitter.com/MrElectric",
+    "header_tags": ["Licensed Electricians", "Residential & Commercial", "Emergency Service", "Upfront Pricing"],
+    "languages": ["English"],
+    "faqs": [
+      {
+        "question": "Does Mr. Electric offer 24-hour emergency electrical service?",
+        "answer": "Yes, Mr. Electric dispatches electricians 24/7/365 for electrical emergencies, including power outages, tripped breakers, and safety hazards."
+      },
+      {
+        "question": "Does Mr. Electric provide free estimates?",
+        "answer": "Mr. Electric provides upfront flat-rate quotes before any work begins so customers know the price before they agree to service."
+      },
+      {
+        "question": "Are Mr. Electric technicians licensed?",
+        "answer": "All Mr. Electric technicians are fully licensed and insured in their respective service areas, meeting all local electrical code requirements."
+      },
+      {
+        "question": "What residential electrical services does Mr. Electric offer?",
+        "answer": "Services include panel upgrades, outlet and switch installation, ceiling fan installation, generator hookups, EV charger installation, and whole-home electrical inspections."
+      },
+      {
+        "question": "Does Mr. Electric handle commercial electrical work?",
+        "answer": "Yes, Mr. Electric serves both residential and commercial clients, including office buildings, retail spaces, and multi-unit properties."
+      }
+    ],
+    "source_urls": [
+      "https://www.mrelectric.com",
+      "https://www.entrepreneur.com/franchises/directory/mr-electric/282603",
+      "https://www.neighborlybrands.com/press-center/news/2016/mr-electric-sup-sup-welcomes-first-female-franch/"
+    ],
+    "facebook": null,
+    "is_hiring": 0,
+    "lb_price_range": "$$",
+    "lb_hours": [
+      { "day": "Mon", "time": "7:00 AM - 6:00 PM", "closed": false },
+      { "day": "Tue", "time": "7:00 AM - 6:00 PM", "closed": false },
+      { "day": "Wed", "time": "7:00 AM - 6:00 PM", "closed": false },
+      { "day": "Thu", "time": "7:00 AM - 6:00 PM", "closed": false },
+      { "day": "Fri", "time": "7:00 AM - 6:00 PM", "closed": false },
+      { "day": "Sat", "time": "9:00 AM - 3:00 PM", "closed": false },
+      { "day": "Sun", "time": "", "closed": true }
+    ],
+    "lb_amenities": ["free_estimates", "licensed_insured", "emergency_service", "financing", "warranty", "credit_cards"],
+    "lb_menu": [
+      { "name": "Electrical Panel Upgrade", "price": "$$", "photo": "" },
+      { "name": "Outlet or Switch Installation", "price": "$100 - $300", "photo": "" },
+      { "name": "Ceiling Fan Installation", "price": "$$", "photo": "" },
+      { "name": "EV Charger Installation", "price": "$$", "photo": "" },
+      { "name": "Generator Hookup", "price": "$$", "photo": "" },
+      { "name": "Whole-Home Electrical Inspection", "price": "$$", "photo": "" },
+      { "name": "Emergency Electrical Repair", "price": "$$", "photo": "" }
+    ],
+    "lb_photos": [],
+    "lb_videos": [],
+    "lb_lat": null,
+    "lb_lng": null
+  },
+  {
+    "name": "Midas",
+    "slug": "midas",
+    "category_slug": "auto-repair-shops",
+    "vertical": "automotive",
+    "listing_mode": "company",
+    "website": "https://www.midas.com",
+    "email": "info@midas.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Palm Beach Gardens",
+    "state": "FL",
+    "hq_location": "Palm Beach Gardens, FL, US",
+    "tagline": "Full-service auto repair and maintenance from one of the world's largest automotive service chains since 1956.",
+    "description": "Midas is one of the world's largest automotive service providers, with approximately 2,100 franchised and company-owned locations across 13 countries. Founded in 1956 in Macon, Georgia, the chain originally specialized in muffler and exhaust service before expanding to brakes, oil changes, tires, steering, suspension, and fleet maintenance. Midas is now a subsidiary of Mavis Tire Express Services Corp. and offers services for conventional, hybrid, and electric vehicles.",
+    "founded_year": 1956,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/midas-international",
+    "twitter": "https://twitter.com/midas_service",
+    "header_tags": ["Auto Repair", "Brakes & Oil Changes", "Tires & Alignment", "Fleet Service"],
+    "languages": ["English"],
+    "faqs": [
+      {
+        "question": "What services does Midas offer?",
+        "answer": "Midas provides brake repair, oil changes, tire installation and rotation, wheel alignment, exhaust repair, steering and suspension service, AC service, and battery replacement."
+      },
+      {
+        "question": "Does Midas offer free brake inspections?",
+        "answer": "Yes, Midas typically offers complimentary brake inspections and multi-point vehicle checks, with inspection pricing around $19.99 at most locations."
+      },
+      {
+        "question": "Does Midas service electric and hybrid vehicles?",
+        "answer": "Yes, Midas locations have expanded their service capabilities to include hybrid and electric vehicle maintenance and repair."
+      },
+      {
+        "question": "Does Midas offer financing?",
+        "answer": "Yes, Midas partners with several financing providers to offer payment plans on repairs and tire purchases."
+      },
+      {
+        "question": "Does Midas accept walk-ins?",
+        "answer": "Most Midas locations accept walk-ins for routine services like oil changes, though scheduling an appointment is recommended to reduce wait times."
+      }
+    ],
+    "source_urls": [
+      "https://en.wikipedia.org/wiki/Midas_(automotive_service)",
+      "https://www.midas.com/about-midas",
+      "https://automotive-services.pricelisto.com/midas"
+    ],
+    "facebook": null,
+    "is_hiring": 0,
+    "lb_price_range": "$$",
+    "lb_hours": [
+      { "day": "Mon", "time": "7:30 AM - 6:00 PM", "closed": false },
+      { "day": "Tue", "time": "7:30 AM - 6:00 PM", "closed": false },
+      { "day": "Wed", "time": "7:30 AM - 6:00 PM", "closed": false },
+      { "day": "Thu", "time": "7:30 AM - 6:00 PM", "closed": false },
+      { "day": "Fri", "time": "7:30 AM - 6:00 PM", "closed": false },
+      { "day": "Sat", "time": "7:30 AM - 6:00 PM", "closed": false },
+      { "day": "Sun", "time": "", "closed": true }
+    ],
+    "lb_amenities": ["free_estimates", "credit_cards", "financing", "warranty", "wheelchair"],
+    "lb_menu": [
+      { "name": "Conventional Oil Change", "price": "$27 - $30", "photo": "" },
+      { "name": "Full Synthetic Oil Change", "price": "$59.99 - $90", "photo": "" },
+      { "name": "Brake Inspection", "price": "$19.99", "photo": "" },
+      { "name": "Brake Pad Replacement (per axle)", "price": "$100 - $300", "photo": "" },
+      { "name": "Tire Rotation", "price": "$$", "photo": "" },
+      { "name": "Wheel Alignment", "price": "$$", "photo": "" },
+      { "name": "AC Service & Recharge", "price": "$$", "photo": "" }
+    ],
+    "lb_photos": [],
+    "lb_videos": [],
+    "lb_lat": null,
+    "lb_lng": null
+  },
+  {
+    "name": "CarMax",
+    "slug": "carmax",
+    "category_slug": "car-dealerships",
+    "vertical": "automotive",
+    "listing_mode": "company",
+    "website": "https://www.carmax.com",
+    "email": "info@carmax.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Richmond",
+    "state": "VA",
+    "hq_location": "Richmond, VA, US",
+    "tagline": "America's largest used-car retailer - no-haggle pricing and omni-channel buying since 1993.",
+    "description": "CarMax is the largest used-vehicle retailer in the United States, operating 253 locations across 41 states as of 2025. Founded in 1993 as a Circuit City subsidiary and spun off as an independent public company in 2002, CarMax pioneered the no-haggle, fixed-price used-car buying model. The company offers an omni-channel experience - customers can browse online, arrange home delivery, or purchase entirely in store - and provides CarMax Auto Finance for on-the-spot financing.",
+    "founded_year": 1993,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/carmax",
+    "twitter": "https://twitter.com/CarMax",
+    "header_tags": ["Used Car Dealer", "No-Haggle Pricing", "Auto Finance", "Online & In-Store"],
+    "languages": ["English", "Spanish"],
+    "faqs": [
+      {
+        "question": "Does CarMax negotiate on price?",
+        "answer": "No, CarMax operates on a no-haggle, fixed-price model. All vehicles are priced upfront with no additional dealer fees."
+      },
+      {
+        "question": "Can I buy a car from CarMax online?",
+        "answer": "Yes, CarMax offers a fully online purchase experience with home delivery available in many markets, in addition to traditional in-store buying."
+      },
+      {
+        "question": "Does CarMax offer financing?",
+        "answer": "Yes, CarMax Auto Finance provides on-site financing options, and CarMax also works with third-party lenders to offer competitive rates."
+      },
+      {
+        "question": "Can I sell my car to CarMax without buying one?",
+        "answer": "Yes, CarMax will purchase your vehicle whether or not you are buying a car from them, and provides a firm written offer valid for seven days."
+      },
+      {
+        "question": "Does CarMax offer a return policy?",
+        "answer": "CarMax offers a 30-day or 1,500-mile money-back guarantee on all vehicle purchases."
+      }
+    ],
+    "source_urls": [
+      "https://en.wikipedia.org/wiki/CarMax",
+      "https://www.carmax.com",
+      "https://tracxn.com/d/companies/carmax/__P0krXDTABf-aDW7-l895-BWUSqYrIWq8ZAOlNiQa5LM"
+    ],
+    "facebook": "https://www.facebook.com/CarMax",
+    "is_hiring": 0,
+    "lb_price_range": "$$",
+    "lb_hours": [
+      { "day": "Mon", "time": "10:00 AM - 9:00 PM", "closed": false },
+      { "day": "Tue", "time": "10:00 AM - 9:00 PM", "closed": false },
+      { "day": "Wed", "time": "10:00 AM - 9:00 PM", "closed": false },
+      { "day": "Thu", "time": "10:00 AM - 9:00 PM", "closed": false },
+      { "day": "Fri", "time": "10:00 AM - 9:00 PM", "closed": false },
+      { "day": "Sat", "time": "9:00 AM - 9:00 PM", "closed": false },
+      { "day": "Sun", "time": "12:00 PM - 7:00 PM", "closed": false }
+    ],
+    "lb_amenities": ["free_estimates", "credit_cards", "financing", "warranty", "wheelchair"],
+    "lb_menu": [
+      { "name": "Used Vehicle Purchase", "price": "Varies", "photo": "" },
+      { "name": "Vehicle Trade-In Appraisal", "price": "Free", "photo": "" },
+      { "name": "CarMax Auto Finance", "price": "Varies", "photo": "" },
+      { "name": "Extended Protection Plan", "price": "Varies", "photo": "" },
+      { "name": "Home Delivery", "price": "Varies", "photo": "" }
+    ],
+    "lb_photos": [],
+    "lb_videos": [],
+    "lb_lat": null,
+    "lb_lng": null
+  },
+  {
+    "name": "Great Clips",
+    "slug": "great-clips",
+    "category_slug": "hair-salons-2",
+    "vertical": "beauty",
+    "listing_mode": "company",
+    "website": "https://www.greatclips.com",
+    "email": "info@greatclips.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Minneapolis",
+    "state": "MN",
+    "hq_location": "Minneapolis, MN, US",
+    "tagline": "Affordable, no-appointment haircuts at over 4,500 locations across the US and Canada since 1982.",
+    "description": "Great Clips is the world's largest hair salon brand, with over 4,530 franchise locations across the United States and Canada. Founded in Minneapolis, Minnesota in 1982, the chain built its model around walk-in, no-appointment haircuts at accessible prices. Great Clips offers online check-in to reduce wait times and uses its Clip Notes system to remember each customer's preferred cut. The chain employs approximately 30,000 stylists system-wide.",
+    "founded_year": 1982,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/greatclips",
+    "twitter": "https://twitter.com/greatclips",
+    "header_tags": ["Walk-In Haircuts", "No Appointment Needed", "Affordable Salon", "Online Check-In"],
+    "languages": ["English"],
+    "faqs": [
+      {
+        "question": "Do I need an appointment at Great Clips?",
+        "answer": "No appointment is needed at Great Clips. You can walk in anytime or check in online to get in line before you arrive."
+      },
+      {
+        "question": "How much does a haircut cost at Great Clips?",
+        "answer": "Adult haircuts typically range from $15 to $19, senior cuts from $13 to $17, and children's haircuts from $13 to $16. Prices vary by location."
+      },
+      {
+        "question": "Does Great Clips offer additional services beyond haircuts?",
+        "answer": "Great Clips offers bang trims, neck trims, beard trims, and shampoo services. Not all locations offer perms or color."
+      },
+      {
+        "question": "Does Great Clips use a loyalty or rewards program?",
+        "answer": "Great Clips uses a Clip Notes system to record your preferred cut so any stylist at any location can replicate it on future visits."
+      },
+      {
+        "question": "Can I check current wait times before visiting?",
+        "answer": "Yes, the Great Clips website and app show live estimated wait times for locations near you, and you can join the online queue before you arrive."
+      }
+    ],
+    "source_urls": [
+      "https://en.wikipedia.org/wiki/Great_Clips",
+      "https://www.greatclips.com",
+      "https://youprobablyneedahaircut.com/great-clips-prices/"
+    ],
+    "facebook": "https://www.facebook.com/GreatClips/",
+    "is_hiring": 0,
+    "lb_price_range": "$",
+    "lb_hours": [
+      { "day": "Mon", "time": "9:00 AM - 8:00 PM", "closed": false },
+      { "day": "Tue", "time": "9:00 AM - 8:00 PM", "closed": false },
+      { "day": "Wed", "time": "9:00 AM - 8:00 PM", "closed": false },
+      { "day": "Thu", "time": "9:00 AM - 8:00 PM", "closed": false },
+      { "day": "Fri", "time": "9:00 AM - 8:00 PM", "closed": false },
+      { "day": "Sat", "time": "9:00 AM - 6:00 PM", "closed": false },
+      { "day": "Sun", "time": "10:00 AM - 5:00 PM", "closed": false }
+    ],
+    "lb_amenities": ["walk_ins", "credit_cards", "wifi", "parking", "wheelchair", "gift_cards"],
+    "lb_menu": [
+      { "name": "Adult Haircut", "price": "$15 - $19", "photo": "" },
+      { "name": "Senior Haircut", "price": "$13 - $17", "photo": "" },
+      { "name": "Child Haircut", "price": "$13 - $16", "photo": "" },
+      { "name": "Bang Trim", "price": "$7 - $10", "photo": "" },
+      { "name": "Beard Trim", "price": "$7 - $10", "photo": "" },
+      { "name": "Shampoo & Style", "price": "$5 - $10", "photo": "" }
+    ],
+    "lb_photos": [],
+    "lb_videos": [],
+    "lb_lat": null,
+    "lb_lng": null
+  },
+  {
+    "name": "Gap",
+    "slug": "gap",
+    "category_slug": "clothing-stores",
+    "vertical": "retail",
+    "listing_mode": "company",
+    "website": "https://www.gap.com",
+    "email": "info@gap.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "San Francisco",
+    "state": "CA",
+    "hq_location": "San Francisco, CA, US",
+    "tagline": "American casual apparel for men, women, and kids - original denim and everyday essentials since 1969.",
+    "description": "Gap is an iconic American clothing retailer founded by Donald and Doris Fisher in San Francisco in 1969, originally selling Levi's jeans and records. The brand transitioned to private-label apparel in 1974 and is now recognized globally for casual wardrobe staples including denim, khakis, T-shirts, and activewear. As part of Gap Inc., which also operates Old Navy, Banana Republic, and Athleta, Gap operates thousands of stores worldwide and reported 82,000 employees across all brands as of 2025.",
+    "founded_year": 1969,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/gap-inc-",
+    "twitter": "https://twitter.com/gap",
+    "header_tags": ["Casual Apparel", "Denim & Basics", "Men Women Kids", "American Style"],
+    "languages": ["English"],
+    "faqs": [
+      {
+        "question": "Does Gap accept returns?",
+        "answer": "Yes, Gap accepts returns within 30 days of purchase with a receipt for a full refund. Items can be returned in store or by mail."
+      },
+      {
+        "question": "Does Gap offer in-store pickup?",
+        "answer": "Yes, Gap offers in-store pickup and curbside pickup for orders placed online, with same-day or next-day pickup available at most locations."
+      },
+      {
+        "question": "Does Gap have a loyalty program?",
+        "answer": "Yes, Gap participates in the Gap Good Rewards program, allowing members to earn points redeemable across Gap, Old Navy, Banana Republic, and Athleta."
+      },
+      {
+        "question": "What are Gap's main product lines?",
+        "answer": "Gap sells denim, casual tops, khakis, activewear, outerwear, and basics for men, women, and children under its own label."
+      },
+      {
+        "question": "Does Gap offer gift cards?",
+        "answer": "Yes, Gap sells physical and digital gift cards redeemable across all Gap Inc. brands."
+      }
+    ],
+    "source_urls": [
+      "https://en.wikipedia.org/wiki/Gap_Inc.",
+      "https://www.gapinc.com/en-us/about/history",
+      "https://www.gap.com"
+    ],
+    "facebook": "https://www.facebook.com/gap/",
+    "is_hiring": 0,
+    "lb_price_range": "$",
+    "lb_hours": [
+      { "day": "Mon", "time": "10:00 AM - 8:00 PM", "closed": false },
+      { "day": "Tue", "time": "10:00 AM - 8:00 PM", "closed": false },
+      { "day": "Wed", "time": "10:00 AM - 8:00 PM", "closed": false },
+      { "day": "Thu", "time": "10:00 AM - 8:00 PM", "closed": false },
+      { "day": "Fri", "time": "10:00 AM - 9:00 PM", "closed": false },
+      { "day": "Sat", "time": "10:00 AM - 9:00 PM", "closed": false },
+      { "day": "Sun", "time": "11:00 AM - 6:00 PM", "closed": false }
+    ],
+    "lb_amenities": ["in_store_pickup", "curbside", "returns_accepted", "credit_cards", "wifi", "parking", "wheelchair", "gift_cards"],
+    "lb_menu": [
+      { "name": "Denim Jeans (Men)", "price": "$49.95 - $89.95", "photo": "" },
+      { "name": "Denim Jeans (Women)", "price": "$44.95 - $89.95", "photo": "" },
+      { "name": "Classic Logo Hoodie", "price": "$49.95 - $69.95", "photo": "" },
+      { "name": "Everyday Soft T-Shirt", "price": "$19.95 - $29.95", "photo": "" },
+      { "name": "Kids Jeans", "price": "$29.95 - $44.95", "photo": "" },
+      { "name": "GapFit Activewear", "price": "$34.95 - $64.95", "photo": "" }
+    ],
+    "lb_photos": [],
+    "lb_videos": [],
+    "lb_lat": null,
+    "lb_lng": null
+  },
+  {
+    "name": "Planet Fitness",
+    "slug": "planet-fitness",
+    "category_slug": "gyms",
+    "vertical": "fitness",
+    "listing_mode": "company",
+    "website": "https://www.planetfitness.com",
+    "email": "info@planetfitness.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Hampton",
+    "state": "NH",
+    "hq_location": "Hampton, NH, US",
+    "tagline": "The Judgement Free Zone - affordable fitness for everyone with 2,700+ locations since 1992.",
+    "description": "Planet Fitness is one of the largest fitness center franchisors in the United States, with over 2,715 clubs across North America, Central America, Spain, and Australia as of 2025. Founded in 1992 in Hampton, New Hampshire, the chain built its brand around the \"Judgement Free Zone\" philosophy - offering low-cost memberships, clean facilities, and a welcoming environment for gym newcomers and casual exercisers. Planet Fitness is publicly traded on the NYSE under the ticker PLNT.",
+    "founded_year": 1992,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/planet-fitness",
+    "twitter": "https://twitter.com/PlanetFitness",
+    "header_tags": ["Judgement Free Zone", "Affordable Gym", "Cardio & Strength", "No Contract"],
+    "languages": ["English"],
+    "faqs": [
+      {
+        "question": "How much does a Planet Fitness membership cost?",
+        "answer": "The Classic membership starts at $15/month, granting access to your home club. The Black Card membership is $24.99/month and includes access to all 2,700+ locations plus guest privileges."
+      },
+      {
+        "question": "Does Planet Fitness have a free trial?",
+        "answer": "Planet Fitness occasionally offers free one-day passes or introductory trial periods at participating locations. Check the website for current promotions."
+      },
+      {
+        "question": "Are there personal training options at Planet Fitness?",
+        "answer": "Planet Fitness offers free fitness training sessions led by staff trainers, included with all memberships at no extra charge."
+      },
+      {
+        "question": "Does Planet Fitness have showers and locker rooms?",
+        "answer": "Yes, all Planet Fitness clubs include locker rooms and showers for member use."
+      },
+      {
+        "question": "Is there a contract required to join Planet Fitness?",
+        "answer": "No, Planet Fitness offers no-commitment month-to-month memberships with no annual contract required."
+      }
+    ],
+    "source_urls": [
+      "https://en.wikipedia.org/wiki/Planet_Fitness",
+      "https://www.planetfitness.com/gym-memberships/",
+      "https://wellfitinsider.com/planet-fitness/planet-fitness-membership-plans-and-prices/"
+    ],
+    "facebook": "https://www.facebook.com/planetfitness",
+    "is_hiring": 0,
+    "lb_price_range": "$",
+    "lb_hours": [
+      { "day": "Mon", "time": "5:00 AM - 12:00 AM", "closed": false },
+      { "day": "Tue", "time": "5:00 AM - 12:00 AM", "closed": false },
+      { "day": "Wed", "time": "5:00 AM - 12:00 AM", "closed": false },
+      { "day": "Thu", "time": "5:00 AM - 12:00 AM", "closed": false },
+      { "day": "Fri", "time": "5:00 AM - 9:00 PM", "closed": false },
+      { "day": "Sat", "time": "7:00 AM - 8:00 PM", "closed": false },
+      { "day": "Sun", "time": "7:00 AM - 8:00 PM", "closed": false }
+    ],
+    "lb_amenities": ["free_trial", "personal_training", "showers", "lockers", "parking", "wheelchair", "credit_cards"],
+    "lb_menu": [
+      { "name": "Classic Membership", "price": "$15/month", "photo": "" },
+      { "name": "Black Card Membership", "price": "$24.99/month", "photo": "" },
+      { "name": "Annual Fee", "price": "$49/year", "photo": "" },
+      { "name": "Free Fitness Training Sessions", "price": "Included", "photo": "" },
+      { "name": "Tanning (Black Card)", "price": "Included", "photo": "" },
+      { "name": "Massage Chairs (Black Card)", "price": "Included", "photo": "" }
+    ],
+    "lb_photos": [],
+    "lb_videos": [],
+    "lb_lat": null,
+    "lb_lng": null
+  },
+  {
+    "name": "CorePower Yoga",
+    "slug": "corepower-yoga",
+    "category_slug": "yoga-studios",
+    "vertical": "fitness",
+    "listing_mode": "company",
+    "website": "https://www.corepoweryoga.com",
+    "email": "info@corepoweryoga.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Denver",
+    "state": "CO",
+    "hq_location": "Denver, CO, US",
+    "tagline": "The largest yoga studio brand in the US - power yoga, sculpt, and hot yoga across 220+ locations.",
+    "description": "CorePower Yoga is the largest yoga studio brand in the United States, with over 220 studios in 23 states as of 2024. Founded in Denver, Colorado in 2002, CorePower blends power yoga, ashtanga, and vinyasa traditions into a physically demanding, studio-heated practice environment. Class formats range from the foundational C2 flow to Yoga Sculpt - which adds weights and cardio - and CorePower StrengthX, a HIIT-inflected strength program. The brand also offers 200-hour and 300-hour teacher training certifications and a digital on-demand membership.",
+    "founded_year": 2002,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/corepower-yoga",
+    "twitter": "https://twitter.com/CorePowerYoga",
+    "header_tags": ["Power Yoga", "Hot Yoga", "Yoga Sculpt", "Teacher Training", "In-Studio & Online"],
+    "languages": ["English"],
+    "faqs": [
+      {
+        "question": "What classes does CorePower Yoga offer?",
+        "answer": "CorePower offers C2 (power yoga), Hot Power Fusion, Yoga Sculpt (yoga with weights and cardio), CorePower StrengthX, and Restore (restorative yoga)."
+      },
+      {
+        "question": "How much does a CorePower Yoga membership cost?",
+        "answer": "The All-Access Membership for unlimited in-studio and online classes typically starts around $139-$189 per month depending on location. Drop-in classes range from $23 to $28."
+      },
+      {
+        "question": "Does CorePower Yoga offer a free trial?",
+        "answer": "Yes, CorePower Yoga typically offers a free week or introductory offer for new students at participating locations."
+      },
+      {
+        "question": "Does CorePower Yoga offer online classes?",
+        "answer": "Yes, CorePower Yoga On Demand provides livestream and pre-recorded classes for $19.99/month as a standalone digital subscription."
+      },
+      {
+        "question": "Does CorePower offer yoga teacher training?",
+        "answer": "Yes, CorePower Yoga offers 200-hour, 300-hour, and 50-hour yoga teacher training programs at studio locations and periodically online."
+      }
+    ],
+    "source_urls": [
+      "https://en.wikipedia.org/wiki/CorePower_Yoga",
+      "https://www.corepoweryoga.com/content/buy",
+      "https://thegymprices.com/corepower-yoga-prices/"
+    ],
+    "facebook": null,
+    "is_hiring": 0,
+    "lb_price_range": "$$$",
+    "lb_hours": [
+      { "day": "Mon", "time": "6:00 AM - 9:00 PM", "closed": false },
+      { "day": "Tue", "time": "6:00 AM - 9:00 PM", "closed": false },
+      { "day": "Wed", "time": "6:00 AM - 9:00 PM", "closed": false },
+      { "day": "Thu", "time": "6:00 AM - 9:00 PM", "closed": false },
+      { "day": "Fri", "time": "6:00 AM - 9:00 PM", "closed": false },
+      { "day": "Sat", "time": "7:00 AM - 8:00 PM", "closed": false },
+      { "day": "Sun", "time": "7:00 AM - 8:00 PM", "closed": false }
+    ],
+    "lb_amenities": ["free_trial", "personal_training", "showers", "lockers", "parking", "wheelchair", "credit_cards"],
+    "lb_menu": [
+      { "name": "All-Access Monthly Membership", "price": "$139 - $189/month", "photo": "" },
+      { "name": "Online-Only Membership (On Demand)", "price": "$19.99/month", "photo": "" },
+      { "name": "5-Class Pack", "price": "$109", "photo": "" },
+      { "name": "10-Class Pack", "price": "$199", "photo": "" },
+      { "name": "Single Drop-In Class", "price": "$23 - $28", "photo": "" },
+      { "name": "200-Hour Teacher Training", "price": "Varies", "photo": "" }
+    ],
+    "lb_photos": [],
+    "lb_videos": [],
+    "lb_lat": null,
+    "lb_lng": null
+  },
+  {
+    "name": "The Cheesecake Factory",
+    "slug": "the-cheesecake-factory",
+    "category_slug": "american-restaurants",
+    "vertical": "food",
+    "listing_mode": "company",
+    "website": "https://www.thecheesecakefactory.com",
+    "email": "info@thecheesecakefactory.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Calabasas",
+    "state": "CA",
+    "hq_location": "Calabasas, CA, US",
+    "tagline": "An eclectic American menu with 250+ items, legendary portions, and 30+ cheesecake flavors since 1978.",
+    "description": "The Cheesecake Factory is an American casual-dining chain and cheesecake distributor headquartered in Calabasas, California. The restaurant brand opened its first full-service location in Beverly Hills in 1978, growing from a small Detroit bakery founded by Evelyn Overton in 1972. Known for its extensive menu of over 250 items - spanning pastas, burgers, seafood, steaks, and salads - and its signature lineup of more than 30 cheesecake flavors, the chain operates 218 branded restaurants and reported $3.58 billion in revenue in 2024.",
+    "founded_year": 1978,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/lifeatcheesecake",
+    "twitter": "https://twitter.com/Cheesecake",
+    "header_tags": ["American Casual Dining", "250+ Menu Items", "Signature Cheesecakes", "Large Portions"],
+    "languages": ["English"],
+    "faqs": [
+      {
+        "question": "Does The Cheesecake Factory take reservations?",
+        "answer": "The Cheesecake Factory accepts waitlist reservations through their website and app, but does not take traditional advance reservations. Walk-ins are accommodated by joining the waitlist on arrival."
+      },
+      {
+        "question": "How many cheesecake flavors does The Cheesecake Factory offer?",
+        "answer": "The Cheesecake Factory offers more than 30 cheesecake flavors at any given time, plus seasonal limited-time additions, and sells cheesecakes whole in 6-inch, 7-inch, and 10-inch sizes."
+      },
+      {
+        "question": "Does The Cheesecake Factory offer takeout and delivery?",
+        "answer": "Yes, The Cheesecake Factory offers curbside takeout through their website and app, and delivery through major third-party delivery platforms."
+      },
+      {
+        "question": "How large are The Cheesecake Factory's portions?",
+        "answer": "The Cheesecake Factory is known for its generous, shareable portions. Many entrees are large enough to split or take home as leftovers."
+      },
+      {
+        "question": "Does The Cheesecake Factory have vegetarian options?",
+        "answer": "Yes, The Cheesecake Factory has a dedicated section of vegetarian and plant-based entrees, including veggie burgers, pasta dishes, and salads."
+      }
+    ],
+    "source_urls": [
+      "https://en.wikipedia.org/wiki/The_Cheesecake_Factory",
+      "https://www.thecheesecakefactory.com/about-us",
+      "https://menupricestoday.com/menu/cheesecake-factory-prices"
+    ],
+    "facebook": null,
+    "is_hiring": 0,
+    "lb_price_range": "$$$",
+    "lb_hours": [
+      { "day": "Mon", "time": "11:00 AM - 10:00 PM", "closed": false },
+      { "day": "Tue", "time": "11:00 AM - 10:00 PM", "closed": false },
+      { "day": "Wed", "time": "11:00 AM - 10:00 PM", "closed": false },
+      { "day": "Thu", "time": "11:00 AM - 10:00 PM", "closed": false },
+      { "day": "Fri", "time": "11:00 AM - 11:00 PM", "closed": false },
+      { "day": "Sat", "time": "10:00 AM - 11:00 PM", "closed": false },
+      { "day": "Sun", "time": "10:00 AM - 10:00 PM", "closed": false }
+    ],
+    "lb_amenities": ["takeout", "delivery", "credit_cards", "wifi", "vegetarian", "outdoor_seating", "reservations", "parking", "wheelchair"],
+    "lb_menu": [
+      { "name": "Avocado Eggrolls", "price": "$16.95", "photo": "" },
+      { "name": "Chicken Madeira", "price": "$26.95", "photo": "" },
+      { "name": "Louisiana Chicken Pasta", "price": "$23.95", "photo": "" },
+      { "name": "Fresh Strawberry Cheesecake (slice)", "price": "$9.95 - $11.95", "photo": "" },
+      { "name": "Godiva Chocolate Cheesecake (slice)", "price": "$9.95 - $11.95", "photo": "" },
+      { "name": "Whole 10-inch Cheesecake", "price": "$65.95 - $72.95", "photo": "" },
+      { "name": "Factory Chopped Salad", "price": "$16.95", "photo": "" },
+      { "name": "Pasta Da Vinci", "price": "$22.95", "photo": "" }
+    ],
+    "lb_photos": [],
+    "lb_videos": [],
+    "lb_lat": null,
+    "lb_lng": null
+  }
+]

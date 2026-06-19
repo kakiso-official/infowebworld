@@ -1,0 +1,618 @@
+[
+  {
+    "name": "Outschool",
+    "slug": "outschool",
+    "category_slug": "k-12-edtech-startups",
+    "listing_mode": "company",
+    "website": "https://www.outschool.com",
+    "email": "info@outschool.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "San Francisco",
+    "state": "CA",
+    "hq_location": "San Francisco, CA, US",
+    "tagline": "Live online classes for kids ages 3-18 across 140,000+ subjects taught by independent teachers.",
+    "description": "Outschool is an online marketplace of live, small-group virtual classes for children ages 3 to 18. Founded in 2015 and launched in 2017, the platform connects learners with independent teachers across subjects ranging from arts and coding to math and social science. Outschool reached unicorn status in April 2021 at a $1.3 billion valuation and expanded to a $3 billion valuation by October 2021 after a $110 million Series D round led by Tiger Global. The company is backed by Y Combinator, Lightspeed Venture Partners, and Tiger Global Management.",
+    "founded_year": 2015,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/outschool",
+    "twitter": "https://twitter.com/outschool",
+    "facebook": "https://www.facebook.com/outschool",
+    "header_tags": ["K-12 Education", "Online Classes", "EdTech", "Kids Learning", "Marketplace"],
+    "languages": ["English"],
+    "is_hiring": 0,
+    "industries_served": ["K-12 Education", "EdTech", "Consumer Learning", "After-School Programs"],
+    "awards": [],
+    "timezones": ["GMT-08:00 (Pacific)"],
+    "focus_breakdown": [
+      {"name": "SMB", "percentage": 10},
+      {"name": "Mid-Market", "percentage": 5},
+      {"name": "Enterprise", "percentage": 5},
+      {"name": "Consumer / Families", "percentage": 80}
+    ],
+    "clients_summary": null,
+    "client_logos": null,
+    "faqs": [
+      {
+        "question": "What age range does Outschool serve?",
+        "answer": "Outschool offers classes for learners ages 3 through 18, covering preschool through high school."
+      },
+      {
+        "question": "How are classes structured on Outschool?",
+        "answer": "Classes are live, small-group sessions taught by independent teachers via video conference. Formats include multi-day courses, one-time classes, and ongoing clubs."
+      },
+      {
+        "question": "Who teaches on Outschool?",
+        "answer": "Outschool teachers are independent educators who apply to join the platform. They set their own curriculum, schedule, and pricing."
+      },
+      {
+        "question": "Is Outschool a school replacement?",
+        "answer": "Outschool is designed for supplemental and enrichment learning rather than as a full-time school replacement, though homeschool families use it extensively."
+      },
+      {
+        "question": "Where is Outschool based?",
+        "answer": "Outschool is headquartered in San Francisco, California, and was accepted into Y Combinator in 2015."
+      }
+    ],
+    "source_urls": [
+      "https://outschool.com/about",
+      "https://en.wikipedia.org/wiki/Outschool",
+      "https://www.crunchbase.com/organization/outschool",
+      "https://tracxn.com/d/companies/outschool/__kb-tA06eVdkKBKKjMaLnan1-MqxBCAwr5z7ZT9jVw1w"
+    ]
+  },
+  {
+    "name": "Watershed",
+    "slug": "watershed",
+    "category_slug": "climate-tech-startups",
+    "listing_mode": "company",
+    "website": "https://www.watershed.com",
+    "email": "info@watershed.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "San Francisco",
+    "state": "CA",
+    "hq_location": "San Francisco, CA, US",
+    "tagline": "Enterprise sustainability platform combining climate science and AI to measure, report, and reduce carbon emissions.",
+    "description": "Watershed is an enterprise software company founded in 2019 by former Stripe engineers Taylor Francis, Avi Itskovich, and Christian Anderson. The platform helps companies measure Scope 1, 2, and 3 emissions, prepare sustainability disclosures, engage their supply chains, and access verified carbon removal projects. Clients include Airbnb, Spotify, FedEx, and Visa. Watershed is backed by Sequoia Capital, Kleiner Perkins, and Greenoaks, and raised a $100 million Series B in 2022 led by Kleiner Perkins and Sequoia - their first co-investment since Google in 1999.",
+    "founded_year": 2019,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/watershedclimate",
+    "twitter": "https://twitter.com/watershed",
+    "facebook": null,
+    "header_tags": ["Carbon Accounting", "ESG Reporting", "Climate Tech", "Sustainability AI", "Emissions Reduction"],
+    "languages": ["English"],
+    "is_hiring": 0,
+    "industries_served": ["Financial Services", "Technology", "Retail", "Logistics", "Consumer Goods", "Private Equity"],
+    "awards": [],
+    "timezones": ["GMT-08:00 (Pacific)"],
+    "focus_breakdown": [
+      {"name": "Mid-Market", "percentage": 35},
+      {"name": "Enterprise", "percentage": 65}
+    ],
+    "clients_summary": "Customers include Airbnb, Spotify, FedEx, Visa, and six of the top ten US private equity firms.",
+    "client_logos": [
+      {"name": "Airbnb", "website": "https://www.airbnb.com"},
+      {"name": "Spotify", "website": "https://www.spotify.com"},
+      {"name": "FedEx", "website": "https://www.fedex.com"},
+      {"name": "Visa", "website": "https://www.visa.com"}
+    ],
+    "faqs": [
+      {
+        "question": "What does Watershed measure?",
+        "answer": "Watershed measures Scope 1 (direct), Scope 2 (purchased energy), and Scope 3 (value chain) greenhouse gas emissions using its proprietary emissions model and integrations with enterprise data systems."
+      },
+      {
+        "question": "What reporting standards does Watershed support?",
+        "answer": "Watershed supports GHG Protocol, CDP, TCFD, SEC climate disclosure, CSRD, and other major sustainability reporting frameworks."
+      },
+      {
+        "question": "Who founded Watershed?",
+        "answer": "Watershed was founded in 2019 by Taylor Francis, Avi Itskovich, and Christian Anderson - three former Stripe employees who had previously worked on Stripe Climate."
+      },
+      {
+        "question": "Does Watershed offer carbon offsets?",
+        "answer": "Yes. Watershed operates a curated marketplace of verified carbon removal and reduction projects, giving companies access to high-quality credits alongside its measurement and reporting tools."
+      }
+    ],
+    "source_urls": [
+      "https://watershed.com/about-us",
+      "https://www.crunchbase.com/organization/watershed-07e2",
+      "https://research.contrary.com/company/watershed",
+      "https://sequoiacap.com/article/watershed-spotlight/"
+    ]
+  },
+  {
+    "name": "Solana Labs",
+    "slug": "solana-labs",
+    "category_slug": "layer-1-blockchain-startups",
+    "listing_mode": "company",
+    "website": "https://www.solanalabs.com",
+    "email": "info@solanalabs.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "San Francisco",
+    "state": "CA",
+    "hq_location": "San Francisco, CA, US",
+    "tagline": "Builder of the Solana blockchain ecosystem - a high-throughput Layer-1 network with sub-second finality and low transaction fees.",
+    "description": "Solana Labs is the San Francisco-based technology company founded in 2018 by Anatoly Yakovenko and Raj Gokal that developed and launched the Solana blockchain. The Solana network went live in March 2020 and uses a novel Proof of History consensus mechanism to achieve high throughput and sub-second transaction finality. Beyond the core blockchain, Solana Labs operates Solana Mobile (maker of the Seeker web3 smartphone), runs an incubator for Web3 startups, and manages Solana Ventures. The SOL token reached an all-time high of $294 in January 2025.",
+    "founded_year": 2018,
+    "team_size": "201-500",
+    "linkedin": "https://www.linkedin.com/company/solanalabs",
+    "twitter": "https://twitter.com/solanalabs",
+    "facebook": null,
+    "header_tags": ["Layer-1 Blockchain", "Web3", "DeFi", "NFTs", "Smart Contracts"],
+    "languages": ["English"],
+    "is_hiring": 0,
+    "industries_served": ["Decentralized Finance", "NFTs and Digital Assets", "Web3 Gaming", "Payments", "Developer Tooling"],
+    "awards": [],
+    "timezones": ["GMT-08:00 (Pacific)"],
+    "focus_breakdown": null,
+    "clients_summary": null,
+    "client_logos": null,
+    "faqs": [
+      {
+        "question": "What is Solana Labs?",
+        "answer": "Solana Labs is the company that built and continues to develop the Solana blockchain, along with ecosystem products like Solana Mobile and the Solana Incubator for Web3 startups."
+      },
+      {
+        "question": "When did the Solana network launch?",
+        "answer": "The Solana mainnet launched in March 2020, with the genesis block created on March 16, 2020."
+      },
+      {
+        "question": "What makes Solana different from other blockchains?",
+        "answer": "Solana uses a Proof of History consensus mechanism that timestamps transactions before they are confirmed, enabling much higher throughput and lower fees than blockchains like Ethereum."
+      },
+      {
+        "question": "What is Solana Mobile?",
+        "answer": "Solana Mobile is a subsidiary of Solana Labs that produces the Seeker smartphone - a dedicated Web3 mobile device with built-in crypto wallet functionality and dApp integration."
+      },
+      {
+        "question": "Who are the founders of Solana Labs?",
+        "answer": "Solana Labs was co-founded by Anatoly Yakovenko, a former senior engineer at Qualcomm, and Raj Gokal in 2018 in San Francisco."
+      }
+    ],
+    "source_urls": [
+      "https://solanalabs.com",
+      "https://en.wikipedia.org/wiki/Solana_(blockchain_platform)",
+      "https://www.crunchbase.com/organization/solana-labs",
+      "https://www.bitstamp.net/learn/company-profiles/what-is-solana-labs/"
+    ]
+  },
+  {
+    "name": "Rivian",
+    "slug": "rivian",
+    "category_slug": "electric-vehicle-startups",
+    "listing_mode": "company",
+    "website": "https://www.rivian.com",
+    "email": "info@rivian.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Irvine",
+    "state": "CA",
+    "hq_location": "Irvine, CA, US",
+    "tagline": "American electric adventure vehicle maker producing the R1T pickup, R1S SUV, and commercial delivery vans - publicly traded on NASDAQ (RIVN).",
+    "description": "Rivian Automotive is an American electric vehicle manufacturer founded in 2009 by R.J. Scaringe and headquartered in Irvine, California. The company produces the R1T electric pickup truck, R1S seven-passenger electric SUV, and a line of Electric Delivery Vans (EDVs) deployed at scale for Amazon. Rivian went public on NASDAQ in November 2021 under the ticker RIVN and has grown its headcount to approximately 17,000 employees as of mid-2026. Notable investors include Amazon (18.1% ownership), Volkswagen Group (16%), and Ford Motor Company.",
+    "founded_year": 2009,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/rivian",
+    "twitter": "https://twitter.com/Rivian",
+    "facebook": null,
+    "header_tags": ["Electric Vehicles", "Adventure EVs", "EV Pickup", "Commercial EVs", "NASDAQ: RIVN"],
+    "languages": ["English"],
+    "is_hiring": 0,
+    "industries_served": ["Automotive", "Last-Mile Delivery", "Consumer Transportation", "Fleet Management"],
+    "awards": [],
+    "timezones": ["GMT-08:00 (Pacific)"],
+    "focus_breakdown": [
+      {"name": "Consumer / Individual Buyers", "percentage": 60},
+      {"name": "Enterprise", "percentage": 40}
+    ],
+    "clients_summary": "Amazon is Rivian's largest commercial client, deploying thousands of EDV electric delivery vans across its US logistics network.",
+    "client_logos": [
+      {"name": "Amazon", "website": "https://www.amazon.com"}
+    ],
+    "faqs": [
+      {
+        "question": "What vehicles does Rivian make?",
+        "answer": "Rivian produces the R1T electric pickup truck, R1S electric SUV, and a range of Electric Delivery Vans (EDVs) sold to commercial fleet operators including Amazon."
+      },
+      {
+        "question": "Is Rivian publicly traded?",
+        "answer": "Yes. Rivian Automotive trades on the NASDAQ under the ticker symbol RIVN. The company went public in November 2021."
+      },
+      {
+        "question": "Where does Rivian manufacture its vehicles?",
+        "answer": "Rivian's primary manufacturing facility is in Normal, Illinois. The company is also constructing a second plant in Georgia."
+      },
+      {
+        "question": "Who founded Rivian?",
+        "answer": "Rivian was founded in 2009 by R.J. Scaringe, who serves as the company's CEO."
+      },
+      {
+        "question": "What is Rivian's relationship with Volkswagen?",
+        "answer": "Rivian and Volkswagen Group have a joint venture to develop next-generation software-defined vehicle technology, with Volkswagen investing up to $5 billion in the partnership."
+      }
+    ],
+    "source_urls": [
+      "https://rivian.com/our-company",
+      "https://en.wikipedia.org/wiki/Rivian",
+      "https://finance.yahoo.com/quote/RIVN/profile/",
+      "https://en.wikipedia.org/wiki/Rivian_and_Volkswagen_Group_Technologies"
+    ]
+  },
+  {
+    "name": "Khan Academy",
+    "slug": "khan-academy",
+    "category_slug": "k-12-edtech-startups",
+    "listing_mode": "company",
+    "website": "https://www.khanacademy.org",
+    "email": "info@khanacademy.org",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Mountain View",
+    "state": "CA",
+    "hq_location": "Mountain View, CA, US",
+    "tagline": "Free, world-class education for anyone, anywhere - a nonprofit offering personalized learning in math, science, and more for K-12 and beyond.",
+    "description": "Khan Academy is a 501(c)(3) nonprofit educational organization founded in 2008 by Salman Khan and headquartered in Mountain View, California. The platform offers free instructional videos, practice exercises, and personalized learning dashboards covering K-12 math, sciences, history, literature, economics, and computer science. As of SY2024-25, Khan Academy has over 189 million registered users across 190 countries and is available in more than 50 languages. In 2023 the organization launched Khanmigo, an AI-powered tutoring assistant, which has since reached 2 million global users.",
+    "founded_year": 2008,
+    "team_size": "201-500",
+    "linkedin": "https://www.linkedin.com/company/khan-academy",
+    "twitter": "https://twitter.com/khanacademy",
+    "facebook": null,
+    "header_tags": ["K-12 Education", "Nonprofit", "Free Learning", "EdTech", "AI Tutoring"],
+    "languages": ["English", "Spanish", "French", "Hindi", "Portuguese", "Arabic", "Turkish"],
+    "is_hiring": 0,
+    "industries_served": ["K-12 Education", "Higher Education", "Homeschooling", "Test Preparation"],
+    "awards": [
+      {"name": "Webby Award for Education", "year": 2012},
+      {"name": "Princess of Asturias Award for International Cooperation", "year": 2019}
+    ],
+    "timezones": ["GMT-08:00 (Pacific)"],
+    "focus_breakdown": null,
+    "clients_summary": "Major donors and supporters include the Bill and Melinda Gates Foundation and Google, which have provided significant grants to support Khan Academy's global expansion.",
+    "client_logos": null,
+    "faqs": [
+      {
+        "question": "Is Khan Academy free?",
+        "answer": "Yes. Khan Academy is entirely free for learners. The nonprofit is funded through donations and grants from foundations and companies including the Gates Foundation and Google."
+      },
+      {
+        "question": "Who founded Khan Academy?",
+        "answer": "Khan Academy was founded in 2008 by Salman 'Sal' Khan, who originally created math tutoring videos for his cousins before expanding into a full nonprofit educational platform."
+      },
+      {
+        "question": "What is Khanmigo?",
+        "answer": "Khanmigo is Khan Academy's AI-powered tutoring and teaching assistant, launched in 2023. It uses a Socratic method to guide students rather than just giving answers, and reached 2 million global users by SY2024-25."
+      },
+      {
+        "question": "What subjects does Khan Academy cover?",
+        "answer": "Khan Academy covers math from early childhood through calculus and beyond, plus science, computing, history, economics, test prep (SAT, GMAT, LSAT), and life skills."
+      },
+      {
+        "question": "How many users does Khan Academy have?",
+        "answer": "Khan Academy has over 189 million registered users across 190 countries as of the 2024-25 academic year, with more than 30 million monthly active visitors."
+      }
+    ],
+    "source_urls": [
+      "https://www.khanacademy.org/about",
+      "https://en.wikipedia.org/wiki/Khan_Academy",
+      "https://www.prosperityforamerica.org/khan-academy-statistics/",
+      "https://2023-2024.annualreport.khanacademy.org/khanmigo"
+    ]
+  },
+  {
+    "name": "Lucid Motors",
+    "slug": "lucid-motors",
+    "category_slug": "electric-vehicle-startups",
+    "listing_mode": "company",
+    "website": "https://www.lucidmotors.com",
+    "email": "info@lucidmotors.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Newark",
+    "state": "CA",
+    "hq_location": "Newark, CA, US",
+    "tagline": "Luxury electric vehicle maker producing the Lucid Air sedan and Lucid Gravity SUV - publicly traded on NASDAQ (LCID).",
+    "description": "Lucid Motors (formerly Atieva) is an American automotive and technology company founded in 2007, headquartered in Newark, California. Originally focused on battery technology and EV powertrains, the company rebranded as Lucid Motors in 2016 to pursue full vehicle manufacturing. Its flagship product, the Lucid Air, won the 2022 MotorTrend Car of the Year and holds the record for longest range of any production EV. Lucid is publicly traded on NASDAQ under the ticker LCID and is majority-owned by the Saudi Arabian Public Investment Fund (approximately 58%).",
+    "founded_year": 2007,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/lucidmotors",
+    "twitter": "https://twitter.com/LucidMotors",
+    "facebook": null,
+    "header_tags": ["Luxury EVs", "Electric Vehicles", "EV Technology", "NASDAQ: LCID", "EV Powertrain"],
+    "languages": ["English"],
+    "is_hiring": 0,
+    "industries_served": ["Automotive", "Luxury Vehicles", "EV Technology", "Fleet Electrification"],
+    "awards": [
+      {"name": "MotorTrend Car of the Year (Lucid Air)", "year": 2022}
+    ],
+    "timezones": ["GMT-08:00 (Pacific)"],
+    "focus_breakdown": [
+      {"name": "Consumer / Luxury Buyers", "percentage": 90},
+      {"name": "Enterprise", "percentage": 10}
+    ],
+    "clients_summary": null,
+    "client_logos": null,
+    "faqs": [
+      {
+        "question": "What vehicles does Lucid Motors make?",
+        "answer": "Lucid Motors produces the Lucid Air luxury electric sedan and the Lucid Gravity electric SUV. Additional midsize SUV models are in development."
+      },
+      {
+        "question": "Is Lucid Motors publicly traded?",
+        "answer": "Yes. Lucid Group trades on NASDAQ under the ticker symbol LCID."
+      },
+      {
+        "question": "Who is the largest shareholder of Lucid Motors?",
+        "answer": "The Public Investment Fund of Saudi Arabia is the largest shareholder, holding approximately 58% of Lucid Group as of 2024."
+      },
+      {
+        "question": "What is Lucid's range record?",
+        "answer": "The Lucid Air Grand Touring has an EPA-estimated range exceeding 500 miles on a single charge, making it one of the longest-range production EVs ever built."
+      },
+      {
+        "question": "How is Lucid different from Tesla?",
+        "answer": "Lucid focuses on the ultra-premium luxury segment with a strong emphasis on powertrain efficiency and range. The company also sells EV powertrain systems to other automakers as a separate revenue line."
+      }
+    ],
+    "source_urls": [
+      "https://lucidmotors.com/company",
+      "https://en.wikipedia.org/wiki/Lucid_Motors",
+      "https://finance.yahoo.com/quote/LCID/profile/",
+      "https://www.zoominfo.com/c/lucid-group-inc/445537239"
+    ]
+  },
+  {
+    "name": "Maven",
+    "slug": "maven",
+    "category_slug": "k-12-edtech-startups",
+    "listing_mode": "company",
+    "website": "https://www.maven.com",
+    "email": "support@maven.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Austin",
+    "state": "TX",
+    "hq_location": "Austin, TX, US",
+    "tagline": "Cohort-based course platform that lets domain experts teach live, interactive courses to professional and lifelong learners worldwide.",
+    "description": "Maven is an online platform for cohort-based courses, founded in 2020 by Gagan Biyani (Udemy co-founder), Wes Kao (altMBA co-founder), and Shreyans Bhansali (Socratic co-founder, acquired by Google). The platform enables subject-matter experts to create and teach live, small-cohort courses primarily for professional and adult learners - covering AI, product management, engineering, design, and career development. Maven raised a $20 million Series A led by Andreessen Horowitz in 2021. Courses on the platform show a 96% week-over-week retention rate, compared to 16% for traditional MOOCs.",
+    "founded_year": 2020,
+    "team_size": "201-500",
+    "linkedin": "https://www.linkedin.com/company/maven-hq",
+    "twitter": "https://twitter.com/mavenhq",
+    "facebook": null,
+    "header_tags": ["Cohort-Based Courses", "EdTech", "Professional Learning", "Expert Instruction", "Live Online Courses"],
+    "languages": ["English"],
+    "is_hiring": 0,
+    "industries_served": ["Professional Development", "Technology Education", "Business Education", "Creative Skills", "Career Advancement"],
+    "awards": [],
+    "timezones": ["GMT-06:00 (Central)"],
+    "focus_breakdown": [
+      {"name": "SMB", "percentage": 20},
+      {"name": "Mid-Market", "percentage": 30},
+      {"name": "Consumer / Individual Professionals", "percentage": 50}
+    ],
+    "clients_summary": null,
+    "client_logos": null,
+    "faqs": [
+      {
+        "question": "Who is Maven designed for?",
+        "answer": "Maven is designed for domain experts - professionals, executives, educators, and creators - who want to teach live, cohort-based courses to professional audiences."
+      },
+      {
+        "question": "How is Maven different from other online course platforms?",
+        "answer": "Unlike self-paced MOOC platforms, Maven courses are live and cohort-based, meaning students go through the course together with structured interaction, community, and accountability - resulting in a 96% week-to-week retention rate."
+      },
+      {
+        "question": "Who founded Maven?",
+        "answer": "Maven was co-founded in 2020 by Gagan Biyani (co-founder of Udemy), Wes Kao (co-founder of altMBA with Seth Godin), and Shreyans Bhansali (co-founder of Socratic, acquired by Google)."
+      },
+      {
+        "question": "What topics are popular on Maven?",
+        "answer": "The most popular course topics on Maven include AI and machine learning, product management, software engineering, UX design, marketing, and career development for professionals."
+      },
+      {
+        "question": "Has Maven raised funding?",
+        "answer": "Yes. Maven raised $20 million in a Series A round led by Andreessen Horowitz (a16z) in 2021, bringing its total funding to approximately $25.8 million."
+      }
+    ],
+    "source_urls": [
+      "https://maven.com/about",
+      "https://www.crunchbase.com/organization/didactic-8ea9",
+      "https://a16z.com/announcement/investing-in-maven/",
+      "https://www.prnewswire.com/news-releases/maven-raises-20-million-in-series-a-funding-led-by-andreessen-horowitz-301295905.html"
+    ]
+  },
+  {
+    "name": "Pachama",
+    "slug": "pachama",
+    "category_slug": "climate-tech-startups",
+    "listing_mode": "company",
+    "website": "https://www.pachama.com",
+    "email": "info@pachama.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "San Francisco",
+    "state": "CA",
+    "hq_location": "San Francisco, CA, US",
+    "tagline": "AI and satellite-powered forest carbon monitoring, verification, and marketplace - acquired by Carbon Direct in November 2025.",
+    "description": "Pachama was a climate technology company founded in 2018 by Diego Saez Gil and Tomas Aftalion, headquartered in San Francisco, California. The company used satellite imagery, LiDAR, and artificial intelligence to measure carbon captured in forests, verify conservation projects, and power a carbon credit marketplace. Customers included Salesforce, Microsoft, Netflix, Shopify, and Airbnb. Pachama raised $79 million in total funding from investors including Serena Williams, Chris Sacca, and Social Capital before being acquired by Carbon Direct on November 10, 2025.",
+    "founded_year": 2018,
+    "team_size": "51-200",
+    "linkedin": "https://www.linkedin.com/company/pachama",
+    "twitter": "https://twitter.com/PachamaInc",
+    "facebook": null,
+    "header_tags": ["Carbon Credits", "Forest Conservation", "Climate Tech", "Remote Sensing", "Carbon Markets"],
+    "languages": ["English"],
+    "is_hiring": 0,
+    "industries_served": ["Carbon Markets", "Corporate Sustainability", "Forest Conservation", "ESG Compliance"],
+    "awards": [
+      {"name": "Global Cleantech 100", "year": 2023}
+    ],
+    "timezones": ["GMT-08:00 (Pacific)"],
+    "focus_breakdown": [
+      {"name": "Mid-Market", "percentage": 40},
+      {"name": "Enterprise", "percentage": 60}
+    ],
+    "clients_summary": "Clients included Salesforce, Microsoft, Netflix, Shopify, Airbnb, Workday, and Flexport before the company's acquisition by Carbon Direct in November 2025.",
+    "client_logos": [
+      {"name": "Salesforce", "website": "https://www.salesforce.com"},
+      {"name": "Microsoft", "website": "https://www.microsoft.com"},
+      {"name": "Netflix", "website": "https://www.netflix.com"},
+      {"name": "Airbnb", "website": "https://www.airbnb.com"}
+    ],
+    "faqs": [
+      {
+        "question": "What did Pachama do?",
+        "answer": "Pachama used satellite imagery, LiDAR, and AI to measure carbon stored in forests, verify conservation project claims, and operate a marketplace where companies could purchase verified forest carbon credits."
+      },
+      {
+        "question": "Is Pachama still operating independently?",
+        "answer": "No. Pachama was acquired by Carbon Direct on November 10, 2025. Its technology and team, including co-founder Diego Saez Gil, are now part of Carbon Direct's carbon management platform."
+      },
+      {
+        "question": "Who founded Pachama?",
+        "answer": "Pachama was co-founded in 2018 by Diego Saez Gil (CEO) and Tomas Aftalion (CTO). Saez Gil previously founded WeHostels, a mobile travel booking app acquired by StudentUniverse."
+      },
+      {
+        "question": "How much did Pachama raise before its acquisition?",
+        "answer": "Pachama raised approximately $79 million in total funding over multiple rounds from investors including Chris Sacca, Serena Williams, Social Capital, and Future Positive."
+      }
+    ],
+    "source_urls": [
+      "https://research.contrary.com/company/pachama",
+      "https://www.carbon-direct.com/press/carbon-direct-acquires-pachama",
+      "https://www.crunchbase.com/organization/pachama",
+      "https://www.globenewswire.com/news-release/2023/01/17/2590245/0/en/Pachama-Named-on-the-2023-Global-Cleantech-100.html"
+    ]
+  },
+  {
+    "name": "Aptos",
+    "slug": "aptos",
+    "category_slug": "layer-1-blockchain-startups",
+    "listing_mode": "company",
+    "website": "https://www.aptoslabs.com",
+    "email": "info@aptoslabs.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Palo Alto",
+    "state": "CA",
+    "hq_location": "Palo Alto, CA, US",
+    "tagline": "Layer-1 blockchain built for mass adoption - scalable, safe, and developer-friendly, using the Move programming language.",
+    "description": "Aptos Labs is a Web3 technology company founded in 2021 by Mo Shaikh and Avery Ching, both former engineers on Meta's Diem blockchain project. Headquartered in Palo Alto, California, Aptos Labs built the Aptos blockchain - a Layer-1 network that launched mainnet in October 2022, supporting parallel transaction execution and claiming a theoretical throughput of over 150,000 transactions per second. The company has raised $400 million across seed and Series A rounds from investors including Andreessen Horowitz, Apollo Global Management, Franklin Templeton, and Binance Labs. Products include Petra Wallet, Aptos Connect (keyless Web3 login), and Aptos Names on-chain identity.",
+    "founded_year": 2021,
+    "team_size": "201-500",
+    "linkedin": "https://www.linkedin.com/company/aptoslabs",
+    "twitter": "https://twitter.com/AptosLabs",
+    "facebook": null,
+    "header_tags": ["Layer-1 Blockchain", "Web3", "Move Language", "DeFi", "Smart Contracts"],
+    "languages": ["English"],
+    "is_hiring": 0,
+    "industries_served": ["Decentralized Finance", "NFTs and Digital Assets", "Web3 Gaming", "Payments", "Enterprise Blockchain"],
+    "awards": [],
+    "timezones": ["GMT-08:00 (Pacific)"],
+    "focus_breakdown": null,
+    "clients_summary": "Aptos Labs has partnered with Microsoft to unlock Web3 on the Aptos Network, providing developers with AI-supported tools for effortless Web3 access.",
+    "client_logos": [
+      {"name": "Microsoft", "website": "https://www.microsoft.com"}
+    ],
+    "faqs": [
+      {
+        "question": "What is the Aptos blockchain?",
+        "answer": "Aptos is a Layer-1 blockchain that uses the Move programming language and parallel execution to achieve high throughput and low latency, targeting mainstream Web3 adoption."
+      },
+      {
+        "question": "When did Aptos mainnet launch?",
+        "answer": "Aptos mainnet officially launched on October 18, 2022, with the genesis block created on October 12, 2022."
+      },
+      {
+        "question": "Who founded Aptos Labs?",
+        "answer": "Aptos Labs was founded in 2021 by Mo Shaikh and Avery Ching, both of whom previously worked on Meta's (Facebook's) Diem blockchain before that project was cancelled."
+      },
+      {
+        "question": "How much has Aptos Labs raised?",
+        "answer": "Aptos Labs raised $400 million - a $200 million seed round and a $200 million Series A - from investors including Andreessen Horowitz crypto fund, Apollo Global Management, Franklin Templeton, and Binance Labs."
+      },
+      {
+        "question": "What is Aptos Connect?",
+        "answer": "Aptos Connect is a keyless Web3 wallet that lets users log in using familiar Web2 credentials (Google, Twitter, Facebook), eliminating the need to manage private keys or seed phrases."
+      }
+    ],
+    "source_urls": [
+      "https://aptoslabs.com",
+      "https://en.wikipedia.org/wiki/Aptos_Labs",
+      "https://www.crunchbase.com/organization/aptos-96b4",
+      "https://www.builtinsf.com/articles/aptos-labs-raises-150m-diem-blockchain-meta"
+    ]
+  },
+  {
+    "name": "Polestar",
+    "slug": "polestar",
+    "category_slug": "electric-vehicle-startups",
+    "listing_mode": "company",
+    "website": "https://www.polestar.com",
+    "email": "info@polestar.com",
+    "phone_code": "+46",
+    "phone": null,
+    "country_code": "SE",
+    "city": "Torslanda",
+    "state": null,
+    "hq_location": "Torslanda, Sweden",
+    "tagline": "Swedish electric performance car brand producing premium EVs with uncompromising design - publicly traded on NASDAQ (PSNY).",
+    "description": "Polestar is a Swedish electric vehicle manufacturer established as an independent brand in 2017 through a joint venture between Volvo Cars and Geely Holding. Headquartered in Torslanda, Sweden, the company produces premium electric cars including the Polestar 2, Polestar 3, and Polestar 4, with the Polestar 5 and Polestar 6 in development. Polestar operates an asset-light model, using manufacturing facilities owned by Volvo and Geely across Sweden, China, and the United States. Polestar went public on NASDAQ in June 2022 under the ticker PSNY, with ownership held by PSD Investment (44%), Geely Holding (22%), Volvo Cars (16%), and public shareholders (18%).",
+    "founded_year": 2017,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/polestarcars",
+    "twitter": "https://twitter.com/PolestarCars",
+    "facebook": null,
+    "header_tags": ["Electric Vehicles", "Swedish EVs", "Premium EVs", "NASDAQ: PSNY", "Performance Cars"],
+    "languages": ["English", "Swedish"],
+    "is_hiring": 0,
+    "industries_served": ["Automotive", "Luxury Vehicles", "Consumer Transportation"],
+    "awards": [],
+    "timezones": ["GMT+01:00 (Berlin)"],
+    "focus_breakdown": [
+      {"name": "Consumer / Premium Buyers", "percentage": 100}
+    ],
+    "clients_summary": null,
+    "client_logos": null,
+    "faqs": [
+      {
+        "question": "What vehicles does Polestar make?",
+        "answer": "Polestar currently produces the Polestar 2 fastback, Polestar 3 large SUV, and Polestar 4 coupe SUV. The Polestar 5 performance sedan and Polestar 6 roadster are in development."
+      },
+      {
+        "question": "Is Polestar publicly traded?",
+        "answer": "Yes. Polestar Automotive Holding UK PLC trades on NASDAQ under the ticker symbol PSNY. The company went public in June 2022."
+      },
+      {
+        "question": "Who owns Polestar?",
+        "answer": "Polestar is owned by PSD Investment / Li Shufu (44%), Geely Holding (22%), Volvo Cars (16%), and public shareholders (18%)."
+      },
+      {
+        "question": "Where is Polestar headquartered?",
+        "answer": "Polestar's operational headquarters are in Torslanda, Sweden. The company's legal headquarters are in Bristol, England, with a new Gothenburg, Sweden campus under construction."
+      },
+      {
+        "question": "Where are Polestar vehicles manufactured?",
+        "answer": "Polestar uses an asset-light manufacturing model, producing vehicles at facilities owned by Volvo and Geely in China, and at the Volvo Cars plant in South Carolina, USA."
+      }
+    ],
+    "source_urls": [
+      "https://investors.polestar.com/about",
+      "https://en.wikipedia.org/wiki/Polestar",
+      "https://www.crunchbase.com/organization/polestar",
+      "https://macrotrends.net/stocks/charts/PSNY/polestar-automotive-holding-uk/number-of-employees"
+    ]
+  }
+]

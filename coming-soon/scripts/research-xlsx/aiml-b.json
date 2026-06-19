@@ -1,0 +1,862 @@
+[
+  {
+    "name": "Tidio",
+    "slug": "tidio",
+    "category_slug": "ai-chatbot-builders",
+    "listing_mode": "product",
+    "website": "https://www.tidio.com",
+    "email": "support@tidio.com",
+    "phone_code": null,
+    "phone": null,
+    "country_code": "PL",
+    "city": "Szczecin",
+    "state": null,
+    "hq_location": "Szczecin, Poland",
+    "tagline": "AI-powered customer service software combining live chat, chatbot automation, and the Lyro AI agent for e-commerce and SMBs.",
+    "description": "Tidio is a customer service platform founded in 2013 that combines live chat, AI chatbots, and the Lyro AI agent to help small and mid-size businesses handle support at scale. The Lyro AI resolves up to 67% of customer queries automatically in under 6 seconds using the company's own knowledge base. Tidio integrates natively with Shopify, WooCommerce, WordPress, HubSpot, and 30+ other tools, centralising website chat, email, Instagram, and WhatsApp into a single inbox.",
+    "founded_year": 2013,
+    "team_size": "51-200",
+    "linkedin": "https://www.linkedin.com/company/tidio-ltd/",
+    "twitter": "https://x.com/tidiocx",
+    "header_tags": ["AI Chatbot", "Live Chat", "Customer Service", "E-commerce Support", "Lyro AI"],
+    "languages": ["English"],
+    "industries_served": ["E-commerce", "Retail", "SaaS", "Marketing Agencies", "Customer Support", "Small Business"],
+    "use_cases": [
+      "Automated customer support via AI agent",
+      "Live chat for e-commerce websites",
+      "Order status and product Q&A automation",
+      "Lead generation through chat flows",
+      "Omnichannel inbox management",
+      "Support ticket handling and triage",
+      "Proactive chat triggers for visitor engagement"
+    ],
+    "target_company_sizes": ["Freelancers", "Small businesses", "Midsize companies"],
+    "key_features": [
+      "Lyro AI agent resolving up to 67% of queries automatically",
+      "Live chat widget with real-time typing preview",
+      "Multichannel inbox: website, email, Instagram, WhatsApp, Messenger",
+      "Visual chatbot flow builder (Flows)",
+      "Shopify-native integration with order lookup and product recommendations",
+      "Operating hours and auto-assignment rules",
+      "Advanced analytics and conversation reporting",
+      "Macros and canned responses for agent efficiency",
+      "Custom branding and widget customization",
+      "OpenAPI access on higher plans"
+    ],
+    "pricing_model": "freemium",
+    "pricing_tiers": [
+      {
+        "name": "Free",
+        "price": 0,
+        "period": "month",
+        "features": [
+          "50 billable conversations per month",
+          "10 seats",
+          "Live chat and ticketing",
+          "Basic analytics"
+        ]
+      },
+      {
+        "name": "Starter",
+        "price": 24.17,
+        "period": "month",
+        "features": [
+          "100 billable conversations per month",
+          "50 Lyro AI conversations (one-off)",
+          "100 Flows visitors reached",
+          "Operating hours"
+        ]
+      },
+      {
+        "name": "Growth",
+        "price": 49.17,
+        "period": "month",
+        "features": [
+          "Up to 2,000 billable conversations per month",
+          "Advanced analytics",
+          "Automatic chat assignment",
+          "Macros and user permissions"
+        ]
+      },
+      {
+        "name": "Plus",
+        "price": 749,
+        "period": "month",
+        "features": [
+          "Custom billable conversation volume",
+          "Departments and multiproject support",
+          "Custom branding",
+          "Dedicated success manager and OpenAPI access"
+        ]
+      },
+      {
+        "name": "Premium",
+        "price": null,
+        "period": "custom",
+        "features": [
+          "From 3,000 Lyro AI conversations",
+          "Guaranteed 50% Lyro AI resolution rate",
+          "Pay-per-resolution billing",
+          "Mobile SDK and custom analytics"
+        ]
+      }
+    ],
+    "integrations": [
+      {
+        "name": "Shopify",
+        "website": "https://www.shopify.com",
+        "description": "Native deep integration enabling AI-powered order lookup, product recommendations, and shipping status within chat."
+      },
+      {
+        "name": "WordPress",
+        "website": "https://wordpress.org",
+        "description": "One-click no-code plugin install for adding Tidio live chat to any WordPress site."
+      },
+      {
+        "name": "HubSpot",
+        "website": "https://www.hubspot.com",
+        "description": "Syncs contacts, conversation data, and lead information between Tidio and HubSpot CRM."
+      },
+      {
+        "name": "Zapier",
+        "website": "https://zapier.com",
+        "description": "Connects Tidio to 8,000+ apps for custom automation workflows beyond native integrations."
+      },
+      {
+        "name": "Zendesk",
+        "website": "https://www.zendesk.com",
+        "description": "Escalates unresolved Tidio conversations to Zendesk tickets with full chat context."
+      }
+    ],
+    "support_channels": ["Email support", "Help center", "Community forum", "Live chat"],
+    "training_options": ["Documentation", "Video tutorials", "Webinars"],
+    "compliance": ["GDPR"],
+    "pros": [
+      "Generous free plan with 50 conversations per month and 10 seats",
+      "Lyro AI agent resolves a high percentage of queries without human intervention",
+      "Deep Shopify native integration ideal for e-commerce stores",
+      "Easy setup with no-code widget for WordPress and most site builders",
+      "Unified inbox consolidates chat, email, Instagram, WhatsApp, and Messenger",
+      "Transparent per-tier pricing with clear conversation limits"
+    ],
+    "cons": [
+      "Conversation-count billing model can lead to unexpected costs during high-traffic periods",
+      "Lyro AI requires manual FAQ input with no automatic content synchronization",
+      "Limited CRM and advanced marketing tool integration depth compared to dedicated platforms",
+      "AI features are primarily template-based, restricting open-ended custom AI workflows",
+      "Premium plan pricing is opaque and requires contacting sales"
+    ],
+    "starting_price": 0,
+    "starting_price_period": "month",
+    "has_free_trial": 0,
+    "has_free_version": 1,
+    "has_ios_app": 1,
+    "has_android_app": 1,
+    "faqs": [
+      {
+        "question": "What is Lyro AI and how does it differ from a regular chatbot?",
+        "answer": "Lyro is Tidio's conversational AI agent powered by Claude. Unlike rule-based chatbots that follow fixed decision trees, Lyro understands natural language and generates contextual answers from your knowledge base, resolving up to 67% of queries automatically without pre-written scripts."
+      },
+      {
+        "question": "Does Tidio have a free plan?",
+        "answer": "Yes. Tidio's free plan includes 50 billable conversations per month, 10 seats, live chat, ticketing, and basic analytics with no time limit."
+      },
+      {
+        "question": "Which e-commerce platforms does Tidio support?",
+        "answer": "Tidio has native integrations with Shopify, WooCommerce, BigCommerce, and Adobe Commerce (Magento), with deeper AI features on Shopify including order-status lookups and product recommendations."
+      },
+      {
+        "question": "Can Tidio handle multiple messaging channels in one inbox?",
+        "answer": "Yes. Tidio centralises conversations from your website chat, email, Instagram Direct, Facebook Messenger, and WhatsApp into a single shared inbox."
+      },
+      {
+        "question": "Is Tidio GDPR compliant?",
+        "answer": "Yes. Tidio is GDPR compliant and provides data processing agreements for EU customers."
+      }
+    ],
+    "source_urls": [
+      "https://www.tidio.com/pricing/",
+      "https://www.tidio.com/about/",
+      "https://www.tidio.com/integrations/",
+      "https://tracxn.com/d/companies/tidio/__DZdr3Dr0qroXCNzKiyjAX2B36HUau5O2i0sgrKdLIvc"
+    ]
+  },
+  {
+    "name": "Botpress",
+    "slug": "botpress",
+    "category_slug": "ai-chatbot-builders",
+    "listing_mode": "product",
+    "website": "https://botpress.com",
+    "email": "info@botpress.com",
+    "phone_code": null,
+    "phone": null,
+    "country_code": "CA",
+    "city": "Montreal",
+    "state": "QC",
+    "hq_location": "Montreal, QC, Canada",
+    "tagline": "Enterprise-grade open-source AI agent platform for building, deploying, and managing customer support chatbots across all channels.",
+    "description": "Botpress is an enterprise AI agent platform founded in 2017 by Sylvain Perron in Quebec, Canada. The platform has deployed over 750,000 AI agents across web, WhatsApp, Slack, Teams, and Messenger, powering customer support for companies of all sizes. Botpress offers a visual drag-and-drop studio, a built-in LLM inference engine, human handoff, and knowledge-base RAG - all without per-seat or per-AI-usage fees on paid plans. It is open-source at its core and supports self-hosted or cloud deployment.",
+    "founded_year": 2017,
+    "team_size": "51-200",
+    "linkedin": "https://www.linkedin.com/company/botpress/",
+    "twitter": "https://x.com/getbotpress",
+    "header_tags": ["AI Chatbot Builder", "Autonomous Agents", "Customer Support", "Open Source", "Enterprise AI"],
+    "languages": ["English"],
+    "industries_served": ["Customer Support", "E-commerce", "Financial Services", "Healthcare", "SaaS", "Retail", "Technology"],
+    "use_cases": [
+      "Automated customer support on website and messaging apps",
+      "WhatsApp Business chatbot deployment",
+      "Internal IT helpdesk automation",
+      "Lead qualification and sales chatbot",
+      "Knowledge-base FAQ bot with RAG",
+      "Human handoff for escalated support tickets",
+      "Multi-channel bot from a single configuration"
+    ],
+    "target_company_sizes": ["Freelancers", "Small businesses", "Midsize companies", "Enterprises"],
+    "key_features": [
+      "Visual drag-and-drop bot studio (Botpress Studio)",
+      "LLMz custom inference engine with LLM-agnostic architecture",
+      "Knowledge Base with RAG for document and URL ingestion",
+      "Multi-channel deployment: web, WhatsApp, Slack, Teams, Messenger, Telegram",
+      "Human handoff with full conversation context to live agents",
+      "AI Transition intent classification without manual training phrases",
+      "Built-in Botpress Desk AI helpdesk module",
+      "Role-based access control (RBAC) on Team plan",
+      "Self-hosted or managed cloud deployment options",
+      "Unlimited bots on all paid plans (as of May 2026)"
+    ],
+    "pricing_model": "freemium",
+    "pricing_tiers": [
+      {
+        "name": "Free",
+        "price": 0,
+        "period": "month",
+        "features": [
+          "100 conversations per month",
+          "3 AI agents",
+          "1 seat",
+          "AI usage included"
+        ]
+      },
+      {
+        "name": "Plus",
+        "price": 150,
+        "period": "month",
+        "features": [
+          "Unlimited bots",
+          "WhatsApp and white-label webchat",
+          "Best for solo operators and small teams",
+          "No per-seat fees"
+        ]
+      },
+      {
+        "name": "Team",
+        "price": 750,
+        "period": "month",
+        "features": [
+          "Unlimited bots and unlimited seats",
+          "RBAC and team analytics",
+          "Conversation routing",
+          "Priority support"
+        ]
+      },
+      {
+        "name": "Enterprise",
+        "price": null,
+        "period": "custom",
+        "features": [
+          "Voice channel support",
+          "Dedicated support and SLAs",
+          "Custom data residency",
+          "SSO and advanced security"
+        ]
+      }
+    ],
+    "integrations": [
+      {
+        "name": "Zendesk",
+        "website": "https://www.zendesk.com",
+        "description": "Manages and escalates support tickets directly from the Botpress agent to Zendesk with full context."
+      },
+      {
+        "name": "Slack",
+        "website": "https://slack.com",
+        "description": "Enables the AI agent to send and receive messages, handle inquiries, and trigger actions inside Slack channels."
+      },
+      {
+        "name": "WhatsApp Business",
+        "website": "https://business.whatsapp.com",
+        "description": "Deploy bots on WhatsApp including support for WhatsApp Message Templates for outbound messaging."
+      },
+      {
+        "name": "Microsoft Teams",
+        "website": "https://www.microsoft.com/en-us/microsoft-teams/group-chat-software",
+        "description": "Runs Botpress AI agents natively inside Microsoft Teams for internal or customer-facing support."
+      }
+    ],
+    "support_channels": ["Email support", "Help center", "Community forum", "Documentation"],
+    "training_options": ["Documentation", "Video tutorials", "Community forum"],
+    "compliance": ["GDPR", "SOC 2"],
+    "pros": [
+      "Open-source core with no vendor lock-in and self-hosting option",
+      "LLM-agnostic - switch between OpenAI, Anthropic, and other providers easily",
+      "No per-seat or per-AI-usage fees on paid plans reduces cost predictability risk",
+      "750,000+ deployed agents demonstrates proven scale at enterprise level",
+      "Visual studio lowers the barrier for non-developer bot builders",
+      "Free plan available with no time limit for prototyping"
+    ],
+    "cons": [
+      "Free plan hard-capped at 100 conversations with no add-on option",
+      "Jump from Plus ($150/month) to Team ($750/month) is steep for growing teams",
+      "Advanced features like voice channel only available on Enterprise custom pricing",
+      "May require developer knowledge for complex custom integrations",
+      "Pricing changed significantly in May 2026 - older plan comparisons may be inaccurate"
+    ],
+    "starting_price": 0,
+    "starting_price_period": "month",
+    "has_free_trial": 0,
+    "has_free_version": 1,
+    "has_ios_app": 0,
+    "has_android_app": 0,
+    "faqs": [
+      {
+        "question": "Is Botpress open source?",
+        "answer": "Yes. Botpress has an open-source core that you can self-host. The commercial cloud plans (Plus, Team, Enterprise) add managed hosting, priority support, and enterprise features on top of the open-source foundation."
+      },
+      {
+        "question": "How many conversations does the free plan include?",
+        "answer": "The free plan includes 100 conversations per month, 3 AI agents, and 1 seat. It is a hard cap with no paid add-ons available on the free tier."
+      },
+      {
+        "question": "Which messaging channels can I deploy Botpress bots on?",
+        "answer": "Botpress supports webchat widget, WhatsApp Business, Facebook Messenger, Instagram, Telegram, Slack, Microsoft Teams, and more from a single bot configuration."
+      },
+      {
+        "question": "Does Botpress charge per seat?",
+        "answer": "No. As of May 2026, paid plans (Plus and Team) do not charge per seat or per AI usage, making costs more predictable as your team grows."
+      },
+      {
+        "question": "Can Botpress hand off to a human agent?",
+        "answer": "Yes. Botpress has a built-in human handoff feature that escalates unresolved conversations to live agents with full conversation context preserved."
+      }
+    ],
+    "source_urls": [
+      "https://botpress.com/pricing",
+      "https://botpress.com/blog/pricing-update-may-2026",
+      "https://www.linkedin.com/company/botpress/",
+      "https://www.highperformr.ai/company/botpress"
+    ]
+  },
+  {
+    "name": "FlutterFlow",
+    "slug": "flutterflow",
+    "category_slug": "ai-app-builders",
+    "listing_mode": "product",
+    "website": "https://flutterflow.io",
+    "email": "info@flutterflow.io",
+    "phone_code": null,
+    "phone": null,
+    "country_code": "US",
+    "city": "Mountain View",
+    "state": "CA",
+    "hq_location": "Mountain View, CA, US",
+    "tagline": "Visual app development platform for building cross-platform mobile, web, and desktop apps with AI assistance and full Flutter code export.",
+    "description": "FlutterFlow is a visual no-code and low-code app builder founded in 2020 by former Google engineers Alex Greaves and Abel Mengistu. It enables developers, designers, and non-technical founders to build production-ready Flutter apps for iOS, Android, and web using a drag-and-drop canvas with 200+ pre-built UI components. FlutterFlow natively integrates with Firebase, Supabase, REST APIs, and Stripe, and exports clean, ownable Flutter source code with no vendor lock-in. The platform has over 3.3 million users and is backed by Y Combinator and Google Ventures.",
+    "founded_year": 2020,
+    "team_size": "51-200",
+    "linkedin": "https://www.linkedin.com/company/flutterflow",
+    "twitter": "https://x.com/flutterflow",
+    "header_tags": ["No-Code App Builder", "Flutter", "Cross-Platform", "Visual Development", "AI App Builder"],
+    "languages": ["English"],
+    "industries_served": ["SaaS", "E-commerce", "Healthcare", "Education", "Fintech", "Startups", "Enterprise", "Consumer Apps"],
+    "use_cases": [
+      "Rapid mobile app prototyping and production deployment",
+      "Building iOS and Android apps without writing Flutter code",
+      "Launching web apps from a single codebase",
+      "Team collaboration on app design and logic",
+      "Exporting Flutter source code for developer handoff",
+      "Integrating Firebase or Supabase backends visually",
+      "Creating enterprise internal tools quickly"
+    ],
+    "target_company_sizes": ["Freelancers", "Small businesses", "Midsize companies", "Enterprises"],
+    "key_features": [
+      "Drag-and-drop WYSIWYG canvas with 200+ pre-built UI components",
+      "Action Flow Editor for visual logic and business rules",
+      "Native Firebase integration (Auth, Firestore, Storage, Functions, Analytics)",
+      "Native Supabase integration with real-time PostgreSQL sync",
+      "REST API, GraphQL, and Swagger/OpenAPI import support",
+      "GitHub integration and branch-based collaboration on Growth and above",
+      "One-click deployment to App Store, Play Store, and web",
+      "Full Flutter source code export with no vendor lock-in",
+      "Figma frame import for design-to-app workflows",
+      "AI-assisted design features for faster layout generation"
+    ],
+    "pricing_model": "freemium",
+    "pricing_tiers": [
+      {
+        "name": "Free",
+        "price": 0,
+        "period": "month",
+        "features": [
+          "Up to 2 projects",
+          "1,000+ templates",
+          "Firebase and Supabase integration",
+          "Web publishing"
+        ]
+      },
+      {
+        "name": "Basic",
+        "price": 39,
+        "period": "month",
+        "features": [
+          "Unlimited projects",
+          "Flutter code download",
+          "APK download",
+          "One-click App Store and Play Store deployment"
+        ]
+      },
+      {
+        "name": "Growth",
+        "price": 80,
+        "period": "month",
+        "features": [
+          "GitHub integration",
+          "Real-time collaboration for 2 users",
+          "2 open branches per project",
+          "One-click localization and VS Code extension"
+        ]
+      },
+      {
+        "name": "Business",
+        "price": 150,
+        "period": "month",
+        "features": [
+          "Collaboration up to 5 users",
+          "5 open branches per project",
+          "Figma frame import and custom typography",
+          "CLI access and up to 3 automated tests"
+        ]
+      }
+    ],
+    "integrations": [
+      {
+        "name": "Firebase",
+        "website": "https://firebase.google.com",
+        "description": "Native integration covering Authentication, Firestore, Cloud Storage, Cloud Functions, and Analytics for full backend support."
+      },
+      {
+        "name": "Supabase",
+        "website": "https://supabase.com",
+        "description": "Visual connection to Supabase PostgreSQL with real-time data sync, authentication, and file storage."
+      },
+      {
+        "name": "Stripe",
+        "website": "https://stripe.com",
+        "description": "Built-in Stripe payment integration for adding in-app purchases and subscription billing without custom code."
+      },
+      {
+        "name": "GitHub",
+        "website": "https://github.com",
+        "description": "Two-way GitHub sync for version control, CI/CD pipelines, and developer handoff on Growth and above plans."
+      },
+      {
+        "name": "Figma",
+        "website": "https://www.figma.com",
+        "description": "Import Figma frames directly into FlutterFlow to convert design mockups into functional app screens."
+      }
+    ],
+    "support_channels": ["Email support", "Help center", "Community forum", "Video tutorials"],
+    "training_options": ["Documentation", "Video tutorials", "Community forum", "Templates library"],
+    "compliance": [],
+    "pros": [
+      "Exports clean, ownable Flutter source code with zero vendor lock-in",
+      "Native Firebase and Supabase integration covers 80% of standard app backend needs",
+      "3.3M+ users and enterprise adoption at Google, Amazon, and Microsoft validates production readiness",
+      "One-click cross-platform deployment to iOS App Store, Google Play, and web",
+      "Generous free plan with 2 projects and core integrations included",
+      "Active community and extensive template library accelerate development"
+    ],
+    "cons": [
+      "Code export and App Store deployment require a paid plan (Basic at $39/month)",
+      "Real-time collaboration limited to 2 users on Growth plan and 5 on Business",
+      "Saves ~25% with annual billing but monthly rates are the only option shown upfront",
+      "Complex custom logic or animations may still require Flutter developer knowledge",
+      "Limited built-in automated testing (up to 3 tests on Business plan)"
+    ],
+    "starting_price": 0,
+    "starting_price_period": "month",
+    "has_free_trial": 0,
+    "has_free_version": 1,
+    "has_ios_app": 0,
+    "has_android_app": 0,
+    "faqs": [
+      {
+        "question": "Do I need to know how to code to use FlutterFlow?",
+        "answer": "No. FlutterFlow is designed for both developers and non-technical users. You can build full apps using the visual drag-and-drop editor without writing code. Developers can also add custom Dart code or custom actions when needed."
+      },
+      {
+        "question": "Can I export the Flutter source code?",
+        "answer": "Yes, on the Basic plan ($39/month) and above. You get clean, readable Flutter code that you own completely - there is no lock-in and you can continue building outside FlutterFlow."
+      },
+      {
+        "question": "Which backends does FlutterFlow support natively?",
+        "answer": "FlutterFlow natively integrates with Firebase (Auth, Firestore, Storage, Functions) and Supabase (PostgreSQL, Auth, Storage). It also supports REST APIs, GraphQL, and Swagger/OpenAPI imports for any custom backend."
+      },
+      {
+        "question": "Can FlutterFlow apps be published to both iOS App Store and Google Play?",
+        "answer": "Yes. FlutterFlow supports one-click deployment to the iOS App Store, Google Play Store, and web from a single codebase on the Basic plan and above."
+      },
+      {
+        "question": "Does FlutterFlow support team collaboration?",
+        "answer": "Yes. The Growth plan ($80/month) supports 2 users with GitHub integration and branch-based workflows. The Business plan ($150/month) expands this to 5 users with 5 open branches per project."
+      }
+    ],
+    "source_urls": [
+      "https://flutterflow.io/pricing",
+      "https://flutterflow.io/",
+      "https://www.linkedin.com/company/flutterflow",
+      "https://tracxn.com/d/companies/flutterflow/__Ms72jQbt5tXTvqB3SppWlyA1Kw8pn_ZgrMJPqPihZGM"
+    ]
+  },
+  {
+    "name": "Lindy",
+    "slug": "lindy",
+    "category_slug": "autonomous-agents",
+    "listing_mode": "product",
+    "website": "https://www.lindy.ai",
+    "email": "info@lindy.ai",
+    "phone_code": null,
+    "phone": null,
+    "country_code": "US",
+    "city": "San Francisco",
+    "state": "CA",
+    "hq_location": "San Francisco, CA, US",
+    "tagline": "No-code AI agent builder that creates autonomous AI employees to manage email, meetings, scheduling, CRM updates, and workflows across 4,000+ apps.",
+    "description": "Lindy is a no-code AI automation platform founded in 2023 by Flo Crivello, a former Uber product manager, and headquartered in San Francisco. The platform lets users build AI agents - called Lindies - by describing tasks in plain English, without writing any code. Each agent handles inbox triage, meeting notes, calendar coordination, CRM updates, and custom workflows by connecting to over 4,000 apps including Gmail, Slack, HubSpot, Salesforce, and Zoom. Trusted by over 400,000 professionals, Lindy has raised $50M in funding from Menlo Ventures, Coatue, and Battery Ventures.",
+    "founded_year": 2023,
+    "team_size": "11-50",
+    "linkedin": "https://www.linkedin.com/company/lindyai",
+    "twitter": "https://x.com/getlindy",
+    "header_tags": ["Autonomous AI Agents", "No-Code Automation", "AI Employee", "Workflow Automation", "Email AI"],
+    "languages": ["English"],
+    "industries_served": ["Sales", "Customer Success", "Recruiting", "Marketing", "Consulting", "SaaS", "Real Estate"],
+    "use_cases": [
+      "Inbox triage and AI email drafting in user's voice",
+      "Automated meeting notes and follow-up generation",
+      "Calendar coordination and scheduling management",
+      "CRM updates from meeting and call context",
+      "Lead research and prospect outreach",
+      "Customer support routing and response drafting",
+      "Multi-agent chained workflows for complex business processes",
+      "iMessage/SMS-based task delegation on mobile"
+    ],
+    "target_company_sizes": ["Freelancers", "Small businesses", "Midsize companies", "Enterprises"],
+    "key_features": [
+      "Natural language agent creation - describe tasks in plain English",
+      "Inbox management with AI triage, prioritization, and reply drafting",
+      "Automated meeting lifecycle support - prep, attendance, notes, follow-ups",
+      "Calendar coordination with focus-time protection and rescheduling",
+      "Multi-agent workflows with handoffs between specialized Lindies",
+      "Human approval checkpoints insertable in any workflow",
+      "CRM auto-update from conversation and meeting context",
+      "iMessage/SMS mobile delegation interface",
+      "Training on personal communication style and brand voice",
+      "4,000+ app integrations via native connectors"
+    ],
+    "pricing_model": "subscription",
+    "pricing_tiers": [
+      {
+        "name": "Plus",
+        "price": 49.99,
+        "period": "month",
+        "features": [
+          "Up to 2 inboxes",
+          "Standard usage",
+          "Meeting scheduling and email drafting",
+          "100+ integrations"
+        ]
+      },
+      {
+        "name": "Pro",
+        "price": 99.99,
+        "period": "month",
+        "features": [
+          "Everything in Plus",
+          "3x usage multiplier",
+          "Up to 3 inboxes",
+          "Computer use capability"
+        ]
+      },
+      {
+        "name": "Max",
+        "price": 199.99,
+        "period": "month",
+        "features": [
+          "Everything in Pro",
+          "7x usage multiplier",
+          "Up to 5 inboxes",
+          "Maximum throughput for power users"
+        ]
+      },
+      {
+        "name": "Enterprise",
+        "price": null,
+        "period": "custom",
+        "features": [
+          "SSO and SCIM provisioning",
+          "HIPAA compliance and BAA",
+          "Audit logs and dedicated support",
+          "Custom integrations"
+        ]
+      }
+    ],
+    "integrations": [
+      {
+        "name": "Gmail",
+        "website": "https://mail.google.com",
+        "description": "Core integration for inbox triage, AI reply drafting, and email-based workflow triggers."
+      },
+      {
+        "name": "HubSpot",
+        "website": "https://www.hubspot.com",
+        "description": "Automatically updates CRM records, logs meeting notes, and notifies on new company additions."
+      },
+      {
+        "name": "Slack",
+        "website": "https://slack.com",
+        "description": "Routes Gmail messages to Slack DMs, delivers workflow notifications, and triggers agent actions from Slack."
+      },
+      {
+        "name": "Google Calendar",
+        "website": "https://calendar.google.com",
+        "description": "Manages scheduling, calendar coordination, and focus-time blocking on behalf of the user."
+      },
+      {
+        "name": "Salesforce",
+        "website": "https://www.salesforce.com",
+        "description": "Updates Salesforce records with meeting context and automates sales follow-up workflows."
+      }
+    ],
+    "support_channels": ["Email support", "Help center", "Documentation"],
+    "training_options": ["Documentation", "Video tutorials", "Templates"],
+    "compliance": ["HIPAA (Enterprise)", "SOC 2"],
+    "pros": [
+      "Plain-English agent setup requires no coding or complex workflow configuration",
+      "Multi-agent chaining handles sophisticated multi-step business processes",
+      "4,000+ app integrations cover virtually all common business tools",
+      "Human approval checkpoints maintain control without blocking automation",
+      "HIPAA compliance available on Enterprise for healthcare use cases",
+      "7-day free trial on all plans with no credit card required"
+    ],
+    "cons": [
+      "No permanent free plan - all usage requires a paid subscription after 7-day trial",
+      "Pricing is month-to-month only with no annual billing option to reduce cost",
+      "Usage limits (inboxes and throughput) are tied to plan tier, not individual agent count",
+      "Relatively young product (founded 2023) with an evolving feature set",
+      "Computer use feature limited to Pro plan ($99.99/month) and above"
+    ],
+    "starting_price": 49.99,
+    "starting_price_period": "month",
+    "has_free_trial": 1,
+    "has_free_version": 0,
+    "has_ios_app": 1,
+    "has_android_app": 0,
+    "faqs": [
+      {
+        "question": "What is a 'Lindy' and how do I create one?",
+        "answer": "A Lindy is an AI agent you create by describing what you want it to do in plain English. You specify triggers (e.g., 'when I receive an email from a prospect'), actions (e.g., 'draft a reply in my tone'), and connected apps - no coding required."
+      },
+      {
+        "question": "Does Lindy have a free plan?",
+        "answer": "No. Lindy is a paid product starting at $49.99/month. Every plan includes a 7-day free trial with full access to Plus features and no credit card required."
+      },
+      {
+        "question": "Can multiple Lindies work together on a single task?",
+        "answer": "Yes. Lindy supports multi-agent workflows where specialized agents hand off tasks to each other. For example, a lead research Lindy can pass enriched data to an outreach Lindy automatically."
+      },
+      {
+        "question": "Is Lindy HIPAA compliant?",
+        "answer": "HIPAA compliance with a Business Associate Agreement (BAA) is available on the Enterprise plan. Standard plans (Plus, Pro, Max) are not HIPAA certified."
+      },
+      {
+        "question": "Which AI model does Lindy use?",
+        "answer": "Lindy uses multiple underlying LLMs to power its agents. The specific model is not publicly disclosed, as Lindy abstracts model selection to optimize for each task type."
+      },
+      {
+        "question": "Can Lindy manage my calendar and meetings automatically?",
+        "answer": "Yes. Lindy can coordinate scheduling, send calendar invites, protect focus time, prepare meeting briefs, take meeting notes, and send follow-ups - all autonomously once configured."
+      }
+    ],
+    "source_urls": [
+      "https://www.lindy.ai/pricing",
+      "https://www.lindy.ai/",
+      "https://www.linkedin.com/company/lindyai",
+      "https://tracxn.com/d/companies/lindy/__FJe0QVe6UcRHtdiPJpmyRG3livSd4eIGsIxMxz-kNPI"
+    ]
+  },
+  {
+    "name": "MagicSchool",
+    "slug": "magicschool",
+    "category_slug": "ai-course-builders",
+    "listing_mode": "product",
+    "website": "https://www.magicschool.ai",
+    "email": "support@magicschool.ai",
+    "phone_code": null,
+    "phone": null,
+    "country_code": "US",
+    "city": "Denver",
+    "state": "CO",
+    "hq_location": "Denver, CO, US",
+    "tagline": "AI platform for K-12 educators with 80+ tools for lesson planning, assessment creation, IEP drafting, and student feedback - FERPA and COPPA compliant.",
+    "description": "MagicSchool is an AI platform for K-12 educators founded in 2023 by Adeel Khan, a former teacher and assistant principal, in Denver, Colorado. The platform offers over 80 AI-powered tools designed specifically for teachers, covering lesson planning, standards-aligned assessments, IEP generation, differentiated instruction, rubric creation, and student communication drafts. MagicSchool is trusted by over 5.5 million educators and has raised $65.3 million in funding. It is FERPA, COPPA, SOC 2, and GDPR compliant, and student data is never sold or used to train AI models.",
+    "founded_year": 2023,
+    "team_size": "201-500",
+    "linkedin": "https://www.linkedin.com/company/magicschool-ai/",
+    "twitter": "https://x.com/magicschoolai",
+    "header_tags": ["AI for Teachers", "K-12 Education", "Lesson Planning AI", "EdTech", "AI Course Builder"],
+    "languages": ["English"],
+    "industries_served": ["K-12 Education", "Higher Education", "School Districts", "Special Education", "EdTech"],
+    "use_cases": [
+      "AI-generated standards-aligned lesson plans",
+      "Rubric and assessment creation in seconds",
+      "IEP (Individualized Education Program) drafting for special education",
+      "Differentiated instruction materials for diverse learners",
+      "Student feedback and class writing feedback generation",
+      "Parent and family communication drafts",
+      "Professional development content for educators",
+      "Student AI interaction rooms with safety moderation"
+    ],
+    "target_company_sizes": ["Freelancers", "Small businesses", "Midsize companies", "Enterprises"],
+    "key_features": [
+      "80+ AI teacher tools covering planning, assessment, communication, and productivity",
+      "50+ AI student tools accessible in moderated Student Rooms",
+      "Standards-aligned lesson plan generation in any subject or grade level",
+      "Rubric Generator producing rubrics in seconds instead of hours",
+      "IEP and differentiated instruction drafting for special education needs",
+      "LMS integrations with Google Classroom, Canvas, Schoology, and Clever",
+      "One-click export to Google Docs and Microsoft Word",
+      "Smart alerts preventing PII leaks, bias, and factual errors",
+      "Multilingual content generation for multilingual learner support",
+      "SOC 2 Type 2 and FERPA/COPPA/GDPR compliance"
+    ],
+    "pricing_model": "freemium",
+    "pricing_tiers": [
+      {
+        "name": "Free",
+        "price": 0,
+        "period": "month",
+        "features": [
+          "80+ AI teacher tools",
+          "50+ AI student tools",
+          "Unlimited student rooms",
+          "FERPA, COPPA, SOC 2, GDPR compliant"
+        ]
+      },
+      {
+        "name": "Plus",
+        "price": 12.99,
+        "period": "month",
+        "features": [
+          "Unlimited AI generations",
+          "Unlimited output history and editing (Studio Mode)",
+          "MagicSchool Labs early access",
+          "Self-paced professional development resources"
+        ]
+      },
+      {
+        "name": "Enterprise",
+        "price": null,
+        "period": "custom",
+        "features": [
+          "Institution-wide staff access with SSO and SIS/LMS integration",
+          "Custom tool creation and tool management controls",
+          "Enhanced student AI moderation and co-branding",
+          "White-glove onboarding and dedicated customer success manager"
+        ]
+      }
+    ],
+    "integrations": [
+      {
+        "name": "Google Classroom",
+        "website": "https://classroom.google.com",
+        "description": "One-click export of lesson plans, rubrics, and resources directly into Google Classroom assignments."
+      },
+      {
+        "name": "Canvas",
+        "website": "https://www.instructure.com/canvas",
+        "description": "LMS integration for pushing AI-generated content into Canvas courses and enabling SSO sign-in."
+      },
+      {
+        "name": "Schoology",
+        "website": "https://www.instructure.com/schoology",
+        "description": "SSO integration and embedded Student Rooms within Schoology course pages for district-wide deployment."
+      },
+      {
+        "name": "Microsoft 365",
+        "website": "https://www.microsoft.com/microsoft-365",
+        "description": "One-click export of generated content to Microsoft Word, and SSO via Microsoft accounts."
+      },
+      {
+        "name": "Clever",
+        "website": "https://clever.com",
+        "description": "Roster sync and single sign-on for district-level deployments through Clever identity management."
+      }
+    ],
+    "support_channels": ["Email support", "Help center", "Live chat", "Self-serve resources"],
+    "training_options": ["Documentation", "Video tutorials", "Self-paced professional development", "Webinars", "White-glove onboarding (Enterprise)"],
+    "compliance": ["FERPA", "COPPA", "GDPR", "SOC 2 Type 2", "Common Sense Privacy Certified"],
+    "pros": [
+      "80+ teacher-specific tools address the full range of educator workloads in one platform",
+      "Educators report saving 7-10 hours per week on planning and administrative tasks",
+      "Strong privacy posture - FERPA, COPPA, SOC 2, GDPR, and Common Sense Privacy Seal (93%)",
+      "Student data is never sold or used to train AI models",
+      "Generous free plan gives individual teachers access to all core tools at no cost",
+      "Deep LMS integrations (Google, Canvas, Schoology) fit existing school workflows"
+    ],
+    "cons": [
+      "AI outputs are often text-heavy and static, lacking interactive or multimedia elements for student engagement",
+      "Premade AI templates can feel restrictive for teachers wanting open-ended AI exploration",
+      "Generation load times can be slow during peak usage",
+      "Grade-level calibration of AI-generated content is not always accurate and requires teacher review",
+      "Enterprise pricing is opaque and requires a sales conversation for district-level budgeting"
+    ],
+    "starting_price": 0,
+    "starting_price_period": "month",
+    "has_free_trial": 0,
+    "has_free_version": 1,
+    "has_ios_app": 0,
+    "has_android_app": 0,
+    "faqs": [
+      {
+        "question": "Is MagicSchool free for teachers?",
+        "answer": "Yes. The Free plan gives individual teachers unlimited access to all 80+ AI teacher tools and 50+ student tools with no time limit. The Plus plan at $12.99/month (or $99.96/year) adds unlimited generations, Studio Mode editing, and early access to new features."
+      },
+      {
+        "question": "Is MagicSchool safe to use with student data?",
+        "answer": "Yes. MagicSchool is FERPA, COPPA, GDPR, and SOC 2 Type 2 certified. Student data is never sold, shared with third parties for advertising, or used to train AI models. The platform holds a 93% privacy rating from Common Sense Education."
+      },
+      {
+        "question": "Which LMS platforms does MagicSchool integrate with?",
+        "answer": "MagicSchool integrates with Google Classroom, Canvas, Schoology, and Clever for SSO and roster sync. Teachers can export content directly to Google Docs and Microsoft Word with one click."
+      },
+      {
+        "question": "Can students use MagicSchool directly?",
+        "answer": "Yes. Teachers can create moderated Student Rooms where students interact with AI tools in a safe, teacher-controlled environment. The platform includes smart alerts that prevent PII leaks and flag biased or factually incorrect AI outputs."
+      },
+      {
+        "question": "What is the difference between the Free and Plus plans?",
+        "answer": "The Free plan has daily generation limits on some tools. The Plus plan ($12.99/month or $99.96/year) removes all generation limits, adds unlimited output history, Studio Mode for editing outputs, early access to MagicSchool Labs, and self-paced professional development content."
+      },
+      {
+        "question": "Does MagicSchool offer district-wide licensing?",
+        "answer": "Yes. The Enterprise plan provides institution-wide staff access, full SIS/LMS integration via Clever and ClassLink, custom tool creation, district branding, advanced data dashboards, and white-glove onboarding with a dedicated customer success manager."
+      }
+    ],
+    "source_urls": [
+      "https://www.magicschool.ai/pricing",
+      "https://www.magicschool.ai/about-us",
+      "https://www.linkedin.com/company/magicschool-ai/",
+      "https://coloradobiz.com/entrepreneur-of-2025-adeel-khan-founder-and-ceo-magicschool-ai-denver/"
+    ]
+  }
+]

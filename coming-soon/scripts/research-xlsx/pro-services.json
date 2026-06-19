@@ -1,0 +1,714 @@
+[
+  {
+    "name": "HOK",
+    "slug": "hok",
+    "category_slug": "architects-2",
+    "listing_mode": "company",
+    "website": "https://www.hok.com",
+    "email": "info@hok.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "St. Louis",
+    "state": "MO",
+    "hq_location": "St. Louis, MO, US",
+    "tagline": "A global design, architecture, engineering, and planning firm with 28 offices across three continents.",
+    "description": "HOK was founded in 1955 by George Hellmuth, Gyo Obata, and George Kassabaum in St. Louis, Missouri. The firm is one of the largest architecture and design practices in North America, with approximately 1,800 professionals across 28 offices. HOK designs sports venues, airports, healthcare facilities, corporate campuses, and cultural institutions, including Mercedes-Benz Stadium in Atlanta and the National Air and Space Museum in Washington, D.C. The firm has been recognized by TIME Magazine as a Most Influential Company and by Fast Company as a Most Innovative Company.",
+    "founded_year": 1955,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/hok",
+    "twitter": "https://twitter.com/HOKNetwork",
+    "facebook": null,
+    "header_tags": ["Architecture", "Engineering", "Interior Design", "Urban Planning", "Sustainable Design"],
+    "languages": ["English"],
+    "industries_served": ["Commercial Real Estate", "Healthcare", "Sports and Recreation", "Aviation and Transportation", "Education", "Government", "Hospitality", "Science and Technology"],
+    "hourly_rate": "$200 - $300 / hr",
+    "min_project_size": "$50,000+",
+    "common_project_size": null,
+    "service_lines": [
+      {"name": "Architecture", "percentage": 50},
+      {"name": "Interior Design", "percentage": 20},
+      {"name": "Planning and Urban Design", "percentage": 15},
+      {"name": "Engineering", "percentage": 10},
+      {"name": "Landscape Architecture", "percentage": 5}
+    ],
+    "focus_breakdown": [
+      {"name": "Enterprise (>$1B)", "percentage": 70},
+      {"name": "Midmarket ($10M - $1B)", "percentage": 25},
+      {"name": "Small Business (<$10M)", "percentage": 5}
+    ],
+    "awards": [
+      {"name": "TIME 100 Most Influential Company", "year": 2022},
+      {"name": "Fast Company Most Innovative Company", "year": 2024},
+      {"name": "Metropolis Magazine Firm of the Year - Planet Positive Awards", "year": 2025},
+      {"name": "AIA California Firm Award", "year": 2019}
+    ],
+    "clients_summary": "HOK's clients include major corporations such as Apple, Microsoft, Google, and Mercedes-Benz, as well as universities and government agencies globally.",
+    "client_logos": [
+      {"name": "Mercedes-Benz", "website": "https://www.mercedes-benz.com"},
+      {"name": "Apple", "website": "https://www.apple.com"},
+      {"name": "Google", "website": "https://www.google.com"},
+      {"name": "Stanford University", "website": "https://www.stanford.edu"}
+    ],
+    "timezones": ["GMT-06:00 (Central)"],
+    "is_hiring": 0,
+    "faqs": [
+      {
+        "question": "What sectors does HOK specialize in?",
+        "answer": "HOK specializes in architecture and design for aviation, corporate, education, government, healthcare, hospitality, science and technology, sports and recreation, and mixed-use developments."
+      },
+      {
+        "question": "How many offices does HOK have?",
+        "answer": "HOK operates 28 offices across North America, Europe, and Asia, including locations in London, Dubai, Hong Kong, and Mumbai."
+      },
+      {
+        "question": "Is HOK committed to sustainable design?",
+        "answer": "Yes. HOK is a recognized leader in sustainable design - their Mercedes-Benz Stadium in Atlanta was the first LEED Platinum certified sports stadium in the U.S., and the firm has been named a Most Innovative Company by Fast Company for its sustainability work."
+      },
+      {
+        "question": "What is HOK's approach to project delivery?",
+        "answer": "HOK takes an integrated, collaborative approach, combining architecture, engineering, interior design, and planning under one roof to deliver holistic design solutions tailored to each client's specific needs and goals."
+      }
+    ],
+    "source_urls": [
+      "https://www.hok.com/about/",
+      "https://en.wikipedia.org/wiki/HOK_(firm)",
+      "https://www.linkedin.com/company/hok",
+      "https://twitter.com/HOKNetwork"
+    ]
+  },
+  {
+    "name": "inDinero",
+    "slug": "indinero",
+    "category_slug": "bookkeepers",
+    "listing_mode": "company",
+    "website": "https://www.indinero.com",
+    "email": "info@indinero.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Portland",
+    "state": "OR",
+    "hq_location": "Portland, OR, US",
+    "tagline": "Integrated accounting, tax, and CFO services for startups and growing businesses.",
+    "description": "inDinero was founded in 2009 by Jessica Mah and Andy Su as a Y Combinator-backed startup, originally as accounting software, later evolving into a full-service financial operations firm. The company provides bookkeeping, tax preparation, CFO advisory, payroll, and financial planning to startups and small-to-midsize businesses across tech, healthcare, SaaS, and construction. inDinero has grown through acquisitions including tempCFO and mAccounting, offering both software and expert human accountants.",
+    "founded_year": 2009,
+    "team_size": "51-200",
+    "linkedin": "https://www.linkedin.com/company/indinero",
+    "twitter": "https://x.com/indinero",
+    "facebook": null,
+    "header_tags": ["Bookkeeping", "Accounting", "CFO Services", "Tax", "Startups"],
+    "languages": ["English"],
+    "industries_served": ["Technology", "Healthcare", "SaaS", "Construction", "E-commerce", "Crypto", "Professional Services", "Nonprofits"],
+    "hourly_rate": "$150 - $199 / hr",
+    "min_project_size": "$5,000+",
+    "common_project_size": null,
+    "service_lines": [
+      {"name": "Bookkeeping and Accounting", "percentage": 35},
+      {"name": "Business Tax Services", "percentage": 25},
+      {"name": "CFO Advisory Services", "percentage": 25},
+      {"name": "Financial Planning and Analysis", "percentage": 10},
+      {"name": "Payroll Services", "percentage": 5}
+    ],
+    "focus_breakdown": [
+      {"name": "Small Business (<$10M)", "percentage": 55},
+      {"name": "Midmarket ($10M - $1B)", "percentage": 40},
+      {"name": "Enterprise (>$1B)", "percentage": 5}
+    ],
+    "awards": [],
+    "clients_summary": null,
+    "client_logos": null,
+    "timezones": ["GMT-08:00 (Pacific)"],
+    "is_hiring": 0,
+    "faqs": [
+      {
+        "question": "What types of businesses does inDinero serve?",
+        "answer": "inDinero primarily serves startups, small businesses, and growing mid-market companies across technology, healthcare, SaaS, construction, and e-commerce sectors."
+      },
+      {
+        "question": "Does inDinero offer fractional CFO services?",
+        "answer": "Yes. inDinero provides on-demand CFO advisory services including strategic financial planning, due diligence support, investor relations preparation, and profitability optimization."
+      },
+      {
+        "question": "What is included in inDinero's accounting plans?",
+        "answer": "Plans include bookkeeping, bank reconciliations, payroll, monthly financial statements, and dedicated accountants. Higher tiers add accrual accounting, controller services, and CFO consulting."
+      },
+      {
+        "question": "Can inDinero help with R&D tax credits?",
+        "answer": "Yes. inDinero's tax team handles R&D tax credit identification and filing, as well as sales and use tax planning, business structure optimization, and annual business tax returns."
+      }
+    ],
+    "source_urls": [
+      "https://www.indinero.com/services/",
+      "https://en.wikipedia.org/wiki/InDinero",
+      "https://www.crunchbase.com/organization/indinero",
+      "https://www.linkedin.com/company/indinero"
+    ]
+  },
+  {
+    "name": "Perkins and Will",
+    "slug": "perkins-and-will",
+    "category_slug": "architects-2",
+    "listing_mode": "company",
+    "website": "https://perkinswill.com",
+    "email": "info@perkinswill.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Chicago",
+    "state": "IL",
+    "hq_location": "Chicago, IL, US",
+    "tagline": "A research-based, interdisciplinary architecture and design firm operating studios in 24 cities worldwide.",
+    "description": "Perkins and Will was founded in 1935 by Lawrence Perkins and Philip Will Jr. in Chicago, Illinois, and is one of the largest architecture and design firms globally with approximately 2,600 professionals. The firm is widely recognized as a global leader in sustainable, research-driven design across healthcare, science and technology, education, workplace, and urban design. A subsidiary of Dar Al-Handasah since 1986, the firm has received numerous accolades including Interior Design's 'Sustainability Giant' designation and Architizer's 'Best Sustainable Firm' award.",
+    "founded_year": 1935,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/perkins-will",
+    "twitter": "https://twitter.com/perkinswill",
+    "facebook": null,
+    "header_tags": ["Architecture", "Healthcare Design", "Sustainable Design", "Education", "Urban Planning"],
+    "languages": ["English"],
+    "industries_served": ["Healthcare", "Science and Technology", "Education", "Commercial Workplace", "Government", "Sports and Recreation", "Residential", "Transportation"],
+    "hourly_rate": "$200 - $300 / hr",
+    "min_project_size": "$50,000+",
+    "common_project_size": null,
+    "service_lines": [
+      {"name": "Architecture", "percentage": 45},
+      {"name": "Interior Design", "percentage": 20},
+      {"name": "Planning and Urban Design", "percentage": 15},
+      {"name": "Branded Environments", "percentage": 10},
+      {"name": "Landscape Architecture", "percentage": 10}
+    ],
+    "focus_breakdown": [
+      {"name": "Enterprise (>$1B)", "percentage": 60},
+      {"name": "Midmarket ($10M - $1B)", "percentage": 35},
+      {"name": "Small Business (<$10M)", "percentage": 5}
+    ],
+    "awards": [
+      {"name": "Interior Design Sustainability Giant", "year": 2024},
+      {"name": "Architizer Best Sustainable Firm", "year": 2023},
+      {"name": "Metropolis Firm of the Year", "year": 2022},
+      {"name": "Texas Society of Architects Architecture Firm Award - Dallas Studio", "year": 2024}
+    ],
+    "clients_summary": "Perkins and Will serves major universities, healthcare systems, government agencies, and Fortune 500 corporations across all six inhabited continents.",
+    "client_logos": null,
+    "timezones": ["GMT-06:00 (Central)"],
+    "is_hiring": 0,
+    "faqs": [
+      {
+        "question": "What is Perkins and Will known for?",
+        "answer": "Perkins and Will is globally recognized for sustainable, evidence-based design across healthcare, science and technology labs, higher education, corporate workplaces, and public sector buildings."
+      },
+      {
+        "question": "How many offices does Perkins and Will operate?",
+        "answer": "The firm operates design studios in 24 cities across six continents, including offices in Chicago, New York, London, Vancouver, and Copenhagen."
+      },
+      {
+        "question": "What sustainability credentials does Perkins and Will hold?",
+        "answer": "Perkins and Will is consistently ranked among the world's most sustainable design firms. They integrate LEED, WELL, and other certification frameworks into projects and conduct original research to advance climate action in the built environment."
+      },
+      {
+        "question": "Does Perkins and Will work on healthcare projects?",
+        "answer": "Yes. Healthcare is one of the firm's core practice areas. Recent projects include UT Southwestern's New Pediatric Campus, which won the Gold Touchstone Award from the Center for Health Design for evidence-based design."
+      }
+    ],
+    "source_urls": [
+      "https://perkinswill.com/",
+      "https://en.wikipedia.org/wiki/Perkins%26Will",
+      "https://www.linkedin.com/company/perkins-will",
+      "https://perkinswill.com/news/2024-design-awards-recap/"
+    ]
+  },
+  {
+    "name": "Stantec",
+    "slug": "stantec",
+    "category_slug": "civil-engineering-firms",
+    "listing_mode": "company",
+    "website": "https://www.stantec.com",
+    "email": "info@stantec.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "CA",
+    "city": "Edmonton",
+    "state": "AB",
+    "hq_location": "Edmonton, AB, CA",
+    "tagline": "A global design and consulting firm committed to designing with community in mind across infrastructure, environment, and buildings.",
+    "description": "Stantec was founded in 1954 in Edmonton, Alberta as D.R. Stanley Associates and has grown into one of the world's top engineering and design firms with over 30,000 employees across 450+ locations on six continents. Publicly traded on both the TSX and NYSE under the ticker STN, the firm provides planning, engineering, architecture, environmental sciences, and project management to public and private clients. Stantec was ranked eighth overall on Corporate Knights' 2025 100 Most Sustainable Corporations in the World, and first among industry peers.",
+    "founded_year": 1954,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/stantec",
+    "twitter": "https://x.com/Stantec",
+    "facebook": null,
+    "header_tags": ["Civil Engineering", "Environmental Consulting", "Infrastructure", "Water", "Buildings"],
+    "languages": ["English", "French"],
+    "industries_served": ["Transportation", "Water and Wastewater", "Energy", "Environment", "Buildings", "Mining and Minerals", "Government", "Healthcare"],
+    "hourly_rate": "$200 - $300 / hr",
+    "min_project_size": "$50,000+",
+    "common_project_size": null,
+    "service_lines": [
+      {"name": "Infrastructure and Transportation", "percentage": 30},
+      {"name": "Environmental Services", "percentage": 25},
+      {"name": "Buildings", "percentage": 20},
+      {"name": "Water", "percentage": 15},
+      {"name": "Energy and Resources", "percentage": 10}
+    ],
+    "focus_breakdown": [
+      {"name": "Enterprise (>$1B)", "percentage": 50},
+      {"name": "Midmarket ($10M - $1B)", "percentage": 35},
+      {"name": "Small Business (<$10M)", "percentage": 15}
+    ],
+    "awards": [
+      {"name": "Corporate Knights 100 Most Sustainable Corporations - Top 10", "year": 2025},
+      {"name": "TIME World's Most Sustainable Companies", "year": 2024},
+      {"name": "Newsweek Canada's Most Responsible Companies", "year": 2025},
+      {"name": "Canadian Consulting Engineering Awards - Award of Excellence (4 projects)", "year": 2024}
+    ],
+    "clients_summary": "Stantec supports public agencies, municipal governments, healthcare systems, energy companies, and private developers across North America and internationally.",
+    "client_logos": null,
+    "timezones": ["GMT-07:00 (Mountain)"],
+    "is_hiring": 0,
+    "faqs": [
+      {
+        "question": "What types of projects does Stantec handle?",
+        "answer": "Stantec handles infrastructure, transportation, water treatment, environmental remediation, buildings design, energy projects, and urban planning for both public and private sector clients worldwide."
+      },
+      {
+        "question": "Is Stantec publicly traded?",
+        "answer": "Yes. Stantec is listed on both the Toronto Stock Exchange and the New York Stock Exchange under the ticker symbol STN."
+      },
+      {
+        "question": "How large is Stantec's global footprint?",
+        "answer": "Stantec operates from over 450 locations across six continents and employs more than 30,000 professionals worldwide."
+      },
+      {
+        "question": "What sustainability recognition has Stantec received?",
+        "answer": "Stantec was ranked 8th overall on Corporate Knights' 2025 100 Most Sustainable Corporations in the World, and first among engineering and design industry peers. They were also named to TIME's World's Most Sustainable Companies list in 2024."
+      }
+    ],
+    "source_urls": [
+      "https://www.stantec.com/en/about/our-evolution",
+      "https://en.wikipedia.org/wiki/Stantec",
+      "https://www.stantec.com/en/news/2025/3-stantec-supported-brownfield-projects-honored-2025-phoenix-awards",
+      "https://www.linkedin.com/company/stantec"
+    ]
+  },
+  {
+    "name": "WSP",
+    "slug": "wsp",
+    "category_slug": "civil-engineering-firms",
+    "listing_mode": "company",
+    "website": "https://www.wsp.com",
+    "email": "info@wsp.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "CA",
+    "city": "Montreal",
+    "state": "QC",
+    "hq_location": "Montreal, QC, CA",
+    "tagline": "One of the world's largest professional services firms, delivering transformative infrastructure and environmental solutions in 50 countries.",
+    "description": "WSP Global traces its origins to 1959 and has grown through major acquisitions - including Parsons Brinckerhoff (2014), Golder Associates (2020), and TRC Companies (2026) - into a firm of 83,000 employees operating across approximately 500 offices in 50 countries. Listed on the Toronto Stock Exchange (TSX: WSP) and part of the S&P/TSX 60, the company reported revenues of C$16.17 billion in 2024. WSP provides consulting across transportation, buildings, environment, energy, water, and advisory services, and was named to the S&P Global Sustainability Yearbook 2024.",
+    "founded_year": 1959,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/wsp-global",
+    "twitter": "https://x.com/wsp",
+    "facebook": null,
+    "header_tags": ["Civil Engineering", "Environmental Consulting", "Transportation", "Energy", "Infrastructure"],
+    "languages": ["English", "French"],
+    "industries_served": ["Transportation", "Buildings and Real Estate", "Energy and Resources", "Environment", "Water", "Mining", "Government", "Defense"],
+    "hourly_rate": "$200 - $300 / hr",
+    "min_project_size": "$50,000+",
+    "common_project_size": null,
+    "service_lines": [
+      {"name": "Transportation and Infrastructure", "percentage": 30},
+      {"name": "Property and Buildings", "percentage": 25},
+      {"name": "Earth and Environment", "percentage": 20},
+      {"name": "Energy and Resources", "percentage": 15},
+      {"name": "Strategic Advisory", "percentage": 10}
+    ],
+    "focus_breakdown": [
+      {"name": "Enterprise (>$1B)", "percentage": 60},
+      {"name": "Midmarket ($10M - $1B)", "percentage": 30},
+      {"name": "Small Business (<$10M)", "percentage": 10}
+    ],
+    "awards": [
+      {"name": "S&P Global Sustainability Yearbook", "year": 2024},
+      {"name": "Corporate Knights Global 100 - Ranked #12", "year": 2024},
+      {"name": "RoSPA Gold Achievement Award (Middle East - sixth consecutive)", "year": 2025},
+      {"name": "Canada's Outstanding CEO of the Year (CEO Alexandre L'Heureux)", "year": 2024}
+    ],
+    "clients_summary": "WSP serves governments, transit authorities, developers, utilities, and industrial operators on over 200,000 active projects globally.",
+    "client_logos": null,
+    "timezones": ["GMT-05:00 (Eastern)"],
+    "is_hiring": 0,
+    "faqs": [
+      {
+        "question": "How large is WSP globally?",
+        "answer": "WSP employs approximately 83,000 professionals across ~500 offices in 50 countries, making it one of the largest professional services and engineering consulting firms in the world."
+      },
+      {
+        "question": "What markets does WSP serve?",
+        "answer": "WSP serves clients in transportation, buildings, earth and environment, energy and resources, water, and strategic advisory sectors for both public and private organizations."
+      },
+      {
+        "question": "Is WSP publicly traded?",
+        "answer": "Yes. WSP Global is listed on the Toronto Stock Exchange under the symbol WSP and is a constituent of the S&P/TSX 60 index."
+      },
+      {
+        "question": "What are some notable WSP projects?",
+        "answer": "WSP's portfolio includes the Jerusalem Light Rail, Auckland's City Rail Link, the 22 Bishopsgate skyscraper in London, and Perth Arena in Australia."
+      }
+    ],
+    "source_urls": [
+      "https://www.wsp.com/en-gl/who-we-are/our-history",
+      "https://en.wikipedia.org/wiki/WSP_Global",
+      "https://www.linkedin.com/company/wsp-global",
+      "https://x.com/wsp"
+    ]
+  },
+  {
+    "name": "Robert Walters",
+    "slug": "robert-walters",
+    "category_slug": "hr-consultants",
+    "listing_mode": "company",
+    "website": "https://www.robertwalters.com",
+    "email": "info@robertwalters.com",
+    "phone_code": "+44",
+    "phone": null,
+    "country_code": "GB",
+    "city": "London",
+    "state": null,
+    "hq_location": "London, GB",
+    "tagline": "A global specialist recruitment consultancy placing professionals across finance, technology, legal, HR, and engineering in 31 countries.",
+    "description": "Robert Walters was founded in 1985 by Robert Walters in London, originally focused on placing accountants, and has grown into a global specialist recruitment business listed on the London Stock Exchange (LSE: RWA) with operations in 31 countries. The firm recruits permanent, contract, and interim professionals across accounting and finance, banking, technology, HR, legal, sales, marketing, supply chain, and engineering. In 2024, Robert Walters unified its three operating brands into a single 'Robert Walters' brand. Revenue was £781.1 million in 2025.",
+    "founded_year": 1985,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/robert-walters",
+    "twitter": "https://x.com/RobertWaltersPR",
+    "facebook": null,
+    "header_tags": ["Specialist Recruitment", "Executive Search", "HR Consulting", "Contract Staffing", "Global Talent"],
+    "languages": ["English"],
+    "industries_served": ["Financial Services", "Technology", "Legal", "Engineering", "Healthcare", "Sales and Marketing", "Supply Chain", "Human Resources"],
+    "hourly_rate": "$100 - $149 / hr",
+    "min_project_size": "$10,000+",
+    "common_project_size": null,
+    "service_lines": [
+      {"name": "Permanent Recruitment", "percentage": 55},
+      {"name": "Contract and Interim Staffing", "percentage": 30},
+      {"name": "Executive Search", "percentage": 10},
+      {"name": "Recruitment Process Outsourcing", "percentage": 5}
+    ],
+    "focus_breakdown": [
+      {"name": "Enterprise (>$1B)", "percentage": 55},
+      {"name": "Midmarket ($10M - $1B)", "percentage": 35},
+      {"name": "Small Business (<$10M)", "percentage": 10}
+    ],
+    "awards": [],
+    "clients_summary": "Robert Walters places professionals for leading employers across financial services, technology, and professional services in 31 countries.",
+    "client_logos": null,
+    "timezones": ["GMT+00:00 (London)"],
+    "is_hiring": 0,
+    "faqs": [
+      {
+        "question": "What disciplines does Robert Walters recruit for?",
+        "answer": "Robert Walters specializes in accounting and finance, banking, technology, HR, legal, engineering, sales and marketing, and supply chain disciplines across permanent, contract, and interim roles."
+      },
+      {
+        "question": "In how many countries does Robert Walters operate?",
+        "answer": "Robert Walters operates in 31 countries across Europe, Asia-Pacific, the Americas, and the Middle East, giving clients access to a truly global talent pool."
+      },
+      {
+        "question": "Is Robert Walters publicly listed?",
+        "answer": "Yes. Robert Walters plc has been listed on the London Stock Exchange (LSE: RWA) since July 1996."
+      },
+      {
+        "question": "Does Robert Walters offer volume or outsourced recruitment?",
+        "answer": "Yes. Beyond specialist individual placement, Robert Walters offers recruitment process outsourcing (RPO) and volume hiring solutions tailored to large organisations' talent acquisition needs."
+      }
+    ],
+    "source_urls": [
+      "https://www.robertwalters.com/",
+      "https://en.wikipedia.org/wiki/Robert_Walters_plc",
+      "https://www.linkedin.com/company/robert-walters",
+      "https://x.com/RobertWaltersPR"
+    ]
+  },
+  {
+    "name": "Willis Towers Watson",
+    "slug": "willis-towers-watson",
+    "category_slug": "employee-benefits-consultants",
+    "listing_mode": "company",
+    "website": "https://www.wtwco.com",
+    "email": "info@wtwco.com",
+    "phone_code": "+44",
+    "phone": null,
+    "country_code": "GB",
+    "city": "London",
+    "state": null,
+    "hq_location": "London, GB",
+    "tagline": "A global advisory, broking, and solutions company helping organisations improve performance through effective risk and people management.",
+    "description": "Willis Towers Watson (WTW) was formed in January 2016 through the merger of Willis Group and Towers Watson, tracing roots to Henry Willis and Co. founded in the 1840s. The company employs approximately 48,900 people and reported revenue of $9.93 billion in 2024. WTW operates through two segments - Health, Wealth and Career (59% of revenue) and Risk and Broking (41%) - serving the majority of Fortune 1000 companies with employee benefits consulting, actuarial services, risk advisory, and insurance broking. The firm is listed on NASDAQ (WTW) and included in the S&P 500.",
+    "founded_year": 2016,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/wtwcorporate",
+    "twitter": "https://x.com/WTWcorporate",
+    "facebook": null,
+    "header_tags": ["Employee Benefits", "Risk Advisory", "Actuarial Services", "HR Consulting", "Insurance Broking"],
+    "languages": ["English"],
+    "industries_served": ["Financial Services", "Healthcare", "Technology", "Manufacturing", "Energy", "Government and Public Sector", "Education", "Retail"],
+    "hourly_rate": "$200 - $300 / hr",
+    "min_project_size": "$50,000+",
+    "common_project_size": null,
+    "service_lines": [
+      {"name": "Health and Benefits Consulting", "percentage": 30},
+      {"name": "Risk and Insurance Broking", "percentage": 30},
+      {"name": "Retirement and Actuarial", "percentage": 20},
+      {"name": "Talent and Rewards", "percentage": 15},
+      {"name": "Investment Consulting", "percentage": 5}
+    ],
+    "focus_breakdown": [
+      {"name": "Enterprise (>$1B)", "percentage": 75},
+      {"name": "Midmarket ($10M - $1B)", "percentage": 22},
+      {"name": "Small Business (<$10M)", "percentage": 3}
+    ],
+    "awards": [],
+    "clients_summary": "WTW serves the majority of Fortune 1000 companies across every major industry, advising on employee benefits, risk management, and workforce strategy.",
+    "client_logos": null,
+    "timezones": ["GMT+00:00 (London)"],
+    "is_hiring": 0,
+    "faqs": [
+      {
+        "question": "What are WTW's two main business segments?",
+        "answer": "WTW operates through Health, Wealth and Career (employee benefits, retirement, talent, and rewards consulting) and Risk and Broking (insurance brokerage, risk advisory, and analytical services)."
+      },
+      {
+        "question": "How large is Willis Towers Watson?",
+        "answer": "WTW has approximately 48,900 employees operating from hundreds of offices worldwide, and reported revenue of $9.93 billion in 2024."
+      },
+      {
+        "question": "What is WTW's LifeSight product?",
+        "answer": "LifeSight is a UK-based defined contribution master trust managed by WTW with over £24 billion in assets under management, designed to simplify pension provision for employer clients."
+      },
+      {
+        "question": "Does WTW serve mid-sized businesses as well as large corporations?",
+        "answer": "Yes. While WTW's core clients are large multinationals and Fortune 1000 companies, the firm also advises mid-market companies and public sector organisations on risk management and employee benefits."
+      }
+    ],
+    "source_urls": [
+      "https://www.wtwco.com/en-us/about-us/our-history",
+      "https://en.wikipedia.org/wiki/Willis_Towers_Watson",
+      "https://www.linkedin.com/company/wtwcorporate",
+      "https://x.com/WTWcorporate"
+    ]
+  },
+  {
+    "name": "Perella Weinberg",
+    "slug": "perella-weinberg",
+    "category_slug": "boutique-investment-banks",
+    "listing_mode": "company",
+    "website": "https://pwpartners.com",
+    "email": "info@pwpartners.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "New York",
+    "state": "NY",
+    "hq_location": "New York, NY, US",
+    "tagline": "A leading independent investment bank specializing in M&A advisory, restructuring, and capital markets for complex, high-value transactions.",
+    "description": "Perella Weinberg Partners (PWP) was founded in 2006 by Joseph R. Perella, Peter A. Weinberg, and Tarek Abdel-Meguid to provide conflict-free advisory services to corporations, institutions, and governments. The firm employs approximately 700 professionals across offices in New York, London, Paris, Munich, Houston, San Francisco, Los Angeles, Chicago, Denver, and Calgary. PWP went public in 2021 (NASDAQ: PWP) and reported revenue of $878 million in 2024. The firm is known for advising on landmark transactions including Medtronic's $42.9 billion acquisition of Covidien and AT&T's $108.7 billion acquisition of Time Warner.",
+    "founded_year": 2006,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/perella-weinberg-partners",
+    "twitter": "https://x.com/realPWP",
+    "facebook": null,
+    "header_tags": ["M&A Advisory", "Restructuring", "Investment Banking", "Capital Markets", "Shareholder Advisory"],
+    "languages": ["English", "French", "German"],
+    "industries_served": ["Technology", "Healthcare", "Energy", "Financial Services", "Consumer and Retail", "Industrial", "Real Estate", "Media and Telecommunications"],
+    "hourly_rate": "$200 - $300 / hr",
+    "min_project_size": "$50,000+",
+    "common_project_size": null,
+    "service_lines": [
+      {"name": "Mergers and Acquisitions Advisory", "percentage": 55},
+      {"name": "Restructuring and Liability Management", "percentage": 25},
+      {"name": "Capital Markets Advisory", "percentage": 10},
+      {"name": "Shareholder Engagement and Activism Defense", "percentage": 10}
+    ],
+    "focus_breakdown": [
+      {"name": "Enterprise (>$1B)", "percentage": 90},
+      {"name": "Midmarket ($10M - $1B)", "percentage": 10},
+      {"name": "Small Business (<$10M)", "percentage": 0}
+    ],
+    "awards": [
+      {"name": "Institutional Investor Outsourced CIO of the Year (PWP Agility)", "year": 2017},
+      {"name": "Institutional Investor Outsourced CIO of the Year (PWP Agility)", "year": 2015},
+      {"name": "Institutional Investor Outsourced CIO of the Year (PWP Agility)", "year": 2014}
+    ],
+    "clients_summary": "Perella Weinberg Partners advises major corporations and governments on their most complex M&A, restructuring, and capital markets transactions globally.",
+    "client_logos": null,
+    "timezones": ["GMT-05:00 (Eastern)"],
+    "is_hiring": 0,
+    "faqs": [
+      {
+        "question": "What is Perella Weinberg Partners best known for?",
+        "answer": "PWP is recognized for providing conflict-free, independent advisory on high-value M&A transactions and complex restructurings, with a track record that includes deals such as Medtronic-Covidien ($42.9B) and AT&T-Time Warner ($108.7B)."
+      },
+      {
+        "question": "Is Perella Weinberg publicly traded?",
+        "answer": "Yes. Perella Weinberg Partners went public in 2021 and trades on NASDAQ under the ticker symbol PWP."
+      },
+      {
+        "question": "Does PWP offer restructuring advisory?",
+        "answer": "Yes. PWP has a dedicated restructuring practice that advises companies and creditors on debt exchanges, financings, distressed M&A, balance sheet recapitalizations, and Chapter 11 situations."
+      },
+      {
+        "question": "How many offices does Perella Weinberg have?",
+        "answer": "PWP operates from 10 offices globally, including New York (headquarters), London, Paris, Munich, Houston, San Francisco, Los Angeles, Chicago, Denver, and Calgary."
+      }
+    ],
+    "source_urls": [
+      "https://pwpartners.com/",
+      "https://en.wikipedia.org/wiki/Perella_Weinberg_Partners",
+      "https://www.linkedin.com/company/perella-weinberg-partners",
+      "https://x.com/realPWP"
+    ]
+  },
+  {
+    "name": "Marcum",
+    "slug": "marcum",
+    "category_slug": "audit-firms",
+    "listing_mode": "company",
+    "website": "https://www.marcumllp.com",
+    "email": "info@marcumllp.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "New York",
+    "state": "NY",
+    "hq_location": "New York, NY, US",
+    "tagline": "A top-15 U.S. accounting and advisory firm serving middle-market and entrepreneurial businesses - now part of CBIZ following a 2024 acquisition.",
+    "description": "Marcum LLP was founded in 1951 and grew to become one of the largest independent accounting firms in the U.S., serving middle-market and entrepreneurial companies, nonprofits, and high net worth individuals from 43 offices nationwide. In November 2024, CBIZ completed a $2.3 billion acquisition of Marcum, with the attest business transferred to Mayer Hoffman McCann. The combined CBIZ-Marcum entity became the largest full-service professional services advisor of its kind in the U.S. with approximately $2.8 billion in combined annualized revenue. Marcum had approximately 3,500 professionals and ranked 13th among U.S. accounting firms prior to the acquisition.",
+    "founded_year": 1951,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/marcum-llp",
+    "twitter": "https://x.com/MarcumLLP",
+    "facebook": null,
+    "header_tags": ["Audit and Assurance", "Tax", "Advisory", "Middle Market", "Accounting"],
+    "languages": ["English"],
+    "industries_served": ["Technology", "Financial Services", "Real Estate", "Healthcare", "Nonprofit", "Manufacturing", "Construction", "Private Equity"],
+    "hourly_rate": "$150 - $199 / hr",
+    "min_project_size": "$10,000+",
+    "common_project_size": null,
+    "service_lines": [
+      {"name": "Audit and Assurance", "percentage": 40},
+      {"name": "Tax Services", "percentage": 35},
+      {"name": "Advisory Services", "percentage": 20},
+      {"name": "Technology Solutions", "percentage": 5}
+    ],
+    "focus_breakdown": [
+      {"name": "Midmarket ($10M - $1B)", "percentage": 60},
+      {"name": "Enterprise (>$1B)", "percentage": 25},
+      {"name": "Small Business (<$10M)", "percentage": 15}
+    ],
+    "awards": [],
+    "clients_summary": "Marcum served over 35,000 clients including privately held and publicly registered companies, private equity funds, and nonprofit organizations across the U.S.",
+    "client_logos": null,
+    "timezones": ["GMT-05:00 (Eastern)"],
+    "is_hiring": 0,
+    "faqs": [
+      {
+        "question": "Is Marcum LLP still independent?",
+        "answer": "No. In November 2024, CBIZ completed a $2.3 billion acquisition of Marcum. The non-attest business was acquired by CBIZ, while the attest business was transferred to Mayer Hoffman McCann (MHM). The combined CBIZ-Marcum entity is now the largest full-service professional services advisor of its kind in the U.S."
+      },
+      {
+        "question": "What services did Marcum provide?",
+        "answer": "Marcum offered a full spectrum of audit and assurance, tax, advisory, technology solutions, and executive search services, with deep expertise serving middle-market, entrepreneurial, and private equity-backed businesses."
+      },
+      {
+        "question": "What industries did Marcum focus on?",
+        "answer": "Marcum had dedicated practices in technology, real estate, financial services, healthcare, nonprofit, manufacturing, construction, and private equity portfolio companies."
+      },
+      {
+        "question": "How large was Marcum before the CBIZ merger?",
+        "answer": "Prior to the November 2024 acquisition, Marcum had approximately 3,500 professionals across 43 U.S. offices and approximately $1.2 billion in annual revenue, ranking 13th among U.S. accounting firms."
+      }
+    ],
+    "source_urls": [
+      "https://www.marcumllp.com/",
+      "https://www.accountingtoday.com/news/cbiz-completes-marcum-acquisition",
+      "https://www.linkedin.com/company/marcum-llp",
+      "https://www.prnewswire.com/news-releases/cbiz-to-acquire-marcum-302210703.html"
+    ]
+  },
+  {
+    "name": "CliftonLarsonAllen",
+    "slug": "cliftonlarsonallen",
+    "category_slug": "audit-firms",
+    "listing_mode": "company",
+    "website": "https://www.claconnect.com",
+    "email": "info@claconnect.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Minneapolis",
+    "state": "MN",
+    "hq_location": "Minneapolis, MN, US",
+    "tagline": "The eighth-largest U.S. accounting firm delivering integrated audit, tax, outsourcing, consulting, and wealth advisory services to industry-focused clients.",
+    "description": "CliftonLarsonAllen (CLA) was formed in 2012 through the merger of Clifton Gunderson LLP (est. 1960) and LarsonAllen LLP (est. 1953) and has grown to become the eighth-largest accountancy firm in the United States. With approximately 8,120 employees across more than 130 U.S. locations and a global affiliation through CLA Global, the firm generated $2 billion in revenue in 2024. CLA delivers audit, tax, outsourcing, consulting, and wealth advisory services with deep industry specialization in healthcare, construction, agribusiness, financial institutions, and nonprofits. CLA has been Great Place to Work certified for four consecutive years.",
+    "founded_year": 2012,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/cliftonlarsonallen",
+    "twitter": "https://x.com/CLAconnect",
+    "facebook": null,
+    "header_tags": ["Audit", "Tax", "Consulting", "Wealth Advisory", "Outsourcing"],
+    "languages": ["English"],
+    "industries_served": ["Healthcare", "Construction", "Agribusiness", "Financial Institutions", "Nonprofit", "Manufacturing", "Real Estate", "Government"],
+    "hourly_rate": "$150 - $199 / hr",
+    "min_project_size": "$10,000+",
+    "common_project_size": null,
+    "service_lines": [
+      {"name": "Audit and Assurance", "percentage": 35},
+      {"name": "Tax Services", "percentage": 30},
+      {"name": "Consulting", "percentage": 20},
+      {"name": "Outsourcing", "percentage": 10},
+      {"name": "Wealth Advisory", "percentage": 5}
+    ],
+    "focus_breakdown": [
+      {"name": "Midmarket ($10M - $1B)", "percentage": 55},
+      {"name": "Enterprise (>$1B)", "percentage": 25},
+      {"name": "Small Business (<$10M)", "percentage": 20}
+    ],
+    "awards": [
+      {"name": "Accounting Today Top 100 Firms", "year": 2026},
+      {"name": "Great Place to Work Certified", "year": 2026},
+      {"name": "Forbes Best Employers for Company Culture", "year": 2025},
+      {"name": "Construction Executive Top 50 Accounting Firms - Ranked #2", "year": 2024},
+      {"name": "Barron's Top 100 RIA Firms - Ranked 49th", "year": 2025}
+    ],
+    "clients_summary": "CLA serves over 202,000 clients worldwide through CLA Global, spanning healthcare systems, credit unions, agricultural businesses, nonprofits, and construction contractors.",
+    "client_logos": null,
+    "timezones": ["GMT-06:00 (Central)"],
+    "is_hiring": 0,
+    "faqs": [
+      {
+        "question": "How did CLA come to be?",
+        "answer": "CLA (CliftonLarsonAllen) was formed in 2012 through the merger of two established Midwest accounting firms - Clifton Gunderson LLP (founded 1960) and LarsonAllen LLP (founded 1953)."
+      },
+      {
+        "question": "What industries does CLA specialize in?",
+        "answer": "CLA has deep industry-focused practices in healthcare, construction, agribusiness, financial institutions, nonprofits, manufacturing, real estate, and government, offering clients specialized knowledge beyond general accounting."
+      },
+      {
+        "question": "Does CLA offer wealth management services?",
+        "answer": "Yes. CLA Wealth Advisors provides investment management, financial planning, and retirement planning services. The practice was ranked 49th on Barron's Top 100 RIA Firms list in 2025."
+      },
+      {
+        "question": "How does CLA's global network work?",
+        "answer": "CLA is an independent member of CLA Global, one of the top 15 global accounting and advisory networks by fee income, providing clients with access to professionals in countries around the world."
+      }
+    ],
+    "source_urls": [
+      "https://www.claconnect.com/en",
+      "https://en.wikipedia.org/wiki/CliftonLarsonAllen",
+      "https://www.claconnect.com/en/who-we-are/awards-recognition-and-honors",
+      "https://www.linkedin.com/company/cliftonlarsonallen"
+    ]
+  }
+]

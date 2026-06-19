@@ -1,0 +1,738 @@
+[
+  {
+    "name": "Concentrix",
+    "slug": "concentrix",
+    "category_slug": "bpo-companies",
+    "listing_mode": "company",
+    "website": "https://www.concentrix.com",
+    "email": "info@concentrix.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Newark",
+    "state": "CA",
+    "hq_location": "Newark, CA, US",
+    "tagline": "We design, build, and run integrated human + AI operations inside the world's most complex enterprises.",
+    "description": "Concentrix is a global business process outsourcing and customer experience company serving Fortune Global 500 clients across more than 70 countries. Founded as a SYNNEX business unit in 2006, it spun off as an independent public company in 2020 and trades on Nasdaq under CNXC. The company blends digital operations, enterprise technology, data analytics, and strategy consulting to manage billions of human and AI interactions annually.",
+    "founded_year": 2006,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/concentrix/",
+    "twitter": "https://twitter.com/concentrix",
+    "header_tags": ["BPO", "Customer Experience", "AI Operations", "Digital Transformation", "CX Outsourcing"],
+    "languages": ["English"],
+    "faqs": [
+      {
+        "question": "What industries does Concentrix serve?",
+        "answer": "Concentrix serves clients across technology, financial services, retail, healthcare, communications, media, and public sector industries worldwide."
+      },
+      {
+        "question": "Where is Concentrix headquartered?",
+        "answer": "Concentrix is headquartered in Newark, California, with operations in more than 70 countries across six continents."
+      },
+      {
+        "question": "What services does Concentrix provide?",
+        "answer": "Concentrix provides customer experience management, digital operations (sales, marketing, customer service, finance and compliance), enterprise technology, data and analytics, and strategy and design services."
+      },
+      {
+        "question": "Is Concentrix a publicly traded company?",
+        "answer": "Yes. Concentrix trades on the Nasdaq exchange under the ticker symbol CNXC and is ranked #426 on the Fortune 500 (2025)."
+      },
+      {
+        "question": "How large is Concentrix?",
+        "answer": "Concentrix employs approximately 290,000 to 455,000 people globally, depending on the reporting period, and operates roughly 270 locations worldwide."
+      }
+    ],
+    "source_urls": [
+      "https://en.wikipedia.org/wiki/Concentrix",
+      "https://www.concentrix.com/about/",
+      "https://www.linkedin.com/company/concentrix/",
+      "https://ir.concentrix.com/news/news-details/2026/Concentrix-Reports-Fourth-Quarter-and-Fiscal-Year-2025-Results/default.aspx"
+    ],
+    "facebook": null,
+    "is_hiring": 0,
+    "industries_served": ["Technology", "Financial Services", "Healthcare", "Retail", "Communications", "Media", "Public Sector"],
+    "awards": [],
+    "timezones": ["GMT-08:00 (Pacific)"],
+    "focus_breakdown": [
+      {"name": "Enterprise (>$1B)", "percentage": 70},
+      {"name": "Midmarket ($10M - $1B)", "percentage": 25},
+      {"name": "Small Business (<$10M)", "percentage": 5}
+    ],
+    "clients_summary": "Concentrix serves more than 2,000 clients globally, primarily Fortune 500 and Global 500 enterprises across multiple verticals.",
+    "client_logos": null,
+    "hourly_rate": "$100 - $149 / hr",
+    "min_project_size": "$50,000+",
+    "common_project_size": null,
+    "service_lines": [
+      {"name": "Digital Operations (CX, Customer Service, Sales)", "percentage": 50},
+      {"name": "Enterprise Technology & AI", "percentage": 25},
+      {"name": "Data & Analytics", "percentage": 15},
+      {"name": "Strategy & Design", "percentage": 10}
+    ]
+  },
+  {
+    "name": "DOOR3",
+    "slug": "door3",
+    "category_slug": "custom-web-development-companies",
+    "listing_mode": "company",
+    "website": "https://www.door3.com",
+    "email": "info@door3.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "New York",
+    "state": "NY",
+    "hq_location": "New York, NY, US",
+    "tagline": "Independence is the Difference - an independent technology consultancy building lasting digital solutions.",
+    "description": "DOOR3 is an independent technology consultancy and software development firm founded in 2002, headquartered in New York City with offices in Barcelona and Kyiv. The company delivers technology consulting, UX/UI design, custom software and web development, and AI services to clients from startups through Fortune 500 enterprises. Its independence from vendor relationships enables objective technology recommendations and transparent delivery.",
+    "founded_year": 2002,
+    "team_size": "51-200",
+    "linkedin": "https://www.linkedin.com/company/259276",
+    "twitter": "https://twitter.com/door3",
+    "header_tags": ["Technology Consulting", "Custom Web Development", "UX/UI Design", "AI Services", "Digital Strategy"],
+    "languages": ["English"],
+    "faqs": [
+      {
+        "question": "What services does DOOR3 offer?",
+        "answer": "DOOR3 offers technology consulting (discovery, CTO/CIO advisory, digital strategy), UX/UI design, custom software and web/mobile development, project rescue, and AI/agentic AI services."
+      },
+      {
+        "question": "Where is DOOR3 based?",
+        "answer": "DOOR3 is headquartered in New York City (370 Lexington Ave.) with additional offices in Barcelona, Spain, and Kyiv, Ukraine."
+      },
+      {
+        "question": "What is DOOR3's client range?",
+        "answer": "DOOR3 works with clients ranging from startups and mid-market companies to Fortune 500 enterprises, serving diverse industries including finance, healthcare, and retail."
+      },
+      {
+        "question": "Has DOOR3 received any awards?",
+        "answer": "DOOR3 has been named a Game-Changing Software Developer in NYC by Clutch and has appeared on the Clutch 1000 list of top global service providers."
+      }
+    ],
+    "source_urls": [
+      "https://www.door3.com/about-us/",
+      "https://www.linkedin.com/company/259276",
+      "https://www.zoominfo.com/c/door3/353012356",
+      "https://clutch.co/profile/door3"
+    ],
+    "facebook": null,
+    "is_hiring": 0,
+    "industries_served": ["Financial Services", "Healthcare", "Retail", "Media", "Technology", "Nonprofit"],
+    "awards": [
+      {"name": "Clutch 1000 Global Top Service Provider", "year": 2023}
+    ],
+    "timezones": ["GMT-05:00 (Eastern)"],
+    "focus_breakdown": [
+      {"name": "Midmarket ($10M - $1B)", "percentage": 50},
+      {"name": "Enterprise (>$1B)", "percentage": 30},
+      {"name": "Small Business (<$10M)", "percentage": 20}
+    ],
+    "clients_summary": "DOOR3 has served clients including PepsiCo and Leon Market, with a portfolio spanning startups through Fortune 500 enterprises.",
+    "client_logos": [
+      {"name": "PepsiCo", "website": "https://www.pepsico.com"}
+    ],
+    "hourly_rate": "$150 - $199 / hr",
+    "min_project_size": "$25,000+",
+    "common_project_size": null,
+    "service_lines": [
+      {"name": "Custom Software & Web Development", "percentage": 40},
+      {"name": "UX/UI Design", "percentage": 25},
+      {"name": "Technology Consulting & Strategy", "percentage": 25},
+      {"name": "AI & Emerging Technology", "percentage": 10}
+    ]
+  },
+  {
+    "name": "Mutual Mobile",
+    "slug": "mutual-mobile",
+    "category_slug": "android-app-development-companies",
+    "listing_mode": "company",
+    "website": "https://mutualmobile.com",
+    "email": "info@mutualmobile.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Austin",
+    "state": "TX",
+    "hq_location": "Austin, TX, US",
+    "tagline": "End-to-end app development, strategy, and design for next-generation digital experiences.",
+    "description": "Mutual Mobile is an Austin-based digital product agency founded in 2009, now operating as a Grid Dynamics company following its 2022 acquisition. The agency specializes in mobile app development (iOS and Android), AR/VR, IoT, cloud-native development, and UX/UI design for technology startups and Fortune 500 enterprises. Mutual Mobile operates out of Austin, Texas, and Hyderabad, India, with approximately 200 employees across both locations.",
+    "founded_year": 2009,
+    "team_size": "201-500",
+    "linkedin": "https://www.linkedin.com/company/mutual-mobile",
+    "twitter": null,
+    "header_tags": ["Mobile App Development", "Android", "iOS", "AR/VR", "Cloud Native"],
+    "languages": ["English"],
+    "faqs": [
+      {
+        "question": "What services does Mutual Mobile provide?",
+        "answer": "Mutual Mobile provides mobile app development (iOS and Android), AR/VR development, IoT solutions, cloud consulting, enterprise app modernization, web development, and UX/UI design."
+      },
+      {
+        "question": "Is Mutual Mobile an independent company?",
+        "answer": "Mutual Mobile was acquired by Grid Dynamics (NASDAQ: GDYN) in December 2022 and now operates as a Grid Dynamics company, enhancing its digital transformation capabilities."
+      },
+      {
+        "question": "Where does Mutual Mobile operate?",
+        "answer": "Mutual Mobile has its primary office in Austin, Texas, with a development center in Hyderabad, India, serving clients across North America and globally."
+      },
+      {
+        "question": "What industries does Mutual Mobile focus on?",
+        "answer": "Mutual Mobile serves technology, healthcare, automotive, and financial services verticals, working with both startups and Fortune 500 enterprises."
+      }
+    ],
+    "source_urls": [
+      "https://clutch.co/profile/mutual-mobile",
+      "https://www.griddynamics.com/press-releases/grid-dynamics-acquires-mutual-mobile",
+      "https://www.agencyspotter.com/mutual-mobile",
+      "https://www.linkedin.com/company/mutual-mobile"
+    ],
+    "facebook": null,
+    "is_hiring": 0,
+    "industries_served": ["Technology", "Healthcare", "Automotive", "Financial Services", "Media", "Retail"],
+    "awards": [],
+    "timezones": ["GMT-06:00 (Central)"],
+    "focus_breakdown": [
+      {"name": "Enterprise (>$1B)", "percentage": 50},
+      {"name": "Midmarket ($10M - $1B)", "percentage": 35},
+      {"name": "Small Business (<$10M)", "percentage": 15}
+    ],
+    "clients_summary": "Mutual Mobile has built products for Fortune 500 companies including AccuWeather and Builders FirstSource, as well as innovative technology startups.",
+    "client_logos": [
+      {"name": "AccuWeather", "website": "https://www.accuweather.com"},
+      {"name": "Builders FirstSource", "website": "https://www.buildersfirstsource.com"}
+    ],
+    "hourly_rate": "$150 - $199 / hr",
+    "min_project_size": "$25,000+",
+    "common_project_size": null,
+    "service_lines": [
+      {"name": "Mobile App Development (iOS & Android)", "percentage": 35},
+      {"name": "Custom Software Development", "percentage": 25},
+      {"name": "UX/UI & Product Design", "percentage": 20},
+      {"name": "Cloud & DevOps", "percentage": 10},
+      {"name": "AR/VR & Emerging Tech", "percentage": 10}
+    ]
+  },
+  {
+    "name": "Cprime",
+    "slug": "cprime",
+    "category_slug": "cloud-consulting-companies",
+    "listing_mode": "company",
+    "website": "https://www.cprime.com",
+    "email": "info@cprime.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Plano",
+    "state": "TX",
+    "hq_location": "Plano, TX, US",
+    "tagline": "Human-first AI transformation - bridging where enterprises are today to where AI can take them.",
+    "description": "Cprime is an enterprise technology transformation consultancy founded in 2003, backed by Goldman Sachs Asset Management and Everstone Capital. The company has worked with over 2,500 enterprises across 30 countries, including 300+ Fortune 500 companies, and is Atlassian's largest and longest-standing Solution Partner. Cprime's services span agile transformation, cloud migration, AI enablement, DevOps, Atlassian platform implementation, and staffing and talent solutions.",
+    "founded_year": 2003,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/cprime-inc",
+    "twitter": "https://twitter.com/cprimeinc",
+    "header_tags": ["Agile Consulting", "Cloud Migration", "AI Transformation", "Atlassian Partner", "DevOps"],
+    "languages": ["English"],
+    "faqs": [
+      {
+        "question": "What is Cprime best known for?",
+        "answer": "Cprime is best known as Atlassian's largest and longest-standing Solution Partner, helping enterprises with agile transformations, cloud migrations, and AI-enabled operating model design."
+      },
+      {
+        "question": "Who are Cprime's typical clients?",
+        "answer": "Cprime serves Fortune 500 enterprises across financial services, healthcare, technology, and government sectors, including clients such as PayPal, McGraw Hill, Citizens Bank, and Wellstar."
+      },
+      {
+        "question": "What cloud platforms does Cprime support?",
+        "answer": "Cprime supports Atlassian Cloud, AWS, and Azure migrations, as well as ServiceNow implementations and broader enterprise platform modernization."
+      },
+      {
+        "question": "When was Cprime founded?",
+        "answer": "Cprime was founded in 2003 in Foster City, California, and has since grown to approximately 625 employees operating across North America, Europe, and Asia."
+      },
+      {
+        "question": "Is Cprime privately held?",
+        "answer": "Cprime is privately held and backed by Goldman Sachs Asset Management and Everstone Capital Partners, which acquired the company in January 2023."
+      }
+    ],
+    "source_urls": [
+      "https://www.cprime.com/",
+      "https://www.linkedin.com/company/cprime-inc",
+      "https://www.cprime.com/resource/revolutionizing-paypal-the-largest-atlassian-cloud-migration-in-history/",
+      "https://www.cbinsights.com/company/cprime"
+    ],
+    "facebook": "https://www.facebook.com/cprimeinc",
+    "is_hiring": 0,
+    "industries_served": ["Financial Services", "Healthcare", "Technology", "Government", "Manufacturing", "Education"],
+    "awards": [],
+    "timezones": ["GMT-06:00 (Central)"],
+    "focus_breakdown": [
+      {"name": "Enterprise (>$1B)", "percentage": 65},
+      {"name": "Midmarket ($10M - $1B)", "percentage": 30},
+      {"name": "Small Business (<$10M)", "percentage": 5}
+    ],
+    "clients_summary": "Cprime counts PayPal, McGraw Hill, Citizens Bank, and Wellstar among its client base, with 300+ Fortune 500 clients served globally.",
+    "client_logos": [
+      {"name": "PayPal", "website": "https://www.paypal.com"},
+      {"name": "McGraw Hill", "website": "https://www.mheducation.com"}
+    ],
+    "hourly_rate": "$150 - $199 / hr",
+    "min_project_size": "$50,000+",
+    "common_project_size": null,
+    "service_lines": [
+      {"name": "Agile & DevOps Consulting", "percentage": 35},
+      {"name": "Atlassian Platform & Cloud Migration", "percentage": 30},
+      {"name": "AI Transformation & Strategy", "percentage": 20},
+      {"name": "Staffing & Talent Solutions", "percentage": 15}
+    ]
+  },
+  {
+    "name": "Closeloop",
+    "slug": "closeloop",
+    "category_slug": "custom-software-development-companies",
+    "listing_mode": "company",
+    "website": "https://closeloop.com",
+    "email": "info@closeloop.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Mountain View",
+    "state": "CA",
+    "hq_location": "Mountain View, CA, US",
+    "tagline": "We help you bring your awesome ideas to life - bridging business vision and technical execution.",
+    "description": "Closeloop Technologies is a custom software development company founded in 2011, headquartered in Mountain View, California, with engineering centers in Mohali, Jaipur, and Pune, India. The company specializes in AI consulting, custom software development, CRM and ERP solutions, cloud engineering, data engineering, and mobile app development. Closeloop holds a 5.0/5.0 rating on Clutch with 41 verified reviews and has been recognized as an Inc. 5000 fastest-growing company.",
+    "founded_year": 2011,
+    "team_size": "51-200",
+    "linkedin": "https://www.linkedin.com/company/closeloop-inc-/",
+    "twitter": "https://twitter.com/closeloop_tech",
+    "header_tags": ["Custom Software Development", "AI Consulting", "CRM & ERP", "Cloud Engineering", "Data Engineering"],
+    "languages": ["English"],
+    "faqs": [
+      {
+        "question": "What does Closeloop specialize in?",
+        "answer": "Closeloop specializes in AI consulting, custom software development, CRM and ERP integration, cloud engineering (AWS, Azure, GCP), data engineering, and mobile app development."
+      },
+      {
+        "question": "Where is Closeloop based?",
+        "answer": "Closeloop is headquartered in Mountain View, California, with delivery centers in Mohali, Jaipur, and Pune, India."
+      },
+      {
+        "question": "Who leads Closeloop?",
+        "answer": "Closeloop is led by Founder and CEO Assim Gupta, who has 20+ years of industry experience at companies including Google, Facebook, and Microsoft."
+      },
+      {
+        "question": "What notable clients has Closeloop served?",
+        "answer": "Closeloop's client portfolio includes Darktrace, Featurespace, Airbase, Credit Sesame, PACE Funding Group, and BeZero Carbon, spanning cybersecurity, fintech, and climate tech."
+      },
+      {
+        "question": "What recognition has Closeloop received?",
+        "answer": "Closeloop holds a 5.0/5.0 Clutch rating from 41 verified reviews and has been listed on the Inc. 5000 as one of America's fastest-growing companies."
+      }
+    ],
+    "source_urls": [
+      "https://closeloop.com/about-us/",
+      "https://clutch.co/profile/closeloop-technologies",
+      "https://www.linkedin.com/company/closeloop-inc-/",
+      "https://www.builtinsf.com/company/closeloop-technologies"
+    ],
+    "facebook": null,
+    "is_hiring": 0,
+    "industries_served": ["Financial Services", "Cybersecurity", "Climate Tech", "Healthcare", "Retail", "Manufacturing"],
+    "awards": [
+      {"name": "Inc. 5000 Fastest-Growing Companies", "year": 2023}
+    ],
+    "timezones": ["GMT-08:00 (Pacific)"],
+    "focus_breakdown": [
+      {"name": "Midmarket ($10M - $1B)", "percentage": 50},
+      {"name": "Enterprise (>$1B)", "percentage": 30},
+      {"name": "Small Business (<$10M)", "percentage": 20}
+    ],
+    "clients_summary": "Closeloop has delivered software for clients including Darktrace, Featurespace, Airbase, Credit Sesame, and BeZero Carbon across fintech, cybersecurity, and climate tech sectors.",
+    "client_logos": [
+      {"name": "Darktrace", "website": "https://www.darktrace.com"},
+      {"name": "Airbase", "website": "https://www.airbase.com"}
+    ],
+    "hourly_rate": "$50 - $99 / hr",
+    "min_project_size": "$25,000+",
+    "common_project_size": null,
+    "service_lines": [
+      {"name": "AI Consulting & Development", "percentage": 30},
+      {"name": "Custom Software Development", "percentage": 30},
+      {"name": "CRM & ERP Solutions", "percentage": 15},
+      {"name": "Cloud Engineering", "percentage": 15},
+      {"name": "Mobile App Development", "percentage": 10}
+    ]
+  },
+  {
+    "name": "Brainhub",
+    "slug": "brainhub",
+    "category_slug": "custom-software-development-companies",
+    "listing_mode": "company",
+    "website": "https://brainhub.eu",
+    "email": "info@brainhub.eu",
+    "phone_code": "+48",
+    "phone": null,
+    "country_code": "PL",
+    "city": "Gliwice",
+    "state": null,
+    "hq_location": "Gliwice, Poland",
+    "tagline": "High-performing teams of vetted software engineers solving complex technical problems.",
+    "description": "Brainhub is a Polish software engineering company founded in 2015, headquartered in Gliwice, Poland, and acquired by STX Next in December 2024 to form a combined team of 600+ engineers. The company specializes in JavaScript/TypeScript-based web and mobile development, cloud solutions, AI development, and legacy modernization, serving clients across financial services, manufacturing, and media. Brainhub maintains a 4.9/5.0 Clutch rating across 53 verified reviews and has served clients including PwC, Credit Suisse, and National Geographic.",
+    "founded_year": 2015,
+    "team_size": "51-200",
+    "linkedin": "https://www.linkedin.com/company/brainhub-pl",
+    "twitter": "https://twitter.com/Brainhubeu",
+    "header_tags": ["Software Engineering", "Web Development", "React", "Node.js", "Cloud Solutions"],
+    "languages": ["English", "Polish"],
+    "faqs": [
+      {
+        "question": "What technologies does Brainhub specialize in?",
+        "answer": "Brainhub specializes in JavaScript and TypeScript ecosystems, including React, React Native, and Node.js, with cloud services on AWS (75%) and Azure (25%)."
+      },
+      {
+        "question": "Is Brainhub still an independent company?",
+        "answer": "Brainhub was acquired by STX Next in December 2024, combining their expertise to form a 600+ engineer organization with expanded AI, Python, and data engineering capabilities."
+      },
+      {
+        "question": "What types of clients does Brainhub work with?",
+        "answer": "Brainhub primarily serves midmarket companies (60% of business), with 20% from enterprise clients and 20% from small businesses, across 20+ industries."
+      },
+      {
+        "question": "What is Brainhub's minimum project size?",
+        "answer": "Brainhub's minimum project size is $50,000+, with typical engagements involving dedicated team augmentation or full-cycle software delivery."
+      }
+    ],
+    "source_urls": [
+      "https://brainhub.eu/about-us",
+      "https://clutch.co/profile/brainhub",
+      "https://www.linkedin.com/company/brainhub-pl",
+      "https://news.outsourceaccelerator.com/stx-next-buys-brainhub/"
+    ],
+    "facebook": null,
+    "is_hiring": 0,
+    "industries_served": ["Financial Services", "Manufacturing", "Media", "Healthcare", "E-Commerce", "Gaming"],
+    "awards": [
+      {"name": "Clutch Global Award - Top B2B Service Provider", "year": 2022}
+    ],
+    "timezones": ["GMT+01:00 (Berlin)"],
+    "focus_breakdown": [
+      {"name": "Midmarket ($10M - $1B)", "percentage": 60},
+      {"name": "Enterprise (>$1B)", "percentage": 20},
+      {"name": "Small Business (<$10M)", "percentage": 20}
+    ],
+    "clients_summary": "Brainhub has delivered software for PwC, Credit Suisse, National Geographic, Paradox Interactive, and Star Stable, among others.",
+    "client_logos": [
+      {"name": "PwC", "website": "https://www.pwc.com"},
+      {"name": "National Geographic", "website": "https://www.nationalgeographic.com"}
+    ],
+    "hourly_rate": "$50 - $99 / hr",
+    "min_project_size": "$50,000+",
+    "common_project_size": null,
+    "service_lines": [
+      {"name": "Web Development", "percentage": 45},
+      {"name": "Cloud Solutions & DevOps", "percentage": 35},
+      {"name": "Enterprise App Modernization", "percentage": 20}
+    ]
+  },
+  {
+    "name": "MindK",
+    "slug": "mindk",
+    "category_slug": "custom-software-development-companies",
+    "listing_mode": "company",
+    "website": "https://mindk.com",
+    "email": "info@mindk.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "San Francisco",
+    "state": "CA",
+    "hq_location": "San Francisco, CA, US",
+    "tagline": "We empower businesses through technology - turning ideas into powerful digital solutions.",
+    "description": "MindK is a custom software development company founded in 2009, with its registered US office in San Francisco and development roots in Ukraine, now operating distributed teams across Central and Eastern Europe. The company builds web and mobile applications, SaaS products, DevOps infrastructure, and provides team augmentation for startups and scale-ups, with 14+ years of experience and 170+ completed projects. MindK is an AWS Partner and was listed among Inc. 5000 Regionals: California 2021.",
+    "founded_year": 2009,
+    "team_size": "51-200",
+    "linkedin": "https://www.linkedin.com/company/mindk",
+    "twitter": "https://twitter.com/mindklab",
+    "header_tags": ["Custom Software Development", "Web & Mobile Apps", "SaaS Development", "DevOps", "Team Augmentation"],
+    "languages": ["English", "Ukrainian"],
+    "faqs": [
+      {
+        "question": "What does MindK build?",
+        "answer": "MindK builds custom web and mobile applications, SaaS platforms, MVP products, and provides DevOps consulting, UI/UX design, test automation, and team augmentation services."
+      },
+      {
+        "question": "Where does MindK operate?",
+        "answer": "MindK has its US office in San Francisco, California, and development teams distributed across Ukraine, Czech Republic, and other Central and Eastern European locations."
+      },
+      {
+        "question": "What industries does MindK serve?",
+        "answer": "MindK serves healthcare, education, HR and recruitment, media, and technology sectors, with notable clients including Adidas, Nokia, Paramount, and Roblox."
+      },
+      {
+        "question": "What certifications does MindK hold?",
+        "answer": "MindK is an AWS certified partner and has been recognized on Inc. 5000 Regionals: California 2021 for rapid growth."
+      },
+      {
+        "question": "What is MindK's average Clutch rating?",
+        "answer": "MindK holds a 4.9/5.0 Clutch rating from 19 verified reviews, with 96% of clients recommending the agency."
+      }
+    ],
+    "source_urls": [
+      "https://mindk.com/company/",
+      "https://clutch.co/profile/mindk",
+      "https://www.linkedin.com/company/mindk",
+      "https://www.highperformr.ai/company/mindk"
+    ],
+    "facebook": null,
+    "is_hiring": 0,
+    "industries_served": ["Healthcare", "Education", "HR & Recruitment", "Media & Entertainment", "Technology", "E-Commerce"],
+    "awards": [
+      {"name": "Inc. 5000 Regionals California", "year": 2021}
+    ],
+    "timezones": ["GMT-08:00 (Pacific)"],
+    "focus_breakdown": [
+      {"name": "Midmarket ($10M - $1B)", "percentage": 55},
+      {"name": "Small Business (<$10M)", "percentage": 30},
+      {"name": "Enterprise (>$1B)", "percentage": 15}
+    ],
+    "clients_summary": "MindK has built software for Adidas, Nokia, Paramount, Roblox, H&M, Orkla, Electrolux, and Levels.fyi, across media, retail, and technology industries.",
+    "client_logos": [
+      {"name": "Adidas", "website": "https://www.adidas.com"},
+      {"name": "Roblox", "website": "https://www.roblox.com"},
+      {"name": "Paramount", "website": "https://www.paramount.com"}
+    ],
+    "hourly_rate": "$50 - $99 / hr",
+    "min_project_size": "$25,000+",
+    "common_project_size": null,
+    "service_lines": [
+      {"name": "Custom Software Development", "percentage": 30},
+      {"name": "Web Development", "percentage": 25},
+      {"name": "Mobile App Development", "percentage": 15},
+      {"name": "DevOps Managed Services", "percentage": 10},
+      {"name": "IT Managed Services", "percentage": 10},
+      {"name": "API Development & Modernization", "percentage": 10}
+    ]
+  },
+  {
+    "name": "Trio",
+    "slug": "trio",
+    "category_slug": "offshore-software-development-companies",
+    "listing_mode": "company",
+    "website": "https://trio.dev",
+    "email": "info@trio.dev",
+    "phone_code": "+55",
+    "phone": null,
+    "country_code": "BR",
+    "city": "Sao Paulo",
+    "state": null,
+    "hq_location": "Sao Paulo, Brazil",
+    "tagline": "Code that moves money. Talent that moves fast - nearshore software engineering for fintech.",
+    "description": "Trio is a nearshore software engineering company founded in 2019, headquartered in Sao Paulo, Brazil, with founding roots in Boston, Massachusetts. The company connects fintech and high-growth technology companies with vetted software engineers from Latin America and Africa who operate in US timezones, specializing in IT staff augmentation, dedicated development teams, and fintech-focused software outsourcing. Trio maintains a 90% customer retention rate and has placed developers globally across payments, open banking, lending, and RegTech sectors.",
+    "founded_year": 2019,
+    "team_size": "11-50",
+    "linkedin": "https://www.linkedin.com/company/triodev/",
+    "twitter": null,
+    "header_tags": ["Nearshore Development", "Fintech Engineering", "Staff Augmentation", "Dedicated Teams", "Latin America"],
+    "languages": ["English", "Portuguese"],
+    "faqs": [
+      {
+        "question": "What makes Trio different from other offshore companies?",
+        "answer": "Trio focuses exclusively on nearshore talent from Latin America and Africa, ensuring developers work in US timezones and integrate seamlessly into existing client teams."
+      },
+      {
+        "question": "What industries does Trio serve?",
+        "answer": "Trio primarily serves fintech companies - including payments, open banking, lending, neobanks, core banking, RegTech, and fraud detection - and high-growth technology companies."
+      },
+      {
+        "question": "Where are Trio's developers located?",
+        "answer": "Trio sources engineers from Latin America (primarily Brazil and nearby countries) and Africa, all working in US-compatible timezones for seamless collaboration."
+      },
+      {
+        "question": "What is Trio's customer retention rate?",
+        "answer": "Trio maintains a 90% customer retention rate, reflecting the continuity and trust-based approach the company emphasizes over transactional outsourcing."
+      }
+    ],
+    "source_urls": [
+      "https://trio.dev/about/story/",
+      "https://trio.dev/about-us/",
+      "https://clutch.co/profile/trio-developers",
+      "https://www.linkedin.com/company/triodev/"
+    ],
+    "facebook": "https://www.facebook.com/triodevelopers/",
+    "is_hiring": 0,
+    "industries_served": ["Financial Technology", "Payments", "Banking", "RegTech", "Insurance Tech", "Technology"],
+    "awards": [],
+    "timezones": ["GMT-05:00 (Eastern)"],
+    "focus_breakdown": [
+      {"name": "Small Business (<$10M)", "percentage": 50},
+      {"name": "Midmarket ($10M - $1B)", "percentage": 40},
+      {"name": "Enterprise (>$1B)", "percentage": 10}
+    ],
+    "clients_summary": "Trio has served fintech and high-growth technology companies including Everyday Speech, helping them build and scale engineering teams with nearshore talent.",
+    "client_logos": null,
+    "hourly_rate": "$50 - $99 / hr",
+    "min_project_size": "$10,000+",
+    "common_project_size": null,
+    "service_lines": [
+      {"name": "IT Staff Augmentation", "percentage": 70},
+      {"name": "Custom Software Development", "percentage": 10},
+      {"name": "Mobile App Development", "percentage": 10},
+      {"name": "Web Development", "percentage": 10}
+    ]
+  },
+  {
+    "name": "Arkenea",
+    "slug": "arkenea",
+    "category_slug": "iphone-app-development-companies",
+    "listing_mode": "company",
+    "website": "https://arkenea.com",
+    "email": "info@arkenea.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Cary",
+    "state": "NC",
+    "hq_location": "Cary, NC, US",
+    "tagline": "We turn healthcare ideas into successful products - 100% dedicated to healthcare software for 15+ years.",
+    "description": "Arkenea is a healthcare software development company founded in 2011, headquartered in Cary, North Carolina, with development teams in India and additional US offices in Florida. The company is exclusively dedicated to the healthcare sector, building HIPAA-compliant custom software, iOS and Android mobile apps, EHR systems, telemedicine platforms, and generative AI solutions for healthcare startups through Fortune 500 medical organizations. Arkenea has been recognized as Best Custom Healthcare Software Developer two years in a row.",
+    "founded_year": 2011,
+    "team_size": "51-200",
+    "linkedin": "https://www.linkedin.com/company/arkenea",
+    "twitter": null,
+    "header_tags": ["Healthcare Software", "iOS App Development", "HIPAA Compliant", "EHR Development", "Telemedicine"],
+    "languages": ["English"],
+    "faqs": [
+      {
+        "question": "What makes Arkenea unique in healthcare software?",
+        "answer": "Arkenea is 100% dedicated to healthcare technology - every project, engineer, and process is exclusively focused on HIPAA-compliant software for medical clients, from startups to Fortune 500 healthcare organizations."
+      },
+      {
+        "question": "What types of healthcare software does Arkenea build?",
+        "answer": "Arkenea builds custom EHR/EMR systems, telemedicine platforms, mobile health apps (iOS and Android), prescription and pharmacy management software, patient management systems, and generative AI solutions for healthcare."
+      },
+      {
+        "question": "Where is Arkenea headquartered?",
+        "answer": "Arkenea is headquartered at 2500 Regency Parkway, Cary, North Carolina, with additional offices in Florida and engineering teams in India."
+      },
+      {
+        "question": "What awards has Arkenea received?",
+        "answer": "Arkenea has been recognized as Best Custom Healthcare Software Developer two years in a row and maintains a 4.9/5.0 Clutch rating with a 5.0 average referral rating."
+      },
+      {
+        "question": "Who does Arkenea typically work with?",
+        "answer": "Arkenea works with healthcare startups, medical device companies, hospital systems, and Fortune 500 healthcare organizations seeking custom, HIPAA-compliant digital solutions."
+      }
+    ],
+    "source_urls": [
+      "https://arkenea.com/our-story/",
+      "https://clutch.co/profile/arkenea",
+      "https://www.linkedin.com/company/arkenea",
+      "https://www.zoominfo.com/c/arkenea-llc/346255499"
+    ],
+    "facebook": null,
+    "is_hiring": 0,
+    "industries_served": ["Healthcare", "Medical Devices", "Telemedicine", "Pharmaceuticals", "Mental Health", "Clinical Research"],
+    "awards": [
+      {"name": "Best Custom Healthcare Software Developer", "year": 2024}
+    ],
+    "timezones": ["GMT-05:00 (Eastern)"],
+    "focus_breakdown": [
+      {"name": "Small Business (<$10M)", "percentage": 45},
+      {"name": "Midmarket ($10M - $1B)", "percentage": 40},
+      {"name": "Enterprise (>$1B)", "percentage": 15}
+    ],
+    "clients_summary": "Arkenea serves healthcare organizations including ORLink, TeleMedHome, NPHub, and Formulary Insights, building HIPAA-compliant software for clinical workflows and patient care.",
+    "client_logos": null,
+    "hourly_rate": "$50 - $99 / hr",
+    "min_project_size": "$50,000+",
+    "common_project_size": null,
+    "service_lines": [
+      {"name": "Mobile App Development (iOS & Android)", "percentage": 25},
+      {"name": "Web Development", "percentage": 25},
+      {"name": "Custom Healthcare Software", "percentage": 20},
+      {"name": "AI & Generative AI Development", "percentage": 15},
+      {"name": "API Development & Integration", "percentage": 10},
+      {"name": "Application Management & Support", "percentage": 5}
+    ]
+  },
+  {
+    "name": "Dom & Tom",
+    "slug": "dom-and-tom",
+    "category_slug": "custom-web-development-companies",
+    "listing_mode": "company",
+    "website": "https://domandtom.com",
+    "email": "dom@domandtom.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "New York",
+    "state": "NY",
+    "hq_location": "New York, NY, US",
+    "tagline": "A digital product agency building the future of digital for Fortune 500 companies and next-generation startups.",
+    "description": "Dom & Tom is a New York-based digital product agency founded in 2009 by Dominic and Thomas Tancredi, with additional offices in Chicago and Los Angeles. The agency specializes in UX/UI design, mobile app development (iOS and Android), custom web development, and emerging technologies, having delivered 500+ web projects and 120+ native mobile applications. Dom & Tom is an Inc. 500 Fastest Growing Company and Clutch Global and Champion Award winner, serving enterprise clients including GE, McDonald's, Hearst, Bloomberg, and Citibank.",
+    "founded_year": 2009,
+    "team_size": "51-200",
+    "linkedin": "https://www.linkedin.com/company/dom-&-tom",
+    "twitter": "https://twitter.com/dom_and_tom",
+    "header_tags": ["Digital Product Agency", "Custom Web Development", "Mobile Apps", "UX/UI Design", "Enterprise"],
+    "languages": ["English"],
+    "faqs": [
+      {
+        "question": "What types of projects does Dom & Tom take on?",
+        "answer": "Dom & Tom builds enterprise business applications, customer portals, iOS and Android mobile apps, and custom websites, with project sizes ranging from $10,000 to nearly $1 million."
+      },
+      {
+        "question": "Who are Dom & Tom's clients?",
+        "answer": "Dom & Tom serves enterprise clients including GE, McDonald's, Tyson, Hearst, Bloomberg, Citibank, Fitch Ratings, Dignity Health, Priceline, and ideeli."
+      },
+      {
+        "question": "What is Dom & Tom's minimum project size?",
+        "answer": "Dom & Tom's minimum project size is $75,000+, reflecting their focus on substantive digital product engagements for mid-market and enterprise clients."
+      },
+      {
+        "question": "What awards has Dom & Tom received?",
+        "answer": "Dom & Tom is an Inc. 500 Fastest Growing Company and has received Clutch Global and Champion Awards. The agency maintains a 4.8/5.0 Clutch rating from 24 verified reviews."
+      },
+      {
+        "question": "Where does Dom & Tom operate?",
+        "answer": "Dom & Tom is headquartered in New York City (2 Wall Street) with additional offices in Chicago and Los Angeles, serving clients across the United States and internationally."
+      }
+    ],
+    "source_urls": [
+      "https://domandtom.com/",
+      "https://clutch.co/profile/dom-tom",
+      "https://www.linkedin.com/company/dom-&-tom",
+      "https://twitter.com/dom_and_tom"
+    ],
+    "facebook": null,
+    "is_hiring": 0,
+    "industries_served": ["Manufacturing", "Energy", "Financial Services", "Media", "Healthcare", "Nonprofit", "Government"],
+    "awards": [
+      {"name": "Inc. 500 Fastest Growing Company", "year": 2017},
+      {"name": "Clutch Global Award", "year": 2023},
+      {"name": "Clutch Champion Award", "year": 2023}
+    ],
+    "timezones": ["GMT-05:00 (Eastern)"],
+    "focus_breakdown": [
+      {"name": "Midmarket ($10M - $1B)", "percentage": 60},
+      {"name": "Enterprise (>$1B)", "percentage": 30},
+      {"name": "Small Business (<$10M)", "percentage": 10}
+    ],
+    "clients_summary": "Dom & Tom serves enterprise and Fortune 500 clients including GE, McDonald's, Tyson, Hearst, Bloomberg, Citibank, and Fitch Ratings across manufacturing, finance, and media sectors.",
+    "client_logos": [
+      {"name": "GE", "website": "https://www.ge.com"},
+      {"name": "McDonald's", "website": "https://www.mcdonalds.com"},
+      {"name": "Bloomberg", "website": "https://www.bloomberg.com"},
+      {"name": "Citibank", "website": "https://www.citi.com"}
+    ],
+    "hourly_rate": "$150 - $199 / hr",
+    "min_project_size": "$50,000+",
+    "common_project_size": null,
+    "service_lines": [
+      {"name": "UX/UI Design", "percentage": 35},
+      {"name": "Mobile App Development", "percentage": 30},
+      {"name": "Web Development", "percentage": 25},
+      {"name": "Low/No Code Development", "percentage": 10}
+    ]
+  }
+]

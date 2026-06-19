@@ -1,0 +1,711 @@
+[
+  {
+    "name": "BILL",
+    "slug": "bill-com",
+    "category_slug": "accounts-payable-software",
+    "listing_mode": "company",
+    "website": "https://www.bill.com",
+    "email": "info@bill.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "San Jose",
+    "state": "CA",
+    "hq_location": "San Jose, CA, US",
+    "tagline": "Intelligent financial automation for accounts payable, accounts receivable, and spend management in one platform.",
+    "description": "BILL (formerly Bill.com) is a cloud-based financial operations platform serving small and midsize businesses across the US. It automates accounts payable and receivable workflows, expense management, and business payments. Founded in 2006, BILL went public on the NYSE in 2019 and has since expanded through acquisitions including Divvy and Invoice2go. Over 500,000 businesses and 8.3 million network members use BILL to manage their financial workflows.",
+    "founded_year": 2006,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/bill",
+    "twitter": "https://twitter.com/billcom",
+    "facebook": "https://www.facebook.com/hq.bill",
+    "header_tags": ["Accounts Payable", "Accounts Receivable", "Financial Automation", "SMB Finance"],
+    "languages": ["English"],
+    "is_hiring": 0,
+    "industries_served": ["Construction", "Nonprofits", "Education", "Professional Services", "Healthcare", "Retail and Ecommerce", "Hospitality", "Technology"],
+    "awards": [],
+    "timezones": ["GMT-08:00 (Pacific)"],
+    "focus_breakdown": [
+      {"name": "SMB", "percentage": 75},
+      {"name": "Mid-Market", "percentage": 20},
+      {"name": "Enterprise", "percentage": 5}
+    ],
+    "clients_summary": "BILL serves over 500,000 businesses including accounting firms, suppliers, and multi-entity organizations across the US.",
+    "client_logos": null,
+    "service_lines": [
+      {"name": "Accounts Payable Automation", "percentage": 35},
+      {"name": "Accounts Receivable / Invoicing", "percentage": 25},
+      {"name": "Spend and Expense Management", "percentage": 20},
+      {"name": "Business Payments Network", "percentage": 20}
+    ],
+    "faqs": [
+      {
+        "question": "What is BILL used for?",
+        "answer": "BILL is used to automate accounts payable and receivable processes, manage business expenses, control budgets, and send or receive payments - all from a single cloud platform."
+      },
+      {
+        "question": "How many businesses use BILL?",
+        "answer": "Over 500,000 businesses and 8.3 million network members use BILL to manage their financial workflows as of 2026."
+      },
+      {
+        "question": "Does BILL integrate with accounting software?",
+        "answer": "Yes, BILL integrates with QuickBooks, Xero, NetSuite, Sage Intacct, and other major accounting platforms to sync financial data automatically."
+      },
+      {
+        "question": "Is BILL suitable for small businesses?",
+        "answer": "BILL is primarily designed for small and midsize businesses, helping them replace paper-based and spreadsheet-based financial processes with automated cloud workflows."
+      },
+      {
+        "question": "When did BILL go public?",
+        "answer": "BILL Holdings, Inc. went public on the New York Stock Exchange in December 2019 and trades under the ticker symbol BILL."
+      }
+    ],
+    "source_urls": [
+      "https://en.wikipedia.org/wiki/Bill.com",
+      "https://www.bill.com/",
+      "https://www.linkedin.com/company/bill",
+      "https://pitchbook.com/profiles/company/43080-85"
+    ]
+  },
+  {
+    "name": "Sisense",
+    "slug": "sisense",
+    "category_slug": "business-intelligence-software",
+    "listing_mode": "company",
+    "website": "https://www.sisense.com",
+    "email": "info@sisense.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "New York",
+    "state": "NY",
+    "hq_location": "New York, NY, US",
+    "tagline": "Embedded analytics and business intelligence platform that puts data-driven insights inside the applications your teams already use.",
+    "description": "Sisense is a business intelligence and embedded analytics software company founded in 2004 in Tel Aviv, Israel, and now headquartered in New York City. The platform enables organizations to embed analytics directly into applications and workflows using its Compose SDK and AI-powered Sisense Fusion suite. Sisense serves over 2,000 customers across financial services, healthcare, supply chain, and technology sectors. The company achieved unicorn status in January 2020.",
+    "founded_year": 2004,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/sisense",
+    "twitter": "https://twitter.com/sisense",
+    "facebook": "https://www.facebook.com/Sisense",
+    "header_tags": ["Business Intelligence", "Embedded Analytics", "Data Visualization", "AI Analytics"],
+    "languages": ["English"],
+    "is_hiring": 0,
+    "industries_served": ["Financial Services", "Healthcare", "Supply Chain", "Technology", "Manufacturing", "Retail"],
+    "awards": [],
+    "timezones": ["GMT-05:00 (Eastern)"],
+    "focus_breakdown": [
+      {"name": "SMB", "percentage": 20},
+      {"name": "Mid-Market", "percentage": 45},
+      {"name": "Enterprise", "percentage": 35}
+    ],
+    "clients_summary": "Sisense serves over 2,000 customers including PagerDuty, Philips, Skullcandy, and Seismic across multiple industries.",
+    "client_logos": [
+      {"name": "PagerDuty", "website": "https://www.pagerduty.com"},
+      {"name": "Philips", "website": "https://www.philips.com"},
+      {"name": "Seismic", "website": "https://seismic.com"}
+    ],
+    "service_lines": [
+      {"name": "Embedded Analytics / Compose SDK", "percentage": 40},
+      {"name": "Business Intelligence Platform", "percentage": 30},
+      {"name": "AI and Generative Analytics (Sisense Fusion)", "percentage": 20},
+      {"name": "Data Connectivity and Modeling", "percentage": 10}
+    ],
+    "faqs": [
+      {
+        "question": "Where is Sisense headquartered?",
+        "answer": "Sisense is headquartered in New York City, New York, US, with additional offices in Tel Aviv and other global locations."
+      },
+      {
+        "question": "What industries does Sisense serve?",
+        "answer": "Sisense serves customers in financial services, healthcare, supply chain, technology, manufacturing, and retail, among others."
+      },
+      {
+        "question": "What is Sisense Fusion?",
+        "answer": "Sisense Fusion is an AI-driven analytics suite that uses machine learning to deliver intelligent insights, automate data analysis, and enable customizable dashboards by industry and business role."
+      },
+      {
+        "question": "Does Sisense offer embedded analytics?",
+        "answer": "Yes, Sisense is a leading embedded analytics platform. Its Compose SDK allows product teams to integrate analytics directly into their own applications with full customization control."
+      },
+      {
+        "question": "When was Sisense founded?",
+        "answer": "Sisense was founded in 2004 in Tel Aviv, Israel, by Elad Israeli, Aviad Harell, Guy Boyangu, and Adi Azaria. The company expanded to the US in 2012."
+      }
+    ],
+    "source_urls": [
+      "https://en.wikipedia.org/wiki/Sisense",
+      "https://www.sisense.com/company/",
+      "https://www.linkedin.com/company/sisense",
+      "https://tracxn.com/d/companies/sisense/__uT3QZPvZITh3Qx-4UFSyhreekdYLzrDD3S2dPo4ptSc"
+    ]
+  },
+  {
+    "name": "Brandfolder",
+    "slug": "brandfolder",
+    "category_slug": "digital-asset-management-dam",
+    "listing_mode": "company",
+    "website": "https://brandfolder.com",
+    "email": "info@brandfolder.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Denver",
+    "state": "CO",
+    "hq_location": "Denver, CO, US",
+    "tagline": "Digital asset management platform that helps organizations organize, control, distribute, and measure all their digital assets.",
+    "description": "Brandfolder is a digital asset management (DAM) platform founded in 2012 and headquartered in Denver, Colorado. Acquired by Smartsheet in August 2020 for $155 million, Brandfolder enables marketing, creative, and operations teams to store, organize, and share brand assets at scale. The platform includes Brand Intelligence for AI-powered tagging, custom portals, a Smart CDN, and native integration with Smartsheet. Customers span industries including food and beverage, sports, retail, financial services, and technology.",
+    "founded_year": 2012,
+    "team_size": "51-200",
+    "linkedin": "https://www.linkedin.com/company/brandfolder-inc-",
+    "twitter": "https://twitter.com/brandfolder",
+    "facebook": null,
+    "header_tags": ["Digital Asset Management", "Brand Management", "Creative Workflow", "DAM Platform"],
+    "languages": ["English"],
+    "is_hiring": 0,
+    "industries_served": ["Food and Beverage", "Retail", "Sports", "Financial Services", "Technology", "Travel and Hospitality", "Franchises", "Manufacturing"],
+    "awards": [],
+    "timezones": ["GMT-07:00 (Mountain)"],
+    "focus_breakdown": [
+      {"name": "SMB", "percentage": 20},
+      {"name": "Mid-Market", "percentage": 45},
+      {"name": "Enterprise", "percentage": 35}
+    ],
+    "clients_summary": "Brandfolder serves customers including JetBlue, Bumble, Sonos, Lyft, Papa John's, Zoom, and TripAdvisor.",
+    "client_logos": [
+      {"name": "JetBlue", "website": "https://www.jetblue.com"},
+      {"name": "Lyft", "website": "https://www.lyft.com"},
+      {"name": "Zoom", "website": "https://zoom.us"}
+    ],
+    "service_lines": [
+      {"name": "Digital Asset Management Platform", "percentage": 50},
+      {"name": "Creative Workflow and Collaboration", "percentage": 20},
+      {"name": "Brand Intelligence and Analytics", "percentage": 15},
+      {"name": "Content Distribution (Smart CDN and Portals)", "percentage": 15}
+    ],
+    "faqs": [
+      {
+        "question": "Who owns Brandfolder?",
+        "answer": "Brandfolder is owned by Smartsheet, which acquired the company in August 2020 for $155 million."
+      },
+      {
+        "question": "What is Brandfolder used for?",
+        "answer": "Brandfolder is used to store, organize, manage, and share digital brand assets such as logos, images, videos, and documents across teams and external stakeholders."
+      },
+      {
+        "question": "What industries does Brandfolder serve?",
+        "answer": "Brandfolder serves organizations across food and beverage, retail, sports, travel, financial services, technology, manufacturing, and franchise industries."
+      },
+      {
+        "question": "Does Brandfolder integrate with other tools?",
+        "answer": "Yes, Brandfolder integrates with Smartsheet, Adobe Creative Cloud, Slack, Salesforce, and hundreds of other apps via its open API."
+      },
+      {
+        "question": "What is Brand Intelligence in Brandfolder?",
+        "answer": "Brand Intelligence is an AI-driven feature that automatically tags and categorizes assets, provides usage analytics, and surfaces insights to help teams understand how their digital assets are being used."
+      }
+    ],
+    "source_urls": [
+      "https://brandfolder.com/about/",
+      "https://www.crunchbase.com/organization/brandfolder",
+      "https://www.linkedin.com/company/brandfolder-inc-",
+      "https://tracxn.com/d/companies/brandfolder/__aT6VUGo_8yAaODQpBbeuF1EALQ4Gx59VrZL66fZzy9c"
+    ]
+  },
+  {
+    "name": "Aircall",
+    "slug": "aircall",
+    "category_slug": "voip-software",
+    "listing_mode": "company",
+    "website": "https://aircall.io",
+    "email": "info@aircall.io",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "New York",
+    "state": "NY",
+    "hq_location": "New York, NY, US",
+    "tagline": "AI-powered cloud phone and customer communications platform trusted by over 23,000 companies worldwide.",
+    "description": "Aircall is a cloud-based VoIP and customer communications platform founded in 2014, headquartered in New York with additional offices in Paris, Sydney, Madrid, and Berlin. The platform enables sales and support teams to manage voice, SMS, and WhatsApp conversations from a single interface, with AI-powered call analytics, automated workflows, and over 250 native integrations. Aircall serves more than 23,000 businesses globally and employs approximately 837 people.",
+    "founded_year": 2014,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/aircall",
+    "twitter": "https://twitter.com/aircall",
+    "facebook": "https://www.facebook.com/aircallapp",
+    "header_tags": ["VoIP Software", "Cloud Phone System", "Customer Communications", "AI Call Analytics"],
+    "languages": ["English", "French", "Spanish", "German"],
+    "is_hiring": 0,
+    "industries_served": ["Technology", "Retail", "Financial Services", "Healthcare", "E-commerce", "Professional Services"],
+    "awards": [],
+    "timezones": ["GMT-05:00 (Eastern)"],
+    "focus_breakdown": [
+      {"name": "SMB", "percentage": 50},
+      {"name": "Mid-Market", "percentage": 40},
+      {"name": "Enterprise", "percentage": 10}
+    ],
+    "clients_summary": "Aircall is trusted by over 23,000 companies including 1Password, Burton, Untuckit, Pipedrive, and Lokalise.",
+    "client_logos": [
+      {"name": "1Password", "website": "https://1password.com"},
+      {"name": "Pipedrive", "website": "https://www.pipedrive.com"}
+    ],
+    "service_lines": [
+      {"name": "Cloud Phone System (Voice)", "percentage": 45},
+      {"name": "AI Call Analytics and Coaching", "percentage": 25},
+      {"name": "SMS and Messaging", "percentage": 15},
+      {"name": "CRM and App Integrations", "percentage": 15}
+    ],
+    "faqs": [
+      {
+        "question": "Where is Aircall headquartered?",
+        "answer": "Aircall is headquartered in New York, NY, with offices in Paris, Sydney, Madrid, and Berlin."
+      },
+      {
+        "question": "How many companies use Aircall?",
+        "answer": "Over 23,000 companies worldwide use Aircall to power their customer communications as of 2026."
+      },
+      {
+        "question": "What integrations does Aircall support?",
+        "answer": "Aircall offers over 250 native integrations including HubSpot, Salesforce, Zendesk, Intercom, Monday.com, and Pipedrive."
+      },
+      {
+        "question": "Does Aircall offer AI features?",
+        "answer": "Yes, Aircall includes AI-powered features such as call transcription, real-time coaching, sentiment analysis, and an AI Voice Agent for handling customer interactions end to end."
+      },
+      {
+        "question": "Is Aircall suitable for remote teams?",
+        "answer": "Yes, Aircall is fully cloud-based and designed for distributed and remote teams, allowing agents to make and receive calls from any device or location."
+      }
+    ],
+    "source_urls": [
+      "https://aircall.io/",
+      "https://www.linkedin.com/company/aircall",
+      "https://pitchbook.com/profiles/company/81891-91",
+      "https://tracxn.com/d/companies/aircall/__RMJKMhpmb_Smiu0alGUjltj-ugbKSTabet-YxreTpfA"
+    ]
+  },
+  {
+    "name": "Pendo",
+    "slug": "pendo",
+    "category_slug": "data-analysis-software",
+    "listing_mode": "company",
+    "website": "https://www.pendo.io",
+    "email": "info@pendo.io",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Raleigh",
+    "state": "NC",
+    "hq_location": "Raleigh, NC, US",
+    "tagline": "Product analytics and digital adoption platform that helps companies understand user behavior and improve software experiences.",
+    "description": "Pendo is a product experience platform founded in 2013 and headquartered in Raleigh, North Carolina. It combines product analytics, in-app guidance, session replay, user feedback, and roadmapping tools in a single platform. Pendo processes over 20 billion daily events and serves more than 14,000 companies across 115 industries, including Fortune 500 enterprises and leading B2B SaaS companies. Customers include Verizon, Morgan Stanley, Okta, Salesforce, and Zendesk.",
+    "founded_year": 2013,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/pendo-io",
+    "twitter": "https://twitter.com/pendoio",
+    "facebook": "https://www.facebook.com/Pendoio",
+    "header_tags": ["Product Analytics", "Digital Adoption", "User Onboarding", "In-App Guidance"],
+    "languages": ["English"],
+    "is_hiring": 0,
+    "industries_served": ["Software and SaaS", "Financial Services", "Healthcare", "Education", "Government", "Retail and E-commerce"],
+    "awards": [
+      {"name": "Deloitte Technology Fast 500", "year": 2023},
+      {"name": "Fast Company Most Innovative Companies", "year": 2026}
+    ],
+    "timezones": ["GMT-05:00 (Eastern)"],
+    "focus_breakdown": [
+      {"name": "SMB", "percentage": 20},
+      {"name": "Mid-Market", "percentage": 35},
+      {"name": "Enterprise", "percentage": 45}
+    ],
+    "clients_summary": "Pendo serves 14,000+ companies including Verizon, Morgan Stanley, LabCorp, Okta, Salesforce, OpenTable, and Zendesk.",
+    "client_logos": [
+      {"name": "Verizon", "website": "https://www.verizon.com"},
+      {"name": "Okta", "website": "https://www.okta.com"},
+      {"name": "Salesforce", "website": "https://www.salesforce.com"}
+    ],
+    "service_lines": [
+      {"name": "Product Analytics", "percentage": 35},
+      {"name": "In-App Guides and Digital Adoption", "percentage": 30},
+      {"name": "User Feedback and Sentiment", "percentage": 20},
+      {"name": "Roadmapping and Prioritization", "percentage": 15}
+    ],
+    "faqs": [
+      {
+        "question": "What does Pendo do?",
+        "answer": "Pendo is a product experience platform that provides analytics on how users interact with software, delivers in-app guidance to drive adoption, and collects feedback to inform product roadmaps."
+      },
+      {
+        "question": "Who uses Pendo?",
+        "answer": "Pendo is used by product, UX, and customer success teams at 14,000+ companies across industries including software, financial services, healthcare, and government."
+      },
+      {
+        "question": "Does Pendo require code changes to implement?",
+        "answer": "Pendo uses a snippet-based installation that requires minimal code changes. In-app guides and analytics can be created and managed without ongoing engineering work."
+      },
+      {
+        "question": "What is Pendo AI?",
+        "answer": "Pendo AI includes features such as Pendo Leo for predictive analytics, Agent Analytics for monitoring AI agents, and Sentiment for analyzing user feedback at scale."
+      },
+      {
+        "question": "Where is Pendo headquartered?",
+        "answer": "Pendo is headquartered at 301 Hillsborough Street in Raleigh, North Carolina, with offices in 10 locations globally."
+      }
+    ],
+    "source_urls": [
+      "https://www.pendo.io/about/",
+      "https://www.linkedin.com/company/pendo-io",
+      "https://pitchbook.com/profiles/company/96538-33",
+      "https://tracxn.com/d/companies/pendo/__mp9ZrvSzh8TcDOMPnbR-0WQPk72bjwj-2r7Hp2gY1Tg"
+    ]
+  },
+  {
+    "name": "Nutshell",
+    "slug": "nutshell",
+    "category_slug": "crm-software",
+    "listing_mode": "company",
+    "website": "https://www.nutshell.com",
+    "email": "info@nutshell.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Ann Arbor",
+    "state": "MI",
+    "hq_location": "Ann Arbor, MI, US",
+    "tagline": "All-in-one CRM and sales automation platform built for B2B teams that want to close more deals without the complexity.",
+    "description": "Nutshell is a cloud-based CRM and sales automation platform founded in 2009 and headquartered in Ann Arbor, Michigan. Designed for small to mid-sized B2B organizations, Nutshell provides contact management, pipeline tracking, email marketing, sales automation, SMS outreach, and AI-assisted prospecting in a single platform. The company supports over 5,000 businesses across 50 countries and has offices in Ann Arbor, New York, Cape Town, and Sydney.",
+    "founded_year": 2009,
+    "team_size": "51-200",
+    "linkedin": "https://www.linkedin.com/company/nutshell-llc",
+    "twitter": "https://twitter.com/nutshell",
+    "facebook": "https://www.facebook.com/nutshell",
+    "header_tags": ["CRM Software", "Sales Automation", "Email Marketing", "B2B Sales"],
+    "languages": ["English"],
+    "is_hiring": 0,
+    "industries_served": ["Manufacturing", "Construction", "Marketing and Advertising", "Professional Services", "Technology", "Real Estate"],
+    "awards": [],
+    "timezones": ["GMT-05:00 (Eastern)"],
+    "focus_breakdown": [
+      {"name": "SMB", "percentage": 70},
+      {"name": "Mid-Market", "percentage": 25},
+      {"name": "Enterprise", "percentage": 5}
+    ],
+    "clients_summary": "Nutshell serves over 5,000 companies in 50 countries, primarily small and mid-sized B2B businesses in manufacturing, construction, and professional services.",
+    "client_logos": null,
+    "service_lines": [
+      {"name": "CRM and Contact Management", "percentage": 40},
+      {"name": "Sales Automation and Pipeline Management", "percentage": 30},
+      {"name": "Email Marketing and Campaigns", "percentage": 20},
+      {"name": "Web Chat, SMS, and Engagement Tools", "percentage": 10}
+    ],
+    "faqs": [
+      {
+        "question": "Who is Nutshell CRM designed for?",
+        "answer": "Nutshell is built for small to mid-sized B2B organizations that want an easy-to-adopt CRM with built-in email marketing and sales automation - without needing a dedicated IT team."
+      },
+      {
+        "question": "What features does Nutshell include?",
+        "answer": "Nutshell includes CRM, pipeline tracking, email marketing, sales automation, web chat, SMS, WhatsApp messaging, AI prospecting (Nutshell IQ), and proposals and invoicing."
+      },
+      {
+        "question": "Where is Nutshell headquartered?",
+        "answer": "Nutshell is headquartered in Ann Arbor, Michigan, with additional offices in New York, Cape Town, and Sydney."
+      },
+      {
+        "question": "How many businesses use Nutshell?",
+        "answer": "Nutshell supports over 5,000 businesses across 50 countries as of 2026."
+      },
+      {
+        "question": "Does Nutshell integrate with other tools?",
+        "answer": "Yes, Nutshell integrates with Google Workspace, Microsoft 365, Slack, QuickBooks, Mailchimp, Zapier, and hundreds of other apps."
+      }
+    ],
+    "source_urls": [
+      "https://www.nutshell.com/about",
+      "https://www.nutshell.com/company",
+      "https://www.linkedin.com/company/nutshell-llc",
+      "https://pitchbook.com/profiles/company/94424-23"
+    ]
+  },
+  {
+    "name": "Paylocity",
+    "slug": "paylocity",
+    "category_slug": "hr-software-hris",
+    "listing_mode": "company",
+    "website": "https://www.paylocity.com",
+    "email": "info@paylocity.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Schaumburg",
+    "state": "IL",
+    "hq_location": "Schaumburg, IL, US",
+    "tagline": "Cloud-based HR and payroll platform that helps mid-sized businesses manage their entire employee lifecycle in one place.",
+    "description": "Paylocity is a cloud-based payroll and human capital management (HCM) software company founded in 1997 and headquartered in Schaumburg, Illinois. The company serves more than 40,000 mid-sized businesses across the US, primarily organizations with 50 to 1,000 employees. Paylocity's platform covers payroll, time and labor, benefits administration, recruiting, onboarding, performance management, and workforce analytics. Paylocity trades on NASDAQ under the ticker PCTY and employs approximately 6,700 people.",
+    "founded_year": 1997,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/paylocity",
+    "twitter": "https://twitter.com/Paylocity",
+    "facebook": "https://www.facebook.com/Paylocity",
+    "header_tags": ["HR Software", "Payroll", "HCM Platform", "Benefits Administration"],
+    "languages": ["English"],
+    "is_hiring": 0,
+    "industries_served": ["Education", "Financial Services", "Healthcare", "Manufacturing", "Nonprofit", "Restaurants and Hospitality", "Retail and Wholesale", "Technology", "Transportation and Logistics"],
+    "awards": [],
+    "timezones": ["GMT-06:00 (Central)"],
+    "focus_breakdown": [
+      {"name": "SMB", "percentage": 35},
+      {"name": "Mid-Market", "percentage": 55},
+      {"name": "Enterprise", "percentage": 10}
+    ],
+    "clients_summary": "Paylocity serves over 40,000 businesses across the US, with an average client size of approximately 150 employees spanning a broad range of industries.",
+    "client_logos": null,
+    "service_lines": [
+      {"name": "Payroll and Tax Compliance", "percentage": 35},
+      {"name": "HR Management (Benefits, Onboarding, Performance)", "percentage": 30},
+      {"name": "Time, Attendance, and Labor", "percentage": 20},
+      {"name": "Recruiting and Talent Management", "percentage": 15}
+    ],
+    "faqs": [
+      {
+        "question": "What company sizes does Paylocity serve?",
+        "answer": "Paylocity primarily targets mid-sized businesses with 50 to 1,000 employees, though the platform also serves smaller and larger organizations."
+      },
+      {
+        "question": "What HR features does Paylocity offer?",
+        "answer": "Paylocity offers payroll processing, time and attendance, benefits administration, recruiting, onboarding, performance management, expense management, and workforce analytics."
+      },
+      {
+        "question": "Is Paylocity publicly traded?",
+        "answer": "Yes, Paylocity Holding Corporation (PCTY) is publicly traded on the NASDAQ exchange."
+      },
+      {
+        "question": "What industries does Paylocity serve?",
+        "answer": "Paylocity serves organizations across healthcare, education, manufacturing, nonprofits, retail, hospitality, financial services, technology, and transportation sectors."
+      },
+      {
+        "question": "When was Paylocity founded?",
+        "answer": "Paylocity was founded in 1997 by Steve Sarowitz in Schaumburg, Illinois."
+      }
+    ],
+    "source_urls": [
+      "https://en.wikipedia.org/wiki/Paylocity",
+      "https://www.paylocity.com/company/about-us/",
+      "https://www.linkedin.com/company/paylocity",
+      "https://pitchbook.com/profiles/company/53393-68"
+    ]
+  },
+  {
+    "name": "JumpCloud",
+    "slug": "jumpcloud",
+    "category_slug": "identity-management-software-iam",
+    "listing_mode": "company",
+    "website": "https://jumpcloud.com",
+    "email": "info@jumpcloud.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Louisville",
+    "state": "CO",
+    "hq_location": "Louisville, CO, US",
+    "tagline": "Unified platform for identity, access, and device management that enables secure IT for organizations of any size.",
+    "description": "JumpCloud is a cloud-based directory and identity management platform founded in 2012 and headquartered in Louisville, Colorado. The platform provides unified endpoint management (UEM), single sign-on (SSO), multi-factor authentication (MFA), privileged access management (PAM), and SaaS management in a single interface. JumpCloud serves more than 150,000 organizations including 5,000+ paying customers such as Cars.com, GoFundMe, Grab, ClassPass, and Peloton. The company became a unicorn in 2021 after raising over $400 million in funding.",
+    "founded_year": 2012,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/jumpcloud",
+    "twitter": "https://twitter.com/JumpCloud",
+    "facebook": "https://www.facebook.com/JumpCloud.DaaS",
+    "header_tags": ["Identity Management", "Unified Endpoint Management", "SSO and MFA", "Zero Trust IT"],
+    "languages": ["English"],
+    "is_hiring": 0,
+    "industries_served": ["Technology", "Financial Services", "Healthcare", "Education", "Nonprofit", "Retail", "Manufacturing"],
+    "awards": [],
+    "timezones": ["GMT-07:00 (Mountain)"],
+    "focus_breakdown": [
+      {"name": "SMB", "percentage": 45},
+      {"name": "Mid-Market", "percentage": 40},
+      {"name": "Enterprise", "percentage": 15}
+    ],
+    "clients_summary": "JumpCloud serves 150,000+ organizations globally, including 5,000+ paying customers such as Cars.com, GoFundMe, Grab, ClassPass, and Peloton.",
+    "client_logos": [
+      {"name": "Cars.com", "website": "https://www.cars.com"},
+      {"name": "GoFundMe", "website": "https://www.gofundme.com"},
+      {"name": "Peloton", "website": "https://www.onepeloton.com"}
+    ],
+    "service_lines": [
+      {"name": "Identity and Access Management (SSO, MFA, PAM)", "percentage": 40},
+      {"name": "Unified Endpoint Management (UEM, MDM)", "percentage": 30},
+      {"name": "Cloud Directory and Lifecycle Management", "percentage": 20},
+      {"name": "SaaS Management and Discovery", "percentage": 10}
+    ],
+    "faqs": [
+      {
+        "question": "What is JumpCloud used for?",
+        "answer": "JumpCloud is used to centrally manage user identities, device access, single sign-on, multi-factor authentication, and endpoint security across an organization's entire IT environment."
+      },
+      {
+        "question": "Does JumpCloud replace Active Directory?",
+        "answer": "JumpCloud serves as a cloud-based alternative or complement to Microsoft Active Directory, offering directory services, SSO, and device management without requiring on-premises infrastructure."
+      },
+      {
+        "question": "How many companies use JumpCloud?",
+        "answer": "JumpCloud serves more than 150,000 organizations worldwide, including over 5,000 paying customers as of 2026."
+      },
+      {
+        "question": "Is JumpCloud suitable for small businesses?",
+        "answer": "Yes, JumpCloud is specifically designed to bring enterprise-grade identity and device management to small and mid-sized organizations without requiring a large IT team."
+      },
+      {
+        "question": "When was JumpCloud founded?",
+        "answer": "JumpCloud was founded in 2012 in Louisville, Colorado, by Rajat Bhargava and co-founders, and formally launched at TechCrunch Disrupt in 2013."
+      }
+    ],
+    "source_urls": [
+      "https://en.wikipedia.org/wiki/JumpCloud",
+      "https://jumpcloud.com/",
+      "https://www.linkedin.com/company/jumpcloud",
+      "https://pitchbook.com/profiles/company/61209-82"
+    ]
+  },
+  {
+    "name": "Sage Intacct",
+    "slug": "sage-intacct",
+    "category_slug": "accounting-software",
+    "listing_mode": "company",
+    "website": "https://www.sageintacct.com",
+    "email": "info@sageintacct.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "San Jose",
+    "state": "CA",
+    "hq_location": "San Jose, CA, US",
+    "tagline": "AI-powered cloud accounting and financial management software built for mid-market organizations and multi-entity businesses.",
+    "description": "Sage Intacct is a cloud-based accounting and financial management software platform founded in 1999 and headquartered in San Jose, California. Acquired by The Sage Group for $850 million in 2017, it is now a core product in Sage's portfolio. The platform serves mid-market organizations in nonprofit, professional services, healthcare, SaaS, construction, and financial services with modules for general ledger, accounts payable and receivable, project accounting, subscription billing, and multi-entity consolidations. Sage Intacct is the AICPA-preferred financial management solution and ranked the top US nonprofit finance system.",
+    "founded_year": 1999,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/sageintacct",
+    "twitter": "https://twitter.com/SageIntacct",
+    "facebook": null,
+    "header_tags": ["Cloud Accounting", "Financial Management", "Multi-Entity Consolidation", "Nonprofit Accounting"],
+    "languages": ["English"],
+    "is_hiring": 0,
+    "industries_served": ["Nonprofit", "Professional Services", "Healthcare", "Financial Services", "Construction", "SaaS and Subscription", "Hospitality", "Distribution", "Government"],
+    "awards": [],
+    "timezones": ["GMT-08:00 (Pacific)"],
+    "focus_breakdown": [
+      {"name": "SMB", "percentage": 15},
+      {"name": "Mid-Market", "percentage": 65},
+      {"name": "Enterprise", "percentage": 20}
+    ],
+    "clients_summary": "Sage Intacct is the AICPA-preferred financial management solution and the number one US nonprofit finance system, serving thousands of mid-market organizations.",
+    "client_logos": null,
+    "service_lines": [
+      {"name": "Core Accounting (GL, AP, AR, Cash Management)", "percentage": 40},
+      {"name": "Project Accounting and Billing", "percentage": 20},
+      {"name": "Subscription and Revenue Management", "percentage": 20},
+      {"name": "Multi-Entity Consolidation and Reporting", "percentage": 20}
+    ],
+    "faqs": [
+      {
+        "question": "Who owns Sage Intacct?",
+        "answer": "Sage Intacct is a subsidiary of The Sage Group plc, a publicly listed UK software company that acquired Sage Intacct in 2017 for $850 million."
+      },
+      {
+        "question": "What industries does Sage Intacct specialize in?",
+        "answer": "Sage Intacct has deep functionality for nonprofits, professional services, healthcare, SaaS businesses, construction, financial services, and multi-location hospitality organizations."
+      },
+      {
+        "question": "Is Sage Intacct better than QuickBooks for mid-market companies?",
+        "answer": "Sage Intacct is designed for organizations that have outgrown QuickBooks, offering multi-entity consolidation, project accounting, subscription billing, and advanced reporting that QuickBooks does not natively support."
+      },
+      {
+        "question": "Does Sage Intacct integrate with Salesforce?",
+        "answer": "Yes, Sage Intacct has a native, certified integration with Salesforce CRM, as well as integrations with ADP, SAP Concur, and hundreds of other business applications."
+      },
+      {
+        "question": "When was Sage Intacct founded?",
+        "answer": "Sage Intacct was founded in 1999 in San Jose, California, and operated independently before being acquired by The Sage Group in 2017."
+      }
+    ],
+    "source_urls": [
+      "https://en.wikipedia.org/wiki/Sage_Intacct",
+      "https://www.sage.com/en-us/sage-business-cloud/intacct/",
+      "https://www.linkedin.com/company/sageintacct",
+      "https://twitter.com/SageIntacct"
+    ]
+  },
+  {
+    "name": "Tipalti",
+    "slug": "tipalti",
+    "category_slug": "accounts-payable-software",
+    "listing_mode": "company",
+    "website": "https://tipalti.com",
+    "email": "contact@tipalti.com",
+    "phone_code": "+1",
+    "phone": "18003053550",
+    "country_code": "US",
+    "city": "Foster City",
+    "state": "CA",
+    "hq_location": "Foster City, CA, US",
+    "tagline": "AI-powered finance automation platform for global accounts payable, mass payments, procurement, and expense management.",
+    "description": "Tipalti is a financial technology company founded in 2010 and headquartered in Foster City, California, that automates end-to-end accounts payable, global mass payments, procurement, and expense management. The platform processes payments to 200+ countries in 120 currencies using 50+ payment methods and integrates with leading ERPs including NetSuite, Sage Intacct, SAP, QuickBooks, and Xero. Tipalti serves mid-market to enterprise companies and reached a $2 billion valuation after raising $150 million in 2021. The company has been named a CNBC World's Top Fintech Company for three consecutive years.",
+    "founded_year": 2010,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/tipalti",
+    "twitter": "https://twitter.com/tipalti",
+    "facebook": "https://www.facebook.com/Tipalti",
+    "header_tags": ["Accounts Payable Automation", "Global Mass Payments", "Finance Automation", "Procurement"],
+    "languages": ["English"],
+    "is_hiring": 0,
+    "industries_served": ["Adtech", "E-commerce and Retail", "Software and Technology", "Gaming", "Healthcare", "Financial Services", "Gig Economy", "Nonprofits", "Media and Entertainment"],
+    "awards": [
+      {"name": "CNBC World's Top Fintech Company", "year": 2025},
+      {"name": "Deloitte Technology Fast 500", "year": 2025}
+    ],
+    "timezones": ["GMT-08:00 (Pacific)"],
+    "focus_breakdown": [
+      {"name": "SMB", "percentage": 10},
+      {"name": "Mid-Market", "percentage": 55},
+      {"name": "Enterprise", "percentage": 35}
+    ],
+    "clients_summary": "Tipalti serves mid-market and enterprise clients including Branch, DreamHost, SkillShare, Cybereason, and Matterport across diverse global industries.",
+    "client_logos": [
+      {"name": "Branch", "website": "https://branch.io"},
+      {"name": "DreamHost", "website": "https://www.dreamhost.com"},
+      {"name": "Matterport", "website": "https://matterport.com"}
+    ],
+    "service_lines": [
+      {"name": "Accounts Payable Automation", "percentage": 30},
+      {"name": "Global Mass Payments", "percentage": 30},
+      {"name": "Procurement and Purchase Order Management", "percentage": 20},
+      {"name": "Expense Management", "percentage": 20}
+    ],
+    "faqs": [
+      {
+        "question": "What does Tipalti do?",
+        "answer": "Tipalti automates accounts payable, global mass payments, procurement, and expense management for mid-market and enterprise companies, processing payments to 200+ countries in 120 currencies."
+      },
+      {
+        "question": "What payment methods does Tipalti support?",
+        "answer": "Tipalti supports over 50 payment methods including ACH transfers, wire transfers, checks, PayPal, virtual cards, and local payment rails across 200+ countries."
+      },
+      {
+        "question": "Does Tipalti integrate with accounting software?",
+        "answer": "Yes, Tipalti integrates natively with NetSuite, Sage Intacct, SAP, QuickBooks, Xero, and Microsoft Dynamics, among others."
+      },
+      {
+        "question": "What is Tipalti's valuation?",
+        "answer": "Tipalti reached a $2 billion valuation following its $150 million funding round in 2021, led by Durable Capital Partners."
+      },
+      {
+        "question": "What compliance features does Tipalti offer?",
+        "answer": "Tipalti includes built-in supplier onboarding with tax validation (W-9, W-8), OFAC and global sanctions screening, and fraud detection via Tipalti Detect to support regulatory compliance."
+      }
+    ],
+    "source_urls": [
+      "https://en.wikipedia.org/wiki/Tipalti",
+      "https://tipalti.com/",
+      "https://www.linkedin.com/company/tipalti",
+      "https://pitchbook.com/profiles/company/60683-68"
+    ]
+  }
+]

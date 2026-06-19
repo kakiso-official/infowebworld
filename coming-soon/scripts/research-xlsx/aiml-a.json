@@ -1,0 +1,763 @@
+[
+  {
+    "name": "QuillBot",
+    "slug": "quillbot",
+    "category_slug": "ai-humanizers",
+    "listing_mode": "product",
+    "website": "https://quillbot.com",
+    "email": "support@quillbot.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Chicago",
+    "state": "IL",
+    "hq_location": "Chicago, IL, US",
+    "tagline": "AI writing tools for paraphrasing, grammar checking, humanizing, and summarizing - used by 35 million writers worldwide.",
+    "description": "QuillBot is an AI-powered writing platform offering paraphrasing, grammar checking, AI humanization, plagiarism detection, summarization, and translation tools. Founded in 2017 at the University of Illinois Urbana-Champaign, it now serves over 35 million users across 180 countries. The platform is owned by Learneo, Inc. and includes integrations with Google Docs, Microsoft Word, and all major browsers.",
+    "founded_year": 2017,
+    "team_size": "201-500",
+    "linkedin": "https://www.linkedin.com/company/quillbot",
+    "twitter": "https://twitter.com/TheQuillBot",
+    "header_tags": ["AI Writing", "Paraphrasing Tool", "Grammar Checker", "AI Humanizer", "Plagiarism Checker"],
+    "languages": ["English"],
+    "industries_served": ["Education", "Content Marketing", "Publishing", "Research & Academia", "Journalism", "Legal", "Business Communications"],
+    "use_cases": [
+      "Paraphrasing and rewriting content",
+      "Humanizing AI-generated text",
+      "Grammar and spelling correction",
+      "Summarizing long documents",
+      "Plagiarism checking",
+      "Translating text across 45+ languages",
+      "Generating citations (APA, MLA, Chicago)",
+      "Detecting AI-generated content"
+    ],
+    "target_company_sizes": ["Freelancers", "Small businesses", "Midsize companies", "Enterprises"],
+    "key_features": [
+      "AI Paraphraser with 9+ rewriting modes (Standard, Fluency, Formal, Creative, etc.)",
+      "AI Humanizer to convert AI-generated text to natural-sounding prose",
+      "Advanced Grammar Checker with real-time corrections",
+      "AI Detector to identify AI-written content",
+      "Plagiarism Checker comparing against billions of web sources",
+      "Multi-language Translator supporting 45+ languages",
+      "Summarizer for condensing long texts",
+      "Citation Generator for APA, MLA, Chicago, Harvard, and IEEE formats",
+      "Google Docs and Microsoft Word native integration",
+      "Browser extensions for Chrome, Firefox, and Edge"
+    ],
+    "pricing_model": "freemium",
+    "pricing_tiers": [
+      {
+        "name": "Free",
+        "price": 0,
+        "period": "month",
+        "features": [
+          "Paraphraser (125-word limit, 2 modes)",
+          "Grammar Checker (limited)",
+          "Summarizer (1,200-word limit)",
+          "Translator (5,000 characters)",
+          "Citation Generator and AI Detector"
+        ]
+      },
+      {
+        "name": "Premium Monthly",
+        "price": 19.95,
+        "period": "month",
+        "features": [
+          "Unlimited paraphrasing with 9+ modes",
+          "Advanced Grammar Checker and AI Humanizer",
+          "Summarizer (6,000-word limit)",
+          "Plagiarism Checker (25,000 words/month)",
+          "Unlimited translation"
+        ]
+      },
+      {
+        "name": "Premium Annual",
+        "price": 8.33,
+        "period": "month",
+        "features": [
+          "All Premium Monthly features",
+          "Billed $99.95/year (58% savings vs monthly)",
+          "Pause subscription anytime",
+          "3-day money-back guarantee"
+        ]
+      },
+      {
+        "name": "Teams",
+        "price": null,
+        "period": "month",
+        "features": [
+          "All Premium features for each seat",
+          "From $2.91/user/month for 51+ seats",
+          "Centralized billing and team management",
+          "Volume discounts for 2-50+ users"
+        ]
+      }
+    ],
+    "integrations": [
+      {"name": "Google Docs", "website": "https://docs.google.com", "description": "Native add-on for paraphrasing and grammar checking within Google Docs"},
+      {"name": "Microsoft Word", "website": "https://www.microsoft.com/word", "description": "Word add-in for inline writing assistance"},
+      {"name": "Google Chrome", "website": "https://www.google.com/chrome", "description": "Browser extension for writing assistance across any web page"},
+      {"name": "Mozilla Firefox", "website": "https://www.mozilla.org/firefox", "description": "Browser extension for writing assistance on Firefox"},
+      {"name": "Microsoft Edge", "website": "https://www.microsoft.com/edge", "description": "Browser extension for writing assistance on Edge"}
+    ],
+    "support_channels": ["Email support", "Help center", "Community forum"],
+    "training_options": ["Documentation", "Video tutorials", "Blog"],
+    "compliance": [],
+    "pros": [
+      "Generous free plan suitable for occasional use",
+      "9+ paraphrasing modes cover diverse writing styles and needs",
+      "Native Google Docs and Microsoft Word integrations",
+      "AI Humanizer effectively bypasses AI content detectors",
+      "Citations, translation, and plagiarism checking bundled in one platform",
+      "Affordable annual pricing at $8.33/month"
+    ],
+    "cons": [
+      "Free plan limited to 125-word paraphrasing and basic features only",
+      "Plagiarism checker limited to 25,000 words/month even on Premium",
+      "AI-generated content can sometimes lose original meaning when paraphrased",
+      "Some advanced tools (image generator, PDF editor) feel secondary to core writing features",
+      "No native mobile app for offline use"
+    ],
+    "starting_price": 8.33,
+    "starting_price_period": "month",
+    "has_free_trial": 0,
+    "has_free_version": 1,
+    "has_ios_app": 0,
+    "has_android_app": 0,
+    "faqs": [
+      {
+        "question": "What is QuillBot used for?",
+        "answer": "QuillBot is used to paraphrase, rewrite, humanize AI text, check grammar, detect plagiarism, summarize documents, translate content, and generate academic citations."
+      },
+      {
+        "question": "Does QuillBot have a free plan?",
+        "answer": "Yes. The free plan includes basic paraphrasing (125-word limit, 2 modes), grammar checking, summarization, translation up to 5,000 characters, and a citation generator."
+      },
+      {
+        "question": "How much does QuillBot Premium cost?",
+        "answer": "QuillBot Premium costs $19.95/month on monthly billing, $13.31/month on a semi-annual plan ($39.95 every 3 months), or $8.33/month on an annual plan ($99.95/year)."
+      },
+      {
+        "question": "Can QuillBot humanize AI-generated text?",
+        "answer": "Yes. QuillBot's AI Humanizer tool rewrites AI-generated content to sound more natural, helping it pass AI detection tools."
+      },
+      {
+        "question": "Does QuillBot integrate with Google Docs and Microsoft Word?",
+        "answer": "Yes. QuillBot offers a native Google Docs add-on and a Microsoft Word add-in, plus browser extensions for Chrome, Firefox, and Edge."
+      },
+      {
+        "question": "Is QuillBot safe for academic use?",
+        "answer": "QuillBot is widely used by students, but users should always follow their institution's academic integrity policies when using paraphrasing or AI writing tools."
+      }
+    ],
+    "source_urls": [
+      "https://quillbot.com",
+      "https://quillbot.com/blog/frequently-asked-questions/how-much-is-quillbot-premium/",
+      "https://www.startuphub.ai/startups/quillbot/",
+      "https://costbench.com/software/ai-writing-tools/quillbot/"
+    ]
+  },
+  {
+    "name": "Bardeen",
+    "slug": "bardeen",
+    "category_slug": "ai-browser-automation",
+    "listing_mode": "product",
+    "website": "https://bardeen.ai",
+    "email": "support@bardeen.ai",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "San Francisco",
+    "state": "CA",
+    "hq_location": "San Francisco, CA, US",
+    "tagline": "AI browser automation agent that scrapes data, enriches leads, and automates repetitive go-to-market workflows without code.",
+    "description": "Bardeen is an AI-powered browser automation platform founded in 2020 by Pascal Weinberger and Artem Harutyunyan in San Francisco. It operates as a Chrome extension that automates repetitive tasks - including web scraping, contact enrichment, CRM updates, and multi-step workflows - for sales, recruiting, and revenue operations teams. The platform has raised $25.3 million and is backed by HubSpot Ventures, Dropbox Ventures, and Insight Partners.",
+    "founded_year": 2020,
+    "team_size": "11-50",
+    "linkedin": "https://www.linkedin.com/company/bardeen",
+    "twitter": "https://twitter.com/bardeenai",
+    "header_tags": ["Browser Automation", "AI Workflows", "Web Scraping", "Lead Enrichment", "No-Code Automation"],
+    "languages": ["English"],
+    "industries_served": ["Sales", "Recruiting", "Revenue Operations", "Marketing", "Real Estate", "Private Equity"],
+    "use_cases": [
+      "Automated web scraping and data extraction from any site",
+      "AI-powered lead discovery and prospect research",
+      "Contact enrichment and email validation",
+      "CRM record creation and updating",
+      "Multi-step sales outreach automation",
+      "Competitive analysis report generation",
+      "Recruiting workflow automation",
+      "Revenue operations data monitoring"
+    ],
+    "target_company_sizes": ["Freelancers", "Small businesses", "Midsize companies"],
+    "key_features": [
+      "Chrome extension-based browser automation with no server setup required",
+      "AI-powered web scraper for structured data extraction from any website",
+      "AI-driven contact enrichment and email validation",
+      "Natural language workflow builder (describe automation in plain English)",
+      "100+ pre-built playbook templates for sales and recruiting",
+      "AI qualification engine to prioritize leads by fit criteria",
+      "Cloud and local execution modes for privacy-sensitive workflows",
+      "Integration with CRMs, Google Sheets, Airtable, Notion, and Slack",
+      "Credit-based usage system with monthly allocations per plan",
+      "Team collaboration features for shared playbooks"
+    ],
+    "pricing_model": "freemium",
+    "pricing_tiers": [
+      {
+        "name": "Free",
+        "price": 0,
+        "period": "month",
+        "features": [
+          "100 credits per month",
+          "Basic web scraping and automation",
+          "Access to pre-built templates",
+          "Chrome extension"
+        ]
+      },
+      {
+        "name": "Basic",
+        "price": 10,
+        "period": "month",
+        "features": [
+          "200 credits per month",
+          "Premium scraper access",
+          "Contact enrichment",
+          "Team collaboration"
+        ]
+      },
+      {
+        "name": "Premium",
+        "price": 50,
+        "period": "month",
+        "features": [
+          "1,000 credits per month (or 12,000/year on annual plan)",
+          "All Basic features",
+          "Annual billing at $480/year (20% savings)",
+          "Priority support"
+        ]
+      },
+      {
+        "name": "Enterprise",
+        "price": null,
+        "period": "custom",
+        "features": [
+          "Custom bulk credit allocation",
+          "Custom scraper building and maintenance",
+          "Premium dedicated support",
+          "Annual billing"
+        ]
+      }
+    ],
+    "integrations": [
+      {"name": "Google Sheets", "website": "https://sheets.google.com", "description": "Export scraped and enriched data directly into Google Sheets"},
+      {"name": "HubSpot", "website": "https://www.hubspot.com", "description": "Sync leads and enriched contact data to HubSpot CRM"},
+      {"name": "Salesforce", "website": "https://www.salesforce.com", "description": "Create and update Salesforce CRM records via automated workflows"},
+      {"name": "LinkedIn", "website": "https://www.linkedin.com", "description": "Automate prospect research and outreach on LinkedIn"},
+      {"name": "Notion", "website": "https://www.notion.so", "description": "Push scraped data and research notes into Notion databases"},
+      {"name": "Slack", "website": "https://slack.com", "description": "Send workflow alerts and automation results to Slack channels"}
+    ],
+    "support_channels": ["Email support", "Help center", "Community forum"],
+    "training_options": ["Documentation", "Video tutorials", "Playbook templates"],
+    "compliance": [],
+    "pros": [
+      "No-code browser automation accessible to non-technical users",
+      "Powerful web scraper handles sites without native APIs",
+      "Free tier with 100 credits/month for light users",
+      "100+ pre-built templates for sales and recruiting workflows",
+      "Local execution mode keeps sensitive data on-device",
+      "Backed by HubSpot and Dropbox Ventures"
+    ],
+    "cons": [
+      "Chrome-only - does not work in Firefox, Safari, or Edge",
+      "Credit-based pricing can scale poorly for high-volume users",
+      "Limited to browser-based tasks; cannot automate desktop applications",
+      "No traditional public API or custom webhooks for developers",
+      "Small team (under 30 employees) means slower feature development"
+    ],
+    "starting_price": 10,
+    "starting_price_period": "month",
+    "has_free_trial": 0,
+    "has_free_version": 1,
+    "has_ios_app": 0,
+    "has_android_app": 0,
+    "faqs": [
+      {
+        "question": "What is Bardeen used for?",
+        "answer": "Bardeen automates repetitive browser-based tasks for go-to-market teams - including web scraping, lead enrichment, CRM data entry, and multi-step sales workflows - without writing code."
+      },
+      {
+        "question": "Does Bardeen require coding skills?",
+        "answer": "No. Bardeen lets users describe automations in plain English or choose from 100+ pre-built templates, requiring no coding or server infrastructure."
+      },
+      {
+        "question": "What browsers does Bardeen support?",
+        "answer": "Bardeen currently runs exclusively as a Chrome extension. It does not support Firefox, Safari, or other browsers."
+      },
+      {
+        "question": "How does Bardeen pricing work?",
+        "answer": "Bardeen uses a credit-based system. The free plan includes 100 credits/month. Paid plans start at $10/month (Basic, 200 credits) and $50/month (Premium, 1,000 credits). Enterprise pricing is custom."
+      },
+      {
+        "question": "Which CRMs does Bardeen integrate with?",
+        "answer": "Bardeen natively integrates with HubSpot and Salesforce, and also connects with Google Sheets, Airtable, Notion, Slack, and LinkedIn."
+      },
+      {
+        "question": "Is there a free plan for Bardeen?",
+        "answer": "Yes. Bardeen offers a free plan with 100 credits per month that refreshes at each billing period, covering basic scraping and automation tasks."
+      }
+    ],
+    "source_urls": [
+      "https://bardeen.ai",
+      "https://bardeen.ai/pricing",
+      "https://tracxn.com/d/companies/bardeenautomation/__YwA_An8_NxIojU1Cul7-YVWLjuc4zG9WXhFWrbaMeWM",
+      "https://aiquiks.com/ai-tools/bardeen"
+    ]
+  },
+  {
+    "name": "ThoughtSpot",
+    "slug": "thoughtspot",
+    "category_slug": "ai-business-intelligence",
+    "listing_mode": "product",
+    "website": "https://www.thoughtspot.com",
+    "email": "info@thoughtspot.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "Mountain View",
+    "state": "CA",
+    "hq_location": "Mountain View, CA, US",
+    "tagline": "Agentic analytics platform that lets business users query live data in natural language and get AI-driven insights instantly.",
+    "description": "ThoughtSpot is an AI-powered business intelligence platform founded in 2012 by Ajeet Singh and Amit Prakash in Mountain View, California. It enables non-technical business users to search live data using natural language and receive AI-generated insights, dashboards, and recommendations through its Spotter AI agent. The platform integrates with Snowflake, Databricks, Google BigQuery, and other cloud data warehouses, and serves financial services, retail, healthcare, and technology sectors.",
+    "founded_year": 2012,
+    "team_size": "500+",
+    "linkedin": "https://www.linkedin.com/company/thoughtspot",
+    "twitter": "https://twitter.com/thoughtspot",
+    "header_tags": ["Business Intelligence", "AI Analytics", "Natural Language Queries", "Embedded Analytics", "Data Visualization"],
+    "languages": ["English"],
+    "industries_served": ["Financial Services", "Retail & CPG", "Healthcare & Life Sciences", "Technology & Software", "Supply Chain & Logistics", "Media & Telecom", "Procurement"],
+    "use_cases": [
+      "Natural language querying of live enterprise data",
+      "AI-automated dashboard and report generation",
+      "Self-service analytics for non-technical business users",
+      "Embedded analytics within third-party products",
+      "Spotter AI agent for automated data analysis",
+      "Semantic layer management for consistent metrics",
+      "Real-time decision support for business leaders",
+      "Data security and governed access at scale"
+    ],
+    "target_company_sizes": ["Midsize companies", "Enterprises"],
+    "key_features": [
+      "Spotter AI Agent - conversational analyst that answers business questions autonomously",
+      "SpotterModel - automated semantic modeling for consistent metric definitions",
+      "SpotterViz - instant AI-generated data visualizations and dashboards",
+      "SpotterCode - AI-assisted code generation for advanced analytics",
+      "Natural language search across live cloud data warehouses",
+      "AI-augmented mobile-ready dashboards with automated insights",
+      "Low-code embedding SDK and APIs for product teams",
+      "Trusted semantic layer with governed metrics and data security",
+      "Direct connectivity to Snowflake, Databricks, BigQuery, and Redshift",
+      "Integration with Slack, Salesforce, Google Slides, and OpenAI"
+    ],
+    "pricing_model": "subscription",
+    "pricing_tiers": [
+      {
+        "name": "Essentials",
+        "price": 25,
+        "period": "month",
+        "features": [
+          "$25/user/month billed annually (5-50 users)",
+          "Up to 25M rows of data",
+          "Dynamic dashboards and actionable insights",
+          "Natural language search"
+        ]
+      },
+      {
+        "name": "Pro",
+        "price": null,
+        "period": "month",
+        "features": [
+          "$0.10 per query (usage-based, 25-1,000 users)",
+          "Up to 250M rows of data",
+          "AI-infused dashboards and Spotter AI Agent",
+          "Analyst Studio"
+        ]
+      },
+      {
+        "name": "Enterprise",
+        "price": null,
+        "period": "custom",
+        "features": [
+          "Custom pricing for unlimited users and data",
+          "Dynamic AI dashboards and Spotter AI Agent",
+          "Analyst Studio and full platform access",
+          "Dedicated support"
+        ]
+      },
+      {
+        "name": "Embedded Developer",
+        "price": 0,
+        "period": "month",
+        "features": [
+          "Free for 1 year (up to 10 users, 25M rows)",
+          "Embeddable AI dashboards",
+          "API and SDK access",
+          "For building embedded analytics products"
+        ]
+      }
+    ],
+    "integrations": [
+      {"name": "Snowflake", "website": "https://www.snowflake.com", "description": "Direct live query of Snowflake data warehouse without data movement"},
+      {"name": "Databricks", "website": "https://www.databricks.com", "description": "Native connectivity to Databricks lakehouse for AI-powered analytics"},
+      {"name": "Salesforce", "website": "https://www.salesforce.com", "description": "Embed ThoughtSpot analytics directly within Salesforce workflows"},
+      {"name": "Slack", "website": "https://slack.com", "description": "Deliver AI-generated insights and alerts directly into Slack channels"},
+      {"name": "Google BigQuery", "website": "https://cloud.google.com/bigquery", "description": "Live query against Google BigQuery data warehouse"},
+      {"name": "OpenAI ChatGPT", "website": "https://openai.com", "description": "ChatGPT integration for conversational analytics experiences"}
+    ],
+    "support_channels": ["Email support", "Help center", "Dedicated account manager", "Community forum"],
+    "training_options": ["Documentation", "Video tutorials", "Instructor-led training", "Certification programs"],
+    "compliance": ["SOC 2", "GDPR"],
+    "pros": [
+      "Natural language querying enables non-technical users to self-serve analytics",
+      "Spotter AI Agent autonomously generates insights and dashboards",
+      "Deep integration with leading cloud data platforms (Snowflake, Databricks)",
+      "Free 1-year embedded developer tier for product builders",
+      "Strong enterprise security with governed semantic layer",
+      "$4.2B valuation and 1,700+ employees indicate platform maturity"
+    ],
+    "cons": [
+      "Essentials plan limited to 50 users and 25M data rows",
+      "Pro plan uses usage-based query pricing which is hard to forecast",
+      "Enterprise pricing is custom and opaque - requires sales engagement",
+      "Steep learning curve for setting up semantic models correctly",
+      "Premium pricing puts it out of reach for smaller businesses"
+    ],
+    "starting_price": 25,
+    "starting_price_period": "month",
+    "has_free_trial": 1,
+    "has_free_version": 0,
+    "has_ios_app": 1,
+    "has_android_app": 1,
+    "faqs": [
+      {
+        "question": "What is ThoughtSpot used for?",
+        "answer": "ThoughtSpot is used for business intelligence and analytics. It lets non-technical users query live data in natural language and get AI-generated insights, dashboards, and automated recommendations."
+      },
+      {
+        "question": "How does ThoughtSpot Spotter work?",
+        "answer": "Spotter is ThoughtSpot's AI agent that acts as an automated data analyst. Users ask business questions in plain language and Spotter autonomously queries data, generates visualizations, and surfaces relevant insights."
+      },
+      {
+        "question": "What data sources does ThoughtSpot connect to?",
+        "answer": "ThoughtSpot connects to major cloud data warehouses including Snowflake, Databricks, Google BigQuery, Amazon Redshift, and Microsoft Azure Synapse."
+      },
+      {
+        "question": "How much does ThoughtSpot cost?",
+        "answer": "ThoughtSpot Essentials starts at $25/user/month (billed annually, 5-50 users). The Pro tier is usage-based at $0.10 per query. Enterprise pricing is custom. An Embedded Developer plan is free for the first year."
+      },
+      {
+        "question": "Does ThoughtSpot support embedded analytics?",
+        "answer": "Yes. ThoughtSpot offers low-code APIs and SDKs so product teams can embed AI-powered analytics directly within their own applications."
+      },
+      {
+        "question": "Who founded ThoughtSpot and when?",
+        "answer": "ThoughtSpot was founded in 2012 by Ajeet Singh and Amit Prakash in Mountain View, California. The company has raised over $600 million in funding and achieved a $4.2 billion valuation."
+      }
+    ],
+    "source_urls": [
+      "https://www.thoughtspot.com",
+      "https://www.thoughtspot.com/pricing",
+      "https://en.wikipedia.org/wiki/ThoughtSpot",
+      "https://getlatka.com/companies/thoughtspot"
+    ]
+  },
+  {
+    "name": "Teachable",
+    "slug": "teachable",
+    "category_slug": "ai-course-builders",
+    "listing_mode": "product",
+    "website": "https://teachable.com",
+    "email": "support@teachable.com",
+    "phone_code": "+1",
+    "phone": null,
+    "country_code": "US",
+    "city": "New York",
+    "state": "NY",
+    "hq_location": "New York, NY, US",
+    "tagline": "Creator-first platform to build, market, and sell online courses, coaching, digital downloads, and memberships.",
+    "description": "Teachable is a no-code course creation platform founded in 2013 by Ankur Nagpal in New York City. It enables creators, educators, and businesses to build and monetize online courses, coaching programs, digital downloads, and memberships. Acquired by Hotmart Company - the global leader in the creator economy - Teachable has served over 100 million students and enabled creators to earn over $1 billion in revenue. The platform includes AI-powered curriculum generation, quiz creation, subtitle translation, and payment processing.",
+    "founded_year": 2013,
+    "team_size": "201-500",
+    "linkedin": "https://www.linkedin.com/company/teachable",
+    "twitter": "https://twitter.com/teachable",
+    "header_tags": ["Online Course Platform", "Course Builder", "AI Curriculum Generator", "Creator Economy", "E-Learning"],
+    "languages": ["English"],
+    "industries_served": ["Education & E-Learning", "Fitness & Wellness", "Business & Entrepreneurship", "Creative Arts", "Technology & Coding", "Finance & Investing", "Language Learning"],
+    "use_cases": [
+      "Creating and selling online video courses",
+      "Running one-on-one or group coaching programs",
+      "Selling digital downloads (ebooks, templates, guides)",
+      "Building recurring revenue membership communities",
+      "AI-assisted curriculum and course content generation",
+      "Automating student enrollment and drip content delivery",
+      "Managing affiliate programs and promotions",
+      "Corporate employee training and compliance courses"
+    ],
+    "target_company_sizes": ["Freelancers", "Small businesses", "Midsize companies", "Enterprises"],
+    "key_features": [
+      "AI Curriculum Generator that builds course outlines from a text description",
+      "AI Quiz Generator for interactive student assessments",
+      "Automatic video subtitles and translations in 70+ languages",
+      "Drag-and-drop course builder with multimedia support",
+      "Built-in checkout, payment processing, and subscription billing",
+      "Affiliate program management for course promotion",
+      "Customizable sales pages and branding (including white-label on Growth+)",
+      "Student community and discussion features",
+      "Mobile apps for students on iOS and Android",
+      "Zapier integration connecting to 150+ external apps"
+    ],
+    "pricing_model": "subscription",
+    "pricing_tiers": [
+      {
+        "name": "Starter",
+        "price": 39,
+        "period": "month",
+        "features": [
+          "5 products, 100 active students, 1 admin user",
+          "7.5% transaction fee on sales",
+          "AI creation tools, mobile apps, global payments",
+          "Certificates of completion"
+        ]
+      },
+      {
+        "name": "Builder",
+        "price": 89,
+        "period": "month",
+        "features": [
+          "10 products, 1,000 active students, 1 admin user",
+          "0% transaction fee",
+          "Affiliate program and real-time support",
+          "50 imported students and all Starter features"
+        ]
+      },
+      {
+        "name": "Growth",
+        "price": 189,
+        "period": "month",
+        "features": [
+          "50 products, 5,000 active students, 5 admin users",
+          "0% transaction fee",
+          "Branding removal, custom permissions, subtitles/translations",
+          "1,000 imported students"
+        ]
+      },
+      {
+        "name": "Custom",
+        "price": null,
+        "period": "custom",
+        "features": [
+          "Unlimited products and custom student limits",
+          "0% transaction fee",
+          "Dedicated success manager and white-glove onboarding",
+          "Priority SLA, tax automation, sandbox testing"
+        ]
+      }
+    ],
+    "integrations": [
+      {"name": "Zapier", "website": "https://zapier.com", "description": "Connect Teachable with 150+ external apps including Shopify, Discord, and Salesforce"},
+      {"name": "Stripe", "website": "https://stripe.com", "description": "Native payment processing for course sales, subscriptions, and checkout"},
+      {"name": "Google Analytics", "website": "https://analytics.google.com", "description": "Track student behavior, funnel performance, and conversion rates"},
+      {"name": "Mailchimp", "website": "https://mailchimp.com", "description": "Sync student email lists for automated email marketing campaigns"},
+      {"name": "Zoom", "website": "https://zoom.us", "description": "Run live coaching sessions and virtual classes via Zoom integration"},
+      {"name": "Calendly", "website": "https://calendly.com", "description": "Schedule coaching appointments and live sessions automatically"}
+    ],
+    "support_channels": ["Email support", "Help center", "Live chat", "Community forum"],
+    "training_options": ["Documentation", "Video tutorials", "Webinars", "Blog"],
+    "compliance": [],
+    "pros": [
+      "AI curriculum and quiz generators accelerate course creation significantly",
+      "No-code builder accessible to creators without technical skills",
+      "Builder plan and above have 0% transaction fees",
+      "100+ million students served demonstrates platform reliability at scale",
+      "Video subtitles auto-generated in 70+ languages expand global reach",
+      "Hotmart ownership provides global payment infrastructure and creator economy scale"
+    ],
+    "cons": [
+      "Starter plan charges 7.5% transaction fee, which cuts into creator revenue",
+      "Active student caps on all plans (100/1,000/5,000) can force early upgrades",
+      "No built-in community features as robust as dedicated platforms like Circle",
+      "Limited product count on Starter (5) and Builder (10) plans",
+      "Annual discount requires upfront payment commitment"
+    ],
+    "starting_price": 29,
+    "starting_price_period": "month",
+    "has_free_trial": 1,
+    "has_free_version": 0,
+    "has_ios_app": 1,
+    "has_android_app": 1,
+    "faqs": [
+      {
+        "question": "What is Teachable used for?",
+        "answer": "Teachable is used to create and sell online courses, coaching programs, digital downloads, and membership communities. It is designed for creators, educators, and businesses who want to monetize knowledge and expertise."
+      },
+      {
+        "question": "Does Teachable have a free plan?",
+        "answer": "Teachable does not offer a permanent free plan, but it provides a free trial. The entry-level Starter plan begins at $39/month (or $29/month billed annually)."
+      },
+      {
+        "question": "How much does Teachable cost?",
+        "answer": "Teachable plans start at $39/month (Starter), $89/month (Builder), and $189/month (Growth). Annual billing reduces prices to $29, $69, and $139/month respectively. A Custom enterprise plan is also available."
+      },
+      {
+        "question": "Does Teachable charge transaction fees?",
+        "answer": "Yes, the Starter plan charges a 7.5% transaction fee on sales. The Builder, Growth, and Custom plans have 0% transaction fees."
+      },
+      {
+        "question": "What AI features does Teachable offer?",
+        "answer": "Teachable includes an AI Curriculum Generator (creates course outlines from a description), an AI Quiz Generator, and automatic video subtitle and translation in 70+ languages."
+      },
+      {
+        "question": "Does Teachable integrate with Zapier?",
+        "answer": "Yes. Teachable's Growth plan and above include Zapier access, enabling connections to 150+ external tools including Shopify, Discord, Salesforce, Zoom, and Mailchimp."
+      }
+    ],
+    "source_urls": [
+      "https://teachable.com",
+      "https://teachable.com/pricing",
+      "https://leadiq.com/c/teachable/5a1d98ee2300005a008787bb",
+      "https://www.crunchbase.com/organization/fedora"
+    ]
+  },
+  {
+    "name": "Be My Eyes",
+    "slug": "be-my-eyes",
+    "category_slug": "ai-for-accessibility",
+    "listing_mode": "product",
+    "website": "https://www.bemyeyes.com",
+    "email": "info@bemyeyes.com",
+    "phone_code": "+45",
+    "phone": null,
+    "country_code": "DK",
+    "city": "Copenhagen",
+    "state": null,
+    "hq_location": "Copenhagen, Denmark",
+    "tagline": "AI and volunteer-powered app giving blind and low-vision users real-time visual assistance in over 180 languages, 24/7.",
+    "description": "Be My Eyes is a Danish accessibility company founded in 2015 by Hans Jorgen Wiberg, a craftsman with low vision. Its app connects blind and visually impaired users with sighted volunteers via live video, and with its Be My AI feature (powered by GPT-4 vision), provides instant AI-generated visual descriptions without a human intermediary. The service is free for consumers and available in 150+ countries; business solutions are offered for enterprises seeking to serve visually impaired customers and employees.",
+    "founded_year": 2015,
+    "team_size": "201-500",
+    "linkedin": "https://www.linkedin.com/company/be-my-eyes",
+    "twitter": "https://twitter.com/bemyeyes",
+    "header_tags": ["Accessibility", "AI Visual Assistance", "Blind & Low Vision", "Volunteer Network", "Be My AI"],
+    "languages": ["English", "Danish", "Spanish", "French", "German", "Portuguese", "Chinese", "Arabic"],
+    "industries_served": ["Accessibility & Assistive Technology", "Healthcare", "Retail", "Hospitality", "Telecommunications", "Consumer Technology"],
+    "use_cases": [
+      "Real-time visual assistance for blind and low-vision individuals via live video",
+      "AI-powered image and scene description using Be My AI",
+      "Workplace accessibility support for blind employees (Be My Eyes Workplace)",
+      "Enterprise customer service accessibility via Service Directory",
+      "Smart glasses hands-free visual assistance (Meta Ray-Ban, Oakley Meta)",
+      "Reading labels, menus, receipts, and product instructions",
+      "Navigating new environments and public spaces",
+      "Identifying objects, colors, and visual information on demand"
+    ],
+    "target_company_sizes": ["Freelancers", "Small businesses", "Midsize companies", "Enterprises"],
+    "key_features": [
+      "Live video connection to sighted volunteers for real-time assistance",
+      "Be My AI - GPT-4 vision-powered image description without human wait time",
+      "Service Directory for connecting with trained enterprise support teams",
+      "Smart glasses integration with Meta Ray-Ban and Oakley Meta",
+      "Hands-free voice controls for calls and navigation",
+      "Be My Eyes Workplace - accessibility solutions for blind employees",
+      "Available on iOS, Android, and Windows",
+      "24/7 coverage via global volunteer network of 10.5+ million users",
+      "180+ language support for global accessibility",
+      "Free consumer app with no subscription or paywall for end users"
+    ],
+    "pricing_model": "freemium",
+    "pricing_tiers": [
+      {
+        "name": "Consumer App",
+        "price": 0,
+        "period": "month",
+        "features": [
+          "Full access to volunteer video assistance",
+          "Be My AI image description (GPT-4 powered)",
+          "Available on iOS, Android, and Windows",
+          "180+ language support"
+        ]
+      },
+      {
+        "name": "Business / Enterprise",
+        "price": null,
+        "period": "custom",
+        "features": [
+          "Service AI for automated customer service accessibility",
+          "Service Connect for trained support agent access",
+          "Service Directory listing for brand visibility",
+          "Be My Eyes Workplace for employee accessibility programs"
+        ]
+      }
+    ],
+    "integrations": [
+      {"name": "Meta Ray-Ban Smart Glasses", "website": "https://www.meta.com/smart-glasses", "description": "Hands-free visual assistance via Ray-Ban Meta and Oakley Meta glasses integration"},
+      {"name": "OpenAI GPT-4 Vision", "website": "https://openai.com", "description": "Powers Be My AI for instant AI-generated image and scene descriptions"},
+      {"name": "Microsoft Windows", "website": "https://www.microsoft.com/windows", "description": "Dedicated Windows app for PC-based accessibility assistance"}
+    ],
+    "support_channels": ["Email support", "Help center", "Community forum"],
+    "training_options": ["Documentation", "Video tutorials", "Business onboarding"],
+    "compliance": [],
+    "pros": [
+      "Completely free for blind and low-vision end users - no subscription required",
+      "Be My AI delivers instant AI descriptions without waiting for a volunteer",
+      "Global volunteer network of 10.5 million ensures 24/7 coverage",
+      "Smart glasses integration enables truly hands-free accessibility",
+      "Recognized by Time as one of the Best Inventions of 2023",
+      "Enterprise solutions extend accessibility to customer service and workplace settings"
+    ],
+    "cons": [
+      "Business pricing is fully custom with no publicly listed tiers - requires sales contact",
+      "Volunteer response times can vary depending on time zone and language",
+      "Be My AI may produce inaccurate descriptions for complex or ambiguous images",
+      "Smart glasses integration limited to Meta Ray-Ban and Oakley Meta currently",
+      "Core features depend on internet connectivity - no offline mode"
+    ],
+    "starting_price": 0,
+    "starting_price_period": "month",
+    "has_free_trial": 0,
+    "has_free_version": 1,
+    "has_ios_app": 1,
+    "has_android_app": 1,
+    "faqs": [
+      {
+        "question": "Is Be My Eyes free to use?",
+        "answer": "Yes. The Be My Eyes consumer app is completely free for blind and low-vision users. There is no subscription, trial period, or paywall. Business and enterprise solutions have custom pricing."
+      },
+      {
+        "question": "What is Be My AI?",
+        "answer": "Be My AI is an AI-powered feature within the Be My Eyes app, built on OpenAI's GPT-4 vision model. It provides instant, detailed descriptions of images and scenes without needing a human volunteer."
+      },
+      {
+        "question": "When was Be My Eyes founded?",
+        "answer": "Be My Eyes was founded in 2015 by Hans Jorgen Wiberg, a Danish craftsman with low vision. Within 24 hours of launch, 10,000 volunteers had signed up."
+      },
+      {
+        "question": "What platforms does Be My Eyes support?",
+        "answer": "Be My Eyes is available on iOS, Android, and Windows. It also integrates with Meta Ray-Ban and Oakley Meta smart glasses for hands-free use."
+      },
+      {
+        "question": "How does Be My Eyes work for businesses?",
+        "answer": "Businesses can list in the Be My Eyes Service Directory so visually impaired customers can reach trained support teams directly. Enterprise solutions include Service AI, Service Connect, and Be My Eyes Workplace for employee accessibility."
+      },
+      {
+        "question": "How many people use Be My Eyes?",
+        "answer": "As of 2026, Be My Eyes has over 10.5 million sighted volunteers and approximately 1 million blind or low-vision users across 150+ countries and 180+ languages."
+      }
+    ],
+    "source_urls": [
+      "https://www.bemyeyes.com",
+      "https://en.wikipedia.org/wiki/Be_My_Eyes",
+      "https://tracxn.com/d/companies/bemyeyes/__p8rGEiswMKnFERfbf8itCVzUmDT-1hcvoznBFayHY-c",
+      "https://www.bemyeyes.com/business/"
+    ]
+  }
+]
