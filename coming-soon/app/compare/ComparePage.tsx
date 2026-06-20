@@ -716,7 +716,7 @@ function OverviewCell({ col }: { col: CompareCol }) {
   // Typical customers — derive from target_company_sizes JSON. If empty
   // we still render a single mute hint.
   const COMPANY_BUCKETS = ['Freelancers', 'Small businesses', 'Mid size businesses', 'Large enterprises']
-  const lowerSizes = col.targetCompanySizes.map(s => s.toLowerCase())
+  const lowerSizes = col.targetCompanySizes.filter((s): s is string => typeof s === 'string').map(s => s.toLowerCase())
   const customerItems = COMPANY_BUCKETS.map(b => ({
     label: b,
     on: lowerSizes.some(s => s.startsWith(b.toLowerCase().split(' ')[0])),
@@ -725,7 +725,7 @@ function OverviewCell({ col }: { col: CompareCol }) {
 
   // Customer support — same shape as platforms
   const SUPPORT_BUCKETS = ['Phone', 'Email/Online', 'Knowledge base', 'Video tutorials', '24/7 live rep']
-  const supportLower = col.supportChannels.map(s => s.toLowerCase())
+  const supportLower = col.supportChannels.filter((s): s is string => typeof s === 'string').map(s => s.toLowerCase())
   const supportItems = SUPPORT_BUCKETS.map(b => ({
     label: b,
     on: supportLower.some(s => s.includes(b.toLowerCase().split('/')[0])),
@@ -1220,15 +1220,20 @@ function KeyFeaturesCell({ col }: { col: CompareCol }) {
 
   return (
     <div className="cpr-cell">
-      {col.keyFeatures.slice(0, 5).map((f, i) => (
-        <div key={i} className="cpr-kf">
-          <div className="cpr-kf-num">{String(i + 1).padStart(2, '0')}</div>
-          <div className="cpr-kf-body">
-            <div className="cpr-kf-name">{f.name}</div>
-            {f.description && <div className="cpr-kf-desc">{f.description}</div>}
+      {col.keyFeatures.slice(0, 5).map((f, i) => {
+        /* tolerate plain-string key_features (older seeds) + { name, description } */
+        const raw = f as unknown as string | { name?: string; description?: string }
+        const kf = typeof raw === 'string' ? { name: raw, description: '' } : raw
+        return (
+          <div key={i} className="cpr-kf">
+            <div className="cpr-kf-num">{String(i + 1).padStart(2, '0')}</div>
+            <div className="cpr-kf-body">
+              <div className="cpr-kf-name">{kf.name}</div>
+              {kf.description && <div className="cpr-kf-desc">{kf.description}</div>}
+            </div>
           </div>
-        </div>
-      ))}
+        )
+      })}
       {col.keyFeatures.length > 5 && (
         <Link href={`/listing/${col.slug}#features`} className="cpr-pill-link cpr-pill-link--ghost">
           See all {col.keyFeatures.length} key features {Ico.arrowRight}
@@ -1840,8 +1845,10 @@ export default function ComparePage({
   const featData = useMemo(() => {
     const lists = cols.map(c => uniq([
       ...c.features,
-      ...c.keyFeatures.map(k => k.name),
-    ]))
+      /* Older seeds store key_features as plain strings, not { name } objects —
+         tolerate both so the union never hits undefined.trim(). */
+      ...(c.keyFeatures as Array<string | { name?: string }>).map(k => typeof k === 'string' ? k : k?.name),
+    ].filter((s): s is string => typeof s === 'string')))
     const totals = lists.map(l => l.length)
     const max = Math.max(0, ...totals)
     const all = uniq(lists.flat().map(s => s.trim()).filter(Boolean)).sort((a, b) => a.localeCompare(b))
@@ -1852,7 +1859,10 @@ export default function ComparePage({
     return { union, totals, max }
   }, [cols])
   const intData = useMemo(() => {
-    const lists = cols.map(c => uniq(c.integrations.map(i => i.name)))
+    const lists = cols.map(c => uniq(
+      (c.integrations as Array<string | { name?: string }>).map(i => typeof i === 'string' ? i : i?.name)
+        .filter((s): s is string => typeof s === 'string')
+    ))
     const totals = lists.map(l => l.length)
     const max = Math.max(0, ...totals)
     const all = uniq(lists.flat().map(s => s.trim()).filter(Boolean)).sort((a, b) => a.localeCompare(b))
