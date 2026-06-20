@@ -4022,7 +4022,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             {(siblings.length > 4 || isPreview) && (
             <section className="tlp-sec tlp-cav-sec">
               <div className="tlp-cav-head">
-                <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faEye} /></span>What else do customers view?</h2>
+                <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faEye} /></span>What do people also view that is similar to {view.companyName}?</h2>
                 <p className="tlp-cav-sub">Popular tools that businesses choose alongside {view.companyName}</p>
               </div>
 
@@ -4136,7 +4136,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 <section className="tlp-sec tlp-rc-sec">
                   <h2 className="tlp-sec-title tlp-rc-title">
                     <span className="tlp-sec-ico"><FontAwesomeIcon icon={faLayerGroup} /></span>
-                    Which categories is {view.companyName} in?
+                    Related Categories of {view.category}
                   </h2>
                   <div className="tlp-rc-grid">
                     {cats.map(c => {
