@@ -2,11 +2,23 @@
    4. PORTFOLIO — Products by us. Carry-over.
    ═══════════════════════════════════════════════════════════ */
 .cmp-portfolio {
+  position: relative;
+  margin-top: clamp(20px, 3vw, 32px);
+}
+/* Soft-bg band + top/bottom dividers constrained to the 1100px column so
+   they stay inside the frame rails instead of bleeding to the page edges. */
+.cmp-portfolio::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: min(1100px, 100%);
   background: var(--cmp-bg-soft);
   border-top: 1px solid var(--cmp-line);
   border-bottom: 1px solid var(--cmp-line);
-  margin-top: clamp(20px, 3vw, 32px);
+  z-index: 0;
 }
+.cmp-portfolio > * { position: relative; z-index: 1; }
 .cmp-portfolio-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

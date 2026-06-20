@@ -1024,7 +1024,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
             <div className="cmp-awards" id="awards">
               <div className="cmp-awards-head">
                 <span className="cmp-awards-head-ico"><AwardMedal /></span>
-                <span className="cmp-awards-head-title">Award &amp; Recognitions</span>
+                <span className="cmp-awards-head-title">What awards has {c.company_name} won?</span>
                 <span className="cmp-awards-head-count">{awards.length}</span>
               </div>
               <div className={'cmp-awards-grid' + (awardsClosing ? ' is-closing' : '')}>
@@ -1062,7 +1062,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
             <div className="cmp-snap-card">
               <header className="cmp-snap-head">
                 <span className="cmp-snap-head-ico"><PriceTag /></span>
-                <h2 className="cmp-snap-title">Pricing Snapshot</h2>
+                <h2 className="cmp-snap-title">What is {c.company_name}&apos;s pricing snapshot?</h2>
               </header>
 
               <div className="cmp-snap-grid">
@@ -1186,7 +1186,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
       <section className="cmp-section cmp-reviews" id="reviews">
         <div className="cmp-section-inner">
           <header className="cmp-reviews-head">
-            <h2 className="cmp-section-title cmp-h2"><span className="cmp-h2-ico"><FontAwesomeIcon icon={faComments} /></span>Reviews</h2>
+            <h2 className="cmp-section-title cmp-h2"><span className="cmp-h2-ico"><FontAwesomeIcon icon={faComments} /></span>What do clients say about {c.company_name}?</h2>
           </header>
 
           {reviewsData.reviewCount > 0 && (
@@ -1271,7 +1271,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
             <div>
               <h2 className="cmp-section-title cmp-h2">
                 <span className="cmp-h2-ico"><FontAwesomeIcon icon={faBoxOpen} /></span>
-                Products by {c.company_name}
+                What products has {c.company_name} built?
                 {products.length > 0 && (
                   <span className="cmp-section-count">{products.length}</span>
                 )}
@@ -1337,48 +1337,54 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                 product page (tlp-alt-grid 4-up rich cards). ── */}
             {similarCompanies.length > 0 && (
               <section id="alternatives" className="tlp-sec">
-                <h2 className="tlp-sec-title cmp-h2"><span className="cmp-h2-ico"><FontAwesomeIcon icon={faRightLeft} /></span>{c.company_name} alternatives</h2>
-                <div className="tlp-alt-grid">
+                <h2 className="tlp-sec-title cmp-h2"><span className="cmp-h2-ico"><FontAwesomeIcon icon={faRightLeft} /></span>What are the best {c.company_name} alternatives?</h2>
+                <div className="tlp-alt-grid tlp-alt-grid--pastel">
                   {similarCompanies.slice(0, 4).map(s => {
                     const sLogo = s.logo_url || ''
                     const priceNum = s.min_project_size
                       ? String(s.min_project_size).replace(/[^\d.]/g, '')
                       : ''
                     return (
-                      <div key={s.id} className="tlp-alt">
-                        <div className="tlp-alt-head">
+                      <div key={s.id} className="tlp-alt tlp-alt--pastel">
+                        <div className="tlp-alt-panel">
                           {sLogo
                             ? <img src={sLogo} alt={`${s.company_name} logo`} className="tlp-alt-logo" />
                             : <span className="tlp-alt-logo tlp-alt-logo--letter" aria-hidden="true">{initialsOf(s.company_name)}</span>}
-                          <div className="tlp-alt-head-right">
-                            <div className="tlp-alt-name">{s.company_name}</div>
-                            {s.category_name && <div className="tlp-alt-sub">{s.category_name}</div>}
+                          <div className="tlp-alt-name">{s.company_name}</div>
+                          {s.category_name && <span className="tlp-alt-cat">{s.category_name}</span>}
+                          {s.tagline && <p className="tlp-alt-tagline">{s.tagline}</p>}
+
+                          <div className="tlp-alt-price-block">
+                            <div className="tlp-alt-price-head">
+                              <span>Starting from</span>
+                              <span className="tlp-info-ico"><InfoIcon /></span>
+                            </div>
+                            {priceNum ? (
+                              <div className="tlp-alt-price">
+                                <span className="tlp-alt-price-sym">$</span>
+                                <span className="tlp-alt-price-num">{priceNum}</span>
+                              </div>
+                            ) : (
+                              <div className="tlp-alt-price tlp-alt-price--none">
+                                <FontAwesomeIcon icon={faClock} style={{ fontSize: 20, color: '#9CA3AF' }} />
+                              </div>
+                            )}
+                            <div className="tlp-alt-period">
+                              {s.hourly_rate || (priceNum ? 'min project' : 'Pricing not shared')}
+                            </div>
                           </div>
                         </div>
 
-                        <a href={`/profile/${s.slug}`} className="tlp-alt-cta">Learn More</a>
-
-                        <div className="tlp-alt-price-block">
-                          <div className="tlp-alt-price-head">
-                            <span>Starting from</span>
-                            <span className="tlp-info-ico"><InfoIcon /></span>
-                          </div>
-                          {priceNum ? (
-                            <div className="tlp-alt-price">
-                              <span className="tlp-alt-price-sym">$</span>
-                              <span className="tlp-alt-price-num">{priceNum}</span>
-                            </div>
-                          ) : (
-                            <div className="tlp-alt-price tlp-alt-price--none">
-                              <FontAwesomeIcon icon={faClock} style={{ fontSize: 20, color: '#9CA3AF' }} />
-                            </div>
-                          )}
-                          <div className="tlp-alt-period">
-                            {s.hourly_rate || (priceNum ? 'min project' : 'Pricing not shared')}
-                          </div>
+                        <div className="tlp-alt-foot">
+                          <a href={`/profile/${s.slug}`} className="tlp-alt-cta">Learn More</a>
+                          <a
+                            href={`/compare-companies/${slug}-vs-${s.slug}`}
+                            className="tlp-alt-cta tlp-alt-cta--outline"
+                            aria-label={`Compare ${c.company_name} with ${s.company_name}`}
+                          >
+                            Compare
+                          </a>
                         </div>
-
-                        {s.tagline && <p className="tlp-alt-tagline">{s.tagline}</p>}
                       </div>
                     )
                   })}
@@ -1390,7 +1396,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                 bracket logo + name vs name pairings, 3×3 grid). ── */}
             {similarCompanies.length > 0 && (
               <section id="compare" className="tlp-sec">
-                <h2 className="tlp-sec-title cmp-h2"><span className="cmp-h2-ico"><FontAwesomeIcon icon={faCodeCompare} /></span>Popular comparisons with {c.company_name}</h2>
+                <h2 className="tlp-sec-title cmp-h2"><span className="cmp-h2-ico"><FontAwesomeIcon icon={faCodeCompare} /></span>What is {c.company_name} compared to?</h2>
                 <div className="tlp-cmp-grid">
                   {similarCompanies.slice(0, 9).map(s => {
                     const sLogo = s.logo_url || ''
@@ -1426,7 +1432,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
             {popularTools.length > 0 && (
               <section className="tlp-sec tlp-cav-sec">
                 <div className="tlp-cav-head">
-                  <h2 className="tlp-sec-title cmp-h2"><span className="cmp-h2-ico"><FontAwesomeIcon icon={faEye} /></span>Customers also viewed</h2>
+                  <h2 className="tlp-sec-title cmp-h2"><span className="cmp-h2-ico"><FontAwesomeIcon icon={faEye} /></span>What do people also view that is similar to {c.company_name}?</h2>
                   <p className="tlp-cav-sub">Popular tools that businesses choose alongside {c.company_name}</p>
                 </div>
                 <div className="tlp-sib-grid">
@@ -1434,21 +1440,21 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                     const tLogo = t.logo_url || ''
                     return (
                       <a key={t.id} href={`/listing/${t.slug}`} className="tlp-sib-card">
-                        <div className="tlp-sib-head">
+                        <div className="tlp-sib-panel">
                           {tLogo
                             ? <img src={tLogo} alt={`${t.company_name} logo`} className="tlp-sib-logo" />
                             : <span className="tlp-sib-letter">{initialsOf(t.company_name)}</span>}
-                          <div className="tlp-sib-id">
-                            <div className="tlp-sib-name">{t.company_name}</div>
-                            {t.category_name && <div className="tlp-sib-cat">{t.category_name}</div>}
-                          </div>
+                          <div className="tlp-sib-name">{t.company_name}</div>
+                          {t.tagline && <p className="tlp-sib-tagline">{t.tagline}</p>}
+                          {t.category_name && <span className="tlp-sib-cat">{t.category_name}</span>}
                         </div>
-                        {t.tagline && <p className="tlp-sib-tagline">{t.tagline}</p>}
                         <div className="tlp-sib-foot">
-                          {t.starting_price ? (
-                            <span className="tlp-sib-price">From ${t.starting_price}{t.starting_price_period ? ` ${t.starting_price_period}` : ''}</span>
-                          ) : <span />}
-                          <span className="tlp-sib-cta">View →</span>
+                          <span className="tlp-sib-cta">View</span>
+                          <span className="tlp-sib-arrow" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                          </span>
                         </div>
                       </a>
                     )
@@ -1463,7 +1469,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
               <section className="tlp-sec tlp-rc-sec">
                 <h2 className="tlp-sec-title tlp-rc-title cmp-h2">
                   <span className="cmp-h2-ico"><FontAwesomeIcon icon={faLayerGroup} /></span>
-                  Related categories
+                  Related Categories of {c.category_name}
                 </h2>
                 <div className="tlp-rc-grid">
                   {relatedCategories.map(rc => (
@@ -1486,7 +1492,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
       <section className="cmp-section cmp-connect">
         <div className="cmp-section-inner cmp-connect-inner">
           <div className="cmp-connect-copy">
-            <h2 className="cmp-section-title cmp-h2"><span className="cmp-h2-ico"><FontAwesomeIcon icon={faPaperPlane} /></span>Get in touch with {c.company_name}</h2>
+            <h2 className="cmp-section-title cmp-h2"><span className="cmp-h2-ico"><FontAwesomeIcon icon={faPaperPlane} /></span>How do I get in touch with {c.company_name}?</h2>
             <p className="cmp-section-sub">
               Send a quote request, visit their website, or follow them around the web.
             </p>

@@ -6,6 +6,12 @@
   width: 100%;
   padding: clamp(28px, 3.5vw, 40px) clamp(20px, 4vw, 32px);
 }
+/* Guard against a class-name collision: the /compare page's comparison.css
+   ALSO defines `.cmp-section` with a cream #FAF5F0 fill. As a global rule it
+   leaked onto the company page's Reviews/Connect sections and bled past the
+   frame rails. Higher-specificity reset keeps company sections transparent
+   (the Portfolio band is drawn separately via ::before, so it's unaffected). */
+.cmp-root .cmp-section { background: transparent; }
 /* Sibling sections still need breathing room above their heading —
    collapsing top padding here jammed the H2 into the previous section's
    bottom border. Keep the full top padding. */

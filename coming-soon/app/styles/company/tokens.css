@@ -46,3 +46,31 @@
   font-family: var(--font-inter), 'Inter', -apple-system, system-ui, sans-serif !important;
   box-sizing: border-box;
 }
+
+/* ─── Vertical frame rails — run from the breadcrumb down to the bottom,
+   just outside the 1100px content column (mirrors the listing page).
+   Hairline; hidden once the column loses its side gutters on narrow
+   viewports. ─── */
+.cmp-root { position: relative; }
+.cmp-root::before,
+.cmp-root::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0.5px;
+  background: var(--cmp-line-mid);
+  z-index: 1;
+  pointer-events: none;
+}
+.cmp-root::before { left: calc(50% - 574px); }
+.cmp-root::after  { right: calc(50% - 574px); }
+@media (max-width: 1180px) {
+  .cmp-root::before,
+  .cmp-root::after { display: none; }
+}
+/* The cross-sell bridge carries the .tlp-main class, which brings the LISTING
+   page's own frame rails (.tlp-main::before/::after). Suppress them here so
+   only the company rails show — otherwise the cross-sell shows doubled lines. */
+.cmp-root .tlp-main::before,
+.cmp-root .tlp-main::after { display: none !important; }
