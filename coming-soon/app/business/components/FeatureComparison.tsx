@@ -51,10 +51,10 @@ export default function FeatureComparison({ onChoosePlan }: Props) {
           {(() => {
             const META = {
               lifetime: { cls: 'lt' as const, label: 'Lifetime',  short: 'LT', name: 'Elite Lifetime Founding', desc: 'Recommended For Businesses', price: slots.ltEx ? '999' : '239', period: 'one-time, forever',  badge: 'Recommend',
-                slash: !slots.ltEx ? <><span className="fc-strikethrough">$999</span> after Pioneer pre-launch window</> : null,
+                slash: !slots.ltEx ? <><span className="fc-strikethrough">$999</span> after the launch offer</> : null,
                 btnLabel: 'Claim Lifetime Spot', btnCls: 'pr-col-btn--primary', onClick: () => onChoosePlan('lifetime') },
               yearly:   { cls: 'yr' as const, label: 'Yearly',    short: 'YR', name: 'Early Adopter',           desc: 'Flexible Membership',         price: slots.yrEx ? '239' : '99',  period: 'per year Locked Forever', badge: null,
-                slash: !slots.yrEx ? <><span className="fc-strikethrough">$239/yr</span> after Pioneer pre-launch window</> : null,
+                slash: !slots.yrEx ? <><span className="fc-strikethrough">$239/yr</span> after the launch offer</> : null,
                 btnLabel: 'Get Started',          btnCls: 'pr-col-btn--secondary', onClick: () => onChoosePlan('yearly') },
               starter:  { cls: 'st' as const, label: 'Starter',   short: 'ST', name: 'Starter Plan',            desc: 'Pay Once, Yours Forever',     price: '49',                       period: 'one-time',                badge: null,
                 slash: 'no renewals · 14-day refund' as React.ReactNode,
@@ -183,7 +183,7 @@ export default function FeatureComparison({ onChoosePlan }: Props) {
             <div className="pr-col-desc">Recommended For Businesses</div>
             <div className="pr-col-price"><span>$</span>{slots.ltEx ? '999' : '239'}</div>
             <div className="pr-col-period">one-time, forever</div>
-            {!slots.ltEx && <div className="pr-col-slash"><span className="fc-strikethrough">$999</span> after Pioneer pre-launch window</div>}
+            {!slots.ltEx && <div className="pr-col-slash"><span className="fc-strikethrough">$999</span> after the launch offer</div>}
             <button type="button" className="pr-col-btn pr-col-btn--primary" onClick={() => onChoosePlan('lifetime')}>Claim Lifetime Spot</button>
           </div>
           <div className="pr-col-head pr-col-head--yr">
@@ -191,7 +191,7 @@ export default function FeatureComparison({ onChoosePlan }: Props) {
             <div className="pr-col-desc">Flexible Membership</div>
             <div className="pr-col-price"><span>$</span>{slots.yrEx ? '239' : '99'}</div>
             <div className="pr-col-period">per year Locked forever</div>
-            {!slots.yrEx && <div className="pr-col-slash"><span className="fc-strikethrough">$239/yr</span> after Pioneer pre-launch window</div>}
+            {!slots.yrEx && <div className="pr-col-slash"><span className="fc-strikethrough">$239/yr</span> after the launch offer</div>}
             <button type="button" className="pr-col-btn pr-col-btn--secondary" onClick={() => onChoosePlan('yearly')}>Get Started</button>
           </div>
           <div className="pr-col-head pr-col-head--st">

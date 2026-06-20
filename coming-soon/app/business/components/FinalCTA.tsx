@@ -47,7 +47,7 @@ export default function FinalCTA() {
         <div className="f2-header">
           <div className="f2-tag">Don&apos;t Miss Out</div>
           <h2 className="f2-heading">
-           Pioneer Pre-Launch Spots
+           Founding Member Spots
           </h2>
         </div>
 
@@ -87,7 +87,7 @@ export default function FinalCTA() {
               </div>
               {!lifetimeExhausted && (
                 <div className="f2-price-after">
-                  <span className="f2-strike">$999 / lifetime</span> after Pioneer pre-launch window
+                  <span className="f2-strike">$999 / lifetime</span> after the launch offer
                 </div>
               )}
 
@@ -157,7 +157,7 @@ export default function FinalCTA() {
               </div>
               {!yearlyExhausted && (
                 <div className="f2-price-after">
-                  <span className="f2-strike f2-strike--blue">$239/yr</span> after Pioneer pre-launch window
+                  <span className="f2-strike f2-strike--blue">$239/yr</span> after the launch offer
                 </div>
               )}
 

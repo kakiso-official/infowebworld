@@ -49,7 +49,7 @@ export default function FoundingCTA() {
       <div className="container">
         {/* Section header */}
         <div className="fc-header">
-          <div className="fc-section-tag">Limited Pioneer Pre-Launch Spots</div>
+          <div className="fc-section-tag">Limited Founding Spots</div>
           <h2 className="fc-section-heading">
             Choose Your <em>Founding</em> Plan
           </h2><p>The earlier you join, the less you pay — forever. Only for Pioneer spots. Not Satisfied, we got you covered with Refund or Free Renewal.</p>
@@ -72,7 +72,7 @@ export default function FoundingCTA() {
             </div>
             {!lifetimeExhausted && (
               <div className="fc-price-after">
-                <span className="fc-strikethrough">$999 / lifetime</span> after Pioneer pre-launch window
+                <span className="fc-strikethrough">$999 / lifetime</span> after the launch offer
               </div>
             )}
 
@@ -121,7 +121,7 @@ export default function FoundingCTA() {
             </div>
             {!yearlyExhausted && (
               <div className="fc-price-after">
-                <span className="fc-strikethrough">$239/yr</span> after Pioneer pre-launch window
+                <span className="fc-strikethrough">$239/yr</span> after the launch offer
               </div>
             )}
 

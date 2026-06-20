@@ -189,7 +189,7 @@ export default function PaymentModal({ isOpen, onClose, plan }: Props) {
             </div>
             {afterPrice && (
               <div className="pm-strike">
-                <span className="pm-strike-price">{afterPrice}</span> after Pioneer window
+                <span className="pm-strike-price">{afterPrice}</span> after the launch offer
               </div>
             )}
 

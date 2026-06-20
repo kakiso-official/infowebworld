@@ -195,7 +195,7 @@ export default function Pricing() {
             <div className="pr-col-desc">Recommended For Businesses</div>
             <div className="pr-col-price"><span>$</span>{slots.ltEx ? '999' : '239'}</div>
             <div className="pr-col-period">one-time, forever</div>
-            {!slots.ltEx && <div className="pr-col-slash"><span className="fc-strikethrough">$999</span> after Pioneer pre-launch window</div>}
+            {!slots.ltEx && <div className="pr-col-slash"><span className="fc-strikethrough">$999</span> after the launch offer</div>}
             <button type="button" className="pr-col-btn pr-col-btn--primary" onClick={() => choosePlan('lifetime')}>Claim Lifetime Spot</button>
           </div>
 
@@ -204,7 +204,7 @@ export default function Pricing() {
             <div className="pr-col-desc">Flexible Membership</div>
             <div className="pr-col-price"><span>$</span>{slots.yrEx ? '239' : '99'}</div>
             <div className="pr-col-period">per year Locked Forever</div>
-            {!slots.yrEx && <div className="pr-col-slash"><span className="fc-strikethrough">$239/yr</span> after Pioneer pre-launch window</div>}
+            {!slots.yrEx && <div className="pr-col-slash"><span className="fc-strikethrough">$239/yr</span> after the launch offer</div>}
             <button type="button" className="pr-col-btn pr-col-btn--secondary" onClick={() => choosePlan('yearly')}>Get Started</button>
           </div>
 
@@ -260,13 +260,13 @@ export default function Pricing() {
             { key: 'lt', badge: 'Recommend', name: 'Elite Founding Business Plan',
               desc: 'Recommended For Businesses',
               price: slots.ltEx ? '999' : '239', period: 'one-time, forever',
-              slash: !slots.ltEx ? <><span className="fc-strikethrough">$999</span> after Pioneer pre-launch window</> : null,
+              slash: !slots.ltEx ? <><span className="fc-strikethrough">$999</span> after the launch offer</> : null,
               btnLabel: 'Claim Lifetime Spot', btnCls: 'pr-col-btn--primary',
               onClick: () => choosePlan('lifetime'), has: () => true },
             { key: 'yr', badge: null, name: 'Early Adopter Plan',
               desc: 'Flexible Membership',
               price: slots.yrEx ? '239' : '99', period: 'per year Locked Forever',
-              slash: !slots.yrEx ? <><span className="fc-strikethrough">$239/yr</span> after Pioneer pre-launch window</> : null,
+              slash: !slots.yrEx ? <><span className="fc-strikethrough">$239/yr</span> after the launch offer</> : null,
               btnLabel: 'Get Started', btnCls: 'pr-col-btn--secondary',
               onClick: () => choosePlan('yearly'), has: () => true },
             { key: 'st', badge: null, name: 'Starter Plan',

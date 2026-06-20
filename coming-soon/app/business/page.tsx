@@ -9,9 +9,9 @@ export const metadata: Metadata = {
     'List your business on InfoWebWorld and lock in founding pricing. Get dofollow backlinks, verified reviews, and leads across 80+ industries.',
   alternates: { canonical: 'https://www.infowebworld.com/business' },
   openGraph: {
-    title: 'Get Listed on InfoWebWorld - Pre-Launch Business Listing',
+    title: 'Get Listed on InfoWebWorld - Business Listing',
     description:
-      'Submit your business before launch. Founding member spots are limited — lock in lifetime pricing today.',
+      'List your business on InfoWebWorld. Founding member spots are limited — lock in lifetime pricing today.',
   },
 }
 
@@ -31,7 +31,7 @@ const faqJsonLd = {
     {
       '@type': 'Question',
       name: 'How much does it cost to list my business on InfoWebWorld?',
-      acceptedAnswer: { '@type': 'Answer', text: 'InfoWebWorld offers a free basic listing. Paid plans start at $49 one-time (Starter), $99/year (Early Adopter), or $239 one-time (Elite Lifetime). Founding member pricing is available during pre-launch.' },
+      acceptedAnswer: { '@type': 'Answer', text: 'InfoWebWorld offers a free basic listing. Paid plans start at $49 one-time (Starter), $99/year (Early Adopter), or $239 one-time (Elite Lifetime). Founding member pricing is available for a limited time.' },
     },
     {
       '@type': 'Question',
