@@ -40,6 +40,30 @@ html, body { overflow-x: clip }
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ─── Vertical frame rails ─────────────────────────────────────────────
+   Two hairlines running the full height of the listing — from the
+   breadcrumb down to the last section — at the left/right edges of the
+   1200px content column. Pure decoration (pointer-events:none); hidden
+   once the column loses its side gutters on narrow viewports. */
+.tlp-main { position: relative; }
+.tlp-main::before,
+.tlp-main::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0.5px;
+  background: var(--tlp-border);
+  z-index: 1;
+  pointer-events: none;
+}
+.tlp-main::before { left: calc(50% - 600px); }
+.tlp-main::after  { right: calc(50% - 600px); }
+@media (max-width: 1200px) {
+  .tlp-main::before,
+  .tlp-main::after { display: none; }
+}
+
 .tlp-main a { color: var(--tlp-blue); text-decoration: none }
 .tlp-main a:hover { text-decoration: underline }
 .tlp-main p { margin: 0 0 14px }
@@ -62,6 +86,8 @@ html, body { overflow-x: clip }
   border-bottom: 1px solid var(--tlp-border);
   padding: 10px 0;
   font-size: 13px;
+  max-width: 1200px;
+  margin-inline: auto;
 }
 .tlp-crumb {
   display: flex;
@@ -264,7 +290,6 @@ body.tlp-subheader-active .tlp-write-review {
 /* ─── Company identity header (Clutch-style: identity / stats / actions) ─── */
 .tlp-identity {
   background: var(--tlp-bg);
-  border-bottom: 1px solid var(--tlp-border);
 }
 .tlp-identity-inner {
   display: grid;
@@ -274,6 +299,7 @@ body.tlp-subheader-active .tlp-write-review {
   padding: 28px 24px;
   max-width: 1200px;
   margin: 0 auto;
+  border-bottom: 1px solid var(--tlp-border);
 }
 
 /* ── Category tag pills — what this listing is about, at a glance ── */
@@ -660,7 +686,6 @@ body.tlp-subheader-active .tlp-write-review {
 /* ─── Horizontal section nav (lives inside .tlp-sticky-head; pins with it) ─── */
 .tlp-tabs {
   background: var(--tlp-bg);
-  border-bottom: 1px solid var(--tlp-border);
 }
 .tlp-tabs-inner {
   max-width: 1200px;
@@ -671,7 +696,8 @@ body.tlp-subheader-active .tlp-write-review {
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  justify-content: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--tlp-border);
 }
 .tlp-tabs-inner::-webkit-scrollbar { display: none }
 .tlp-tab-link {
@@ -705,9 +731,9 @@ body.tlp-subheader-active .tlp-write-review {
 /* Page title block (inside content column, above the overview card) */
 .tlp-title-block { margin-bottom: 22px }
 .tlp-page-title {
-  font-size: clamp(24px, 2.6vw, 30px);
+  font-size: clamp(30px, 3.4vw, 40px);
   font-weight: 700; color: var(--tlp-ink);
-  letter-spacing: -.015em; line-height: 1.2;
+  letter-spacing: -.022em; line-height: 1.14;
   margin: 0 0 12px;
 }
 .tlp-verify {
@@ -3212,6 +3238,91 @@ body.tlp-subheader-active .tlp-write-review {
 .tlp-sib-price { color: #11181C; font-weight: 600; }
 .tlp-sib-cta   { color: #2563EB; font-weight: 600; }
 
+/* ════════════════════════════════════════════════════════════════════════
+   "What else do customers view?" — pastel explore cards. Scoped to the
+   Customers-Also-Viewed section ONLY; same .tlp-sib markup/data, re-skinned.
+   Pastel panel colour cycles every 6 cards.
+   ════════════════════════════════════════════════════════════════════════ */
+.tlp-cav-sec .tlp-sib-grid { gap: 20px; }
+
+.tlp-cav-sec .tlp-sib-card {
+  gap: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(17,24,28,.05), 0 10px 26px -14px rgba(17,24,28,.18);
+  transition: transform .16s ease, box-shadow .16s ease;
+}
+.tlp-cav-sec .tlp-sib-card:hover {
+  border: 0;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(17,24,28,.07), 0 20px 44px -16px rgba(17,24,28,.26);
+}
+/* Beat the global ".tlp-main a:hover { text-decoration: underline }" so the
+   whole-card link never underlines its text on hover/focus. */
+.tlp-cav-sec a.tlp-sib-card,
+.tlp-cav-sec a.tlp-sib-card:hover,
+.tlp-cav-sec a.tlp-sib-card:focus { text-decoration: none !important; }
+
+/* Pastel top panel — logo, name, tagline, category pill */
+.tlp-cav-sec .tlp-sib-panel {
+  flex: 1;
+  display: flex; flex-direction: column;
+  gap: 11px;
+  padding: 22px 22px 20px;
+  background: var(--cav-bg, #EEF2F6);
+}
+.tlp-cav-sec .tlp-sib-logo,
+.tlp-cav-sec .tlp-sib-letter {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(17,24,28,.12);
+}
+.tlp-cav-sec .tlp-sib-logo { padding: 7px; object-fit: contain; }
+.tlp-cav-sec .tlp-sib-letter { font-size: 19px; color: #374151; }
+.tlp-cav-sec .tlp-sib-name {
+  white-space: normal; overflow: visible;
+  font-size: 20px; font-weight: 800; line-height: 1.18;
+  letter-spacing: -.02em; color: #1A2230;
+}
+.tlp-cav-sec .tlp-sib-tagline { color: #38414F; font-size: 13px; line-height: 1.5; }
+.tlp-cav-sec .tlp-sib-cat {
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 5px 12px; border-radius: 999px;
+  background: var(--cav-pill, rgba(17,24,28,.07));
+  color: var(--cav-pill-text, #1A2230);
+  font-size: 11.5px; font-weight: 700;
+  text-transform: none; letter-spacing: 0; line-height: 1.3;
+}
+
+/* White foot: "View" + circle arrow */
+.tlp-cav-sec .tlp-sib-foot {
+  margin-top: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px;
+  background: #fff;
+}
+.tlp-cav-sec .tlp-sib-cta { color: #1A2230; font-weight: 700; font-size: 14px; }
+.tlp-cav-sec .tlp-sib-arrow {
+  display: grid; place-items: center;
+  width: 34px; height: 34px; border-radius: 50%;
+  background: #1A2230; color: #fff;
+  transition: transform .16s ease;
+}
+.tlp-cav-sec .tlp-sib-card:hover .tlp-sib-arrow { transform: translateX(3px); }
+
+/* Pastel palette — cycles every 6 cards */
+.tlp-cav-sec .tlp-sib-card:nth-child(6n+1){ --cav-bg:#DCEBF9; --cav-pill:#BBD8F3; --cav-pill-text:#1C3A5E; }
+.tlp-cav-sec .tlp-sib-card:nth-child(6n+2){ --cav-bg:#FBE6D2; --cav-pill:#F3CFA8; --cav-pill-text:#6A3D17; }
+.tlp-cav-sec .tlp-sib-card:nth-child(6n+3){ --cav-bg:#E9DEF7; --cav-pill:#D6C3F0; --cav-pill-text:#46286B; }
+.tlp-cav-sec .tlp-sib-card:nth-child(6n+4){ --cav-bg:#D6F0E2; --cav-pill:#B6E4CD; --cav-pill-text:#1C5240; }
+.tlp-cav-sec .tlp-sib-card:nth-child(6n+5){ --cav-bg:#FAD9E6; --cav-pill:#F2C0D5; --cav-pill-text:#6B2545; }
+.tlp-cav-sec .tlp-sib-card:nth-child(6n+6){ --cav-bg:#FBF1CE; --cav-pill:#EFDFA3; --cav-pill-text:#695819; }
+
 /* Letter-avatar inside Popular Comparison cards */
 .tlp-cmp-letter {
   display: inline-flex; align-items: center; justify-content: center;
@@ -4124,20 +4235,15 @@ body.tlp-subheader-active .tlp-write-review {
 @media (max-width: 460px) { .tlp-cmp-grid { grid-template-columns: 1fr } }
 
 .tlp-cmp {
-  /* 3-column grid. Each column auto-sizes to its WIDER child (usually the
-     name on row 2). The logo on row 1 is then centered above its name.
-     The whole cluster is centered horizontally in the card.
-     Result: even when names have different lengths (e.g. "Claude AI" vs
-     "ChatGPT by OpenAI"), each logo sits directly above the center of
-     its own name — never drifting. */
-  display: grid;
-  grid-template-columns: auto auto auto;
-  justify-content: center;   /* center the cluster in the card */
+  /* Two independent, tightly-centered rows stacked vertically: the logos
+     (X ⇄ Y) and the names (X vs Y). The logos row is always the same width
+     (three fixed-size items), so it lands at the SAME spot in every card —
+     every logo lines up across the grid and the ⇄ sits directly above the
+     "vs". Names sit centered just beneath, whatever their length. */
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  /* per-cell alignment below — both logos converge toward the central
-     compare icon: left side end-aligned, right side start-aligned. */
-  column-gap: 10px;
-  row-gap: 6px;
+  gap: 6px;
   padding: 20px 24px;
   border: 1px solid #F1F3F5;
   border-radius: 8px;
@@ -4145,21 +4251,9 @@ body.tlp-subheader-active .tlp-write-review {
   text-decoration: none;
   transition: background-color .15s ease, border-color .15s ease;
 }
-/* Promote each row's children to be direct grid items of .tlp-cmp,
-   so columns auto-align between the logos row and the names row. */
-.tlp-cmp-row { display: contents }
+/* Each row is its own tight, horizontally-centered cluster. */
+.tlp-cmp-row { display: flex; align-items: center; justify-content: center; gap: 8px }
 
-/* Per-cell horizontal alignment — both logos converge toward the
-   central compare icon, so the card always reads "X  vs  Y" tightly:
-   left column → end (right-edge), middle → center, right → start. */
-.tlp-cmp-logos > :nth-child(1),
-.tlp-cmp-names > :nth-child(1) { justify-self: end; }
-
-.tlp-cmp-logos > :nth-child(2),
-.tlp-cmp-names > :nth-child(2) { justify-self: center; }
-
-.tlp-cmp-logos > :nth-child(3),
-.tlp-cmp-names > :nth-child(3) { justify-self: start; }
 /* Specificity bump: global .tlp-main a:hover adds underline, so use
    a.tlp-cmp to beat it (0,2,1 ≥ 0,2,1) plus !important on the leaf
    spans for total safety. */
@@ -4193,26 +4287,31 @@ a.tlp-cmp:focus {
 .tlp-cmp-trend {
   display: inline-flex;
   flex-shrink: 0;
-  width: 18px; height: 18px;
   align-items: center; justify-content: center;
+  font-size: 16px;
+  color: var(--tlp-mute);
 }
-.tlp-cmp-trend svg { width: 18px; height: 18px }
+.tlp-cmp-trend svg { width: auto; height: 1em }
 
 .tlp-cmp-names {
-  /* gap/line-height handled by grid container now */
+  align-self: stretch;   /* span the full card width so the two name halves stay symmetric and the row never drifts between cards */
   line-height: 1.3;
 }
 .tlp-cmp-name {
+  flex: 1 1 0;           /* two equal halves either side of the "vs" */
+  text-align: left;      /* right-hand name hugs the "vs" */
   font-size: 14px; font-weight: 600;
   color: var(--tlp-ink);
   min-width: 0;
   letter-spacing: -.005em;
 }
 .tlp-cmp-name--muted {
+  text-align: right;     /* subject name hugs the "vs" from the other side */
   color: #9AA3AE;
   font-weight: 500;
 }
 .tlp-cmp-vs {
+  flex: 0 0 auto;        /* stays dead-centre between the two equal name halves */
   font-size: 12.5px; font-weight: 500;
   color: #9AA3AE;
   text-transform: lowercase;
@@ -5070,6 +5169,91 @@ html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nh-h, 112px) + 12
   background: var(--h-accent, #E8553D) !important; color: #fff !important;
   border-color: var(--h-accent, #E8553D) !important;
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+   Pastel "best alternatives" cards — same family as the Customers-Also-Viewed
+   cards. Scoped to real-mode .tlp-alt--pastel so the preview sandbox table
+   keeps its original look. Panel colour cycles per card.
+   ════════════════════════════════════════════════════════════════════════ */
+.tlp-alt-grid--pastel { gap: 20px; }
+
+.tlp-alt--pastel {
+  gap: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(17,24,28,.05), 0 10px 26px -14px rgba(17,24,28,.18);
+  transition: transform .16s ease, box-shadow .16s ease;
+}
+.tlp-alt--pastel:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(17,24,28,.07), 0 20px 44px -16px rgba(17,24,28,.26);
+}
+
+/* Pastel top panel */
+.tlp-alt--pastel .tlp-alt-panel {
+  flex: 1;
+  display: flex; flex-direction: column;
+  gap: 10px;
+  padding: 22px 22px 18px;
+  background: var(--cav-bg, #EEF2F6);
+}
+.tlp-alt--pastel .tlp-alt-logo {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: #fff; padding: 7px;
+  box-shadow: 0 1px 3px rgba(17,24,28,.12);
+}
+.tlp-alt--pastel .tlp-alt-logo--letter { padding: 0; background: #fff; color: #374151; font-size: 18px; }
+.tlp-alt--pastel .tlp-alt-name {
+  font-size: 20px; font-weight: 800; line-height: 1.18;
+  letter-spacing: -.02em; color: #1A2230;
+}
+.tlp-alt--pastel .tlp-alt-cat {
+  align-self: flex-start;
+  padding: 5px 12px; border-radius: 999px;
+  background: var(--cav-pill, rgba(17,24,28,.07));
+  color: var(--cav-pill-text, #1A2230);
+  font-size: 11.5px; font-weight: 700; line-height: 1.3;
+}
+.tlp-alt--pastel .tlp-alt-tagline { margin: 0; font-size: 13px; line-height: 1.5; color: #38414F; }
+/* Compact, borderless price pinned to the bottom of the pastel panel */
+.tlp-alt--pastel .tlp-alt-price-block { margin-top: auto; border: 0; padding: 4px 0 0; }
+.tlp-alt--pastel .tlp-alt-price-head { font-size: 11px; color: #5A6473; font-weight: 600; margin-bottom: 1px; }
+.tlp-alt--pastel .tlp-alt-price-head .tlp-info-ico { display: none; }
+.tlp-alt--pastel .tlp-alt-price { align-items: baseline; }
+.tlp-alt--pastel .tlp-alt-price-sym { font-size: 14px; margin-top: 0; color: #1A2230; }
+.tlp-alt--pastel .tlp-alt-price-num { font-size: 22px; color: #1A2230; }
+.tlp-alt--pastel .tlp-alt-price--none { padding: 0; }
+.tlp-alt--pastel .tlp-alt-period { font-size: 11.5px; color: #5A6473; margin-top: 1px; }
+
+/* White foot: Learn More (dark) + Compare (outline) */
+.tlp-alt--pastel .tlp-alt-foot { display: flex; gap: 8px; padding: 13px 16px; background: #fff; }
+.tlp-main .tlp-alt--pastel .tlp-alt-foot a.tlp-alt-cta {
+  flex: 1; min-width: 0;
+  padding: 13px 12px;
+  border-radius: 11px;
+  background: #1A2230; color: #fff;
+  font-size: 13.5px; font-weight: 700;
+  letter-spacing: .01em; text-transform: none;
+}
+.tlp-main .tlp-alt--pastel .tlp-alt-foot a.tlp-alt-cta:hover { background: #2C3650; color: #fff; }
+.tlp-main .tlp-alt--pastel .tlp-alt-foot a.tlp-alt-cta--outline {
+  background: #fff !important; color: #1A2230 !important; border: 1.5px solid #E2E5EA !important;
+}
+.tlp-main .tlp-alt--pastel .tlp-alt-foot a.tlp-alt-cta--outline:hover {
+  background: #F4F6F8 !important; color: #1A2230 !important; border-color: #CBD2DA !important;
+}
+
+/* Pastel palette — cycles per card */
+.tlp-alt--pastel:nth-child(6n+1){ --cav-bg:#DCEBF9; --cav-pill:#BBD8F3; --cav-pill-text:#1C3A5E; }
+.tlp-alt--pastel:nth-child(6n+2){ --cav-bg:#FBE6D2; --cav-pill:#F3CFA8; --cav-pill-text:#6A3D17; }
+.tlp-alt--pastel:nth-child(6n+3){ --cav-bg:#E9DEF7; --cav-pill:#D6C3F0; --cav-pill-text:#46286B; }
+.tlp-alt--pastel:nth-child(6n+4){ --cav-bg:#D6F0E2; --cav-pill:#B6E4CD; --cav-pill-text:#1C5240; }
+.tlp-alt--pastel:nth-child(6n+5){ --cav-bg:#FAD9E6; --cav-pill:#F2C0D5; --cav-pill-text:#6B2545; }
+.tlp-alt--pastel:nth-child(6n+6){ --cav-bg:#FBF1CE; --cav-pill:#EFDFA3; --cav-pill-text:#695819; }
 
 /* ═══════════════════════════════════════════════════════════════════════
    POLISHED HOVER ANIMATIONS — applied across the listing flow.

@@ -198,7 +198,20 @@ function mapServerRow(r: Record<string, unknown>): Partial<RealSubmission> {
     industriesServed: parseJsonArr(r.industries_served) as string[],
     useCases: parseJsonArr(r.use_cases) as string[],
     targetCompanySizes: parseJsonArr(r.target_company_sizes) as string[],
-    keyFeatures: parseJsonArr(r.key_features) as KeyFeature[],
+    /* Tolerate legacy string[] payloads — older AI/ML seeds stored
+       key_features as plain strings, which rendered as blank cards because
+       the UI reads kf.name / kf.description. Wrap each string as { name }. */
+    keyFeatures: parseJsonArr(r.key_features).map((kf) => {
+      if (typeof kf === 'string') return { name: kf, description: '' }
+      if (kf && typeof kf === 'object') {
+        const o = kf as Record<string, unknown>
+        return {
+          name: String(o.name ?? ''),
+          description: typeof o.description === 'string' ? o.description : '',
+        }
+      }
+      return { name: String(kf), description: '' }
+    }).filter(k => k.name) as KeyFeature[],
     startingPrice: r.starting_price != null ? String(r.starting_price) : '',
     startingPricePeriod: String(r.starting_price_period ?? ''),
     hasFreeTrial: Boolean(Number(r.has_free_trial ?? 0)),
@@ -1077,37 +1090,6 @@ function BracketIcon() {
   )
 }
 
-/* Two-arrow zigzag "trend" icon used between the two logos in Popular
-   Comparisons. Red arrow climbs up-right, dark arrow falls down-left —
-   visually signals "stack X up against Y". */
-function TrendIcon({ size = 30 }: { size?: number }) {
-  return (
-    <svg viewBox="0 0 64 64" width={size} height={size} aria-hidden="true">
-      {/* Red up-trend (with arrowhead at top-right) */}
-      <path
-        d="M5 31 L20 18 L30 26 L43 14"
-        fill="none" stroke="#FF5A5F" strokeWidth="6.5"
-        strokeLinecap="round" strokeLinejoin="round"
-      />
-      <path
-        d="M34 12 L46 12 L46 24"
-        fill="none" stroke="#FF5A5F" strokeWidth="6.5"
-        strokeLinecap="round" strokeLinejoin="round"
-      />
-      {/* Dark down-trend (with arrowhead at bottom-left) */}
-      <path
-        d="M59 33 L44 46 L34 38 L21 50"
-        fill="none" stroke="#1F2937" strokeWidth="6.5"
-        strokeLinecap="round" strokeLinejoin="round"
-      />
-      <path
-        d="M30 52 L18 52 L18 40"
-        fill="none" stroke="#1F2937" strokeWidth="6.5"
-        strokeLinecap="round" strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
 
 function ArrowLeftSm() {
   return (
@@ -2055,7 +2037,9 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             <div className="tlp-title-block">
               <h1 className="tlp-page-title">
                 {view.companyName}
-                {isPreview && ' — 2026 Pricing, Features, Reviews & Alternatives'}
+                {isPreview
+                  ? ' — 2026 Pricing, Features, Reviews & Alternatives'
+                  : view.category ? ` - ${view.category}` : ''}
               </h1>
               {view.tagline && <p className="tlp-page-tagline">{view.tagline}</p>}
 
@@ -2169,7 +2153,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 {/* ── Left column: Q&A blocks (now full-width — overview
                        sidebar removed entirely per design) ── */}
                 <div className="tlp-ovw-main">
-                  <h2 className="tlp-ovw-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faCircleInfo} /></span>{view.companyName} overview</h2>
+                  <h2 className="tlp-ovw-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faCircleInfo} /></span>{view.companyName} Summary &amp; Overview</h2>
                   {isPreview && (
                     <div className="tlp-ovw-verify">
                       <span className="tlp-verify-avatars" aria-hidden="true">
@@ -2257,7 +2241,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             {(view.realScreenshots || isPreview) && (
             <section id="ui" className="tlp-card">
               <div className="tlp-ui-head-row">
-                <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faImage} /></span>{view.companyName}&apos;s user interface</h2>
+                <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faImage} /></span>What does {view.companyName}&apos;s interface look like?</h2>
                 {isPreview && (
                   <div className="tlp-ui-head">
                     <span className="tlp-ui-ease">Ease of use:</span>
@@ -2353,7 +2337,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
               <section id="insights" className="tlp-card">
                 {!isPreview && (
                   <>
-                    <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faStar} /></span>{view.companyName} reviews and insights</h2>
+                    <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faStar} /></span>What do users say about {view.companyName}?</h2>
                     <div className="tlp-in-grid">
                       {/* ── Left sidebar: overall rating + insights placeholder ── */}
                       <aside className="tlp-in-left">
@@ -2453,7 +2437,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
 
                 {/* Sample-only chrome below — only renders in preview mode. */}
                 {isPreview && (<>
-              <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faScaleBalanced} /></span>{view.companyName} pros, cons and reviews insights</h2>
+              <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faScaleBalanced} /></span>What are {view.companyName}&apos;s pros and cons?</h2>
 
               <div className="tlp-in-grid">
                 {/* ── Left sidebar ── */}
@@ -2877,7 +2861,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             {/* ========== KEY FEATURES — always render section (empty-state when
                 neither realKeyFeatures nor realFeatures is provided). ========== */}
             <section id="key-features" className="tlp-sec tlp-kf-sec">
-              <h2 className="tlp-sec-title tlp-kf-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faListCheck} /></span>{view.companyName}&apos;s key features</h2>
+              <h2 className="tlp-sec-title tlp-kf-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faListCheck} /></span>What are {view.companyName}&apos;s key features?</h2>
 
               {isPreview ? (
                 <p className="tlp-kf-intro">
@@ -3091,12 +3075,12 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 falls back to the rich ALTERNATIVES sample in preview mode. ========== */}
             {(siblings.length > 0 || isPreview) && (
             <section id="alternatives" className="tlp-sec">
-              <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faRightLeft} /></span>{view.companyName} alternatives</h2>
+              <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faRightLeft} /></span>What are the best {view.companyName} alternatives?</h2>
 
               {/* Real mode: rich card grid matching the test-page visual. Uses
                   ONLY submitter data — no fake ratings, no fake free-trial flags. */}
               {!isPreview && siblings.length > 0 && (
-                <div className="tlp-alt-grid">
+                <div className="tlp-alt-grid tlp-alt-grid--pastel">
                   {siblings.slice(0, 4).map(s => {
                     const sDomain = s.website ? String(s.website).replace(/^https?:\/\//, '').split('/')[0] : ''
                     const sLogo = s.logo_url || (sDomain ? clearbit(sDomain, 128) : '')
@@ -3104,18 +3088,46 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                     const priceNum = sPrice && sPrice.kind === 'paid' ? sPrice.num : ''
                     const isFreePrice = !!sPrice && sPrice.kind === 'free'
                     return (
-                      <div key={s.id} className="tlp-alt">
-                        <div className="tlp-alt-head">
+                      <div key={s.id} className="tlp-alt tlp-alt--pastel">
+                        <div className="tlp-alt-panel">
                           {sLogo
                             ? <img src={sLogo} alt={`${s.company_name} logo`} className="tlp-alt-logo" />
                             : <span className="tlp-alt-logo tlp-alt-logo--letter" aria-hidden="true">{s.company_name.charAt(0).toUpperCase()}</span>}
-                          <div className="tlp-alt-head-right">
-                            <div className="tlp-alt-name">{s.company_name}</div>
-                            {s.category_name && <div className="tlp-alt-sub">{s.category_name}</div>}
+                          <div className="tlp-alt-name">{s.company_name}</div>
+                          {s.category_name && <span className="tlp-alt-cat">{s.category_name}</span>}
+                          {s.tagline && <p className="tlp-alt-tagline">{s.tagline}</p>}
+
+                          <div className="tlp-alt-price-block">
+                            <div className="tlp-alt-price-head">
+                              <span>Starting from</span>
+                              <span className="tlp-info-ico"><InfoIcon /></span>
+                            </div>
+                            {isFreePrice ? (
+                              <div className="tlp-alt-price">
+                                <span className="tlp-alt-price-num">Free</span>
+                              </div>
+                            ) : priceNum ? (
+                              <div className="tlp-alt-price">
+                                <span className="tlp-alt-price-sym">$</span>
+                                <span className="tlp-alt-price-num">{priceNum}</span>
+                              </div>
+                            ) : (
+                              <div className="tlp-alt-price tlp-alt-price--none">
+                                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                                  <circle cx="12" cy="12" r="9" fill="none" stroke="#D1D5DB" strokeWidth="1.8" />
+                                  <path d="M12 7v5l3 3" fill="none" stroke="#9CA3AF" strokeWidth="1.8" strokeLinecap="round" />
+                                </svg>
+                              </div>
+                            )}
+                            <div className="tlp-alt-period">{
+                              isFreePrice
+                                ? (s.starting_price_period || 'forever')
+                                : (s.starting_price_period || (priceNum ? '' : 'Pricing not shared'))
+                            }</div>
                           </div>
                         </div>
 
-                        <div className="tlp-alt-cta-row">
+                        <div className="tlp-alt-foot">
                           <a href={`/listing/${s.slug}`} className="tlp-alt-cta">Learn More</a>
                           <a
                             href={`/compare/${listingSlug}-vs-${s.slug}`}
@@ -3125,37 +3137,6 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                             Compare
                           </a>
                         </div>
-
-                        <div className="tlp-alt-price-block">
-                          <div className="tlp-alt-price-head">
-                            <span>Starting from</span>
-                            <span className="tlp-info-ico"><InfoIcon /></span>
-                          </div>
-                          {isFreePrice ? (
-                            <div className="tlp-alt-price">
-                              <span className="tlp-alt-price-num">Free</span>
-                            </div>
-                          ) : priceNum ? (
-                            <div className="tlp-alt-price">
-                              <span className="tlp-alt-price-sym">$</span>
-                              <span className="tlp-alt-price-num">{priceNum}</span>
-                            </div>
-                          ) : (
-                            <div className="tlp-alt-price tlp-alt-price--none">
-                              <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
-                                <circle cx="12" cy="12" r="9" fill="none" stroke="#D1D5DB" strokeWidth="1.8" />
-                                <path d="M12 7v5l3 3" fill="none" stroke="#9CA3AF" strokeWidth="1.8" strokeLinecap="round" />
-                              </svg>
-                            </div>
-                          )}
-                          <div className="tlp-alt-period">{
-                            isFreePrice
-                              ? (s.starting_price_period || 'forever')
-                              : (s.starting_price_period || (priceNum ? '' : 'Pricing not shared'))
-                          }</div>
-                        </div>
-
-                        {s.tagline && <p className="tlp-alt-tagline">{s.tagline}</p>}
                       </div>
                     )
                   })}
@@ -3291,7 +3272,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             {/* ========== PRICING ========== */}
             {(view.realPricing || isPreview) && (
             <section id="pricing" className="tlp-sec">
-              <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faTags} /></span>{view.companyName} pricing</h2>
+              <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faTags} /></span>How much does {view.companyName} cost?</h2>
 
               {isPreview && (
                 <div className="tlp-price-meta">
@@ -3535,7 +3516,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             <section id="integrations" className="tlp-sec">
               <div className="tlp-int-title-row">
                 <h2 className="tlp-sec-title" style={{ margin: 0 }}><span className="tlp-sec-ico"><FontAwesomeIcon icon={faPuzzlePiece} /></span>
-                  {view.companyName} integrations
+                  What does {view.companyName} integrate with?
                   {view.realIntegrations ? ` (${view.realIntegrations.length})` : (isPreview ? ' (2,089)' : '')}
                 </h2>
                 {isPreview && (
@@ -3687,7 +3668,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 BELOW: review-snippet quote cards with "Highly Relevant" tag
                 ============================================================ */}
             <section id="support" className="tlp-sec">
-              <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faHeadset} /></span>{view.companyName} customer support</h2>
+              <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faHeadset} /></span>How good is {view.companyName}&apos;s customer support?</h2>
 
               <div className="tlp-cs-grid">
                 {/* ── LEFT column ── */}
@@ -3896,7 +3877,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             {/* ========== FAQS — always render section. Empty state when the
                 owner has not added any. ========== */}
             <section id="faqs" className="tlp-sec">
-              <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faCircleQuestion} /></span>{view.companyName} FAQs</h2>
+              <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faCircleQuestion} /></span>What do people ask about {view.companyName}?</h2>
               <p className="tlp-sec-lead">Here are some of the questions we get asked most often.</p>
 
               {(() => {
@@ -3975,7 +3956,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 Clean two-row card: logos + TrendIcon, then names + "vs". ========== */}
             {(siblings.length > 0 || isPreview) && (
             <section id="compare" className="tlp-sec tlp-cmp-sec">
-              <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faCodeCompare} /></span>Popular comparisons with {view.companyName}</h2>
+              <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faCodeCompare} /></span>What is {view.companyName} compared to?</h2>
 
               <div className="tlp-cmp-grid">
                 {!isPreview && siblings.length > 0
@@ -3993,7 +3974,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                             {view.logoUrl
                               ? <img src={view.logoUrl} alt={view.companyName} className="tlp-cmp-logo" />
                               : <span className="tlp-cmp-logo tlp-cmp-letter">{view.companyName.charAt(0).toUpperCase()}</span>}
-                            <span className="tlp-cmp-trend"><TrendIcon /></span>
+                            <span className="tlp-cmp-trend"><FontAwesomeIcon icon={faRightLeft} /></span>
                             {sLogo
                               ? <img src={sLogo} alt={s.company_name} className="tlp-cmp-logo" />
                               : <span className="tlp-cmp-logo tlp-cmp-letter">{s.company_name.charAt(0).toUpperCase()}</span>}
@@ -4017,7 +3998,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                         >
                           <div className="tlp-cmp-row tlp-cmp-logos">
                             <img src={view.logoUrl} alt={view.companyName} className="tlp-cmp-logo" />
-                            <span className="tlp-cmp-trend"><TrendIcon /></span>
+                            <span className="tlp-cmp-trend"><FontAwesomeIcon icon={faRightLeft} /></span>
                             <img src={clearbit(c.bd)} alt={c.b} className="tlp-cmp-logo" />
                           </div>
                           <div className="tlp-cmp-row tlp-cmp-names">
@@ -4041,7 +4022,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
             {(siblings.length > 4 || isPreview) && (
             <section className="tlp-sec tlp-cav-sec">
               <div className="tlp-cav-head">
-                <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faEye} /></span>Customers also viewed</h2>
+                <h2 className="tlp-sec-title"><span className="tlp-sec-ico"><FontAwesomeIcon icon={faEye} /></span>What else do customers view?</h2>
                 <p className="tlp-cav-sub">Popular tools that businesses choose alongside {view.companyName}</p>
               </div>
 
@@ -4053,18 +4034,21 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                       || (s.website ? clearbit(String(s.website).replace(/^https?:\/\//, '').split('/')[0], 128) : '')
                     return (
                       <a key={s.id} href={`/listing/${s.slug}`} className="tlp-sib-card">
-                        <div className="tlp-sib-head">
+                        <div className="tlp-sib-panel">
                           {sLogo
                             ? <img src={sLogo} alt={`${s.company_name} logo`} className="tlp-sib-logo" />
                             : <span className="tlp-sib-letter">{s.company_name.charAt(0).toUpperCase()}</span>}
-                          <div className="tlp-sib-id">
-                            <div className="tlp-sib-name">{s.company_name}</div>
-                            <div className="tlp-sib-cat">{s.category_name}</div>
-                          </div>
+                          <div className="tlp-sib-name">{s.company_name}</div>
+                          {s.tagline && <p className="tlp-sib-tagline">{s.tagline}</p>}
+                          {s.category_name && <span className="tlp-sib-cat">{s.category_name}</span>}
                         </div>
-                        {s.tagline && <p className="tlp-sib-tagline">{s.tagline}</p>}
                         <div className="tlp-sib-foot">
-                          <span className="tlp-sib-cta">View →</span>
+                          <span className="tlp-sib-cta">View</span>
+                          <span className="tlp-sib-arrow" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                          </span>
                         </div>
                       </a>
                     )
@@ -4152,7 +4136,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                 <section className="tlp-sec tlp-rc-sec">
                   <h2 className="tlp-sec-title tlp-rc-title">
                     <span className="tlp-sec-ico"><FontAwesomeIcon icon={faLayerGroup} /></span>
-                    Related categories
+                    Which categories is {view.companyName} in?
                   </h2>
                   <div className="tlp-rc-grid">
                     {cats.map(c => {
