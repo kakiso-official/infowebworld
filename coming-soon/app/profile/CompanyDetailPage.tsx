@@ -40,7 +40,7 @@ import {
   faCircleCheck, faMedal, faTags, faStar, faHouse, faChevronRight, faChevronDown, faPenToSquare,
   faComments, faBoxOpen, faPaperPlane, faCodeCompare, faEye, faLayerGroup, faQuoteLeft, faMoneyBillWave, faBriefcase,
 } from '@fortawesome/free-solid-svg-icons'
-import { faLinkedinIn, faXTwitter, faFacebookF } from '@fortawesome/free-brands-svg-icons'
+import { faLinkedin, faXTwitter, faFacebook } from '@fortawesome/free-brands-svg-icons'
 
 /* ═══════════════════════════════════════════════════════════════════════════
    /profile/[slug] — Clutch.co-style company profile.
@@ -228,9 +228,9 @@ const MapPin      = () => <FontAwesomeIcon icon={faLocationDot} />
 const Users       = () => <FontAwesomeIcon icon={faUsers} />
 const Calendar    = () => <FontAwesomeIcon icon={faCalendarDays} />
 const Mail        = () => <FontAwesomeIcon icon={faEnvelope} />
-const Linkedin    = () => <FontAwesomeIcon icon={faLinkedinIn} />
+const Linkedin    = () => <FontAwesomeIcon icon={faLinkedin} />
 const Twitter     = () => <FontAwesomeIcon icon={faXTwitter} />
-const Facebook    = () => <FontAwesomeIcon icon={faFacebookF} />
+const Facebook    = () => <FontAwesomeIcon icon={faFacebook} />
 const Arrow       = () => <FontAwesomeIcon icon={faArrowRight} />
 const Plus        = () => <FontAwesomeIcon icon={faPlus} />
 const Check       = () => <FontAwesomeIcon icon={faCheck} />
@@ -814,6 +814,17 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                   >
                     <FontAwesomeIcon icon={faCircleCheck} /> Claim Now
                   </button>
+                )}
+
+                {/* Social profiles — in the CTA button line, pushed to the
+                    right so they sit under the Shortlist button. Real
+                    brand-colored logos (moved up from the Connect block). */}
+                {(c.linkedin || c.twitter || c.facebook) && (
+                  <div className="cmp-head-socials">
+                    {c.linkedin && <a href={c.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="cmp-soc cmp-soc--li"><Linkedin /></a>}
+                    {c.twitter  && <a href={c.twitter}  target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" className="cmp-soc cmp-soc--x"><Twitter /></a>}
+                    {c.facebook && <a href={c.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="cmp-soc cmp-soc--fb"><Facebook /></a>}
+                  </div>
                 )}
               </div>
             </div>
@@ -1523,11 +1534,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                 <Mail /> Request email &amp; phone
               </button>
             )}
-            <div className="cmp-connect-socials">
-              {c.linkedin && <a href={c.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><Linkedin /></a>}
-              {c.twitter  && <a href={c.twitter}  target="_blank" rel="noopener noreferrer" aria-label="Twitter / X"><Twitter /></a>}
-              {c.facebook && <a href={c.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook"><Facebook /></a>}
-            </div>
+            {/* Socials moved to the hero (.cmp-head-socials). */}
           </div>
         </div>
       </section>
