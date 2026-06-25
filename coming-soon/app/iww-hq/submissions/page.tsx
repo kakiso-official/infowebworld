@@ -303,6 +303,7 @@ export default function SubmissionsPage() {
           <span className="sub-stat sub-stat--green"><strong>{stats.paid}</strong> paid</span>
         </div>
         <div className="sub-top-spacer" />
+        <ExportButton />
         <DeployButton />
       </header>
 
@@ -948,6 +949,59 @@ function GeminiEnrichButton({
 }
 
 /* ── Deploy button — fires the Vercel deploy hook ──────────────────── */
+/* ── Export live listings → CSV (opens in Excel) ───────────────────────
+   Hits the admin export endpoint, which returns a UTF-8 CSV of every live
+   listing — companies AND products (the Mode column distinguishes them) —
+   with name, website, email, sector, plan, review stats, … We fetch-then-
+   blob (rather than a bare <a href>) so the admin cookie is sent, the row
+   count can flash on success, and errors surface inline. */
+function ExportButton() {
+  const [busy, setBusy] = useState(false)
+  const [flash, setFlash] = useState('')
+  const [error, setError] = useState('')
+
+  const click = async () => {
+    if (busy) return
+    setBusy(true); setError(''); setFlash('')
+    try {
+      const res = await fetch('/api/admin/submissions/export?mode=all&status=live', { credentials: 'same-origin' })
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}))
+        setError(j?.error || `Export failed (${res.status}).`)
+        return
+      }
+      const count = res.headers.get('X-Export-Count') || ''
+      const cd = res.headers.get('Content-Disposition') || ''
+      const filename = cd.match(/filename="([^"]+)"/)?.[1] || 'infowebworld-live-listings.csv'
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url; a.download = filename; a.click()
+      URL.revokeObjectURL(url)
+      setFlash(count ? `✓ ${Number(count).toLocaleString()} rows` : '✓ Downloaded')
+      window.setTimeout(() => setFlash(''), 4000)
+    } catch { setError('Network error.') } finally { setBusy(false) }
+  }
+
+  return (
+    <>
+      {error && (
+        <span style={{ fontSize: 11.5, color: 'var(--red)', fontWeight: 600 }}>
+          {error}
+        </span>
+      )}
+      <button
+        className="sub-export"
+        onClick={click}
+        disabled={busy}
+        title="Download a CSV (opens in Excel) of every live listing — companies and products — with name, website, email, sector, plan, reviews and more."
+      >
+        {busy ? 'Exporting…' : flash || 'Export listings'}
+      </button>
+    </>
+  )
+}
+
 function DeployButton() {
   const [busy, setBusy] = useState(false)
   const [done, setDone] = useState(false)

@@ -96,6 +96,20 @@
 .sub-deploy:disabled { opacity: .55; cursor: not-allowed }
 .sub-deploy.is-success { background: var(--green); border-color: var(--green) }
 
+/* Secondary/outline action — sits left of the dark Deploy button */
+.sub-export {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 36px; padding: 0 16px;
+  background: #fff; color: var(--ink);
+  border: 1.5px solid var(--border); border-radius: 8px;
+  font-size: 12.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .04em;
+  cursor: pointer; white-space: nowrap;
+  transition: background .12s ease, border-color .12s ease, color .12s ease;
+}
+.sub-export:hover:not(:disabled) { border-color: var(--ink); background: var(--bg) }
+.sub-export:disabled { opacity: .55; cursor: not-allowed }
+
 /* ─── Filter toolbar ──────────────────────────────────────────────── */
 .sub-toolbar {
   flex-shrink: 0;
