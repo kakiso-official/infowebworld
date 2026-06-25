@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
       LEFT JOIN plans p ON p.id = s.plan_id
       LEFT JOIN categories c ON c.id = s.category_id
       LEFT JOIN countries co ON co.id = s.country_id
-      ORDER BY s.created_at DESC LIMIT 5000
+      ORDER BY s.created_at DESC LIMIT 50000
     `)
     return Response.json(rows)
   } catch (err) {
