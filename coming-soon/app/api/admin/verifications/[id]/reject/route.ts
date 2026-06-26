@@ -4,6 +4,9 @@ import { requireAdmin } from '@/lib/auth'
 import { notifyOwnerOnVerificationRejected } from '@/lib/notify-owner'
 import { notifyApplicantOnClaimRejected } from '@/lib/notify-submission'
 
+/* TEMP: admin-action notification emails are paused. Flip to `true` to restore. */
+const SEND_ADMIN_EMAILS: boolean = false
+
 /**
  * POST /api/admin/verifications/[id]/reject
  *
@@ -69,7 +72,7 @@ export async function POST(
       [adminNotes, admin.adminId, requestId]
     )
 
-    if (!wasAlreadyRejected) {
+    if (SEND_ADMIN_EMAILS && !wasAlreadyRejected) {
       if (row.request_type === 'claim') {
         /* A pending claim's listing is still unowned, so the owner-targeted
            notifier would skip the applicant — email them directly instead. */

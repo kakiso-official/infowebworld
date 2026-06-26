@@ -2,6 +2,9 @@ import { NextRequest } from 'next/server'
 import { queryOne, execute } from '@/lib/db'
 import { notifySubmissionApproved, notifySubmissionRejected } from '@/lib/notify-submission'
 
+/* TEMP: admin-action notification emails are paused. Flip to `true` to restore. */
+const SEND_ADMIN_EMAILS: boolean = false
+
 function slugify(text: string): string {
   return text
     .toLowerCase()
@@ -84,8 +87,9 @@ export async function PATCH(
 
     /* Notify the submitter on the transitions they care about — approved
        (now live) or rejected. Best-effort; sendEmail never throws. The
-       `reason` (optional in the PATCH body) is shown in the rejection email. */
-    if (status === 'active' && oldStatus !== 'active' && submission.email) {
+       `reason` (optional in the PATCH body) is shown in the rejection email.
+       TEMP: gated behind SEND_ADMIN_EMAILS (currently off). */
+    if (SEND_ADMIN_EMAILS && status === 'active' && oldStatus !== 'active' && submission.email) {
       await notifySubmissionApproved({
         contactEmail: submission.email,
         recipientName: submission.contact_name,
@@ -93,7 +97,7 @@ export async function PATCH(
         listingSlug: finalSlug || submission.slug || '',
         listingMode: submission.listing_mode === 'company' ? 'company' : 'product',
       })
-    } else if (status === 'rejected' && oldStatus !== 'rejected' && submission.email) {
+    } else if (SEND_ADMIN_EMAILS && status === 'rejected' && oldStatus !== 'rejected' && submission.email) {
       await notifySubmissionRejected({
         contactEmail: submission.email,
         recipientName: submission.contact_name,

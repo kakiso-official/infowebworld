@@ -4,6 +4,9 @@ import { execute, queryOne } from '@/lib/db'
 import { requireAdmin } from '@/lib/auth'
 import { notifyOwnerOnVerificationApproved } from '@/lib/notify-owner'
 
+/* TEMP: admin-action notification emails are paused. Flip to `true` to restore. */
+const SEND_ADMIN_EMAILS: boolean = false
+
 /**
  * POST /api/admin/verifications/[id]/approve
  *
@@ -98,12 +101,15 @@ export async function POST(
 
     if (!wasAlreadyApproved) {
       /* Fire-and-forget owner email — wrapped in its own try inside the
-         helper so a mail failure can't roll back the DB state. */
-      await notifyOwnerOnVerificationApproved({
-        listingId: row.listing_id,
-        applicantId: row.user_id,
-        adminNotes,
-      })
+         helper so a mail failure can't roll back the DB state.
+         TEMP: gated behind SEND_ADMIN_EMAILS (currently off). */
+      if (SEND_ADMIN_EMAILS) {
+        await notifyOwnerOnVerificationApproved({
+          listingId: row.listing_id,
+          applicantId: row.user_id,
+          adminNotes,
+        })
+      }
       /* On-demand rebuild of the public listing so the badge appears now,
          not 48h from now. Best-effort — log + continue if it throws. */
       if (row.listing_slug) {

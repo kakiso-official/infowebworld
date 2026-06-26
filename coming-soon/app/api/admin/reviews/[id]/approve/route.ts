@@ -3,6 +3,9 @@ import { execute, queryOne } from '@/lib/db'
 import { requireAdmin } from '@/lib/auth'
 import { notifyOwnerOnReview } from '@/lib/notify-owner'
 
+/* TEMP: admin-action notification emails are paused. Flip to `true` to restore. */
+const SEND_ADMIN_EMAILS: boolean = false
+
 /**
  * POST /api/admin/reviews/[id]/approve
  * Flip the review to status='approved'. The listing owner is emailed *here*
@@ -48,7 +51,7 @@ export async function POST(request: NextRequest, ctx: { params: Promise<{ id: st
     )
     /* Notify only on first approval — re-approving an already-approved
        review (e.g., admin double-click) shouldn't re-spam the owner. */
-    if (!wasAlreadyApproved) {
+    if (SEND_ADMIN_EMAILS && !wasAlreadyApproved) {
       await notifyOwnerOnReview({
         listingId: row.listing_id,
         reviewerId: row.user_id,
