@@ -19,6 +19,9 @@ type Props = {
   totalReviews?: number
   /** Active listing count (passed through to keep the count in sync w/ filters). */
   totalListings?: number
+  /** Applied ?country= filter's display name → country-aware H1 + description
+      ("Top X Companies in <Country>"). Empty on the unfiltered base page. */
+  countryName?: string
   /** Whether Gemini SEO content exists — controls Buyer's Guide / FAQs link visibility. */
   hasGuide?: boolean
 }
@@ -75,11 +78,12 @@ function qualifyCategoryName(name: string, sectorSlug?: string): string {
 
 /* Build the descriptive paragraph. Real data: listing count + category name +
    parent sector. Country chips are interpolated inline at the natural spot. */
-function buildDescription(name: string, parentName: string, listingCount: number): string {
+function buildDescription(name: string, parentName: string, listingCount: number, country?: string): string {
   const sector = parentName ? ` ${parentName.toLowerCase()}` : ''
   const count = listingCount > 0 ? `${listingCount}+ ` : ''
+  const where = country ? `in ${country}` : 'worldwide'
   return (
-    `Find top ${name.toLowerCase()} companies worldwide offering reliable, ` +
+    `Find top ${name.toLowerCase()} companies ${where} offering reliable, ` +
     `high-quality solutions across budgets. Explore ${count}firms delivering real project outcomes ` +
     `and verified client satisfaction. InfoWebWorld provides a curated list of leading${sector} ` +
     `companies, helping you compare hourly rates, reviews, industry expertise, and locations ` +
@@ -95,6 +99,7 @@ export default function CategoryHero({
   avgRating = 0,
   totalReviews = 0,
   totalListings,
+  countryName = '',
   hasGuide = false,
 }: Props) {
   const [expanded, setExpanded] = useState(false)
@@ -110,7 +115,7 @@ export default function CategoryHero({
 
   /* Split the description at the {COUNTRIES} marker so the country chips
      can render inline as real links inside the paragraph. */
-  const descTemplate = c.description || buildDescription(qualifiedName, c.parentName || sectorName || '', listingCount)
+  const descTemplate = c.description || buildDescription(qualifiedName, c.parentName || sectorName || '', listingCount, countryName)
   const [descBefore, descAfter] = descTemplate.includes('{COUNTRIES}')
     ? descTemplate.split('{COUNTRIES}')
     : [descTemplate, '']
@@ -171,8 +176,10 @@ export default function CategoryHero({
         <span className="cd-breadcrumb-current">{c.name}</span>
       </nav>
 
-      {/* H1 — Top {Category} Companies (sector-qualified) */}
-      <h1 className="cd-hero-title">Top {qualifiedName} Companies</h1>
+      {/* H1 — Top {Category} Companies [in {Country}] (sector-qualified).
+          Lead + wording MATCH the <title> from buildCategoryMeta so Google
+          doesn't rewrite the SERP title to this heading. */}
+      <h1 className="cd-hero-title">Top {qualifiedName} Companies{countryName ? ` in ${countryName}` : ''}</h1>
 
       {/* Description with inline country chips + read-more toggle */}
       <p className="cd-hero-desc">

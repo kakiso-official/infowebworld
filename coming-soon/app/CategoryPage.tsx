@@ -46,7 +46,7 @@ type InitialData = {
   totalReviews?: number
 }
 
-export default function CategoryPage({ segments, sectorSlug, initialData }: { segments?: string[]; sectorSlug?: string; initialData?: InitialData }) {
+export default function CategoryPage({ segments, sectorSlug, initialData, routeCountry }: { segments?: string[]; sectorSlug?: string; initialData?: InitialData; routeCountry?: { slug: string; name: string; count: number } | null }) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const slug = segments?.[0] || null
@@ -480,7 +480,12 @@ export default function CategoryPage({ segments, sectorSlug, initialData }: { se
           })()}
           avgRating={initialData?.avgRating ?? 0}
           totalReviews={initialData?.totalReviews ?? 0}
-          totalListings={listingTotal}
+          /* On a ?country= page, show that country's listing count (resolved
+             server-side); otherwise the whole-tree total. */
+          totalListings={routeCountry ? routeCountry.count : listingTotal}
+          /* Server-resolved country name → country-aware H1 in the SSR HTML
+             (locationCountry only resolves client-side after CSC loads). */
+          countryName={routeCountry?.name || locationCountry?.name || ''}
           hasGuide={!!initialData?.seoContent}
         />
         {subcats.length > 0 && <SubcategoryList subcategories={subcats} sectorSlug={sectorSlug} />}

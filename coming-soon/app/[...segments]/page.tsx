@@ -10,6 +10,7 @@ import CategoryPage from '../CategoryPage'
 import SectorAllBrowse from '../components-category/SectorAllBrowse'
 import { getSectorMeta } from '../sector/sector-demo-data'
 import { query, queryOne } from '@/lib/db'
+import { toSlug, lookupLocationCountryAsync } from '../lib/geo-slugs'
 import { CATEGORIES as STATIC_CATEGORIES } from '../config/categories-data'
 import { SECTOR_LANDINGS } from '@/lib/sector-landings'
 import SectorLandingPage from '../sector-landing/SectorLandingPage'
@@ -189,6 +190,75 @@ const DOMAIN = 'https://www.infowebworld.com'
 /** Single global URL space — country prefix removed */
 function canonicalUrl(_country: string, path: string) {
   return `${DOMAIN}${path}`
+}
+
+/* ── Per-country filter indexing ──────────────────────────────────────────
+   A ?country=<slug> variant of a category page becomes its OWN indexable
+   "Top X Companies in <Country>" page (self-canonical, localized title +
+   description + keywords + H1) ONLY when it holds real inventory
+   (>= COUNTRY_INDEX_THRESHOLD active listings for that country). Below that,
+   and for EVERY deeper filter (state/city/type/tags), the variant is
+   noindex,follow + canonical → the bare category URL — so we consolidate
+   instead of spawning thin doorway pages. ── */
+const COUNTRY_INDEX_THRESHOLD = 3
+
+type FilterMetaCtx = {
+  /** state/city/type/tags present → always consolidate to the base URL. */
+  deepFilter: boolean
+  /** country-only filter, resolved to a display name + its listing count. */
+  country: { slug: string; name: string; count: number } | null
+}
+
+/** Read the ?country= / deeper-filter state out of a resolved searchParams. */
+function readFilterState(sp: Record<string, string | string[] | undefined>) {
+  const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v) || ''
+  const countrySlug = one(sp.country).trim()
+  const deepFilter = !!(one(sp.state) || one(sp.city) || one(sp.type) || one(sp.tags))
+  return { countrySlug, deepFilter, anyFilter: !!countrySlug || deepFilter }
+}
+
+/** Title-case a country slug for display when the DB name isn't resolvable. */
+function prettyCountryName(slug: string): string {
+  return slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+}
+
+/** Resolve a ?country=<slug> to its DB { id, name }. The countries table is
+    tiny (~11 rows). Match by slugified name first, then bridge via the
+    country-state-city ISO code for names that differ from their slug (e.g.
+    united-arab-emirates → code AE). Returns null when the country isn't in
+    our DB (⇒ zero listings ⇒ the variant stays noindex). */
+async function resolveFilterCountry(slug: string): Promise<{ id: number; name: string } | null> {
+  try {
+    const rows = await query<{ id: number; name: string; code: string }>('SELECT id, name, code FROM countries')
+    const direct = rows.find((r) => toSlug(String(r.name)) === slug)
+    if (direct) return { id: Number(direct.id), name: String(direct.name) }
+    const geo = await lookupLocationCountryAsync(slug)
+    if (geo) {
+      const byCode = rows.find((r) => String(r.code || '').toUpperCase() === geo.isoCode.toUpperCase())
+      if (byCode) return { id: Number(byCode.id), name: geo.name }
+    }
+    return null
+  } catch {
+    return null
+  }
+}
+
+/** Count active/paid listings in a category's whole subtree for ONE country.
+    Mirrors the 5-level descendant UNION used for the sitemap + page counts. */
+async function countCategoryListingsForCountry(categoryId: number, countryId: number): Promise<number> {
+  const row = await queryOne(
+    `SELECT COUNT(*) as cnt FROM submissions s
+       WHERE s.status IN ('active','paid') AND s.country_id = ?
+       AND s.category_id IN (
+         SELECT id FROM categories WHERE id = ? AND is_active = 1
+         UNION SELECT id FROM categories WHERE parent_id = ? AND is_active = 1
+         UNION SELECT c3.id FROM categories c3 JOIN categories c2 ON c2.id = c3.parent_id WHERE c2.parent_id = ? AND c3.is_active = 1
+         UNION SELECT c4.id FROM categories c4 JOIN categories c3 ON c3.id = c4.parent_id JOIN categories c2 ON c2.id = c3.parent_id WHERE c2.parent_id = ? AND c4.is_active = 1
+         UNION SELECT c5.id FROM categories c5 JOIN categories c4 ON c4.id = c5.parent_id JOIN categories c3 ON c3.id = c4.parent_id JOIN categories c2 ON c2.id = c3.parent_id WHERE c2.parent_id = ? AND c5.is_active = 1
+       )`,
+    [countryId, categoryId, categoryId, categoryId, categoryId, categoryId]
+  ).catch(() => ({ cnt: 0 }))
+  return Number(row?.cnt ?? 0)
 }
 
 /* ── Look up L1 sector slug for any category (L1/L2/L3) ── */
@@ -757,7 +827,14 @@ function qualifyCategoryName(name: string, sectorSlug: string): string {
   return name
 }
 
-/* ── Build metadata for L2/L3 categories — full SEO surface ── */
+/* ── Build metadata for L2/L3 categories — full SEO surface.
+   `filterCtx` makes ?country= variants first-class:
+     · a country with real inventory (>= COUNTRY_INDEX_THRESHOLD) gets its own
+       indexable "Top X Companies in <Country>" page — localized title,
+       description, keywords + self-canonical.
+     · a low-inventory country, or ANY deeper filter (state/city/type/tags),
+       is noindex,follow + canonical → the bare category URL, so filtered
+       views consolidate instead of becoming thin doorway pages. ── */
 function buildCategoryMeta(
   cat: CatSeo,
   country: string,
@@ -765,38 +842,47 @@ function buildCategoryMeta(
   monthYear: string,
   sectorSlug: string,
   rating?: { avg: number; total: number },
+  filterCtx?: FilterMetaCtx,
 ): Metadata {
   const baseName = qualifyCategoryName(cat.seoTitle || cat.name, sectorSlug)
   const year = new Date().getFullYear()
 
-  /* Title — buying-intent first ("Best"), "Companies" carries the high-CTR
-     directory-search keyword, year for freshness, single hyphen separator
-     (no em-dash), brand trailing. No listing count: thin-page categories
-     would expose tiny numbers in the SERP, and dense ones would expose
-     numbers that age fast. Keep ~55-65 chars so SERP doesn't truncate. */
-  const title = `Best ${baseName} Companies (${year}) - Reviews & Pricing | InfoWebWorld`
+  const baseUrl = canonicalUrl(country, `/${sectorSlug}/${cat.slug}`)
 
-  /* Description — buying-intent keyword stack + trust signal + freshness.
-     ~155 chars. Rating is a trust signal (rich-snippet eligible via
-     AggregateRating schema) and stays; the bare listing count does not. */
+  /* Which filter mode? Country meta only applies when no DEEPER filter is set
+     (state/city/type/tags always consolidate to the base URL). */
+  const deepFilter = !!filterCtx?.deepFilter
+  const fc = !deepFilter ? (filterCtx?.country ?? null) : null
+  const inCountry = fc ? ` in ${fc.name}` : ''
+
+  /* Title — lead word "Top" MATCHES the visible H1 (CategoryHero) and the
+     CollectionPage JSON-LD name, so Google stops swapping our SERP title for
+     the on-page heading. "Companies" carries the high-CTR directory keyword,
+     year = freshness, single hyphen separator (no em-dash), brand trailing. */
+  const title = `Top ${baseName} Companies${inCountry} (${year}) - Reviews & Pricing | InfoWebWorld`
+
+  /* Description — buying-intent + trust (rating) + freshness. ~155 chars. */
+  const lcName = baseName.toLowerCase()
   const ratingClause = rating && rating.total > 0
     ? `Rated ${rating.avg.toFixed(1)}/5 by ${rating.total.toLocaleString()} verified users. `
     : ''
-  const description = `Compare the best ${baseName.toLowerCase()} companies on InfoWebWorld - top picks, verified reviews, transparent pricing & features. ${ratingClause}Updated ${monthYear}.`.trim()
+  const description = `Compare the best ${lcName} companies${inCountry} on InfoWebWorld - top picks, verified reviews, transparent pricing & features. ${ratingClause}Updated ${monthYear}.`.trim()
 
-  const url = canonicalUrl(country, `/${sectorSlug}/${cat.slug}`)
+  /* Canonical:
+     · country page → itself (?country=slug), so it indexes standalone
+     · base page    → DB canonical override, else the bare URL
+     · deep filter  → NO canonical emitted (see alternates below). It's
+       noindex, and pairing noindex with a canonical that points at a
+       *different* (base) URL is a mixed signal Google may mishandle — noindex
+       alone reliably keeps it out of the index while `follow` passes equity. */
+  const pageUrl = fc ? `${baseUrl}?country=${fc.slug}` : baseUrl
+  const canonical = fc ? pageUrl : (cat.seoCanonical || baseUrl)
+
   /* Dynamic per-category OG image — rendered at request time by
-     /api/og/{sector}/{slug} with the category name, listing count, and
-     sector palette. Replaces the static fallback so every category gets
-     a distinct social share card + Google Discover thumbnail. DB-stored
-     seoOgImage still wins if explicitly set. */
+     /api/og/{sector}/{slug}. DB-stored seoOgImage still wins if set. */
   const ogImage = cat.seoOgImage || `${DOMAIN}/api/og/${sectorSlug}/${cat.slug}`
 
-  /* Keyword stack — DB seo_keywords + targeted variants spanning buying
-     intent ("hire", "best", "buy"), comparison ("vs", "alternatives",
-     "compare"), modifier ("top rated", "enterprise", "free"), and temporal
-     ("2026") modifiers Google + AI search engines reward. */
-  const lcName = baseName.toLowerCase()
+  /* Keyword stack — base variants + (for a country page) localized variants. */
   const autoKw = [
     lcName,
     `best ${lcName}`,
@@ -823,32 +909,50 @@ function buildCategoryMeta(
     `${lcName} buyer's guide`,
     `enterprise ${lcName}`,
     `${lcName} for small business`,
+    ...(fc ? [
+      `${lcName}${inCountry}`,
+      `best ${lcName}${inCountry}`,
+      `top ${lcName} companies${inCountry}`,
+      `${lcName} companies${inCountry}`,
+      `${fc.name.toLowerCase()} ${lcName}`,
+    ] : []),
   ]
   const keywords = [...new Set([...cat.seoKeywords.map(k => k.toLowerCase()), ...autoKw])].join(', ')
+
+  /* Indexing decision:
+     · deep filter  → noindex,follow (consolidate to base)
+     · country page → index only when it clears COUNTRY_INDEX_THRESHOLD
+     · base page    → index only when the tree holds 5+ listings
+     noindex pages stay `follow` so PageRank still flows to base + listings. */
+  const indexable = deepFilter
+    ? false
+    : fc
+      ? fc.count >= COUNTRY_INDEX_THRESHOLD
+      : cat.listingCount >= 5
 
   return {
     title,
     description,
     keywords,
-    alternates: {
-      canonical: cat.seoCanonical || url,
-      /* hreflang — declares the locale of this page. en-US explicit + x-default
-         pointing at the same URL satisfies Google's international handling
-         even though we're English-only right now. Enables future localization
-         without breaking existing URLs. */
+    /* Deep-filter variants emit no canonical/hreflang — they rely on noindex
+       (above) to stay out of the index without a conflicting cross-URL
+       canonical. Base + country pages get a self-referencing canonical. */
+    alternates: deepFilter ? undefined : {
+      canonical,
+      /* hreflang — en-US explicit + x-default on the same (canonical) URL. */
       languages: {
-        'en-US': url,
-        'x-default': url,
+        'en-US': canonical,
+        'x-default': canonical,
       },
     },
     openGraph: {
       title,
       description,
-      url,
+      url: deepFilter ? baseUrl : canonical,
       siteName: 'InfoWebWorld',
       type: 'website',
       locale: 'en_US',
-      images: [{ url: ogImage, width: 1200, height: 630, alt: `${baseName} - Top Companies` }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: `${baseName} - Top Companies${inCountry}` }],
     },
     twitter: {
       card: 'summary_large_image',
@@ -857,12 +961,7 @@ function buildCategoryMeta(
       images: [ogImage],
       site: '@infowebworld',
     },
-    /* Conditional indexing — only categories with 5+ listings (counting the
-       whole descendant tree) get index:true. Sparse categories stay
-       noindex,follow so PageRank still flows down the tree, but Google
-       doesn't waste crawl budget on thin pages and we don't dilute site-
-       wide quality signal with empty CollectionPages. */
-    robots: cat.listingCount >= 5
+    robots: indexable
       ? {
           index: true,
           follow: true,
@@ -927,6 +1026,9 @@ function buildJsonLd(
   const baseName = qualifyCategoryName(cat.seoTitle || cat.name, sectorSlug)
   const baseDesc = cat.seoDescription || cat.description
   const url = canonicalUrl(country, `/${sectorSlug}/${cat.slug}`)
+  /* " in <Country>" suffix for the CollectionPage/ItemList names so schema
+     tracks the localized <title> + H1 on ?country= pages ('' otherwise). */
+  const inCountry = countryName ? ` in ${countryName}` : ''
 
   // BreadcrumbList
   const bcItems: Record<string, unknown>[] = [
@@ -965,8 +1067,8 @@ function buildJsonLd(
   const collection: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: `Top ${baseName} Companies`,
-    description: baseDesc || `Explore top ${baseName} businesses on InfoWebWorld.`,
+    name: `Top ${baseName} Companies${inCountry}`,
+    description: baseDesc || `Explore top ${baseName} businesses${inCountry} on InfoWebWorld.`,
     url,
     inLanguage: 'en-US',
     isPartOf: { '@type': 'WebSite', name: 'InfoWebWorld', url: DOMAIN },
@@ -985,7 +1087,7 @@ function buildJsonLd(
   if (itemListEntities.length > 0) {
     collection.mainEntity = {
       '@type': 'ItemList',
-      name: `Top ${baseName} Companies`,
+      name: `Top ${baseName} Companies${inCountry}`,
       numberOfItems: itemListEntities.length,
       itemListElement: itemListEntities,
     }
@@ -1245,12 +1347,20 @@ function buildJsonLd(
    ════════════════════════════════════════ */
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ segments: string[] }>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
 }): Promise<Metadata> {
   const { segments  } = await params; const country = ""
   const slug = segments?.[0]
   if (!slug) return {}
+
+  /* Applied filters — drives per-country meta + consolidates filtered views.
+     ?country= (alone) → localized indexable page; state/city/type/tags → the
+     variant is noindex + canonical to the base URL. */
+  const { countrySlug: filterCountrySlug, deepFilter: filterDeep, anyFilter: filterAny } =
+    readFilterState(await searchParams)
 
   const countryName = 'Worldwide'
   const monthYear = currentMonthYear()
@@ -1356,18 +1466,22 @@ export async function generateMetadata({
         site: '@infowebworld',
       },
       /* Threshold doesn't apply here — view-all is a curated index page over a
-         non-trivial sector taxonomy, always worth indexing. */
-      robots: {
-        index: true,
-        follow: true,
-        googleBot: {
-          index: true,
-          follow: true,
-          'max-snippet': -1,
-          'max-image-preview': 'large',
-          'max-video-preview': -1,
-        },
-      },
+         non-trivial sector taxonomy, always worth indexing. A filtered variant
+         (?country=/state/type/tags) consolidates: noindex,follow + the
+         canonical above already points at the bare view-all URL. */
+      robots: filterAny
+        ? { index: false, follow: true }
+        : {
+            index: true,
+            follow: true,
+            googleBot: {
+              index: true,
+              follow: true,
+              'max-snippet': -1,
+              'max-image-preview': 'large',
+              'max-video-preview': -1,
+            },
+          },
       other: {
         'article:section': `${shortName} Categories`,
         'article:tag': `${lcName}, business categories, directory, ${meta.seoKeywords.slice(0, 5).join(', ')}`,
@@ -1531,18 +1645,22 @@ export async function generateMetadata({
       },
       /* SEO-FIRST: index + follow. Every L1 sector page is a unique
          CollectionPage with curated listings + Gemini long-form content +
-         aggregate review signal — exactly what Google wants to rank. */
-      robots: {
-        index: true,
-        follow: true,
-        googleBot: {
-          index: true,
-          follow: true,
-          'max-snippet': -1,
-          'max-image-preview': 'large',
-          'max-video-preview': -1,
-        },
-      },
+         aggregate review signal — exactly what Google wants to rank. A
+         filtered variant (?country=/state/type/tags) consolidates to the bare
+         sector URL: noindex,follow (canonical above stays the base sector). */
+      robots: filterAny
+        ? { index: false, follow: true }
+        : {
+            index: true,
+            follow: true,
+            googleBot: {
+              index: true,
+              follow: true,
+              'max-snippet': -1,
+              'max-image-preview': 'large',
+              'max-video-preview': -1,
+            },
+          },
     }
   }
 
@@ -1575,7 +1693,18 @@ export async function generateMetadata({
     }
   } catch { /* aggregate is optional */ }
 
-  return buildCategoryMeta(cat, country, countryName, monthYear, sectorSlug, ratingArg)
+  /* Country context for a ?country= variant (skipped when a deeper filter is
+     present — those consolidate to the base URL inside buildCategoryMeta). */
+  let filterCountry: FilterMetaCtx['country'] = null
+  if (filterCountrySlug && !filterDeep) {
+    const rc = await resolveFilterCountry(filterCountrySlug)
+    const cnt = rc ? await countCategoryListingsForCountry(cat.id, rc.id) : 0
+    filterCountry = { slug: filterCountrySlug, name: rc?.name || prettyCountryName(filterCountrySlug), count: cnt }
+  }
+  return buildCategoryMeta(cat, country, countryName, monthYear, sectorSlug, ratingArg, {
+    deepFilter: filterDeep,
+    country: filterCountry,
+  })
 }
 
 /* ════════════════════════════════════════
@@ -1583,12 +1712,18 @@ export async function generateMetadata({
    ════════════════════════════════════════ */
 export default async function CategoryDetailRoute({
   params,
+  searchParams,
 }: {
   params: Promise<{ segments: string[] }>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
   const { segments  } = await params; const country = ""
   const slug = segments?.[0]
-  const countryName = 'Worldwide'
+  /* Applied ?country= filter → resolve to a display name + count so the
+     server-rendered H1, on-page count and JSON-LD say "… in <Country>",
+     matching the localized <title> from generateMetadata. Deeper filters
+     (state/city/type/tags) are handled client-side + consolidated in meta. */
+  const { countrySlug: routeCountrySlug, deepFilter: routeDeepFilter } = readFilterState(await searchParams)
   const monthYear = currentMonthYear()
 
   // Check if this is a view-all page (new nested form: /{sector}/view-all-sub-categories-{sector})
@@ -2212,6 +2347,16 @@ export default async function CategoryDetailRoute({
     notFound()
   }
 
+  /* Resolve the ?country= filter (country-only) into a display name + count.
+     Feeds the country-aware H1 (CategoryHero) and the CollectionPage JSON-LD
+     name so the crawled HTML matches the localized <title>. */
+  let routeCountry: { slug: string; name: string; count: number } | null = null
+  if (routeCountrySlug && !routeDeepFilter && pageData?.category?.id) {
+    const rc = await resolveFilterCountry(routeCountrySlug)
+    const cnt = rc ? await countCategoryListingsForCountry(Number(pageData.category.id), rc.id) : 0
+    routeCountry = { slug: routeCountrySlug, name: rc?.name || prettyCountryName(routeCountrySlug), count: cnt }
+  }
+
   /* ── JSON-LD ── */
   let jsonLdScripts: React.ReactNode = null
 
@@ -2278,7 +2423,7 @@ export default async function CategoryDetailRoute({
       ? { datePublished: new Date(String(pageData.seoContent.generated_at)).toISOString() }
       : undefined
     const schemas = buildJsonLd(
-      catSeo, country, countryName, monthYear, resolvedSector,
+      catSeo, country, routeCountry?.name || '', monthYear, resolvedSector,
       geminiFaq, ratingArg, topListings, seedListings, articleMeta,
       pageData?.seoContent || null,
     )
@@ -2331,6 +2476,7 @@ export default async function CategoryDetailRoute({
           segments={catSegments}
           sectorSlug={sectorSlug || slug || ''}
           initialData={pageData || undefined}
+          routeCountry={routeCountry}
         />
       </Suspense>
       <AiDisclaimer />
