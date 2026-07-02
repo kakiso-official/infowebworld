@@ -17,3 +17,4 @@
 -- Run once in phpMyAdmin.
 
 ALTER TABLE `submissions` MODIFY `tagline` VARCHAR(255) NOT NULL;
+    

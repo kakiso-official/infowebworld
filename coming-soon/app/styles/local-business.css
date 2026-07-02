@@ -337,3 +337,29 @@
 .lbp-rev-empty p { margin: 0 0 4px; color: var(--mute); font-size: 14px; }
 
 @media (max-width: 700px) { .lbp-photos--illus { height: 180px; } }
+
+/* ════════════════════════════════════════════════════════════════════════
+   Hero — full-width image background with the header overlaid on top
+   ════════════════════════════════════════════════════════════════════════ */
+.lbp-hero { position: relative; min-height: 440px; display: flex; align-items: flex-end; overflow: hidden; background: var(--bg-soft); }
+.lbp-hero-bg { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.lbp-hero--illus .lbp-hero-bg { background-position: center right; }
+.lbp-hero-scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,15,18,.82) 0%, rgba(15,15,18,.5) 42%, rgba(15,15,18,.14) 74%, rgba(15,15,18,.22) 100%); }
+.lbp-hero-inner { position: relative; width: 100%; padding-top: 60px; padding-bottom: 26px; }
+.lbp-hero .lbp-head { padding: 0; border-bottom: 0; }
+.lbp-hero .lbp-name { color: #fff; font-size: 40px; text-shadow: 0 2px 20px rgba(0,0,0,.5); }
+.lbp-hero .lbp-rating-row, .lbp-hero .lbp-meta-row { color: #fff; }
+.lbp-hero .lbp-rating-num, .lbp-hero .lbp-rating-count, .lbp-hero .lbp-price, .lbp-hero .lbp-cat-link { color: #fff; }
+.lbp-hero .lbp-dot { color: rgba(255,255,255,.55); }
+.lbp-hero .lbp-rating-new,
+.lbp-hero .lbp-claimed { color: #fff; background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.32); }
+.lbp-hero .lbp-claimed svg { color: #6ee7a8; }
+.lbp-hero .lbp-btn { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.42); color: #fff; }
+.lbp-hero .lbp-btn:hover { background: rgba(255,255,255,.28); }
+.lbp-hero .lbp-btn--primary, .lbp-hero .lbp-btn--saved { background: var(--red); border-color: var(--red); color: #fff; }
+.lbp-hero .lbp-btn--primary:hover, .lbp-hero .lbp-btn--saved:hover { background: var(--red-dark); border-color: var(--red-dark); }
+@media (max-width: 700px) {
+  .lbp-hero { min-height: 340px; }
+  .lbp-hero-inner { padding-top: 44px; }
+  .lbp-hero .lbp-name { font-size: 28px; }
+}

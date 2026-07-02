@@ -16,7 +16,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  faStar, faCamera, faImages, faShareNodes, faBookmark, faPenToSquare, faLocationDot,
+  faStar, faCamera, faShareNodes, faBookmark, faPenToSquare, faLocationDot,
   faPhone, faGlobe, faClock, faCheck, faXmark, faCircleCheck, faChevronRight, faThumbsUp,
   faDiamondTurnRight, faBagShopping, faCommentDots, faFaceLaughSquint, faLightbulb,
   faShieldHalved, faWandMagicSparkles, faKey, faPlay, faCalendarCheck, faTicket, faBed,
@@ -168,7 +168,7 @@ export default function LocalBusinessProfilePage({
       reviewCount,
       reviewDist: Array.isArray(rv.distribution) ? rv.distribution : [0, 0, 0, 0, 0],
       recentReviews: Array.isArray(rv.recent) ? rv.recent : [],
-      priceRange: String(company.lb_price_range || '$'),
+      priceRange: String(company.lb_price_range || ''),
       lbPhotos: parseArr(company.lb_photos),
       lbHours: parseObjArr(company.lb_hours),
       lbAmenities: parseArr(company.lb_amenities),
@@ -183,9 +183,11 @@ export default function LocalBusinessProfilePage({
      comes from `vertical`. ── */
   /* Real photos only — drop favicons/logos some sites expose as og:image, so
      they fall back to the brand illustration instead of showing a logo. */
-  const realPhotos = biz.lbPhotos.filter((u) => !/logo|favicon|\.svg(\?|$)/i.test(u))
+  const realPhotos = biz.lbPhotos
+    .filter((u) => !/logo|favicon|\.svg(\?|$)/i.test(u))
+    .map((u) => u.replace(/^http:\/\//, 'https://'))   /* avoid mixed-content blocks */
   const hasPhotos = realPhotos.length > 0
-  const photos = realPhotos
+  const heroImg = realPhotos[0] || '/illustrations/lb-fallback.png'
   const hasReviews = biz.reviewCount > 0
   const hours: (string | undefined)[][] = biz.lbHours.length
     ? biz.lbHours.map((h) => [String(h.day ?? ''), h.closed ? 'Closed' : String(h.time ?? ''), h.openNow ? 'Open now' : undefined])
@@ -193,9 +195,8 @@ export default function LocalBusinessProfilePage({
   const amenities: { label: string; ok: boolean }[] = biz.lbAmenities.length
     ? vertical.amenities.map((slug) => ({ label: amenityLabel(slug), ok: biz.lbAmenities.includes(slug) }))
     : vertical.amenities.map((slug) => ({ label: amenityLabel(slug), ok: true }))
-  const menu = biz.lbMenu.length
-    ? biz.lbMenu.map((m) => ({ name: String(m.name ?? ''), price: String(m.price ?? ''), img: String(m.photo ?? '') }))
-    : vertical.sampleItems.map((m, i) => ({ name: m.name, price: m.price, img: PHOTO('m' + (i + 1), 200, 150) }))
+  /* Real menu only — no fabricated dishes/images when the owner hasn't added any. */
+  const menu = biz.lbMenu.map((m) => ({ name: String(m.name ?? ''), price: String(m.price ?? ''), img: String(m.photo ?? '').replace(/^http:\/\//, 'https://') }))
   const videos = biz.lbVideos
   const aiTopics = vertical.aiTopics
   /* Real rating distribution [1★..5★] → display rows (5★ first). */
@@ -280,26 +281,12 @@ export default function LocalBusinessProfilePage({
 
   return (
     <div className="lbp">
-      {/* ── Photo banner: real photos (Ken Burns), else brand illustration ── */}
-      {hasPhotos ? (
-        <div className="lbp-photos">
-          {photos.map((src, i) => (
-            <div key={i} className={`lbp-photo ${i === 0 ? 'lbp-photo--lead' : ''}`}>
-              <img src={src} alt="" loading="lazy" />
-              {i === photos.length - 1 && (
-                <button className="lbp-photo-all"><FontAwesomeIcon icon={faImages} /> See all photos</button>
-              )}
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="lbp-photos lbp-photos--illus">
-          <img src="/illustrations/lb-fallback.png" alt="" className="lbp-illus-img"
-            onError={(e) => { e.currentTarget.style.display = 'none' }} />
-        </div>
-      )}
-
-      <div className="lbp-wrap">
+      {/* ── Hero: large background image (real photo, else brand illustration),
+           with the name / rating / badges / actions overlaid on top. ── */}
+      <section className={`lbp-hero ${hasPhotos ? '' : 'lbp-hero--illus'}`}>
+        <div className="lbp-hero-bg" style={{ backgroundImage: `url("${heroImg}")` }} aria-hidden="true" />
+        <div className="lbp-hero-scrim" aria-hidden="true" />
+        <div className="lbp-hero-inner lbp-wrap">
         {/* ── Header ── */}
         <header className="lbp-head">
           <h1 className="lbp-name">{biz.name}</h1>
@@ -318,8 +305,7 @@ export default function LocalBusinessProfilePage({
               : <span className="lbp-claimed"><FontAwesomeIcon icon={faCircleCheck} /> {biz.unclaimed ? 'Unclaimed' : 'Claimed'}</span>}
           </div>
           <div className="lbp-meta-row">
-            <span className="lbp-price">{biz.priceRange}</span>
-            <span className="lbp-dot">·</span>
+            {biz.priceRange && (<><span className="lbp-price">{biz.priceRange}</span><span className="lbp-dot">·</span></>)}
             {biz.categories.map((c, i) => (
               <span key={c}>
                 {i > 0 && <span className="lbp-dot">·</span>}
@@ -336,7 +322,10 @@ export default function LocalBusinessProfilePage({
             </button>
           </div>
         </header>
+        </div>
+      </section>
 
+      <div className="lbp-wrap">
         <div className="lbp-body">
           <main className="lbp-main">
             {/* Claim banner (unclaimed only) */}
@@ -351,22 +340,23 @@ export default function LocalBusinessProfilePage({
               </div>
             )}
 
-            {/* Menu */}
+            {/* Menu / Services / Products — real items only (never fake dishes) */}
+            {menu.length > 0 && (
             <Reveal className="lbp-sec">
               <div className="lbp-sec-head">
                 <h2>{vertical.listingLabel}</h2>
-                <a className="lbp-sec-link" href="#">{vertical.listingViewAll} <FontAwesomeIcon icon={faChevronRight} /></a>
               </div>
               <div className="lbp-menu">
-                {menu.map((m) => (
-                  <div key={m.name} className="lbp-menu-item">
-                    <img src={m.img} alt={m.name} loading="lazy" />
+                {menu.map((m, i) => (
+                  <div key={i} className="lbp-menu-item">
+                    {m.img && <img src={m.img} alt={m.name} loading="lazy" />}
                     <div className="lbp-menu-name">{m.name}</div>
                     <div className="lbp-menu-price">{m.price}</div>
                   </div>
                 ))}
               </div>
             </Reveal>
+            )}
 
             {/* Videos */}
             {videos.length > 0 && (
