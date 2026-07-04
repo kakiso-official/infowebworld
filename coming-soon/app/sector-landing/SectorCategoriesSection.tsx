@@ -21,13 +21,18 @@ import type { CardDef } from '@/lib/sector-landings'
 
 /* label = chip text; slug = ?country=<slug> value the category page
    resolves via lookupLocationCountry(). Must match toSlug(country.name)
-   from app/lib/geo-slugs.ts (so e.g. "USA" → "united-states"). */
+   from app/lib/geo-slugs.ts.
+
+   SEO: labels are FULL country names, NOT abbreviations. These chips are
+   internal links into each L2's ?country= page; a bare "USA" anchor (absent
+   from that page's <title>/H1) made Google rewrite the SERP title to "USA".
+   Full names match the target page's "...in United States" title. */
 const LOCATIONS: { label: string; slug: string }[] = [
-  { label: 'USA',       slug: 'united-states' },
-  { label: 'India',     slug: 'india' },
-  { label: 'UK',        slug: 'united-kingdom' },
-  { label: 'Canada',    slug: 'canada' },
-  { label: 'Australia', slug: 'australia' },
+  { label: 'United States',  slug: 'united-states' },
+  { label: 'India',          slug: 'india' },
+  { label: 'United Kingdom', slug: 'united-kingdom' },
+  { label: 'Canada',         slug: 'canada' },
+  { label: 'Australia',      slug: 'australia' },
 ]
 
 /** Top N L3 children of an L2, in taxonomy sort order. */

@@ -1967,6 +1967,16 @@
   font-weight: 500;
 }
 .cd-page .cd-hero-country:hover { text-decoration: underline; }
+/* Currently-filtered market — non-link "active" state (dark, bold, not
+   clickable). Rendered as a <span> so there's no self-referential country
+   anchor for Google to lift as the SERP title. */
+.cd-page .cd-hero-country--active {
+  color: #0F172A;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: default;
+}
+.cd-page .cd-hero-country--active:hover { text-decoration: none; }
 .cd-page .cd-hero-expand {
   display: inline;
   margin-left: 4px;

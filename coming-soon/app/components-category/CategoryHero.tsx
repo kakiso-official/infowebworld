@@ -22,19 +22,30 @@ type Props = {
   /** Applied ?country= filter's display name → country-aware H1 + description
       ("Top X Companies in <Country>"). Empty on the unfiltered base page. */
   countryName?: string
+  /** Slug of the applied ?country= filter. The matching market chip renders as
+      a non-link active state instead of a self-referential link — a self-link
+      whose anchor text is a short country label is a prime trigger for Google
+      to rewrite the SERP title to that label. Empty on the base page. */
+  countrySlug?: string
   /** Whether Gemini SEO content exists — controls Buyer's Guide / FAQs link visibility. */
   hasGuide?: boolean
 }
 
 /* Top markets surfaced as inline filter chips inside the hero description.
    Each links to the same category page with a ?country= filter that
-   CategoryPage already parses and applies to the listings query. */
+   CategoryPage already parses and applies to the listings query.
+
+   SEO: labels are FULL country names ("United States", not "USA"). The bare
+   abbreviation appeared nowhere in the <title>/H1/description, so Google was
+   picking the short "USA" anchor text as the SERP title and overriding our
+   real "...in United States..." title. Full names match the title/H1 exactly,
+   so the anchor text reinforces (instead of contradicts) the page title. */
 const TOP_COUNTRIES: { name: string; slug: string }[] = [
-  { name: 'USA', slug: 'united-states' },
-  { name: 'UK', slug: 'united-kingdom' },
+  { name: 'United States', slug: 'united-states' },
+  { name: 'United Kingdom', slug: 'united-kingdom' },
   { name: 'India', slug: 'india' },
   { name: 'Australia', slug: 'australia' },
-  { name: 'UAE', slug: 'united-arab-emirates' },
+  { name: 'United Arab Emirates', slug: 'united-arab-emirates' },
   { name: 'Canada', slug: 'canada' },
 ]
 
@@ -100,6 +111,7 @@ export default function CategoryHero({
   totalReviews = 0,
   totalListings,
   countryName = '',
+  countrySlug = '',
   hasGuide = false,
 }: Props) {
   const [expanded, setExpanded] = useState(false)
@@ -187,17 +199,30 @@ export default function CategoryHero({
         {!showExpand && (
           <>
             <span className="cd-hero-countries">
-              {TOP_COUNTRIES.map((cn, i) => (
-                <span key={cn.slug}>
-                  <Link
-                    href={`/${sectorSlug || c.parentSlug || ''}/${c.slug}?country=${cn.slug}`}
-                    className="cd-hero-country"
-                  >
-                    {cn.name}
-                  </Link>
-                  {i < TOP_COUNTRIES.length - 2 ? ', ' : i === TOP_COUNTRIES.length - 2 ? ', and ' : ''}
-                </span>
-              ))}
+              {TOP_COUNTRIES.map((cn, i) => {
+                const sep = i < TOP_COUNTRIES.length - 2 ? ', ' : i === TOP_COUNTRIES.length - 2 ? ', and ' : ''
+                /* The currently-filtered country renders as a non-link active
+                   chip — never a self-referential link — so Google can't lift
+                   its short label as the SERP title. */
+                const isActive = !!countrySlug && countrySlug === cn.slug
+                return (
+                  <span key={cn.slug}>
+                    {isActive ? (
+                      <span className="cd-hero-country cd-hero-country--active" aria-current="page">
+                        {cn.name}
+                      </span>
+                    ) : (
+                      <Link
+                        href={`/${sectorSlug || c.parentSlug || ''}/${c.slug}?country=${cn.slug}`}
+                        className="cd-hero-country"
+                      >
+                        {cn.name}
+                      </Link>
+                    )}
+                    {sep}
+                  </span>
+                )
+              })}
             </span>
             {afterText}
           </>

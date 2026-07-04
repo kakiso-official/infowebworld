@@ -486,6 +486,10 @@ export default function CategoryPage({ segments, sectorSlug, initialData, routeC
           /* Server-resolved country name → country-aware H1 in the SSR HTML
              (locationCountry only resolves client-side after CSC loads). */
           countryName={routeCountry?.name || locationCountry?.name || ''}
+          /* Active-country slug → the matching market chip renders as a
+             non-link active state (kills the self-referential country anchor
+             Google was lifting as the SERP title). */
+          countrySlug={routeCountry?.slug || locationCountry?.slug || ''}
           hasGuide={!!initialData?.seoContent}
         />
         {subcats.length > 0 && <SubcategoryList subcategories={subcats} sectorSlug={sectorSlug} />}
