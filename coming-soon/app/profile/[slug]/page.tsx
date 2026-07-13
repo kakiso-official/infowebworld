@@ -21,7 +21,11 @@ import LocalBusinessProfilePage from '../LocalBusinessProfilePage'
    every visitor.
    ──────────────────────────────────────────────────────────────────── */
 export const revalidate = 172800
-export const dynamicParams = false
+/* Hybrid pre-build (May 8 session plan, shipped July 13): newest 500 slugs
+   baked at build, the ~5.2K long tail ISR-renders on first visit — every
+   deploy used to re-render all ~5.7K profile pages against the slow cPanel
+   MySQL. Unknown slugs still 404 via `if (!data) notFound()` below. */
+export const dynamicParams = true
 
 export async function generateStaticParams() {
   try {
@@ -29,7 +33,9 @@ export async function generateStaticParams() {
       `SELECT slug FROM submissions
         WHERE listing_mode = 'company'
           AND status IN ('active','paid')
-          AND slug IS NOT NULL AND slug != ''`
+          AND slug IS NOT NULL AND slug != ''
+        ORDER BY id DESC
+        LIMIT 500`
     )
     return rows.map(r => ({ slug: r.slug }))
   } catch (err) {

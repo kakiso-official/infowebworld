@@ -28,6 +28,7 @@ import '../styles/claim-modal.css'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import LeadFormModal from '../listing/LeadFormModal'
 import SignupModal from '../components/auth/SignupModal'
+import { useAuth } from '@/lib/use-auth'
 import ClaimListingModal from '../listing/ClaimListingModal'
 import { withInfoWebWorldUtm } from '../lib/utm'
 import { trackWebsiteClick } from '../lib/track-website-click'
@@ -523,8 +524,13 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
   const [pendingAction, setPendingAction] = useState<null | 'follow' | 'bookmark' | 'contact'>(null)
   const [claimOpen, setClaimOpen] = useState(false)
 
+  /* Only signed-in users need per-listing state — anon visitors (and JS-
+     executing crawlers across ~5.7K profile URLs) keep the anon defaults
+     without a function invocation. Post-signup hydration runs via the
+     SignupModal onSuccess flow below. */
+  const { user: sharedAuthUser } = useAuth()
   useEffect(() => {
-    if (!slug) return
+    if (!slug || !sharedAuthUser) return
     let cancelled = false
     fetch(`/api/listings/${slug}/me`, { credentials: 'same-origin' })
       .then(r => r.ok ? r.json() : null)
@@ -539,7 +545,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
       })
       .catch(() => { /* anon — leave defaults */ })
     return () => { cancelled = true }
-  }, [slug])
+  }, [slug, sharedAuthUser])
 
   const cssVars: React.CSSProperties = {
     ['--cmp-accent' as string]: accent,

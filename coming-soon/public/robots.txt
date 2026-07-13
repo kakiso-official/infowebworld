@@ -66,6 +66,11 @@ Disallow: /test-landing-page/
 # HowTo + sector-specific FAQ). Each one is a unique answer-engine surface.
 Allow: /*/view-all-sub-categories-
 
+# Pace non-Google crawlers (Google ignores crawl-delay; Bing/others honor it).
+# The category space is thousands of server-rendered URLs — uncontrolled
+# crawl bursts are real Vercel money.
+Crawl-delay: 10
+
 # Block parasitic SEO audit crawlers (zero value, heavy traffic)
 User-agent: AhrefsBot
 Disallow: /
@@ -91,6 +96,32 @@ Disallow: /
 
 User-agent: GPTBot
 Disallow: /
+
+# Meta's AI training crawler — among the highest-volume crawlers on the web
+User-agent: meta-externalagent
+Disallow: /
+
+# Other heavy crawlers with zero referral value for this site
+User-agent: PetalBot
+Disallow: /
+
+User-agent: DataForSeoBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: SeekportBot
+Disallow: /
+
+User-agent: Timpibot
+Disallow: /
+
+User-agent: ImagesiftBot
+Disallow: /
+
+# NOTE: middleware.ts now ALSO enforces this list with an edge 403
+# (BLOCKED_UA_RE) — robots.txt is voluntary and several of these ignore it.
 
 # AI answer-engine crawlers (OAI-SearchBot, PerplexityBot, ClaudeBot, Google-Extended,
 # Applebot) are intentionally NOT blocked — they power AEO citations. They inherit

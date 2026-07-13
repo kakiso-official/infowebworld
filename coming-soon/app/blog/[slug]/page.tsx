@@ -8,10 +8,11 @@ import BlogReaderInteractions from '../post/BlogReaderInteractions'
 import BlogToc, { type TocItem } from '../BlogToc'
 import { getPublishedPostBySlug, getRelatedPosts } from '@/lib/blog'
 
-/* Post pages render dynamically from the DB (force-dynamic, edge-cached ~1h via
-   middleware) so a post published in the admin panel is live immediately. An
-   unknown slug calls notFound() below. */
-export const dynamic = 'force-dynamic'
+/* Post pages ISR-render from the DB (5 min revalidate; ~1h worst case with
+   the middleware edge TTL) instead of force-dynamic — unknown slugs now
+   return a TRUE 404 via notFound() (under force-dynamic the shell streamed
+   a 200 soft-404 that bots re-crawled forever). */
+export const revalidate = 300
 
 const SITE = 'https://www.infowebworld.com'
 

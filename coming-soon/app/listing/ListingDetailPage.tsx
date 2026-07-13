@@ -15,6 +15,7 @@ import LeadFormModal from './LeadFormModal'
 import ClaimListingModal from './ClaimListingModal'
 import SignupModal from '../components/auth/SignupModal'
 import { withInfoWebWorldUtm } from '../lib/utm'
+import { useAuth } from '@/lib/use-auth'
 import { listingOutboundRel } from '@/lib/user-plan-types'
 import { trackWebsiteClick } from '../lib/track-website-click'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -1491,9 +1492,14 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
      Page is statically cached (ISR), so the HTML is identical for every
      visitor. Right after mount we ask /api/listings/[slug]/me which
      reads the auth cookie and returns this user's relationship to the
-     listing. Only fires for real listings (not /test-listing-page). */
+     listing. Only fires for real listings (not /test-listing-page) and
+     only for signed-in users — anon visitors (and every JS-executing
+     crawler across the 6.5K listing URLs) keep the default anon state
+     without burning a function invocation. Post-signup hydration is
+     handled separately by the SignupModal onSuccess flow. */
+  const { user: sharedAuthUser } = useAuth()
   useEffect(() => {
-    if (isPreview || !listingSlug) return
+    if (isPreview || !listingSlug || !sharedAuthUser) return
     let cancelled = false
     fetch(`/api/listings/${encodeURIComponent(listingSlug)}/me`, {
       credentials: 'same-origin', cache: 'no-store',
@@ -1511,7 +1517,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
       })
       .catch(() => { /* anon defaults already set */ })
     return () => { cancelled = true }
-  }, [isPreview, listingSlug])
+  }, [isPreview, listingSlug, sharedAuthUser])
   /* Auth gate modal — opens whenever an anon user clicks an engagement button
      (follow / react / bookmark / write a review). Replaces the old full-page
      redirect to /business so the user keeps their context on the listing. */

@@ -31,11 +31,15 @@ import { CATEGORIES } from '../../config/categories-data'
    mount, so the same cached HTML works for every visitor.
    ──────────────────────────────────────────────────────────────────── */
 export const revalidate = 172800        // 48h auto-revalidate of deployed slugs
-export const dynamicParams = false       // slugs not in the build → 404 until next deploy
+/* Hybrid pre-build (May 8 session plan, shipped July 13): only the newest
+   500 slugs are baked at build; everything else ISR-renders on first visit
+   and is then cached for 48h. Every deploy used to pre-render ALL ~6.5K
+   listing/profile pages (~100K slow cPanel MySQL queries per build) —
+   burning Vercel build minutes at 78-114 deploys/month. Bonus: an approved
+   listing now goes live on first visit, no deploy needed. Unknown slugs
+   still 404 via the `if (!data) notFound()` guard below. */
+export const dynamicParams = true
 
-/* Pre-render every active/paid listing at build time. This is the only
-   way a listing becomes publicly visible — admin approval alone isn't
-   enough; a deploy must happen after approval. */
 export async function generateStaticParams() {
   /* Pre-render PRODUCT slugs only — company-mode rows live at /profile,
      not /company. The page query also filters product-only at request
@@ -46,7 +50,9 @@ export async function generateStaticParams() {
       `SELECT slug FROM submissions
         WHERE status IN ('active','paid')
           AND slug IS NOT NULL AND slug != ''
-          AND COALESCE(listing_mode, 'product') = 'product'`
+          AND COALESCE(listing_mode, 'product') = 'product'
+        ORDER BY id DESC
+        LIMIT 500`
     )
     return rows.map(r => ({ slug: r.slug }))
   } catch (err) {
@@ -57,7 +63,9 @@ export async function generateStaticParams() {
       try {
         const rows = await query<{ slug: string }>(
           `SELECT slug FROM submissions
-            WHERE status IN ('active','paid') AND slug IS NOT NULL AND slug != ''`
+            WHERE status IN ('active','paid') AND slug IS NOT NULL AND slug != ''
+            ORDER BY id DESC
+            LIMIT 500`
         )
         return rows.map(r => ({ slug: r.slug }))
       } catch { return [] }

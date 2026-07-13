@@ -63,7 +63,9 @@ export default function SessionTimeline({ sessionId, live }: { sessionId: number
     cancelled.current = false
     reload()
     if (!live) return
-    const id = setInterval(reload, 1500)
+    /* 5s + hidden-tab pause (was 1.5s always-on): each tick is a function
+       invocation with multiple MySQL queries against the slow cPanel DB. */
+    const id = setInterval(() => { if (!document.hidden) reload() }, 5000)
     return () => {
       cancelled.current = true
       clearInterval(id)

@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import '../styles/categories.css'
 import type { Metadata } from 'next'
-import { redirect, notFound } from 'next/navigation'
+import { redirect, permanentRedirect, notFound } from 'next/navigation'
 import { unstable_cache } from 'next/cache'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
@@ -29,6 +29,21 @@ const L1_SLUGS = new Set([
   'ai-ml', 'software-saas', 'it-services-agencies',
   'startups-innovation', 'local-businesses', 'professional-services',
 ])
+
+/* ── category slug → its true L1 sector, from the static taxonomy (zero DB).
+   Used to kill two crawler cost holes before any query runs:
+   1. Wrong-sector aliases: /{anySector}/{slug} rendered a full 200 page for
+      all 6 prefixes (~53K URLs, each ~14 slow MySQL queries + index,follow
+      duplicates). Now they 308 to the one canonical URL.
+   2. Bare legacy slugs resolve without the 5-way self-join DB lookup.
+   Slugs added to the DB after the last taxonomy export are absent here —
+   callers must fall back to the DB check, never hard-404 on a map miss. */
+const SECTOR_BY_CATEGORY_SLUG = new Map<string, string>()
+for (const r of STATIC_CATEGORIES) {
+  if (r.level >= 2 && r.sector_slug && !SECTOR_BY_CATEGORY_SLUG.has(r.slug)) {
+    SECTOR_BY_CATEGORY_SLUG.set(r.slug, r.sector_slug)
+  }
+}
 
 /* Sector accent colors — same palette as SectorAllBrowse's sectorMeta()
    client helper, redeclared here so the server-rendered .va-card grid on
@@ -227,9 +242,15 @@ function prettyCountryName(slug: string): string {
     country-state-city ISO code for names that differ from their slug (e.g.
     united-arab-emirates → code AE). Returns null when the country isn't in
     our DB (⇒ zero listings ⇒ the variant stays noindex). */
+const getCountriesCached = unstable_cache(
+  async () => query<{ id: number; name: string; code: string }>('SELECT id, name, code FROM countries'),
+  ['countries-list'],
+  { revalidate: 86400 }
+)
+
 async function resolveFilterCountry(slug: string): Promise<{ id: number; name: string } | null> {
   try {
-    const rows = await query<{ id: number; name: string; code: string }>('SELECT id, name, code FROM countries')
+    const rows = await getCountriesCached()
     const direct = rows.find((r) => toSlug(String(r.name)) === slug)
     if (direct) return { id: Number(direct.id), name: String(direct.name) }
     const geo = await lookupLocationCountryAsync(slug)
@@ -244,8 +265,16 @@ async function resolveFilterCountry(slug: string): Promise<{ id: number; name: s
 }
 
 /** Count active/paid listings in a category's whole subtree for ONE country.
-    Mirrors the 5-level descendant UNION used for the sitemap + page counts. */
-async function countCategoryListingsForCountry(categoryId: number, countryId: number): Promise<number> {
+    Mirrors the 5-level descendant UNION used for the sitemap + page counts.
+    Cached 1h — this UNION is one of the heaviest queries on the site and it
+    runs in BOTH generateMetadata and the page body for every ?country= hit. */
+const countCategoryListingsForCountry = unstable_cache(
+  async (categoryId: number, countryId: number) => countCategoryListingsForCountryUncached(categoryId, countryId),
+  ['category-country-count'],
+  { revalidate: 3600 }
+)
+
+async function countCategoryListingsForCountryUncached(categoryId: number, countryId: number): Promise<number> {
   const row = await queryOne(
     `SELECT COUNT(*) as cnt FROM submissions s
        WHERE s.status IN ('active','paid') AND s.country_id = ?
@@ -1379,6 +1408,14 @@ export async function generateMetadata({
   if (!isViewAll && L1_SLUGS.has(slug) && segments.length >= 2) {
     sectorSlug = slug
     categorySlug = segments[1]
+
+    /* Cost guard (see SECTOR_BY_CATEGORY_SLUG): collapse extra path segments
+       and wrong-sector aliases to the canonical URL before any DB work. */
+    if (segments.length > 2) permanentRedirect(`/${sectorSlug}/${categorySlug}`)
+    const trueSector = SECTOR_BY_CATEGORY_SLUG.get(categorySlug)
+    if (trueSector && trueSector !== sectorSlug) {
+      permanentRedirect(`/${trueSector}/${categorySlug}`)
+    }
   }
 
   /* ── view-all page — sector categories browse ──
@@ -1668,9 +1705,12 @@ export async function generateMetadata({
   const cat = await fetchCategoryForSeo(categorySlug)
   if (!cat) return {}
 
-  // If no sectorSlug yet (old URL without L1 prefix), look it up from DB
+  // If no sectorSlug yet (old URL without L1 prefix), resolve from the static
+  // taxonomy first (zero DB); DB lookup only for post-export categories.
   if (!sectorSlug) {
-    sectorSlug = (await getSectorSlugForCategory(categorySlug)) || ''
+    sectorSlug = SECTOR_BY_CATEGORY_SLUG.get(categorySlug)
+      || (await getSectorSlugForCategory(categorySlug))
+      || ''
   }
 
   /* Pull the aggregate rating so the meta description can advertise it. */
@@ -1756,11 +1796,41 @@ export default async function CategoryDetailRoute({
     redirect(`/${slug}/${viewAllSlug(slug)}`)
   }
 
-  /* ── Redirect old URLs without L1 prefix to new prefixed URLs ── */
+  /* ── Redirect old URLs without L1 prefix to new prefixed URLs ──
+     Resolved from the static taxonomy (zero DB). Bare-slug URLs only ever
+     existed for pre-May-2026 categories, which are all in the export, so no
+     DB fallback is needed. Anything else with an unknown first segment is
+     garbage (dead routes, scanner probes, /listing//profile fall-throughs):
+     send it to /url-removed, which renders non-streamed and returns a TRUE
+     404 — instead of the force-dynamic soft-404 (HTTP 200 + DB queries)
+     that kept bots re-crawling an unbounded URL space forever. */
   if (!isViewAll2 && slug && !L1_SLUGS.has(segments[0])) {
-    const sector = await getSectorSlugForCategory(segments[0])
+    const sector = SECTOR_BY_CATEGORY_SLUG.get(segments[0])
     if (sector) {
-      redirect(`/${sector}/${segments.join('/')}`)
+      permanentRedirect(`/${sector}/${segments.join('/')}`)
+    }
+    redirect('/url-removed')
+  }
+
+  /* ── Cost guard for L1-prefixed category URLs (mirrors generateMetadata) ──
+     Wrong-sector aliases and 3+-segment leftovers 308 to the canonical URL;
+     slugs in neither the static taxonomy nor the DB are garbage → TRUE 404
+     via /url-removed instead of a 200 soft-404 with the full 14-query render. */
+  if (sectorSlug && categorySlug) {
+    if (segments.length > 2) permanentRedirect(`/${sectorSlug}/${categorySlug}`)
+    const trueSector = SECTOR_BY_CATEGORY_SLUG.get(categorySlug)
+    if (trueSector && trueSector !== sectorSlug) {
+      permanentRedirect(`/${trueSector}/${categorySlug}`)
+    }
+    if (!trueSector) {
+      /* Absent from the export: post-export category (render it) or garbage
+         (404). One cheap indexed lookup settles it; on DB error keep the old
+         render path so a flaky connection can't 404 a real category. */
+      const exists = await queryOne(
+        `SELECT id FROM categories WHERE slug = ? AND is_active = 1 LIMIT 1`,
+        [categorySlug]
+      ).catch(() => ({ id: 0 }))
+      if (!exists) redirect('/url-removed')
     }
   }
 

@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { refreshAuth } from '@/lib/use-auth'
 import { I, ic } from '../icons'
 
 type Mode = 'signup' | 'login'
@@ -113,7 +114,9 @@ export default function SignupModal({ open, onClose, nextUrl, onSuccess, initial
       if (data.type === 'iww-auth-success') {
         cleanup()
         try { popup.close() } catch {}
-        if (onSuccess) onSuccess()
+        /* No-reload success path: sync the shared useAuth() cache so every
+           mounted component sees the new session without a page reload. */
+        if (onSuccess) { refreshAuth(); onSuccess() }
         else {
           const target = data.next || nextUrl
           if (target) window.location.href = target
@@ -180,7 +183,7 @@ export default function SignupModal({ open, onClose, nextUrl, onSuccess, initial
       })
       const j = await res.json()
       if (!res.ok || !j.ok) { setError(j.error || 'Something went wrong.'); setBusy(false); return }
-      if (onSuccess) onSuccess()
+      if (onSuccess) { refreshAuth(); onSuccess() }
       else if (nextUrl) window.location.href = nextUrl
       else window.location.reload()
     } catch {
@@ -206,7 +209,7 @@ export default function SignupModal({ open, onClose, nextUrl, onSuccess, initial
       })
       const j = await res.json()
       if (!res.ok || !j.ok) { setError(j.error || 'Verification failed.'); setBusy(false); return }
-      if (onSuccess) onSuccess()
+      if (onSuccess) { refreshAuth(); onSuccess() }
       else if (nextUrl) window.location.href = nextUrl
       else window.location.reload()
     } catch {

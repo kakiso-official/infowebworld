@@ -25,8 +25,13 @@ import './styles/test-landing-page.css'
    @graph below (Organization, WebSite + SearchAction, the 6-sector ItemList +
    SiteNavigationElements that drive sitelink selection, and the FAQPage) is
    preserved from the previous homepage so nothing regresses on launch.
-   ════════════════════════════════════════════════════════════════════════ */
-export const dynamic = 'force-dynamic'
+
+   ISR (10 min), not force-dynamic: nothing here reads cookies/headers/
+   searchParams and every DB fetch already sits behind unstable_cache(600s).
+   As a static page, utm/fbclid query-string variants all serve the same
+   cached payload instead of each one invoking a function (July 2026 cost
+   fix). */
+export const revalidate = 600
 
 const SITE = 'https://www.infowebworld.com'
 

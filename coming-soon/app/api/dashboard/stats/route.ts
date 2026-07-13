@@ -205,7 +205,10 @@ export async function GET(request: NextRequest) {
     }
 
     return Response.json(data, {
-      headers: { 'Cache-Control': 'public, max-age=60, s-maxage=3600, stale-while-revalidate=86400' },
+      /* Admin-only analytics — must NEVER land in a shared cache. The old
+         public s-maxage=3600 header let anyone read the full analytics
+         payload from the edge for an hour after an admin primed it. */
+      headers: { 'Cache-Control': 'private, no-store' },
     })
   } catch (err) {
     console.error('Dashboard stats error:', err)

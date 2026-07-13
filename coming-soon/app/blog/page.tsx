@@ -4,9 +4,11 @@ import Footer from '../components/Footer'
 import BlogListing from './BlogListing'
 import { getPublishedPosts } from '@/lib/blog'
 
-/* Blog index — published posts from the DB. force-dynamic (edge-cached ~1h via
-   middleware) so posts written in the admin panel appear live, no redeploy. */
-export const dynamic = 'force-dynamic'
+/* Blog index — published posts from the DB. ISR (5 min) instead of
+   force-dynamic, so crawler hits stop invoking a function per request.
+   With the middleware's 1h edge TTL on top, a post published in the admin
+   panel appears within ~1h. */
+export const revalidate = 300
 
 export const metadata: Metadata = {
   title: 'Blog - Business Insights, Guides & Comparisons | InfoWebWorld',

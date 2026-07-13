@@ -1,6 +1,16 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
+/* ── Bot user-agents blocked at the edge ──
+   robots.txt already disallows these, but robots is voluntary — MJ12bot,
+   Bytespider and friends ignore it and each full crawl of the category
+   space costs real Vercel money (April 2026 + July 2026 quota incidents).
+   A middleware 403 is a single edge request: no function render, no DB,
+   no origin transfer. Search engines we want (Googlebot, Bingbot,
+   DuckDuckBot) and AEO answer-engine bots (OAI-SearchBot, PerplexityBot,
+   ClaudeBot, Applebot) are NOT in this list. */
+const BLOCKED_UA_RE = /AhrefsBot|SemrushBot|DotBot|MJ12bot|BLEXBot|DataForSeoBot|serpstatbot|PetalBot|Bytespider|CCBot|GPTBot|Amazonbot|meta-externalagent|SeekportBot|Timpibot|ImagesiftBot|magpie-crawler|Scrapy|HeadlessChrome/i
+
 /* ── Exact-match indexable static pages ── */
 const INDEXABLE_PATHS = new Set([
   '', '/',
@@ -100,9 +110,36 @@ function applyHeaders(response: NextResponse, pathname: string, isVercelApp: boo
     return
   }
 
-  response.headers.set('CDN-Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400')
+  /* ISR routes (/listing, /profile) manage their own freshness via
+     revalidate=172800. The old unconditional CDN-Cache-Control s-maxage=3600
+     here forced the edge to re-fetch every one of the ~6.5K pages from
+     origin up to 48x more often than designed (verified live:
+     X-Vercel-Cache STALE at 16h). Leave their headers completely alone. */
+  if (ISR_PATH_RE.test(pathname)) {
+    return
+  }
+
+  /* Directory content (categories, sectors, blog, compare) changes slowly.
+     24h edge TTL + a short SWR window collapses the hourly re-render churn
+     across the ~9K crawlable category URLs into at most one render per URL
+     per region per day. */
+  if (LONG_CACHE_RE.test(pathname)) {
+    response.headers.set('CDN-Cache-Control', 'public, s-maxage=86400, stale-while-revalidate=3600')
+    response.headers.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=3600')
+    return
+  }
+
+  response.headers.set('CDN-Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=3600')
   response.headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300')
 }
+
+/* /listing + /profile are real ISR routes with their own 48h revalidate. */
+const ISR_PATH_RE = /^\/(listing|profile)\//
+
+/* Slow-changing public directory surfaces — safe at a 24h edge TTL.
+   Blog is deliberately NOT here: new posts should surface within the
+   default 1h edge TTL, not a day later. */
+const LONG_CACHE_RE = /^\/(ai-ml|software-saas|it-services-agencies|startups-innovation|local-businesses|professional-services|categories|sector|compare|compare-companies|all)(\/|$)/
 
 /* ── Removed country URL space ──
    The site used to serve /{country}/* URLs (/uk/blog, /us/ai-ml, bare /uk, …).
@@ -125,14 +162,23 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   const isVercelApp = request.headers.get('host')?.includes('vercel.app') ?? false
 
+  /* Impolite crawlers get a 403 straight from the edge — before any
+     function invocation, DB query, or origin transfer is billed. */
+  const ua = request.headers.get('user-agent') || ''
+  if (BLOCKED_UA_RE.test(ua)) {
+    return new NextResponse(null, { status: 403 })
+  }
+
   /* Removed country URL space → rewrite to /url-removed so the visitor keeps
      their original URL but gets the real branded 404 page with a TRUE 404
      status (see COUNTRY_PREFIX_RE above for why a rewrite, not a redirect or
-     the soft-404'ing catch-all). */
+     the soft-404'ing catch-all). Cached at the edge — bots retry these dead
+     URLs for months and each retry was a full origin round-trip. */
   if (COUNTRY_PREFIX_RE.test(pathname)) {
     const gone = NextResponse.rewrite(new URL('/url-removed', request.url))
     gone.headers.set('x-robots-tag', 'noindex, nofollow')
-    gone.headers.set('cache-control', 'no-store')
+    gone.headers.set('cdn-cache-control', 'public, s-maxage=86400')
+    gone.headers.set('cache-control', 'public, max-age=3600')
     return gone
   }
 

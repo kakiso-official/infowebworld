@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400" role="img" aria-label="Local business">
+  <rect width="640" height="400" fill="#FBF3E7"/>
+  <!-- ground -->
+  <rect x="0" y="330" width="640" height="70" fill="#F2E3CC"/>
+  <!-- storefront body -->
+  <rect x="170" y="150" width="300" height="180" rx="6" fill="#FFFFFF" stroke="#E8D9C0" stroke-width="3"/>
+  <!-- awning -->
+  <rect x="150" y="118" width="340" height="46" rx="10" fill="#E8553D"/>
+  <g fill="#FBF3E7">
+    <rect x="170" y="118" width="30" height="46" rx="6"/>
+    <rect x="230" y="118" width="30" height="46" rx="6"/>
+    <rect x="290" y="118" width="30" height="46" rx="6"/>
+    <rect x="350" y="118" width="30" height="46" rx="6"/>
+    <rect x="410" y="118" width="30" height="46" rx="6"/>
+  </g>
+  <!-- door -->
+  <rect x="296" y="220" width="70" height="110" rx="6" fill="#F59E0B"/>
+  <circle cx="352" cy="278" r="5" fill="#FFFFFF"/>
+  <!-- windows -->
+  <rect x="196" y="220" width="76" height="64" rx="6" fill="#FDF0DC" stroke="#E8D9C0" stroke-width="3"/>
+  <rect x="388" y="220" width="76" height="64" rx="6" fill="#FDF0DC" stroke="#E8D9C0" stroke-width="3"/>
+  <!-- sign board -->
+  <rect x="262" y="176" width="116" height="26" rx="6" fill="#2FAE6A"/>
+  <!-- sun -->
+  <circle cx="88" cy="84" r="34" fill="#F59E0B" opacity="0.85"/>
+</svg>

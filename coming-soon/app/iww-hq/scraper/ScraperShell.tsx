@@ -101,8 +101,13 @@ export default function ScraperShell() {
 
   useEffect(() => {
     refresh()
-    const id = setInterval(refresh, 4000)
-    return () => clearInterval(id)
+    /* 30s + hidden-tab pause (was 4s always-on): each tick is 2 function
+       invocations running 7+ MySQL queries — a forgotten open tab was one
+       of the biggest single Vercel spend drivers in the July 2026 audit. */
+    const id = setInterval(() => { if (!document.hidden) refresh() }, 30000)
+    const onVisible = () => { if (!document.hidden) refresh() }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => { clearInterval(id); document.removeEventListener('visibilitychange', onVisible) }
   }, [refresh])
 
   const selected = useMemo(() => jobs.find(j => j.id === selectedJobId) ?? null, [jobs, selectedJobId])
@@ -299,7 +304,8 @@ function JobDetailView({ jobId, onChanged }: { jobId: number; onChanged: () => v
   useEffect(() => {
     setOpenSessionId(null); setData(null)
     reload(true)                                                  // initial full
-    const id = setInterval(() => reload(false), 3500)             // polls summary
+    /* 15s + hidden-tab pause (was 3.5s always-on) — see refresh() note. */
+    const id = setInterval(() => { if (!document.hidden) reload(false) }, 15000)
     return () => clearInterval(id)
   }, [jobId])  // eslint-disable-line react-hooks/exhaustive-deps
 

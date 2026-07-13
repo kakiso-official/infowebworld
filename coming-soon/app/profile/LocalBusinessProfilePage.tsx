@@ -24,6 +24,7 @@ import {
 import '../styles/local-business.css'
 import SignupModal from '../components/auth/SignupModal'
 import ClaimListingModal from '../listing/ClaimListingModal'
+import { useAuth } from '@/lib/use-auth'
 import { verticalForBreadcrumb, amenityLabel } from '../lib/local-business-verticals'
 
 const ACCENT = '#F59E0B'   /* local-businesses sector amber */
@@ -187,7 +188,7 @@ export default function LocalBusinessProfilePage({
     .filter((u) => !/logo|favicon|\.svg(\?|$)/i.test(u))
     .map((u) => u.replace(/^http:\/\//, 'https://'))   /* avoid mixed-content blocks */
   const hasPhotos = realPhotos.length > 0
-  const heroImg = realPhotos[0] || '/illustrations/lb-fallback.png'
+  const heroImg = realPhotos[0] || '/illustrations/lb-fallback.svg'
   const hasReviews = biz.reviewCount > 0
   const hours: (string | undefined)[][] = biz.lbHours.length
     ? biz.lbHours.map((h) => [String(h.day ?? ''), h.closed ? 'Closed' : String(h.time ?? ''), h.openNow ? 'Open now' : undefined])
@@ -233,15 +234,19 @@ export default function LocalBusinessProfilePage({
   const [saving, setSaving] = useState(false)
   const [votes, setVotes] = useState<Record<string, boolean>>({})
 
+  /* Only signed-in users need per-listing state — anon visitors and bots
+     keep anon defaults without a function invocation. Post-signup state is
+     re-hydrated by the SignupModal onSuccess flow. */
+  const { user: sharedAuthUser } = useAuth()
   useEffect(() => {
-    if (!slug) return
+    if (!slug || !sharedAuthUser) return
     let cancelled = false
     fetch(`/api/listings/${slug}/me`, { credentials: 'same-origin' })
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => { if (!cancelled && j) setMe({ isAuthed: !!j.isAuthed, isBookmarked: !!j.isBookmarked }) })
       .catch(() => { /* anon — leave defaults */ })
     return () => { cancelled = true }
-  }, [slug])
+  }, [slug, sharedAuthUser])
 
   const requireAuth = (action: 'save' | 'review' | 'photo'): boolean => {
     if (me.isAuthed) return true

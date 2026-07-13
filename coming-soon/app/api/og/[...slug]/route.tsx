@@ -1,9 +1,8 @@
 import { ImageResponse } from 'next/og'
-import { query } from '@/lib/db'
+import { CATEGORIES as STATIC_CATEGORIES } from '@/app/config/categories-data'
 
-// Node runtime required: lib/db uses mysql2 (Node-only). Edge runtime
-// breaks the build at "collect page data". CDN cache (s-maxage=86400)
-// makes Edge perf irrelevant here.
+// Data comes from the static taxonomy export (no DB). CDN cache
+// (s-maxage=2592000) makes runtime perf irrelevant here.
 
 /* Dynamic Open Graph image route — renders a 1200×630 social card per
    category. URL: /api/og/{sectorSlug}/{categorySlug} or /api/og/{sectorSlug}.
@@ -33,33 +32,34 @@ export async function GET(
   const categorySlug = segments[1] || ''
   const palette = SECTOR_PALETTES[sectorSlug] || SECTOR_PALETTES['ai-ml']
 
-  /* Resolve category name + listing count from DB. Falls back to sector-only
-     card if no category was requested. */
+  /* Resolve category name + listing count from the static taxonomy export —
+     zero DB. The old version ran a 5-level correlated COUNT against the slow
+     remote MySQL per cache miss, and social/preview bots fetch these og
+     images across 529+ category URLs (a real Fluid-CPU line item in the
+     July 2026 cost audit). A slightly stale count on a social card is
+     harmless; falls back to the sector-only card for unknown slugs. */
   let categoryName = ''
   let listingCount = 0
   if (categorySlug) {
-    try {
-      const row = await query<{ name: string; tree_count: number }>(
-        `SELECT c.name,
-                (SELECT COUNT(*) FROM submissions s
-                  LEFT JOIN categories sc    ON sc.id    = s.category_id
-                  LEFT JOIN categories scp   ON scp.id   = sc.parent_id
-                  LEFT JOIN categories scgp  ON scgp.id  = scp.parent_id
-                  LEFT JOIN categories scggp ON scggp.id = scgp.parent_id
-                  LEFT JOIN categories scgggp ON scgggp.id = scggp.parent_id
-                 WHERE s.status IN ('active','paid')
-                   AND (sc.id = c.id OR scp.id = c.id OR scgp.id = c.id OR scggp.id = c.id OR scgggp.id = c.id)
-                ) AS tree_count
-           FROM categories c
-          WHERE c.slug = ? AND c.is_active = 1
-          LIMIT 1`,
-        [categorySlug]
-      )
-      if (row.length > 0) {
-        categoryName = String(row[0].name || '')
-        listingCount = Number(row[0].tree_count || 0)
+    const cat = STATIC_CATEGORIES.find((r) => r.slug === categorySlug)
+    if (cat) {
+      categoryName = cat.name
+      /* Direct + descendant listing counts (subtree rollup in memory). */
+      const childIds = new Set<number>([cat.id])
+      let grew = true
+      while (grew) {
+        grew = false
+        for (const r of STATIC_CATEGORIES) {
+          if (r.parent_id != null && childIds.has(r.parent_id) && !childIds.has(r.id)) {
+            childIds.add(r.id)
+            grew = true
+          }
+        }
       }
-    } catch { /* fall back to sector-only */ }
+      listingCount = STATIC_CATEGORIES.reduce(
+        (sum, r) => (childIds.has(r.id) ? sum + (r.listing_count || 0) : sum), 0
+      )
+    }
   }
 
   const title = categoryName ? `Top ${categoryName}` : `Top ${palette.name}`
@@ -185,7 +185,9 @@ export async function GET(
       width: 1200,
       height: 630,
       headers: {
-        'Cache-Control': 'public, max-age=86400, s-maxage=86400, immutable',
+        /* Social cards don't need freshness — 30d edge cache stops the
+           per-region daily re-render of 535+ satori PNGs. */
+        'Cache-Control': 'public, max-age=86400, s-maxage=2592000, stale-while-revalidate=86400, immutable',
       },
     }
   )

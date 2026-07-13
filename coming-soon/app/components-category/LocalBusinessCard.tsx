@@ -87,7 +87,7 @@ export default function LocalBusinessCard({ item }: { item: RealSubmission }) {
   const rating = item.reviewAvg > 0 ? item.reviewAvg : 0
   /* Real photo only (skip favicons/logos); else the brand illustration. */
   const realPhoto = (item.lbPhotos.find((u) => !/logo|favicon|\.svg(\?|$)/i.test(u)) || '').replace(/^http:\/\//, 'https://')
-  const photo = realPhoto || '/illustrations/lb-fallback.png'
+  const photo = realPhoto || '/illustrations/lb-fallback.svg'
   const openNow = item.lbHours.some(h => h.openNow)
   const price = item.lbPriceRange || ''
   const locationParts = [item.city, item.state].filter(Boolean)
