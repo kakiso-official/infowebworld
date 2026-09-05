@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { cleanText } from '@/lib/seo'
 
 /* ════════════════════════════════════════════════════════════════════
    Header search — clean rewrite matching the new .iw-* header design.
@@ -208,7 +209,9 @@ export default function GlobalSearch({
                   )}
                   <span className="iw-srch-row-text">
                     <span className="iw-srch-row-name">{hl(l.company_name)}</span>
-                    {l.tagline && <span className="iw-srch-row-sub">{l.tagline}</span>}
+                    {cleanText(l.tagline, '', 20) && (
+                      <span className="iw-srch-row-sub">{cleanText(l.tagline, '', 20)}</span>
+                    )}
                   </span>
                   {l.category_name && (
                     <span className="iw-srch-row-tag">{l.category_name}</span>

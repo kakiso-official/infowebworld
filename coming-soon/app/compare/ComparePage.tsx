@@ -1,6 +1,7 @@
 'use client'
 
 import '../styles/compare.css'
+import { cleanText } from '@/lib/seo'
 
 /* ─────────────────────────────────────────────────────────────
    /compare — client orchestrator (heavy redesign to match the
@@ -542,7 +543,9 @@ function PickSecondView({
               )}
             </div>
           </div>
-          {col.tagline && <p className="cpr-pick2-tag">{col.tagline}</p>}
+          {cleanText(col.tagline, '', 20) && (
+            <p className="cpr-pick2-tag">{cleanText(col.tagline, '', 20)}</p>
+          )}
         </div>
 
         {/* Search slot for second — restricted to the picked product's
@@ -701,7 +704,9 @@ function CheckList({ items }: { items: { label: string; on: boolean }[] }) {
 
 function OverviewCell({ col }: { col: CompareCol }) {
   const [expanded, setExpanded] = useState(false)
-  const desc = col.description || ''
+  /* Guarded: seeded rows can hold scraper-error text or an
+     abbreviation fragment in description/tagline. */
+  const desc = cleanText(col.description, '', 40)
   const isLong = desc.length > 240
 
   // Platforms — always show all 4 rows like the GetApp reference, with

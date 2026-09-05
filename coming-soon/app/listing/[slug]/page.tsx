@@ -1,7 +1,8 @@
-import { Suspense } from 'react'
+import { Suspense, cache } from 'react'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { query, queryOne } from '@/lib/db'
+import { clampDescription, cleanText } from '@/lib/seo'
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import ListingDetailPage from '../ListingDetailPage'
@@ -93,8 +94,11 @@ interface ListingRow {
 interface BreadcrumbItem { name: string; slug: string }
 interface FaqItem { question: string; answer: string }
 
-/* ── Data fetching (server-side) ── */
-async function getListingBySlug(slug: string) {
+/* ── Data fetching (server-side) ──
+   Wrapped in React `cache()`: generateMetadata and the page component both
+   call this, and without memoisation the whole sequential query chain ran
+   twice per request against a remote cPanel MySQL. */
+const getListingBySlug = cache(async function getListingBySlug(slug: string) {
   /* Strict mode filter: /listing/<slug> only resolves PRODUCT listings.
      Company-mode rows (listing_mode='company') live exclusively at
      /profile/<slug>; if a company row happens to share a slug with a
@@ -160,18 +164,27 @@ async function getListingBySlug(slug: string) {
     /* Pre-migration — skip the join, no badge. */
   }
 
-  // Build breadcrumb
+  /* Build breadcrumb.
+     Guarded: the listing row itself already loaded fine, so a failure in
+     these secondary walks must degrade the page, not 500 it. During the
+     2026-08-25 crawl the shared connection pool was exhausted and 62
+     /profile pages returned HTTP 500 from exactly this shape of unguarded
+     follow-up query. */
   interface CatRow { id: number; name: string; slug: string; parent_id: number | null }
   const crumbs: BreadcrumbItem[] = []
-  let currentId: number | null = listing.category_id
-  while (currentId) {
-    const cat: CatRow | null = await queryOne<CatRow>(
-      'SELECT id, name, slug, parent_id FROM categories WHERE id = ?',
-      [currentId]
-    )
-    if (!cat) break
-    crumbs.unshift({ name: cat.name, slug: cat.slug })
-    currentId = cat.parent_id
+  try {
+    let currentId: number | null = listing.category_id
+    for (let hop = 0; currentId && hop < 8; hop++) {
+      const cat: CatRow | null = await queryOne<CatRow>(
+        'SELECT id, name, slug, parent_id FROM categories WHERE id = ?',
+        [currentId]
+      )
+      if (!cat) break
+      crumbs.unshift({ name: cat.name, slug: cat.slug })
+      currentId = cat.parent_id
+    }
+  } catch (err) {
+    console.error('[listing/[slug]] breadcrumb walk failed, rendering without it:', err)
   }
 
   // Related listings from same category
@@ -183,7 +196,10 @@ async function getListingBySlug(slug: string) {
      WHERE s.category_id = ? AND s.id != ? AND s.status IN ('active','paid')
      ORDER BY s.created_at DESC LIMIT 4`,
     [listing.category_id, listing.id]
-  )
+  ).catch(err => {
+    console.error('[listing/[slug]] related query failed, rendering without it:', err)
+    return [] as Record<string, unknown>[]
+  })
 
   /* Siblings — same L3 category first; if fewer than 9 results, broaden to
      the L2 parent's children. Used to drive Alternatives, Customers Also
@@ -400,7 +416,7 @@ async function getListingBySlug(slug: string) {
     },
     isAuthed: false,
   }
-}
+})
 
 /* ── Safely serialize mysql2 row to plain JSON (strips Buffers etc.) ── */
 function serialize<T>(obj: T): T {
@@ -437,18 +453,22 @@ export async function generateMetadata({
   const city = L.city || ''
   const country = L.country_name || ''
   const location = [city, country].filter(Boolean).join(', ')
-  const tagline = L.tagline || `${companyName} — discover, compare, and connect on InfoWebWorld`
+  /* Single hyphen, never an em-dash — this string reaches the SERP snippet. */
+  const tagline = cleanText(L.tagline, '', 20) || `${companyName} - discover, compare, and connect on InfoWebWorld`
 
   // Title: {Company} - {Category} | InfoWebWorld (max ~60 chars)
   const title = `${companyName} - ${category} | InfoWebWorld`
 
-  // Description: 120-155 chars, action-oriented, with keywords
-  const descParts = [
-    `Discover ${companyName}: ${tagline}.`,
-    location ? `${location}.` : '',
-    `Read reviews, compare pricing & connect on InfoWebWorld.`,
-  ]
-  const description = descParts.filter(Boolean).join(' ').slice(0, 160)
+  /* Description — clamped on a word/clause boundary rather than hard-cut.
+     The old `.slice(0, 160)` left 761 of 823 listing pages over Google's
+     ~985px snippet width AND could sever a word mid-token. */
+  const description = clampDescription(
+    [
+      `Discover ${companyName}: ${tagline}.`,
+      location ? `${location}.` : '',
+    ].filter(Boolean).join(' '),
+    'Read reviews, compare pricing & connect on InfoWebWorld.',
+  )
 
   const url = `https://www.infowebworld.com/listing/${slug}`
   const ogImage = L.logo_url || 'https://www.infowebworld.com/logo/infowebworldlogo-logoforlightbackgrounds.png'

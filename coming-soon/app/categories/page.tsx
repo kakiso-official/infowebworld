@@ -12,6 +12,7 @@ import Footer from '../components/Footer'
 import AiDisclaimer from '../components/AiDisclaimer'
 import CategoriesBrowse from './CategoriesBrowse'
 import { CATEGORIES } from '../config/categories-data'
+import { buildSerpTitle, clampDescription } from '@/lib/seo'
 import {
   BASE_URL, ID_ORG, ID_WEBSITE, ID_LOGO,
   organizationNode, brandNode, websiteNode,
@@ -125,8 +126,19 @@ const faqs = [
 
 export async function generateMetadata(): Promise<Metadata> {
   const year = new Date().getFullYear()
-  const title = `Business Directory Categories ${year} - ${TAX_SECTORS} Sectors · ${TAX_CATEGORIES} Categories · ${TAX_SUBCATEGORIES.toLocaleString()} Subcategories | InfoWebWorld`
-  const description = `Browse all business directory categories on InfoWebWorld: ${TAX_SECTORS} sectors, ${TAX_CATEGORIES} categories, ${TAX_SUBCATEGORIES.toLocaleString()} subcategories across AI & ML, SaaS, IT Services, Startups, Local Businesses, and Professional Services. Verified companies, real reviews, side-by-side comparison.`
+  /* Budgeted: the old string ran ~130 chars and was truncated in the SERP
+     well before the brand, losing the keyword tail. */
+  const title = buildSerpTitle(
+    `Business Directory Categories ${year}`,
+    [
+      { text: `${TAX_CATEGORIES} Categories` },
+      { text: 'InfoWebWorld', sep: ' | ' },
+    ],
+  )
+  const description = clampDescription(
+    `Browse all ${TAX_SECTORS} sectors, ${TAX_CATEGORIES} categories and ${TAX_SUBCATEGORIES.toLocaleString()} subcategories on InfoWebWorld - AI & ML, SaaS, IT services, startups, local business and professional services.`,
+    'Verified companies, real reviews.',
+  )
 
   return {
     title,

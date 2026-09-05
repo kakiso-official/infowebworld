@@ -1,7 +1,8 @@
-import { Suspense } from 'react'
+import { Suspense, cache } from 'react'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { query, queryOne } from '@/lib/db'
+import { clampDescription, cleanText } from '@/lib/seo'
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import CompanyDetailPage from '../CompanyDetailPage'
@@ -155,7 +156,12 @@ interface RelatedCategoryRow {
   color: string | null
 }
 
-async function getCompanyBySlug(slug: string) {
+/* Wrapped in React `cache()` so generateMetadata and the page component
+   share ONE fetch per request. Without it this whole loader — 14-22
+   sequential round trips to a remote cPanel MySQL — ran TWICE for every
+   profile render, which is a large part of why the 2026-08-25 crawl saw
+   /profile pages take 6-9.7s (sisense 9.68s, eacomm 9.15s). */
+const getCompanyBySlug = cache(async function getCompanyBySlug(slug: string) {
   /* All Clutch-style fields tolerated when missing (pre-migration); the
      row simply comes back without them and the client reads them as ''. */
   let company: CompanyRow | null = null
@@ -191,19 +197,62 @@ async function getCompanyBySlug(slug: string) {
   }
   if (!company) return null
 
-  /* Breadcrumb — walk the category ancestry (L1 → leaf) so the company page
-     renders the same crumb trail as the product page. */
-  interface CrumbCat { id: number; name: string; slug: string; parent_id: number | null }
+  /* Breadcrumb — the category ancestry (L1 → leaf), same crumb trail as the
+     product page.
+
+     This used to be a hop-by-hop loop issuing up to 8 SEPARATE queries to a
+     remote cPanel MySQL — a meaningful slice of the 6-9.7s render times the
+     2026-08-25 crawl measured. Collapsed to ONE self-joined query using the
+     same 5-level LEFT JOIN pattern fetchCategoryPageData already uses (the
+     taxonomy is L1..L5, so 5 hops is the true maximum).
+
+     The resolved L1 id is captured here and reused by relatedCategories
+     below, which was independently re-walking the same chain. */
+  interface AncestryRow {
+    l0_id: number | null; l0_name: string | null; l0_slug: string | null; l0_level: number | null
+    l1_id: number | null; l1_name: string | null; l1_slug: string | null; l1_level: number | null
+    l2_id: number | null; l2_name: string | null; l2_slug: string | null; l2_level: number | null
+    l3_id: number | null; l3_name: string | null; l3_slug: string | null; l3_level: number | null
+    l4_id: number | null; l4_name: string | null; l4_slug: string | null; l4_level: number | null
+  }
   const breadcrumb: { name: string; slug: string }[] = []
-  let crumbId: number | null = company.category_id
-  for (let hop = 0; crumbId && hop < 8; hop++) {
-    const cat: CrumbCat | null = await queryOne<CrumbCat>(
-      'SELECT id, name, slug, parent_id FROM categories WHERE id = ? LIMIT 1',
-      [crumbId]
-    )
-    if (!cat) break
-    breadcrumb.unshift({ name: cat.name, slug: cat.slug })
-    crumbId = cat.parent_id
+  let sectorL1Id: number | null = null
+  if (company.category_id) {
+    try {
+      const anc = await queryOne<AncestryRow>(
+        `SELECT c.id  AS l0_id, c.name  AS l0_name, c.slug  AS l0_slug, c.level  AS l0_level,
+                p.id  AS l1_id, p.name  AS l1_name, p.slug  AS l1_slug, p.level  AS l1_level,
+                gp.id AS l2_id, gp.name AS l2_name, gp.slug AS l2_slug, gp.level AS l2_level,
+                ggp.id AS l3_id, ggp.name AS l3_name, ggp.slug AS l3_slug, ggp.level AS l3_level,
+                gggp.id AS l4_id, gggp.name AS l4_name, gggp.slug AS l4_slug, gggp.level AS l4_level
+           FROM categories c
+           LEFT JOIN categories p    ON p.id    = c.parent_id
+           LEFT JOIN categories gp   ON gp.id   = p.parent_id
+           LEFT JOIN categories ggp  ON ggp.id  = gp.parent_id
+           LEFT JOIN categories gggp ON gggp.id = ggp.parent_id
+          WHERE c.id = ? LIMIT 1`,
+        [company.category_id]
+      )
+      if (anc) {
+        /* Deepest ancestor first so the trail reads L1 → leaf. */
+        const chain = [
+          { id: anc.l4_id, name: anc.l4_name, slug: anc.l4_slug, level: anc.l4_level },
+          { id: anc.l3_id, name: anc.l3_name, slug: anc.l3_slug, level: anc.l3_level },
+          { id: anc.l2_id, name: anc.l2_name, slug: anc.l2_slug, level: anc.l2_level },
+          { id: anc.l1_id, name: anc.l1_name, slug: anc.l1_slug, level: anc.l1_level },
+          { id: anc.l0_id, name: anc.l0_name, slug: anc.l0_slug, level: anc.l0_level },
+        ]
+        for (const c of chain) {
+          if (c.id == null || !c.name || !c.slug) continue
+          breadcrumb.push({ name: c.name, slug: c.slug })
+          if (Number(c.level) === 1) sectorL1Id = Number(c.id)
+        }
+      }
+    } catch (err) {
+      /* The company row already loaded — degrade the crumb trail rather
+         than failing the whole page. */
+      console.error('[profile/[slug]] ancestry query failed, rendering without breadcrumb:', err)
+    }
   }
 
   /* Products made by this company — for the "Products by us" section.
@@ -211,7 +260,10 @@ async function getCompanyBySlug(slug: string) {
      by same user_id (covers legacy products created before the migration
      ran, since one-company-per-user means the owner's other products are
      unambiguously theirs). */
-  const products = await query<ProductRow>(
+  /* Started here but awaited at the return — the cross-marketing blocks
+     below don't depend on it, so this one overlaps them instead of
+     adding its own serial round trip. */
+  const productsPromise = query<ProductRow>(
     `SELECT s.id, s.slug, s.company_name, s.tagline, s.logo_url,
             s.starting_price, s.starting_price_period,
             c.name AS category_name, c.slug AS category_slug, c.color AS category_color
@@ -329,18 +381,10 @@ async function getCompanyBySlug(slug: string) {
   let relatedCategories: RelatedCategoryRow[] = []
   if (company.category_id) {
     try {
-      type CatChain = { id: number; parent_id: number | null; level: number }
-      let cur: number | null = company.category_id
-      let l1Id: number | null = null
-      for (let hop = 0; hop < 5 && cur; hop++) {
-        const cat: CatChain | null = await queryOne<CatChain>(
-          'SELECT id, parent_id, level FROM categories WHERE id = ? LIMIT 1',
-          [cur]
-        )
-        if (!cat) break
-        if (cat.level === 1) { l1Id = cat.id; break }
-        cur = cat.parent_id
-      }
+      /* Reuses the L1 already resolved by the breadcrumb ancestry query
+         above — this block used to re-walk the identical parent chain with
+         up to 5 more round trips of its own. */
+      const l1Id = sectorL1Id
       if (l1Id) {
         relatedCategories = await query<RelatedCategoryRow>(
           `SELECT id, name, slug, color
@@ -378,20 +422,18 @@ async function getCompanyBySlug(slug: string) {
      the whole page. */
   let followerCount = 0
   let bookmarkCount = 0
-  try {
-    const r = await queryOne<{ c: number }>(
+  const [followRes, bookmarkRes] = await Promise.all([
+    queryOne<{ c: number }>(
       'SELECT COUNT(*) AS c FROM listing_follows WHERE listing_id = ?',
       [company.id]
-    )
-    followerCount = Number(r?.c || 0)
-  } catch { /* engagement table missing — leave 0 */ }
-  try {
-    const r = await queryOne<{ c: number }>(
+    ).catch(() => null),
+    queryOne<{ c: number }>(
       'SELECT COUNT(*) AS c FROM listing_bookmarks WHERE listing_id = ?',
       [company.id]
-    )
-    bookmarkCount = Number(r?.c || 0)
-  } catch { /* engagement table missing — leave 0 */ }
+    ).catch(() => null),
+  ])
+  followerCount = Number(followRes?.c || 0)
+  bookmarkCount = Number(bookmarkRes?.c || 0)
 
   /* Reviews aggregate + recent for "What clients have said" + ★ rating. */
   let avgRating = 0
@@ -399,33 +441,40 @@ async function getCompanyBySlug(slug: string) {
   const reviewDist = [0, 0, 0, 0, 0] // approved counts: [1★, 2★, 3★, 4★, 5★]
   let recentReviews: Record<string, unknown>[] = []
   try {
-    const agg = await queryOne<{ avg_rating: number | null; review_count: number }>(
-      `SELECT AVG(rating) AS avg_rating, COUNT(*) AS review_count
-         FROM reviews WHERE listing_id = ? AND status = 'approved'`,
-      [company.id]
-    )
-    avgRating = agg?.avg_rating ? Number(agg.avg_rating) : 0
-    reviewCount = Number(agg?.review_count || 0)
-    const distRows = await query<{ rating: number; c: number }>(
-      `SELECT rating, COUNT(*) AS c
-         FROM reviews WHERE listing_id = ? AND status = 'approved'
-        GROUP BY rating`,
-      [company.id]
-    )
-    for (const row of distRows) {
-      const s = Number(row.rating)
-      if (s >= 1 && s <= 5) reviewDist[s - 1] = Number(row.c)
-    }
-    recentReviews = await query(
+    /* All three read the same table but are independent of each other —
+       issued together rather than one after another. */
+    const [agg, distRows, recent] = await Promise.all([
+      queryOne<{ avg_rating: number | null; review_count: number }>(
+        `SELECT AVG(rating) AS avg_rating, COUNT(*) AS review_count
+           FROM reviews WHERE listing_id = ? AND status = 'approved'`,
+        [company.id]
+      ),
+      query<{ rating: number; c: number }>(
+        `SELECT rating, COUNT(*) AS c
+           FROM reviews WHERE listing_id = ? AND status = 'approved'
+          GROUP BY rating`,
+        [company.id]
+      ),
+      query(
       `SELECT r.id, r.rating, r.title, r.body, r.created_at,
               u.name AS user_name, u.avatar_url AS user_avatar_url
          FROM reviews r
          LEFT JOIN business_users u ON u.id = r.user_id
         WHERE r.listing_id = ? AND r.status = 'approved'
         ORDER BY r.created_at DESC LIMIT 6`,
-      [company.id]
-    ) as Record<string, unknown>[]
+        [company.id]
+      ),
+    ])
+    avgRating = agg?.avg_rating ? Number(agg.avg_rating) : 0
+    reviewCount = Number(agg?.review_count || 0)
+    for (const row of distRows) {
+      const n = Number(row.rating)
+      if (n >= 1 && n <= 5) reviewDist[n - 1] = Number(row.c)
+    }
+    recentReviews = recent as Record<string, unknown>[]
   } catch { /* reviews table missing — leave defaults */ }
+
+  const products = await productsPromise
 
   return {
     company,
@@ -437,7 +486,7 @@ async function getCompanyBySlug(slug: string) {
     engagement: { followers: followerCount, bookmarks: bookmarkCount },
     reviews: { avgRating, reviewCount, distribution: reviewDist, recent: recentReviews },
   }
-}
+})
 
 function serialize<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj, (_key, value) => {
@@ -446,6 +495,72 @@ function serialize<T>(obj: T): T {
     }
     return value
   }))
+}
+
+/* Count a JSON array column safely.
+
+   mysql2 auto-parses MySQL `JSON` columns into real JS values before this
+   code ever sees them (no `jsonStrings` option is set on the pool), so
+   these arrive as arrays, NOT as JSON strings — but the CompanyRow type
+   declares them `string | null` and legacy rows really can hold a string.
+   Handle both, exactly like parseJsonArr in CompanyDetailPage. */
+function jsonLen(val: unknown): number {
+  if (!val) return 0
+  let arr: unknown = val
+  if (typeof val === 'string') {
+    try { arr = JSON.parse(val) } catch { return 0 }
+  }
+  return Array.isArray(arr) ? arr.length : 0
+}
+
+/* ── Indexing gate for company profiles ────────────────────────────────
+   All 5,655 profiles used to be hard `noindex, nofollow` while the sitemap
+   simultaneously submitted 5,723 of them to Google — a guaranteed
+   "Submitted URL marked noindex" error, and it invited Googlebot to crawl
+   the slowest pages on the site for nothing.
+
+   Blanket-indexing them instead would be just as wrong: most are bulk
+   seed rows whose body is largely template. So a profile earns indexing
+   by carrying content a searcher would actually want — either a real
+   written bio, or several independent proof points. */
+function hasSubstantiveProfile(data: Awaited<ReturnType<typeof getCompanyBySlug>>): boolean {
+  if (!data) return false
+  const c = data.company
+
+  /* Junk descriptions (scraper-error text, abbreviation fragments) count
+     as no description at all. */
+  const bioLen = cleanText(c.description, '', 25).length
+
+  /* An owner who claimed or verified the listing has vouched for it — that
+     outranks any automated content test. */
+  if (c.verified === 1 || c.user_id) return bioLen >= 100
+
+  /* DISTINCTIVE signals only.
+     Measured over the real 5,723 live company rows (Sep 2026), the fields
+     the seed generators DERIVE are useless as evidence of substance:
+       service_lines    4,897 / 5,723  (85.6%) — derived from header_tags
+       firmographics    2,851 / 5,723  (49.8%)
+       description >=150 chars 5,012   (87.6%)
+     Gating on those would have indexed 87%+ of the estate — ~5,000
+     template-shaped pages onto a DA-22 domain at once.
+
+     These are the signals that actually came from the company's own site
+     or from real activity, and they are genuinely scarce:
+       client logos     1,005  (17.6%)
+       awards             928  (16.2%)
+       intro video        393   (6.9%)
+       description >=300  694  (12.1%)  — a real write-up, not one sentence */
+  const distinctive =
+    (bioLen >= 300 ? 1 : 0) +
+    (jsonLen(c.awards) > 0 ? 1 : 0) +
+    (jsonLen(c.client_logos) > 0 ? 1 : 0) +
+    (c.intro_video_url ? 1 : 0) +
+    (data.reviews.reviewCount > 0 ? 1 : 0) +
+    (data.products.length > 0 ? 1 : 0)
+
+  /* One distinctive signal earns indexing, but the page still has to carry
+     a readable body — a video on an otherwise empty profile is thin. */
+  return distinctive >= 1 && bioLen >= 150
 }
 
 export async function generateMetadata({
@@ -459,15 +574,34 @@ export async function generateMetadata({
 
   const C = data.company
   const title = `${C.company_name} - Company Profile | InfoWebWorld`
-  const desc = (C.tagline || `${C.company_name} on InfoWebWorld`).slice(0, 160)
+
+  /* Never emit a scraper-error string or an abbreviation-truncated
+     fragment as the snippet — 157 seeded rows carry exactly that
+     ("Page verification failed...", "C.H.", "Arthur J."). Fall back to
+     the tagline, then to a constructed line. */
+  const bio = cleanText(C.description, '', 60)
+  const tagline = cleanText(C.tagline, '', 20)
+  const sector = C.category_name ? `${C.category_name} company` : 'company'
+  const location = C.hq_location || C.country_name || ''
+  const desc = clampDescription(
+    bio || tagline ||
+    `${C.company_name} - ${sector}${location ? ` based in ${location}` : ''}. Reviews, services and company details on InfoWebWorld.`,
+  )
+
   const url = `https://www.infowebworld.com/profile/${slug}`
   const ogImage = C.logo_url || 'https://www.infowebworld.com/logo/infowebworldlogo-logoforlightbackgrounds.png'
+
+  /* `follow` even when not indexed, so link equity still reaches the
+     categories and listings this profile points at. */
+  const indexable = hasSubstantiveProfile(data)
 
   return {
     title,
     description: desc,
     alternates: { canonical: url },
-    robots: { index: false, follow: false },
+    robots: indexable
+      ? { index: true, follow: true, googleBot: { index: true, follow: true } }
+      : { index: false, follow: true },
     openGraph: {
       type: 'profile',
       title,
@@ -497,7 +631,9 @@ function buildJsonLd(c: CompanyRow, reviewsAgg: { avgRating: number; reviewCount
     '@id': `${url}#organization`,
     name: c.company_name,
     url: c.website || url,
-    description: c.description || c.tagline,
+    /* Same junk guard as the meta description — never publish a scraper
+       error string into structured data. */
+    description: cleanText(c.description, '', 60) || cleanText(c.tagline, '', 20) || undefined,
     logo: c.logo_url || undefined,
     foundingDate: c.founded_year || undefined,
     numberOfEmployees: c.team_size

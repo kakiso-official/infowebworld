@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og'
 import { CATEGORIES as STATIC_CATEGORIES } from '@/app/config/categories-data'
+import { isCrossSectorCollision } from '@/app/config/category-name-collisions'
 
 // Data comes from the static taxonomy export (no DB). CDN cache
 // (s-maxage=2592000) makes runtime perf irrelevant here.
@@ -43,7 +44,13 @@ export async function GET(
   if (categorySlug) {
     const cat = STATIC_CATEGORIES.find((r) => r.slug === categorySlug)
     if (cat) {
-      categoryName = cat.name
+      /* Disambiguate a name that another sector also uses, so the social
+         card for /it-services-agencies/legal-services doesn't render the
+         same text as /professional-services/legal-services-pro. Matches
+         the <title> treatment in app/[...segments]/page.tsx. */
+      categoryName = isCrossSectorCollision(cat.name)
+        ? `${cat.name} - ${palette.name}`
+        : cat.name
       /* Direct + descendant listing counts (subtree rollup in memory). */
       const childIds = new Set<number>([cat.id])
       let grew = true

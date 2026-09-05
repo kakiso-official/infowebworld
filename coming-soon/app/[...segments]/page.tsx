@@ -10,6 +10,8 @@ import CategoryPage from '../CategoryPage'
 import SectorAllBrowse from '../components-category/SectorAllBrowse'
 import { getSectorMeta } from '../sector/sector-demo-data'
 import { query, queryOne } from '@/lib/db'
+import { buildSerpTitle, clampDescription } from '@/lib/seo'
+import { isCrossSectorCollision } from '../config/category-name-collisions'
 import { toSlug, lookupLocationCountryAsync } from '../lib/geo-slugs'
 import { CATEGORIES as STATIC_CATEGORIES } from '../config/categories-data'
 import { SECTOR_LANDINGS } from '@/lib/sector-landings'
@@ -341,6 +343,14 @@ async function fetchCategoryForSeo(slug: string): Promise<CatSeo | null> {
 
     const cid = Number(row.id)
 
+    /* Listing + subcategory counts drive the INDEXING GATE below (>=5
+       listings = indexable). They must never silently read 0 on a DB blip:
+       during the 2026-08-25 crawl the connection pool was exhausted, these
+       queries failed, and 174 healthy category pages emitted `noindex` —
+       /ai-ml/ai-agents among them, a page with 7,000+ words. A wrongly
+       emitted noindex de-indexes a good page and is slow to recover, so on
+       failure we fall back to the static taxonomy's own counts rather than
+       to zero. */
     const countRow = await queryOne(
       `SELECT COUNT(*) as cnt FROM submissions s
        WHERE s.status IN ('active','paid')
@@ -361,12 +371,22 @@ async function fetchCategoryForSeo(slug: string): Promise<CatSeo | null> {
           WHERE c2.parent_id = ? AND c5.is_active = 1
        )`,
       [cid, cid, cid, cid, cid]
-    )
+    ).catch(() => null)
 
     const subRow = await queryOne(
       `SELECT COUNT(*) as cnt FROM categories WHERE parent_id = ? AND is_active = 1 AND is_navigation = 1`,
       [cid]
-    )
+    ).catch(() => null)
+
+    /* Static fallbacks — app/config/categories-data.ts carries a real
+       listing_count per row, exported from this same DB. */
+    const staticRow = countRow == null || subRow == null
+      ? STATIC_CATEGORIES.find(c => c.slug === slug)
+      : undefined
+    const staticListingCount = Number(staticRow?.listing_count ?? 0)
+    const staticSubCount = staticRow
+      ? STATIC_CATEGORIES.filter(c => c.parent_id === staticRow.id).length
+      : 0
 
     let seoKw: string[] = []
     if (typeof row.seo_keywords === 'string' && row.seo_keywords) {
@@ -389,8 +409,8 @@ async function fetchCategoryForSeo(slug: string): Promise<CatSeo | null> {
       seoCanonical: String(row.seo_canonical ?? ''),
       parentName: String(row.parent_name ?? ''),
       parentSlug: String(row.parent_slug ?? ''),
-      listingCount: Number(countRow?.cnt ?? 0),
-      subcategoryCount: Number(subRow?.cnt ?? 0),
+      listingCount: countRow != null ? Number(countRow.cnt ?? 0) : staticListingCount,
+      subcategoryCount: subRow != null ? Number(subRow.cnt ?? 0) : staticSubCount,
     }
   } catch {
     return null
@@ -399,25 +419,39 @@ async function fetchCategoryForSeo(slug: string): Promise<CatSeo | null> {
 
 /* ── Fetch category page data — 2 DB round trips + cached shared data ── */
 async function fetchCategoryPageData(categorySlug: string) {
-  try {
-    // Round trip 1: category row (everything else depends on this)
-    const catRow = await queryOne(
-      `SELECT c.*, p.name as parent_name, p.slug as parent_slug,
-              CASE WHEN c.level = 1 THEN c.slug
-                   WHEN c.level = 2 THEN p.slug
-                   WHEN c.level = 3 THEN gp.slug
-                   WHEN c.level = 4 THEN ggp.slug
-                   WHEN c.level = 5 THEN gggp.slug END as sector_slug
-       FROM categories c
-       LEFT JOIN categories p    ON p.id    = c.parent_id
-       LEFT JOIN categories gp   ON gp.id   = p.parent_id
-       LEFT JOIN categories ggp  ON ggp.id  = gp.parent_id
-       LEFT JOIN categories gggp ON gggp.id = ggp.parent_id
-       WHERE c.slug = ? AND c.is_active = 1 LIMIT 1`,
-      [categorySlug]
-    )
-    if (!catRow) return null
+  /* ── Existence check runs OUTSIDE the main try/catch, deliberately ──
+     Before Sep 2026 every query in this function shared one try/catch that
+     returned null on ANY failure, and the caller turns null into
+     notFound(). Because the route is force-dynamic, notFound() streams as
+     HTTP 200 with an empty shell — so a transient DB blip (cPanel caps the
+     user at max_user_connections=50, which a crawler exhausts easily) made
+     real, healthy category pages serve a 200 "not found" carrying the
+     site-wide default title and zero words. The 2026-08-25 Screaming Frog
+     crawl caught 98 pages in exactly that state, plus 174 more that got a
+     bare `noindex` because their listing count came back 0.
 
+     Now: only a definitive "no such row" 404s. If the lookup itself fails
+     we cannot know whether the category exists, so we throw — a real 500
+     that Google retries — rather than manufacture a soft 404 that gets
+     cached and de-indexes a good page. */
+  const catRow = await queryOne(
+    `SELECT c.*, p.name as parent_name, p.slug as parent_slug,
+            CASE WHEN c.level = 1 THEN c.slug
+                 WHEN c.level = 2 THEN p.slug
+                 WHEN c.level = 3 THEN gp.slug
+                 WHEN c.level = 4 THEN ggp.slug
+                 WHEN c.level = 5 THEN gggp.slug END as sector_slug
+     FROM categories c
+     LEFT JOIN categories p    ON p.id    = c.parent_id
+     LEFT JOIN categories gp   ON gp.id   = p.parent_id
+     LEFT JOIN categories ggp  ON ggp.id  = gp.parent_id
+     LEFT JOIN categories gggp ON gggp.id = ggp.parent_id
+     WHERE c.slug = ? AND c.is_active = 1 LIMIT 1`,
+    [categorySlug]
+  )
+  if (!catRow) return null
+
+  try {
     const cid = Number(catRow.id)
     const level = Number(catRow.level)
     // Resolve sector ID for scoped category fetch
@@ -521,10 +555,29 @@ async function fetchCategoryPageData(categorySlug: string) {
       seoContent: seoContentRow || null,
       avgRating,
       totalReviews,
+      degraded: false,
     }))
   } catch (err) {
-    console.error('fetchCategoryPageData error:', err)
-    return null
+    /* The category EXISTS (we already proved that above) but a secondary
+       query failed. Render the page degraded — real title, real H1, real
+       breadcrumb — instead of 404-ing a page that is genuinely there.
+       The `degraded` flag rides on the payload so the render path and the
+       logs can tell a thin-but-real page from a healthy one. Metadata is
+       built separately by fetchCategoryForSeo, which has its own static
+       fallback, so the page still emits its correct title, canonical and
+       robots directive rather than the site-wide defaults. */
+    console.error('fetchCategoryPageData: secondary queries failed, serving degraded page:', err)
+    return JSON.parse(JSON.stringify({
+      category: { ...catRow, subcategories: [], listingTypes: [], parent: null, activeListings: 0 },
+      allCategories: [],
+      tagGroups: [],
+      listings: [],
+      listingTotal: 0,
+      seoContent: null,
+      avgRating: 0,
+      totalReviews: 0,
+      degraded: true,
+    }))
   }
 }
 
@@ -856,6 +909,33 @@ function qualifyCategoryName(name: string, sectorSlug: string): string {
   return name
 }
 
+/* Short, human sector labels used to disambiguate a category name that is
+   reused by another sector (51 such names / 106 rows — see
+   app/config/category-name-collisions.ts). Kept short so the qualified
+   title still clears the SERP width budget. */
+const SECTOR_TITLE_LABEL: Record<string, string> = {
+  'ai-ml': 'AI & ML',
+  'software-saas': 'SaaS',
+  'it-services-agencies': 'IT & Agencies',
+  'startups-innovation': 'Startups',
+  'local-businesses': 'Local Business',
+  'professional-services': 'Professional Services',
+}
+
+/* The sector qualifier for a category, or '' when the name is unique.
+   Only collisions get qualified — blanket-appending the sector to all
+   8,849 categories would blow the title budget for no benefit. */
+function sectorQualifier(name: string, sectorSlug: string): string {
+  if (!isCrossSectorCollision(name)) return ''
+  const label = SECTOR_TITLE_LABEL[sectorSlug]
+  if (!label) return ''
+  /* Don't repeat a word the name already carries ("SEO Agencies" in the
+     IT sector shouldn't become "SEO Agencies - IT & Agencies"→ fine, but
+     "Professional Services" categories shouldn't double up). */
+  if (name.toLowerCase().includes(label.toLowerCase())) return ''
+  return label
+}
+
 /* ── Build metadata for L2/L3 categories — full SEO surface.
    `filterCtx` makes ?country= variants first-class:
      · a country with real inventory (>= COUNTRY_INDEX_THRESHOLD) gets its own
@@ -887,15 +967,42 @@ function buildCategoryMeta(
   /* Title — lead word "Top" MATCHES the visible H1 (CategoryHero) and the
      CollectionPage JSON-LD name, so Google stops swapping our SERP title for
      the on-page heading. "Companies" carries the high-CTR directory keyword,
-     year = freshness, single hyphen separator (no em-dash), brand trailing. */
-  const title = `Top ${baseName} Companies${inCountry} (${year}) - Reviews & Pricing | InfoWebWorld`
+     year = freshness, single hyphen separator (no em-dash), brand trailing.
 
-  /* Description — buying-intent + trust (rating) + freshness. ~155 chars. */
+     Budgeted (Sep 2026 audit): the fixed tail pushed 100% of category titles
+     past Google's ~580px SERP cut (median 708-786px), truncating the very
+     keyword we rank for. buildSerpTitle keeps the core — which stays inside
+     budget for 99%+ of the taxonomy — and drops the decorative tail only
+     when the category name is long enough to need the room. */
+  /* Cross-sector name collision (e.g. "Legal Services" exists in both
+     it-services-agencies and professional-services) — the sector label is
+     part of the CORE so it can never be dropped, otherwise the two pages
+     keep emitting an identical title and compete with each other. */
+  const qualifier = sectorQualifier(cat.name, sectorSlug)
+  const titleCore = qualifier
+    ? `Top ${baseName} Companies${inCountry} - ${qualifier}`
+    : `Top ${baseName} Companies${inCountry}`
+
+  const title = buildSerpTitle(
+    titleCore,
+    [
+      { text: `(${year})`, sep: ' ' },
+      { text: 'Reviews & Pricing' },
+      { text: 'InfoWebWorld', sep: ' | ' },
+    ],
+  )
+
+  /* Description — buying-intent + trust (rating) + freshness, clamped to the
+     snippet budget. The "Updated {month}" clause is passed as the suffix so
+     it survives the clamp instead of being the first thing truncated away. */
   const lcName = baseName.toLowerCase()
   const ratingClause = rating && rating.total > 0
-    ? `Rated ${rating.avg.toFixed(1)}/5 by ${rating.total.toLocaleString()} verified users. `
+    ? ` Rated ${rating.avg.toFixed(1)}/5 by ${rating.total.toLocaleString()} verified users.`
     : ''
-  const description = `Compare the best ${lcName} companies${inCountry} on InfoWebWorld - top picks, verified reviews, transparent pricing & features. ${ratingClause}Updated ${monthYear}.`.trim()
+  const description = clampDescription(
+    `Compare the best ${lcName} companies${inCountry}${qualifier ? ` in ${qualifier}` : ''} on InfoWebWorld - top picks, verified reviews, transparent pricing & features.${ratingClause}`,
+    `Updated ${monthYear}.`,
+  )
 
   /* Canonical:
      · country page → itself (?country=slug), so it indexes standalone

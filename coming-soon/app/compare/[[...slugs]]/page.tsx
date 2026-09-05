@@ -3,6 +3,7 @@ import Script from 'next/script'
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import { query } from '../../../lib/db'
+import { buildSerpTitle, clampDescription } from '@/lib/seo'
 import {
   parseCompareSlugs,
   buildCompareUrl,
@@ -81,12 +82,15 @@ export async function generateMetadata(
   const titleNames = resolved.length === 1
     ? resolved[0]
     : resolved.join(' vs ')
+  /* Single hyphen, never an em-dash (SEO title rule), and budgeted:
+     a 4-way comparison joins up to 4 company names, so this had no length
+     cap at all and could run far past the SERP width. */
   const title = resolved.length === 1
-    ? `${resolved[0]} — Compare Pricing, Features & Reviews | InfoWebWorld`
-    : `${titleNames} Comparison (${YEAR}) | InfoWebWorld`
+    ? buildSerpTitle(`${resolved[0]} - Compare Pricing, Features & Reviews`, [{ text: 'InfoWebWorld', sep: ' | ' }])
+    : buildSerpTitle(`${titleNames} Comparison`, [{ text: `(${YEAR})`, sep: ' ' }, { text: 'InfoWebWorld', sep: ' | ' }])
   const description = resolved.length === 1
-    ? `Compare ${resolved[0]} against alternatives — features, pricing, reviews, integrations. Add up to 4 products to your side-by-side view.`
-    : `${titleNames} compared head-to-head — features, pricing, reviews, integrations. Updated ${YEAR}.`
+    ? clampDescription(`Compare ${resolved[0]} against alternatives - features, pricing, reviews, integrations.`, 'Add up to 4 products to your side-by-side view.')
+    : clampDescription(`${titleNames} compared head-to-head - features, pricing, reviews, integrations.`, `Updated ${YEAR}.`)
 
   return {
     title,

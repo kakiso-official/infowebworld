@@ -1,6 +1,7 @@
 'use client'
 
 import '../styles/compare.css'
+import { cleanText } from '@/lib/seo'
 import '../styles/compare-companies.css'
 
 /* ─────────────────────────────────────────────────────────────
@@ -503,7 +504,9 @@ function PickSecondView({
               )}
             </div>
           </div>
-          {col.tagline && <p className="cpr-pick2-tag">{col.tagline}</p>}
+          {cleanText(col.tagline, '', 20) && (
+            <p className="cpr-pick2-tag">{cleanText(col.tagline, '', 20)}</p>
+          )}
         </div>
 
         {/* Search slot for second — restricted to the picked company's
@@ -639,7 +642,9 @@ function EmptyCell({ text }: { text: string }) {
 
 function OverviewCell({ col }: { col: CompanyCol }) {
   const [expanded, setExpanded] = useState(false)
-  const desc = col.description || ''
+  /* Guarded: seeded rows can hold scraper-error text or an
+     abbreviation fragment in description/tagline. */
+  const desc = cleanText(col.description, '', 40)
   const isLong = desc.length > 240
 
   return (

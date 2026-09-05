@@ -136,12 +136,17 @@ export async function POST(request: NextRequest) {
     const uuid = crypto.randomUUID()
 
     /* Slug rule: from this point onward, no random suffix is appended.
-       The user-typed name is slugified directly. Uniqueness is enforced
-       per-mode: a company at /profile/<slug> and a product at
-       /company/<slug> live in different URL namespaces and can share a
-       slug freely. Within the same namespace, a collision is a hard
-       reject — the user picks a more distinct name. Existing rows
-       (which kept their suffixed slugs) are out of scope here. */
+       The user-typed name is slugified directly, and a collision is a hard
+       reject — the user picks a more distinct name.
+
+       The check is GLOBAL, not per-mode. An earlier version scoped it with
+       `AND COALESCE(listing_mode,'product') = ?` on the theory that
+       /profile/<slug> and /listing/<slug> are separate namespaces — but
+       the database disagrees: `uk_submissions_slug` (database/
+       migration-listings-v2.sql:8) is a single-column UNIQUE KEY on slug
+       alone. So a product slug colliding with a company slug slipped past
+       this friendly 409 and blew up on the INSERT as a raw duplicate-key
+       500. Match the constraint that actually exists. */
     const slug = slugify(body.companyName)
     if (!slug) {
       return Response.json(
@@ -150,10 +155,8 @@ export async function POST(request: NextRequest) {
       )
     }
     const collision = await queryOne<{ id: number }>(
-      `SELECT id FROM submissions
-        WHERE slug = ? AND COALESCE(listing_mode,'product') = ?
-        LIMIT 1`,
-      [slug, listingMode]
+      `SELECT id FROM submissions WHERE slug = ? LIMIT 1`,
+      [slug]
     )
     if (collision) {
       return Response.json(

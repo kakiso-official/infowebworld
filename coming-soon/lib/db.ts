@@ -10,7 +10,14 @@ function getPool() {
       database: process.env.DATABASE_NAME,
       user: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
-      connectionLimit: 2,
+      /* Raised 2 -> 8 (Sep 2026). The old value dates from the Vercel era,
+         when many serverless instances each opened their own pool against a
+         cPanel user capped at max_user_connections = 50. The app now runs as
+         a SINGLE container on the Hostinger VPS, so this is one pool: a
+         ceiling of 8 concurrent connections, comfortably under 50 even with
+         a build running alongside. At 2, the query parallelisation in
+         /profile and /listing could only ever run two-at-a-time. */
+      connectionLimit: 8,
       waitForConnections: true,
       queueLimit: 50,
       connectTimeout: 10000,

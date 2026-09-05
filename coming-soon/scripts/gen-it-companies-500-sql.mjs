@@ -114,9 +114,45 @@ function slugify(str) {
     .replace(/&/g, ' and ').replace(/[.'’]/g, '')
     .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 90)
 }
+/* Abbreviation-safe first sentence.
+
+   The old regex /^.*?[.!?](\s|$)/ stopped at the first period followed by
+   whitespace, so any leading abbreviation truncated the whole description:
+     "C.H. Robinson is a logistics company."   -> "C.H."
+     "Arthur J. Gallagher & Co. is a broker."  -> "Arthur J."
+     "Robert W. Baird & Co. is an ..."         -> "Robert W."
+   That shipped 64 such fragments into production `tagline`/`description`
+   columns. Now a period only ends the sentence when it is NOT part of a
+   known abbreviation or a single-letter initial, and the result must be
+   long enough to be a real sentence. */
+const ABBREVIATIONS = new Set([
+  'mr', 'mrs', 'ms', 'dr', 'prof', 'st', 'mt', 'jr', 'sr',
+  'inc', 'llc', 'llp', 'ltd', 'plc', 'co', 'corp', 'pte', 'pty', 'gmbh', 'bv', 'nv', 'sa', 'ag', 'srl', 'spa', 'oy', 'ab', 'as',
+  'no', 'vs', 'etc', 'eg', 'ie', 'approx', 'est', 'dept', 'univ', 'assn', 'bros',
+  'us', 'usa', 'uk', 'eu', 'ny', 'ca', 'dc',
+])
 function firstSentence(desc) {
-  const m = String(desc).match(/^.*?[.!?](\s|$)/)
-  let t = (m ? m[0] : String(desc)).trim()
+  const text = String(desc == null ? '' : desc).replace(/\s+/g, ' ').trim()
+  if (!text) return text
+
+  const re = /[.!?](\s|$)/g
+  let m
+  while ((m = re.exec(text)) !== null) {
+    const end = m.index + 1
+    /* The token immediately before this period. */
+    const word = (text.slice(0, m.index).match(/([A-Za-z.]+)$/) || [, ''])[1]
+    const bare = word.replace(/\./g, '').toLowerCase()
+    const isInitial = /^[A-Za-z]$/.test(bare)                 // "J." / "W."
+    const isDotted = /^(?:[A-Za-z]\.){1,}$/.test(word + '.')  // "C.H." / "P.N."
+    const isAbbrev = ABBREVIATIONS.has(bare)
+    if (isInitial || isDotted || isAbbrev) continue           // not a real sentence end
+    /* A "sentence" shorter than this is a truncation artefact, not prose. */
+    if (end < 30) continue
+    let t = text.slice(0, end).trim()
+    if (t.length > 240) t = t.slice(0, 237).trim() + '…'
+    return t
+  }
+  let t = text
   if (t.length > 240) t = t.slice(0, 237).trim() + '…'
   return t
 }
@@ -172,6 +208,7 @@ function faqs(c, hq) {
 /* ── dedupe by domain + slug; pre-seed with the existing 209 so new slugs never
       collide with already-live listings ── */
 const seenDom = new Set(AVOID)
+let skippedDupSlug = 0
 const seenSlug = new Set([
   // the 9-firm seed's explicit slugs
   'dynacons-systems-solutions', 'dev-information-technology', 'mindteck-india-ltd', 'intense-technologies',
@@ -184,7 +221,8 @@ for (const c of COMBINED) {
   const dom = String(c.domain || '').toLowerCase().replace(/^www\./, '')
   if (!dom || seenDom.has(dom)) continue
   let slug = slugify(c.company_name)
-  if (seenSlug.has(slug)) slug = `${slug}-${dom.split('.')[0]}`
+  /* Reject, do NOT mutate — see note in gen-companies-all.mjs. */
+  if (seenSlug.has(slug)) { skippedDupSlug++; continue }
   if (!slug || seenSlug.has(slug)) continue
   seenDom.add(dom); seenSlug.add(slug)
   COMPANIES.push({ ...c, _slug: slug, _dom: dom })

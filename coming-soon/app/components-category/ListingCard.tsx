@@ -10,6 +10,7 @@ import {
 import SignupModal from '../components/auth/SignupModal'
 import CompareSearchBar from './CompareSearchBar'
 import { useAuth } from '@/lib/use-auth'
+import { cleanText } from '@/lib/seo'
 import { withInfoWebWorldUtm } from '../lib/utm'
 import { trackWebsiteClick } from '../lib/track-website-click'
 import { listingOutboundRel } from '@/lib/user-plan-types'
@@ -208,7 +209,13 @@ export function RealListingCard({
   sectorSlug?: string
 }) {
   const initial = item.companyName.charAt(0).toUpperCase()
-  const desc = item.description || item.tagline || ''
+  /* Guarded: 157 bulk-seeded rows store the enrichment agent's error text
+     ("Page verification failed - bot-gated site preventing content access")
+     or an abbreviation-truncated fragment ("C.H.", "Arthur J.") in
+     description/tagline. Category pages ARE indexed, so that junk must
+     never render here. */
+  const cardTagline = cleanText(item.tagline, '', 20)
+  const desc = cleanText(item.description, '', 40) || cardTagline || ''
   const profileHref = (item.listingMode === 'company' ? '/profile/' : '/listing/') + item.slug
   const rating = item.reviewAvg > 0 ? item.reviewAvg : 0
   const reviewCount = item.reviewCount
@@ -389,8 +396,8 @@ export function RealListingCard({
 
         {/* Center: Tagline · description · portfolios · info icons */}
         <div className="cd-lc-main">
-          {item.tagline && <p className="cd-lc-tag">{item.tagline}</p>}
-          {desc && <p className="cd-lc-desc">{desc}</p>}
+          {cardTagline && <p className="cd-lc-tag">{cardTagline}</p>}
+          {desc && desc !== cardTagline && <p className="cd-lc-desc">{desc}</p>}
           <Link href={profileHref} className="cd-lc-portfolio">
             See full details
           </Link>
