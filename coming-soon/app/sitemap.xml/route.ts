@@ -5,7 +5,8 @@ const BASE = 'https://www.infowebworld.com'
 /* Full sitemap index — references every sub-sitemap:
    - sitemap-pages.xml       static indexable pages (Home, About, Plans, etc.)
    - sitemap-sectors.xml     6 L1 sector landing pages
-   - sitemap-categories.xml  L2-L5 category pages with >= 5 listings
+   - sitemap-categories.xml  every L2 + L3 category page, plus L4 + L5 pages
+                             that hold listings (lib/category-indexing.ts)
    - sitemap-listings.xml    individual /listing and /profile pages
    - sitemap-blog.xml        published blog posts */
 const SUB_SITEMAPS = [

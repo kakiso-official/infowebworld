@@ -11,6 +11,7 @@ import SectorAllBrowse from '../components-category/SectorAllBrowse'
 import { getSectorMeta } from '../sector/sector-demo-data'
 import { query, queryOne } from '@/lib/db'
 import { buildSerpTitle, clampDescription } from '@/lib/seo'
+import { ALWAYS_INDEXABLE_MAX_LEVEL, isCategoryIndexable } from '@/lib/category-indexing'
 import { isCrossSectorCollision } from '../config/category-name-collisions'
 import { toSlug, lookupLocationCountryAsync } from '../lib/geo-slugs'
 import { CATEGORIES as STATIC_CATEGORIES } from '../config/categories-data'
@@ -324,7 +325,11 @@ type CatSeo = {
   seoTitle: string; seoDescription: string; seoKeywords: string[]
   seoOgImage: string; seoCanonical: string
   parentName: string; parentSlug: string
-  listingCount: number; subcategoryCount: number
+  /** Active/paid listings in the whole subtree. null = not counted (L1-L3
+      don't need it) or unknown (the count query failed). */
+  listingCount: number | null; subcategoryCount: number
+  /** categories.is_launched / seo_no_index — inputs to isCategoryIndexable. */
+  launched: boolean; noIndex: boolean
 }
 
 async function fetchCategoryForSeo(slug: string): Promise<CatSeo | null> {
@@ -332,6 +337,7 @@ async function fetchCategoryForSeo(slug: string): Promise<CatSeo | null> {
     const row = await queryOne(
       `SELECT c.id, c.name, c.slug, c.level, c.description, c.cover_image,
               c.seo_title, c.seo_description, c.seo_keywords, c.seo_og_image, c.seo_canonical,
+              c.is_launched, c.seo_no_index,
               p.name as parent_name, p.slug as parent_slug
        FROM categories c
        LEFT JOIN categories p ON p.id = c.parent_id
@@ -342,48 +348,53 @@ async function fetchCategoryForSeo(slug: string): Promise<CatSeo | null> {
     if (!row) return null
 
     const cid = Number(row.id)
+    const level = Number(row.level ?? 1)
 
-    /* Listing + subcategory counts drive the INDEXING GATE below (>=5
-       listings = indexable). They must never silently read 0 on a DB blip:
-       during the 2026-08-25 crawl the connection pool was exhausted, these
-       queries failed, and 174 healthy category pages emitted `noindex` —
-       /ai-ml/ai-agents among them, a page with 7,000+ words. A wrongly
-       emitted noindex de-indexes a good page and is slow to recover, so on
-       failure we fall back to the static taxonomy's own counts rather than
-       to zero. */
-    const countRow = await queryOne(
-      `SELECT COUNT(*) as cnt FROM submissions s
-       WHERE s.status IN ('active','paid')
-       AND s.category_id IN (
-         SELECT id FROM categories WHERE id = ? AND is_active = 1
-         UNION SELECT id FROM categories WHERE parent_id = ? AND is_active = 1
-         UNION SELECT c3.id FROM categories c3
-           JOIN categories c2 ON c2.id = c3.parent_id
-          WHERE c2.parent_id = ? AND c3.is_active = 1
-         UNION SELECT c4.id FROM categories c4
-           JOIN categories c3 ON c3.id = c4.parent_id
-           JOIN categories c2 ON c2.id = c3.parent_id
-          WHERE c2.parent_id = ? AND c4.is_active = 1
-         UNION SELECT c5.id FROM categories c5
-           JOIN categories c4 ON c4.id = c5.parent_id
-           JOIN categories c3 ON c3.id = c4.parent_id
-           JOIN categories c2 ON c2.id = c3.parent_id
-          WHERE c2.parent_id = ? AND c5.is_active = 1
-       )`,
-      [cid, cid, cid, cid, cid]
-    ).catch(() => null)
+    /* The subtree listing count drives the INDEXING GATE for L4/L5 only —
+       L1-L3 always index (isCategoryIndexable, lib/category-indexing.ts) —
+       so L1-L3 skip this 5-level UNION entirely. It must never silently
+       read 0 on a DB blip: during the 2026-08-25 crawl the connection pool
+       was exhausted, count queries failed, and 174 healthy category pages
+       emitted `noindex` — /ai-ml/ai-agents among them, a page with 7,000+
+       words. So a failed count stays null ("unknown"), which
+       isCategoryIndexable never turns into a noindex. The static taxonomy
+       is no fallback here: its listing_count is a DIRECT count frozen at
+       export time, and in Oct 2026 it read 0 for 2,086 of the L4/L5
+       pages that held listings. */
+    const countRow = level > ALWAYS_INDEXABLE_MAX_LEVEL
+      ? await queryOne(
+          `SELECT COUNT(*) as cnt FROM submissions s
+           WHERE s.status IN ('active','paid')
+           AND s.category_id IN (
+             SELECT id FROM categories WHERE id = ? AND is_active = 1
+             UNION SELECT id FROM categories WHERE parent_id = ? AND is_active = 1
+             UNION SELECT c3.id FROM categories c3
+               JOIN categories c2 ON c2.id = c3.parent_id
+              WHERE c2.parent_id = ? AND c3.is_active = 1
+             UNION SELECT c4.id FROM categories c4
+               JOIN categories c3 ON c3.id = c4.parent_id
+               JOIN categories c2 ON c2.id = c3.parent_id
+              WHERE c2.parent_id = ? AND c4.is_active = 1
+             UNION SELECT c5.id FROM categories c5
+               JOIN categories c4 ON c4.id = c5.parent_id
+               JOIN categories c3 ON c3.id = c4.parent_id
+               JOIN categories c2 ON c2.id = c3.parent_id
+              WHERE c2.parent_id = ? AND c5.is_active = 1
+           )`,
+          [cid, cid, cid, cid, cid]
+        ).catch(() => null)
+      : null
 
     const subRow = await queryOne(
       `SELECT COUNT(*) as cnt FROM categories WHERE parent_id = ? AND is_active = 1 AND is_navigation = 1`,
       [cid]
     ).catch(() => null)
 
-    /* Static fallbacks — app/config/categories-data.ts carries a real
-       listing_count per row, exported from this same DB. */
-    const staticRow = countRow == null || subRow == null
+    /* Static fallback for the subcategory count —
+       app/config/categories-data.ts is exported from this same DB. */
+    const staticRow = subRow == null
       ? STATIC_CATEGORIES.find(c => c.slug === slug)
       : undefined
-    const staticListingCount = Number(staticRow?.listing_count ?? 0)
     const staticSubCount = staticRow
       ? STATIC_CATEGORIES.filter(c => c.parent_id === staticRow.id).length
       : 0
@@ -399,7 +410,7 @@ async function fetchCategoryForSeo(slug: string): Promise<CatSeo | null> {
       id: cid,
       name: String(row.name ?? ''),
       slug: String(row.slug ?? ''),
-      level: Number(row.level ?? 1),
+      level,
       description: String(row.description ?? ''),
       coverImage: String(row.cover_image ?? ''),
       seoTitle: String(row.seo_title ?? ''),
@@ -409,8 +420,10 @@ async function fetchCategoryForSeo(slug: string): Promise<CatSeo | null> {
       seoCanonical: String(row.seo_canonical ?? ''),
       parentName: String(row.parent_name ?? ''),
       parentSlug: String(row.parent_slug ?? ''),
-      listingCount: countRow != null ? Number(countRow.cnt ?? 0) : staticListingCount,
+      listingCount: countRow != null ? Number(countRow.cnt ?? 0) : null,
       subcategoryCount: subRow != null ? Number(subRow.cnt ?? 0) : staticSubCount,
+      launched: Number(row.is_launched ?? 1) !== 0,
+      noIndex: Number(row.seo_no_index ?? 0) !== 0,
     }
   } catch {
     return null
@@ -563,9 +576,10 @@ async function fetchCategoryPageData(categorySlug: string) {
        breadcrumb — instead of 404-ing a page that is genuinely there.
        The `degraded` flag rides on the payload so the render path and the
        logs can tell a thin-but-real page from a healthy one. Metadata is
-       built separately by fetchCategoryForSeo, which has its own static
-       fallback, so the page still emits its correct title, canonical and
-       robots directive rather than the site-wide defaults. */
+       built separately by fetchCategoryForSeo, which degrades on its own
+       (a failed listing count never becomes a noindex), so the page still
+       emits its correct title, canonical and robots directive rather than
+       the site-wide defaults. */
     console.error('fetchCategoryPageData: secondary queries failed, serving degraded page:', err)
     return JSON.parse(JSON.stringify({
       category: { ...catRow, subcategories: [], listingTypes: [], parent: null, activeListings: 0 },
@@ -1056,15 +1070,25 @@ function buildCategoryMeta(
   const keywords = [...new Set([...cat.seoKeywords.map(k => k.toLowerCase()), ...autoKw])].join(', ')
 
   /* Indexing decision:
+     · base page    → isCategoryIndexable (lib/category-indexing.ts): L2/L3
+                      always; L4/L5 only when the subtree holds a listing;
+                      never when unlaunched or admin-flagged noindex. The
+                      SAME rule picks sitemap-categories.xml's URLs.
+     · country page → the base must be indexable AND the country must clear
+                      COUNTRY_INDEX_THRESHOLD
      · deep filter  → noindex,follow (consolidate to base)
-     · country page → index only when it clears COUNTRY_INDEX_THRESHOLD
-     · base page    → index only when the tree holds 5+ listings
      noindex pages stay `follow` so PageRank still flows to base + listings. */
+  const baseIndexable = isCategoryIndexable({
+    level: cat.level,
+    subtreeListings: cat.listingCount,
+    launched: cat.launched,
+    noIndex: cat.noIndex,
+  })
   const indexable = deepFilter
     ? false
     : fc
-      ? fc.count >= COUNTRY_INDEX_THRESHOLD
-      : cat.listingCount >= 5
+      ? baseIndexable && fc.count >= COUNTRY_INDEX_THRESHOLD
+      : baseIndexable
 
   return {
     title,
@@ -1210,7 +1234,7 @@ function buildJsonLd(
     isPartOf: { '@type': 'WebSite', name: 'InfoWebWorld', url: DOMAIN },
     publisher: { '@type': 'Organization', name: 'InfoWebWorld', url: DOMAIN, logo: { '@type': 'ImageObject', url: `${DOMAIN}/favicon-512.png` } },
     dateModified: new Date().toISOString(),
-    ...(cat.listingCount > 0 ? { numberOfItems: cat.listingCount } : {}),
+    ...(cat.listingCount ? { numberOfItems: cat.listingCount } : {}),
   }
   /* AggregateRating intentionally NOT set on CollectionPage — Google's
      Review Snippet rich result whitelist is limited to Product, Service,
@@ -2556,6 +2580,8 @@ export default async function CategoryDetailRoute({
       parentName: String(c.parent_name ?? ''), parentSlug: String(c.parent_slug ?? ''),
       listingCount: pageData.listingTotal ?? 0,
       subcategoryCount: Array.isArray(c.subcategories) ? c.subcategories.length : 0,
+      launched: Number(c.is_launched ?? 1) !== 0,
+      noIndex: Number(c.seo_no_index ?? 0) !== 0,
     }
     // Parse Gemini extended_faq for JSON-LD rich snippets
     const jpFaq = (v: unknown) => { if (!v) return null; if (typeof v === 'string') { try { return JSON.parse(v) } catch { return null } } return v }

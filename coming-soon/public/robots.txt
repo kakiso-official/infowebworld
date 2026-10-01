@@ -34,8 +34,9 @@ Allow: /local-businesses$
 Allow: /professional-services$
 
 # ─── L2/L3/L4/L5 category pages under each sector ───
-# Page-level metadata.robots already gates sparse pages (<5 listings →
-# noindex,follow). Crawler is allowed in; thin pages won't index.
+# Every L2 + L3 category page is indexable. L4 + L5 pages are indexable
+# only once they hold a listing — empty ones carry page-level
+# noindex,follow. Crawler is allowed in everywhere so links keep flowing.
 Allow: /ai-ml/
 Allow: /software-saas/
 Allow: /it-services-agencies/

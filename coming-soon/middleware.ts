@@ -40,8 +40,9 @@ const INDEXABLE_PATHS = new Set([
 
 /* L1 sector slugs — used to detect sector landing + category detail routes
    so middleware can allow them through (meta-robots in [...segments]/page.tsx
-   then handles the per-page index/noindex decision via the 5-listing
-   threshold). Must stay in sync with the L1_SLUGS set in that file. */
+   then makes the per-page index/noindex decision via isCategoryIndexable in
+   lib/category-indexing.ts: L2/L3 always, L4/L5 only with listings). Must
+   stay in sync with the L1_SLUGS set in that file. */
 const SECTOR_SLUGS = new Set([
   'ai-ml', 'software-saas', 'it-services-agencies',
   'startups-innovation', 'local-businesses', 'professional-services',

@@ -1,7 +1,8 @@
 'use client'
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import { isCategoryIndexable } from '@/lib/category-indexing'
 
-type Category = { id: number; name: string; slug: string; level: number; parentId: number | null; parentName?: string; listingCount: number }
+type Category = { id: number; name: string; slug: string; level: number; parentId: number | null; parentName?: string; listingCount: number; launched: boolean; noIndex: boolean }
 type SectionMap = Record<number, { sections: Record<string, boolean>; generatedAt: string }>
 type StatusInfo = { total: number; generated: number; sectionMap: SectionMap }
 
@@ -29,11 +30,21 @@ const PAGE_SIZE = 50
 
 type SortOption = 'name-az' | 'name-za' | 'most-complete' | 'least-complete' | 'recent-first' | 'most-listings' | 'least-listings'
 type GenStatusFilter = 'all' | 'indexable' | 'sparse' | 'complete' | 'partial' | 'none' | 'missing-faq' | 'missing-about' | 'missing-ai-summary'
-/* INDEXABLE_THRESHOLD must match the live category page's robots gate in
-   app/[...segments]/page.tsx (cat.listingCount >= 5 → index:true). Categories
-   meeting this threshold are the ones Google will actually crawl + rank — so
-   they're the priority for AI content generation. */
-const INDEXABLE_THRESHOLD = 5
+/* "Indexable" uses the live category page's own robots rule
+   (isCategoryIndexable, lib/category-indexing.ts): L1-L3 always, L4/L5 only
+   when their subtree holds a listing, never unlaunched or admin-noindexed.
+   Those are the pages Google will actually crawl + rank — so they're the
+   priority for AI content generation. Note: the admin categories API also
+   counts PENDING listings, so an L4/L5 holding only pending listings shows
+   indexable here a little before its page actually is. */
+function isLiveIndexable(cat: Category, treeListings: number): boolean {
+  return isCategoryIndexable({
+    level: cat.level,
+    subtreeListings: treeListings,
+    launched: cat.launched,
+    noIndex: cat.noIndex,
+  })
+}
 
 function relativeTime(dateStr: string): string {
   if (!dateStr || dateStr === 'null' || dateStr === 'undefined') return ''
@@ -88,6 +99,8 @@ export default function SeoContentAdmin() {
         level: Number(c.level), parentId: c.parent_id ? Number(c.parent_id) : null,
         parentName: c.parent_name ? String(c.parent_name) : undefined,
         listingCount: Number(c.listing_count ?? 0),
+        launched: Number(c.is_launched ?? 1) !== 0,
+        noIndex: Number(c.seo_no_index ?? 0) !== 0,
       }))
       setAllCategories(cats)
     })
@@ -164,8 +177,8 @@ export default function SeoContentAdmin() {
         const secs = catSections(c.id)
         const tc = treeCount[c.id] || 0
         switch (genStatusFilter) {
-          case 'indexable': return tc >= INDEXABLE_THRESHOLD
-          case 'sparse': return tc < INDEXABLE_THRESHOLD
+          case 'indexable': return isLiveIndexable(c, tc)
+          case 'sparse': return !isLiveIndexable(c, tc)
           case 'complete': return count === 8
           case 'partial': return count >= 1 && count <= 7
           case 'none': return count === 0
@@ -410,8 +423,8 @@ export default function SeoContentAdmin() {
         </select>
         <select value={genStatusFilter} onChange={e => setGenStatusFilter(e.target.value as GenStatusFilter)} style={selectStyle}>
           <option value="all">All Status</option>
-          <option value="indexable">⚡ Indexable ({INDEXABLE_THRESHOLD}+ listings)</option>
-          <option value="sparse">Sparse (under {INDEXABLE_THRESHOLD})</option>
+          <option value="indexable">⚡ Indexable (L1-L3, or L4-L5 with listings)</option>
+          <option value="sparse">Not indexed (empty L4-L5)</option>
           <option value="complete">Complete (8/8)</option>
           <option value="partial">Partial (1-7)</option>
           <option value="none">None (0/8)</option>
@@ -517,7 +530,7 @@ export default function SeoContentAdmin() {
           const singleLoading = !batchRunning && active
 
           const tc = treeCount[cat.id] || 0
-          const isIndexable = tc >= INDEXABLE_THRESHOLD
+          const isIndexable = isLiveIndexable(cat, tc)
           /* Indexable rows get a left accent stripe in sector color + a slight
              tinted background so admin can scan and prioritise the categories
              Google will actually crawl & rank. */
@@ -553,14 +566,18 @@ export default function SeoContentAdmin() {
                     }} />
                   )}
                 </span>
-                {/* Listing-count badge — INDEXABLE flag when >= 5 listings in
-                    the descendant tree (matches the live page's robots gate).
-                    Sector-colored solid badge when indexable, grey ghost
-                    badge when sparse so admin knows generation priority. */}
+                {/* Listing-count badge — INDEXABLE flag per the live page's
+                    robots rule (isLiveIndexable above). Sector-colored solid
+                    badge when indexable, grey ghost badge when not, so admin
+                    knows generation priority. */}
                 <span
                   title={isIndexable
-                    ? `${tc} listings — INDEXABLE on the live site. Generate AI content.`
-                    : `${tc} listing${tc === 1 ? '' : 's'} — under ${INDEXABLE_THRESHOLD}, page is noindex on the live site.`}
+                    ? `${tc} listing${tc === 1 ? '' : 's'} — INDEXABLE on the live site. Generate AI content.`
+                    : cat.noIndex
+                      ? `${tc} listing${tc === 1 ? '' : 's'} — flagged noindex in category SEO settings, page is noindex on the live site.`
+                      : !cat.launched
+                        ? `${tc} listing${tc === 1 ? '' : 's'} — category not launched, page is noindex on the live site.`
+                        : `${tc} listings — empty L${cat.level} category, page is noindex on the live site.`}
                   style={{
                     display: 'inline-flex', alignItems: 'center', gap: 4,
                     padding: '2px 7px', borderRadius: 4,
