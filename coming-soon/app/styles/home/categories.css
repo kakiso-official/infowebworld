@@ -1,0 +1,158 @@
+/* ══════════════════════════════════════════════════════════════
+   Homepage — "Browse the Global Business Directory by Category"
+   Six sector cards: icon badge + name + subcategory count + arrow.
+   New "hm-" namespace; does not touch .tlp-cats* (reused by sector
+   landing pages, /categories and /search).
+   ══════════════════════════════════════════════════════════════ */
+
+.hm-cats {
+  background: #FFFFFF;
+  padding: clamp(48px, 7vw, 84px) clamp(18px, 4vw, 32px);
+}
+.hm-cats-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+/* Header */
+.hm-cats-head {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto clamp(28px, 4vw, 44px);
+}
+.hm-cats-title {
+  font-size: clamp(1.5rem, 2.6vw, 1.95rem);
+  font-weight: 800;
+  letter-spacing: -.022em;
+  line-height: 1.18;
+  color: #0A1B33;
+  margin: 0 0 8px;
+  text-wrap: balance;
+}
+.hm-cats-sub {
+  font-size: clamp(13.5px, 1.2vw, 15px);
+  color: #4B5563;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* Grid — 3 cols desktop, 2 cols <=980px, 1 col <=620px */
+.hm-cats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+/* Card — whole card is the link; equal heights per row via grid */
+.hm-cat-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  height: 100%;
+  padding: 24px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+.hm-cat-card:hover {
+  border-color: rgba(0, 59, 42, .35);
+  box-shadow: 0 14px 32px -16px rgba(10, 27, 51, .14);
+  transform: translateY(-1px);
+}
+.hm-cat-card:hover .hm-cat-card-arrow {
+  transform: translateX(3px);
+  color: #003B2A;
+}
+.hm-cat-card:focus-visible {
+  outline: 2px solid #0E8F6E;
+  outline-offset: 2px;
+}
+
+.hm-cat-card-ico {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.hm-cat-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.hm-cat-card-name {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  color: #0A1B33;
+  margin: 0;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.hm-cat-card-count {
+  font-size: 13.5px;
+  color: #6B7280;
+  line-height: 1.4;
+}
+
+.hm-cat-card-arrow {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #6B7280;
+  transition: transform .15s ease, color .15s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hm-cat-card,
+  .hm-cat-card-arrow {
+    transition: none;
+  }
+  .hm-cat-card:hover,
+  .hm-cat-card:hover .hm-cat-card-arrow {
+    transform: none;
+  }
+}
+
+/* Tablet — 2 columns */
+@media (max-width: 980px) {
+  .hm-cats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Phone — compact 1-column horizontal card */
+@media (max-width: 620px) {
+  .hm-cats-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .hm-cat-card {
+    padding: 16px;
+    gap: 12px;
+  }
+  .hm-cat-card-ico {
+    width: 44px;
+    height: 44px;
+    font-size: 19px;
+  }
+  .hm-cat-card-name {
+    font-size: 15px;
+  }
+  .hm-cat-card-count {
+    font-size: 13px;
+  }
+}

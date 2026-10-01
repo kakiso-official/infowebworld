@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUserCheck, faRobot, faLink, faArrowRight } from '@fortawesome/free-solid-svg-icons'
 
 /* ═══════════════════════════════════════════════════════════════════════
    /test-landing-page hero.
@@ -120,11 +122,11 @@ export default function HeroSearchClient() {
       </div>
 
       <div className="tlp-hero-inner">
-        <h1 className="tlp-hero-title">
-          Find and compare the best business software, services, and agencies.
+        <h1 className="tlp-hero-title hm-hero-title">
+          #1 Rated Global Business Directory to Find, Compare, and List Verified Businesses
         </h1>
         <p className="tlp-hero-sub">
-          Verified buyer reviews across 8,000+ categories. Honest, moderated, and never paid for.
+          Search for companies, services, software, and tools worldwide.
         </p>
 
         <div className="tlp-hero-search" ref={wrapRef}>
@@ -243,6 +245,37 @@ export default function HeroSearchClient() {
               )}
             </div>
           )}
+        </div>
+
+        <ul className="hm-hero-badges">
+          <li className="hm-hero-badge">
+            <span className="hm-hero-badge-ico" aria-hidden="true">
+              <FontAwesomeIcon icon={faUserCheck} />
+            </span>
+            <span>100% Human Curation</span>
+          </li>
+          <li className="hm-hero-badge">
+            <span className="hm-hero-badge-ico" aria-hidden="true">
+              <FontAwesomeIcon icon={faRobot} />
+            </span>
+            <span>Built for the AI Era</span>
+          </li>
+          <li className="hm-hero-badge">
+            <span className="hm-hero-badge-ico" aria-hidden="true">
+              <FontAwesomeIcon icon={faLink} />
+            </span>
+            <span>Permanent Dofollow Links</span>
+          </li>
+        </ul>
+
+        <div className="hm-hero-cta-row">
+          <Link href="/business" className="hm-btn hm-btn-primary">
+            <span>List Your Business Free</span>
+            <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" />
+          </Link>
+          <Link href="/categories" className="hm-btn hm-btn-secondary">
+            Browse All Categories
+          </Link>
         </div>
 
       </div>

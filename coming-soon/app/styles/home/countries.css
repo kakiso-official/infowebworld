@@ -1,0 +1,208 @@
+/* ════════════════════════════════════════════════════════════════════════
+   .hm-geo - "Businesses Near You, Businesses Around the World" section
+   Homepage-only selectors (hm- prefix). Imported once from app/styles/home.css.
+   ════════════════════════════════════════════════════════════════════════ */
+
+.hm-geo {
+  background: #FFFFFF;
+  padding: clamp(48px, 7vw, 84px) clamp(18px, 4vw, 32px);
+}
+
+.hm-geo-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.hm-geo-head {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto clamp(28px, 4vw, 44px);
+}
+
+.hm-geo-title {
+  font-size: clamp(1.5rem, 2.6vw, 1.95rem);
+  font-weight: 800;
+  letter-spacing: -0.022em;
+  line-height: 1.18;
+  color: #0A1B33;
+  margin: 0 0 8px;
+  text-wrap: balance;
+}
+
+.hm-geo-sub {
+  font-size: clamp(13.5px, 1.2vw, 15px);
+  color: #4B5563;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.hm-geo-pill {
+  margin: 16px auto 0;
+  display: flex;
+  justify-content: center;
+}
+
+.hm-geo-pill span {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  background: #F6F9F7;
+  border: 1px solid #E5E7EB;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  color: #003B2A;
+}
+
+/* Tile grid - 6/row desktop, 4/row <=1180px, 3/row <=980px (tablet),
+   2/row <=620px (phone). min-width:0 on children stops long country
+   names from forcing the grid wider than its track and causing page
+   overflow. */
+.hm-geo-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 14px;
+}
+
+@media (max-width: 1180px) {
+  .hm-geo-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 980px) {
+  .hm-geo-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .hm-geo-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
+
+/* Non-interactive tile: a card-shaped resting surface, but deliberately
+   NO hover border/shadow/transform and NO pointer cursor - per spec,
+   only interactive cards get that treatment. */
+.hm-geo-tile {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  padding: 18px 10px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  cursor: default;
+}
+
+.hm-geo-flag {
+  display: block;
+  width: 40px;
+  height: 30px;
+  border-radius: 4px;
+  object-fit: cover;
+  background-color: #EEF2F0;
+  box-shadow: inset 0 0 0 1px rgba(10, 27, 51, 0.12);
+}
+
+.hm-geo-name {
+  min-width: 0;
+  max-width: 100%;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  color: #0A1B33;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.hm-geo-count {
+  font-size: 12px;
+  color: #6B7280;
+}
+
+/* "Show all N countries" disclosure */
+.hm-geo-more {
+  margin: clamp(20px, 3vw, 28px) auto 0;
+  max-width: 760px;
+  text-align: center;
+}
+
+.hm-geo-more-summary {
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 10px 20px;
+  background: #FFFFFF;
+  border: 1.5px solid rgba(0, 59, 42, 0.28);
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  color: #003B2A;
+  transition: background 0.15s ease;
+}
+
+.hm-geo-more-summary::-webkit-details-marker {
+  display: none;
+}
+
+.hm-geo-more-summary:hover {
+  background: #F1F8F3;
+}
+
+.hm-geo-more-summary:focus-visible {
+  outline: 2px solid #0E8F6E;
+  outline-offset: 2px;
+}
+
+.hm-geo-chevron {
+  display: inline-flex;
+  font-size: 12px;
+  transition: transform 0.2s ease;
+}
+
+.hm-geo-more[open] .hm-geo-chevron {
+  transform: rotate(180deg);
+}
+
+.hm-geo-chips {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.hm-geo-chip {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  padding: 6px 14px;
+  background: #F6F9F7;
+  border: 1px solid #E5E7EB;
+  border-radius: 999px;
+  font-size: 12.5px;
+  color: #4B5563;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hm-geo-more-summary {
+    transition: none;
+  }
+  .hm-geo-chevron {
+    transition: none;
+  }
+}

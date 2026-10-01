@@ -6,25 +6,47 @@ import CategoriesSection from './test-landing-page/CategoriesSection'
 import TopFirmsSection, { type FirmRow } from './test-landing-page/TopFirmsSection'
 import NewReviewsSection, { type ReviewRow } from './test-landing-page/NewReviewsSection'
 import PopularSection, { type PopFirmRow } from './test-landing-page/PopularSection'
-import TrustSection from './test-landing-page/TrustSection'
-import CompareSection from './test-landing-page/CompareSection'
 import FinalCtaSection from './test-landing-page/FinalCtaSection'
+import PopularSubcategoriesSection from './home-sections/PopularSubcategoriesSection'
+import { getPopularSubcategories } from './home-sections/popular-subcategories-data'
+import CountriesSection from './home-sections/CountriesSection'
+import { getCountryListingCounts } from './home-sections/countries-data'
+import ComparisonTableSection from './home-sections/ComparisonTableSection'
+import LatestBlogSection from './home-sections/LatestBlogSection'
+import { getLatestBlogPosts } from './home-sections/latest-blog-data'
+import HomeFaqSection from './home-sections/HomeFaqSection'
+import { buildHomeFaqJsonLd } from './home-sections/home-faq-data'
+import { CATEGORIES } from './config/categories-data'
 import { query } from '@/lib/db'
 import { unstable_cache } from 'next/cache'
 import './styles/test-landing-page.css'
+import './styles/home.css'
 
 /* ════════════════════════════════════════════════════════════════════════
-   Live homepage — the directory landing.
+   Live homepage — the directory landing (SEO-spec rebuild, Oct 2026).
 
-   Rendered dynamically so the per-sector firm rows, latest reviews, and
-   popular-tools strip reflect current DB state (edge-cached ~1h via
-   middleware, so the origin is hit at most once per hour per region).
+   Section order (inside <main className="tlp">):
+     1  Hero (H1, search, trust badges, CTAs)     ./test-landing-page/
+     2  Sector categories (6 cards)               ./test-landing-page/
+     3  Top featured businesses (per-sector tabs) ./test-landing-page/
+     4  Popular sub-categories                    ./home-sections/
+     5  Countries with live listings              ./home-sections/
+     6  InfoWebWorld vs typical directory table   ./home-sections/
+     7  Latest reviews                            ./test-landing-page/
+     8  Latest blog posts                         ./home-sections/
+     9  FAQs (same array feeds the FAQPage node)  ./home-sections/
+     10 Most popular AI tools                     ./test-landing-page/
+     11 Final CTA                                 ./test-landing-page/
+   ("Compare the Top-Rated Tools & Services" was removed from the homepage
+   in Oct 2026 by request; the sector landings still render CompareSection.)
 
-   The section components are authored under ./test-landing-page/; that route
-   now 308-redirects here, so this is the single canonical landing. The SEO
-   @graph below (Organization, WebSite + SearchAction, the 6-sector ItemList +
-   SiteNavigationElements that drive sitelink selection, and the FAQPage) is
-   preserved from the previous homepage so nothing regresses on launch.
+   Shared .tlp-* sections are reused by the sector landings, so the homepage
+   only passes copy via props; homepage-only styles live in ./styles/home.css
+   (all "hm-" prefixed). The ./test-landing-page/ route 308-redirects here,
+   so this is the single canonical landing. The SEO @graph below
+   (Organization, WebSite + SearchAction, WebPage, the 6-sector ItemList +
+   SiteNavigationElements that drive sitelink selection, and the FAQPage)
+   carries only real, data-derived numbers.
 
    ISR (10 min), not force-dynamic: nothing here reads cookies/headers/
    searchParams and every DB fetch already sits behind unstable_cache(600s).
@@ -63,6 +85,33 @@ const LANDING_SECTORS: { slug: string; label: string }[] = [
   { slug: 'professional-services', label: 'Professional Services' },
 ]
 
+/* Exact SEO-specified meta title + description — reused verbatim by the
+   <title>/meta description, Open Graph, Twitter card and the WebPage node. */
+const META_TITLE = '#1 Rated Global Business Directory to List, Compare & Review'
+const META_DESCRIPTION = 'InfoWebWorld is a global business directory where you can list businesses & products, add reviews, and find verified companies worldwide. Get your free listing.'
+
+/* Real taxonomy size for the schema descriptions: categories + sub-categories
+   = levels 2-5 of the static taxonomy (the L1 rows are the 6 sectors). */
+const CATEGORY_COUNT = CATEGORIES.filter(c => c.level >= 2 && c.level <= 5).length
+const CATEGORY_COUNT_LABEL = CATEGORY_COUNT.toLocaleString('en-US')
+
+/* Organization / WebSite descriptions. The country clause is only added when
+   the countries fetcher returned live DB counts (countryCount !== null) —
+   on its static fallback no country number is claimed. */
+function organizationDescription(countryCount: number | null): string {
+  const base = `Global business directory with verified reviews, dofollow backlinks, and lead generation across ${SECTORS.length} sectors and ${CATEGORY_COUNT_LABEL} categories and subcategories`
+  return countryCount !== null
+    ? `${base}, with live listings from ${countryCount.toLocaleString('en-US')} countries.`
+    : `${base}.`
+}
+
+function websiteDescription(countryCount: number | null): string {
+  const base = `The global business directory to search, compare, and review businesses across ${SECTORS.length} sectors and ${CATEGORY_COUNT_LABEL} categories and subcategories`
+  return countryCount !== null
+    ? `${base} in ${countryCount.toLocaleString('en-US')} countries.`
+    : `${base}.`
+}
+
 const organization = {
   '@type': 'Organization',
   '@id': `${SITE}#org`,
@@ -70,7 +119,7 @@ const organization = {
   slogan: 'The global business directory for verified business discovery',
   url: SITE,
   logo: 'https://www.infowebworld.com/logo/infowebworldlogo-logoforlightbackgrounds.png',
-  description: 'Global business directory with verified reviews, dofollow backlinks, and lead generation across 80+ industries.',
+  description: organizationDescription(null), // replaced per render with the live country count
   knowsAbout: ['Global business directory', 'Online business directory', 'Business listings', 'Company profiles', 'Verified business reviews', 'B2B company database', 'Business discovery'],
   foundingDate: '2026',
   address: {
@@ -102,7 +151,7 @@ const website = {
   '@id': `${SITE}#website`,
   url: SITE,
   name: 'InfoWebWorld',
-  description: 'The global business directory to search, compare, and review businesses across 80+ industries in 12 countries.',
+  description: websiteDescription(null), // replaced per render with the live country count
   publisher: { '@id': `${SITE}#org` },
   inLanguage: 'en-US',
   potentialAction: {
@@ -148,8 +197,8 @@ const webPage = {
   '@type': 'WebPage',
   '@id': `${SITE}#homepage`,
   url: SITE,
-  name: 'Global Business Directory - Find, Compare & Review Verified Businesses',
-  description: 'Global business directory to search verified businesses, tools, agencies, and professionals across 80+ industries - with real reviews, transparent pricing, and dofollow listings.',
+  name: META_TITLE,
+  description: META_DESCRIPTION,
   isPartOf: { '@id': `${SITE}#website` },
   about: { '@id': `${SITE}#org` },
   mainEntity: { '@id': `${SITE}#primary-sections` },
@@ -158,45 +207,32 @@ const webPage = {
 }
 
 export const metadata: Metadata = {
+  /* Root layout's title is a plain string (no template), so this renders
+     as-is. openGraph/twitter are shallow-merged (replaced, not deep-merged)
+     over the layout's, so every field is set here. */
+  title: META_TITLE,
+  description: META_DESCRIPTION,
   alternates: { canonical: 'https://www.infowebworld.com' },
+  openGraph: {
+    type: 'website',
+    url: 'https://www.infowebworld.com',
+    siteName: 'InfoWebWorld',
+    locale: 'en_US',
+    title: META_TITLE,
+    description: META_DESCRIPTION,
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'InfoWebWorld - Global Business Directory' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: META_TITLE,
+    description: META_DESCRIPTION,
+    images: ['/og-image.png'],
+  },
 }
 
-const faqJsonLd = {
-  '@type': 'FAQPage',
-  '@id': `${SITE}#faq`,
-  mainEntity: [
-    {
-      '@type': 'Question',
-      name: 'What is a global business directory?',
-      acceptedAnswer: { '@type': 'Answer', text: 'A global business directory is an online platform that lists and connects companies across industries and countries - with searchable company profiles, industry categories, key contacts, locations, and reviews - so buyers can discover, compare, and vet businesses worldwide. InfoWebWorld is a global business directory covering 80+ industries across 12+ countries, with verified reviews and dofollow listings.' },
-    },
-    {
-      '@type': 'Question',
-      name: 'What is InfoWebWorld?',
-      acceptedAnswer: { '@type': 'Answer', text: 'InfoWebWorld is a global business directory where users can search, compare, and review businesses across 80+ industries in 12+ countries. It helps professionals find the best solutions through verified reviews and detailed company profiles.' },
-    },
-    {
-      '@type': 'Question',
-      name: 'How does InfoWebWorld work?',
-      acceptedAnswer: { '@type': 'Answer', text: 'Users can search businesses by category or location, compare companies side by side, read verified reviews, and connect directly with service providers. Every listing includes satisfaction scores, feature breakdowns, and real user feedback.' },
-    },
-    {
-      '@type': 'Question',
-      name: 'Is it free to list a business on InfoWebWorld?',
-      acceptedAnswer: { '@type': 'Answer', text: 'Yes, businesses can submit listings for free on InfoWebWorld. Free listings include a company profile, category placement, and a dofollow backlink. Optional premium plans are available for enhanced visibility and lead generation features.' },
-    },
-    {
-      '@type': 'Question',
-      name: 'What industries does InfoWebWorld cover?',
-      acceptedAnswer: { '@type': 'Answer', text: 'InfoWebWorld covers 80+ industries including SaaS, marketing, cybersecurity, cloud computing, HR tech, fintech, e-commerce, healthcare, legal services, education technology, and many more. New categories are added regularly based on market demand.' },
-    },
-    {
-      '@type': 'Question',
-      name: 'How can I add my business to InfoWebWorld?',
-      acceptedAnswer: { '@type': 'Answer', text: 'Visit the Get Listed page to submit your business details. Fill in your company information, choose a category, and submit for review. Once approved, your listing goes live with a verified badge and dofollow backlink.' },
-    },
-  ],
-}
+/* FAQPage node — built from the same HOME_FAQS array <HomeFaqSection />
+   renders, so the structured data always matches the visible FAQs. */
+const faqJsonLd = buildHomeFaqJsonLd(SITE)
 
 /* ── Live data fetchers ──────────────────────────────────────────────────
    Each is defensively wrapped: a missing column / table (pre-migration
@@ -357,27 +393,45 @@ const getCachedLatestReviews  = unstable_cache(getLatestReviews,  ['home-reviews
 const getCachedPopularAi      = unstable_cache(getPopularAiTools, ['home-popular-ai-v1'], { revalidate: 600 })
 
 export default async function Home() {
-  /* Parallel fetch — sectors, reviews, popular AI tools — all in one round. */
-  const [firmsBySectorArr, reviews, popularAi] = await Promise.all([
+  /* Parallel fetch — sector firms, reviews, popular AI tools, popular
+     sub-categories, country counts and latest blog posts — all in one round.
+     Every fetcher is unstable_cache'd (600s) and degrades to an empty /
+     static-fallback result on DB failure, so this never throws. */
+  const [firmsBySectorArr, reviews, popularAi, popularSubcats, countries, blogPosts] = await Promise.all([
     Promise.all(LANDING_SECTORS.map(s => getCachedFirmsForSector(s.slug))),
     getCachedLatestReviews(8),
     getCachedPopularAi(6),
+    getPopularSubcategories(),
+    getCountryListingCounts(),
+    getLatestBlogPosts(3),
   ])
   const firmsBySector: Record<string, FirmRow[]> = {}
   LANDING_SECTORS.forEach((s, i) => { firmsBySector[s.slug] = firmsBySectorArr[i] })
+
+  /* Live country count for the schema descriptions — null (clause omitted)
+     when the countries fetcher fell back to its static, count-less list. */
+  const liveCountryCount =
+    countries.length > 0 && countries.every(c => c.listings !== null) ? countries.length : null
 
   return (
     <>
       {/* JSON-LD — single @graph carrying Organization, WebSite+SearchAction
           (qualifies for the sitelinks search box), WebPage, ItemList of the
           6 primary sectors (drives sitelink selection), SiteNavigationElement
-          per sector (primary nav hint), and FAQPage. All entities use @id
-          cross-references for proper graph resolution. */}
+          per sector (primary nav hint), and FAQPage (mirrors the visible
+          FAQs). All entities use @id cross-references for graph resolution. */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify({
           '@context': 'https://schema.org',
-          '@graph': [organization, website, webPage, sectorList, ...siteNavElements, faqJsonLd],
+          '@graph': [
+            { ...organization, description: organizationDescription(liveCountryCount) },
+            { ...website, description: websiteDescription(liveCountryCount) },
+            webPage,
+            sectorList,
+            ...siteNavElements,
+            faqJsonLd,
+          ],
         }) }}
       />
 
@@ -386,11 +440,23 @@ export default async function Home() {
         <HeroSearchClient />
         <CategoriesSection />
         <TopFirmsSection sectors={LANDING_SECTORS} firmsBySector={firmsBySector} />
-        <NewReviewsSection reviews={reviews} />
+        <PopularSubcategoriesSection items={popularSubcats} />
+        <CountriesSection countries={countries} />
+        <ComparisonTableSection />
+        <NewReviewsSection
+          reviews={reviews}
+          title="Latest Reviews of Verified Businesses"
+          subtitle="Business owners share how a paid listing brought visibility, and buyers share how verified reviews helped them decide."
+        />
+        <LatestBlogSection posts={blogPosts} />
+        <HomeFaqSection />
         <PopularSection firms={popularAi} />
-        <TrustSection />
-        <CompareSection />
-        <FinalCtaSection />
+        <FinalCtaSection
+          title="Get Your Business Discovered by Buyers Worldwide"
+          subtitle="Start with a free listing today, or pick a plan with reviews, leads, and analytics."
+          ctaLabel="List Your Business"
+          ctaHref="/business"
+        />
       </main>
       <Footer />
     </>

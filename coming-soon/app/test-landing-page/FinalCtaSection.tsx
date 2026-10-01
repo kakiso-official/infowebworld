@@ -11,21 +11,33 @@ import Link from 'next/link'
    generous padding, dark-green pill CTA.
    ═══════════════════════════════════════════════════════════════════════ */
 
-export default function FinalCtaSection() {
+export interface FinalCtaSectionProps {
+  title?: string
+  subtitle?: string
+  ctaLabel?: string
+  ctaHref?: string
+}
+
+export default function FinalCtaSection({
+  title = 'Get in front of your next customer on InfoWebWorld.',
+  subtitle = 'Join the directory where buyers actively search, compare, and choose their next partner.',
+  ctaLabel = 'List your business',
+  ctaHref = '/business',
+}: FinalCtaSectionProps = {}) {
   return (
     <section className="tlp-fcta" aria-labelledby="tlp-fcta-h">
       <div className="tlp-fcta-inner">
         <div className="tlp-fcta-card">
           <div className="tlp-fcta-text">
             <h2 id="tlp-fcta-h" className="tlp-fcta-title">
-              Get in front of your next customer on InfoWebWorld.
+              {title}
             </h2>
             <p className="tlp-fcta-sub">
-              Join the directory where buyers actively search, compare, and choose their next partner.
+              {subtitle}
             </p>
           </div>
-          <Link href="/business" className="tlp-fcta-btn">
-            List your business
+          <Link href={ctaHref} className="tlp-fcta-btn">
+            {ctaLabel}
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
                  strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <line x1="5" y1="12" x2="19" y2="12" />

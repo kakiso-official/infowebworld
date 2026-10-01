@@ -1,0 +1,285 @@
+/* ════════════════════════════════════════════════════════════════════════
+   Homepage "Latest From the InfoWebWorld Blog" section (hm-blog*).
+
+   New selectors only — does not touch any .tlp-* class. Imported from the
+   homepage style barrel alongside the other app/styles/home/*.css files.
+   ════════════════════════════════════════════════════════════════════════ */
+
+.hm-blog {
+  padding: clamp(48px, 7vw, 84px) clamp(18px, 4vw, 32px);
+  background: #F6F9F7;
+}
+
+.hm-blog-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  min-width: 0;
+}
+
+.hm-blog-head {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto clamp(28px, 4vw, 44px);
+}
+
+.hm-blog-title-h2 {
+  font-size: clamp(1.5rem, 2.6vw, 1.95rem);
+  font-weight: 800;
+  letter-spacing: -0.022em;
+  line-height: 1.18;
+  color: #0A1B33;
+  margin: 0 0 8px;
+  text-wrap: balance;
+}
+
+.hm-blog-sub {
+  font-size: clamp(13.5px, 1.2vw, 15px);
+  color: #4B5563;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* ── grid ── */
+
+.hm-blog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(16px, 2vw, 24px);
+  align-items: stretch;
+}
+
+.hm-blog-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+
+.hm-blog-card:hover {
+  border-color: rgba(0, 59, 42, .35);
+  box-shadow: 0 14px 32px -16px rgba(10, 27, 51, .14);
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hm-blog-card {
+    transition: none;
+  }
+  .hm-blog-card:hover {
+    transform: none;
+  }
+}
+
+/* ── media ── */
+
+.hm-blog-media {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #EAF1EC;
+  flex: none;
+}
+
+.hm-blog-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: relative;
+  z-index: 1;
+}
+
+.hm-blog-img--ph {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #003B2A 0%, #0E8F6E 100%);
+  color: #FFFFFF;
+}
+
+.hm-blog-ph-icon {
+  font-size: 2.1rem;
+  opacity: .92;
+}
+
+.hm-blog-pill {
+  position: absolute;
+  z-index: 1;
+  left: 12px;
+  bottom: 12px;
+  max-width: calc(100% - 24px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: rgba(10, 27, 51, .72);
+  color: #FFFFFF;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+/* ── body ── */
+
+.hm-blog-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  padding: 18px 20px 20px;
+}
+
+.hm-blog-card-title {
+  font-size: 16.5px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  color: #0A1B33;
+  margin: 0 0 8px;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hm-blog-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.hm-blog-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+/* Focus ring drawn on the stretched ::after (i.e. around the whole card),
+   inset so neither the title's line-clamp overflow nor the card's
+   overflow:hidden can clip it. */
+.hm-blog-link:focus-visible {
+  outline: none;
+}
+.hm-blog-link:focus-visible::after {
+  outline: 2px solid #0E8F6E;
+  outline-offset: -2px;
+  border-radius: 12px;
+}
+
+.hm-blog-excerpt {
+  font-size: 13.5px;
+  color: #4B5563;
+  line-height: 1.55;
+  margin: 0 0 12px;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hm-blog-meta {
+  margin: auto 0 0;
+  padding-top: 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #6B7280;
+}
+
+/* ── CTA ── */
+
+.hm-blog-cta {
+  text-align: center;
+  margin-top: clamp(28px, 4vw, 40px);
+}
+
+.hm-blog-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 26px;
+  background: #FFFFFF;
+  color: #003B2A;
+  border: 1.5px solid rgba(0, 59, 42, .28);
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  transition: background .15s ease;
+}
+
+.hm-blog-cta-btn:hover {
+  background: #F1F8F3;
+}
+
+.hm-blog-cta-btn:active {
+  transform: translateY(1px);
+}
+
+.hm-blog-cta-btn:focus-visible {
+  outline: 2px solid #0E8F6E;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hm-blog-cta-btn:active {
+    transform: none;
+  }
+}
+
+/* ── tablet (980px): 2 columns, 3rd card spans full width as a
+   horizontal (media-left, body-right) layout ── */
+
+@media (max-width: 980px) {
+  .hm-blog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hm-blog-card--wide {
+    grid-column: 1 / -1;
+    flex-direction: row;
+  }
+
+  .hm-blog-card--wide .hm-blog-media {
+    width: 38%;
+    max-width: 320px;
+    aspect-ratio: auto;
+    align-self: stretch;
+  }
+
+  .hm-blog-card--wide .hm-blog-body {
+    flex: 1;
+  }
+}
+
+/* ── phone (620px): single column, every card (including the wide one)
+   stacks vertically ── */
+
+@media (max-width: 620px) {
+  .hm-blog-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hm-blog-card--wide {
+    grid-column: auto;
+    flex-direction: column;
+  }
+
+  .hm-blog-card--wide .hm-blog-media {
+    width: auto;
+    max-width: none;
+    aspect-ratio: 16 / 9;
+    align-self: auto;
+  }
+}

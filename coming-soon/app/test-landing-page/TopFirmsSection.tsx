@@ -64,10 +64,10 @@ export default function TopFirmsSection({ sectors, firmsBySector }: Props) {
       <div className="tlp-firms-inner">
         <header className="tlp-firms-head">
           <h2 id="tlp-firms-h" className="tlp-firms-title">
-            Find the top-rated companies in every category
+            Top Featured Businesses, Verified Worldwide
           </h2>
           <p className="tlp-firms-sub">
-            InfoWebWorld helps you connect with top-ranked companies backed by trusted research and verified reviews.
+            Compare featured companies worldwide, backed by verified listings and real buyer reviews, and reach out to the right one in a few clicks.
           </p>
         </header>
 

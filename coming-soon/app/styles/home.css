@@ -1,0 +1,15 @@
+/* ──────────────────────────────────────────────────────────────
+   home.css — homepage-only section styles (all "hm-" prefixed).
+
+   Loaded by app/page.tsx right AFTER ./test-landing-page.css, so the
+   few hm- hooks layered on shared .tlp-* markup (e.g. .hm-hero-title)
+   win the cascade at equal specificity. Partials under ./home/, in
+   page order. All @import lines must come first.
+   ────────────────────────────────────────────────────────────── */
+@import "./home/hero.css";
+@import "./home/categories.css";
+@import "./home/popular-subcategories.css";
+@import "./home/countries.css";
+@import "./home/comparison.css";
+@import "./home/blog.css";
+@import "./home/faq.css";

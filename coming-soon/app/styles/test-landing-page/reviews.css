@@ -203,3 +203,21 @@
   .tlp-revs-rail { animation-duration: 45s; }
 }
 
+/* Optional subtitle under the section heading (opt-in prop). .tlp-revs-inner
+   is a flex column with a large gap (clamp 28-44px) meant to separate the
+   heading area from the review track below — that same gap would otherwise
+   land twice (once above, once below the subtitle) if the subtitle were
+   just dropped in. The negative top margin cancels the inherited flex gap
+   down to a tight 8px under the heading, so the title+subtitle read as one
+   group while the existing title-to-track rhythm (the flex gap, below the
+   subtitle) is left completely untouched. */
+.tlp-revs-title + .tlp-revs-sub {
+  font-size: clamp(13.5px, 1.2vw, 15px);
+  color: #4B5563;
+  line-height: 1.55;
+  max-width: 760px;
+  margin: calc(8px - clamp(28px, 4vw, 44px)) auto 0;
+  text-align: center;
+  padding: 0 clamp(18px, 4vw, 32px);
+}
+

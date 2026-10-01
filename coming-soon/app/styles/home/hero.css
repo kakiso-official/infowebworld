@@ -1,0 +1,158 @@
+/* ══════════════════════════════════════════════════════════════
+   Homepage hero additions — namespace .hm-*
+
+   Scoped on top of the shared .tlp-hero-* shell (app/styles/test-landing-page/hero.css).
+   Never redeclares .tlp-hero-title / .tlp-hero-sub rules — only adds the
+   new title sizing hook, trust-badge pills, and CTA button row that sit
+   below the existing search bar.
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── H1 sizing hook — balances the longer SEO headline into 2-3 lines
+   on desktop without touching the shared .tlp-hero-title rules (font
+   size/weight/line-height/letter-spacing stay exactly as defined there). ── */
+.hm-hero-title {
+  /* The SEO headline is ~80 characters (vs ~70 before), so it is set a
+     touch smaller than the shared .tlp-hero-title scale and given a wider
+     measure: 3 balanced lines on desktop/tablet instead of 4-5 lines at
+     18ch. Same specificity as .tlp-hero-title; wins because home.css
+     loads after test-landing-page.css. */
+  font-size: clamp(1.75rem, 4vw, 2.9rem);
+  max-width: 28ch;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+/* ── Trust badges row ── */
+.hm-hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  max-width: 640px;
+}
+
+.hm-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .72);
+  border: 1px solid rgba(10, 27, 51, .08);
+  backdrop-filter: blur(6px);
+  color: #0A1B33;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -.005em;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.hm-hero-badge-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: #0E8F6E;
+  flex: none;
+}
+
+/* ── CTA row ── */
+.hm-hero-cta-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 6px;
+  width: 100%;
+}
+
+.hm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 26px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -.005em;
+  text-decoration: none;
+  line-height: 1.2;
+  transition: background .15s ease, border-color .15s ease, transform .1s ease;
+}
+
+.hm-btn > svg,
+.hm-btn .svg-inline--fa {
+  font-size: 13px;
+}
+
+.hm-btn-primary {
+  background: #003B2A;
+  color: #FFFFFF;
+  border: 1.5px solid transparent;
+}
+.hm-btn-primary:hover { background: #0C5A40; }
+.hm-btn-primary:active { transform: translateY(1px); }
+
+.hm-btn-secondary {
+  background: #FFFFFF;
+  color: #003B2A;
+  border: 1.5px solid rgba(0, 59, 42, .28);
+}
+.hm-btn-secondary:hover { background: #F1F8F3; }
+.hm-btn-secondary:active { transform: translateY(1px); }
+
+.hm-btn:focus-visible {
+  outline: 2px solid #0E8F6E;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hm-btn { transition: none; }
+  .hm-btn-primary:active, .hm-btn-secondary:active { transform: none; }
+}
+
+/* ── Tablet ── */
+@media (max-width: 980px) {
+  .hm-hero-title { max-width: 26ch; }
+}
+
+/* ── Phone ── */
+@media (max-width: 620px) {
+  .hm-hero-title { max-width: 100%; }
+
+  .hm-hero-badges {
+    gap: 8px;
+  }
+  .hm-hero-badge {
+    padding: 7px 13px;
+    font-size: 12.5px;
+    white-space: normal;
+    text-align: left;
+  }
+
+  .hm-hero-cta-row {
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hm-btn {
+    width: 100%;
+  }
+}
+
+/* ── Smallest phones — avoid any chance of overflow at 360px ── */
+@media (max-width: 360px) {
+  .hm-hero-badge {
+    padding: 6px 11px;
+    font-size: 12px;
+  }
+}

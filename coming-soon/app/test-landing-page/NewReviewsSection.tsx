@@ -28,9 +28,13 @@ export interface ReviewRow {
   listing_mode: 'product' | 'company'
 }
 
-interface Props {
+export interface NewReviewsSectionProps {
   reviews: ReviewRow[]
+  title?: string
+  subtitle?: string
 }
+
+type Props = NewReviewsSectionProps
 
 function listingHref(r: ReviewRow): string {
   return (r.listing_mode === 'company' ? '/profile/' : '/listing/') + r.listing_slug
@@ -76,13 +80,18 @@ function Stars({ value, max = 5 }: { value: number; max?: number }) {
   )
 }
 
-export default function NewReviewsSection({ reviews }: Props) {
+export default function NewReviewsSection({
+  reviews,
+  title = 'What verified buyers are saying',
+  subtitle,
+}: Props) {
   return (
     <section className="tlp-revs" aria-labelledby="tlp-revs-h">
       <div className="tlp-revs-inner">
         <h2 id="tlp-revs-h" className="tlp-revs-title">
-          What verified buyers are saying
+          {title}
         </h2>
+        {subtitle ? <p className="tlp-revs-sub">{subtitle}</p> : null}
 
         {reviews.length === 0 ? (
           <div className="tlp-revs-empty">

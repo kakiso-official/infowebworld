@@ -1,0 +1,243 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   hm-vs — "Smarter Way to Find and List Businesses" comparison table
+   Homepage only. New selectors, "hm-" prefix. Do not reuse tlp-* classes.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.hm-vs {
+  background: #F6F9F7;
+  padding: clamp(48px, 7vw, 84px) clamp(18px, 4vw, 32px);
+}
+
+.hm-vs-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.hm-vs-head {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto clamp(28px, 4vw, 44px);
+}
+
+.hm-vs-title {
+  font-size: clamp(1.5rem, 2.6vw, 1.95rem);
+  font-weight: 800;
+  letter-spacing: -0.022em;
+  line-height: 1.18;
+  color: #0A1B33;
+  margin: 0 0 8px;
+  text-wrap: balance;
+}
+
+/* ── Card ─────────────────────────────────────────────────────────── */
+
+.hm-vs-card {
+  max-width: 940px;
+  margin: 0 auto;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  box-shadow: 0 20px 48px -24px rgba(10, 27, 51, 0.16);
+  overflow: hidden;
+  min-width: 0;
+}
+
+.hm-vs-scroll {
+  overflow-x: auto;
+  min-width: 0;
+}
+
+/* ── Table ────────────────────────────────────────────────────────── */
+
+.hm-vs-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.hm-vs-caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.hm-vs-table col,
+.hm-vs-table th,
+.hm-vs-table td {
+  min-width: 0;
+}
+
+.hm-vs-table th:nth-child(1),
+.hm-vs-table td:nth-child(1) {
+  width: 38%;
+}
+
+.hm-vs-table th:nth-child(2),
+.hm-vs-table td:nth-child(2) {
+  width: 31%;
+}
+
+.hm-vs-table th:nth-child(3),
+.hm-vs-table td:nth-child(3) {
+  width: 31%;
+}
+
+.hm-vs-table thead th {
+  text-align: left;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0A1B33;
+  padding: 16px 20px;
+  border-bottom: 1px solid #E5E7EB;
+  overflow-wrap: break-word;
+}
+
+.hm-vs-table thead th.hm-vs-th-iww {
+  background: #003B2A;
+  color: #FFFFFF;
+}
+
+.hm-vs-table tbody th[scope='row'] {
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  color: #0A1B33;
+  padding: 14px 20px;
+  border-bottom: 1px solid #E5E7EB;
+  overflow-wrap: break-word;
+}
+
+.hm-vs-table tbody td {
+  padding: 14px 20px;
+  border-bottom: 1px solid #E5E7EB;
+  font-size: 14px;
+  vertical-align: top;
+  overflow-wrap: break-word;
+}
+
+.hm-vs-table tbody tr:last-child th,
+.hm-vs-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.hm-vs-table tbody tr:hover th,
+.hm-vs-table tbody tr:hover td {
+  background: rgba(10, 27, 51, 0.015);
+}
+
+.hm-vs-table tbody tr:hover .hm-vs-td-iww {
+  background: rgba(0, 59, 42, 0.07);
+}
+
+/* InfoWebWorld hero column */
+.hm-vs-table tbody td.hm-vs-td-iww {
+  background: rgba(0, 59, 42, 0.045);
+  color: #0A1B33;
+  font-weight: 600;
+}
+
+.hm-vs-table tbody td.hm-vs-td-typical {
+  color: #6B7280;
+}
+
+/* Icon + text row inside a cell. The <td> itself must stay
+   display:table-cell (a flex <td> is pulled out of the table's column
+   layout), so the flex row lives on this inner wrapper. */
+.hm-vs-cell {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+}
+
+.hm-vs-cell > span {
+  min-width: 0;
+}
+
+.hm-vs-ico {
+  flex: 0 0 auto;
+  font-size: 15px;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.hm-vs-ico-yes {
+  color: #0E8F6E;
+}
+
+.hm-vs-ico-muted {
+  color: #D1D5DB;
+}
+
+.hm-vs-ico-soft {
+  color: #CBD5C9;
+}
+
+/* ── Tablet ───────────────────────────────────────────────────────── */
+
+@media (max-width: 980px) {
+  .hm-vs-table thead th,
+  .hm-vs-table tbody th[scope='row'],
+  .hm-vs-table tbody td {
+    padding: 13px 16px;
+  }
+}
+
+/* ── Phone ────────────────────────────────────────────────────────── */
+
+@media (max-width: 620px) {
+  .hm-vs-card {
+    border-radius: 12px;
+  }
+
+  .hm-vs-table th:nth-child(1),
+  .hm-vs-table td:nth-child(1) {
+    width: 30%;
+  }
+
+  .hm-vs-table th:nth-child(2),
+  .hm-vs-table td:nth-child(2) {
+    width: 36%;
+  }
+
+  .hm-vs-table th:nth-child(3),
+  .hm-vs-table td:nth-child(3) {
+    width: 34%;
+  }
+
+  .hm-vs-table thead th,
+  .hm-vs-table tbody th[scope='row'],
+  .hm-vs-table tbody td {
+    padding: 10px 8px;
+    font-size: 12.5px;
+  }
+
+  .hm-vs-cell {
+    gap: 6px;
+  }
+
+  .hm-vs-ico {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 380px) {
+  .hm-vs-table thead th,
+  .hm-vs-table tbody th[scope='row'],
+  .hm-vs-table tbody td {
+    padding: 9px 7px;
+    font-size: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hm-vs-card {
+    transition: none;
+  }
+}
