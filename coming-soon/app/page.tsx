@@ -33,9 +33,9 @@ import './styles/home.css'
      5  Countries with live listings              ./home-sections/
      6  InfoWebWorld vs typical directory table   ./home-sections/
      7  Latest reviews                            ./test-landing-page/
-     8  Latest blog posts                         ./home-sections/
-     9  FAQs (same array feeds the FAQPage node)  ./home-sections/
-     10 Most popular AI tools                     ./test-landing-page/
+     8  Most popular AI tools                     ./test-landing-page/
+     9  Latest blog posts                         ./home-sections/
+     10 FAQs (same array feeds the FAQPage node)  ./home-sections/
      11 Final CTA                                 ./test-landing-page/
    ("Compare the Top-Rated Tools & Services" was removed from the homepage
    in Oct 2026 by request; the sector landings still render CompareSection.)
@@ -448,9 +448,9 @@ export default async function Home() {
           title="Latest Reviews of Verified Businesses"
           subtitle="Business owners share how a paid listing brought visibility, and buyers share how verified reviews helped them decide."
         />
+        <PopularSection firms={popularAi} />
         <LatestBlogSection posts={blogPosts} />
         <HomeFaqSection />
-        <PopularSection firms={popularAi} />
         <FinalCtaSection
           title="Get Your Business Discovered by Buyers Worldwide"
           subtitle="Start with a free listing today, or pick a plan with reviews, leads, and analytics."

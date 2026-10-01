@@ -65,7 +65,7 @@ export default function CountriesSection({ countries }: { countries: CountryCoun
                   loading="lazy"
                   decoding="async"
                 />
-                <span className="hm-geo-name">{c.name}</span>
+                <h3 className="hm-geo-name">{c.name}</h3>
                 {listingsLabel && <span className="hm-geo-count">{listingsLabel}</span>}
               </li>
             )
