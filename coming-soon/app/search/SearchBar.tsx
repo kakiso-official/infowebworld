@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { categoryPath } from '@/lib/sector-paths'
 
 /* ═══════════════════════════════════════════════════════════════════════
    /search page search bar.
@@ -110,7 +111,7 @@ export default function SearchBar({ initialQuery = '', initialSector = null, aut
     if (!results) return []
     return [
       ...results.listings.map(l => (l.listing_mode === 'company' ? '/profile/' : '/listing/') + l.slug),
-      ...results.categories.map(c => (c.sector_slug ? `/${c.sector_slug}/${c.slug}` : `/${c.slug}`)),
+      ...results.categories.map(c => categoryPath({ level: c.level, slug: c.slug, sectorSlug: c.sector_slug })),
       ...results.blog.map(b => `/blog/${b.slug}`),
     ]
   }, [results])
@@ -227,7 +228,7 @@ export default function SearchBar({ initialQuery = '', initialSector = null, aut
                 return (
                   <Link
                     key={c.id}
-                    href={c.sector_slug ? `/${c.sector_slug}/${c.slug}` : `/${c.slug}`}
+                    href={categoryPath({ level: c.level, slug: c.slug, sectorSlug: c.sector_slug })}
                     className={'tlp-hsr-row' + (i === activeIdx ? ' tlp-hsr-row--active' : '')}
                     onClick={() => setOpen(false)}
                     onMouseEnter={() => setActiveIdx(i)}

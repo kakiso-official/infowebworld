@@ -1,0 +1,39 @@
+/* ══════════════════════════════════════════════════════════════
+   ai-directory.css — AI tools directory (/ai-si-directory).
+
+   The page reuses the homepage's hm- sections. Their brand colours are
+   --hm-c-* custom properties (fallback = the homepage green), so this
+   file only re-points those tokens at the AI & ML "Lavender Neural"
+   palette (--c4 / --c4-dark from .tcat-ai-ml on the same <main>) and
+   adds the few layout tweaks this page needs. Everything is scoped
+   under .aid, so no other page changes. Loaded after ./home.css.
+   ══════════════════════════════════════════════════════════════ */
+
+.aid {
+  --hm-c-brand: var(--c4-dark);          /* #5B4DBE */
+  --hm-c-brand-hover: #4A3DA6;
+  --hm-c-brand-rgb: 91, 77, 190;         /* = --c4-dark */
+  --hm-c-accent: #6D5DD3;                /* 5:1 on white - safe for small text */
+  --hm-c-wash: #F8F6FE;
+  --hm-c-tint: #F1EEFC;
+  --hm-c-media: #ECE8FA;
+  --hm-c-flag: #F0EEF8;
+  --hm-c-soft: #D5CDEE;
+}
+
+/* Section rhythm: "Just Reviewed" (white) is followed by the countries
+   and then the comparison table, so swap their homepage backgrounds to
+   keep light and tinted bands alternating. */
+.aid .hm-geo { background: var(--hm-c-wash); }
+.aid .hm-vs  { background: #FFFFFF; }
+
+/* Hero: the stat badges sit on the lavender wash - a touch more opaque
+   than the homepage's so they read as distinct chips. The row is wider
+   than the homepage's so all three stats fit on one line on desktop. */
+.aid .hm-hero-badges {
+  max-width: 780px;
+}
+.aid .hm-hero-badge {
+  background: rgba(255, 255, 255, .86);
+  border-color: rgba(var(--c4-rgb), .18);
+}

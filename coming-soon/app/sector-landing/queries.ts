@@ -13,8 +13,14 @@ import type { PopFirmRow } from '../test-landing-page/PopularSection'
 /** Top N L2 categories under a sector that ACTUALLY HAVE LISTINGS (counting
  *  the full descendant tree). Empty L2s are filtered out so the L1 page
  *  never shows an empty product rail. Each L2 comes back with its top M
- *  listings, sorted by rating desc. */
-export async function getPopularByL2(sectorSlug: string, l2Limit = 10, productLimit = 9): Promise<PopL2[]> {
+ *  listings, sorted by rating desc - or, with `featuredFirst`, listings on
+ *  a paid plan (featured placement) first, then by rating. */
+export async function getPopularByL2(
+  sectorSlug: string,
+  l2Limit = 10,
+  productLimit = 9,
+  { featuredFirst = false }: { featuredFirst?: boolean } = {},
+): Promise<PopL2[]> {
   try {
     const cats = await query<{
       id: number; slug: string; name: string; listing_count: number
@@ -44,11 +50,13 @@ export async function getPopularByL2(sectorSlug: string, l2Limit = 10, productLi
        at once. A sequential await loop keeps the page slower (~1–2s vs
        ~300ms) but eliminates "Queue limit reached" thrash. */
     const results = []
+    const featuredCounts = new Map<string, number>()
     for (const cat of cats) {
       const products = await query<{
         slug: string; company_name: string; logo_url: string | null;
         rating_avg: number | null; rating_count: number | null;
         listing_mode: 'product' | 'company' | string | null
+        is_featured?: number | string | null
       }>(
         `SELECT s.slug, s.company_name, s.logo_url,
                 (SELECT AVG(rating) FROM reviews
@@ -56,17 +64,20 @@ export async function getPopularByL2(sectorSlug: string, l2Limit = 10, productLi
                 (SELECT COUNT(*)    FROM reviews
                   WHERE listing_id = s.id AND status = 'approved') AS rating_count,
                 COALESCE(s.listing_mode, 'product') AS listing_mode
+                ${featuredFirst ? ', (COALESCE(pl.price, 0) > 0) AS is_featured' : ''}
            FROM submissions s
            LEFT JOIN categories sc    ON sc.id    = s.category_id
            LEFT JOIN categories scp   ON scp.id   = sc.parent_id
            LEFT JOIN categories scgp  ON scgp.id  = scp.parent_id
            LEFT JOIN categories scggp ON scggp.id = scgp.parent_id
+           ${featuredFirst ? 'LEFT JOIN plans pl ON pl.id = s.plan_id' : ''}
           WHERE s.status IN ('active', 'paid')
             AND (sc.id = ? OR scp.id = ? OR scgp.id = ? OR scggp.id = ?)
-          ORDER BY rating_avg DESC, rating_count DESC, s.created_at DESC
+          ORDER BY ${featuredFirst ? '(COALESCE(pl.price, 0) > 0) DESC, ' : ''}rating_avg DESC, rating_count DESC, s.created_at DESC
           LIMIT ?`,
         [cat.id, cat.id, cat.id, cat.id, productLimit]
       )
+      featuredCounts.set(cat.slug, products.filter(p => Number(p.is_featured) === 1).length)
       results.push({
         slug: cat.slug,
         name: cat.name,
@@ -79,6 +90,12 @@ export async function getPopularByL2(sectorSlug: string, l2Limit = 10, productLi
           listingMode: (p.listing_mode === 'company' ? 'company' : 'product') as 'product' | 'company',
         })),
       })
+    }
+    /* Featured mode: tabs holding featured listings come first, so the
+       default (first) tab opens on them. Array#sort is stable, so the
+       listing-count order holds within equal featured counts. */
+    if (featuredFirst) {
+      results.sort((a, b) => (featuredCounts.get(b.slug) ?? 0) - (featuredCounts.get(a.slug) ?? 0))
     }
     return results
   } catch (err) {

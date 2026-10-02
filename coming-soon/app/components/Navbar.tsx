@@ -8,6 +8,7 @@ import UserMenu from './auth/UserMenu'
 import { useAuth } from '@/lib/use-auth'
 import SignupModal from './auth/SignupModal'
 import { CATEGORIES as STATIC_CATEGORIES } from '../config/categories-data'
+import { sectorLandingPath } from '@/lib/sector-paths'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -503,7 +504,7 @@ export default function Navbar(
                 {sortedSectors.map(s => (
                   <Link
                     key={s.slug}
-                    href={`/${s.slug}`}
+                    href={sectorLandingPath(s.slug)}
                     className={'iw-svc-row' + (!showAllSectorsRight && activeSector === s.slug ? ' iw-svc-row--on' : '')}
                     onMouseEnter={() => { setActiveSector(s.slug); setShowAllSectorsRight(false) }}
                     onClick={closeDD}
@@ -540,7 +541,7 @@ export default function Navbar(
                       {sortedSectors.map(s => (
                         <Link
                           key={s.slug}
-                          href={`/${s.slug}`}
+                          href={sectorLandingPath(s.slug)}
                           className="iw-tile iw-tile--sector"
                           onClick={closeDD}
                           style={{
@@ -637,7 +638,7 @@ export default function Navbar(
                   </li>
                   {SECTORS.map(s => (
                     <li key={s.slug}>
-                      <Link href={`/${s.slug}`} onClick={() => setMenuOpen(false)}>
+                      <Link href={sectorLandingPath(s.slug)} onClick={() => setMenuOpen(false)}>
                         <span className="iw-mob-sub-dot" style={{ background: s.palette.c4 }} aria-hidden="true" />
                         {s.label}
                       </Link>

@@ -15,6 +15,9 @@ import BlogCoverImage from './BlogCoverImage'
 
 export interface LatestBlogSectionProps {
   posts: HomeBlogPost[]
+  heading?: string
+  sub?: string
+  ctaLabel?: string
 }
 
 const dateFmt = new Intl.DateTimeFormat('en-US', {
@@ -32,17 +35,21 @@ function formatDate(iso: string): string {
   return dateFmt.format(d)
 }
 
-export default function LatestBlogSection({ posts }: LatestBlogSectionProps) {
+export default function LatestBlogSection({
+  posts,
+  heading = 'Latest From the InfoWebWorld Blog',
+  sub = 'Explore guides, insights, and news that help you list, compare, and choose businesses with confidence.',
+  ctaLabel = 'Read all articles',
+}: LatestBlogSectionProps) {
   if (!posts || posts.length === 0) return null
 
   return (
     <section className="hm-blog" aria-labelledby="hm-blog-h">
       <div className="hm-blog-inner">
         <header className="hm-blog-head">
-          <h2 id="hm-blog-h" className="hm-blog-title-h2">Latest From the InfoWebWorld Blog</h2>
+          <h2 id="hm-blog-h" className="hm-blog-title-h2">{heading}</h2>
           <p className="hm-blog-sub">
-            Explore guides, insights, and news that help you list, compare, and choose
-            businesses with confidence.
+            {sub}
           </p>
         </header>
 
@@ -87,7 +94,7 @@ export default function LatestBlogSection({ posts }: LatestBlogSectionProps) {
         </div>
 
         <div className="hm-blog-cta">
-          <Link href="/blog" className="hm-blog-cta-btn">Read all articles</Link>
+          <Link href="/blog" className="hm-blog-cta-btn">{ctaLabel}</Link>
         </div>
       </div>
     </section>

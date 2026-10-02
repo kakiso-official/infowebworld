@@ -67,12 +67,15 @@ function initialsOf(name: string): string {
 export default function NewLaunchesSection({
   launches,
   sectorSlug = 'ai-ml',
+  title = 'Just launched on InfoWebWorld',
   sub = 'The newest AI tools, agents, and models added to the directory — moderated and verified before they appear.',
   cta = 'Browse all AI tools',
 }: {
   launches: LaunchRow[]
   /** L1 sector slug — used by the "Browse all" CTA. */
   sectorSlug?: string
+  /** Section H2. */
+  title?: string
   /** Section sub-paragraph (sector-specific). */
   sub?: string
   /** "Browse all <noun>" CTA label. */
@@ -84,7 +87,7 @@ export default function NewLaunchesSection({
     <section className="tcat-new" aria-labelledby="tcat-new-h">
       <div className="tcat-new-inner">
         <header className="tcat-new-head">
-          <h2 id="tcat-new-h" className="tcat-new-title">Just launched on InfoWebWorld</h2>
+          <h2 id="tcat-new-h" className="tcat-new-title">{title}</h2>
           <p className="tcat-new-sub">{sub}</p>
         </header>
 

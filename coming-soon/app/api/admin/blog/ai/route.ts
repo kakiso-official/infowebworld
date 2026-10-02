@@ -3,6 +3,7 @@ import { requireAdmin } from '@/lib/auth'
 import { CATEGORIES, type StaticCategoryRow } from '@/app/config/categories-data'
 import { getPublishedPosts } from '@/lib/blog'
 import { geminiChat } from '@/lib/ai'
+import { sectorLandingPath } from '@/lib/sector-paths'
 
 /* ════════════════════════════════════════════════════════════════════════
    Blog AI assist (Gemini 2.5 Flash). Two modes:
@@ -53,7 +54,7 @@ type Cand = { url: string; name: string }
 
 function buildCandidates(content: string, pubPosts: Array<{ slug: string; title: string }>): Cand[] {
   const list: Cand[] = []
-  for (const s of SECTORS) list.push({ url: `/${s.slug}`, name: s.name })
+  for (const s of SECTORS) list.push({ url: sectorLandingPath(s.slug), name: s.name })
   for (const p of STATIC_PAGES) list.push(p)
   for (const p of pubPosts) list.push({ url: `/blog/${p.slug}`, name: p.title })
 

@@ -7,6 +7,7 @@ import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import ListingDetailPage from '../ListingDetailPage'
 import { CATEGORIES } from '../../config/categories-data'
+import { sectorLandingPath } from '@/lib/sector-paths'
 
 /* ─── Static-only config ──────────────────────────────────────────────
    Fully pre-built at deploy time, exactly like /categories. Every
@@ -548,7 +549,7 @@ function buildJsonLd(listing: ListingRow, breadcrumb: BreadcrumbItem[]) {
       '@type': 'ListItem',
       position: i + 2,
       name: bc.name,
-      item: i === 0 ? `https://www.infowebworld.com/${bc.slug}` : `https://www.infowebworld.com/${breadcrumb[0].slug}/${bc.slug}`,
+      item: i === 0 ? `https://www.infowebworld.com${sectorLandingPath(bc.slug)}` : `https://www.infowebworld.com/${breadcrumb[0].slug}/${bc.slug}`,
     })),
     { '@type': 'ListItem', position: breadcrumb.length + 2, name: companyName },
   ]

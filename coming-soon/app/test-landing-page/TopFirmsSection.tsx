@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar } from '@fortawesome/free-solid-svg-icons'
+import { sectorLandingPath } from '@/lib/sector-paths'
 
 /* ═══════════════════════════════════════════════════════════════════════
    Top-rated companies block — dark section under the categories grid.
@@ -145,7 +146,7 @@ export default function TopFirmsSection({ sectors, firmsBySector }: Props) {
         )}
 
         <div className="tlp-firms-cta">
-          <Link href={`/${active}`} className="tlp-firms-cta-btn">
+          <Link href={sectorLandingPath(active)} className="tlp-firms-cta-btn">
             View all {activeLabel} companies
           </Link>
         </div>

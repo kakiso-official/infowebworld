@@ -7,7 +7,8 @@ import type { CountryCount } from './countries-data'
    showcasing the countries InfoWebWorld has live listings from.
 
    Server Component - `countries` is fetched by the caller (app/page.tsx)
-   via getCountryListingCounts() and passed in as a prop.
+   via getCountryListingCounts() and passed in as a prop. The AI tools
+   directory passes sector-scoped counts plus its own heading/sub/pill.
    ════════════════════════════════════════════════════════════════════════ */
 
 const VISIBLE_COUNT = 12
@@ -17,7 +18,20 @@ function formatListings(n: number | null): string | null {
   return `${n.toLocaleString('en-US')} listing${n === 1 ? '' : 's'}`
 }
 
-export default function CountriesSection({ countries }: { countries: CountryCount[] }) {
+export interface CountriesSectionProps {
+  countries: CountryCount[]
+  heading?: string
+  sub?: string
+  /** Live-mode pill text; "{n}" becomes the formatted country count. */
+  pillTemplate?: string
+}
+
+export default function CountriesSection({
+  countries,
+  heading = 'Businesses Near You, Businesses Around the World',
+  sub = 'Browse verified listings by country, from local shops and agencies to global software companies.',
+  pillTemplate = 'Verified listings from {n} countries',
+}: CountriesSectionProps) {
   if (!countries.length) return null
 
   /* Live mode = every row carries a real DB-computed count. The static
@@ -34,14 +48,14 @@ export default function CountriesSection({ countries }: { countries: CountryCoun
       <div className="hm-geo-inner">
         <div className="hm-geo-head">
           <h2 id="hm-geo-h" className="hm-geo-title">
-            Businesses Near You, Businesses Around the World
+            {heading}
           </h2>
           <p className="hm-geo-sub">
-            Browse verified listings by country, from local shops and agencies to global software companies.
+            {sub}
           </p>
           {isLive && (
             <p className="hm-geo-pill">
-              <span>Verified listings from {countries.length.toLocaleString('en-US')} countries</span>
+              <span>{pillTemplate.replace('{n}', countries.length.toLocaleString('en-US'))}</span>
             </p>
           )}
         </div>

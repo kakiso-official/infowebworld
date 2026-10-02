@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar, faStarHalfStroke } from '@fortawesome/free-solid-svg-icons'
 import type { Category } from '../iww-hq/data/category-storage'
+import { sectorLandingPath } from '@/lib/sector-paths'
 
 type Props = {
   category: Category
@@ -162,7 +163,7 @@ export default function CategoryHero({
         {ancestors.length > 0 ? ancestors.map(a => (
           <span key={a.id}>
             <Link
-              href={a.level === 1 ? `/${a.slug}` : `/${sectorSlug || ''}/${a.slug}`}
+              href={a.level === 1 ? sectorLandingPath(a.slug) : `/${sectorSlug || ''}/${a.slug}`}
               className="cd-breadcrumb-link"
             >
               {a.name}
@@ -173,7 +174,7 @@ export default function CategoryHero({
           <>
             {sectorSlug && sectorName && (
               <>
-                <Link href={`/${sectorSlug}`} className="cd-breadcrumb-link">{sectorName}</Link>
+                <Link href={sectorLandingPath(sectorSlug)} className="cd-breadcrumb-link">{sectorName}</Link>
                 <span className="cd-breadcrumb-sep">/</span>
               </>
             )}

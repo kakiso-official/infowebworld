@@ -17,6 +17,7 @@ import { getLatestBlogPosts } from './home-sections/latest-blog-data'
 import HomeFaqSection from './home-sections/HomeFaqSection'
 import { buildHomeFaqJsonLd } from './home-sections/home-faq-data'
 import { CATEGORIES } from './config/categories-data'
+import { sectorLandingPath } from '@/lib/sector-paths'
 import { query } from '@/lib/db'
 import { unstable_cache } from 'next/cache'
 import './styles/test-landing-page.css'
@@ -159,7 +160,7 @@ const website = {
     target: { '@type': 'EntryPoint', urlTemplate: `${SITE}/search?q={search_term_string}` },
     'query-input': 'required name=search_term_string',
   },
-  hasPart: SECTORS.map(s => ({ '@type': 'WebPage', '@id': `${SITE}/${s.slug}`, url: `${SITE}/${s.slug}`, name: s.name })),
+  hasPart: SECTORS.map(s => ({ '@type': 'WebPage', '@id': `${SITE}${sectorLandingPath(s.slug)}`, url: `${SITE}${sectorLandingPath(s.slug)}`, name: s.name })),
 }
 
 /* SiteNavigationElement nodes — Google reads these as the site's primary
@@ -167,10 +168,10 @@ const website = {
    sitelink signal when combined with the homepage ItemList below. */
 const siteNavElements = SECTORS.map(s => ({
   '@type': 'SiteNavigationElement',
-  '@id': `${SITE}/${s.slug}#nav`,
+  '@id': `${SITE}${sectorLandingPath(s.slug)}#nav`,
   name: s.name,
   description: s.desc,
-  url: `${SITE}/${s.slug}`,
+  url: `${SITE}${sectorLandingPath(s.slug)}`,
 }))
 
 /* ItemList of the 6 primary sections — emitted as the homepage's mainEntity
@@ -187,7 +188,7 @@ const sectorList = {
   itemListElement: SECTORS.map((s, i) => ({
     '@type': 'ListItem',
     position: i + 1,
-    url: `${SITE}/${s.slug}`,
+    url: `${SITE}${sectorLandingPath(s.slug)}`,
     name: s.name,
     description: s.desc,
   })),

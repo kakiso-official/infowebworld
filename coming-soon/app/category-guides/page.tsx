@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
 import InfoPageShell, { IPSection, IPCardGrid, IPCard } from '../components/InfoPageShell'
 import { faqNode, articleNode, itemListNode, howToNode, BASE_URL } from '../components/seo-schema'
+import { sectorLandingPath } from '@/lib/sector-paths'
 
 const URL = `${BASE_URL}/category-guides`
 
 const sectors = [
-  { name: 'AI & Machine Learning', url: `${BASE_URL}/ai-ml`, description: 'Chatbots, AI writing, image and video generation, AI code assistants, data analysis, AI agent frameworks, applied AI across verticals.' },
+  { name: 'AI & Machine Learning', url: `${BASE_URL}${sectorLandingPath('ai-ml')}`, description: 'Chatbots, AI writing, image and video generation, AI code assistants, data analysis, AI agent frameworks, applied AI across verticals.' },
   { name: 'Software & SaaS', url: `${BASE_URL}/software-saas`, description: 'Sales CRM, marketing tools, HR and payroll, developer tools, project management, communication, cybersecurity, analytics, ERP.' },
   { name: 'IT Services & Agencies', url: `${BASE_URL}/it-services-agencies`, description: 'Custom software development, web and mobile app agencies, SEO firms, cloud migration, UX/UI studios, cybersecurity consultants, AI/ML dev shops.' },
   { name: 'Startups & Innovation', url: `${BASE_URL}/startups-innovation`, description: 'FinTech, HealthTech, EdTech, climate tech, AI-native startups, Web3 and blockchain, VCs, accelerators.' },
@@ -153,7 +154,7 @@ export default function CategoryGuidesPage() {
           <IPCard icon="🤖" title="AI & ML">
             Chatbots, AI writing tools, image & video generation, AI code assistants,
             data analysis, AI agent frameworks, and applied AI across verticals.
-            <br /><a href="/ai-ml" className="ip-card-link">Browse AI & ML →</a>
+            <br /><a href={sectorLandingPath('ai-ml')} className="ip-card-link">Browse AI & ML →</a>
           </IPCard>
           <IPCard icon="💻" title="Software & SaaS">
             Sales CRM, marketing tools, HR & payroll software, developer tools, project

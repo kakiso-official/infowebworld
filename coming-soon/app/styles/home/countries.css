@@ -46,13 +46,13 @@
   display: inline-flex;
   align-items: center;
   padding: 6px 16px;
-  background: #F6F9F7;
+  background: var(--hm-c-wash, #F6F9F7);
   border: 1px solid #E5E7EB;
   border-radius: 999px;
   font-size: 12.5px;
   font-weight: 700;
   letter-spacing: -0.005em;
-  color: #003B2A;
+  color: var(--hm-c-brand, #003B2A);
 }
 
 /* Tile grid - 6/row desktop, 4/row <=1180px, 3/row <=980px (tablet),
@@ -110,7 +110,7 @@
   height: 30px;
   border-radius: 4px;
   object-fit: cover;
-  background-color: #EEF2F0;
+  background-color: var(--hm-c-flag, #EEF2F0);
   box-shadow: inset 0 0 0 1px rgba(10, 27, 51, 0.12);
 }
 
@@ -146,12 +146,12 @@
   cursor: pointer;
   padding: 10px 20px;
   background: #FFFFFF;
-  border: 1.5px solid rgba(0, 59, 42, 0.28);
+  border: 1.5px solid rgba(var(--hm-c-brand-rgb, 0, 59, 42), 0.28);
   border-radius: 10px;
   font-size: 14px;
   font-weight: 700;
   letter-spacing: -0.005em;
-  color: #003B2A;
+  color: var(--hm-c-brand, #003B2A);
   transition: background 0.15s ease;
 }
 
@@ -160,11 +160,11 @@
 }
 
 .hm-geo-more-summary:hover {
-  background: #F1F8F3;
+  background: var(--hm-c-tint, #F1F8F3);
 }
 
 .hm-geo-more-summary:focus-visible {
-  outline: 2px solid #0E8F6E;
+  outline: 2px solid var(--hm-c-accent, #0E8F6E);
   outline-offset: 2px;
 }
 
@@ -192,7 +192,7 @@
   min-width: 0;
   overflow-wrap: anywhere;
   padding: 6px 14px;
-  background: #F6F9F7;
+  background: var(--hm-c-wash, #F6F9F7);
   border: 1px solid #E5E7EB;
   border-radius: 999px;
   font-size: 12.5px;

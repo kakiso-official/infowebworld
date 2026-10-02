@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { categoryPath } from '@/lib/sector-paths'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserCheck, faRobot, faLink, faArrowRight } from '@fortawesome/free-solid-svg-icons'
 
@@ -204,7 +205,7 @@ export default function HeroSearchClient() {
                   {results!.categories.map(c => (
                     <Link
                       key={c.id}
-                      href={c.sector_slug ? `/${c.sector_slug}/${c.slug}` : `/${c.slug}`}
+                      href={categoryPath({ level: c.level, slug: c.slug, sectorSlug: c.sector_slug })}
                       className="tlp-hsr-row"
                       onClick={() => setOpen(false)}
                     >

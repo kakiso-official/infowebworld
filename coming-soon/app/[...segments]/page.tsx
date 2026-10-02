@@ -16,6 +16,7 @@ import { isCrossSectorCollision } from '../config/category-name-collisions'
 import { toSlug, lookupLocationCountryAsync } from '../lib/geo-slugs'
 import { CATEGORIES as STATIC_CATEGORIES } from '../config/categories-data'
 import { SECTOR_LANDINGS } from '@/lib/sector-landings'
+import { sectorLandingPath } from '@/lib/sector-paths'
 import SectorLandingPage from '../sector-landing/SectorLandingPage'
 import { PRO_SERVICES_VERTICALS, PRO_SERVICES_FAQ } from '../sector-landing/pro-services-content'
 import {
@@ -1196,10 +1197,10 @@ function buildJsonLd(
   ]
   let pos = 2
   if (cat.parentName && cat.parentSlug) {
-    // If parent is L1 (cat.level === 2), link directly to /{parentSlug}
+    // If parent is L1 (cat.level === 2), link to its landing page
     // If parent is L2 (cat.level === 3), link to /{sectorSlug}/{parentSlug}
     const parentUrl = cat.level === 2
-      ? canonicalUrl(country, `/${cat.parentSlug}`)
+      ? canonicalUrl(country, sectorLandingPath(cat.parentSlug))
       : canonicalUrl(country, `/${sectorSlug}/${cat.parentSlug}`)
     bcItems.push({
       '@type': 'ListItem', position: pos++,
@@ -2450,7 +2451,10 @@ export default async function CategoryDetailRoute({
      in lib/sector-landings.ts; the layout (HeroSearch + CategoriesSection +
      Popular/TopFirms/Reviews/Launches/Tools/Trust/Compare/CTA) is shared
      across all six, scoped by a .tcat-<slug> class that overrides the palette
-     CSS custom properties. */
+     CSS custom properties.
+     Exception: the AI & ML landing is its own route, app/ai-si-directory
+     (Oct 2026 SEO spec); /ai-ml 308s there in next.config.ts, so this
+     branch only ever renders the other five sectors. */
   /* ── Fetch ALL data server-side ── */
   let pageData: Awaited<ReturnType<typeof fetchCategoryPageData>> = null
 

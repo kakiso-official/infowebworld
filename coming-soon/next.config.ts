@@ -55,10 +55,23 @@ const nextConfig: NextConfig = {
         destination: '/:path*',
         permanent: true,
       },
-      // Old AI slug → new short slug
+      // AI & ML landing moved to /ai-si-directory (Oct 2026 SEO spec). Only
+      // the landing moved: AI category pages keep their /ai-ml/... URLs.
+      // Internal links use lib/sector-paths.ts, so nothing links here.
       {
-        source: '/artificial-intelligence-ml/:path*',
-        destination: '/ai-ml/:path*',
+        source: '/ai-ml',
+        destination: '/ai-si-directory',
+        permanent: true,
+      },
+      // Old AI slug → current URLs, in one hop (landing → /ai-si-directory)
+      {
+        source: '/artificial-intelligence-ml',
+        destination: '/ai-si-directory',
+        permanent: true,
+      },
+      {
+        source: '/artificial-intelligence-ml/:path+',
+        destination: '/ai-ml/:path+',
         permanent: true,
       },
       // Rename local-business → local-businesses (L1 sector)

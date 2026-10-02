@@ -74,3 +74,47 @@ export const getCountryListingCounts = unstable_cache(
   ['home-countries-v1'],
   { revalidate: 600 }
 )
+
+/* Same counts limited to one L1 sector (the AI tools directory's
+   "Explore SI & AI Tools Around the World"). A listing belongs to the
+   sector when the sector is its category or any of its 4 ancestors, so
+   listings filed at L4/L5 count too. Falls back to the same count-less
+   static list; all 12 of those markets hold listings in every sector. */
+async function fetchSectorCountryListingCounts(sectorSlug: string): Promise<CountryCount[]> {
+  try {
+    const rows = await query<{ name: string; code: string; n: number | string }>(
+      `SELECT co.name, co.code, COUNT(s.id) AS n
+         FROM submissions s
+         JOIN countries co           ON co.id     = s.country_id
+         LEFT JOIN categories c      ON c.id      = s.category_id
+         LEFT JOIN categories cp     ON cp.id     = c.parent_id
+         LEFT JOIN categories cgp    ON cgp.id    = cp.parent_id
+         LEFT JOIN categories cggp   ON cggp.id   = cgp.parent_id
+         LEFT JOIN categories cgggp  ON cgggp.id  = cggp.parent_id
+        WHERE s.status IN ('active', 'paid')
+          AND co.code <> 'XX' AND co.name <> 'Other'
+          AND (c.slug = ? OR cp.slug = ? OR cgp.slug = ? OR cggp.slug = ? OR cgggp.slug = ?)
+        GROUP BY co.id, co.name, co.code
+        ORDER BY n DESC, co.name`,
+      [sectorSlug, sectorSlug, sectorSlug, sectorSlug, sectorSlug]
+    )
+    if (!rows.length) return FALLBACK_COUNTRIES
+    return rows.map(r => ({
+      name: toDisplayName(r.name),
+      code: r.code,
+      listings: Number(r.n),
+    }))
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    if (!/Unknown column|Table.*doesn't exist/.test(msg)) {
+      console.warn(`[countries] ${sectorSlug} listing counts fetch failed:`, err)
+    }
+    return FALLBACK_COUNTRIES
+  }
+}
+
+export const getSectorCountryListingCounts = unstable_cache(
+  fetchSectorCountryListingCounts,
+  ['sector-countries-v1'],
+  { revalidate: 600 }
+)

@@ -18,6 +18,7 @@ import { withInfoWebWorldUtm } from '../lib/utm'
 import { useAuth } from '@/lib/use-auth'
 import { listingOutboundRel } from '@/lib/user-plan-types'
 import { trackWebsiteClick } from '../lib/track-website-click'
+import { sectorLandingPath } from '@/lib/sector-paths'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCircleInfo, faImage, faStar, faScaleBalanced, faUsers, faListCheck,
@@ -1843,7 +1844,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
               <a href="/" aria-label="Home"><HomeIcon /></a>
               {view.breadcrumb.length > 0 ? view.breadcrumb.map((bc, i) => {
                 const sectorSlug = view.breadcrumb[0]?.slug
-                const href = i === 0 ? `/${bc.slug}` : `/${sectorSlug}/${bc.slug}`
+                const href = i === 0 ? sectorLandingPath(bc.slug) : `/${sectorSlug}/${bc.slug}`
                 return (
                   <span key={bc.slug} style={{ display: 'contents' }}>
                     <span className="tlp-crumb-sep"><ChevronRight size={12} /></span>

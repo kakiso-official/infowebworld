@@ -42,7 +42,7 @@
 
 /* Subtle accent on the open item. */
 .hm-faq-item[open] {
-  background: #F6F9F7;
+  background: var(--hm-c-wash, #F6F9F7);
 }
 
 .hm-faq-q {
@@ -59,7 +59,7 @@
 }
 
 .hm-faq-item[open] > .hm-faq-q {
-  border-left-color: #0E8F6E;
+  border-left-color: var(--hm-c-accent, #0E8F6E);
 }
 
 .hm-faq-q::-webkit-details-marker {
@@ -71,7 +71,7 @@
 }
 
 .hm-faq-q:focus-visible {
-  outline: 2px solid #0E8F6E;
+  outline: 2px solid var(--hm-c-accent, #0E8F6E);
   outline-offset: 2px;
   border-radius: 6px;
 }
@@ -97,7 +97,7 @@
 
 .hm-faq-item[open] > .hm-faq-q .hm-faq-chev {
   transform: rotate(180deg);
-  color: #0E8F6E;
+  color: var(--hm-c-accent, #0E8F6E);
 }
 
 .hm-faq-a {
@@ -113,18 +113,18 @@
 }
 
 .hm-faq-a p a {
-  color: #003B2A;
+  color: var(--hm-c-brand, #003B2A);
   font-weight: 700;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
 .hm-faq-a p a:hover {
-  color: #0C5A40;
+  color: var(--hm-c-brand-hover, #0C5A40);
 }
 
 .hm-faq-a p a:focus-visible {
-  outline: 2px solid #0E8F6E;
+  outline: 2px solid var(--hm-c-accent, #0E8F6E);
   outline-offset: 2px;
   border-radius: 3px;
 }

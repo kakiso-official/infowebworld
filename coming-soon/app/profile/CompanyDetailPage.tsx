@@ -42,6 +42,7 @@ import {
   faComments, faBoxOpen, faPaperPlane, faCodeCompare, faEye, faLayerGroup, faQuoteLeft, faMoneyBillWave, faBriefcase,
 } from '@fortawesome/free-solid-svg-icons'
 import { faLinkedin, faXTwitter, faFacebook } from '@fortawesome/free-brands-svg-icons'
+import { sectorLandingPath } from '@/lib/sector-paths'
 
 /* ═══════════════════════════════════════════════════════════════════════════
    /profile/[slug] — Clutch.co-style company profile.
@@ -659,7 +660,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
               <a href="/" aria-label="Home"><FontAwesomeIcon icon={faHouse} /></a>
               {breadcrumb.map((bc, i) => {
                 const sectorSlug = breadcrumb[0]?.slug
-                const href = i === 0 ? `/${bc.slug}` : `/${sectorSlug}/${bc.slug}`
+                const href = i === 0 ? sectorLandingPath(bc.slug) : `/${sectorSlug}/${bc.slug}`
                 return (
                   <span key={bc.slug} style={{ display: 'contents' }}>
                     <span className="cmp-crumb-sep"><FontAwesomeIcon icon={faChevronRight} /></span>

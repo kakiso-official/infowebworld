@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, type ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { categoryPath } from '@/lib/sector-paths'
 
 /* ═══════════════════════════════════════════════════════════════════════
    Sector-landing hero search.
@@ -35,9 +36,19 @@ type Props = {
   avgRating?: number
   totalReviews?: number
   totalListings?: number
+  /** Hide the byline / rating / count strip (the AI tools directory shows
+   *  its own stat badges instead). */
+  hideMeta?: boolean
+  /** Extra class on the H1 (e.g. the "hm-hero-title" long-headline sizing). */
+  titleClassName?: string
+  /** Rendered below the search box (stat badges + CTA buttons). */
+  children?: ReactNode
 }
 
-export default function HeroSearch({ sectorSlug, title, sub, placeholder, avgRating = 0, totalReviews = 0, totalListings = 0 }: Props) {
+export default function HeroSearch({
+  sectorSlug, title, sub, placeholder, avgRating = 0, totalReviews = 0, totalListings = 0,
+  hideMeta = false, titleClassName, children,
+}: Props) {
   const router = useRouter()
   const [q, setQ] = useState('')
   const [results, setResults] = useState<Results | null>(null)
@@ -116,37 +127,39 @@ export default function HeroSearch({ sectorSlug, title, sub, placeholder, avgRat
       </div>
 
       <div className="tlp-hero-inner">
-        <h1 className="tlp-hero-title">{title}</h1>
+        <h1 className={'tlp-hero-title' + (titleClassName ? ` ${titleClassName}` : '')}>{title}</h1>
         <p className="tlp-hero-sub">{sub}</p>
 
         {/* Author byline + rating + listing count — visible E-E-A-T signal +
             machine-readable freshness via <time>. Reads as a single muted
             line beneath the headline. */}
-        <div className="tlp-hero-meta">
-          <span className="tlp-hero-meta-byline">
-            By <strong>InfoWebWorld Editorial</strong> · Updated{' '}
-            <time dateTime={new Date().toISOString()}>
-              {new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-            </time>
-          </span>
-          {totalReviews > 0 && (
-            <>
-              <span className="tlp-hero-meta-sep" aria-hidden="true">·</span>
-              <span className="tlp-hero-meta-rate">
-                <span className="tlp-hero-meta-star" aria-hidden="true">★</span>
-                <strong>{avgRating.toFixed(1)}</strong>/5 from <strong>{totalReviews.toLocaleString()}</strong> verified reviews
-              </span>
-            </>
-          )}
-          {totalListings > 0 && (
-            <>
-              <span className="tlp-hero-meta-sep" aria-hidden="true">·</span>
-              <span className="tlp-hero-meta-count">
-                <strong>{totalListings.toLocaleString()}+</strong> verified companies
-              </span>
-            </>
-          )}
-        </div>
+        {!hideMeta && (
+          <div className="tlp-hero-meta">
+            <span className="tlp-hero-meta-byline">
+              By <strong>InfoWebWorld Editorial</strong> · Updated{' '}
+              <time dateTime={new Date().toISOString()}>
+                {new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              </time>
+            </span>
+            {totalReviews > 0 && (
+              <>
+                <span className="tlp-hero-meta-sep" aria-hidden="true">·</span>
+                <span className="tlp-hero-meta-rate">
+                  <span className="tlp-hero-meta-star" aria-hidden="true">★</span>
+                  <strong>{avgRating.toFixed(1)}</strong>/5 from <strong>{totalReviews.toLocaleString()}</strong> verified reviews
+                </span>
+              </>
+            )}
+            {totalListings > 0 && (
+              <>
+                <span className="tlp-hero-meta-sep" aria-hidden="true">·</span>
+                <span className="tlp-hero-meta-count">
+                  <strong>{totalListings.toLocaleString()}+</strong> verified companies
+                </span>
+              </>
+            )}
+          </div>
+        )}
 
         <div className="tlp-hero-search" ref={wrapRef}>
           <form className={'tlp-hsr' + ((focused || open) ? ' tlp-hsr--on' : '')} onSubmit={onSubmit} role="search">
@@ -223,7 +236,7 @@ export default function HeroSearch({ sectorSlug, title, sub, placeholder, avgRat
                   {results!.categories.map(c => (
                     <Link
                       key={c.id}
-                      href={c.sector_slug ? `/${c.sector_slug}/${c.slug}` : `/${c.slug}`}
+                      href={categoryPath({ level: c.level, slug: c.slug, sectorSlug: c.sector_slug })}
                       className="tlp-hsr-row"
                       onClick={() => setOpen(false)}
                     >
@@ -266,6 +279,7 @@ export default function HeroSearch({ sectorSlug, title, sub, placeholder, avgRat
           )}
         </div>
 
+        {children}
       </div>
     </section>
   )

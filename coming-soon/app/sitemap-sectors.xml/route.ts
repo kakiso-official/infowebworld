@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server'
+import { sectorLandingPath } from '@/lib/sector-paths'
 
 const BASE = 'https://www.infowebworld.com'
 
 /* The 6 L1 sector landings — top of the taxonomy, always indexable,
-   highest priority after the homepage. */
+   highest priority after the homepage. Landing URLs come from
+   sectorLandingPath() (AI & ML lives at /ai-si-directory). */
 const SECTORS = [
   'ai-ml',
   'software-saas',
@@ -16,7 +18,7 @@ const SECTORS = [
 export async function GET() {
   const now = new Date().toISOString().split('T')[0]
   const sectorUrls = SECTORS.map(s => `  <url>
-    <loc>${BASE}/${s}</loc>
+    <loc>${BASE}${sectorLandingPath(s)}</loc>
     <lastmod>${now}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>

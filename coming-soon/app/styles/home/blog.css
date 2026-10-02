@@ -7,7 +7,7 @@
 
 .hm-blog {
   padding: clamp(48px, 7vw, 84px) clamp(18px, 4vw, 32px);
-  background: #F6F9F7;
+  background: var(--hm-c-wash, #F6F9F7);
 }
 
 .hm-blog-inner {
@@ -62,7 +62,7 @@
 }
 
 .hm-blog-card:hover {
-  border-color: rgba(0, 59, 42, .35);
+  border-color: rgba(var(--hm-c-brand-rgb, 0, 59, 42), .35);
   box-shadow: 0 14px 32px -16px rgba(10, 27, 51, .14);
   transform: translateY(-1px);
 }
@@ -82,7 +82,7 @@
   position: relative;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  background: #EAF1EC;
+  background: var(--hm-c-media, #EAF1EC);
   flex: none;
 }
 
@@ -102,7 +102,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #003B2A 0%, #0E8F6E 100%);
+  background: linear-gradient(135deg, var(--hm-c-brand, #003B2A) 0%, var(--hm-c-accent, #0E8F6E) 100%);
   color: #FFFFFF;
 }
 
@@ -171,7 +171,7 @@
   outline: none;
 }
 .hm-blog-link:focus-visible::after {
-  outline: 2px solid #0E8F6E;
+  outline: 2px solid var(--hm-c-accent, #0E8F6E);
   outline-offset: -2px;
   border-radius: 12px;
 }
@@ -209,8 +209,8 @@
   gap: 8px;
   padding: 12px 26px;
   background: #FFFFFF;
-  color: #003B2A;
-  border: 1.5px solid rgba(0, 59, 42, .28);
+  color: var(--hm-c-brand, #003B2A);
+  border: 1.5px solid rgba(var(--hm-c-brand-rgb, 0, 59, 42), .28);
   border-radius: 10px;
   font-size: 14px;
   font-weight: 700;
@@ -220,7 +220,7 @@
 }
 
 .hm-blog-cta-btn:hover {
-  background: #F1F8F3;
+  background: var(--hm-c-tint, #F1F8F3);
 }
 
 .hm-blog-cta-btn:active {
@@ -228,7 +228,7 @@
 }
 
 .hm-blog-cta-btn:focus-visible {
-  outline: 2px solid #0E8F6E;
+  outline: 2px solid var(--hm-c-accent, #0E8F6E);
   outline-offset: 2px;
 }
 

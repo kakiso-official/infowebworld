@@ -57,7 +57,7 @@
   align-items: center;
   justify-content: center;
   font-size: 13px;
-  color: #0E8F6E;
+  color: var(--hm-c-accent, #0E8F6E);
   flex: none;
 }
 
@@ -93,23 +93,23 @@
 }
 
 .hm-btn-primary {
-  background: #003B2A;
+  background: var(--hm-c-brand, #003B2A);
   color: #FFFFFF;
   border: 1.5px solid transparent;
 }
-.hm-btn-primary:hover { background: #0C5A40; }
+.hm-btn-primary:hover { background: var(--hm-c-brand-hover, #0C5A40); }
 .hm-btn-primary:active { transform: translateY(1px); }
 
 .hm-btn-secondary {
   background: #FFFFFF;
-  color: #003B2A;
-  border: 1.5px solid rgba(0, 59, 42, .28);
+  color: var(--hm-c-brand, #003B2A);
+  border: 1.5px solid rgba(var(--hm-c-brand-rgb, 0, 59, 42), .28);
 }
-.hm-btn-secondary:hover { background: #F1F8F3; }
+.hm-btn-secondary:hover { background: var(--hm-c-tint, #F1F8F3); }
 .hm-btn-secondary:active { transform: translateY(1px); }
 
 .hm-btn:focus-visible {
-  outline: 2px solid #0E8F6E;
+  outline: 2px solid var(--hm-c-accent, #0E8F6E);
   outline-offset: 2px;
 }
 

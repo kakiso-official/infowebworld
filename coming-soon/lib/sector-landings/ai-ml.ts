@@ -1,6 +1,11 @@
 import { faRobot, faImage, faCode, faGears, faBullhorn, faHeadset } from '@fortawesome/free-solid-svg-icons'
 import type { SectorLandingConfig } from './types'
 
+/* Since Oct 2026 the AI & ML landing is its own route, app/ai-si-directory
+   (the SEO brief's copy lives in that page). From this config it still
+   reads scopeClass, heroPlaceholder and sections.topFirmsTabsLabel /
+   topFirmsEmptyNoun / newLaunchesCta; the remaining fields only serve the
+   shared catch-all landing, which /ai-ml no longer reaches (308). */
 export const aiMl: SectorLandingConfig = {
   slug: 'ai-ml',
   name: 'AI & ML',

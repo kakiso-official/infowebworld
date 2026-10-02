@@ -36,6 +36,9 @@ const INDEXABLE_PATHS = new Set([
   '/team/past',
   '/insights',
   '/write-review',
+  /* AI & ML sector landing (moved from /ai-ml, Oct 2026) — see
+     lib/sector-paths.ts. Its category pages stay under /ai-ml/. */
+  '/ai-si-directory',
 ])
 
 /* L1 sector slugs — used to detect sector landing + category detail routes
@@ -140,7 +143,7 @@ const ISR_PATH_RE = /^\/(listing|profile)\//
 /* Slow-changing public directory surfaces — safe at a 24h edge TTL.
    Blog is deliberately NOT here: new posts should surface within the
    default 1h edge TTL, not a day later. */
-const LONG_CACHE_RE = /^\/(ai-ml|software-saas|it-services-agencies|startups-innovation|local-businesses|professional-services|categories|sector|compare|compare-companies|all)(\/|$)/
+const LONG_CACHE_RE = /^\/(ai-ml|ai-si-directory|software-saas|it-services-agencies|startups-innovation|local-businesses|professional-services|categories|sector|compare|compare-companies|all)(\/|$)/
 
 /* ── Removed country URL space ──
    The site used to serve /{country}/* URLs (/uk/blog, /us/ai-ml, bare /uk, …).

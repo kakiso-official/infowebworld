@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { CATEGORIES as STATIC_CATEGORIES } from '../config/categories-data'
+import { sectorLandingPath } from '@/lib/sector-paths'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -108,7 +109,7 @@ export default function CategoriesSection() {
         </div>
 
         <div className="tlp-cats-cta">
-          <Link href="/ai-ml" className="tlp-cats-cta-btn">Explore all AI categories</Link>
+          <Link href={sectorLandingPath('ai-ml')} className="tlp-cats-cta-btn">Explore all AI categories</Link>
         </div>
       </div>
     </section>

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { sectorLandingPath } from '@/lib/sector-paths'
 import { HugeiconsIcon } from '@hugeicons/react'
 import {
   LaptopProgrammingIcon,
@@ -45,7 +46,7 @@ export default function CompareSection() {
 
         <div className="tlp-comp-grid">
           {CARDS.map(c => (
-            <Link key={c.slug} href={`/${c.slug}`} className="tlp-comp-card">
+            <Link key={c.slug} href={sectorLandingPath(c.slug)} className="tlp-comp-card">
               <span className="tlp-comp-card-ico">
                 <HugeiconsIcon icon={c.icon} size={42} strokeWidth={1.8} color="currentColor" />
               </span>

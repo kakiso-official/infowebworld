@@ -12,6 +12,7 @@ import Footer from '../components/Footer'
 import AiDisclaimer from '../components/AiDisclaimer'
 import CategoriesBrowse from './CategoriesBrowse'
 import { CATEGORIES } from '../config/categories-data'
+import { sectorLandingPath } from '@/lib/sector-paths'
 import { buildSerpTitle, clampDescription } from '@/lib/seo'
 import {
   BASE_URL, ID_ORG, ID_WEBSITE, ID_LOGO,
@@ -330,7 +331,7 @@ export default async function CategoriesPage() {
       '@type': 'SpeakableSpecification',
       cssSelector: ['.cd-server-h1', '.cd-server-desc', '.cd-server-h2'],
     },
-    significantLink: sectorList.map(s => `${BASE_URL}/${s.slug}`),
+    significantLink: sectorList.map(s => `${BASE_URL}${sectorLandingPath(s.slug)}`),
     mainEntity: { '@id': ID_ITEMLIST },
     mainEntityOfPage: URL_CAT,
     numberOfItems: CATEGORIES.length,
@@ -370,15 +371,15 @@ export default async function CategoriesPage() {
     itemListElement: sectorList.map((s, i) => ({
       '@type': 'ListItem',
       position: i + 1,
-      url: `${BASE_URL}/${s.slug}`,
+      url: `${BASE_URL}${sectorLandingPath(s.slug)}`,
       name: s.name,
       description: s.long,
       item: {
         '@type': 'Thing',
-        '@id': `${BASE_URL}/${s.slug}#sector`,
+        '@id': `${BASE_URL}${sectorLandingPath(s.slug)}#sector`,
         name: s.name,
         description: s.long,
-        url: `${BASE_URL}/${s.slug}`,
+        url: `${BASE_URL}${sectorLandingPath(s.slug)}`,
       },
     })),
   }
@@ -551,10 +552,10 @@ export default async function CategoriesPage() {
           <div className="cat-seo-grid" itemScope itemType="https://schema.org/ItemList">
             <meta itemProp="numberOfItems" content={String(sectorList.length)} />
             {sectorList.map((s, i) => (
-              <a key={s.slug} href={`/${s.slug}`} className="cat-seo-sector"
+              <a key={s.slug} href={sectorLandingPath(s.slug)} className="cat-seo-sector"
                  itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
                 <meta itemProp="position" content={String(i + 1)} />
-                <link itemProp="url" href={`${BASE_URL}/${s.slug}`} />
+                <link itemProp="url" href={`${BASE_URL}${sectorLandingPath(s.slug)}`} />
                 <span className="cat-seo-sector-icon" aria-hidden="true" style={{ background: `${s.color}14`, color: s.color }}>
                   <HIcon name={s.icon} size={18} color={s.color} sw={1.7} />
                 </span>

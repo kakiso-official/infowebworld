@@ -4,7 +4,7 @@
    ═══════════════════════════════════════════════════════════════════════ */
 
 .hm-vs {
-  background: #F6F9F7;
+  background: var(--hm-c-wash, #F6F9F7);
   padding: clamp(48px, 7vw, 84px) clamp(18px, 4vw, 32px);
 }
 
@@ -27,6 +27,14 @@
   color: #0A1B33;
   margin: 0 0 8px;
   text-wrap: balance;
+}
+
+/* Optional sub-heading (the homepage has none). */
+.hm-vs-sub {
+  font-size: clamp(13.5px, 1.2vw, 15px);
+  color: #4B5563;
+  line-height: 1.55;
+  margin: 0;
 }
 
 /* ── Card ─────────────────────────────────────────────────────────── */
@@ -99,7 +107,7 @@
 }
 
 .hm-vs-table thead th.hm-vs-th-iww {
-  background: #003B2A;
+  background: var(--hm-c-brand, #003B2A);
   color: #FFFFFF;
 }
 
@@ -132,12 +140,12 @@
 }
 
 .hm-vs-table tbody tr:hover .hm-vs-td-iww {
-  background: rgba(0, 59, 42, 0.07);
+  background: rgba(var(--hm-c-brand-rgb, 0, 59, 42), 0.07);
 }
 
 /* InfoWebWorld hero column */
 .hm-vs-table tbody td.hm-vs-td-iww {
-  background: rgba(0, 59, 42, 0.045);
+  background: rgba(var(--hm-c-brand-rgb, 0, 59, 42), 0.045);
   color: #0A1B33;
   font-weight: 600;
 }
@@ -168,7 +176,7 @@
 }
 
 .hm-vs-ico-yes {
-  color: #0E8F6E;
+  color: var(--hm-c-accent, #0E8F6E);
 }
 
 .hm-vs-ico-muted {
@@ -176,7 +184,7 @@
 }
 
 .hm-vs-ico-soft {
-  color: #CBD5C9;
+  color: var(--hm-c-soft, #CBD5C9);
 }
 
 /* ── Tablet ───────────────────────────────────────────────────────── */

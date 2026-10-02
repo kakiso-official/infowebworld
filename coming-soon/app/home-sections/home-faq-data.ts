@@ -51,18 +51,23 @@ export const HOME_FAQS: HomeFaq[] = [
   },
 ]
 
-/* Builds the FAQPage node for the homepage's JSON-LD @graph. No @context
-   (the caller embeds this inside an existing @graph array) and plain-text
-   answers only (no HTML), matching how search engines expect FAQPage
-   acceptedAnswer.text to read. */
-export function buildHomeFaqJsonLd(siteUrl: string) {
+/* Builds a FAQPage node for a page's JSON-LD @graph from the same array
+   the page renders. No @context (the caller embeds this inside an existing
+   @graph array) and plain-text answers only (no HTML), matching how search
+   engines expect FAQPage acceptedAnswer.text to read. */
+export function buildFaqPageJsonLd(faqs: HomeFaq[], pageUrl: string) {
   return {
     '@type': 'FAQPage',
-    '@id': `${siteUrl}#faq`,
-    mainEntity: HOME_FAQS.map(f => ({
+    '@id': `${pageUrl}#faq`,
+    mainEntity: faqs.map(f => ({
       '@type': 'Question',
       name: f.q,
       acceptedAnswer: { '@type': 'Answer', text: f.a },
     })),
   }
+}
+
+/* The homepage's FAQPage node. */
+export function buildHomeFaqJsonLd(siteUrl: string) {
+  return buildFaqPageJsonLd(HOME_FAQS, siteUrl)
 }

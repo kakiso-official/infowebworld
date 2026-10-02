@@ -160,3 +160,57 @@ export const getPopularSubcategories = unstable_cache(
   ['home-popular-subcats-v2'],
   { revalidate: 600 }
 )
+
+/* ── Curated picks (AI tools directory) ─────────────────────────────────
+   A hand-picked, ordered list of sub-categories instead of the top-N by
+   listing count. Same live subtree counts as above; on DB failure every
+   `listings` is null (the UI hides the count line), never a stale number.
+   Unknown slugs are dropped rather than rendered as dead links. */
+
+export type CuratedSubcategoryPick = {
+  slug: string
+  /** Display name override (e.g. title-casing "Workout planning"). */
+  name?: string
+}
+
+async function fetchCuratedSubcategoriesUncached(
+  sectorSlug: string,
+  picks: CuratedSubcategoryPick[],
+): Promise<PopularSubcategory[]> {
+  const resolved = picks
+    .map(p => ({ pick: p, cat: CATEGORIES.find(c => c.slug === p.slug && c.sector_slug === sectorSlug && c.level >= 2) }))
+    .filter((x): x is { pick: CuratedSubcategoryPick; cat: StaticCategoryRow } => !!x.cat)
+
+  let subtreeCounts: Map<number, number> | null = null
+  try {
+    const rows = await query<{ category_id: number | string; n: number | string }>(
+      `SELECT category_id, COUNT(*) AS n
+         FROM submissions
+        WHERE status IN ('active','paid')
+          AND category_id IS NOT NULL
+        GROUP BY category_id`
+    )
+    const rawCounts = new Map<number, number>()
+    for (const row of rows) {
+      const id = Number(row.category_id)
+      const n = Number(row.n)
+      if (Number.isFinite(id) && Number.isFinite(n)) {
+        rawCounts.set(id, (rawCounts.get(id) ?? 0) + n)
+      }
+    }
+    subtreeCounts = rollUpCounts(rawCounts)
+  } catch (err) {
+    console.warn('[popular-subcats] curated counts fetch failed, hiding counts', err)
+  }
+
+  return resolved.map(({ pick, cat }) => ({
+    ...toPopularSubcategory(cat, subtreeCounts ? (subtreeCounts.get(cat.id) ?? 0) : null),
+    name: pick.name ?? cat.name,
+  }))
+}
+
+export const getCuratedSubcategories = unstable_cache(
+  fetchCuratedSubcategoriesUncached,
+  ['curated-subcats-v1'],
+  { revalidate: 600 }
+)

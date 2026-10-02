@@ -20,6 +20,10 @@ import type { PopularSubcategory } from './popular-subcategories-data'
    of single-link cards. Pure Server Component - `items` is pre-fetched by
    the page via getPopularSubcategories(). See popular-subcategories-data.ts
    for the exported data API.
+
+   The AI tools directory (/ai-si-directory) reuses it for its curated
+   AI sub-categories via the optional copy/CTA/icon props; with only
+   `items` passed the homepage renders exactly as before.
    ═══════════════════════════════════════════════════════════════════════ */
 
 const SECTOR_ACCENTS: Record<string, string> = {
@@ -42,26 +46,56 @@ const SECTOR_ICONS: Record<string, IconDefinition> = {
 
 const DEFAULT_ACCENT = '#0E8F6E'
 
-export default function PopularSubcategoriesSection({ items }: { items: PopularSubcategory[] }) {
+export interface PopularSubcategoriesSectionProps {
+  items: PopularSubcategory[]
+  heading?: string
+  sub?: string
+  /** Optional count pill under the sub-heading (e.g. "1,381 sub-categories"). */
+  pill?: string
+  ctaLabel?: string
+  ctaHref?: string
+  /** Per-item icon, keyed by category slug (falls back to the sector icon). */
+  icons?: Record<string, IconDefinition>
+  /** One accent for every card (falls back to the per-sector accent). */
+  accent?: string
+}
+
+export default function PopularSubcategoriesSection({
+  items,
+  heading = 'Every Business Need, One Directory',
+  sub = "InfoWebWorld sorts companies into clear sub-categories, so you can compare verified providers for the exact service or software you're looking for.",
+  pill,
+  ctaLabel = 'Explore all categories',
+  ctaHref = '/categories',
+  icons,
+  accent,
+}: PopularSubcategoriesSectionProps) {
   return (
     <section className="hm-needs" aria-labelledby="hm-needs-h">
       <div className="hm-needs-inner">
         <header className="hm-needs-head">
           <h2 id="hm-needs-h" className="hm-needs-title">
-            Every Business Need, One Directory
+            {heading}
           </h2>
           <p className="hm-needs-sub">
-            InfoWebWorld sorts companies into clear sub-categories, so you can compare verified providers for the exact service or software you&apos;re looking for.
+            {sub}
           </p>
+          {pill && (
+            <p className="hm-needs-pill">
+              <span>{pill}</span>
+            </p>
+          )}
         </header>
 
         {items.length > 0 && (
           <ul className="hm-needs-grid">
             {items.map(item => {
-              const accent = SECTOR_ACCENTS[item.sectorSlug] ?? DEFAULT_ACCENT
-              const icon = SECTOR_ICONS[item.sectorSlug]
-              const cardStyle = { '--hm-accent': accent } as CSSProperties
-              const countLabel = item.listings !== null
+              const cardAccent = accent ?? SECTOR_ACCENTS[item.sectorSlug] ?? DEFAULT_ACCENT
+              const icon = icons?.[item.slug] ?? SECTOR_ICONS[item.sectorSlug]
+              const cardStyle = { '--hm-accent': cardAccent } as CSSProperties
+              /* A curated pick can legitimately hold no listings yet - show
+                 the count line only when there is something to count. */
+              const countLabel = item.listings
                 ? `${item.listings.toLocaleString('en-US')} ${item.listings === 1 ? 'listing' : 'listings'}`
                 : null
 
@@ -96,8 +130,8 @@ export default function PopularSubcategoriesSection({ items }: { items: PopularS
         )}
 
         <div className="hm-needs-cta">
-          <Link href="/categories" className="hm-needs-btn">
-            Explore all categories
+          <Link href={ctaHref} className="hm-needs-btn">
+            {ctaLabel}
           </Link>
         </div>
       </div>

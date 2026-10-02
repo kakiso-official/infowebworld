@@ -1,10 +1,16 @@
 /* ──────────────────────────────────────────────────────────────
-   home.css — homepage-only section styles (all "hm-" prefixed).
+   home.css — homepage section styles (all "hm-" prefixed).
 
    Loaded by app/page.tsx right AFTER ./test-landing-page.css, so the
    few hm- hooks layered on shared .tlp-* markup (e.g. .hm-hero-title)
    win the cascade at equal specificity. Partials under ./home/, in
    page order. All @import lines must come first.
+
+   Brand colours are theme tokens with the homepage green as fallback:
+   --hm-c-brand, --hm-c-brand-hover, --hm-c-brand-rgb, --hm-c-accent,
+   --hm-c-wash, --hm-c-tint, --hm-c-media, --hm-c-flag, --hm-c-soft.
+   The homepage never sets them; the AI tools directory re-points them
+   at its lavender palette in ./ai-directory.css.
    ────────────────────────────────────────────────────────────── */
 @import "./home/hero.css";
 @import "./home/categories.css";

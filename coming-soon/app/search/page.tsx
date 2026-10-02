@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { sectorLandingPath, categoryPath } from '@/lib/sector-paths'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import SearchBar from './SearchBar'
@@ -128,7 +129,7 @@ function CompanyCard({ c, q }: { c: SearchCompanyHit; q: string }) {
 }
 
 function CategoryCard({ c, q }: { c: SearchCategoryHit; q: string }) {
-  const href = c.sectorSlug ? `/${c.sectorSlug}/${c.slug}` : `/${c.slug}`
+  const href = categoryPath(c)
   const lvl = LEVEL_LABELS[c.level] || `Level ${c.level}`
   return (
     <Link href={href} className="srch-cat">
@@ -256,7 +257,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
               <p className="srch-prompt-label">Browse by sector</p>
               <div className="srch-sector-grid">
                 {PROMPT_SECTORS.map(s => (
-                  <Link key={s.slug} href={`/${s.slug}`} className="srch-sector" style={{ ['--srch-sec' as string]: s.color }}>
+                  <Link key={s.slug} href={sectorLandingPath(s.slug)} className="srch-sector" style={{ ['--srch-sec' as string]: s.color }}>
                     <span className="srch-sector-name">{s.name}</span>
                     <span className="srch-sector-desc">{s.desc}</span>
                   </Link>
@@ -285,7 +286,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
               </p>
               <div className="srch-chips" style={{ marginTop: 8 }}>
                 {PROMPT_SECTORS.map(s => (
-                  <Link key={s.slug} href={`/${s.slug}`} className="srch-chip">{s.name}</Link>
+                  <Link key={s.slug} href={sectorLandingPath(s.slug)} className="srch-chip">{s.name}</Link>
                 ))}
               </div>
             </div>

@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { categoryPath } from '@/lib/sector-paths'
 import { cleanText } from '@/lib/seo'
 
 /* ════════════════════════════════════════════════════════════════════
@@ -227,7 +228,7 @@ export default function GlobalSearch({
               {results!.categories.map(cat => (
                 <Link
                   key={cat.id}
-                  href={cat.sector_slug ? `/${cat.sector_slug}/${cat.slug}` : `/${cat.slug}`}
+                  href={categoryPath({ level: cat.level, slug: cat.slug, sectorSlug: cat.sector_slug })}
                   className="iw-srch-row"
                   onClick={close}
                   role="option"

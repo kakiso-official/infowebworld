@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { mapRow } from '../iww-hq/data/category-storage'
 import type { Category } from '../iww-hq/data/category-storage'
 import { CATEGORIES as STATIC_CATS } from '../config/categories-data'
+import { sectorLandingPath, categoryPath } from '@/lib/sector-paths'
 
 /* Folder icons — same closed-folder glyph used on /listing's Related
    Categories and L2-L4 SubcategoryList; open-folder variant for the
@@ -283,7 +284,7 @@ export default function CategoriesBrowse() {
                     return (
                       <Link
                         key={cat.id}
-                        href={cat.sectorSlug ? `/${cat.sectorSlug}/${cat.slug}` : `/${cat.slug}`}
+                        href={categoryPath(cat)}
                         className="tlp-hsr-row"
                         onClick={() => setOpen(false)}
                       >
@@ -332,7 +333,7 @@ export default function CategoriesBrowse() {
                   style={{ '--sc-pastel': meta.pastel, '--sc': meta.color } as React.CSSProperties}
                 >
                   {/* Colored header with closed-folder icon + name */}
-                  <Link href={`/${sector.slug}`} className="cb-sector-hd">
+                  <Link href={sectorLandingPath(sector.slug)} className="cb-sector-hd">
                     <span className="cb-sector-folder" aria-hidden="true">
                       <ClosedFolderIcon size={32} />
                     </span>

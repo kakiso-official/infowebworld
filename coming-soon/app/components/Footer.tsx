@@ -4,6 +4,7 @@ import FooterAuthLink from './FooterAuthLink'
 import LoggedOutOnly from './LoggedOutOnly'
 
 import { BASE } from '../config/base-path'
+import { sectorLandingPath } from '@/lib/sector-paths'
 const bp = BASE
 
 /* ── Footer link config — one source of truth for every column ── */
@@ -60,12 +61,12 @@ const COLUMNS: Column[] = [
 ]
 
 const TOP_CATEGORIES: LinkRow[] = [
-  { label: 'AI & ML',                  href: '/ai-ml' },
-  { label: 'Software & SaaS',          href: '/software-saas' },
-  { label: 'IT Services & Agencies',   href: '/it-services-agencies' },
-  { label: 'Startups & Innovation',    href: '/startups-innovation' },
-  { label: 'Local Businesses',         href: '/local-businesses' },
-  { label: 'Professional Services',    href: '/professional-services' },
+  { label: 'AI & ML',                  href: sectorLandingPath('ai-ml') },
+  { label: 'Software & SaaS',          href: sectorLandingPath('software-saas') },
+  { label: 'IT Services & Agencies',   href: sectorLandingPath('it-services-agencies') },
+  { label: 'Startups & Innovation',    href: sectorLandingPath('startups-innovation') },
+  { label: 'Local Businesses',         href: sectorLandingPath('local-businesses') },
+  { label: 'Professional Services',    href: sectorLandingPath('professional-services') },
 ]
 
 const DISCOVER_LINKS: LinkRow[] = [

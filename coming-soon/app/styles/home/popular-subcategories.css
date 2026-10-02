@@ -9,7 +9,7 @@
 
 .hm-needs {
   padding: clamp(48px, 7vw, 84px) clamp(18px, 4vw, 32px);
-  background: #F6F9F7;
+  background: var(--hm-c-wash, #F6F9F7);
 }
 
 .hm-needs-inner {
@@ -39,6 +39,26 @@
   color: #4B5563;
   line-height: 1.55;
   margin: 0;
+}
+
+/* Optional count pill under the sub-heading (same look as .hm-geo-pill). */
+.hm-needs-pill {
+  margin: 16px auto 0;
+  display: flex;
+  justify-content: center;
+}
+
+.hm-needs-pill span {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  color: var(--hm-c-brand, #003B2A);
 }
 
 /* ─── Grid ────────────────────────────────────────────────────────────── */
@@ -96,13 +116,13 @@
 }
 
 .hm-needs-card:hover {
-  border-color: rgba(0, 59, 42, 0.35);
+  border-color: rgba(var(--hm-c-brand-rgb, 0, 59, 42), 0.35);
   box-shadow: 0 14px 32px -16px rgba(10, 27, 51, 0.14);
   transform: translateY(-1px);
 }
 
 .hm-needs-card:focus-visible {
-  outline: 2px solid #0E8F6E;
+  outline: 2px solid var(--hm-c-accent, #0E8F6E);
   outline-offset: 2px;
 }
 
@@ -150,7 +170,7 @@
 .hm-needs-card-count {
   font-size: 12.5px;
   font-weight: 700;
-  color: #0E8F6E;
+  color: var(--hm-c-accent, #0E8F6E);
   margin: 2px 0 0;
 }
 
@@ -165,7 +185,7 @@
 }
 
 .hm-needs-card:hover .hm-needs-card-arrow {
-  color: #003B2A;
+  color: var(--hm-c-brand, #003B2A);
   transform: translateX(2px);
 }
 
@@ -181,7 +201,7 @@
   align-items: center;
   gap: 8px;
   padding: 12px 26px;
-  background: #003B2A;
+  background: var(--hm-c-brand, #003B2A);
   color: #FFFFFF;
   border-radius: 10px;
   font-size: 14px;
@@ -192,7 +212,7 @@
 }
 
 .hm-needs-btn:hover {
-  background: #0C5A40;
+  background: var(--hm-c-brand-hover, #0C5A40);
 }
 
 .hm-needs-btn:active {
@@ -200,7 +220,7 @@
 }
 
 .hm-needs-btn:focus-visible {
-  outline: 2px solid #0E8F6E;
+  outline: 2px solid var(--hm-c-accent, #0E8F6E);
   outline-offset: 2px;
 }
 

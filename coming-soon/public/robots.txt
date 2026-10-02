@@ -25,8 +25,8 @@ Allow: /categories$
 Allow: /llms.txt$
 Allow: /llms-full.txt$
 
-# ─── The 6 L1 sector landings ───
-Allow: /ai-ml$
+# ─── The 6 L1 sector landings (AI & ML's landing is /ai-si-directory) ───
+Allow: /ai-si-directory$
 Allow: /software-saas$
 Allow: /it-services-agencies$
 Allow: /startups-innovation$

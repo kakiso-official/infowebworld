@@ -50,16 +50,23 @@ function renderAnswer(answer: string, links?: HomeFaq['links']): ReactNode[] {
   )
 }
 
-export default function HomeFaqSection() {
+export interface HomeFaqSectionProps {
+  /** Q&As to render - pass the same array that builds the page's FAQPage
+   *  node (the AI tools directory passes AI_FAQS). Defaults to HOME_FAQS. */
+  faqs?: HomeFaq[]
+  heading?: string
+}
+
+export default function HomeFaqSection({ faqs = HOME_FAQS, heading = 'FAQs' }: HomeFaqSectionProps = {}) {
   return (
     <section className="hm-faq" aria-labelledby="hm-faq-h">
       <div className="hm-faq-inner">
         <div className="hm-faq-head">
-          <h2 id="hm-faq-h" className="hm-faq-title">FAQs</h2>
+          <h2 id="hm-faq-h" className="hm-faq-title">{heading}</h2>
         </div>
 
         <div className="hm-faq-list">
-          {HOME_FAQS.map((faq, i) => (
+          {faqs.map((faq, i) => (
             <details key={faq.q} className="hm-faq-item" open={i === 0}>
               <summary className="hm-faq-q">
                 <h3 className="hm-faq-q-text">{faq.q}</h3>

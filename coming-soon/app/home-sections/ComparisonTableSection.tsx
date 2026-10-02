@@ -6,7 +6,8 @@ import { faCircleCheck, faCircleMinus } from '@fortawesome/free-solid-svg-icons'
 
 /* ═══════════════════════════════════════════════════════════════════════
    "Smarter Way to Find and List Businesses" comparison table section
-   — homepage only, replaces the old "Why trust InfoWebWorld" banner.
+   — replaces the old "Why trust InfoWebWorld" banner on the homepage and
+   on the AI tools directory (which passes its own heading/sub/caption).
 
    A real semantic <table> (not divs) so crawlers and AI answer engines
    can read the InfoWebWorld-vs-typical-directory comparison directly.
@@ -66,19 +67,32 @@ const ROWS: Row[] = [
   },
 ]
 
-export default function ComparisonTableSection() {
+export interface ComparisonTableSectionProps {
+  heading?: string
+  /** Optional line under the heading (the homepage has none). */
+  sub?: string
+  /** Visually hidden <caption> naming what the table compares. */
+  caption?: string
+}
+
+export default function ComparisonTableSection({
+  heading = 'Smarter Way to Find and List Businesses',
+  sub,
+  caption = 'InfoWebWorld compared with a typical free business directory',
+}: ComparisonTableSectionProps = {}) {
   return (
     <section className="hm-vs" aria-labelledby="hm-vs-h">
       <div className="hm-vs-inner">
         <div className="hm-vs-head">
-          <h2 id="hm-vs-h" className="hm-vs-title">Smarter Way to Find and List Businesses</h2>
+          <h2 id="hm-vs-h" className="hm-vs-title">{heading}</h2>
+          {sub ? <p className="hm-vs-sub">{sub}</p> : null}
         </div>
 
         <div className="hm-vs-card">
           <div className="hm-vs-scroll">
             <table className="hm-vs-table">
               <caption className="hm-vs-caption">
-                InfoWebWorld compared with a typical free business directory
+                {caption}
               </caption>
               <thead>
                 <tr>

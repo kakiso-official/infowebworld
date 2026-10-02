@@ -39,6 +39,7 @@ function Stars({ value, max = 5 }: { value: number; max?: number }) {
 export default function TopFirmsSection({
   cats,
   sectorSlug = 'ai-ml',
+  title = 'Find the top-rated companies in every category',
   sub = 'InfoWebWorld helps you connect with top-ranked AI companies backed by trusted research and verified reviews.',
   tabsLabel = 'AI categories',
   emptyNoun = 'AI tools',
@@ -46,6 +47,8 @@ export default function TopFirmsSection({
   cats: PopL2[]
   /** L1 sector slug — used to build the "View all <cat> companies" CTA. */
   sectorSlug?: string
+  /** Section H2. */
+  title?: string
   /** Section sub-paragraph (sector-specific). */
   sub?: string
   /** Aria-label for the tablist. */
@@ -69,7 +72,7 @@ export default function TopFirmsSection({
       <div className="tlp-firms-inner">
         <header className="tlp-firms-head">
           <h2 id="tcat-firms-h" className="tlp-firms-title">
-            Find the top-rated companies in every category
+            {title}
           </h2>
           <p className="tlp-firms-sub">{sub}</p>
         </header>

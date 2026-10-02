@@ -105,6 +105,24 @@ function deriveExcerpt(body: string, max = 160): string {
   return (lastSpace > 0 ? cut.slice(0, lastSpace) : cut).trim() + '…'
 }
 
+type PublishedPost = Awaited<ReturnType<typeof getPublishedPosts>>[number]
+
+function postTime(p: PublishedPost): number {
+  return new Date(p.publishedAt || p.createdAt).getTime()
+}
+
+function toHomeBlogPost(p: PublishedPost): HomeBlogPost {
+  return {
+    slug: p.slug,
+    title: p.title,
+    excerpt: (p.excerpt && p.excerpt.trim()) || deriveExcerpt(p.body || ''),
+    coverImage: p.coverImage || '',
+    category: p.category || '',
+    readTime: Number(p.readTime) || 1,
+    publishedAt: p.publishedAt || p.createdAt || '',
+  }
+}
+
 /** Latest N published posts, newest first (publishedAt desc, falling back
  *  to createdAt for rows where publishedAt is somehow null). Defensive:
  *  any failure degrades to an empty list rather than throwing into the
@@ -114,21 +132,9 @@ async function fetchLatestBlogPosts(limit = 3): Promise<HomeBlogPost[]> {
     const posts = await getPublishedPosts()
     return posts
       .slice()
-      .sort((a, b) => {
-        const aTime = new Date(a.publishedAt || a.createdAt).getTime()
-        const bTime = new Date(b.publishedAt || b.createdAt).getTime()
-        return bTime - aTime
-      })
+      .sort((a, b) => postTime(b) - postTime(a))
       .slice(0, limit)
-      .map(p => ({
-        slug: p.slug,
-        title: p.title,
-        excerpt: (p.excerpt && p.excerpt.trim()) || deriveExcerpt(p.body || ''),
-        coverImage: p.coverImage || '',
-        category: p.category || '',
-        readTime: Number(p.readTime) || 1,
-        publishedAt: p.publishedAt || p.createdAt || '',
-      }))
+      .map(toHomeBlogPost)
   } catch (err) {
     console.error('[home] latest blog fetch failed:', err instanceof Error ? err.message : err)
     return []
@@ -138,5 +144,46 @@ async function fetchLatestBlogPosts(limit = 3): Promise<HomeBlogPost[]> {
 export const getLatestBlogPosts = unstable_cache(
   fetchLatestBlogPosts,
   ['home-blog-v5'],
+  { revalidate: 600 }
+)
+
+/* ── Topic-relevant posts ("Latest AI & SI Tool Blogs and Guides") ──────
+   Tier 1 = posts about the topic itself, tier 2 = adjacent tool/software
+   buying guides; anything else only fills slots that are still empty.
+   Newest first within a tier. Matched on title, tags, category and
+   excerpt - never the body, where "AI" gets a passing mention in almost
+   every post. */
+const TOPIC_TIERS = {
+  ai: [
+    /\b(ai|artificial intelligence|machine learning|ml|generative|genai|llms?|gpt|chatgpt|chatbots?|copilots?|agentic|neural|deep learning)\b/i,
+    /\b(software|saas|tools?|toolkit|tech stack|automation|apps?)\b/i,
+  ],
+} satisfies Record<string, RegExp[]>
+
+export type BlogTopic = keyof typeof TOPIC_TIERS
+
+async function fetchTopicBlogPosts(topic: BlogTopic, limit = 3): Promise<HomeBlogPost[]> {
+  try {
+    const tiers = TOPIC_TIERS[topic]
+    const tierOf = (p: PublishedPost) => {
+      const haystack = [p.title, p.category, p.excerpt, ...(p.tags || [])].join(' ')
+      const i = tiers.findIndex(re => re.test(haystack))
+      return i === -1 ? tiers.length : i
+    }
+    const posts = await getPublishedPosts()
+    return posts
+      .map(p => ({ p, tier: tierOf(p) }))
+      .sort((a, b) => a.tier - b.tier || postTime(b.p) - postTime(a.p))
+      .slice(0, limit)
+      .map(({ p }) => toHomeBlogPost(p))
+  } catch (err) {
+    console.error(`[blog] ${topic} posts fetch failed:`, err instanceof Error ? err.message : err)
+    return []
+  }
+}
+
+export const getTopicBlogPosts = unstable_cache(
+  fetchTopicBlogPosts,
+  ['topic-blog-v1'],
   { revalidate: 600 }
 )
