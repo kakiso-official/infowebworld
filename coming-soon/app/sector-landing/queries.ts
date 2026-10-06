@@ -107,6 +107,84 @@ export async function getPopularByL2(
   }
 }
 
+/** Live listings under a sector, counted over the listing's category AND
+ *  its 4 ancestors - the old sector hero walked only 3 and so missed every
+ *  listing filed at L5 (519 of 910 AI listings in Oct 2026). 0 on failure. */
+export async function getSectorListingTotal(sectorSlug: string): Promise<number> {
+  try {
+    const rows = await query<{ n: number | string }>(
+      `SELECT COUNT(*) AS n
+         FROM submissions s
+         LEFT JOIN categories c     ON c.id     = s.category_id
+         LEFT JOIN categories cp    ON cp.id    = c.parent_id
+         LEFT JOIN categories cgp   ON cgp.id   = cp.parent_id
+         LEFT JOIN categories cggp  ON cggp.id  = cgp.parent_id
+         LEFT JOIN categories cgggp ON cgggp.id = cggp.parent_id
+        WHERE s.status IN ('active','paid')
+          AND (c.slug = ? OR cp.slug = ? OR cgp.slug = ? OR cggp.slug = ? OR cgggp.slug = ?)`,
+      [sectorSlug, sectorSlug, sectorSlug, sectorSlug, sectorSlug]
+    )
+    return Number(rows[0]?.n ?? 0)
+  } catch (err) {
+    console.warn(`[sector-landing:${sectorSlug}] listing total fetch failed:`, err)
+    return 0
+  }
+}
+
+/** Approved reviews of this sector's listings first, then the newest
+ *  approved reviews from the rest of the directory, so a sector with few
+ *  reviews never shows a thin strip of two or three cards. */
+export async function getSectorReviewsWithTopUp(sectorSlug: string, limit = 8): Promise<ReviewRow[]> {
+  const own = await getLatestSectorReviews(sectorSlug, limit)
+  if (own.length >= limit) return own
+  try {
+    const rows = await query<{
+      id: number; rating: number; title: string; body: string; created_at: string
+      user_name: string | null; user_avatar: string | null; user_email: string | null
+      listing_slug: string; listing_name: string; listing_logo: string | null
+      listing_mode: 'product' | 'company' | string | null
+    }>(
+      `SELECT r.id, r.rating, r.title, r.body, r.created_at,
+              u.name AS user_name, u.avatar_url AS user_avatar, u.email AS user_email,
+              s.slug AS listing_slug, s.company_name AS listing_name,
+              s.logo_url AS listing_logo,
+              COALESCE(s.listing_mode, 'product') AS listing_mode
+         FROM reviews r
+         JOIN business_users u ON u.id = r.user_id
+         JOIN submissions    s ON s.id = r.listing_id
+        WHERE r.status = 'approved'
+          AND s.status IN ('active','paid')
+        ORDER BY r.created_at DESC
+        LIMIT ?`,
+      [limit + own.length]
+    )
+    const seen = new Set(own.map(r => r.id))
+    const rest: ReviewRow[] = rows
+      .filter(r => !seen.has(r.id))
+      .map(r => ({
+        id: r.id,
+        rating: Number(r.rating),
+        title: r.title || '',
+        body: r.body || '',
+        created_at: r.created_at,
+        user_name: r.user_name,
+        user_avatar: r.user_avatar,
+        user_email: r.user_email,
+        listing_slug: r.listing_slug,
+        listing_name: r.listing_name,
+        listing_logo: r.listing_logo,
+        listing_mode: (r.listing_mode === 'company' ? 'company' : 'product') as 'product' | 'company',
+      }))
+    return [...own, ...rest].slice(0, limit)
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    if (!/Unknown column|Table.*doesn't exist/.test(msg)) {
+      console.warn(`[sector-landing:${sectorSlug}] review top-up fetch failed:`, err)
+    }
+    return own
+  }
+}
+
 /** Latest approved reviews scoped to listings under this sector. */
 export async function getLatestSectorReviews(sectorSlug: string, limit = 8): Promise<ReviewRow[]> {
   try {

@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar, faStarHalfStroke, faArrowRight } from '@fortawesome/free-solid-svg-icons'
+import { sectorCategoryPath } from '@/lib/sector-paths'
 
 /* ═══════════════════════════════════════════════════════════════════════
    Most Popular AI Categories — left rail of L2 tabs + 3×3 grid of
@@ -92,7 +93,7 @@ export default function PopularSection({
   title = 'Most Popular\nAI Categories',
 }: {
   cats: PopL2[]
-  /** L1 sector slug — used to build /{sector}/{l2-slug} links. */
+  /** L1 sector slug — used to build the L2 category links (sectorCategoryPath). */
   sectorSlug?: string
   /** Left-rail heading. `\n` becomes <br/>. */
   title?: string
@@ -146,7 +147,7 @@ export default function PopularSection({
           {active.products.length > 0 ? (
             <>
               <div className="tcat-pop-head">
-                <Link href={`/${sectorSlug}/${active.slug}`} className="tcat-pop-seeall">
+                <Link href={sectorCategoryPath(sectorSlug, active.slug)} className="tcat-pop-seeall">
                   See all {active.name}
                   <FontAwesomeIcon icon={faArrowRight} className="tcat-pop-seeall-ico" />
                 </Link>

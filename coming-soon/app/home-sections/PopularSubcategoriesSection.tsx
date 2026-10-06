@@ -12,6 +12,7 @@ import {
   faArrowRight,
 } from '@fortawesome/free-solid-svg-icons'
 import type { PopularSubcategory } from './popular-subcategories-data'
+import { sectorCategoryPath } from '@/lib/sector-paths'
 
 /* ═══════════════════════════════════════════════════════════════════════
    Homepage section: "Every Business Need, One Directory"
@@ -21,9 +22,9 @@ import type { PopularSubcategory } from './popular-subcategories-data'
    the page via getPopularSubcategories(). See popular-subcategories-data.ts
    for the exported data API.
 
-   The AI tools directory (/ai-si-directory) reuses it for its curated
-   AI sub-categories via the optional copy/CTA/icon props; with only
-   `items` passed the homepage renders exactly as before.
+   The sector directories (/ai-si-directory, /saas-directory, ...) reuse
+   it for their curated sub-categories via the optional copy/CTA/icon
+   props; with only `items` passed the homepage renders exactly as before.
    ═══════════════════════════════════════════════════════════════════════ */
 
 const SECTOR_ACCENTS: Record<string, string> = {
@@ -58,6 +59,9 @@ export interface PopularSubcategoriesSectionProps {
   icons?: Record<string, IconDefinition>
   /** One accent for every card (falls back to the per-sector accent). */
   accent?: string
+  /** Extra class on the grid (e.g. "hm-needs-grid--center" to centre a
+   *  short last row). */
+  gridClassName?: string
 }
 
 export default function PopularSubcategoriesSection({
@@ -69,6 +73,7 @@ export default function PopularSubcategoriesSection({
   ctaHref = '/categories',
   icons,
   accent,
+  gridClassName,
 }: PopularSubcategoriesSectionProps) {
   return (
     <section className="hm-needs" aria-labelledby="hm-needs-h">
@@ -88,7 +93,7 @@ export default function PopularSubcategoriesSection({
         </header>
 
         {items.length > 0 && (
-          <ul className="hm-needs-grid">
+          <ul className={'hm-needs-grid' + (gridClassName ? ` ${gridClassName}` : '')}>
             {items.map(item => {
               const cardAccent = accent ?? SECTOR_ACCENTS[item.sectorSlug] ?? DEFAULT_ACCENT
               const icon = icons?.[item.slug] ?? SECTOR_ICONS[item.sectorSlug]
@@ -102,7 +107,7 @@ export default function PopularSubcategoriesSection({
               return (
                 <li key={`${item.sectorSlug}/${item.slug}`} className="hm-needs-item">
                   <Link
-                    href={`/${item.sectorSlug}/${item.slug}`}
+                    href={sectorCategoryPath(item.sectorSlug, item.slug)}
                     className="hm-needs-card"
                     style={cardStyle}
                   >

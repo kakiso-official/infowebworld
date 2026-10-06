@@ -147,16 +147,36 @@ export const getLatestBlogPosts = unstable_cache(
   { revalidate: 600 }
 )
 
-/* ── Topic-relevant posts ("Latest AI & SI Tool Blogs and Guides") ──────
-   Tier 1 = posts about the topic itself, tier 2 = adjacent tool/software
-   buying guides; anything else only fills slots that are still empty.
-   Newest first within a tier. Matched on title, tags, category and
-   excerpt - never the body, where "AI" gets a passing mention in almost
-   every post. */
+/* ── Topic-relevant posts (the sector directories' blog sections) ───────
+   Tier 1 = posts about the topic itself, tier 2 = adjacent guides;
+   anything else only fills slots that are still empty. Newest first
+   within a tier. Matched on title, tags, category and excerpt - never the
+   body, where "AI" gets a passing mention in almost every post. */
 const TOPIC_TIERS = {
   ai: [
     /\b(ai|artificial intelligence|machine learning|ml|generative|genai|llms?|gpt|chatgpt|chatbots?|copilots?|agentic|neural|deep learning)\b/i,
     /\b(software|saas|tools?|toolkit|tech stack|automation|apps?)\b/i,
+  ],
+  saas: [
+    /\b(saas|business software|tech stack|toolkit)\b/i,
+    /\b(software|tools?|apps?|automation)\b/i,
+  ],
+  /* Case-sensitive on purpose: "IT" the acronym, not the pronoun "it". */
+  it: [
+    /\b(IT|[Ii]n-[Hh]ouse|[Oo]utsourc\w*|it services)\b/,
+    /\b(agenc(?:y|ies)|vendors?|hiring|software|saas|tech stack)\b/i,
+  ],
+  professional: [
+    /\b(professional services?|consult\w*|accountants?|lawyers?|vendors?|hiring|outsourc\w*)\b/i,
+    /\b(agenc(?:y|ies)|professionals|reviews?)\b/i,
+  ],
+  local: [
+    /\b(local|small business(?:es)?|reviews?|ratings?|customers?|near me)\b/i,
+    /\b(vendors?|hiring|agenc(?:y|ies)|professionals)\b/i,
+  ],
+  startups: [
+    /\b(startups?|founders?|funding|venture)\b/i,
+    /\b(saas|software|tools?|tech stack|small business(?:es)?)\b/i,
   ],
 } satisfies Record<string, RegExp[]>
 

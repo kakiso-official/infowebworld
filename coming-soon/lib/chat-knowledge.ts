@@ -13,6 +13,7 @@
  */
 
 import { CATEGORIES } from '@/app/config/categories-data'
+import { sectorLandingPath, sectorCategoryPath } from '@/lib/sector-paths'
 
 const SECTORS = CATEGORIES
   .filter(c => c.level === 1)
@@ -33,12 +34,12 @@ function buildTaxonomyBlock(): string {
   const lines: string[] = []
   for (const s of SECTORS) {
     const l2s = L2_BY_PARENT.get(s.id) ?? []
-    lines.push(`### ${s.name}  →  /${s.slug}`)
+    lines.push(`### ${s.name}  →  ${sectorLandingPath(s.slug)}`)
     if (l2s.length === 0) {
       lines.push('  (no subcategories yet)')
     } else {
       for (const c of l2s) {
-        lines.push(`  - ${c.name}  →  /${s.slug}/${c.slug}`)
+        lines.push(`  - ${c.name}  →  ${sectorCategoryPath(s.slug, c.slug)}`)
       }
     }
     lines.push('')

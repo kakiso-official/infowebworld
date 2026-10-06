@@ -1,0 +1,103 @@
+/* ══════════════════════════════════════════════════════════════
+   sector-directory.css — the five "[sector] directory" landings
+   (/saas-directory, /it-directory, /startup-directory,
+   /local-businesses-directory, /professional-service-directory).
+
+   Same approach as ./ai-directory.css: the pages reuse the homepage's
+   hm- sections, whose brand colours are --hm-c-* custom properties
+   (fallback = the homepage green). This file re-points those tokens at
+   each sector's palette (the .tcat-<slug> class on the same <main>
+   carries --c1..--c4-dark; ./test-category-1-page/palettes.css) and
+   adds the few layout tweaks these pages share. Everything is scoped
+   under .sdir, so no other page changes. Loaded after ./home.css.
+
+   Contrast (WCAG): --hm-c-brand >= 5.2:1 and --hm-c-accent >= 5:1 on
+   white, >= 4.4:1 on the --hm-c-tint hover fill.
+   ══════════════════════════════════════════════════════════════ */
+
+/* Software & SaaS — Sky Interface */
+.sdir.tcat-software-saas {
+  --hm-c-brand: #2B6FB5;                 /* = --c4-dark */
+  --hm-c-brand-hover: #235C97;
+  --hm-c-brand-rgb: 43, 111, 181;
+  --hm-c-accent: #2F6FAF;
+  --hm-c-wash: #F5F9FD;
+  --hm-c-tint: #EAF3FB;
+  --hm-c-media: #E3EEF9;
+  --hm-c-flag: #EEF4FA;
+  --hm-c-soft: #C6DBEF;
+}
+
+/* IT Services & Agencies — Mint Circuit */
+.sdir.tcat-it-services-agencies {
+  --hm-c-brand: #156B50;                 /* = --c4-dark */
+  --hm-c-brand-hover: #105840;
+  --hm-c-brand-rgb: 21, 107, 80;
+  --hm-c-accent: #177A5B;
+  --hm-c-wash: #F3FAF7;
+  --hm-c-tint: #E5F5EF;
+  --hm-c-media: #DDF1EA;
+  --hm-c-flag: #EAF5F0;
+  --hm-c-soft: #BFE2D5;
+}
+
+/* Startups & Innovation — Peach Ignite */
+.sdir.tcat-startups-innovation {
+  --hm-c-brand: #B14820;                 /* = --c4-dark */
+  --hm-c-brand-hover: #963B19;
+  --hm-c-brand-rgb: 177, 72, 32;
+  --hm-c-accent: #B5502A;
+  --hm-c-wash: #FEF8F4;
+  --hm-c-tint: #FCEEE5;
+  --hm-c-media: #FBE6D9;
+  --hm-c-flag: #FAF0EA;
+  --hm-c-soft: #F0CDB9;
+}
+
+/* Local Businesses — Sage Community */
+.sdir.tcat-local-businesses {
+  --hm-c-brand: #487014;                 /* = --c4-dark */
+  --hm-c-brand-hover: #3A5C10;
+  --hm-c-brand-rgb: 72, 112, 20;
+  --hm-c-accent: #4F7A18;
+  --hm-c-wash: #F7FAF0;
+  --hm-c-tint: #EEF6E2;
+  --hm-c-media: #E7F1D8;
+  --hm-c-flag: #F0F5E7;
+  --hm-c-soft: #D2E4B7;
+}
+
+/* Professional Services — Blush Authority */
+.sdir.tcat-professional-services {
+  --hm-c-brand: #A93D63;                 /* = --c4-dark */
+  --hm-c-brand-hover: #8F3253;
+  --hm-c-brand-rgb: 169, 61, 99;
+  --hm-c-accent: #AD4268;
+  --hm-c-wash: #FDF6F9;
+  --hm-c-tint: #FAEBF1;
+  --hm-c-media: #F7E1EA;
+  --hm-c-flag: #F8EEF2;
+  --hm-c-soft: #EBC3D3;
+}
+
+/* Section rhythm: "Recently added" (white) is followed by the countries
+   and then the comparison table, so swap their homepage backgrounds to
+   keep light and tinted bands alternating. The reviews band fades from
+   the sector's own wash (the shared .tcat1 rule hardcodes lavender; one
+   extra class so this wins whatever order the stylesheets load in). */
+.sdir .hm-geo { background: var(--hm-c-wash); }
+.sdir .hm-vs  { background: #FFFFFF; }
+.tcat1.sdir .tlp-revs {
+  background: linear-gradient(180deg, var(--hm-c-wash) 0%, #FFFFFF 60%);
+}
+
+/* Hero: the stat badges sit on the sector wash - a touch more opaque
+   than the homepage's so they read as distinct chips. The row is wider
+   than the homepage's so all three stats fit on one line on desktop. */
+.sdir .hm-hero-badges {
+  max-width: 780px;
+}
+.sdir .hm-hero-badge {
+  background: rgba(255, 255, 255, .86);
+  border-color: rgba(var(--c4-rgb), .18);
+}

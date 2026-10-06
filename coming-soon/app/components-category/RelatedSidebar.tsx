@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { I, ic, type IconKey } from './icons'
 import type { Category } from '../iww-hq/data/category-storage'
+import { sectorCategoryPath } from '@/lib/sector-paths'
 
 export default function RelatedSidebar({ categories, color, sectorSlug }: { categories: Category[]; color: string; sectorSlug?: string }) {
   if (!categories.length) return null
@@ -16,7 +17,7 @@ export default function RelatedSidebar({ categories, color, sectorSlug }: { cate
           return (
             <Link
               key={rc.id}
-              href={`${sectorSlug ? `/${sectorSlug}` : ''}/${rc.slug}`}
+              href={sectorCategoryPath(sectorSlug, rc.slug)}
               className="cd-related-side-item"
             >
               <div className="cd-related-side-icon" style={{ background: `${rcColor}10` }}>

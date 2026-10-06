@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar } from '@fortawesome/free-solid-svg-icons'
 import type { PopL2, PopProduct } from './PopularSection'
+import { sectorCategoryPath } from '@/lib/sector-paths'
 
 /* ═══════════════════════════════════════════════════════════════════════
    AI/ML "Find the top-rated companies in every category" — same dark
@@ -43,6 +44,7 @@ export default function TopFirmsSection({
   sub = 'InfoWebWorld helps you connect with top-ranked AI companies backed by trusted research and verified reviews.',
   tabsLabel = 'AI categories',
   emptyNoun = 'AI tools',
+  namesAsHeadings = false,
 }: {
   cats: PopL2[]
   /** L1 sector slug — used to build the "View all <cat> companies" CTA. */
@@ -55,6 +57,8 @@ export default function TopFirmsSection({
   tabsLabel?: string
   /** Noun used in the "More top-rated <noun> are coming soon" empty state. */
   emptyNoun?: string
+  /** Render each listing name as an <h3> instead of a <div>. */
+  namesAsHeadings?: boolean
 }) {
   /* Default the active tab to the first category that actually has
      listings, falling back to the first category if nothing populated. */
@@ -66,6 +70,7 @@ export default function TopFirmsSection({
   const activeCat = cats.find(c => c.slug === active) || cats[0]
   const firms = activeCat?.products || []
   const activeLabel = activeCat?.name || ''
+  const NameTag = namesAsHeadings ? 'h3' : 'div'
 
   return (
     <section className="tlp-firms" aria-labelledby="tcat-firms-h">
@@ -116,7 +121,7 @@ export default function TopFirmsSection({
                         : <span>{f.name.slice(0, 2).toUpperCase()}</span>}
                     </div>
                     <div className="tlp-firm-mid">
-                      <div className="tlp-firm-name">{f.name}</div>
+                      <NameTag className="tlp-firm-name">{f.name}</NameTag>
                       {hasReviews && (
                         <div className="tlp-firm-meta">
                           <Stars value={f.rating} />
@@ -156,7 +161,7 @@ export default function TopFirmsSection({
         )}
 
         <div className="tlp-firms-cta">
-          <Link href={`/${sectorSlug}/${active}`} className="tlp-firms-cta-btn">
+          <Link href={sectorCategoryPath(sectorSlug, active)} className="tlp-firms-cta-btn">
             View all {activeLabel} companies
           </Link>
         </div>

@@ -3,7 +3,7 @@ import { requireAdmin } from '@/lib/auth'
 import { CATEGORIES, type StaticCategoryRow } from '@/app/config/categories-data'
 import { getPublishedPosts } from '@/lib/blog'
 import { geminiChat } from '@/lib/ai'
-import { sectorLandingPath } from '@/lib/sector-paths'
+import { sectorLandingPath, sectorCategoryPath } from '@/lib/sector-paths'
 
 /* ════════════════════════════════════════════════════════════════════════
    Blog AI assist (Gemini 2.5 Flash). Two modes:
@@ -70,7 +70,7 @@ function buildCandidates(content: string, pubPosts: Array<{ slug: string; title:
     if (score > 0) scored.push({ c, score })
   }
   scored.sort((a, b) => b.score - a.score || (Number(b.c.listing_count) || 0) - (Number(a.c.listing_count) || 0))
-  for (const { c } of scored.slice(0, 45)) list.push({ url: `/${c.sector_slug}/${c.slug}`, name: c.name })
+  for (const { c } of scored.slice(0, 45)) list.push({ url: sectorCategoryPath(c.sector_slug, c.slug), name: c.name })
 
   const seen = new Set<string>()
   return list.filter(c => { const k = norm(c.url); if (seen.has(k)) return false; seen.add(k); return true })

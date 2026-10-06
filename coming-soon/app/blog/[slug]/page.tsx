@@ -7,6 +7,7 @@ import Footer from '../../components/Footer'
 import BlogReaderInteractions from '../post/BlogReaderInteractions'
 import BlogToc, { type TocItem } from '../BlogToc'
 import { getPublishedPostBySlug, getRelatedPosts } from '@/lib/blog'
+import { rewriteLegacySectorLinks } from '@/lib/sector-paths'
 
 /* Post pages ISR-render from the DB (5 min revalidate; ~1h worst case with
    the middleware edge TTL) instead of force-dynamic — unknown slugs now
@@ -66,7 +67,9 @@ export default async function BlogPostRoute({ params }: { params: Promise<{ slug
   if (!post) notFound()
 
   const related = await getRelatedPosts(post.slug, post.category, 3)
-  const rawHtml = marked.parse(post.body || '', { async: false }) as string
+  /* Posts written before the sector URLs moved still link /software-saas,
+     /ai-ml/... etc.; point those at the current URLs instead of a 308. */
+  const rawHtml = rewriteLegacySectorLinks(marked.parse(post.body || '', { async: false }) as string)
   const { html, toc } = buildToc(rawHtml)
   const hasToc = toc.length >= 2
   const url = `${SITE}/blog/${post.slug}`

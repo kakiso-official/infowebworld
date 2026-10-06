@@ -22,12 +22,12 @@ import type { SectorLandingConfig } from '@/lib/sector-landings'
 const SeoSections = dynamic(() => import('../components-category/SeoSections'), { ssr: true })
 
 /* ═══════════════════════════════════════════════════════════════════════
-   Shared L1 sector landing page.
+   Shared L1 sector landing page (pre-Oct 2026).
 
-   Called by:
-     · the catch-all /[...segments]/page.tsx isSector branch for the
-       6 sector URLs (/ai-ml, /software-saas, etc.)
-     · /test-category-1-page (legacy demo, kept as alias for /ai-ml)
+   Called by the catch-all /[...segments]/page.tsx isSector branch, which
+   no longer renders: since the Oct 2026 SEO specs every sector landing is
+   its own route (app/ai-si-directory, app/sector-directory/*) and the old
+   /{sector} URLs 308 there in next.config.ts.
 
    Every data section pulls real DB rows scoped to `cfg.slug`. The
    per-sector palette lives in app/styles/test-category-1-page.css —

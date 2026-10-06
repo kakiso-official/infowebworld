@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 import { DIRECTORY_SEO } from './directory-seo-content'
+import { sectorCategoryPath } from '@/lib/sector-paths'
 
 /* ═══════════════════════════════════════════════════════════════════════
    Visible SEO / AEO / GEO content surface for a sector landing.
@@ -81,14 +82,14 @@ export default function DirectorySeo({ sectorSlug, firmCount = 0 }: { sectorSlug
           {d.fields.map((v, i) => (
             <a
               key={v.slug}
-              href={`/${sectorSlug}/${v.slug}`}
+              href={sectorCategoryPath(sectorSlug, v.slug)}
               className="va-card"
               itemProp="itemListElement"
               itemScope
               itemType="https://schema.org/ListItem"
             >
               <meta itemProp="position" content={String(i + 1)} />
-              <link itemProp="url" href={`https://www.infowebworld.com/${sectorSlug}/${v.slug}`} />
+              <link itemProp="url" href={`https://www.infowebworld.com${sectorCategoryPath(sectorSlug, v.slug)}`} />
               <span className="va-card-ico" aria-hidden="true">
                 {d.icon}
               </span>

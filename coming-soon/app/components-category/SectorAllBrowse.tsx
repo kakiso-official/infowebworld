@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { mapRow } from '../iww-hq/data/category-storage'
 import type { Category } from '../iww-hq/data/category-storage'
 import { CATEGORIES as STATIC_CATS } from '../config/categories-data'
+import { sectorCategoryPath } from '@/lib/sector-paths'
 
 /* Folder icons — same closed-folder glyph used on /categories and on
    /listing's Related Categories list; open-folder variant for the
@@ -315,7 +316,7 @@ export default function SectorAllBrowse({ sectorSlug }: { sectorSlug: string }) 
                     return (
                       <Link
                         key={cat.id}
-                        href={`/${sectorSlug}/${cat.slug}`}
+                        href={sectorCategoryPath(sectorSlug, cat.slug)}
                         className="tlp-hsr-row"
                         onClick={() => setOpen(false)}
                       >
@@ -359,7 +360,7 @@ export default function SectorAllBrowse({ sectorSlug }: { sectorSlug: string }) 
               className="cb-sector"
               style={{ '--sc-pastel': meta.pastel, '--sc': meta.color } as React.CSSProperties}
             >
-              <Link href={`/${sectorSlug}/${l2.slug}`} className="cb-sector-hd">
+              <Link href={sectorCategoryPath(sectorSlug, l2.slug)} className="cb-sector-hd">
                 <span className="cb-sector-folder" aria-hidden="true">
                   <ClosedFolderIcon size={32} />
                 </span>
@@ -376,7 +377,7 @@ export default function SectorAllBrowse({ sectorSlug }: { sectorSlug: string }) 
                   {l2.children.map(l3 => (
                     <Link
                       key={l3.id}
-                      href={`/${sectorSlug}/${l3.slug}`}
+                      href={sectorCategoryPath(sectorSlug, l3.slug)}
                       className="cb-sector-row"
                     >
                       <span className="cb-sector-row-ico" aria-hidden="true">

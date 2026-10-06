@@ -42,7 +42,7 @@ import {
   faComments, faBoxOpen, faPaperPlane, faCodeCompare, faEye, faLayerGroup, faQuoteLeft, faMoneyBillWave, faBriefcase,
 } from '@fortawesome/free-solid-svg-icons'
 import { faLinkedin, faXTwitter, faFacebook } from '@fortawesome/free-brands-svg-icons'
-import { sectorLandingPath } from '@/lib/sector-paths'
+import { sectorLandingPath, sectorCategoryPath } from '@/lib/sector-paths'
 
 /* ═══════════════════════════════════════════════════════════════════════════
    /profile/[slug] — Clutch.co-style company profile.
@@ -660,7 +660,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
               <a href="/" aria-label="Home"><FontAwesomeIcon icon={faHouse} /></a>
               {breadcrumb.map((bc, i) => {
                 const sectorSlug = breadcrumb[0]?.slug
-                const href = i === 0 ? sectorLandingPath(bc.slug) : `/${sectorSlug}/${bc.slug}`
+                const href = i === 0 ? sectorLandingPath(bc.slug) : sectorCategoryPath(sectorSlug, bc.slug)
                 return (
                   <span key={bc.slug} style={{ display: 'contents' }}>
                     <span className="cmp-crumb-sep"><FontAwesomeIcon icon={faChevronRight} /></span>
@@ -1491,7 +1491,7 @@ export default function CompanyDetailPage({ slug: propSlug, initialData }: Props
                 </h2>
                 <div className="tlp-rc-grid">
                   {relatedCategories.map(rc => (
-                    <a key={rc.id} href={`/${rc.slug}`} className="tlp-rc">
+                    <a key={rc.id} href={sectorCategoryPath(breadcrumb[0]?.slug, rc.slug)} className="tlp-rc">
                       <span className="tlp-rc-icon"><FolderIcon /></span>
                       <span className="tlp-rc-lbl">{rc.name}</span>
                     </a>

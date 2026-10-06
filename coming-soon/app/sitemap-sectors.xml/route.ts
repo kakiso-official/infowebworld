@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { sectorLandingPath } from '@/lib/sector-paths'
+import { sectorLandingPath, sectorViewAllPath } from '@/lib/sector-paths'
 
 const BASE = 'https://www.infowebworld.com'
 
@@ -24,11 +24,12 @@ export async function GET() {
     <priority>0.95</priority>
   </url>`)
 
-  /* view-all sector indexes — `/${sector}/view-all-sub-categories-${sector}`.
+  /* view-all sector indexes — sectorViewAllPath(), e.g.
+     /saas-directory/view-all-sub-categories-software-saas.
      Sit just below the sector landings: full @graph CollectionPage carrying
      ItemList + Dataset + DefinedTermSet + HowTo + FAQ, unique answer surface. */
   const viewAllUrls = SECTORS.map(s => `  <url>
-    <loc>${BASE}/${s}/view-all-sub-categories-${s}</loc>
+    <loc>${BASE}${sectorViewAllPath(s)}</loc>
     <lastmod>${now}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>

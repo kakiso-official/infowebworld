@@ -1,8 +1,9 @@
 import type { ParsedCategoryFilters } from './parse-segments'
+import { sectorCategoryPath } from '@/lib/sector-paths'
 
 /**
  * Build a category URL with filters as query parameters.
- * Base path: /{sectorSlug}/{categorySlug}
+ * Base path: {sector landing path}/{categorySlug} (lib/sector-paths.ts)
  * Filters:   ?country=X&state=Y&city=Z&type=X&tags=X,Y
  *
  * Query-param URLs are naturally non-crawlable and feel like "filters applied".
@@ -13,9 +14,7 @@ export function buildCategoryUrl(
   sectorSlug?: string,
 ): string {
   // Base path — just sector + category slug, no filter segments
-  const basePath = sectorSlug
-    ? `/${sectorSlug}/${filters.categorySlug}`
-    : `/${filters.categorySlug}`
+  const basePath = sectorCategoryPath(sectorSlug, filters.categorySlug)
 
   // Build query params for active filters
   const params = new URLSearchParams()

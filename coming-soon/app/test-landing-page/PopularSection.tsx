@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar } from '@fortawesome/free-solid-svg-icons'
+import { sectorViewAllPath } from '@/lib/sector-paths'
 
 /* ═══════════════════════════════════════════════════════════════════════
    Popular AI tools block — dark section under the reviews marquee.
@@ -95,7 +96,7 @@ export default function PopularSection({
   emptyLine = 'No AI tools to feature yet — check back soon.',
   cta = 'Browse all AI tools',
 }: Props) {
-  const browseHref = `/${sectorSlug}/view-all-sub-categories-${sectorSlug}`
+  const browseHref = sectorViewAllPath(sectorSlug)
 
   if (firms.length === 0) {
     return (

@@ -6,6 +6,7 @@ import { mapRow } from '../iww-hq/data/category-storage'
 import type { Category } from '../iww-hq/data/category-storage'
 import { CATEGORIES as STATIC_CATS } from '../config/categories-data'
 import { sectorLandingPath, categoryPath } from '@/lib/sector-paths'
+import { sectorCategoryPath } from '@/lib/sector-paths'
 
 /* Folder icons — same closed-folder glyph used on /listing's Related
    Categories and L2-L4 SubcategoryList; open-folder variant for the
@@ -347,7 +348,7 @@ export default function CategoriesBrowse() {
                     {sector.children.map(child => (
                       <Link
                         key={child.id}
-                        href={`/${sector.slug}/${child.slug}`}
+                        href={sectorCategoryPath(sector.slug, child.slug)}
                         className="cb-sector-row"
                       >
                         <span className="cb-sector-row-ico" aria-hidden="true">

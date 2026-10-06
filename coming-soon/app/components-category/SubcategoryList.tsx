@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import { sectorCategoryPath } from '@/lib/sector-paths'
 
 type Sub = { id: string; slug: string; name: string; listingCount: number }
 
@@ -29,12 +30,11 @@ export default function SubcategoryList({
   sectorSlug?: string
 }) {
   if (!subcategories.length) return null
-  const sp = sectorSlug ? `/${sectorSlug}` : ''
   return (
     <ul className="cd-sublist" aria-label="Subcategories">
       {subcategories.map(sc => (
         <li key={sc.id} className="cd-sublist-item">
-          <Link href={`${sp}/${sc.slug}`} className="cd-sublist-link">
+          <Link href={sectorCategoryPath(sectorSlug, sc.slug)} className="cd-sublist-link">
             <span className="cd-sublist-ico" aria-hidden="true"><FolderIcon size={20} /></span>
             <span className="cd-sublist-name">{sc.name}</span>
           </Link>

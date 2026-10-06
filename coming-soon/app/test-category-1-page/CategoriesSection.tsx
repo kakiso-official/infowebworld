@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { CATEGORIES as STATIC_CATEGORIES } from '../config/categories-data'
-import { sectorLandingPath } from '@/lib/sector-paths'
+import { sectorLandingPath, sectorCategoryPath } from '@/lib/sector-paths'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -76,13 +76,13 @@ export default function CategoriesSection() {
                 <div className="tlp-cat-card-ico">
                   <FontAwesomeIcon icon={c.icon} style={{ width: 36, height: 36 }} />
                 </div>
-                <Link href={`/ai-ml/${c.slug}`} className="tlp-cat-card-name">{c.label}</Link>
+                <Link href={sectorCategoryPath('ai-ml', c.slug)} className="tlp-cat-card-name">{c.label}</Link>
 
                 <span className="tlp-cat-card-pill">Services</span>
                 <ul className="tlp-cat-card-tags">
                   {services.map((sub, i) => (
                     <li key={sub.slug}>
-                      <Link href={`/ai-ml/${c.slug}/${sub.slug}`} className="tlp-cat-card-tag">
+                      <Link href={sectorCategoryPath('ai-ml', sub.slug)} className="tlp-cat-card-tag">
                         {sub.name}
                       </Link>
                       {i < services.length - 1 && (

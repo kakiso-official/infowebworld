@@ -32,6 +32,8 @@ export interface NewReviewsSectionProps {
   reviews: ReviewRow[]
   title?: string
   subtitle?: string
+  /** Label of the "Write a review" button (both states). */
+  ctaLabel?: string
 }
 
 type Props = NewReviewsSectionProps
@@ -84,6 +86,7 @@ export default function NewReviewsSection({
   reviews,
   title = 'What verified buyers are saying',
   subtitle,
+  ctaLabel = 'Write a review',
 }: Props) {
   return (
     <section className="tlp-revs" aria-labelledby="tlp-revs-h">
@@ -96,7 +99,7 @@ export default function NewReviewsSection({
         {reviews.length === 0 ? (
           <div className="tlp-revs-empty">
             <p>No verified reviews yet — yours could be the first.</p>
-            <Link href="/write-review" className="tlp-revs-cta-btn">Write a review</Link>
+            <Link href="/write-review" className="tlp-revs-cta-btn">{ctaLabel}</Link>
           </div>
         ) : (
           <>
@@ -156,7 +159,7 @@ export default function NewReviewsSection({
             </div>
 
             <div className="tlp-revs-cta">
-              <Link href="/write-review" className="tlp-revs-cta-btn">Write a review</Link>
+              <Link href="/write-review" className="tlp-revs-cta-btn">{ctaLabel}</Link>
             </div>
           </>
         )}

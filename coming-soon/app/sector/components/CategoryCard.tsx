@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { I, ic } from '../../components/icons'
 import HIcon from './HIcon'
+import { sectorCategoryPath } from '@/lib/sector-paths'
 
 type Props = {
   cat: { name: string; slug: string; listingCount: number; childCount: number; icon?: string }
@@ -11,7 +12,7 @@ type Props = {
 
 export default function CategoryCard({ cat, color, sectorSlug }: Props) {
   return (
-    <Link href={sectorSlug ? `/${sectorSlug}/${cat.slug}` : `/${cat.slug}`} className="sl-cat">
+    <Link href={sectorCategoryPath(sectorSlug, cat.slug)} className="sl-cat">
       <div className="sl-cat-icon" style={{ background: `${color}14` }}>
         <HIcon name={cat.icon || 'grid'} size={22} color={color} />
       </div>

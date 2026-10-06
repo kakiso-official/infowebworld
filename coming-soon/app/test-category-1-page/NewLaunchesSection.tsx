@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar, faClock, faArrowRight } from '@fortawesome/free-solid-svg-icons'
+import { sectorViewAllPath } from '@/lib/sector-paths'
 
 /* ═══════════════════════════════════════════════════════════════════════
    "Just launched on InfoWebWorld" — chronological 2×4 grid of the most
@@ -136,7 +137,7 @@ export default function NewLaunchesSection({
         </div>
 
         <div className="tcat-new-cta">
-          <Link href={`/${sectorSlug}/view-all-sub-categories-${sectorSlug}`} className="tcat-new-cta-btn">
+          <Link href={sectorViewAllPath(sectorSlug)} className="tcat-new-cta-btn">
             {cta}
             <FontAwesomeIcon icon={faArrowRight} className="tcat-new-cta-ico" />
           </Link>

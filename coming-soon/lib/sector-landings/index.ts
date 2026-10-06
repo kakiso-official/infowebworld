@@ -14,7 +14,10 @@
  * shared types.
  *
  * Used by app/sector-landing/SectorLandingPage.tsx and the catch-all
- * /[...segments]/page.tsx isSector branch.
+ * /[...segments]/page.tsx isSector branch, which no longer render since
+ * the Oct 2026 move to the "[sector] directory" routes (the AI tools
+ * directory still reads a few fields of ./ai-ml; the other five pages
+ * take their copy from app/sector-directory/specs/).
  */
 import type { SectorLandingConfig } from './types'
 import { aiMl } from './ai-ml'

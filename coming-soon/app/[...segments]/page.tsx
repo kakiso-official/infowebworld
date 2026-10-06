@@ -16,7 +16,9 @@ import { isCrossSectorCollision } from '../config/category-name-collisions'
 import { toSlug, lookupLocationCountryAsync } from '../lib/geo-slugs'
 import { CATEGORIES as STATIC_CATEGORIES } from '../config/categories-data'
 import { SECTOR_LANDINGS } from '@/lib/sector-landings'
-import { sectorLandingPath } from '@/lib/sector-paths'
+import {
+  sectorLandingPath, sectorCategoryPath, sectorViewAllPath, sectorFromUrlSegment, currentSectorUrl,
+} from '@/lib/sector-paths'
 import SectorLandingPage from '../sector-landing/SectorLandingPage'
 import { PRO_SERVICES_VERTICALS, PRO_SERVICES_FAQ } from '../sector-landing/pro-services-content'
 import {
@@ -72,11 +74,6 @@ function VaFolderIcon({ size = 22 }: { size?: number }) {
         d="M6 14l3 4h12l3 4h18" />
     </svg>
   )
-}
-
-/** Helper: build the view-all slug for a sector */
-function viewAllSlug(sectorSlug: string) {
-  return `view-all-sub-categories-${sectorSlug}`
 }
 
 /* ── Per-sector keyword positioning for the 6 "view all" category-index pages.
@@ -611,7 +608,7 @@ async function buildSectorJsonLd(
 ): Promise<string> {
   const meta = getSectorMeta(sectorSlug)
   const sName = meta.seoTitle
-  const sUrl = canonicalUrl(country, `/${sectorSlug}`)
+  const sUrl = canonicalUrl(country, sectorLandingPath(sectorSlug))
   const year = new Date().getFullYear()
 
   /* Pull top 12 sector listings + aggregate review row in parallel — these
@@ -796,7 +793,7 @@ async function buildSectorJsonLd(
       '@type': 'ListItem',
       position: i + 1,
       name: v.name,
-      url: canonicalUrl(country, `/professional-services/${v.slug}`),
+      url: canonicalUrl(country, sectorCategoryPath('professional-services', v.slug)),
     })),
   }
 
@@ -971,7 +968,7 @@ function buildCategoryMeta(
   const baseName = qualifyCategoryName(cat.seoTitle || cat.name, sectorSlug)
   const year = new Date().getFullYear()
 
-  const baseUrl = canonicalUrl(country, `/${sectorSlug}/${cat.slug}`)
+  const baseUrl = canonicalUrl(country, sectorCategoryPath(sectorSlug, cat.slug))
 
   /* Which filter mode? Country meta only applies when no DEEPER filter is set
      (state/city/type/tags always consolidate to the base URL). */
@@ -1027,7 +1024,7 @@ function buildCategoryMeta(
        *different* (base) URL is a mixed signal Google may mishandle — noindex
        alone reliably keeps it out of the index while `follow` passes equity. */
   const pageUrl = fc ? `${baseUrl}?country=${fc.slug}` : baseUrl
-  const canonical = fc ? pageUrl : (cat.seoCanonical || baseUrl)
+  const canonical = fc ? pageUrl : (cat.seoCanonical ? currentSectorUrl(cat.seoCanonical) : baseUrl)
 
   /* Dynamic per-category OG image — rendered at request time by
      /api/og/{sector}/{slug}. DB-stored seoOgImage still wins if set. */
@@ -1186,7 +1183,7 @@ function buildJsonLd(
 ) {
   const baseName = qualifyCategoryName(cat.seoTitle || cat.name, sectorSlug)
   const baseDesc = cat.seoDescription || cat.description
-  const url = canonicalUrl(country, `/${sectorSlug}/${cat.slug}`)
+  const url = canonicalUrl(country, sectorCategoryPath(sectorSlug, cat.slug))
   /* " in <Country>" suffix for the CollectionPage/ItemList names so schema
      tracks the localized <title> + H1 on ?country= pages ('' otherwise). */
   const inCountry = countryName ? ` in ${countryName}` : ''
@@ -1198,10 +1195,10 @@ function buildJsonLd(
   let pos = 2
   if (cat.parentName && cat.parentSlug) {
     // If parent is L1 (cat.level === 2), link to its landing page
-    // If parent is L2 (cat.level === 3), link to /{sectorSlug}/{parentSlug}
+    // If parent is L2 (cat.level === 3), link to its category page
     const parentUrl = cat.level === 2
       ? canonicalUrl(country, sectorLandingPath(cat.parentSlug))
-      : canonicalUrl(country, `/${sectorSlug}/${cat.parentSlug}`)
+      : canonicalUrl(country, sectorCategoryPath(sectorSlug, cat.parentSlug))
     bcItems.push({
       '@type': 'ListItem', position: pos++,
       name: cat.parentName,
@@ -1526,27 +1523,38 @@ export async function generateMetadata({
   const countryName = 'Worldwide'
   const monthYear = currentMonthYear()
 
-  // Check if this is a view-all-sub-categories page (new nested form: /{sector}/view-all-sub-categories-{sector})
+  /* The first segment of a sector URL is the sector's landing path
+     (/ai-si-directory/{slug} → ai-ml; lib/sector-paths.ts). Old
+     /{sectorSlug} and /{sectorSlug}/... URLs are 308'd by next.config.ts
+     before routing; this is the safety net if one ever reaches the route. */
+  const urlSector = sectorFromUrlSegment(slug)
+  if (!urlSector && L1_SLUGS.has(slug)) permanentRedirect(currentSectorUrl(`/${segments.join('/')}`))
+
+  // Check if this is a view-all-sub-categories page (/{sector path}/view-all-sub-categories-{sector})
   const viewAllPrefix = 'view-all-sub-categories-'
   const isViewAll =
     segments.length === 2 &&
-    L1_SLUGS.has(slug) &&
+    !!urlSector &&
     segments[1].startsWith(viewAllPrefix)
   const viewAllSector = isViewAll ? segments[1].slice(viewAllPrefix.length) : null
+  /* Another sector's index under this sector's path → its own URL. */
+  if (isViewAll && viewAllSector !== urlSector && viewAllSector && L1_SLUGS.has(viewAllSector)) {
+    permanentRedirect(sectorViewAllPath(viewAllSector))
+  }
 
-  // Determine actual category slug: if first segment is L1 and there's a second, category is segments[1]
+  // Determine actual category slug: under a sector path, the category is segments[1]
   let categorySlug = slug
   let sectorSlug = ''
-  if (!isViewAll && L1_SLUGS.has(slug) && segments.length >= 2) {
-    sectorSlug = slug
+  if (!isViewAll && urlSector && segments.length >= 2) {
+    sectorSlug = urlSector
     categorySlug = segments[1]
 
     /* Cost guard (see SECTOR_BY_CATEGORY_SLUG): collapse extra path segments
        and wrong-sector aliases to the canonical URL before any DB work. */
-    if (segments.length > 2) permanentRedirect(`/${sectorSlug}/${categorySlug}`)
+    if (segments.length > 2) permanentRedirect(sectorCategoryPath(sectorSlug, categorySlug))
     const trueSector = SECTOR_BY_CATEGORY_SLUG.get(categorySlug)
     if (trueSector && trueSector !== sectorSlug) {
-      permanentRedirect(`/${trueSector}/${categorySlug}`)
+      permanentRedirect(sectorCategoryPath(trueSector, categorySlug))
     }
   }
 
@@ -1556,7 +1564,7 @@ export async function generateMetadata({
      image, hreflang, indexable. Matches the /categories metadata depth. */
   if (isViewAll && viewAllSector && L1_SLUGS.has(viewAllSector)) {
     const meta = getSectorMeta(viewAllSector)
-    const url = canonicalUrl(country, `/${viewAllSector}/${viewAllSlug(viewAllSector)}`)
+    const url = canonicalUrl(country, sectorViewAllPath(viewAllSector))
     const year = new Date().getFullYear()
 
     /* Static taxonomy counts for this sector — no DB hit; the file lives
@@ -1665,10 +1673,12 @@ export async function generateMetadata({
     }
   }
 
-  /* ── L1 Sectors — full SEO/AEO/GEO metadata surface. ── */
+  /* ── L1 Sectors — full SEO/AEO/GEO metadata surface. Not reached since
+     the Oct 2026 move: /{sector} 308s to its own directory route
+     (next.config.ts), whose metadata lives in that route. ── */
   if (L1_SLUGS.has(slug) && segments.length === 1) {
     const meta = getSectorMeta(slug)
-    const url = canonicalUrl(country, `/${slug}`)
+    const url = canonicalUrl(country, sectorLandingPath(slug))
     const year = new Date().getFullYear()
 
     /* Pull aggregate listing count + review aggregate for this sector tree —
@@ -1898,37 +1908,49 @@ export default async function CategoryDetailRoute({
   const { countrySlug: routeCountrySlug, deepFilter: routeDeepFilter } = readFilterState(await searchParams)
   const monthYear = currentMonthYear()
 
-  // Check if this is a view-all page (new nested form: /{sector}/view-all-sub-categories-{sector})
+  /* The first segment of a sector URL is the sector's landing path
+     (/ai-si-directory/{slug} → ai-ml; lib/sector-paths.ts). Old
+     /{sectorSlug} and /{sectorSlug}/... URLs are 308'd by next.config.ts
+     before routing; this is the safety net if one ever reaches the route. */
+  const urlSector = sectorFromUrlSegment(slug)
+  if (!urlSector && slug && L1_SLUGS.has(slug)) permanentRedirect(currentSectorUrl(`/${segments.join('/')}`))
+
+  // Check if this is a view-all page (/{sector path}/view-all-sub-categories-{sector})
   const viewAllPrefix2 = 'view-all-sub-categories-'
   const isViewAll2 =
     segments.length === 2 &&
-    !!slug &&
-    L1_SLUGS.has(slug) &&
+    !!urlSector &&
     segments[1].startsWith(viewAllPrefix2)
   const viewAllSector2 = isViewAll2 ? segments[1].slice(viewAllPrefix2.length) : null
+  if (isViewAll2 && viewAllSector2 !== urlSector) {
+    /* Another sector's index under this sector's path → its own URL; an
+       unknown sector suffix is garbage → TRUE 404. */
+    if (viewAllSector2 && L1_SLUGS.has(viewAllSector2)) permanentRedirect(sectorViewAllPath(viewAllSector2))
+    redirect('/url-removed')
+  }
 
-  /* ── Redirect old flat /view-all-sub-categories-{sector} → /{sector}/view-all-sub-categories-{sector} ── */
+  /* ── Redirect old flat /view-all-sub-categories-{sector} → the nested index ── */
   if (slug && slug.startsWith(viewAllPrefix2) && segments.length === 1) {
     const legacySector = slug.slice(viewAllPrefix2.length)
     if (L1_SLUGS.has(legacySector)) {
-      redirect(`/${legacySector}/${viewAllSlug(legacySector)}`)
+      permanentRedirect(sectorViewAllPath(legacySector))
     }
   }
 
-  // Determine actual category slug and sector prefix
+  // Determine actual category slug and its sector
   let categorySlug = slug || ''
   let sectorSlug = ''
-  if (!isViewAll2 && slug && L1_SLUGS.has(slug) && segments.length >= 2) {
-    sectorSlug = slug
+  if (!isViewAll2 && urlSector && segments.length >= 2) {
+    sectorSlug = urlSector
     categorySlug = segments[1]
   }
 
-  /* ── Redirect old /sector/all URLs to new view-all nested format ── */
-  if (segments.length === 2 && segments[1] === 'all' && slug && L1_SLUGS.has(slug)) {
-    redirect(`/${slug}/${viewAllSlug(slug)}`)
+  /* ── Redirect old /{sector path}/all URLs to the view-all index ── */
+  if (segments.length === 2 && segments[1] === 'all' && urlSector) {
+    permanentRedirect(sectorViewAllPath(urlSector))
   }
 
-  /* ── Redirect old URLs without L1 prefix to new prefixed URLs ──
+  /* ── Redirect old URLs without a sector path to the prefixed URLs ──
      Resolved from the static taxonomy (zero DB). Bare-slug URLs only ever
      existed for pre-May-2026 categories, which are all in the export, so no
      DB fallback is needed. Anything else with an unknown first segment is
@@ -1936,23 +1958,23 @@ export default async function CategoryDetailRoute({
      send it to /url-removed, which renders non-streamed and returns a TRUE
      404 — instead of the force-dynamic soft-404 (HTTP 200 + DB queries)
      that kept bots re-crawling an unbounded URL space forever. */
-  if (!isViewAll2 && slug && !L1_SLUGS.has(segments[0])) {
+  if (!isViewAll2 && slug && !urlSector) {
     const sector = SECTOR_BY_CATEGORY_SLUG.get(segments[0])
     if (sector) {
-      permanentRedirect(`/${sector}/${segments.join('/')}`)
+      permanentRedirect(`${sectorLandingPath(sector)}/${segments.join('/')}`)
     }
     redirect('/url-removed')
   }
 
-  /* ── Cost guard for L1-prefixed category URLs (mirrors generateMetadata) ──
+  /* ── Cost guard for sector-prefixed category URLs (mirrors generateMetadata) ──
      Wrong-sector aliases and 3+-segment leftovers 308 to the canonical URL;
      slugs in neither the static taxonomy nor the DB are garbage → TRUE 404
      via /url-removed instead of a 200 soft-404 with the full 14-query render. */
   if (sectorSlug && categorySlug) {
-    if (segments.length > 2) permanentRedirect(`/${sectorSlug}/${categorySlug}`)
+    if (segments.length > 2) permanentRedirect(sectorCategoryPath(sectorSlug, categorySlug))
     const trueSector = SECTOR_BY_CATEGORY_SLUG.get(categorySlug)
     if (trueSector && trueSector !== sectorSlug) {
-      permanentRedirect(`/${trueSector}/${categorySlug}`)
+      permanentRedirect(sectorCategoryPath(trueSector, categorySlug))
     }
     if (!trueSector) {
       /* Absent from the export: post-export category (render it) or garbage
@@ -1995,7 +2017,7 @@ export default async function CategoryDetailRoute({
       return s
     }, 0)
 
-    const URL_VIEWALL = `${SEO_BASE_URL}/${viewAllSector2}/${viewAllSlug(viewAllSector2)}`
+    const URL_VIEWALL = `${SEO_BASE_URL}${sectorViewAllPath(viewAllSector2)}`
     const yearNow = new Date().getFullYear()
     const monthYearNow = currentMonthYear()
     const lcSectorName = sectorName.toLowerCase()
@@ -2046,13 +2068,13 @@ export default async function CategoryDetailRoute({
       mentions: l2RowsInSector.slice(0, 15).map(l2 => ({
         '@type': 'Thing',
         name: l2.name,
-        url: `${SEO_BASE_URL}/${viewAllSector2}/${l2.slug}`,
+        url: `${SEO_BASE_URL}${sectorCategoryPath(viewAllSector2, l2.slug)}`,
       })),
       speakable: {
         '@type': 'SpeakableSpecification',
         cssSelector: ['.cd-server-h1', '.cd-server-desc', '.cd-server-h2'],
       },
-      significantLink: l2RowsInSector.slice(0, 20).map(l2 => `${SEO_BASE_URL}/${viewAllSector2}/${l2.slug}`),
+      significantLink: l2RowsInSector.slice(0, 20).map(l2 => `${SEO_BASE_URL}${sectorCategoryPath(viewAllSector2, l2.slug)}`),
       mainEntity: { '@id': ID_ITEMLIST },
       mainEntityOfPage: URL_VIEWALL,
       numberOfItems: l2InSector + l3InSector,
@@ -2099,14 +2121,14 @@ export default async function CategoryDetailRoute({
         return {
           '@type': 'ListItem',
           position: i + 1,
-          url: `${SEO_BASE_URL}/${viewAllSector2}/${l2.slug}`,
+          url: `${SEO_BASE_URL}${sectorCategoryPath(viewAllSector2, l2.slug)}`,
           name: l2.name,
           item: {
             '@type': 'Thing',
-            '@id': `${SEO_BASE_URL}/${viewAllSector2}/${l2.slug}#category`,
+            '@id': `${SEO_BASE_URL}${sectorCategoryPath(viewAllSector2, l2.slug)}#category`,
             name: l2.name,
             description: `${l2.name} — ${l3sUnder} subcategories inside ${sectorName} on InfoWebWorld.`,
-            url: `${SEO_BASE_URL}/${viewAllSector2}/${l2.slug}`,
+            url: `${SEO_BASE_URL}${sectorCategoryPath(viewAllSector2, l2.slug)}`,
           },
         }
       }),
@@ -2327,14 +2349,14 @@ export default async function CategoryDetailRoute({
               {l2RowsInSector.map((l2, i) => (
                 <a
                   key={l2.slug}
-                  href={`/${viewAllSector2}/${l2.slug}`}
+                  href={sectorCategoryPath(viewAllSector2, l2.slug)}
                   className="va-card"
                   itemProp="itemListElement"
                   itemScope
                   itemType="https://schema.org/ListItem"
                 >
                   <meta itemProp="position" content={String(i + 1)} />
-                  <link itemProp="url" href={`${SEO_BASE_URL}/${viewAllSector2}/${l2.slug}`} />
+                  <link itemProp="url" href={`${SEO_BASE_URL}${sectorCategoryPath(viewAllSector2, l2.slug)}`} />
                   <span className="va-card-ico" aria-hidden="true">
                     <VaFolderIcon size={22} />
                   </span>
@@ -2452,9 +2474,12 @@ export default async function CategoryDetailRoute({
      Popular/TopFirms/Reviews/Launches/Tools/Trust/Compare/CTA) is shared
      across all six, scoped by a .tcat-<slug> class that overrides the palette
      CSS custom properties.
-     Exception: the AI & ML landing is its own route, app/ai-si-directory
-     (Oct 2026 SEO spec); /ai-ml 308s there in next.config.ts, so this
-     branch only ever renders the other five sectors. */
+     Since Oct 2026 every sector landing is its own route built to the SEO
+     specs (app/ai-si-directory and the five app/sector-directory pages,
+     see lib/sector-paths.ts). next.config.ts 308s each old /{sector} URL
+     there before routing, so this branch (and the L1 block in
+     generateMetadata) no longer renders; it only matters if one of those
+     redirects is removed. */
   /* ── Fetch ALL data server-side ── */
   let pageData: Awaited<ReturnType<typeof fetchCategoryPageData>> = null
 
@@ -2672,7 +2697,7 @@ export default async function CategoryDetailRoute({
      HTML for crawlers. No need for a separate <div> that renders the same
      content again. View source is now ~50% lighter. */
 
-  const catSegments = L1_SLUGS.has(segments[0]) && segments.length > 1 ? segments.slice(1) : segments
+  const catSegments = urlSector && segments.length > 1 ? segments.slice(1) : segments
 
   return (
     <>
@@ -2681,7 +2706,7 @@ export default async function CategoryDetailRoute({
       <Suspense>
         <CategoryPage
           segments={catSegments}
-          sectorSlug={sectorSlug || slug || ''}
+          sectorSlug={sectorSlug}
           initialData={pageData || undefined}
           routeCountry={routeCountry}
         />

@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import { faCircleCheck, faCircleMinus } from '@fortawesome/free-solid-svg-icons'
 
 /* Styles: app/styles/home/comparison.css — imported by the homepage CSS
@@ -7,7 +8,9 @@ import { faCircleCheck, faCircleMinus } from '@fortawesome/free-solid-svg-icons'
 /* ═══════════════════════════════════════════════════════════════════════
    "Smarter Way to Find and List Businesses" comparison table section
    — replaces the old "Why trust InfoWebWorld" banner on the homepage and
-   on the AI tools directory (which passes its own heading/sub/caption).
+   on the sector directories (which pass their own heading/sub/caption,
+   and the five non-AI ones a "For buyers / For businesses" pair of
+   audience cards under the table).
 
    A real semantic <table> (not divs) so crawlers and AI answer engines
    can read the InfoWebWorld-vs-typical-directory comparison directly.
@@ -73,12 +76,15 @@ export interface ComparisonTableSectionProps {
   sub?: string
   /** Visually hidden <caption> naming what the table compares. */
   caption?: string
+  /** Optional cards under the table, one per audience (an <h3> + a line). */
+  audiences?: { heading: string; text: string; icon: IconDefinition }[]
 }
 
 export default function ComparisonTableSection({
   heading = 'Smarter Way to Find and List Businesses',
   sub,
   caption = 'InfoWebWorld compared with a typical free business directory',
+  audiences,
 }: ComparisonTableSectionProps = {}) {
   return (
     <section className="hm-vs" aria-labelledby="hm-vs-h">
@@ -130,6 +136,22 @@ export default function ComparisonTableSection({
             </table>
           </div>
         </div>
+
+        {audiences && audiences.length > 0 ? (
+          <ul className="hm-vs-aud">
+            {audiences.map(a => (
+              <li key={a.heading} className="hm-vs-aud-card">
+                <span className="hm-vs-aud-ico" aria-hidden="true">
+                  <FontAwesomeIcon icon={a.icon} />
+                </span>
+                <div className="hm-vs-aud-body">
+                  <h3 className="hm-vs-aud-title">{a.heading}</h3>
+                  <p className="hm-vs-aud-text">{a.text}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : null}
       </div>
     </section>
   )

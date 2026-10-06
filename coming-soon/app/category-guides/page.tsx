@@ -7,11 +7,11 @@ const URL = `${BASE_URL}/category-guides`
 
 const sectors = [
   { name: 'AI & Machine Learning', url: `${BASE_URL}${sectorLandingPath('ai-ml')}`, description: 'Chatbots, AI writing, image and video generation, AI code assistants, data analysis, AI agent frameworks, applied AI across verticals.' },
-  { name: 'Software & SaaS', url: `${BASE_URL}/software-saas`, description: 'Sales CRM, marketing tools, HR and payroll, developer tools, project management, communication, cybersecurity, analytics, ERP.' },
-  { name: 'IT Services & Agencies', url: `${BASE_URL}/it-services-agencies`, description: 'Custom software development, web and mobile app agencies, SEO firms, cloud migration, UX/UI studios, cybersecurity consultants, AI/ML dev shops.' },
-  { name: 'Startups & Innovation', url: `${BASE_URL}/startups-innovation`, description: 'FinTech, HealthTech, EdTech, climate tech, AI-native startups, Web3 and blockchain, VCs, accelerators.' },
-  { name: 'Local Businesses', url: `${BASE_URL}/local-businesses`, description: 'Restaurants, beauty and spa, home repair, automotive, doctors, pet services, retail, wedding vendors, schools, hospitality.' },
-  { name: 'Professional Services', url: `${BASE_URL}/professional-services`, description: 'Law firms, accountants, financial advisors, consulting, engineering firms, architects, real estate, HR consulting, coaching.' },
+  { name: 'Software & SaaS', url: `${BASE_URL}${sectorLandingPath('software-saas')}`, description: 'Sales CRM, marketing tools, HR and payroll, developer tools, project management, communication, cybersecurity, analytics, ERP.' },
+  { name: 'IT Services & Agencies', url: `${BASE_URL}${sectorLandingPath('it-services-agencies')}`, description: 'Custom software development, web and mobile app agencies, SEO firms, cloud migration, UX/UI studios, cybersecurity consultants, AI/ML dev shops.' },
+  { name: 'Startups & Innovation', url: `${BASE_URL}${sectorLandingPath('startups-innovation')}`, description: 'FinTech, HealthTech, EdTech, climate tech, AI-native startups, Web3 and blockchain, VCs, accelerators.' },
+  { name: 'Local Businesses', url: `${BASE_URL}${sectorLandingPath('local-businesses')}`, description: 'Restaurants, beauty and spa, home repair, automotive, doctors, pet services, retail, wedding vendors, schools, hospitality.' },
+  { name: 'Professional Services', url: `${BASE_URL}${sectorLandingPath('professional-services')}`, description: 'Law firms, accountants, financial advisors, consulting, engineering firms, architects, real estate, HR consulting, coaching.' },
 ]
 
 const faqs = [
@@ -159,27 +159,27 @@ export default function CategoryGuidesPage() {
           <IPCard icon="💻" title="Software & SaaS">
             Sales CRM, marketing tools, HR & payroll software, developer tools, project
             management, communication, cybersecurity, analytics, and ERP.
-            <br /><a href="/software-saas" className="ip-card-link">Browse Software & SaaS →</a>
+            <br /><a href={sectorLandingPath('software-saas')} className="ip-card-link">Browse Software & SaaS →</a>
           </IPCard>
           <IPCard icon="🧑‍💻" title="IT Services & Agencies">
             Custom software development, web & mobile app agencies, SEO firms, cloud
             migration, UX/UI studios, cybersecurity consultants, and AI/ML dev shops.
-            <br /><a href="/it-services-agencies" className="ip-card-link">Browse IT Services →</a>
+            <br /><a href={sectorLandingPath('it-services-agencies')} className="ip-card-link">Browse IT Services →</a>
           </IPCard>
           <IPCard icon="🚀" title="Startups & Innovation">
             FinTech, HealthTech, EdTech, climate tech, AI-native startups, Web3 &
             blockchain, VCs, accelerators, and the people funding the future.
-            <br /><a href="/startups-innovation" className="ip-card-link">Browse Startups →</a>
+            <br /><a href={sectorLandingPath('startups-innovation')} className="ip-card-link">Browse Startups →</a>
           </IPCard>
           <IPCard icon="🏪" title="Local Businesses">
             Restaurants, beauty & spa, home repair, automotive, doctors, pet services,
             retail, wedding vendors, schools, and hospitality.
-            <br /><a href="/local-businesses" className="ip-card-link">Browse Local Businesses →</a>
+            <br /><a href={sectorLandingPath('local-businesses')} className="ip-card-link">Browse Local Businesses →</a>
           </IPCard>
           <IPCard icon="💼" title="Professional Services">
             Law firms, accountants, financial advisors, consulting, engineering firms,
             architects, real estate, HR consulting, coaching, and corporate training.
-            <br /><a href="/professional-services" className="ip-card-link">Browse Professional Services →</a>
+            <br /><a href={sectorLandingPath('professional-services')} className="ip-card-link">Browse Professional Services →</a>
           </IPCard>
         </IPCardGrid>
       </IPSection>

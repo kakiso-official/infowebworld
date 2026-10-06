@@ -96,6 +96,72 @@
   }
 }
 
+/* Opt-in: centre a short last row (e.g. 15 picks in a 4-column grid).
+   Each card spans two half-columns, so a partial row can start half a
+   card in. */
+.hm-needs-grid--center {
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+}
+.hm-needs-grid--center > * {
+  grid-column: span 2;
+}
+.hm-needs-grid--center > :nth-child(4n + 1):nth-last-child(3) {
+  grid-column: 2 / span 2;
+}
+.hm-needs-grid--center > :nth-child(4n + 1):nth-last-child(2) {
+  grid-column: 3 / span 2;
+}
+.hm-needs-grid--center > :nth-child(4n + 1):last-child {
+  grid-column: 4 / span 2;
+}
+
+@media (max-width: 1180px) {
+  .hm-needs-grid--center {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .hm-needs-grid--center > *,
+  .hm-needs-grid--center > :nth-child(4n + 1):nth-last-child(3),
+  .hm-needs-grid--center > :nth-child(4n + 1):nth-last-child(2),
+  .hm-needs-grid--center > :nth-child(4n + 1):last-child {
+    grid-column: span 2;
+  }
+  .hm-needs-grid--center > :nth-child(3n + 1):nth-last-child(2) {
+    grid-column: 2 / span 2;
+  }
+  .hm-needs-grid--center > :nth-child(3n + 1):last-child {
+    grid-column: 3 / span 2;
+  }
+}
+
+@media (max-width: 980px) {
+  .hm-needs-grid--center {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .hm-needs-grid--center > *,
+  .hm-needs-grid--center > :nth-child(3n + 1):nth-last-child(2),
+  .hm-needs-grid--center > :nth-child(3n + 1):last-child {
+    grid-column: span 2;
+  }
+  .hm-needs-grid--center > :nth-child(2n + 1):last-child {
+    grid-column: 2 / span 2;
+  }
+}
+
+@media (max-width: 620px) {
+  .hm-needs-grid--center {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hm-needs-grid--center > *,
+  .hm-needs-grid--center > :nth-child(4n + 1):nth-last-child(3),
+  .hm-needs-grid--center > :nth-child(4n + 1):nth-last-child(2),
+  .hm-needs-grid--center > :nth-child(4n + 1):last-child,
+  .hm-needs-grid--center > :nth-child(3n + 1):nth-last-child(2),
+  .hm-needs-grid--center > :nth-child(3n + 1):last-child,
+  .hm-needs-grid--center > :nth-child(2n + 1):last-child {
+    grid-column: auto;
+  }
+}
+
 /* ─── Card ────────────────────────────────────────────────────────────── */
 
 .hm-needs-card {

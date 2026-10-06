@@ -17,6 +17,7 @@ import '../styles/sector/chips.css'
 import '../styles/sector/cta.css'
 import '../styles/sector/animations.css'
 import '../styles/sector/responsive.css'
+import { sectorCategoryPath, sectorViewAllPath } from '@/lib/sector-paths'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 function jp(v: unknown) { if (!v) return null; if (typeof v === 'string') { try { return JSON.parse(v) } catch { return null } } return v }
@@ -24,7 +25,7 @@ function jp(v: unknown) { if (!v) return null; if (typeof v === 'string') { try 
 function resolveLinks(text: string, allCats: Category[], sectorSlug: string) {
   return text.replace(/\[LINK:([^:]+):([^\]]+)\]/g, (_, slug, label) => {
     const cat = allCats.find(c => c.slug === slug)
-    if (cat) { const href = `/${sectorSlug}/${slug}`; return `<a href="${href}">${label}</a>` }
+    if (cat) { const href = sectorCategoryPath(sectorSlug, slug); return `<a href="${href}">${label}</a>` }
     return label
   })
 }
@@ -139,7 +140,7 @@ export default function SectorLanding({ category, allCategories, seoContent }: {
           <p className="slp-sub">{l2Cats.length} categories with {l3Cats.length.toLocaleString()} subcategories to explore</p>
           <div className="slp-cat-grid">
             {l2WithCounts.map((c, i) => (
-              <Link key={c.id} href={`/${category.slug}/${c.slug}`} className="slp-cat-card" style={{ animationDelay: `${Math.min(i * 40, 400)}ms` }}>
+              <Link key={c.id} href={sectorCategoryPath(category.slug, c.slug)} className="slp-cat-card" style={{ animationDelay: `${Math.min(i * 40, 400)}ms` }}>
                 <div className="slp-cat-head" style={{ background: `${color}0A` }}>
                   <I d={ic[c.icon as keyof typeof ic] || ic.grid} size={20} color={color} sw={2} />
                   <span className="slp-cat-count" style={{ background: `${color}15`, color }}>{c.childCount}</span>
@@ -266,10 +267,10 @@ export default function SectorLanding({ category, allCategories, seoContent }: {
             <h2 className="slp-h2">Explore All <em>Subcategories</em></h2>
             <p className="slp-sub">{l3Cats.length.toLocaleString()} specialized areas within {sectorName}</p>
             <nav className="slp-chips" aria-label={`${sectorName} subcategories`}>
-              {l3Cats.slice(0, 200).map(c => <Link key={c.id} href={`/${category.slug}/${c.slug}`} className="slp-chip">{c.name}</Link>)}
+              {l3Cats.slice(0, 200).map(c => <Link key={c.id} href={sectorCategoryPath(category.slug, c.slug)} className="slp-chip">{c.name}</Link>)}
             </nav>
             {l3Cats.length > 200 && (
-              <Link href={`/${category.slug}/view-all-sub-categories-${category.slug}`} className="slp-view-all" style={{ color }}>
+              <Link href={sectorViewAllPath(category.slug)} className="slp-view-all" style={{ color }}>
                 View all {l3Cats.length.toLocaleString()} subcategories &rarr;
               </Link>
             )}

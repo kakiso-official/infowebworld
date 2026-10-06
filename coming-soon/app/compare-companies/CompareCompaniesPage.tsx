@@ -39,6 +39,7 @@ import {
   type CompareReview,
   type ServiceShare,
 } from './lib'
+import { sectorCategoryPath } from '@/lib/sector-paths'
 
 /* ── Icons ────────────────────────────────────────────────── */
 
@@ -491,7 +492,7 @@ function PickSecondView({
             <div className="cpr-pick2-info">
               <Link href={`/profile/${col.slug}`} className="cpr-pick2-name">{col.companyName}</Link>
               {col.category && (
-                <Link href={`/${col.category.slug}`} className="cpr-pick2-cat" style={{ color: col.category.color }}>
+                <Link href={sectorCategoryPath(col.sectorSlug, col.category.slug)} className="cpr-pick2-cat" style={{ color: col.category.color }}>
                   {col.category.name}
                 </Link>
               )}
@@ -1051,7 +1052,7 @@ function AlternativesCell({
   maxCap: number
 }) {
   const show = alternatives.slice(0, 3)
-  const moreHref = thisCol.category?.slug ? `/${thisCol.category.slug}` : '/categories'
+  const moreHref = thisCol.category?.slug ? sectorCategoryPath(thisCol.sectorSlug, thisCol.category.slug) : '/categories'
 
   if (show.length === 0) {
     return (
@@ -1529,7 +1530,7 @@ export default function CompareCompaniesPage({
             {breadCat && (
               <>
                 <span aria-hidden="true">/</span>
-                <Link href={`/${breadCat.slug}`} style={{ color: breadCat.color }}>{breadCat.name}</Link>
+                <Link href={sectorCategoryPath(cols[0].sectorSlug, breadCat.slug)} style={{ color: breadCat.color }}>{breadCat.name}</Link>
               </>
             )}
           </nav>

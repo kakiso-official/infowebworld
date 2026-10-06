@@ -2,6 +2,10 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLayerGroup, faUserCheck, faRobot, faArrowRight } from '@fortawesome/free-solid-svg-icons'
+/* Font Awesome's own sizing CSS. FA only injects it at runtime when a client
+   component renders an icon, so a page whose icons are all server-rendered
+   (e.g. no reviewed listings in its client sections) showed them unsized. */
+import '@fortawesome/fontawesome-svg-core/styles.css'
 import '../styles/test-category-1-page.css'
 import '../styles/test-landing-page.css'
 import '../styles/home.css'
@@ -32,12 +36,13 @@ import {
   getAiListingTotal, getAiFeaturedByL2, getAiLaunches, getAiReviews, getAiPopularTools,
 } from './ai-directory-data'
 import { aiMl } from '@/lib/sector-landings/ai-ml'
-import { sectorLandingPath } from '@/lib/sector-paths'
+import { sectorLandingPath, sectorViewAllPath } from '@/lib/sector-paths'
 
 /* ════════════════════════════════════════════════════════════════════════
    AI tools directory — the AI & ML sector landing (SEO-spec rebuild,
-   Oct 2026). Lives at /ai-si-directory; /ai-ml 308-redirects here
-   (next.config.ts) while the AI category pages keep their /ai-ml/... URLs.
+   Oct 2026). Lives at /ai-si-directory, with the AI category pages under
+   it (/ai-si-directory/{slug}); /ai-ml and /ai-ml/... 308 here
+   (next.config.ts).
 
    Section order (inside <main className="tlp tcat1 tcat-ai-ml aid">):
      1  Hero (H1, AI-scoped search, stat badges, CTAs)
@@ -63,7 +68,7 @@ export const revalidate = 600
 
 const SITE = 'https://www.infowebworld.com'
 const PAGE_URL = `${SITE}${sectorLandingPath(AI_SECTOR)}`
-const VIEW_ALL_PATH = `/${AI_SECTOR}/view-all-sub-categories-${AI_SECTOR}`
+const VIEW_ALL_PATH = sectorViewAllPath(AI_SECTOR)
 const OG_IMAGE = `${SITE}/api/og/${AI_SECTOR}`
 
 /* Exact SEO-specified meta title + description — reused verbatim by the

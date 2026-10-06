@@ -8,6 +8,7 @@ import {
 import { CATEGORIES } from '../config/categories-data'
 import type { CategoryCardItem } from '../test-landing-page/CategoriesSection'
 import type { CuratedSubcategoryPick } from '../home-sections/popular-subcategories-data'
+import { sectorCategoryPath } from '@/lib/sector-paths'
 
 /* ═══════════════════════════════════════════════════════════════════════
    AI & ML taxonomy pieces for the AI tools directory, computed once from
@@ -49,7 +50,7 @@ const aiL2 = CATEGORIES
  *  the brief shows next to each name, e.g. "AI Core & Models (6)". */
 export const AI_CATEGORY_ITEMS: CategoryCardItem[] = aiL2.map(l2 => ({
   key: l2.slug,
-  href: `/${AI_SECTOR}/${l2.slug}`,
+  href: sectorCategoryPath(AI_SECTOR, l2.slug),
   label: l2.name,
   icon: L2_ORDER.find(o => o.slug === l2.slug)?.icon ?? faLayerGroup,
   accent: AI_ACCENT,

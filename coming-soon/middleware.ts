@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { SECTOR_URL_SEGMENTS } from '@/lib/sector-paths'
 
 /* ── Bot user-agents blocked at the edge ──
    robots.txt already disallows these, but robots is voluntary — MJ12bot,
@@ -36,16 +37,19 @@ const INDEXABLE_PATHS = new Set([
   '/team/past',
   '/insights',
   '/write-review',
-  /* AI & ML sector landing (moved from /ai-ml, Oct 2026) — see
-     lib/sector-paths.ts. Its category pages stay under /ai-ml/. */
+  /* The six sector landings (moved from /{sector}, Oct 2026) — see
+     lib/sector-paths.ts. Their category pages live under them. */
   '/ai-si-directory',
+  '/saas-directory',
+  '/it-directory',
+  '/startup-directory',
+  '/local-businesses-directory',
+  '/professional-service-directory',
 ])
 
-/* L1 sector slugs — used to detect sector landing + category detail routes
-   so middleware can allow them through (meta-robots in [...segments]/page.tsx
-   then makes the per-page index/noindex decision via isCategoryIndexable in
-   lib/category-indexing.ts: L2/L3 always, L4/L5 only with listings). Must
-   stay in sync with the L1_SLUGS set in that file. */
+/* The OLD L1 sector URL prefixes (/software-saas, /software-saas/...).
+   next.config.ts 308s them to the directory URLs before middleware runs;
+   kept so a slipped-through request isn't stamped noindex. */
 const SECTOR_SLUGS = new Set([
   'ai-ml', 'software-saas', 'it-services-agencies',
   'startups-innovation', 'local-businesses', 'professional-services',
@@ -56,15 +60,19 @@ function shouldNoindex(pathname: string): boolean {
 
   const segments = pathname.split('/').filter(Boolean)
 
-  /* /{sector} — L1 sector landing pages. Always indexable. */
+  /* /{sector} — the old L1 landing URLs. They 308 to the directory URLs
+     above in next.config.ts before middleware runs; kept as a safety net. */
   if (segments.length === 1 && SECTOR_SLUGS.has(segments[0])) return false
 
-  /* /{sector}/{categorySlug} — L2/L3/L4/L5 category detail pages AND the
-     view-all-sub-categories-{sector} index pages. Both are indexable: the
-     view-all pages now carry a full @graph (CollectionPage + ItemList +
-     Dataset + DefinedTermSet + HowTo + sector-specific FAQ) so they're a
-     real AEO/GEO surface, not a duplicate of /categories. */
-  if (segments.length === 2 && SECTOR_SLUGS.has(segments[0])) return false
+  /* /{sector path}/{categorySlug} — L2/L3/L4/L5 category detail pages AND
+     the view-all-sub-categories-{sector} index pages, under each sector's
+     directory path (/saas-directory/crm-platforms; lib/sector-paths.ts).
+     Both are indexable here: the page's own meta-robots makes the per-page
+     decision via isCategoryIndexable (lib/category-indexing.ts: L2/L3
+     always, L4/L5 only with listings), and the view-all pages carry a full
+     @graph (CollectionPage + ItemList + Dataset + DefinedTermSet + HowTo +
+     sector-specific FAQ) — a real AEO/GEO surface. */
+  if (segments.length === 2 && (SECTOR_URL_SEGMENTS.has(segments[0]) || SECTOR_SLUGS.has(segments[0]))) return false
 
   /* Individual listing + company profile pages. */
   if (segments.length === 2 && (segments[0] === 'listing' || segments[0] === 'profile')) return false
@@ -143,7 +151,7 @@ const ISR_PATH_RE = /^\/(listing|profile)\//
 /* Slow-changing public directory surfaces — safe at a 24h edge TTL.
    Blog is deliberately NOT here: new posts should surface within the
    default 1h edge TTL, not a day later. */
-const LONG_CACHE_RE = /^\/(ai-ml|ai-si-directory|software-saas|it-services-agencies|startups-innovation|local-businesses|professional-services|categories|sector|compare|compare-companies|all)(\/|$)/
+const LONG_CACHE_RE = /^\/(ai-ml|ai-si-directory|software-saas|saas-directory|it-services-agencies|it-directory|startups-innovation|startup-directory|local-businesses|local-businesses-directory|professional-services|professional-service-directory|categories|sector|compare|compare-companies|all)(\/|$)/
 
 /* ── Removed country URL space ──
    The site used to serve /{country}/* URLs (/uk/blog, /us/ai-ml, bare /uk, …).

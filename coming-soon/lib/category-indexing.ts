@@ -1,5 +1,5 @@
 /* ─── Category indexing rule ──────────────────────────────────────────
-   The ONE definition of "may a /{sector}/{category} page be indexed".
+   The ONE definition of "may a category page (/{sector path}/{category}) be indexed".
    Pure function, zero imports — shared by every surface that has to
    agree on it:
      · app/[...segments]/page.tsx        meta robots on the live page

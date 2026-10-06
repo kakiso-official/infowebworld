@@ -8,6 +8,7 @@ import Footer from '../../components/Footer'
 import ListingDetailPage from '../ListingDetailPage'
 import { CATEGORIES } from '../../config/categories-data'
 import { sectorLandingPath } from '@/lib/sector-paths'
+import { sectorCategoryPath } from '@/lib/sector-paths'
 
 /* ─── Static-only config ──────────────────────────────────────────────
    Fully pre-built at deploy time, exactly like /categories. Every
@@ -304,7 +305,7 @@ const getListingBySlug = cache(async function getListingBySlug(slug: string) {
           listing's parent — i.e. share a grandparent.
        3) Sorted by listing_count desc so populated categories surface first.
      Returns [{ name, slug, sectorSlug, color }] with sectorSlug used to build
-     the canonical /{sector}/{slug} URL on the listing page. */
+     the canonical category URL (sectorCategoryPath) on the listing page. */
   type RelatedCat = { name: string; slug: string; sectorSlug: string; color: string }
   let relatedCategories: RelatedCat[] = []
   if (listing.category_id) {
@@ -549,7 +550,7 @@ function buildJsonLd(listing: ListingRow, breadcrumb: BreadcrumbItem[]) {
       '@type': 'ListItem',
       position: i + 2,
       name: bc.name,
-      item: i === 0 ? `https://www.infowebworld.com${sectorLandingPath(bc.slug)}` : `https://www.infowebworld.com/${breadcrumb[0].slug}/${bc.slug}`,
+      item: i === 0 ? `https://www.infowebworld.com${sectorLandingPath(bc.slug)}` : `https://www.infowebworld.com${sectorCategoryPath(breadcrumb[0].slug, bc.slug)}`,
     })),
     { '@type': 'ListItem', position: breadcrumb.length + 2, name: companyName },
   ]

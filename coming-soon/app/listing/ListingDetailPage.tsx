@@ -18,7 +18,7 @@ import { withInfoWebWorldUtm } from '../lib/utm'
 import { useAuth } from '@/lib/use-auth'
 import { listingOutboundRel } from '@/lib/user-plan-types'
 import { trackWebsiteClick } from '../lib/track-website-click'
-import { sectorLandingPath } from '@/lib/sector-paths'
+import { sectorLandingPath, sectorCategoryPath } from '@/lib/sector-paths'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCircleInfo, faImage, faStar, faScaleBalanced, faUsers, faListCheck,
@@ -103,7 +103,7 @@ interface InitialData {
   breadcrumb: { name: string; slug: string }[]
   related: Record<string, unknown>[]
   /** Sibling/cousin categories derived from the static taxonomy on the
-   *  server. Each entry resolves to a /{sectorSlug}/{slug} URL. Falls back
+   *  server. Each entry resolves to its category URL (sectorCategoryPath). Falls back
    *  to the hardcoded RELATED_CATS sample in preview mode only. */
   relatedCategories?: { name: string; slug: string; sectorSlug: string; color: string }[]
   siblings?: Record<string, unknown>[]
@@ -1844,7 +1844,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
               <a href="/" aria-label="Home"><HomeIcon /></a>
               {view.breadcrumb.length > 0 ? view.breadcrumb.map((bc, i) => {
                 const sectorSlug = view.breadcrumb[0]?.slug
-                const href = i === 0 ? sectorLandingPath(bc.slug) : `/${sectorSlug}/${bc.slug}`
+                const href = i === 0 ? sectorLandingPath(bc.slug) : sectorCategoryPath(sectorSlug, bc.slug)
                 return (
                   <span key={bc.slug} style={{ display: 'contents' }}>
                     <span className="tlp-crumb-sep"><ChevronRight size={12} /></span>
@@ -4128,7 +4128,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
 
             {/* ========== RELATED CATEGORIES — server-derived siblings of the
                 listing's L3 category. Broadens to cousins when sparse. Each
-                link routes to /{sectorSlug}/{slug}. Falls back to the
+                link routes to its category URL (sectorCategoryPath). Falls back to the
                 hardcoded sample only in preview mode. ========== */}
             {(() => {
               const rc = initialData?.relatedCategories
@@ -4148,7 +4148,7 @@ export default function ListingDetailPage(props: ListingDetailPageProps = {}) {
                   <div className="tlp-rc-grid">
                     {cats.map(c => {
                       const href = c.sectorSlug && c.slug
-                        ? `/${c.sectorSlug}/${c.slug}`
+                        ? sectorCategoryPath(c.sectorSlug, c.slug)
                         : '#'
                       return (
                         <a key={c.slug || c.name} href={href} className="tlp-rc">

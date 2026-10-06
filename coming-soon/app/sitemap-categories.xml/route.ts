@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { query } from '@/lib/db'
 import { isCategoryIndexable } from '@/lib/category-indexing'
+import { sectorCategoryPath } from '@/lib/sector-paths'
 
 const BASE = 'https://www.infowebworld.com'
 
@@ -121,7 +122,7 @@ export async function GET() {
     /* Deeper levels = more specific = slightly lower priority. L2=0.8 … L5=0.5. */
     const priority = (0.9 - (Number(c.level) - 1) * 0.1).toFixed(1)
     return `  <url>
-    <loc>${xmlEscape(`${BASE}/${sector}/${c.slug}`)}</loc>
+    <loc>${xmlEscape(`${BASE}${sectorCategoryPath(sector, c.slug)}`)}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>${priority}</priority>

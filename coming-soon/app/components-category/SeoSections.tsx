@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
+import { sectorCategoryPath } from '@/lib/sector-paths'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type SeoContent = {
@@ -43,7 +44,7 @@ function parseInternalLinks(text: string, sectorSlug: string) {
   let match
   while ((match = regex.exec(text)) !== null) {
     if (match.index > last) parts.push(text.slice(last, match.index))
-    parts.push(<Link key={match.index} href={`/${sectorSlug}/${match[1]}`} className="seo-inline-link">{match[2]}</Link>)
+    parts.push(<Link key={match.index} href={sectorCategoryPath(sectorSlug, match[1])} className="seo-inline-link">{match[2]}</Link>)
     last = regex.lastIndex
   }
   if (last < text.length) parts.push(text.slice(last))
@@ -94,7 +95,7 @@ function autoLinkCategories(
     }
     if (bestIdx > 0) out.push(remaining.slice(0, bestIdx))
     const matched = remaining.substr(bestIdx, bestCat.name.length)
-    const href = `/${bestCat.sectorSlug || bestCat.sector_slug || sectorSlug}/${bestCat.slug}`
+    const href = sectorCategoryPath(bestCat.sectorSlug || bestCat.sector_slug || sectorSlug, bestCat.slug)
     out.push(
       <Link key={`autolink-${key++}`} href={href} className="seo-inline-link">{matched}</Link>
     )
@@ -349,7 +350,7 @@ export default function SeoSections({ seoContent: sc, categoryName, categorySlug
                 <div key={i} className="seo-comp-card">
                   <h3 className="seo-h3">
                     {categoryName} vs{' '}
-                    {linked ? <Link href={`/${linked.sector}/${linked.slug}`} className="seo-inline-link">{c.vs_name}</Link> : c.vs_name}
+                    {linked ? <Link href={sectorCategoryPath(linked.sector, linked.slug)} className="seo-inline-link">{c.vs_name}</Link> : c.vs_name}
                   </h3>
                   <p className="seo-comp-summary">{c.summary}</p>
                   {c.differences && (
@@ -414,7 +415,7 @@ export default function SeoSections({ seoContent: sc, categoryName, categorySlug
             {compCats.map((name: string, i: number) => {
               const linked = findCatSlug(name)
               return linked ? (
-                <Link key={i} href={`/${linked.sector}/${linked.slug}`} className="seo-explore-card">{name}</Link>
+                <Link key={i} href={sectorCategoryPath(linked.sector, linked.slug)} className="seo-explore-card">{name}</Link>
               ) : (
                 <span key={i} className="seo-explore-card">{name}</span>
               )

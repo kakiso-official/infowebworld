@@ -25,24 +25,25 @@ Allow: /categories$
 Allow: /llms.txt$
 Allow: /llms-full.txt$
 
-# ─── The 6 L1 sector landings (AI & ML's landing is /ai-si-directory) ───
+# ─── The 6 L1 sector landings ("[sector] directory" URLs) ───
 Allow: /ai-si-directory$
-Allow: /software-saas$
-Allow: /it-services-agencies$
-Allow: /startups-innovation$
-Allow: /local-businesses$
-Allow: /professional-services$
+Allow: /saas-directory$
+Allow: /it-directory$
+Allow: /startup-directory$
+Allow: /local-businesses-directory$
+Allow: /professional-service-directory$
 
-# ─── L2/L3/L4/L5 category pages under each sector ───
+# ─── L2/L3/L4/L5 category pages under each sector's directory path ───
 # Every L2 + L3 category page is indexable. L4 + L5 pages are indexable
 # only once they hold a listing — empty ones carry page-level
 # noindex,follow. Crawler is allowed in everywhere so links keep flowing.
-Allow: /ai-ml/
-Allow: /software-saas/
-Allow: /it-services-agencies/
-Allow: /startups-innovation/
-Allow: /local-businesses/
-Allow: /professional-services/
+# (The old /ai-ml/, /software-saas/ ... paths 308 to these.)
+Allow: /ai-si-directory/
+Allow: /saas-directory/
+Allow: /it-directory/
+Allow: /startup-directory/
+Allow: /local-businesses-directory/
+Allow: /professional-service-directory/
 
 # ─── Individual listing + company profile + blog post pages ───
 Allow: /listing/

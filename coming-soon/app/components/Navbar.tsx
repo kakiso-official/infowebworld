@@ -21,6 +21,7 @@ import {
   faBed, faPen, faGraduationCap, faGamepad, faPaw, faScissors,
   faWandMagicSparkles, faTableCellsLarge, faFlask, faBagShopping,
 } from '@fortawesome/free-solid-svg-icons'
+import { sectorCategoryPath, sectorViewAllPath } from '@/lib/sector-paths'
 
 /* ════════════════════════════════════════════════════════════════════
    InfoWebWorld site header — dark utility strip + single-row main bar.
@@ -571,7 +572,7 @@ export default function Navbar(
                       {activeL2s.map(c => (
                         <Link
                           key={c.slug}
-                          href={`/${activeSector}/${c.slug}`}
+                          href={sectorCategoryPath(activeSector, c.slug)}
                           className="iw-tile"
                           onClick={closeDD}
                         >
@@ -582,7 +583,7 @@ export default function Navbar(
                     </div>
                     <div className="iw-svc-foot">
                       <Link
-                        href={`/${activeSector}/view-all-sub-categories-${activeSector}`}
+                        href={sectorViewAllPath(activeSector)}
                         className="iw-cta iw-cta--mega"
                         onClick={closeDD}
                       >

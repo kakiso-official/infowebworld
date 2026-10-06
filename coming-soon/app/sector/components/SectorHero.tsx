@@ -5,6 +5,7 @@ import Link from 'next/link'
 import type { Category } from '../../iww-hq/data/category-storage'
 import type { RealSubmission } from '../../iww-hq/data/submissions-storage'
 import type { SectorMeta, SectorDemo } from '../sector-demo-data'
+import { sectorCategoryPath } from '@/lib/sector-paths'
 
 /* ── Category pill colors (vibrant solids, same palette as homepage) ── */
 const PILL_COLORS = [
@@ -142,7 +143,7 @@ export default function SectorHero({ category, meta, sectorName, shortName, l2Ca
     if (!slug) { router.push('/business'); return }
     router.push((mode === 'company' ? '/profile/' : '/listing/') + slug)
   }
-  const goToCategory = (slug: string) => { setFocused(false); router.push(`/${sectorSlug}/${slug}`) }
+  const goToCategory = (slug: string) => { setFocused(false); router.push(sectorCategoryPath(sectorSlug, slug)) }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (!showDropdown) return
@@ -221,7 +222,7 @@ export default function SectorHero({ category, meta, sectorName, shortName, l2Ca
   const catUp = (_e: React.PointerEvent, i: number) => {
     const p = catP.current[i]; p.drag = false
     catEls.current[i]?.classList.remove('hero-cat--grab')
-    if (!p.moved) router.push(`/${sectorSlug}/${heroCats[i].slug}`)
+    if (!p.moved) router.push(sectorCategoryPath(sectorSlug, heroCats[i].slug))
   }
 
   /* ── 3D swipeable card stack ── */

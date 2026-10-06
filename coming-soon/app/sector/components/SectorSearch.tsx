@@ -7,6 +7,7 @@ import HIcon from './HIcon'
 import Stars from '../../components-category/Stars'
 import type { Category } from '../../iww-hq/data/category-storage'
 import type { SectorDemo } from '../sector-demo-data'
+import { sectorCategoryPath } from '@/lib/sector-paths'
 
 type Props = { sectorName: string; shortName: string; color: string; sectorSlug: string; l2Cats: Category[]; l3Cats: Category[]; demos: SectorDemo[] }
 type ResultGroup = { label: string; iconKey: string; items: ResultItem[] }
@@ -26,10 +27,10 @@ export default function SectorSearch({ sectorName, shortName, color, sectorSlug,
     const groups: ResultGroup[] = []
 
     const catMatches = l2Cats.filter(c => c.name.toLowerCase().includes(q) || (c.description || '').toLowerCase().includes(q)).slice(0, 4)
-    if (catMatches.length) groups.push({ label: 'Categories', iconKey: 'grid', items: catMatches.map(c => ({ type: 'category', name: c.name, href: `/${sectorSlug}/${c.slug}`, meta: `${l3Cats.filter(l3 => l3.parentId === c.id).length} subcategories`, icon: c.icon || 'grid', color })) })
+    if (catMatches.length) groups.push({ label: 'Categories', iconKey: 'grid', items: catMatches.map(c => ({ type: 'category', name: c.name, href: sectorCategoryPath(sectorSlug, c.slug), meta: `${l3Cats.filter(l3 => l3.parentId === c.id).length} subcategories`, icon: c.icon || 'grid', color })) })
 
     const subMatches = l3Cats.filter(c => c.name.toLowerCase().includes(q) || (c.description || '').toLowerCase().includes(q)).slice(0, 5)
-    if (subMatches.length) groups.push({ label: 'Subcategories', iconKey: 'layers', items: subMatches.map(c => { const p = l2Cats.find(x => x.id === c.parentId); return { type: 'subcategory', name: c.name, href: `/${sectorSlug}/${c.slug}`, meta: p ? p.name : sectorName, icon: c.icon || 'layers', color } }) })
+    if (subMatches.length) groups.push({ label: 'Subcategories', iconKey: 'layers', items: subMatches.map(c => { const p = l2Cats.find(x => x.id === c.parentId); return { type: 'subcategory', name: c.name, href: sectorCategoryPath(sectorSlug, c.slug), meta: p ? p.name : sectorName, icon: c.icon || 'layers', color } }) })
 
     const listMatches = demos.filter(d => d.name.toLowerCase().includes(q) || d.tagline.toLowerCase().includes(q) || d.category.toLowerCase().includes(q)).slice(0, 6)
     if (listMatches.length) groups.push({ label: 'Listings', iconKey: 'star', items: listMatches.map(d => ({ type: 'listing', name: d.name, href: '/business', meta: d.tagline, score: d.score, reviews: d.reviews, icon: d.icon, color: d.color, badges: d.badges })) })

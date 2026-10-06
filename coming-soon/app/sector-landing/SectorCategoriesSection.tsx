@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { CATEGORIES as STATIC_CATEGORIES } from '../config/categories-data'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import type { CardDef } from '@/lib/sector-landings'
+import { sectorCategoryPath, sectorViewAllPath } from '@/lib/sector-paths'
 
 /* ═══════════════════════════════════════════════════════════════════════
    Sector-landing "Find verified X across every category" grid.
@@ -14,7 +15,7 @@ import type { CardDef } from '@/lib/sector-landings'
         generated taxonomy in app/config/categories-data.ts
      · "Locations" pill + default-market chips that link into the L2
         category page with the country filter applied
-        (/{sector}/{l2}?country=<country-slug>)
+        ({sector path}/{l2}?country=<country-slug>)
 
    Cards come in via the per-sector config in lib/sector-landings.ts.
    ═══════════════════════════════════════════════════════════════════════ */
@@ -71,13 +72,13 @@ export default function SectorCategoriesSection({ sectorSlug, heading, sub, card
                 <div className="tlp-cat-card-ico">
                   <FontAwesomeIcon icon={c.icon} style={{ width: 36, height: 36 }} />
                 </div>
-                <Link href={`/${sectorSlug}/${c.slug}`} className="tlp-cat-card-name">{c.label}</Link>
+                <Link href={sectorCategoryPath(sectorSlug, c.slug)} className="tlp-cat-card-name">{c.label}</Link>
 
                 <span className="tlp-cat-card-pill">Sub Categories</span>
                 <ul className="tlp-cat-card-tags">
                   {services.map((sub, i) => (
                     <li key={sub.slug}>
-                      <Link href={`/${sectorSlug}/${c.slug}/${sub.slug}`} className="tlp-cat-card-tag">
+                      <Link href={sectorCategoryPath(sectorSlug, sub.slug)} className="tlp-cat-card-tag">
                         {sub.name}
                       </Link>
                       {i < services.length - 1 && (
@@ -92,7 +93,7 @@ export default function SectorCategoriesSection({ sectorSlug, heading, sub, card
                   {LOCATIONS.map((loc, i) => (
                     <li key={loc.slug}>
                       <Link
-                        href={`/${sectorSlug}/${c.slug}?country=${loc.slug}`}
+                        href={`${sectorCategoryPath(sectorSlug, c.slug)}?country=${loc.slug}`}
                         className="tlp-cat-card-tag"
                         aria-label={`${c.label} in ${loc.label}`}
                       >
@@ -111,7 +112,7 @@ export default function SectorCategoriesSection({ sectorSlug, heading, sub, card
 
         <div className="tlp-cats-cta">
           <Link
-            href={`/${sectorSlug}/view-all-sub-categories-${sectorSlug}`}
+            href={sectorViewAllPath(sectorSlug)}
             className="tlp-cats-cta-btn"
           >
             {ctaLabel}

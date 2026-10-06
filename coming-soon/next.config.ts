@@ -1,5 +1,17 @@
 import type { NextConfig } from "next";
 
+/* Sector slug → its public path: the landing, and the prefix of every
+   category page in the sector. Same map as LANDING_PATHS in
+   lib/sector-paths.ts - keep the two in sync. */
+const SECTOR_PATHS: Record<string, string> = {
+  'ai-ml': '/ai-si-directory',
+  'software-saas': '/saas-directory',
+  'it-services-agencies': '/it-directory',
+  'startups-innovation': '/startup-directory',
+  'local-businesses': '/local-businesses-directory',
+  'professional-services': '/professional-service-directory',
+}
+
 const nextConfig: NextConfig = {
   devIndicators: false,
   /* Ensure the markdown blog posts are bundled with the admin file API so it
@@ -55,34 +67,35 @@ const nextConfig: NextConfig = {
         destination: '/:path*',
         permanent: true,
       },
-      // AI & ML landing moved to /ai-si-directory (Oct 2026 SEO spec). Only
-      // the landing moved: AI category pages keep their /ai-ml/... URLs.
-      // Internal links use lib/sector-paths.ts, so nothing links here.
-      {
-        source: '/ai-ml',
-        destination: '/ai-si-directory',
-        permanent: true,
-      },
-      // Old AI slug → current URLs, in one hop (landing → /ai-si-directory)
+      // The six sectors moved to their "[sector] directory" URLs (Oct 2026
+      // SEO specs): the landing AND every page under it, e.g.
+      //   /software-saas                → /saas-directory
+      //   /software-saas/crm-platforms  → /saas-directory/crm-platforms
+      // Internal links use lib/sector-paths.ts, so nothing links to the old
+      // paths. Query strings carry over.
+      ...Object.entries(SECTOR_PATHS).flatMap(([sector, path]) => [
+        { source: `/${sector}`, destination: path, permanent: true },
+        { source: `/${sector}/:path+`, destination: `${path}/:path+`, permanent: true },
+      ]),
+      // Older aliases of two sector slugs → the current URLs, in one hop.
       {
         source: '/artificial-intelligence-ml',
-        destination: '/ai-si-directory',
+        destination: SECTOR_PATHS['ai-ml'],
         permanent: true,
       },
       {
         source: '/artificial-intelligence-ml/:path+',
-        destination: '/ai-ml/:path+',
+        destination: `${SECTOR_PATHS['ai-ml']}/:path+`,
         permanent: true,
       },
-      // Rename local-business → local-businesses (L1 sector)
       {
         source: '/local-business',
-        destination: '/local-businesses',
+        destination: SECTOR_PATHS['local-businesses'],
         permanent: true,
       },
       {
-        source: '/local-business/:path*',
-        destination: '/local-businesses/:path*',
+        source: '/local-business/:path+',
+        destination: `${SECTOR_PATHS['local-businesses']}/:path+`,
         permanent: true,
       },
     ]
