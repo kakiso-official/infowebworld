@@ -50,6 +50,7 @@ export async function notifySubmissionApproved(a: {
   companyName: string
   listingSlug: string
   listingMode: 'product' | 'company'
+  paidPlan?: boolean
 }): Promise<void> {
   try {
     if (!a.contactEmail) return

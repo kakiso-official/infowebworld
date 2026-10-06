@@ -277,12 +277,17 @@ export async function fetchSubmissionStats() {
   }
 }
 
+/* Admin-gated (sends the iww_adm_token cookie). Throws on failure so the
+   page flashes "Status change failed" instead of a false success - e.g.
+   when the admin session has expired. */
 export async function updateSubmissionStatus(id: string, status: string) {
-  await fetch(`${API}/submissions/${id}/status`, {
+  const res = await fetch(`${API}/submissions/${id}/status`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
+    credentials: 'same-origin',
     body: JSON.stringify({ status }),
-  }).catch(() => {})
+  })
+  if (!res.ok) throw new Error(`Status update failed (${res.status})`)
 }
 
 export async function deleteSubmission(id: string) {

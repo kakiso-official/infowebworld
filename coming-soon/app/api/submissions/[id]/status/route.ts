@@ -1,9 +1,8 @@
 import { NextRequest } from 'next/server'
 import { queryOne, execute } from '@/lib/db'
+import { requireAdmin } from '@/lib/auth'
+import { isPaidListingPlan } from '@/lib/user-plan-types'
 import { notifySubmissionApproved, notifySubmissionRejected } from '@/lib/notify-submission'
-
-/* TEMP: admin-action notification emails are paused. Flip to `true` to restore. */
-const SEND_ADMIN_EMAILS: boolean = false
 
 function slugify(text: string): string {
   return text
@@ -19,6 +18,12 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  /* Admin-only: approving, rejecting or suspending a listing - and the email
+     that tells its submitter - is a moderation action. The /iww-hq UI calls
+     this same-origin, so its admin cookie comes along. */
+  const guard = await requireAdmin(request)
+  if (guard instanceof Response) return guard
+
   try {
     const { id } = await params
     const body = await request.json()
@@ -37,10 +42,14 @@ export async function PATCH(
     const submission = await queryOne<{
       id: number; status: string; category_id: number | null; company_name: string; slug: string | null
       email: string | null; contact_name: string | null; listing_mode: string | null
+      user_id: number | null; ip_address: string | null; plan_slug: string | null
     }>(
-      `SELECT id, status, category_id, company_name, slug, email, contact_name,
-              COALESCE(listing_mode, 'product') AS listing_mode
-         FROM submissions WHERE id = ?`,
+      `SELECT s.id, s.status, s.category_id, s.company_name, s.slug, s.email, s.contact_name,
+              s.user_id, s.ip_address, pl.slug AS plan_slug,
+              COALESCE(s.listing_mode, 'product') AS listing_mode
+         FROM submissions s
+         LEFT JOIN plans pl ON pl.id = s.plan_id
+        WHERE s.id = ?`,
       [id]
     )
 
@@ -85,25 +94,31 @@ export async function PATCH(
       }
     }
 
-    /* Notify the submitter on the transitions they care about — approved
-       (now live) or rejected. Best-effort; sendEmail never throws. The
-       `reason` (optional in the PATCH body) is shown in the rejection email.
-       TEMP: gated behind SEND_ADMIN_EMAILS (currently off). */
-    if (SEND_ADMIN_EMAILS && status === 'active' && oldStatus !== 'active' && submission.email) {
-      await notifySubmissionApproved({
-        contactEmail: submission.email,
-        recipientName: submission.contact_name,
-        companyName: submission.company_name,
-        listingSlug: finalSlug || submission.slug || '',
-        listingMode: submission.listing_mode === 'company' ? 'company' : 'product',
-      })
-    } else if (SEND_ADMIN_EMAILS && status === 'rejected' && oldStatus !== 'rejected' && submission.email) {
-      await notifySubmissionRejected({
-        contactEmail: submission.email,
-        recipientName: submission.contact_name,
-        companyName: submission.company_name,
-        reason: typeof reason === 'string' ? reason : null,
-      })
+    /* Tell the submitter when their listing goes live or is rejected - only
+       for listings someone actually submitted through the form (an owner
+       account or a recorded submit IP). The bulk-seeded directory rows have
+       neither, and their contact address belongs to a company that never
+       asked to be listed. Best-effort; sendEmail never throws. The optional
+       `reason` in the PATCH body is shown in the rejection email. */
+    const submittedViaForm = submission.user_id != null || !!submission.ip_address
+    if (submittedViaForm && submission.email) {
+      if (status === 'active' && oldStatus !== 'active') {
+        await notifySubmissionApproved({
+          contactEmail: submission.email,
+          recipientName: submission.contact_name,
+          companyName: submission.company_name,
+          listingSlug: finalSlug || submission.slug || '',
+          listingMode: submission.listing_mode === 'company' ? 'company' : 'product',
+          paidPlan: isPaidListingPlan(submission.plan_slug),
+        })
+      } else if (status === 'rejected' && oldStatus !== 'rejected') {
+        await notifySubmissionRejected({
+          contactEmail: submission.email,
+          recipientName: submission.contact_name,
+          companyName: submission.company_name,
+          reason: typeof reason === 'string' ? reason : null,
+        })
+      }
     }
 
     return Response.json({ ok: true, message: `Status updated to ${status}` })

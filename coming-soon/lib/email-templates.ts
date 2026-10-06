@@ -686,13 +686,20 @@ export function submissionReceivedEmail(a: SubmissionReceivedArgs) {
   }
 }
 
-export interface SubmissionApprovedArgs { recipientName: string | null; companyName: string; listingSlug: string; listingMode: 'product' | 'company' }
+export interface SubmissionApprovedArgs {
+  recipientName: string | null; companyName: string; listingSlug: string; listingMode: 'product' | 'company'
+  /** On a paid plan: its website link is the sold dofollow backlink and lead tools are included.
+   *  Free listings get a nofollow link (listingOutboundRel), so their email must not promise one. */
+  paidPlan?: boolean
+}
 export function submissionApprovedEmail(a: SubmissionApprovedArgs) {
   const greet = greeting(a.recipientName)
   const url = txListingUrl(a.listingSlug, a.listingMode)
   const bodyHtml =
     txPara(`Hi ${escapeHtml(greet)} — great news. <strong style="color:#1A1A1A">${escapeHtml(a.companyName)}</strong> has been approved and is <strong style="color:#0E8F6E">live on InfoWebWorld</strong>.`) +
-    txPara(`It's now discoverable in search and its category, and your dofollow backlink is active. Collect reviews, respond to leads, and track engagement from your dashboard.`)
+    txPara(a.paidPlan
+      ? `It's now discoverable in search and its category, and your dofollow backlink is active. Collect reviews, respond to leads, and track engagement from your dashboard.`
+      : `It's now discoverable in search and its category, with a link to your website. Collect reviews and keep your details up to date from your dashboard.`)
   return {
     subject: `${a.companyName} is live on InfoWebWorld`,
     html: buildEmailShell({
