@@ -45,6 +45,10 @@ Allow: /startup-directory/
 Allow: /local-businesses-directory/
 Allow: /professional-service-directory/
 
+# ─── Country directory pages (/countries, /countries/{country}, /countries/{country}/{sector}) ───
+Allow: /countries$
+Allow: /countries/
+
 # ─── Individual listing + company profile + blog post pages ───
 Allow: /listing/
 Allow: /profile/

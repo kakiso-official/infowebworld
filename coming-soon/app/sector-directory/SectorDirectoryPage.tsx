@@ -188,6 +188,7 @@ export default async function SectorDirectoryPage({ spec }: { spec: SectorDirect
           heading={spec.countries.heading}
           sub={spec.countries.sub}
           pillTemplate={spec.countries.pillTemplate}
+          sectorSlug={sector}
         />
 
         <ComparisonTableSection

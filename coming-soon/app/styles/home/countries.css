@@ -87,21 +87,62 @@
   }
 }
 
-/* Non-interactive tile: a card-shaped resting surface, but deliberately
-   NO hover border/shadow/transform and NO pointer cursor - per spec,
-   only interactive cards get that treatment. */
+/* The tile card. Padding/border/background live here so a plain (fallback-
+   mode) tile and a linked tile look identical at rest - the link variant
+   below carries no box styling of its own, only the flex content layout. */
 .hm-geo-tile {
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  text-align: center;
   padding: 18px 10px;
   background: #FFFFFF;
   border: 1px solid #E5E7EB;
   border-radius: 12px;
   cursor: default;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+/* Fallback-mode tile has no <Link> child - give the <li> itself the same
+   flex content layout the link gets below. */
+.hm-geo-tile:not(:has(.hm-geo-link)) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+/* Live-mode tile: the <Link> fills the tile and carries the content
+   layout, so the tile looks the same at rest as the non-interactive one. */
+.hm-geo-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  margin: -18px -10px;
+  padding: 18px 10px;
+  color: inherit;
+  text-decoration: none;
+  border-radius: inherit;
+}
+
+.hm-geo-tile:has(.hm-geo-link):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(10, 27, 51, 0.08);
+  border-color: rgba(var(--hm-c-brand-rgb, 0, 59, 42), 0.3);
+}
+
+.hm-geo-link:focus-visible {
+  outline: 2px solid var(--hm-c-accent, #0E8F6E);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hm-geo-tile {
+    transition: none;
+  }
+  .hm-geo-tile:has(.hm-geo-link):hover {
+    transform: none;
+  }
 }
 
 .hm-geo-flag {
@@ -191,12 +232,54 @@
 .hm-geo-chip {
   min-width: 0;
   overflow-wrap: anywhere;
-  padding: 6px 14px;
+  padding: 0;
   background: var(--hm-c-wash, #F6F9F7);
   border: 1px solid #E5E7EB;
   border-radius: 999px;
   font-size: 12.5px;
   color: #4B5563;
+  transition: border-color 0.15s ease;
+}
+
+.hm-geo-chip-link {
+  display: inline-flex;
+  padding: 6px 14px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.hm-geo-chip:hover {
+  border-color: rgba(var(--hm-c-brand-rgb, 0, 59, 42), 0.3);
+}
+
+.hm-geo-chip-link:focus-visible {
+  outline: 2px solid var(--hm-c-accent, #0E8F6E);
+  outline-offset: 2px;
+  border-radius: 999px;
+}
+
+/* "Browse all countries" link under the grid/disclosure. */
+.hm-geo-all {
+  margin: clamp(16px, 2.5vw, 22px) auto 0;
+  text-align: center;
+}
+
+.hm-geo-all a {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--hm-c-brand, #003B2A);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.15s ease;
+}
+
+.hm-geo-all a:hover {
+  text-decoration-color: currentColor;
+}
+
+.hm-geo-all a:focus-visible {
+  outline: 2px solid var(--hm-c-accent, #0E8F6E);
+  outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -204,6 +287,10 @@
     transition: none;
   }
   .hm-geo-chevron {
+    transition: none;
+  }
+  .hm-geo-chip,
+  .hm-geo-all a {
     transition: none;
   }
 }

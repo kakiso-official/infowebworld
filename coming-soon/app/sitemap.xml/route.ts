@@ -7,11 +7,14 @@ const BASE = 'https://www.infowebworld.com'
    - sitemap-sectors.xml     6 L1 sector landing pages
    - sitemap-categories.xml  every L2 + L3 category page, plus L4 + L5 pages
                              that hold listings (lib/category-indexing.ts)
+   - sitemap-countries.xml   /countries + country hub + country-sector pages
+                             that clear COUNTRY_INDEX_MIN_LISTINGS
    - sitemap-listings.xml    individual /listing and /profile pages
    - sitemap-blog.xml        published blog posts */
 const SUB_SITEMAPS = [
   'sitemap-pages.xml',
   'sitemap-sectors.xml',
+  'sitemap-countries.xml',
   'sitemap-categories.xml',
   'sitemap-listings.xml',
   'sitemap-blog.xml',

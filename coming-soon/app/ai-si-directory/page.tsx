@@ -304,6 +304,7 @@ export default async function AiToolsDirectoryPage() {
           heading="Explore SI & AI Tools Around the World"
           sub="Looking for a local AI tool vendor? Pick a country and see the tools listed there."
           pillTemplate="Verified AI tool listings from {n} countries"
+          sectorSlug={AI_SECTOR}
         />
 
         <ComparisonTableSection

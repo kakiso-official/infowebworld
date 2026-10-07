@@ -74,6 +74,13 @@ function shouldNoindex(pathname: string): boolean {
      sector-specific FAQ) — a real AEO/GEO surface. */
   if (segments.length === 2 && (SECTOR_URL_SEGMENTS.has(segments[0]) || SECTOR_SLUGS.has(segments[0]))) return false
 
+  /* /countries index + country hub + country-sector pages (Oct 2026):
+     /countries, /countries/{country}, /countries/{country}/{segment}.
+     Not blanket-noindexed here — the page's own metadata decides (robots
+     is index,follow only once the country/pair clears COUNTRY_INDEX_MIN_LISTINGS;
+     see lib/country-paths.ts + app/countries/*). */
+  if (segments[0] === 'countries' && segments.length <= 3) return false
+
   /* Individual listing + company profile pages. */
   if (segments.length === 2 && (segments[0] === 'listing' || segments[0] === 'profile')) return false
 
@@ -151,7 +158,7 @@ const ISR_PATH_RE = /^\/(listing|profile)\//
 /* Slow-changing public directory surfaces — safe at a 24h edge TTL.
    Blog is deliberately NOT here: new posts should surface within the
    default 1h edge TTL, not a day later. */
-const LONG_CACHE_RE = /^\/(ai-ml|ai-si-directory|software-saas|saas-directory|it-services-agencies|it-directory|startups-innovation|startup-directory|local-businesses|local-businesses-directory|professional-services|professional-service-directory|categories|sector|compare|compare-companies|all)(\/|$)/
+const LONG_CACHE_RE = /^\/(ai-ml|ai-si-directory|software-saas|saas-directory|it-services-agencies|it-directory|startups-innovation|startup-directory|local-businesses|local-businesses-directory|professional-services|professional-service-directory|categories|sector|compare|compare-companies|all|countries)(\/|$)/
 
 /* ── Removed country URL space ──
    The site used to serve /{country}/* URLs (/uk/blog, /us/ai-ml, bare /uk, …).

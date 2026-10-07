@@ -5,6 +5,7 @@ import LoggedOutOnly from './LoggedOutOnly'
 
 import { BASE } from '../config/base-path'
 import { sectorLandingPath } from '@/lib/sector-paths'
+import { COUNTRIES_INDEX_PATH } from '@/lib/country-paths'
 const bp = BASE
 
 /* ── Footer link config — one source of truth for every column ── */
@@ -70,9 +71,10 @@ const TOP_CATEGORIES: LinkRow[] = [
 ]
 
 const DISCOVER_LINKS: LinkRow[] = [
-  { label: 'Write a Review', href: '/write-review' },
-  { label: 'Compare',        href: '/compare' },
-  { label: 'News',           href: '/news' },
+  { label: 'Write a Review',    href: '/write-review' },
+  { label: 'Compare',           href: '/compare' },
+  { label: 'News',              href: '/news' },
+  { label: 'Browse by Country', href: COUNTRIES_INDEX_PATH },
 ]
 
 export default function Footer() {

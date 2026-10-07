@@ -1,6 +1,8 @@
+import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import type { CountryCount } from './countries-data'
+import { COUNTRIES_INDEX_PATH, countryHubPath, countrySectorPath, countrySlug } from '@/lib/country-paths'
 
 /* ════════════════════════════════════════════════════════════════════════
    "Businesses Near You, Businesses Around the World" - homepage section
@@ -24,6 +26,9 @@ export interface CountriesSectionProps {
   sub?: string
   /** Live-mode pill text; "{n}" becomes the formatted country count. */
   pillTemplate?: string
+  /** Scopes every tile's link to one sector's country page
+   *  (/countries/{country}/{sector path}) instead of the country hub. */
+  sectorSlug?: string
 }
 
 export default function CountriesSection({
@@ -31,14 +36,21 @@ export default function CountriesSection({
   heading = 'Businesses Near You, Businesses Around the World',
   sub = 'Browse verified listings by country, from local shops and agencies to global software companies.',
   pillTemplate = 'Verified listings from {n} countries',
+  sectorSlug,
 }: CountriesSectionProps) {
   if (!countries.length) return null
 
   /* Live mode = every row carries a real DB-computed count. The static
      fallback (DB failure) sets listings: null throughout, so a single null
      check is enough to tell the two apart - never show the count pill, and
-     never render the "show all" disclosure, in fallback mode. */
+     never render the "show all" disclosure, in fallback mode. Fallback tiles
+     stay plain (no /countries/* page is guaranteed to exist for them). */
   const isLive = countries.every(c => c.listings !== null)
+
+  const hrefFor = (c: CountryCount) => {
+    const slug = countrySlug(c.name)
+    return sectorSlug ? countrySectorPath(slug, sectorSlug) : countryHubPath(slug)
+  }
 
   const visible = countries.slice(0, VISIBLE_COUNT)
   const rest = countries.slice(VISIBLE_COUNT)
@@ -60,16 +72,16 @@ export default function CountriesSection({
           )}
         </div>
 
-        {/* Country hub pages are planned next but do not exist yet, so these
-            tiles are intentionally non-interactive (<ul>/<li>, no <Link>,
-            default cursor, no hover lift). Once /countries/[slug] ships,
-            wrap each tile's content in <Link href={`/countries/${slugOf(c)}`}>
-            and promote the <li> back to a single-link card. */}
+        {/* Tiles link to the country's page (hub, or this sector's country
+            page when sectorSlug is set) now that /countries/* ships. In
+            fallback mode (DB failure, listings: null) a page is not
+            guaranteed to exist for every static entry, so those tiles stay
+            plain non-interactive cards. */}
         <ul className="hm-geo-grid">
           {visible.map(c => {
             const listingsLabel = formatListings(c.listings)
-            return (
-              <li key={c.code} className="hm-geo-tile">
+            const tileContent = (
+              <>
                 <img
                   className="hm-geo-flag"
                   src={`https://flagcdn.com/w80/${c.code.toLowerCase()}.png`}
@@ -81,6 +93,15 @@ export default function CountriesSection({
                 />
                 <h3 className="hm-geo-name">{c.name}</h3>
                 {listingsLabel && <span className="hm-geo-count">{listingsLabel}</span>}
+              </>
+            )
+            return (
+              <li key={c.code} className="hm-geo-tile">
+                {isLive ? (
+                  <Link href={hrefFor(c)} className="hm-geo-link">
+                    {tileContent}
+                  </Link>
+                ) : tileContent}
               </li>
             )
           })}
@@ -97,11 +118,19 @@ export default function CountriesSection({
             <ul className="hm-geo-chips">
               {rest.map(c => (
                 <li key={c.code} className="hm-geo-chip">
-                  {c.name} · {(c.listings ?? 0).toLocaleString('en-US')}
+                  <Link href={hrefFor(c)} className="hm-geo-chip-link">
+                    {c.name} · {(c.listings ?? 0).toLocaleString('en-US')}
+                  </Link>
                 </li>
               ))}
             </ul>
           </details>
+        )}
+
+        {isLive && (
+          <p className="hm-geo-all">
+            <Link href={COUNTRIES_INDEX_PATH}>Browse all countries</Link>
+          </p>
         )}
       </div>
     </section>
