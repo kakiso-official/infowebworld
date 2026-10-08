@@ -1,11 +1,22 @@
 /* ═══════════════════════════════════════════════════════════════════════
    Country directory pages (Oct 2026) - paths, names and SEO copy rules.
-   Pure module (no DB, no React), safe in server, client and route code.
+   Pure module (no DB, no React), safe in server, client, route and proxy
+   (middleware.ts) code.
 
-     /countries                            every country with live listings
-     /countries/{country}                  the country hub - all six sectors
-     /countries/{country}/{sector path}    one sector in one country, e.g.
-                                           /countries/india/it-directory
+     /countries                                  every country with live listings
+     /{country}-business-directory               the country hub - all six sectors,
+                                                 e.g. /us-business-directory
+     /{country}-business-directory/{sector path} one sector in one country, e.g.
+                                                 /india-business-directory/it-directory
+
+   {country} is the country's URL slug ('india', 'new-zealand'), or the short
+   name people search for where there is one ('us', 'uk', 'uae' - see
+   SHORT_COUNTRY). The pages themselves live at app/countries/[country] and
+   app/countries/[country]/[sector]: middleware.ts rewrites the URLs above to
+   them (routeCountryDirectoryPath) and 308s the first URLs these pages had
+   (Oct 7 2026: /countries/{country-slug}[/{sector path}]) to the current
+   ones, so internal links must always come from countryHubPath /
+   countrySectorPath below.
 
    The sector segment is the sector's directory URL segment from
    lib/sector-paths.ts ('it-directory' = it-services-agencies), so the
@@ -18,6 +29,9 @@
 import { sectorLandingPath, sectorFromUrlSegment } from './sector-paths'
 
 export const COUNTRIES_INDEX_PATH = '/countries'
+
+/** Every country hub URL ends with this: /us-business-directory. */
+export const COUNTRY_DIRECTORY_SUFFIX = '-business-directory'
 
 /** A country (or country + sector) page exists from this many live listings. */
 export const COUNTRY_PAGE_MIN_LISTINGS = 1
@@ -69,18 +83,104 @@ export function countryInPhrase(displayName: string): string {
   return NEEDS_THE.has(displayName) ? `the ${displayName}` : displayName
 }
 
-export function countryHubPath(slug: string): string {
-  return `${COUNTRIES_INDEX_PATH}/${slug}`
+/* Countries whose directory URL and heading use the short name people
+   search for ("US business directory"), keyed by canonical country slug.
+   Every other country uses its slug and display name. */
+const SHORT_COUNTRY: Record<string, { prefix: string; name: string }> = {
+  'united-states': { prefix: 'us', name: 'US' },
+  'united-kingdom': { prefix: 'uk', name: 'UK' },
+  'united-arab-emirates': { prefix: 'uae', name: 'UAE' },
 }
 
-/** '/countries/india/it-directory' for ('india', 'it-services-agencies'). */
+/* URL prefix → canonical country slug for the short forms, plus 'usa',
+   which only ever 308s to /us-business-directory. */
+const SLUG_BY_PREFIX: Record<string, string> = {
+  ...Object.fromEntries(Object.entries(SHORT_COUNTRY).map(([slug, s]) => [s.prefix, slug])),
+  usa: 'united-states',
+}
+
+/** The {country} part of a country's directory URLs: 'us' for
+ *  'united-states', otherwise the slug itself ('india'). */
+export function countryUrlPrefix(slug: string): string {
+  return SHORT_COUNTRY[slug]?.prefix ?? slug
+}
+
+/** The country as a directory hub names it: 'US', 'UK', 'UAE', otherwise
+ *  the display name ('India'). */
+export function countryDirectoryName(displayName: string): string {
+  return SHORT_COUNTRY[countrySlug(displayName)]?.name ?? displayName
+}
+
+/** Hub H1, and its SERP title before the brand: one format for every
+ *  country - '#1 Rated US Business Directory'. */
+export function countryHubHeading(displayName: string): string {
+  return `#1 Rated ${countryDirectoryName(displayName)} Business Directory`
+}
+
+/** '/us-business-directory' for 'united-states', '/india-business-directory'
+ *  for 'india'. */
+export function countryHubPath(slug: string): string {
+  return `/${countryUrlPrefix(slug)}${COUNTRY_DIRECTORY_SUFFIX}`
+}
+
+/** '/india-business-directory/it-directory' for ('india', 'it-services-agencies'). */
 export function countrySectorPath(slug: string, sectorSlug: string): string {
   return `${countryHubPath(slug)}${sectorLandingPath(sectorSlug)}`
 }
 
-/** The sector a /countries/{country}/{segment} URL opens, or null. */
+/** The sector a /{country}-business-directory/{segment} URL opens, or null. */
 export function sectorFromCountrySegment(segment: string): string | null {
   return sectorFromUrlSegment(segment)
+}
+
+/* ── Routing (middleware.ts) ────────────────────────────────────────── */
+
+/* /{country}-business-directory[/{segment}], any case. */
+const DIRECTORY_URL_RE = /^\/([^/]+)-business-directory(?:\/([^/]+))?\/?$/i
+/* The first URLs of these pages (Oct 7 2026): /countries/{slug}[/{segment}]. */
+const LEGACY_URL_RE = /^\/countries\/([^/]+)(?:\/([^/]+))?\/?$/
+const URL_PART_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+
+function decodePart(raw: string): string {
+  try { return decodeURIComponent(raw) } catch { return raw }
+}
+
+/** What middleware does with a request path in the country directory URL
+ *  space, or null when the path is not in it:
+ *   · redirect - 308 to `path`: the canonical URL of an old /countries/...
+ *     URL, a short-name alias (/united-states-business-directory), or a
+ *     wrong-case / trailing-slash variant
+ *   · rewrite  - serve `path` (the app/countries/[country] route) under the
+ *     requested URL
+ *   · gone     - nothing can live here (characters no slug has): a real 404
+ *  A well-formed {country} that is not a country with listings is rewritten
+ *  like any other; the page sends it to /url-removed. */
+export function routeCountryDirectoryPath(
+  pathname: string,
+): { kind: 'redirect' | 'rewrite'; path: string } | { kind: 'gone' } | null {
+  const legacy = pathname.match(LEGACY_URL_RE)
+  const current = legacy ? null : pathname.match(DIRECTORY_URL_RE)
+  const m = legacy ?? current
+  if (!m) return null
+
+  const first = decodePart(m[1]).toLowerCase()
+  const segment = m[2] === undefined ? null : decodePart(m[2]).toLowerCase()
+  if (!URL_PART_RE.test(first) || (segment !== null && !URL_PART_RE.test(segment))) {
+    /* An old /countries/... URL like that never had a page either; the
+       countries route turns it away the same way. */
+    return legacy ? null : { kind: 'gone' }
+  }
+
+  /* first = the old URL's country slug, or the new URL's {country} part. */
+  const slug = SLUG_BY_PREFIX[first] ?? first
+  const canonical = `${countryHubPath(slug)}${segment ? `/${segment}` : ''}`
+  if (legacy || pathname !== canonical) return { kind: 'redirect', path: canonical }
+  return { kind: 'rewrite', path: `${COUNTRIES_INDEX_PATH}/${slug}${segment ? `/${segment}` : ''}` }
+}
+
+/** True for /{country}-business-directory and /{country}-business-directory/{segment}. */
+export function isCountryDirectoryPath(pathname: string): boolean {
+  return DIRECTORY_URL_RE.test(pathname)
 }
 
 /** flagcdn.com image for an ISO 3166-1 alpha-2 code (next.config allows it). */
@@ -177,14 +277,6 @@ export const SECTOR_COUNTRY_COPY: Record<string, SectorCountryCopy> = {
     ],
   },
 }
-
-/** SERP title candidates for a country hub, best first. */
-export const COUNTRY_HUB_TITLES = [
-  '{N} Business Directory ({Y}) - Verified Companies & Reviews',
-  '{N} Business Directory ({Y}) - Top Verified Companies',
-  '{N} Business Directory ({Y}) - Companies & Reviews',
-  '{N} Business Directory ({Y})',
-]
 
 /** Fill a title template and return the first candidate within `budget`
  *  characters (falls back to the shortest). {N} = display name,

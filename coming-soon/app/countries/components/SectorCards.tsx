@@ -5,7 +5,7 @@ import { SECTOR_COUNTRY_COPY, countrySectorPath } from '@/lib/country-paths'
 import type { SectorCount } from '../country-data'
 import { SECTOR_UI } from './sector-ui'
 
-/* Sector cards linking to /countries/{country}/{sector directory}. Same
+/* Sector cards linking to /{country}-business-directory/{sector directory}. Same
    card markup + styles as the homepage "Browse by Category" grid (hm-cat-*),
    but the count is the sector's live listings in this country. Only
    sectors with listings are rendered, so every card is a real page. */

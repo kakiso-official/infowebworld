@@ -18,13 +18,17 @@ const BASE = 'https://www.infowebworld.com'
 export const dynamic = 'force-dynamic'
 
 /* Sitemap of the country directory pages (Oct 2026):
-     · /countries                     the index — always included
-     · /countries/{country}           every country whose live listing count
-                                       clears COUNTRY_INDEX_MIN_LISTINGS
-     · /countries/{country}/{sector}  every country x sector pair at page 1
-                                       that clears COUNTRY_INDEX_MIN_LISTINGS
-   Mirrors the page-level robots rule in each page's metadata (lib/country-
-   paths.ts + app/countries/*) so nothing listed here ever renders noindex. */
+     · /countries                                 the index — always included
+     · /{country}-business-directory              every country whose live
+                                                  listing count clears
+                                                  COUNTRY_INDEX_MIN_LISTINGS
+     · /{country}-business-directory/{sector}     every country x sector pair
+                                                  at page 1 that clears
+                                                  COUNTRY_INDEX_MIN_LISTINGS
+   URLs come from countryHubPath / countrySectorPath, so the old
+   /countries/{country}/... URLs (308s) are never listed. Mirrors the
+   page-level robots rule in each page's metadata (lib/country-paths.ts +
+   app/countries/*) so nothing listed here ever renders noindex. */
 export async function GET() {
   try {
     const [countries, pairs] = await Promise.all([

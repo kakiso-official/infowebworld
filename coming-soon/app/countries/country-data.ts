@@ -1,9 +1,9 @@
 /* ═══════════════════════════════════════════════════════════════════════
    Server-only data module for the country directory pages:
 
-     /countries                            getCountriesWithListings
-     /countries/{country}                  getCountryBySlug + sector mix
-     /countries/{country}/{sectorSegment}  getCountryListings (paginated)
+     /countries                                    getCountriesWithListings
+     /{country}-business-directory                 getCountryBySlug + sector mix
+     /{country}-business-directory/{sectorSegment} getCountryListings (paginated)
 
    Mirrors the SQL patterns in app/sector-landing/queries.ts (ancestor
    walk c/p1../p4 to attribute an L4/L5 listing back to its L1 sector) and

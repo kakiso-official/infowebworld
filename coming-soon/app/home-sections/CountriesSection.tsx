@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import type { CountryCount } from './countries-data'
-import { COUNTRIES_INDEX_PATH, countryHubPath, countrySectorPath, countrySlug } from '@/lib/country-paths'
+import { countryHubPath, countrySectorPath, countrySlug } from '@/lib/country-paths'
 
 /* ════════════════════════════════════════════════════════════════════════
    "Businesses Near You, Businesses Around the World" - homepage section
@@ -11,6 +11,10 @@ import { COUNTRIES_INDEX_PATH, countryHubPath, countrySectorPath, countrySlug } 
    Server Component - `countries` is fetched by the caller (app/page.tsx)
    via getCountryListingCounts() and passed in as a prop. The AI tools
    directory passes sector-scoped counts plus its own heading/sub/pill.
+
+   One button below the tiles: "Show all {n} countries" opens the rest in
+   place (Oct 2026 SEO spec: one button, not two - the separate "Browse all
+   countries" link to /countries was dropped; the footer links there).
    ════════════════════════════════════════════════════════════════════════ */
 
 const VISIBLE_COUNT = 12
@@ -27,7 +31,7 @@ export interface CountriesSectionProps {
   /** Live-mode pill text; "{n}" becomes the formatted country count. */
   pillTemplate?: string
   /** Scopes every tile's link to one sector's country page
-   *  (/countries/{country}/{sector path}) instead of the country hub. */
+   *  (/{country}-business-directory/{sector path}) instead of the country hub. */
   sectorSlug?: string
 }
 
@@ -44,7 +48,7 @@ export default function CountriesSection({
      fallback (DB failure) sets listings: null throughout, so a single null
      check is enough to tell the two apart - never show the count pill, and
      never render the "show all" disclosure, in fallback mode. Fallback tiles
-     stay plain (no /countries/* page is guaranteed to exist for them). */
+     stay plain (no country page is guaranteed to exist for them). */
   const isLive = countries.every(c => c.listings !== null)
 
   const hrefFor = (c: CountryCount) => {
@@ -73,10 +77,9 @@ export default function CountriesSection({
         </div>
 
         {/* Tiles link to the country's page (hub, or this sector's country
-            page when sectorSlug is set) now that /countries/* ships. In
-            fallback mode (DB failure, listings: null) a page is not
-            guaranteed to exist for every static entry, so those tiles stay
-            plain non-interactive cards. */}
+            page when sectorSlug is set). In fallback mode (DB failure,
+            listings: null) a page is not guaranteed to exist for every
+            static entry, so those tiles stay plain non-interactive cards. */}
         <ul className="hm-geo-grid">
           {visible.map(c => {
             const listingsLabel = formatListings(c.listings)
@@ -125,12 +128,6 @@ export default function CountriesSection({
               ))}
             </ul>
           </details>
-        )}
-
-        {isLive && (
-          <p className="hm-geo-all">
-            <Link href={COUNTRIES_INDEX_PATH}>Browse all countries</Link>
-          </p>
         )}
       </div>
     </section>

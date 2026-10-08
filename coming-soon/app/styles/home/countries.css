@@ -258,30 +258,6 @@
   border-radius: 999px;
 }
 
-/* "Browse all countries" link under the grid/disclosure. */
-.hm-geo-all {
-  margin: clamp(16px, 2.5vw, 22px) auto 0;
-  text-align: center;
-}
-
-.hm-geo-all a {
-  font-size: 13.5px;
-  font-weight: 700;
-  color: var(--hm-c-brand, #003B2A);
-  text-decoration: underline;
-  text-decoration-color: transparent;
-  transition: text-decoration-color 0.15s ease;
-}
-
-.hm-geo-all a:hover {
-  text-decoration-color: currentColor;
-}
-
-.hm-geo-all a:focus-visible {
-  outline: 2px solid var(--hm-c-accent, #0E8F6E);
-  outline-offset: 2px;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .hm-geo-more-summary {
     transition: none;
@@ -289,8 +265,7 @@
   .hm-geo-chevron {
     transition: none;
   }
-  .hm-geo-chip,
-  .hm-geo-all a {
+  .hm-geo-chip {
     transition: none;
   }
 }

@@ -9,7 +9,7 @@ import '../styles/country-directory.css'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import FinalCtaSection from '../test-landing-page/FinalCtaSection'
-import { COUNTRIES_INDEX_PATH, SECTOR_COUNTRY_COPY, countryHubPath } from '@/lib/country-paths'
+import { COUNTRIES_INDEX_PATH, countryHubPath } from '@/lib/country-paths'
 import { getCountriesWithListings, getCountrySectorPairs } from './country-data'
 import { buildIndexJsonLd, buildMetadata, fmt, indexCrumbs, indexDescription, indexTitle } from './seo'
 import CountryHero from './components/CountryHero'
@@ -18,9 +18,9 @@ import CountryCards, { type CountryCardItem } from './components/CountryCards'
 
 /* ═══════════════════════════════════════════════════════════════════════
    /countries - every country with live listings, biggest first. Each
-   card opens the country hub (/countries/{country}). The fetchers throw
-   on a DB failure, so a DB outage is a 500 (retried), never an empty
-   index that would be cached and crawled.
+   card opens the country hub (/{country}-business-directory). The
+   fetchers throw on a DB failure, so a DB outage is a 500 (retried),
+   never an empty index that would be cached and crawled.
    ═══════════════════════════════════════════════════════════════════════ */
 
 /* Rendered per request (the fetchers are cached for 10 minutes), not
@@ -47,30 +47,19 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function CountriesIndexPage() {
   const { countries, pairs } = await loadIndex()
 
-  /* Each country's biggest sector, for the card's meta line. */
-  const topSector = new Map<number, { sector: string; listings: number }>()
-  for (const p of pairs) {
-    const cur = topSector.get(p.countryId)
-    if (!cur || p.listings > cur.listings) topSector.set(p.countryId, { sector: p.sector, listings: p.listings })
-  }
   const sectorsLive = new Set(pairs.map(p => p.sector)).size
 
   const totalListings = countries.reduce((s, c) => s + c.listings, 0)
   const title = indexTitle(countries.length)
   const description = indexDescription(countries)
 
-  const items: CountryCardItem[] = countries.map(c => {
-    const top = topSector.get(c.id)
-    const noun = top ? SECTOR_COUNTRY_COPY[top.sector]?.noun : undefined
-    return {
-      key: c.slug,
-      name: c.name,
-      code: c.code,
-      href: countryHubPath(c.slug),
-      listings: c.listings,
-      meta: noun ? `Top: ${noun}` : undefined,
-    }
-  })
+  const items: CountryCardItem[] = countries.map(c => ({
+    key: c.slug,
+    name: c.name,
+    code: c.code,
+    href: countryHubPath(c.slug),
+    listings: c.listings,
+  }))
 
   const top3 = countries.slice(0, 3).map(c => c.name)
 
@@ -91,8 +80,7 @@ export default async function CountriesIndexPage() {
             { icon: faBuilding, text: `${fmt(totalListings)} live listings` },
             ...(sectorsLive > 0 ? [{ icon: faLayerGroup, text: `${sectorsLive} sectors` }] : []),
           ]}
-          primary={{ label: 'Browse all countries', href: '#all-countries' }}
-          secondary={{ label: 'List your business', href: '/business' }}
+          primary={{ label: 'List your business', href: '/business' }}
         />
 
         <Section

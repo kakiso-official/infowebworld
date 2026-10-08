@@ -3,8 +3,8 @@ import { buildFaqPageJsonLd, type HomeFaq } from '../home-sections/home-faq-data
 import { buildSerpTitle, clampDescription, DESC_BUDGET, TITLE_BUDGET } from '@/lib/seo'
 import { sectorCategoryPath } from '@/lib/sector-paths'
 import {
-  COUNTRIES_INDEX_PATH, COUNTRY_INDEX_MIN_LISTINGS, COUNTRY_HUB_TITLES, SECTOR_COUNTRY_COPY,
-  countryHubPath, countryInPhrase, countrySectorPath, pickTitle,
+  COUNTRIES_INDEX_PATH, COUNTRY_INDEX_MIN_LISTINGS, SECTOR_COUNTRY_COPY,
+  countryDirectoryName, countryHubHeading, countryHubPath, countryInPhrase, countrySectorPath, pickTitle,
 } from '@/lib/country-paths'
 import type { CategoryCount, CityCount, CountryInfo, CountryReviewStats, ListingRow, SectorCount } from './country-data'
 
@@ -71,8 +71,10 @@ export function listingPath(row: ListingRow): string {
 
 /* ── Titles ─────────────────────────────────────────────────────────── */
 
+/** One format for every country hub (Oct 2026 SEO spec):
+ *  '#1 Rated US Business Directory | InfoWebWorld'. */
 export function hubTitle(country: CountryInfo): string {
-  return pickTitle(COUNTRY_HUB_TITLES, { name: country.name, year: now().year }, TITLE_BUDGET)
+  return `${countryHubHeading(country.name)} | InfoWebWorld`
 }
 
 /** The sector title; page N > 1 appends " - Page N" when it still fits,
@@ -107,8 +109,15 @@ export function indexTitle(countryCount: number): string {
 
 /* ── H1s ────────────────────────────────────────────────────────────── */
 
+/** '#1 Rated US Business Directory' - the hub title without the brand. */
 export function hubH1(country: CountryInfo): string {
-  return `${country.name} Business Directory`
+  return countryHubHeading(country.name)
+}
+
+/** 'US Business Directory', 'India Business Directory' - the hub's name in
+ *  links and lists elsewhere. */
+export function hubName(country: Pick<CountryInfo, 'name'>): string {
+  return `${countryDirectoryName(country.name)} Business Directory`
 }
 
 export function sectorH1(country: CountryInfo, sector: string): string {
@@ -513,7 +522,7 @@ export function buildIndexJsonLd(countries: CountryInfo[], title: string, descri
     description,
     crumbs: indexCrumbs(),
     listName: 'Countries with business listings on InfoWebWorld',
-    items: countries.map(c => ({ name: `${c.name} Business Directory`, path: countryHubPath(c.slug) })),
+    items: countries.map(c => ({ name: hubName(c), path: countryHubPath(c.slug) })),
   })
 }
 

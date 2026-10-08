@@ -27,7 +27,7 @@ import {
   getCountryTopCategories, type CountryInfo,
 } from '../../country-data'
 import {
-  buildMetadata, buildSectorFaqs, buildSectorJsonLd, fmt, plural, sectorCrumbs,
+  buildMetadata, buildSectorFaqs, buildSectorJsonLd, fmt, hubName, plural, sectorCrumbs,
   sectorDescription, sectorH1, sectorIndexable, sectorPagePath, sectorTitle,
 } from '../../seo'
 import CountryHero, { type HeroStat } from '../../components/CountryHero'
@@ -39,9 +39,10 @@ import CountryListingGrid from '../../components/CountryListingGrid'
 import CountryPagination from '../../components/CountryPagination'
 
 /* ═══════════════════════════════════════════════════════════════════════
-   /countries/{country}/{sector directory} - one sector in one country,
-   e.g. /countries/india/it-directory. Every live listing, paginated
-   (?page=N, page 1 = the clean URL), wrapped in the sector palette.
+   /{country}-business-directory/{sector directory} - one sector in one
+   country, e.g. /india-business-directory/it-directory. Served from this
+   route by middleware.ts (lib/country-paths.ts). Every live listing,
+   paginated (?page=N, page 1 = the clean URL), in the sector palette.
 
      1  Hero (flag, breadcrumb, H1 "{noun} in {Country}", stats)
      2  Browse by category (L2 + popular L3 → category ?country= pages)
@@ -296,7 +297,7 @@ export default async function CountrySectorPage(
             sub={`More of the ${country.name} business directory.`}
             action={
               <Link href={countryHubPath(country.slug)} className="cdir-more-link">
-                <span>{country.name} Business Directory</span>
+                <span>{hubName(country)}</span>
                 <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" />
               </Link>
             }

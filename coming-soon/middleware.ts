@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { SECTOR_URL_SEGMENTS } from '@/lib/sector-paths'
+import { isCountryDirectoryPath, routeCountryDirectoryPath } from '@/lib/country-paths'
 
 /* ── Bot user-agents blocked at the edge ──
    robots.txt already disallows these, but robots is voluntary — MJ12bot,
@@ -74,12 +75,14 @@ function shouldNoindex(pathname: string): boolean {
      sector-specific FAQ) — a real AEO/GEO surface. */
   if (segments.length === 2 && (SECTOR_URL_SEGMENTS.has(segments[0]) || SECTOR_SLUGS.has(segments[0]))) return false
 
-  /* /countries index + country hub + country-sector pages (Oct 2026):
-     /countries, /countries/{country}, /countries/{country}/{segment}.
-     Not blanket-noindexed here — the page's own metadata decides (robots
-     is index,follow only once the country/pair clears COUNTRY_INDEX_MIN_LISTINGS;
-     see lib/country-paths.ts + app/countries/*). */
+  /* Country directory (Oct 2026): the /countries index, the country hubs
+     /{country}-business-directory and their sector pages
+     /{country}-business-directory/{segment}. Not blanket-noindexed here —
+     the page's own metadata decides (robots is index,follow only once the
+     country/pair clears COUNTRY_INDEX_MIN_LISTINGS; see lib/country-paths.ts
+     + app/countries/*). The old /countries/{country}/... URLs 308 below. */
   if (segments[0] === 'countries' && segments.length <= 3) return false
+  if (isCountryDirectoryPath(pathname)) return false
 
   /* Individual listing + company profile pages. */
   if (segments.length === 2 && (segments[0] === 'listing' || segments[0] === 'profile')) return false
@@ -158,7 +161,7 @@ const ISR_PATH_RE = /^\/(listing|profile)\//
 /* Slow-changing public directory surfaces — safe at a 24h edge TTL.
    Blog is deliberately NOT here: new posts should surface within the
    default 1h edge TTL, not a day later. */
-const LONG_CACHE_RE = /^\/(ai-ml|ai-si-directory|software-saas|saas-directory|it-services-agencies|it-directory|startups-innovation|startup-directory|local-businesses|local-businesses-directory|professional-services|professional-service-directory|categories|sector|compare|compare-companies|all|countries)(\/|$)/
+const LONG_CACHE_RE = /^\/(ai-ml|ai-si-directory|software-saas|saas-directory|it-services-agencies|it-directory|startups-innovation|startup-directory|local-businesses|local-businesses-directory|professional-services|professional-service-directory|categories|sector|compare|compare-companies|all|countries|[a-z0-9-]+-business-directory)(\/|$)/
 
 /* ── Removed country URL space ──
    The site used to serve /{country}/* URLs (/uk/blog, /us/ai-ml, bare /uk, …).
@@ -206,6 +209,26 @@ export function middleware(request: NextRequest) {
      breadcrumbs) without each page having to plumb it through props. */
   const requestHeaders = new Headers(request.headers)
   requestHeaders.set('x-pathname', pathname)
+
+  /* Country directory (Oct 8 2026 URL change, lib/country-paths.ts):
+     /us-business-directory[/{sector path}] is served by the
+     app/countries/[country] routes under its own URL; the Oct 7 URLs
+     (/countries/united-states[/...]), short-name aliases and wrong-case
+     variants 308 to it in one hop, query string kept (?page=N). */
+  const countryRoute = routeCountryDirectoryPath(pathname)
+  if (countryRoute) {
+    if (countryRoute.kind === 'gone') {
+      const gone = NextResponse.rewrite(new URL('/url-removed', request.url))
+      gone.headers.set('x-robots-tag', 'noindex, nofollow')
+      return gone
+    }
+    const url = request.nextUrl.clone()
+    url.pathname = countryRoute.path
+    if (countryRoute.kind === 'redirect') return NextResponse.redirect(url, 308)
+    const rewritten = NextResponse.rewrite(url, { request: { headers: requestHeaders } })
+    applyHeaders(rewritten, pathname, isVercelApp)
+    return rewritten
+  }
 
   const response = NextResponse.next({ request: { headers: requestHeaders } })
   applyHeaders(response, pathname, isVercelApp)

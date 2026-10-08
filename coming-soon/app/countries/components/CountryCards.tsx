@@ -3,15 +3,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRight, faEarthAmericas } from '@fortawesome/free-solid-svg-icons'
 import { flagUrl } from '@/lib/country-paths'
 
-/* Flag cards linking to a country page (hub or country + sector). The
-   caller decides the href and the meta line (e.g. "Top: IT Companies"). */
+/* Flag cards linking to a country page (hub or country + sector); the
+   caller decides the href. */
 export type CountryCardItem = {
   key: string
   name: string
   code: string
   href: string
   listings: number
-  meta?: string
 }
 
 function Flag({ code }: { code: string }) {
@@ -51,7 +50,6 @@ export default function CountryCards({ items, compact = false }: { items: Countr
               <span className="cdir-cc-count">
                 {c.listings.toLocaleString('en-US')} listing{c.listings === 1 ? '' : 's'}
               </span>
-              {c.meta ? <span className="cdir-cc-meta">{c.meta}</span> : null}
             </span>
             <span className="cdir-cc-arrow" aria-hidden="true"><FontAwesomeIcon icon={faArrowRight} /></span>
           </Link>

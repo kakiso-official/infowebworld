@@ -21,37 +21,48 @@ import {
 import {
   getCountriesWithListings, getCountryBySlug, getCountryCities, getCountryFeatured,
   getCountryRecent, getCountryReviewStats, getCountryReviews, getCountrySectorCounts,
-  getCountryTopCategories, type CountryInfo,
+  getCountryTopCategories, type CategoryCount, type CountryInfo,
 } from '../country-data'
 import {
-  buildHubFaqs, buildHubJsonLd, buildMetadata, fmt, hubCrumbs, hubDescription, hubH1,
-  hubIndexable, hubTitle, joinList, plural,
+  buildHubFaqs, buildHubJsonLd, buildMetadata, categoryInCountryPath, fmt, hubCrumbs,
+  hubDescription, hubH1, hubIndexable, hubTitle, joinList, plural,
 } from '../seo'
 import CountryHero, { type HeroStat } from '../components/CountryHero'
 import Section from '../components/Section'
-import SectorCards from '../components/SectorCards'
-import { CategoryChips, CityChips } from '../components/Chips'
+import SectorCategoryTabs, { type SectorTab } from '../components/SectorCategoryTabs'
+import { CityChips } from '../components/Chips'
 import CountryCards from '../components/CountryCards'
 import CountryListingGrid from '../components/CountryListingGrid'
 import RecentListings from '../components/RecentListings'
 
 /* ═══════════════════════════════════════════════════════════════════════
-   /countries/{country} - the country hub: all six sectors mixed.
+   /{country}-business-directory - the country hub: all six sectors mixed.
+   Served from this route by middleware.ts (lib/country-paths.ts), so the
+   `country` param is always the canonical country slug.
 
-     1  Hero (flag, breadcrumb, H1 "{Country} Business Directory", stats)
-     2  Browse {Country} by sector  → /countries/{country}/{sector dir}
-     3  Top categories               → /{sector dir}/{category}?country=
-     4  Featured businesses (12, paid + verified first)
-     5  Popular cities (chips)
-     6  Recently added (8)
-     7  Reviews (only when the country has any)
-     8  FAQs (same array as the FAQPage node)
-     9  Explore other countries
-     10 Final CTA
+     1  Hero (flag, breadcrumb, H1 "#1 Rated {US} Business Directory", stats)
+     2  Browse {Country} businesses by sector - one tab per sector, its top
+        categories as cards (→ /{sector dir}/{category}?country=) and a CTA
+        to /{country}-business-directory/{sector dir}
+     3  Featured businesses (12, paid + verified first)
+     4  Popular cities (chips)
+     5  Recently added (8)
+     6  Reviews (only when the country has any)
+     7  FAQs (same array as the FAQPage node)
+     8  Explore other countries
+     9  Final CTA
 
    Unknown / zero-listing country → /url-removed (a real 404; notFound()
-   here would stream a 200). Alias or wrong-case slug → 308 to canonical.
+   here would stream a 200). A non-canonical slug → 308 to the hub URL.
    ═══════════════════════════════════════════════════════════════════════ */
+
+/** Category cards per sector tab - the homepage Featured grid's 3 x 3. */
+const CATEGORIES_PER_SECTOR = 9
+
+/* Every L2 category with listings in the country, in one query: the tabs
+   take each sector's top 9 from it, the FAQ the overall top 5. Above the
+   whole taxonomy's L2 count, so no sector is ever cut short. */
+const ALL_L2_LIMIT = 500
 
 export const dynamic = 'force-dynamic'
 
@@ -81,7 +92,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     title: hubTitle(country),
     description: hubDescription(country, sectors),
     indexable: hubIndexable(country),
-    imageAlt: `${country.name} Business Directory - InfoWebWorld`,
+    imageAlt: `${hubH1(country)} - InfoWebWorld`,
   })
 }
 
@@ -89,11 +100,10 @@ export default async function CountryHubPage({ params }: { params: Params }) {
   const country = await resolveCountry(params)
   const id = country.id
 
-  const [sectors, topL2, topL3, cities, featured, recentPool, reviews, reviewStats, allCountries] =
+  const [sectors, topL2, cities, featured, recentPool, reviews, reviewStats, allCountries] =
     await Promise.all([
       loadSectors(id),
-      getCountryTopCategories(id, null, 2, 12),
-      getCountryTopCategories(id, null, 3, 16),
+      getCountryTopCategories(id, null, 2, ALL_L2_LIMIT),
       getCountryCities(id, null, 40),
       getCountryFeatured(id, 12),
       getCountryRecent(id, null, 20),
@@ -104,7 +114,6 @@ export default async function CountryHubPage({ params }: { params: Params }) {
 
   const C = countryInPhrase(country.name)
   const live = sectors.filter(s => s.listings > 0).sort((a, b) => b.listings - a.listings)
-  const biggest = live[0]
 
   /* Recently added: newest listings that are not already in Featured. */
   const featuredIds = new Set(featured.map(r => String(r.id)))
@@ -112,8 +121,37 @@ export default async function CountryHubPage({ params }: { params: Params }) {
 
   const title = hubTitle(country)
   const description = hubDescription(country, sectors)
-  const categoriesForFaq = topL2.length > 0 ? topL2 : topL3
-  const faqs = buildHubFaqs({ country, sectors, cities, categories: categoriesForFaq, reviewStats })
+  const faqs = buildHubFaqs({ country, sectors, cities, categories: topL2, reviewStats })
+
+  /* One tab per live sector: its top categories here (topL2 is already
+     sorted by listings, so each sector's list is too). */
+  const l2BySector = new Map<string, CategoryCount[]>()
+  for (const c of topL2) {
+    const list = l2BySector.get(c.sector)
+    if (list) list.push(c)
+    else l2BySector.set(c.sector, [c])
+  }
+  const sectorTabs: SectorTab[] = live
+    .filter(s => SECTOR_COUNTRY_COPY[s.sector])
+    .map(s => {
+      const copy = SECTOR_COUNTRY_COPY[s.sector]
+      return {
+        sector: s.sector,
+        label: copy.name,
+        listings: s.listings,
+        href: countrySectorPath(country.slug, s.sector),
+        cta: s.listings === 1
+          ? `See the ${copy.name} listing in ${C}`
+          : `View all ${fmt(s.listings)} ${copy.noun} in ${C}`,
+        categories: (l2BySector.get(s.sector) ?? []).slice(0, CATEGORIES_PER_SECTOR).map(c => ({
+          id: c.id,
+          name: c.name,
+          listings: c.listings,
+          href: categoryInCountryPath(c.sector, c.slug, country.slug),
+        })),
+        emptyText: `Every ${copy.name} listing in ${C} is on the sector page.`,
+      }
+    })
 
   const stats: HeroStat[] = [
     { icon: faBuilding, text: `${plural(country.listings, 'live listing', 'live listings')}` },
@@ -151,33 +189,15 @@ export default async function CountryHubPage({ params }: { params: Params }) {
           title={hubH1(country)}
           sub={sub}
           stats={stats}
-          primary={biggest
-            ? { label: `Browse ${SECTOR_COUNTRY_COPY[biggest.sector]?.name ?? 'listings'}`, href: countrySectorPath(country.slug, biggest.sector) }
-            : { label: 'Browse all listings', href: '#featured' }}
-          secondary={{ label: 'List your business', href: '/business' }}
+          primary={{ label: 'List your business', href: '/business' }}
         />
 
-        {live.length > 0 && (
-          <Section
-            id="sectors"
-            title={`Browse ${country.name} Businesses by Sector`}
-            sub={`Each sector page lists every live ${country.name} listing in it, with reviews, services and company details.`}
-          >
-            <SectorCards countrySlug={country.slug} sectors={live} />
-          </Section>
-        )}
-
-        {(topL2.length > 0 || topL3.length > 0) && (
-          <Section
-            id="categories"
-            tone="wash"
-            title={`Top Categories in ${C}`}
-            sub={`The categories with the most live listings in ${C}. Each opens the category filtered to ${country.name}.`}
-          >
-            <CategoryChips categories={topL2} countrySlug={country.slug} label={topL3.length > 0 ? 'Categories' : undefined} />
-            <CategoryChips categories={topL3} countrySlug={country.slug} label={topL2.length > 0 ? 'Popular subcategories' : undefined} />
-          </Section>
-        )}
+        <SectorCategoryTabs
+          id="sectors"
+          title={`Browse ${country.name} Businesses by Sector`}
+          sub={`Pick a sector to see its most popular categories in ${C}, ranked by live listings. Open a category to compare its businesses, or view every listing in the sector.`}
+          tabs={sectorTabs}
+        />
 
         <Section
           id="featured"

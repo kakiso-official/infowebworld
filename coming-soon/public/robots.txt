@@ -45,9 +45,15 @@ Allow: /startup-directory/
 Allow: /local-businesses-directory/
 Allow: /professional-service-directory/
 
-# ─── Country directory pages (/countries, /countries/{country}, /countries/{country}/{sector}) ───
+# ─── Country directory pages ───
+# /countries, the country hubs /{country}-business-directory (e.g.
+# /us-business-directory) and their sector pages under them. The old
+# /countries/{country}/... URLs 308 to these - left crawlable so the
+# redirects are seen.
 Allow: /countries$
 Allow: /countries/
+Allow: /*-business-directory$
+Allow: /*-business-directory/
 
 # ─── Individual listing + company profile + blog post pages ───
 Allow: /listing/
