@@ -113,9 +113,8 @@ export default function CompanyPicker({ onPick }: { onPick: (c: CompanyHit) => v
       {!q.trim() && (
         <>
           <p className="wr-cp-hint">
-            Start typing to find a company. Only listed companies can be reviewed —
-            if the company you want is missing, you can{' '}
-            <a href="/business" className="wr-cp-link">list it for them</a>.
+            Can&apos;t find it?{' '}
+            <a href="/business" className="wr-cp-link">Add the company first.</a>
           </p>
           <img
             src="/illustrations/builder-sign.png"

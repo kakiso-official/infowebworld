@@ -14,7 +14,7 @@
    ──────────────────────────────────────────────────────────── */
 
 const KEY = '8f3c4e2d6b914a5e87cd0192f6e4b3a7'
-const HOST = 'infowebworld.com'
+const HOST = 'www.infowebworld.com' // canonical host - non-www 301s here
 const KEY_LOCATION = `https://${HOST}/${KEY}.txt`
 const ENDPOINT = 'https://api.indexnow.org/indexnow'
 

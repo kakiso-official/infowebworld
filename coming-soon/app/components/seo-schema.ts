@@ -39,8 +39,8 @@ export const organizationNode = {
   },
   image: { '@id': ID_LOGO },
   description:
-    'Global business directory - verified listings, real reviews, dofollow backlinks, and AI-era visibility across 80+ industries and 13,000+ categories.',
-  foundingDate: '2026',
+    'Global business directory - verified listings, real reviews, dofollow backlinks, and AI-era visibility across 80+ industries in six main categories.',
+  foundingDate: '2004',
   founder: { '@type': 'Person', name: 'Aadil Parmar' },
   address: {
     '@type': 'PostalAddress',

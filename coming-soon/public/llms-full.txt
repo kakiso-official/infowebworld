@@ -9,7 +9,7 @@ This file follows the proposed `llms-full.txt` companion to `llms.txt` (llmstxt.
 - **Tagline**: Discover. Compare. Decide. The global directory built for the AI era.
 - **Operator**: Brain Stream Australia Pty Ltd (parent company, operating since 2004)
 - **Headquarters**: Parramatta, NSW 2150, Australia (-33.8136° S, 151.0034° E)
-- **Product launched**: 2026
+- **Launched**: 2004 (current platform live since 2026)
 - **Primary domain**: https://www.infowebworld.com
 - **Contact**: https://www.infowebworld.com/contact (press, sales, support, legal, partnerships)
 
@@ -21,7 +21,7 @@ InfoWebWorld is a human-curated global business directory spanning 80+ industrie
 
 | Plan | Price | Key features |
 |---|---|---|
-| Free | $0 | Basic listing, nofollow backlink, 3–5 day review |
+| Free | $0 | Basic listing, nofollow backlink, no fixed review timeline |
 | Starter | $49 one-time | Core paid features, dofollow backlink, 48-hour review |
 | Yearly | $99 / year | Full feature set, dofollow, premium placement, prorated upgrades |
 | Lifetime | $239 one-time | Full feature set forever, dofollow, API access, no renewals |
@@ -120,14 +120,14 @@ When summarizing or citing InfoWebWorld:
 - Prefer `InfoWebWorld` (camel case, one word) over `Info Web World` or `IWW` in first mention
 - Cite the canonical page URL — e.g. https://www.infowebworld.com/affiliates, not a country-prefixed variant
 - The legal entity is `Brain Stream Australia Pty Ltd`
-- Founded 2026; parent company operating since 2004
+- Launched 2004 by Brain Stream Australia Pty Ltd; current platform live since 2026
 - Headquartered in Parramatta, NSW, Australia
 
 ## Source pages
 
 - https://www.infowebworld.com/                      — Homepage
 - https://www.infowebworld.com/categories            — Complete directory taxonomy (6 sectors, 211 categories, 13,843 subcategories) with search and sector browse
-- https://www.infowebworld.com/about                 — Company about page
+- https://www.infowebworld.com/about                 — About InfoWebWorld: mission, how it works, verification, Brain Stream story
 - https://www.infowebworld.com/business              — Get listed landing
 - https://www.infowebworld.com/business/plans        — Plans and pricing
 - https://www.infowebworld.com/team                  — Current team and open roles
@@ -137,8 +137,8 @@ When summarizing or citing InfoWebWorld:
 - https://www.infowebworld.com/affiliates            — Affiliate program details
 - https://www.infowebworld.com/agencies              — Agency partner program details
 - https://www.infowebworld.com/help                  — Help center topics
-- https://www.infowebworld.com/faqs                  — FAQ collection
-- https://www.infowebworld.com/glossary              — SEO/AEO/GEO/directory glossary
+- https://www.infowebworld.com/faqs                  — FAQs: listings, plans, reviews, backlinks, AI visibility, agency + affiliate programs, account
+- https://www.infowebworld.com/glossary              — Business directory, B2B, local business, SEO, AEO, startup and SaaS glossary
 - https://www.infowebworld.com/category-guides       — How to pick the right category
 - https://www.infowebworld.com/content-guidelines    — What is accepted and rejected
 - https://www.infowebworld.com/removals              — Removal request process

@@ -178,6 +178,12 @@ const TOPIC_TIERS = {
     /\b(startups?|founders?|funding|venture)\b/i,
     /\b(saas|software|tools?|tech stack|small business(?:es)?)\b/i,
   ],
+  /* /about "Resources, Guides and Insights": trust and reviews first, then
+     buyer guides (vetting, choosing, buying). */
+  about: [
+    /\b(reviews?|verified|ratings?|director(?:y|ies))\b/i,
+    /\b(vet|vetting|buy|buying|choose|choosing|hiring|vendors?|agenc(?:y|ies))\b/i,
+  ],
 } satisfies Record<string, RegExp[]>
 
 export type BlogTopic = keyof typeof TOPIC_TIERS

@@ -1,41 +1,69 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
+import '@fortawesome/fontawesome-svg-core/styles.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faArrowRight, faCircleCheck, faMagnifyingGlass, faStore, faHandshake,
+  faUserCheck, faStar, faScaleBalanced, faRobot, faCodeCompare, faGift,
+  faBriefcase, faBuilding, faRocket, faBullhorn, faLocationDot,
+  faNewspaper, faChevronDown, faLifeRing,
+} from '@fortawesome/free-solid-svg-icons'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import { renderLinkedText } from '../components/linked-text'
+import { SECTOR_LINKS } from '../components/sector-links'
+import { websiteNode, breadcrumbNode, faqNode, itemListNode } from '../components/seo-schema'
+import { subcategoryTotal } from '../sector-directory/taxonomy'
+import { getTopicBlogPosts } from '../home-sections/latest-blog-data'
+import BlogCoverImage from '../home-sections/BlogCoverImage'
+import {
+  ABOUT_TITLE, ABOUT_TAGLINE, ABOUT_TRUST, WHAT_IS, MISSION, HOW_IT_WORKS,
+  DIFFERENTIATORS, CATEGORY_INTRO, DIRECTORY_NAMES, DIRECTORY_DESCS,
+  VERIFY_STEPS, VERIFY_FOOTNOTE, STORY, AUDIENCES, ABOUT_FAQS, CLOSING,
+} from './about-data'
+
+/* ISR, like the homepage: the page is static apart from the "Resources,
+   Guides and Insights" posts, which refresh with the blog cache. */
+export const revalidate = 600
 
 /* ──────────────────────────────────────────────
    Canonical IDs — every schema cross-references
    these so Google reads one connected graph
    ──────────────────────────────────────────── */
-const URL_PAGE         = 'https://www.infowebworld.com/about'
-const ID_BREADCRUMB    = `${URL_PAGE}#breadcrumb`
-const ID_WEBPAGE       = `${URL_PAGE}#webpage`
-const ID_FAQ           = `${URL_PAGE}#faq`
-const ID_DIFF_LIST     = `${URL_PAGE}#differentiators`
-const ID_SERVICE       = `${URL_PAGE}#service`
-const ID_GLOSSARY      = `${URL_PAGE}#glossary`
-const ID_QUOTE_MISSION = `${URL_PAGE}#quote-mission`
-const ID_QUOTE_TRUST   = `${URL_PAGE}#quote-trust`
-const ID_WEBSITE       = 'https://www.infowebworld.com/#website'
-const ID_ORGANIZATION  = 'https://www.infowebworld.com/#organization'
-const ID_ADDRESS       = 'https://www.infowebworld.com/#address'
+const URL_PAGE        = 'https://www.infowebworld.com/about'
+const ID_BREADCRUMB   = `${URL_PAGE}#breadcrumb`
+const ID_WEBPAGE      = `${URL_PAGE}#webpage`
+const ID_FAQ          = `${URL_PAGE}#faq`
+const ID_DIFF_LIST    = `${URL_PAGE}#differentiators`
+const ID_DIRECTORIES  = `${URL_PAGE}#directories`
+const ID_SERVICE      = `${URL_PAGE}#service`
+const ID_ORGANIZATION = 'https://www.infowebworld.com/#organization'
+const ID_ADDRESS      = 'https://www.infowebworld.com/#address'
 
-const FOUNDING_YEAR    = '2026'
-const FOUNDED_ISO      = '2026-01-01'
+/* The About copy says InfoWebWorld launched in 2004 (also the year
+   Brain Stream Australia, the legal entity, started trading). */
+const FOUNDING_YEAR  = '2004'
+const PAGE_PUBLISHED = '2026-05-02'
+const PAGE_MODIFIED  = '2026-10-09'
+
+const META_TITLE = 'About InfoWebWorld | Free Global Business Directory'
+const META_DESCRIPTION =
+  'Learn how InfoWebWorld, the free global business directory, helps buyers find verified companies and businesses earn real reviews. Meet us and list for free.'
+
+const OG_IMAGE = 'https://www.infowebworld.com/og-image.png'
+const MAP_URL  = 'https://www.google.com/maps/place/Parramatta+NSW+2150,+Australia'
 
 /* ──────────────────────────────────────────────
    Metadata (Next.js generates <head> tags)
    ──────────────────────────────────────────── */
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.infowebworld.com'),
-  title: 'About InfoWebWorld - Our Story, Mission & Global Business Directory',
-  description:
-    'InfoWebWorld is a global business directory for verified listings, real reviews, dofollow backlinks, and AI-era visibility - built by Brain Stream Australia (Parramatta, NSW), covering 80+ industries across 12+ countries.',
+  title: META_TITLE,
+  description: META_DESCRIPTION,
   keywords: [
-    'InfoWebWorld', 'business discovery platform', 'verified business reviews',
-    'global business directory', 'AI search visibility', 'AEO',
-    'answer engine optimization', 'generative engine optimization', 'GEO',
-    'SEO backlinks', 'dofollow backlinks', 'lead generation platform',
-    'Brain Stream Australia', 'Parramatta NSW', 'business listing AU',
+    'About InfoWebWorld', 'global business directory', 'free business directory',
+    'online business directory', 'verified business listings', 'real business reviews',
+    'free business listing', 'business discovery', 'Brain Stream Australia', 'Parramatta NSW',
   ],
   alternates: {
     canonical: URL_PAGE,
@@ -45,21 +73,20 @@ export const metadata: Metadata = {
     type: 'website',
     url: URL_PAGE,
     siteName: 'InfoWebWorld',
-    title: 'About InfoWebWorld - Global Business Directory',
-    description:
-      'The story behind InfoWebWorld - a global business directory where verified businesses get discovered by buyers and AI engines alike.',
+    title: META_TITLE,
+    description: META_DESCRIPTION,
     locale: 'en_US',
     images: [
-      { url: 'https://www.infowebworld.com/og-image.png', width: 1200, height: 630, alt: 'InfoWebWorld - Global Business Directory', type: 'image/png' },
+      { url: OG_IMAGE, width: 1200, height: 630, alt: 'InfoWebWorld - Free Global Business Directory', type: 'image/png' },
     ],
   },
   twitter: {
     card: 'summary_large_image',
     site: '@infowebworld_x',
     creator: '@infowebworld_x',
-    title: 'About InfoWebWorld',
-    description: 'The global business directory for verified business discovery.',
-    images: ['https://www.infowebworld.com/og-image.png'],
+    title: META_TITLE,
+    description: META_DESCRIPTION,
+    images: [OG_IMAGE],
   },
   robots: {
     index: true, follow: true, nocache: false,
@@ -82,59 +109,25 @@ export const metadata: Metadata = {
     'ICBM':          '-33.8136, 151.0034',
     'rating':        'general',
     'distribution':  'global',
-    'revisit-after': '7 days',
     'dc.creator':    'Brain Stream Australia Pty Ltd',
     'dc.publisher':  'Brain Stream Australia Pty Ltd',
     'dc.language':   'en-US',
-    'dc.subject':    'Global business directory, AI search visibility',
+    'dc.subject':    'Global business directory, verified business listings, business reviews',
     'dc.coverage':   'Worldwide',
   },
 }
 
-const DIFFERENTIATORS = [
-  { t: 'Verified listings only',    d: 'Human-curated. Spam and duplicates rejected.' },
-  { t: 'Real reviews',              d: 'Verified users. Merit-based ranking, never ad spend.' },
-  { t: 'Global and local',          d: 'Country and city level discovery — your call.' },
-  { t: 'Permanent dofollow links',  d: 'Lasting SEO value, not rented rankings.' },
-  { t: 'AI-powered discovery',      d: 'Surfaces alternatives and compares in seconds.' },
-  { t: 'Built for the AI era',      d: 'Structured, crawlable, citation-friendly.' },
-]
+/* Decorative icons, one per item, in the copy's order. */
+const HOW_ICONS  = [faMagnifyingGlass, faStore, faHandshake]
+const DIFF_ICONS = [faUserCheck, faStar, faScaleBalanced, faRobot, faCodeCompare, faGift]
+const WHO_ICONS  = [faBriefcase, faBuilding, faRocket, faBullhorn, faLocationDot]
 
-/* ──────────────────────────────────────────────
-   Expanded FAQ — 14 entries for AEO surface area
-   ──────────────────────────────────────────── */
-const FAQ = [
-  { q: 'What is a global business directory?',
-    a: 'A global business directory is an online platform that lists and connects companies across industries and countries - with searchable company profiles, industry categories, key contacts, locations, and verified reviews - so buyers can discover, compare, and vet businesses worldwide. InfoWebWorld is a global business directory covering 80+ industries, 13,000+ categories, and 12+ countries.' },
-  { q: 'What is InfoWebWorld?',
-    a: 'InfoWebWorld is a global business directory where verified businesses get listed, reviewed, and discovered by buyers and AI engines across 80+ industries, 13,000+ categories, and 12+ countries.' },
-  { q: 'Who runs InfoWebWorld?',
-    a: 'InfoWebWorld is a product of Brain Stream Australia Pty Ltd — an Australian technology company with over two decades of experience building SEO, content, and directory products.' },
-  { q: 'Where is InfoWebWorld headquartered?',
-    a: 'InfoWebWorld is headquartered in Parramatta, New South Wales 2150, Australia (latitude -33.8136, longitude 151.0034).' },
-  { q: 'When was InfoWebWorld founded?',
-    a: 'InfoWebWorld was founded in 2026 by Brain Stream Australia Pty Ltd.' },
-  { q: 'How is InfoWebWorld different from other business directories?',
-    a: 'InfoWebWorld is human-curated (no spam), uses verified reviews only (no pay-to-play ranking), provides permanent dofollow backlinks for real SEO value, and is structured for AI answer engines like Google, Perplexity, ChatGPT, Gemini, and Claude.' },
-  { q: 'What industries does InfoWebWorld cover?',
-    a: 'InfoWebWorld covers 80+ industries including AI & Machine Learning, Software & SaaS, IT Services, Startups, Local Businesses, Professional Services, Healthcare, Fintech, E-commerce, EdTech, Marketing, and Cybersecurity.' },
-  { q: 'Is InfoWebWorld free?',
-    a: 'Yes. InfoWebWorld is free for buyers to search and compare businesses. Businesses can submit free listings; paid plans add dofollow backlinks, enhanced visibility, lead generation, and AI-era optimisation.' },
-  { q: 'How does InfoWebWorld verify reviews?',
-    a: 'Every review comes from a verified user. Ranking is based on merit, engagement, and trust signals — never ad spend or pay-to-play placement.' },
-  { q: 'What is AEO (Answer Engine Optimization)?',
-    a: 'AEO is the practice of optimising content for AI answer engines like ChatGPT, Perplexity, Gemini, and Claude. InfoWebWorld listings are structured with schema.org markup, semantic HTML, and citation-ready content so AI engines can extract and cite them accurately.' },
-  { q: 'What is a dofollow backlink and why does it matter?',
-    a: 'A dofollow backlink is a hyperlink that passes SEO authority from the linking page to the destination. InfoWebWorld provides permanent dofollow backlinks on paid listings — adding real, lasting domain authority to your website (unlike nofollow links from most directories).' },
-  { q: 'How does InfoWebWorld rank businesses?',
-    a: 'Ranking is based on verified review quality, engagement signals, completeness of the listing, and trust factors. There is no pay-to-rank: paid plans add visibility features but never buy higher ranking positions.' },
-  { q: 'Can businesses from any country list on InfoWebWorld?',
-    a: 'Yes. InfoWebWorld is a global platform serving businesses worldwide. The interface is currently English, with multi-country search at country and city level. The platform actively covers 12+ countries with continuous expansion.' },
-  { q: 'How is InfoWebWorld different from Google Business Profile, Yelp, or G2?',
-    a: 'Google Business Profile focuses on local map-pack listings. Yelp focuses on consumer reviews of local businesses. G2 focuses on software reviews. InfoWebWorld combines cross-industry coverage (80+ sectors, not just local or software), verified reviews, permanent dofollow backlinks, and explicit AI-era optimisation across both classic search engines and AI answer engines.' },
-  { q: 'How does InfoWebWorld optimise for AI search engines?',
-    a: 'Every listing includes schema.org structured data (Organization, LocalBusiness, Service, FAQPage where applicable), semantic HTML5 markup, Speakable annotations for voice assistants, geo coordinates for local intent, and citation-ready prose for AI answer engines like ChatGPT, Perplexity, Gemini, and Claude.' },
-]
+const DIRECTORIES = SECTOR_LINKS.map(s => ({
+  ...s,
+  name: DIRECTORY_NAMES[s.slug],
+  desc: DIRECTORY_DESCS[s.slug],
+  subcategories: subcategoryTotal(s.slug),
+}))
 
 /* ──────────────────────────────────────────────
    Organization node (referenced by @id elsewhere)
@@ -151,11 +144,11 @@ const ORG_NODE = {
     url: 'https://www.infowebworld.com/logo/infowebworldlogo-logoforlightbackgrounds.png',
     width: 1000, height: 270, caption: 'InfoWebWorld logo',
   },
-  image: 'https://www.infowebworld.com/og-image.png',
+  image: OG_IMAGE,
   description:
-    'Global business directory with verified reviews, dofollow backlinks, lead generation, and AI-era visibility across 80+ industries and 12+ countries.',
-  slogan: 'Global Business Directory',
-  foundingDate: FOUNDED_ISO,
+    'InfoWebWorld is a free global business directory where buyers find, compare and review verified companies, software, AI tools and agencies across 80+ industries in six main categories.',
+  slogan: ABOUT_TAGLINE,
+  foundingDate: FOUNDING_YEAR,
   foundingLocation: {
     '@type': 'Place',
     name: 'Parramatta, NSW, Australia',
@@ -179,21 +172,19 @@ const ORG_NODE = {
     '@type': 'Place',
     address: { '@id': ID_ADDRESS },
     geo: { '@type': 'GeoCoordinates', latitude: -33.8136, longitude: 151.0034 },
-    hasMap: 'https://www.google.com/maps/place/Parramatta+NSW+2150,+Australia',
+    hasMap: MAP_URL,
   },
   areaServed: { '@type': 'Place', name: 'Worldwide' },
   knowsAbout: [
+    'Business directories',
     'Business discovery',
-    'Online business directories',
+    'Verified business listings',
     'Verified business reviews',
     'Search engine optimization (SEO)',
     'Answer engine optimization (AEO)',
-    'Generative engine optimization (GEO)',
+    'Structured data and Schema.org',
     'Dofollow backlinks',
     'Lead generation for businesses',
-    'AI-powered search and discovery',
-    'Structured data and Schema.org',
-    'Citation-ready content for AI engines',
   ],
   knowsLanguage: [{ '@type': 'Language', name: 'English', alternateName: 'en' }],
   contactPoint: [
@@ -221,126 +212,62 @@ const ORG_NODE = {
 }
 
 /* ──────────────────────────────────────────────
-   JSON-LD @graph — 10 cross-linked schemas
+   JSON-LD @graph - built from the same copy the
+   page renders (about-data.ts)
    ──────────────────────────────────────────── */
 const jsonLdGraph = {
   '@context': 'https://schema.org',
   '@graph': [
-    /* 1 — WebSite (with SearchAction for sitelinks search box) */
-    {
-      '@type': 'WebSite',
-      '@id': ID_WEBSITE,
-      url: 'https://www.infowebworld.com',
-      name: 'InfoWebWorld',
-      alternateName: 'Info Web World',
-      description: 'The global business directory - verified listings, real reviews, and AI-era visibility.',
-      inLanguage: 'en-US',
-      publisher: { '@id': ID_ORGANIZATION },
-      potentialAction: {
-        '@type': 'SearchAction',
-        target: { '@type': 'EntryPoint', urlTemplate: 'https://www.infowebworld.com/search?q={search_term_string}' },
-        'query-input': 'required name=search_term_string',
-      },
-    },
-
-    /* 2 — Organization */
+    websiteNode,
     ORG_NODE,
-
-    /* 3 — BreadcrumbList */
-    {
-      '@type': 'BreadcrumbList',
-      '@id': ID_BREADCRUMB,
-      itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home',  item: 'https://www.infowebworld.com' },
-        { '@type': 'ListItem', position: 2, name: 'About', item: URL_PAGE },
+    breadcrumbNode(
+      [
+        { name: 'Home', url: 'https://www.infowebworld.com' },
+        { name: 'About', url: URL_PAGE },
       ],
-    },
-
-    /* 4 — AboutPage + Article (multi-type for max AI-engine extraction) */
+      ID_BREADCRUMB,
+    ),
     {
-      '@type': ['AboutPage', 'Article'],
+      '@type': 'AboutPage',
       '@id': ID_WEBPAGE,
       url: URL_PAGE,
-      name: 'About InfoWebWorld - Global Business Directory',
-      alternateName: 'About InfoWebWorld',
-      headline: 'About InfoWebWorld - Built for the AI era of business discovery',
-      alternativeHeadline: 'About InfoWebWorld - our story, mission, and the team behind the platform',
-      description: 'InfoWebWorld is the global business directory for verified business discovery, built by Brain Stream Australia for the AI era of search.',
+      name: META_TITLE,
+      headline: ABOUT_TITLE,
+      alternativeHeadline: ABOUT_TAGLINE,
+      description: META_DESCRIPTION,
       inLanguage: 'en-US',
-      isPartOf: { '@id': ID_WEBSITE },
+      isPartOf: { '@id': 'https://www.infowebworld.com/#website' },
       breadcrumb: { '@id': ID_BREADCRUMB },
-      primaryImageOfPage: {
-        '@type': 'ImageObject',
-        url: 'https://www.infowebworld.com/og-image.png',
-        width: 1200, height: 630,
-      },
-      image: 'https://www.infowebworld.com/og-image.png',
-      datePublished: FOUNDED_ISO,
-      dateModified:  FOUNDED_ISO,
-      author:    { '@id': ID_ORGANIZATION },
+      primaryImageOfPage: { '@type': 'ImageObject', url: OG_IMAGE, width: 1200, height: 630 },
+      image: OG_IMAGE,
+      datePublished: PAGE_PUBLISHED,
+      dateModified: PAGE_MODIFIED,
       publisher: { '@id': ID_ORGANIZATION },
+      about: { '@id': ID_ORGANIZATION },
       mainEntity: { '@id': ID_ORGANIZATION },
-      audience: {
-        '@type': 'BusinessAudience',
-        audienceType: 'Businesses seeking AI-era visibility, verified reviews, dofollow backlinks, and lead generation across 80+ industries',
-      },
       speakable: {
         '@type': 'SpeakableSpecification',
-        cssSelector: ['.ab-title', '.ab-lede', '.ab-h2', '#mission p'],
+        cssSelector: ['.ab-title', '.ab-tagline', '#what-is p', '#mission p'],
       },
-      about: [
-        { '@type': 'Thing', name: 'Business directory' },
-        { '@type': 'Thing', name: 'AI-powered search and discovery' },
-        { '@type': 'Thing', name: 'Verified business reviews' },
-        { '@type': 'Thing', name: 'Lead generation for businesses' },
-        { '@type': 'Thing', name: 'Search engine and AI visibility (SEO, AEO, GEO)' },
-        { '@type': 'Thing', name: 'Brain Stream Australia Pty Ltd' },
-      ],
       mentions: [
+        { '@type': 'Organization', name: 'Brain Stream Australia Pty Ltd', url: 'https://www.brainstream.com.au/' },
         { '@type': 'Organization', name: 'Google' },
-        { '@type': 'Organization', name: 'Perplexity AI' },
         { '@type': 'Organization', name: 'OpenAI', alternateName: 'ChatGPT' },
-        { '@type': 'Organization', name: 'Anthropic', alternateName: 'Claude' },
-        { '@type': 'Organization', name: 'Google DeepMind', alternateName: 'Gemini' },
+        { '@type': 'Organization', name: 'Perplexity AI' },
       ],
-      hasPart: [
-        { '@id': ID_FAQ },
-        { '@id': ID_DIFF_LIST },
-        { '@id': ID_SERVICE },
-        { '@id': ID_GLOSSARY },
-      ],
-      keywords: 'business discovery, verified reviews, dofollow backlinks, AI visibility, AEO, GEO, business directory, global business directory, InfoWebWorld, Brain Stream Australia',
-      wordCount: 380,
-      articleSection: 'About',
+      hasPart: [{ '@id': ID_FAQ }, { '@id': ID_DIFF_LIST }, { '@id': ID_DIRECTORIES }],
     },
-
-    /* 5 — FAQPage (14 Q&A pairs — AEO gold) */
-    {
-      '@type': 'FAQPage',
-      '@id': ID_FAQ,
-      isPartOf: { '@id': ID_WEBPAGE },
-      inLanguage: 'en-US',
-      mainEntity: FAQ.map(({ q, a }) => ({
-        '@type': 'Question',
-        name: q,
-        acceptedAnswer: { '@type': 'Answer', text: a, inLanguage: 'en-US' },
-      })),
-    },
-
-    /* 6 — ItemList for differentiators (potential carousel rich result) */
-    {
-      '@type': 'ItemList',
-      '@id': ID_DIFF_LIST,
-      name: 'What makes InfoWebWorld different',
-      description: 'Six factors that distinguish InfoWebWorld from typical business directories.',
-      numberOfItems: DIFFERENTIATORS.length,
-      itemListOrder: 'https://schema.org/ItemListOrderAscending',
-      itemListElement: DIFFERENTIATORS.map((d, i) => ({
-        '@type': 'ListItem', position: i + 1, name: d.t, description: d.d,
-      })),
-    },
-
-    /* 7 — Service (what InfoWebWorld provides) */
+    faqNode(ABOUT_FAQS, ID_FAQ, ID_WEBPAGE),
+    itemListNode(
+      DIFFERENTIATORS.map(d => ({ name: d.title.replace(/:$/, ''), description: d.text })),
+      ID_DIFF_LIST,
+      'What Makes InfoWebWorld Different',
+    ),
+    itemListNode(
+      DIRECTORIES.map(d => ({ name: d.name, url: `https://www.infowebworld.com${d.href}`, description: d.desc })),
+      ID_DIRECTORIES,
+      'Explore the Business Directory by Category',
+    ),
     {
       '@type': 'Service',
       '@id': ID_SERVICE,
@@ -348,96 +275,26 @@ const jsonLdGraph = {
       serviceType: 'Global business directory',
       provider: { '@id': ID_ORGANIZATION },
       areaServed: { '@type': 'Place', name: 'Worldwide' },
-      audience: {
-        '@type': 'BusinessAudience',
-        audienceType: 'Businesses across 80+ industries seeking AI-era visibility, verified reviews, and lead generation',
-      },
       termsOfService: 'https://www.infowebworld.com/terms',
       category: 'Business directory',
       offers: { '@type': 'AggregateOffer', url: 'https://www.infowebworld.com/business/plans', priceCurrency: 'USD', lowPrice: '0', highPrice: '239' },
     },
-
-    /* 8 — DefinedTermSet (glossary — entity-clarifying for AI engines) */
-    {
-      '@type': 'DefinedTermSet',
-      '@id': ID_GLOSSARY,
-      name: 'InfoWebWorld glossary',
-      hasDefinedTerm: [
-        {
-          '@type': 'DefinedTerm',
-          name: 'Global business directory',
-          description: "InfoWebWorld's positioning: a global business directory combining verified listings, real reviews, and AI-era visibility into a single growth surface for businesses.",
-          inDefinedTermSet: { '@id': ID_GLOSSARY },
-        },
-        {
-          '@type': 'DefinedTerm',
-          name: 'Verified listing',
-          description: 'A business listing that has been human-reviewed and confirmed against the platform\u2019s content guidelines before publication.',
-          inDefinedTermSet: { '@id': ID_GLOSSARY },
-        },
-        {
-          '@type': 'DefinedTerm',
-          name: 'Verified review',
-          description: 'A review submitted only by a user whose identity and platform use have been confirmed; the basis for InfoWebWorld\u2019s merit-based ranking.',
-          inDefinedTermSet: { '@id': ID_GLOSSARY },
-        },
-        {
-          '@type': 'DefinedTerm',
-          name: 'Dofollow backlink',
-          description: 'A hyperlink that passes SEO authority from the linking page to the destination. InfoWebWorld provides permanent dofollow backlinks on paid listings.',
-          inDefinedTermSet: { '@id': ID_GLOSSARY },
-        },
-        {
-          '@type': 'DefinedTerm',
-          name: 'AEO',
-          description: 'Answer Engine Optimization \u2014 the practice of structuring content so AI answer engines (ChatGPT, Perplexity, Gemini, Claude) can extract and cite it accurately.',
-          inDefinedTermSet: { '@id': ID_GLOSSARY },
-        },
-        {
-          '@type': 'DefinedTerm',
-          name: 'GEO',
-          description: 'Generative Engine Optimization \u2014 a superset of AEO that includes optimisation for generative AI surfaces such as Google AI Overviews, ChatGPT Search, and Perplexity.',
-          inDefinedTermSet: { '@id': ID_GLOSSARY },
-        },
-        {
-          '@type': 'DefinedTerm',
-          name: 'Pay-to-play ranking',
-          description: 'The anti-pattern of allowing advertisers to buy higher ranking positions. InfoWebWorld explicitly rejects this model.',
-          inDefinedTermSet: { '@id': ID_GLOSSARY },
-        },
-      ],
-    },
-
-    /* 9 — Quotation (mission statement, citation-ready) */
-    {
-      '@type': 'Quotation',
-      '@id': ID_QUOTE_MISSION,
-      text: 'Mission: help real buyers find real businesses, faster.',
-      creator: { '@id': ID_ORGANIZATION },
-      creditText: 'InfoWebWorld',
-      dateCreated: FOUNDED_ISO,
-      inLanguage: 'en-US',
-      about: { '@id': ID_ORGANIZATION },
-    },
-
-    /* 10 — Quotation (trust statement) */
-    {
-      '@type': 'Quotation',
-      '@id': ID_QUOTE_TRUST,
-      text: 'Every listing is human-curated; every review is verified; every ranking is earned on merit, never bought.',
-      creator: { '@id': ID_ORGANIZATION },
-      creditText: 'InfoWebWorld',
-      dateCreated: FOUNDED_ISO,
-      inLanguage: 'en-US',
-      about: { '@id': ID_ORGANIZATION },
-    },
   ],
+}
+
+const postDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+
+function formatPostDate(iso: string): string {
+  const d = new Date(iso)
+  return Number.isNaN(d.getTime()) ? '' : postDate.format(d)
 }
 
 /* ──────────────────────────────────────────────
    Page
    ──────────────────────────────────────────── */
-export default function AboutPage() {
+export default async function AboutPage() {
+  const posts = await getTopicBlogPosts('about', 3)
+
   return (
     <>
       <script
@@ -447,151 +304,252 @@ export default function AboutPage() {
 
       <Navbar />
 
-      <main className="ab" id="top" role="main">
-        <article className="ab-wrap" itemScope itemType="https://schema.org/AboutPage">
-          <meta itemProp="inLanguage"     content="en-US" />
-          <meta itemProp="datePublished"  content={FOUNDED_ISO} />
-          <meta itemProp="dateModified"   content={FOUNDED_ISO} />
-          <meta itemProp="url"            content={URL_PAGE} />
-          <meta itemProp="image"          content="https://www.infowebworld.com/og-image.png" />
-
-          <header className="ab-header">
-            <nav className="ab-crumb" aria-label="Breadcrumb" itemScope itemType="https://schema.org/BreadcrumbList">
-              <span itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-                <a href="/" itemProp="item"><span itemProp="name">Home</span></a>
-                <meta itemProp="position" content="1" />
-              </span>
-              <span aria-hidden="true">/</span>
-              <span itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-                <span itemProp="name">About</span>
-                <meta itemProp="position" content="2" />
-              </span>
+      <main className="ab" id="top">
+        {/* ── Hero ── */}
+        <header className="ab-hero">
+          <div className="ab-hero-inner">
+            <nav className="ab-crumb" aria-label="Breadcrumb">
+              <ol>
+                <li><Link href="/">Home</Link></li>
+                <li aria-current="page">About</li>
+              </ol>
             </nav>
-            <div className="ab-head-row">
-              <div className="ab-head-titles">
-                <span className="ab-kicker">About <cite>InfoWebWorld</cite></span>
-                <h1 className="ab-title" itemProp="headline">
-                  The <dfn title="A global business directory combining verified listings, real reviews, dofollow backlinks, and AI-era visibility">global business directory</dfn> for verified business discovery.
-                </h1>
-              </div>
-              <p className="ab-lede" itemProp="description">
-                We help buyers find verified companies, real reviews, and the signals they need to decide — across <mark>80+ industries</mark> and <mark>12+ countries</mark>.
-              </p>
-            </div>
-          </header>
-
-          <div className="ab-grid">
-            {/* ── Mission ── */}
-            <section className="ab-col" id="mission" aria-labelledby="h-mission">
-              <h2 className="ab-h2" id="h-mission">Our mission</h2>
-              <p>
-                Business discovery online is broken — search results cluttered with ads, ranking pay-to-play, reviews not always trusted. We think buyers deserve better.
-              </p>
-              <p>
-                <strong><cite>InfoWebWorld</cite></strong> is the global business directory where verified businesses get discovered on merit. <mark>Mission: help real buyers find real businesses, faster.</mark>
-              </p>
-            </section>
-
-            {/* ── Differentiators (ItemList) ── */}
-            <section
-              className="ab-col"
-              id="differentiators"
-              aria-labelledby="h-diff"
-              itemScope
-              itemType="https://schema.org/ItemList"
-            >
-              <meta itemProp="name" content="What makes InfoWebWorld different" />
-              <meta itemProp="numberOfItems" content={String(DIFFERENTIATORS.length)} />
-              <h2 className="ab-h2" id="h-diff">What makes us different</h2>
-              <ol className="ab-diff">
-                {DIFFERENTIATORS.map((d, i) => (
-                  <li
-                    key={d.t}
-                    itemProp="itemListElement"
-                    itemScope
-                    itemType="https://schema.org/ListItem"
-                  >
-                    <meta itemProp="position" content={String(i + 1)} />
-                    <strong itemProp="name">{d.t}.</strong>{' '}
-                    <span itemProp="description">{d.d}</span>
+            <div className="ab-hero-copy">
+              <h1 className="ab-title">{ABOUT_TITLE}</h1>
+              <p className="ab-tagline">{ABOUT_TAGLINE}</p>
+              <ul className="ab-trust" aria-label="Highlights">
+                {ABOUT_TRUST.map(item => (
+                  <li key={item}>
+                    <FontAwesomeIcon icon={faCircleCheck} className="ab-trust-ico" aria-hidden="true" />
+                    {item}
                   </li>
                 ))}
-              </ol>
-            </section>
-
-            {/* ── Built by Brain Stream Australia (Organization microdata) ── */}
-            <section
-              className="ab-col"
-              id="company"
-              aria-labelledby="h-company"
-              itemScope
-              itemType="https://schema.org/Organization"
-              itemID={ID_ORGANIZATION}
-            >
-              <meta itemProp="legalName"    content="Brain Stream Australia Pty Ltd" />
-              <meta itemProp="foundingDate" content={FOUNDED_ISO} />
-              <meta itemProp="url"          content="https://www.infowebworld.com" />
-              <h2 className="ab-h2" id="h-company">
-                Built by <span itemProp="name"><cite>Brain Stream Australia</cite></span>
-              </h2>
-              <p>
-                A product of{' '}
-                <strong><cite>Brain Stream Australia Pty Ltd</cite></strong>, headquartered in{' '}
-                <span itemProp="address" itemScope itemType="https://schema.org/PostalAddress">
-                  <span itemProp="addressLocality">Parramatta</span>,{' '}
-                  <abbr title="New South Wales"><span itemProp="addressRegion">NSW</span></abbr>
-                </span>
-                . Founded <time dateTime={FOUNDED_ISO}>{FOUNDING_YEAR}</time>. Two decades of building{' '}
-                <abbr title="Search Engine Optimization">SEO</abbr>, content, and directory products.{' '}
-                <a href="/contact">Get in touch &rarr;</a>
-              </p>
-              <figure className="ab-map">
-                <iframe
-                  src="https://maps.google.com/maps?q=Parramatta+NSW+2150+Australia&t=&z=14&ie=UTF8&iwloc=&output=embed"
-                  title="Map of Brain Stream Australia headquarters — Parramatta, NSW 2150, Australia"
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  allowFullScreen
-                />
-                <figcaption>
-                  <address className="ab-map-addr">Parramatta, NSW 2150</address>
-                  <a
-                    href="https://www.google.com/maps/place/Parramatta+NSW+2150,+Australia"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="ab-map-link"
-                    itemProp="hasMap"
-                  >
-                    Open &rarr;
-                  </a>
-                </figcaption>
-              </figure>
-            </section>
-
-            {/* ── Why trust (poster image) ── */}
-            <aside
-              className="ab-col ab-col-poster"
-              id="why-trust"
-              aria-labelledby="h-trust"
-            >
-              <h2 className="ab-h2" id="h-trust">Why trust <cite>InfoWebWorld</cite>?</h2>
-              <figure className="ab-poster">
-                <img
-                  src="/illustrations/why-trust-infowebworld.png"
-                  alt="Why Trust InfoWebWorld? 1. Leads Generation — Turn Your Listing into a Lead Generation Engine. 2. Customer-First Approach — Your goals are our priority, we listen and understand your needs. 3. Verified Reviews — Build Trust That Converts; turn customer feedback into your strongest growth asset. 4. Search and AI Visibility — Powerful SEO-optimized asset that ranks across search engines and AI platforms."
-                  width={1080}
-                  height={1350}
-                  loading="lazy"
-                  decoding="async"
-                  itemProp="image"
-                />
-                <figcaption className="ab-sr-only">
-                  Four reasons to trust InfoWebWorld: Leads Generation, Customer-First Approach, Verified Reviews, and Search and AI Visibility.
-                </figcaption>
-              </figure>
-            </aside>
+              </ul>
+              <div className="ab-cta-row">
+                <Link href="/business/plans" className="ab-btn ab-btn--primary">
+                  List Your Business Free <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" />
+                </Link>
+                <Link href="/categories" className="ab-btn ab-btn--ghost">Browse All Categories</Link>
+              </div>
+            </div>
           </div>
-        </article>
+        </header>
+
+        {/* ── What is + mission ── */}
+        <div className="ab-band">
+          <div className="ab-inner ab-split">
+            <section id="what-is" aria-labelledby="ab-what-h">
+              <h2 id="ab-what-h" className="ab-h2">What Is InfoWebWorld?</h2>
+              {WHAT_IS.map(p => (
+                <p key={p.text}>{renderLinkedText(p.text, p.links)}</p>
+              ))}
+            </section>
+            <section id="mission" className="ab-mission" aria-labelledby="ab-mission-h">
+              <h2 id="ab-mission-h" className="ab-h2">Our Mission: Helping Real Buyers Find Real Businesses</h2>
+              {MISSION.map(p => <p key={p}>{p}</p>)}
+            </section>
+          </div>
+        </div>
+
+        {/* ── How it works ── */}
+        <section className="ab-band ab-band--tint" id="how-it-works" aria-labelledby="ab-how-h">
+          <div className="ab-inner">
+            <h2 id="ab-how-h" className="ab-h2">How InfoWebWorld Works</h2>
+            <div className="ab-cards">
+              {HOW_IT_WORKS.map((card, i) => (
+                <div key={card.title} className="ab-card">
+                  <span className="ab-card-ico" aria-hidden="true"><FontAwesomeIcon icon={HOW_ICONS[i]} /></span>
+                  <h3 className="ab-h3">{card.title}</h3>
+                  <p>{renderLinkedText(card.text, card.links)}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Differentiators ── */}
+        <section className="ab-band" id="differentiators" aria-labelledby="ab-diff-h">
+          <div className="ab-inner ab-diff-wrap">
+            <div>
+              <h2 id="ab-diff-h" className="ab-h2">What Makes InfoWebWorld Different</h2>
+              <ul className="ab-diff">
+                {DIFFERENTIATORS.map((d, i) => (
+                  <li key={d.title}>
+                    <span className="ab-diff-ico" aria-hidden="true"><FontAwesomeIcon icon={DIFF_ICONS[i]} /></span>
+                    <p><strong>{d.title}</strong> {d.text}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <figure className="ab-poster">
+              <img
+                src="/illustrations/why-trust-infowebworld.png"
+                alt="Why Trust InfoWebWorld? 1. Leads Generation — Turn Your Listing into a Lead Generation Engine. 2. Customer-First Approach — Your goals are our priority, we listen and understand your needs. 3. Verified Reviews — Build Trust That Converts; turn customer feedback into your strongest growth asset. 4. Search and AI Visibility — Powerful SEO-optimized asset that ranks across search engines and AI platforms."
+                width={1080}
+                height={1350}
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+          </div>
+        </section>
+
+        {/* ── Directory by category ── */}
+        <section className="ab-band ab-band--tint" id="directories" aria-labelledby="ab-dir-h">
+          <div className="ab-inner">
+            <h2 id="ab-dir-h" className="ab-h2">Explore the Business Directory by Category</h2>
+            <p className="ab-lead">{renderLinkedText(CATEGORY_INTRO.text, CATEGORY_INTRO.links)}</p>
+            <div className="ab-dirs">
+              {DIRECTORIES.map(d => (
+                <div key={d.slug} className="ab-dir" style={{ '--ab-dir': d.accent } as React.CSSProperties}>
+                  <span className="ab-dir-ico" aria-hidden="true"><FontAwesomeIcon icon={d.icon} /></span>
+                  <h3 className="ab-dir-name">
+                    <Link href={d.href} className="ab-dir-link">{d.name}</Link>
+                  </h3>
+                  <p className="ab-dir-desc">{d.desc}</p>
+                  <span className="ab-dir-count">
+                    {d.subcategories.toLocaleString('en-US')} subcategories
+                    <FontAwesomeIcon icon={faArrowRight} className="ab-dir-arrow" aria-hidden="true" />
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Verification ── */}
+        <section className="ab-band" id="verification" aria-labelledby="ab-verify-h">
+          <div className="ab-inner ab-verify">
+            <h2 id="ab-verify-h" className="ab-h2">How We Verify Listings and Keep Reviews Real</h2>
+            <ol className="ab-steps">
+              {VERIFY_STEPS.map((step, i) => (
+                <li key={step.title} className="ab-step">
+                  <span className="ab-step-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                  <p><strong>{step.title}</strong> {renderLinkedText(step.text, step.links)}</p>
+                </li>
+              ))}
+            </ol>
+            <p className="ab-note">
+              <FontAwesomeIcon icon={faLifeRing} className="ab-note-ico" aria-hidden="true" />
+              <span>{renderLinkedText(VERIFY_FOOTNOTE.text, VERIFY_FOOTNOTE.links)}</span>
+            </p>
+          </div>
+        </section>
+
+        {/* ── Our story ── */}
+        <section className="ab-band ab-band--tint" id="story" aria-labelledby="ab-story-h">
+          <div className="ab-inner ab-story">
+            <div>
+              <h2 id="ab-story-h" className="ab-h2">Our Story: Built by Brain Stream Australia</h2>
+              <p>{renderLinkedText(STORY.text, STORY.links)}</p>
+            </div>
+            <figure className="ab-map">
+              <iframe
+                src="https://maps.google.com/maps?q=Parramatta+NSW+2150+Australia&t=&z=14&ie=UTF8&iwloc=&output=embed"
+                title="Map of Brain Stream Australia headquarters - Parramatta, NSW 2150, Australia"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+              <figcaption>
+                <address className="ab-map-addr">
+                  <FontAwesomeIcon icon={faLocationDot} aria-hidden="true" /> Parramatta, NSW 2150, Australia
+                </address>
+                <a href={MAP_URL} target="_blank" rel="noopener noreferrer" className="ab-map-link">
+                  Open in Google Maps
+                </a>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        {/* ── Who uses it ── */}
+        <section className="ab-band" id="who-uses" aria-labelledby="ab-who-h">
+          <div className="ab-inner">
+            <h2 id="ab-who-h" className="ab-h2">Who Uses InfoWebWorld?</h2>
+            <ul className="ab-who">
+              {AUDIENCES.map((a, i) => (
+                <li key={a.title} className="ab-who-item">
+                  <span className="ab-who-ico" aria-hidden="true"><FontAwesomeIcon icon={WHO_ICONS[i]} /></span>
+                  <p><strong>{a.title}</strong> {renderLinkedText(a.text, a.links)}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* ── Resources (relevant blog posts, newest fill in) ── */}
+        <section className="ab-band ab-band--tint" id="resources" aria-labelledby="ab-res-h">
+          <div className="ab-inner">
+            <div className="ab-sec-head">
+              <h2 id="ab-res-h" className="ab-h2">Resources, Guides and Insights</h2>
+              <Link href="/blog" className="ab-more">
+                All articles <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" />
+              </Link>
+            </div>
+            {posts.length > 0 ? (
+              <div className="ab-posts">
+                {posts.map(post => {
+                  const date = formatPostDate(post.publishedAt)
+                  return (
+                    <article key={post.slug} className="ab-post">
+                      <div className="ab-post-media">
+                        <div className="ab-post-ph" aria-hidden="true"><FontAwesomeIcon icon={faNewspaper} /></div>
+                        {post.coverImage ? <BlogCoverImage src={post.coverImage} alt={post.title} /> : null}
+                      </div>
+                      <div className="ab-post-body">
+                        {post.category ? <span className="ab-post-cat">{post.category}</span> : null}
+                        <h3 className="ab-post-title">
+                          <Link href={`/blog/${post.slug}`} className="ab-post-link">{post.title}</Link>
+                        </h3>
+                        {post.excerpt ? <p className="ab-post-excerpt">{post.excerpt}</p> : null}
+                        <p className="ab-post-meta">
+                          {date ? `${date} · ` : ''}{post.readTime} min read
+                        </p>
+                      </div>
+                    </article>
+                  )
+                })}
+              </div>
+            ) : (
+              <p>
+                Read our latest guides on the <Link href="/blog">InfoWebWorld blog</Link>.
+              </p>
+            )}
+          </div>
+        </section>
+
+        {/* ── FAQs ── */}
+        <section className="ab-band" id="faq" aria-labelledby="ab-faq-h">
+          <div className="ab-inner ab-inner--narrow">
+            <h2 id="ab-faq-h" className="ab-h2">FAQs</h2>
+            <div className="ab-faqs">
+              {ABOUT_FAQS.map((faq, i) => (
+                <details key={faq.q} className="ab-faq" open={i === 0}>
+                  <summary>
+                    <h3 className="ab-faq-q">{faq.q}</h3>
+                    <FontAwesomeIcon icon={faChevronDown} className="ab-faq-chev" aria-hidden="true" />
+                  </summary>
+                  <p className="ab-faq-a">{renderLinkedText(faq.a, faq.links)}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Closing CTA ── */}
+        <section className="ab-final" aria-labelledby="ab-final-h">
+          <div className="ab-final-inner">
+            <h2 id="ab-final-h" className="ab-final-title">Get in Touch or List Your Business Today</h2>
+            <p className="ab-final-sub">{CLOSING}</p>
+            <div className="ab-cta-row">
+              <Link href="/business/plans" className="ab-btn ab-btn--light">
+                List Your Business Free <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" />
+              </Link>
+              <Link href="/contact" className="ab-btn ab-btn--outline">Contact Us</Link>
+            </div>
+          </div>
+        </section>
       </main>
 
       <Footer />

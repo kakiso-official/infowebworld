@@ -161,7 +161,7 @@ export default function TeamPage() {
         </IPCardGrid>
       </IPSection>
 
-      <IPSection title="Open Roles">
+      <IPSection id="open-roles" title="Open Roles">
         <p>
           We&apos;re actively looking for operators and makers who want to build the next
           generation of business discovery tooling. If that&apos;s you, we&apos;d love to hear

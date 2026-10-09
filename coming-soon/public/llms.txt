@@ -6,7 +6,7 @@ InfoWebWorld is a human-curated directory and discovery engine. Every listing is
 
 ## About
 
-- [About InfoWebWorld](https://www.infowebworld.com/about): Mission, principles, company info, why businesses trust the platform, and Brain Stream HQ details.
+- [About InfoWebWorld](https://www.infowebworld.com/about): What InfoWebWorld is, its mission, how it works for buyers, businesses and agencies, how listings and reviews are verified, and the Brain Stream Australia story.
 - [The Team](https://www.infowebworld.com/team): Remote-first team across AU/IN/EU, leadership, open roles in engineering, growth, design, and content.
 - [Team Alumni](https://www.infowebworld.com/team/past): Recognition for past contributors who shaped InfoWebWorld.
 - [Media & Press](https://www.infowebworld.com/media): Press kit, brand assets, company fact sheet, direct press contact.
@@ -27,10 +27,10 @@ InfoWebWorld is a human-curated directory and discovery engine. Every listing is
 ## Help & Support
 
 - [Help Center](https://www.infowebworld.com/help): Listings, billing, reviews, analytics, security, policies — with 24-hour email support.
-- [FAQs](https://www.infowebworld.com/faqs): Frequently asked questions covering listings, plans, reviews, SEO backlinks, account and data.
-- [Glossary](https://www.infowebworld.com/glossary): Plain-English definitions of SEO, AEO, GEO, dofollow, schema markup, NAP, CTR, RFQ, and other directory terms.
+- [FAQs](https://www.infowebworld.com/faqs): Answers on business listings, plans and pricing, verified reviews, dofollow backlinks, AI visibility, the agency and affiliate programs, account and privacy, and support.
+- [Glossary](https://www.infowebworld.com/glossary): Plain-English definitions of business directory, B2B, local business, SEO, AEO, startup, SaaS and listing terms.
 - [Category Guides](https://www.infowebworld.com/category-guides): How to pick the right sector and subcategory across 6 sectors, 80+ categories, 13,000+ subcategories.
-- [Write a Review](https://www.infowebworld.com/write-review): How to write a verified, moderated, unpaid review of a business on InfoWebWorld.
+- [Write a Review](https://www.infowebworld.com/write-review): Search for a company, rate it, then write or speak a verified, moderated, never-paid review; plus review tips, moderation rules and FAQs.
 
 ## Legal
 
@@ -43,7 +43,7 @@ InfoWebWorld is a human-curated directory and discovery engine. Every listing is
 
 ## Quick facts
 
-- **Founded**: 2026
+- **Launched**: 2004, by Brain Stream Australia Pty Ltd (current platform live since 2026)
 - **Parent company**: Brain Stream Australia Pty Ltd (operating since 2004)
 - **Headquarters**: Parramatta, NSW 2150, Australia
 - **Geographic coordinates**: -33.8136° S, 151.0034° E
@@ -63,12 +63,12 @@ InfoWebWorld is a human-curated directory and discovery engine. Every listing is
 
 ## What makes InfoWebWorld different
 
-1. **Verified listings only** — Human-curated; spam and duplicates rejected before reaching buyers.
-2. **Real reviews, no pay-to-play** — Ranking is merit-based; never ad spend.
-3. **Global and local at once** — Listings surface at both country and city level.
-4. **Permanent dofollow backlinks** — Real, lasting SEO value (not rented rankings).
-5. **AI-powered discovery** — AI-assisted search surfaces alternatives and compares features in seconds.
-6. **Built for the AI era** — Structured, crawlable, citation-friendly for Google, Perplexity, ChatGPT, Gemini, and Claude.
+1. **Verified, human-reviewed listings** — Our team checks each submission and rejects spam.
+2. **Real buyer reviews** — Ratings come from real buyers and pass anti-fake screening. Businesses cannot pay to remove a review.
+3. **Ranking on merit** — Ranking is not sold by the click or by the day. Research and rankings stay independent.
+4. **Visibility in search and AI answers** — Profiles use structured data so businesses can be found in Google and in AI assistants such as ChatGPT and Perplexity. Paid listings include a permanent dofollow backlink.
+5. **Comparison built in** — Compare products and companies side by side before deciding.
+6. **Free to start** — Searching is free, and the Free plan requires no credit card.
 
 ## Industries covered
 

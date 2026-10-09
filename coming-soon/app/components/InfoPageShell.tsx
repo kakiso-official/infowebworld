@@ -25,7 +25,15 @@ interface CTAProps {
 interface Props {
   kicker?: string
   title: string
+  /** Rich version of `title` for the H1 only (e.g. keeping a hyphenated
+   *  word on one line). Must read the same as `title`, which stays the
+   *  breadcrumb + JSON-LD name. */
+  titleNode?: React.ReactNode
   subtitle?: string
+  /** Rich version of `subtitle` (e.g. with links) shown in the hero instead
+   *  of the plain string. `subtitle` stays the WebPage JSON-LD description,
+   *  so keep the two saying the same thing. */
+  subtitleNode?: React.ReactNode
   updated?: string
   cta?: CTAProps
   variant?: 'default' | 'legal' | 'coming-soon'
@@ -45,7 +53,7 @@ interface Props {
 }
 
 export default async function InfoPageShell({
-  kicker, title, subtitle, updated, cta, variant = 'default',
+  kicker, title, titleNode, subtitle, subtitleNode, updated, cta, variant = 'default',
   about, mentions, webPageType = 'WebPage', extraGraph,
   schemaKeywords, primaryImage, children,
 }: Props) {
@@ -170,8 +178,10 @@ export default async function InfoPageShell({
             </span>
           </nav>
           {kicker && <span className="ip-kicker">{kicker}</span>}
-          <h1 className="ip-title" itemProp="headline">{title}</h1>
-          {subtitle && <p className="ip-sub" itemProp="description">{subtitle}</p>}
+          <h1 className="ip-title" itemProp="headline">{titleNode ?? title}</h1>
+          {(subtitleNode ?? subtitle) && (
+            <p className="ip-sub" itemProp="description">{subtitleNode ?? subtitle}</p>
+          )}
           {updated && (
             <span className="ip-updated">
               Last updated <time dateTime={dateModified} itemProp="dateModified">{updated}</time>

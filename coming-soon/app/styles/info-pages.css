@@ -56,6 +56,7 @@
   color: #0A0A0A;
   margin: 0 0 .8rem;
   max-width: 28ch;
+  text-wrap: balance;
 }
 .ip-sub {
   font-size: .95rem;
@@ -65,6 +66,17 @@
   max-width: 65ch;
   margin: 0 0 1rem;
 }
+.ip-sub a {
+  color: #0A0A0A;
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2.5px;
+  text-decoration-color: #C0C0C0;
+  transition: text-decoration-color .15s ease;
+}
+.ip-sub a:hover { text-decoration-color: #0A0A0A }
+.ip-nowrap { white-space: nowrap }
 .ip-updated {
   display: inline-flex;
   align-items: center;
@@ -355,31 +367,168 @@
   color: #4A4A4A;
 }
 
-/* ── Definition list (glossary) ── */
-.ip-dl { margin: 0 }
-.ip-dl > div {
-  padding: .55rem 0;
-  border-bottom: 1px solid #F0F0F0;
-}
-.ip-dl > div:last-child { border-bottom: 0 }
-.ip-dl dt {
-  font-weight: 700;
-  font-size: .95rem;
-  color: #0A0A0A;
-  margin: 0 0 .2rem;
-  letter-spacing: -.005em;
-}
-.ip-dl dd {
+/* ── Anchored sections clear the fixed header (109px on desktop) ── */
+.ip-section[id] { scroll-margin-top: 124px }
+
+/* ── FAQ: question headings inside <summary>, answers as <p> ── */
+.ip-faq-q {
   margin: 0;
-  color: #4A4A4A;
-  font-size: .88rem;
-  line-height: 1.55;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+}
+.ip-body .ip-faq-body p {
+  margin: 0;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+/* ── FAQ topic chips ("Browse FAQs by Topic") ── */
+.ip-topics {
+  margin: 0 0 1.5rem;
+  padding: 1rem 1.1rem 1.1rem;
+  background: #FAFAFA;
+  border: 1px solid #EAEAEA;
+  border-radius: 12px;
+}
+.ip-body .ip-topics-label {
+  margin: 0 0 .7rem;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #6B6B6B;
+}
+.ip-topics-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem;
+}
+.ip-body .ip-topics-list { margin: 0; padding: 0 }
+.ip-body .ip-topics-list li { margin: 0 }
+.ip-topics-list a {
+  display: inline-flex;
+  align-items: center;
+  padding: .42rem .85rem;
+  background: #FFFFFF;
+  border: 1px solid #DCDCDC;
+  border-radius: 999px;
+  font-size: .82rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #0A0A0A !important;
+  text-decoration: none !important;
+  transition: background .15s ease, border-color .15s ease, color .15s ease;
+}
+.ip-topics-list a:hover,
+.ip-topics-list a:focus-visible {
+  background: #0A0A0A;
+  border-color: #0A0A0A;
+  color: #FFFFFF !important;
+}
+
+/* ── Glossary: sticky A-Z bar ──
+   Sticks to the top of the viewport; while the site header is showing
+   (it hides on scroll-down, see Navbar) the bar sits right below it. */
+.ip-az {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .25rem;
+  margin: 0 0 1rem;
+  padding: .45rem;
+  background: rgba(255, 255, 255, .96);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid #EAEAEA;
+  border-radius: 12px;
+  box-shadow: 0 10px 24px -18px rgba(0, 0, 0, .35);
+  transition: top .25s cubic-bezier(.4, 0, .2, 1);
+}
+body:has(.iw-head:not(.iw-head--hidden)) .ip-az { top: 73px }
+.ip-az a {
+  flex: 1 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 8px;
+  font-size: .86rem;
+  font-weight: 700;
+  color: #0A0A0A !important;
+  text-decoration: none !important;
+  transition: background .15s ease, color .15s ease;
+}
+.ip-az a:hover,
+.ip-az a:focus-visible {
+  background: #0A0A0A;
+  color: #FFFFFF !important;
+}
+
+/* ── Glossary: letter sections + dictionary rows ── */
+.ip-section[id^="letter-"] > .ip-h2 {
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: -.03em;
+  line-height: 1;
+  margin: 0 0 .5rem;
+}
+.ip-section[id^="letter-"] { scroll-margin-top: 140px }
+.ip-terms { margin: 0 -.6rem }
+.ip-term {
+  display: grid;
+  grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+  gap: .3rem 1.6rem;
+  padding: .8rem .6rem;
+  border-bottom: 1px solid #F0F0F0;
+  border-radius: 8px;
+  scroll-margin-top: 150px;
+}
+.ip-term:last-child { border-bottom: 0 }
+.ip-term:target { background: #FFF7D6 }
+.ip-term-name {
+  margin: 0;
+  font-size: .95rem;
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: -.005em;
+  color: #0A0A0A;
+}
+.ip-body .ip-term-def {
+  margin: 0;
+  font-size: .9rem;
+  line-height: 1.6;
+  color: #3A3A3A;
+}
+
+@media (min-width: 980px) {
+  body:has(.iw-head:not(.iw-head--hidden)) .ip-az { top: 109px }
+  .ip-section[id^="letter-"] { scroll-margin-top: 175px }
+  .ip-term { scroll-margin-top: 185px }
 }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .ip-cards--3, .ip-cards--4 { grid-template-columns: repeat(2, 1fr) }
   .ip-toc-list { columns: 1 }
+  .ip-az {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .ip-az::-webkit-scrollbar { display: none }
+  .ip-az a { flex: 0 0 2.15rem }
+}
+@media (max-width: 640px) {
+  .ip-term { grid-template-columns: minmax(0, 1fr); gap: .2rem }
+}
+@media (max-width: 480px) {
+  body:has(.iw-head:not(.iw-head--hidden)) .ip-az { top: 61px }
 }
 @media (max-width: 480px) {
   .ip-cards--2, .ip-cards--3, .ip-cards--4 { grid-template-columns: 1fr }
@@ -387,11 +536,13 @@
     flex-direction: column;
     align-items: flex-start;
   }
+  /* Stacked, the 320px flex-basis would become a 320px-tall gap. */
+  .ip-cta-desc { flex: 0 0 auto }
 }
 
 /* ── Print ── */
 @media print {
-  .ip-crumb, .ip-cta { display: none }
+  .ip-crumb, .ip-cta, .ip-az { display: none }
   .ip { color: #000 }
   .ip-toc { background: #fff; border: 1px solid #ccc }
   .ip-section { page-break-inside: avoid }

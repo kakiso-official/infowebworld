@@ -35,6 +35,10 @@ type Method = 'voice' | 'manual'
 
 type Draft = { rating: number; title: string; body: string; language?: string }
 
+/* The page server-renders the landing H1 + intro above this component and
+   the guide (./WriteReviewContent) below it; write-review.css hides both
+   once the root loses .wr-page--landing, so the review flow itself stays
+   uncluttered. */
 export default function WriteReviewClient() {
   const sp = useSearchParams()
   const router = useRouter()
@@ -142,19 +146,11 @@ export default function WriteReviewClient() {
   const isLanding = step === 'pick-company'
 
   return (
-    <main className={'wr-page' + (isLanding ? ' wr-page--landing' : '')}>
-      {/* ── Step 1 landing — minimal centered hero: title + subtitle +
-              search bar. No mascot. ── */}
+    <div className={'wr-page' + (isLanding ? ' wr-page--landing' : '')}>
+      {/* ── Step 1 landing — the company search, centred under the
+              page's server-rendered H1 + intro. ── */}
       {isLanding && (
         <div className="wr-land">
-          <div className="wr-land-copy">
-            <h1 className="wr-land-title">Which company would you like to review?</h1>
-            <p className="wr-land-sub">
-              Search to find the business you want to review — pick the right one and we&rsquo;ll
-              walk you through the rest.
-            </p>
-          </div>
-
           <div className="wr-land-search">
             <CompanyPicker onPick={handlePickCompany} />
           </div>
@@ -297,6 +293,6 @@ export default function WriteReviewClient() {
         initialMode="login"
         onSuccess={handleAuthSuccess}
       />
-    </main>
+    </div>
   )
 }

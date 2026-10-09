@@ -1,82 +1,41 @@
 import type { Metadata } from 'next'
 import InfoPageShell, { IPSection } from '../components/InfoPageShell'
 import { faqNode, BASE_URL } from '../components/seo-schema'
+import { renderLinkedText } from '../components/linked-text'
+import { FAQ_GROUPS, FAQ_INTRO } from './faqs-data'
 
 const URL = `${BASE_URL}/faqs`
 
-const faqs = [
-  {
-    section: 'Listings',
-    items: [
-      { q: 'How do I submit my business?', a: 'Go to the Get Listed page, pick a plan (Free, Starter, Yearly, or Lifetime), and fill out the listing form. Paid listings are reviewed within 48 hours; free listings within 3–5 business days.' },
-      { q: 'Can I list multiple businesses on one account?', a: 'Yes. You can submit as many listings as you want from a single account. Each listing is tied to its own plan. Agencies managing multiple clients can apply to our Partner Program for bulk tools.' },
-      { q: 'Can I edit my listing after it goes live?', a: 'Yes. Log in to your dashboard at any time to edit content, swap media, add FAQs, update pricing, or change categories. Edits go live immediately for paid plans; free plans require re-review.' },
-      { q: 'What happens if my listing is rejected?', a: "We'll email you with the reason. Most rejections are about content-guideline violations (duplicate listings, fake websites, misleading categories). You can edit and resubmit for free." },
-    ],
-  },
-  {
-    section: 'Plans & Billing',
-    items: [
-      { q: "What's the difference between Starter, Yearly, and Lifetime?", a: 'Starter is a $49 one-time payment with core features. Yearly is $99/year with the full feature set and renews annually. Lifetime is $239 one-time with the full feature set forever — no renewals.' },
-      { q: 'Do you offer refunds?', a: 'Yes — within 14 days of initial purchase for Yearly plans, and within 14 days for Starter and Lifetime one-time plans. Renewals are non-refundable. Contact support to request.' },
-      { q: 'How do I upgrade my plan?', a: 'From your dashboard, click the Upgrade chip next to your plan name, or go to /business/plans and pick your new tier. Upgrades are prorated; downgrades apply at the next renewal.' },
-      { q: 'What payment methods do you accept?', a: 'PayPal (covers Visa, Mastercard, Amex, PayPal balance). More methods are coming soon.' },
-    ],
-  },
-  {
-    section: 'Reviews',
-    items: [
-      { q: 'How do I collect reviews?', a: 'Paid plans include a Review Invitation Tool — send customers a direct review link via email or SMS. You can also embed a review widget on your own site.' },
-      { q: 'Can I remove a bad review?', a: "Only if it violates our Content Guidelines (fake, paid, defamatory, off-topic, etc.). Flag the review from your dashboard; our moderation team investigates within 72 hours. Legitimate negative reviews stay — but you can always respond publicly." },
-      { q: 'Can I pay for better placement?', a: 'Only in the sense that Yearly and Lifetime plans include premium placement in their features. We do not sell ranking by the click or by the day. Ranking is based on plan tier + engagement + review quality.' },
-    ],
-  },
-  {
-    section: 'SEO & Backlinks',
-    items: [
-      { q: 'Are your backlinks dofollow?', a: 'Yes. Every paid listing (Starter, Yearly, Lifetime) includes a permanent dofollow backlink to your website. Free listings get a nofollow link.' },
-      { q: "What's InfoWebWorld's domain authority?", a: "We're a new product (launched 2026) with an established parent company. DA/DR grows as we scale — watch this space." },
-      { q: 'Will I rank higher on Google because of this?', a: "Our backlinks are one of many ranking factors. Quality listings with good content, real reviews, and steady engagement tend to rank well. We don't promise specific ranking outcomes — nobody honest does." },
-    ],
-  },
-  {
-    section: 'Account & Data',
-    items: [
-      { q: 'How do I sign in with Google?', a: 'Click "Continue with Google" on any sign-in button. A popup opens, you pick your account, and you\'re in. No password needed.' },
-      { q: 'How do I delete my account?', a: "Contact support via the Contact page with [DELETE] in the subject line. We'll confirm identity, delete personal data within 30 days, and retain only what's legally required." },
-      { q: 'Can I export my listing data?', a: 'Yes — use the dashboard export tool, or contact support for a full CSV of all your submissions, reviews, and analytics.' },
-    ],
-  },
-]
+const TITLE = 'InfoWebWorld FAQs: Business Listing, Plans & Reviews Help'
+const DESCRIPTION =
+  'Answers on business listings, plans and pricing, verified reviews, dofollow backlinks, agency and affiliate programs and your account.'
 
-const flatFaqs = faqs.flatMap(g => g.items)
-const faqJsonLd = faqNode(flatFaqs, `${URL}#faq`, `${URL}#webpage`)
+/* One FAQPage for the whole page, built from the same copy the accordions
+   render. The WebPage node stays a plain WebPage: typing it FAQPage too
+   would add a second FAQPage with no mainEntity. */
+const faqJsonLd = faqNode(FAQ_GROUPS.flatMap(g => g.items), `${URL}#faq`, `${URL}#webpage`)
 
 export const metadata: Metadata = {
-  title: 'FAQs - Listings · Plans · Reviews · SEO · Account | InfoWebWorld',
-  description:
-    'Frequently asked questions about InfoWebWorld — submitting listings, plans and pricing, verified reviews, dofollow backlinks, refund policy, Google sign-in, account deletion, and more.',
+  title: TITLE,
+  description: DESCRIPTION,
   keywords: [
-    'InfoWebWorld FAQ',
+    'InfoWebWorld FAQs',
     'business directory FAQ',
-    'how to submit business listing',
-    'directory plans pricing FAQ',
-    'verified review FAQ',
-    'dofollow backlink FAQ',
-    'directory refund policy',
-    'how to delete directory account',
-    'Google sign in directory',
-    'business listing dashboard',
-    'remove bad review directory',
-    'best business directory 2026',
-    'how to rank on business directory',
-    'directory upgrade plan',
-    'listing data export CSV',
+    'how to list my business',
+    'business listing approval time',
+    'business listing cost',
+    'free business listing',
+    'verified reviews',
+    'dofollow backlinks',
+    'agency partner program',
+    'affiliate program',
+    'remove a bad review',
+    'delete my account',
   ],
   alternates: { canonical: URL },
   openGraph: {
-    title: 'Frequently Asked Questions - InfoWebWorld',
-    description: 'Listings, plans, reviews, SEO backlinks, account & data — all answered.',
+    title: TITLE,
+    description: DESCRIPTION,
     url: URL,
     siteName: 'InfoWebWorld',
     type: 'website',
@@ -85,8 +44,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FAQs - InfoWebWorld',
-    description: 'Listings, plans, reviews, SEO backlinks, account & data — answered.',
+    title: TITLE,
+    description: DESCRIPTION,
     images: [`${BASE_URL}/og-image.png`],
   },
   robots: {
@@ -99,24 +58,37 @@ export default function FAQsPage() {
   return (
     <InfoPageShell
       kicker="Support"
-      title="Frequently Asked Questions"
-      subtitle="The questions we hear most — answered directly. If you can't find what you're looking for, drop us a line."
-      webPageType={['WebPage', 'FAQPage']}
-      about={['Business listings', 'Plans and pricing', 'Verified reviews', 'SEO and backlinks', 'Account management', 'Refund policy']}
-      mentions={['PayPal', 'Google OAuth', 'Dofollow backlink', 'Nofollow link', 'Domain authority', '14-day refund window']}
-      schemaKeywords={['FAQ', 'listings', 'plans', 'reviews', 'SEO', 'backlinks', 'account']}
+      title="InfoWebWorld FAQs"
+      subtitle={FAQ_INTRO}
+      updated="October 9, 2026"
+      webPageType="WebPage"
+      about={['Business listings', 'Plans and pricing', 'Verified reviews', 'SEO and backlinks', 'AI search visibility', 'Agency Partner Program', 'Affiliate program', 'Account and privacy']}
+      mentions={['PayPal', 'Google sign-in', 'Dofollow backlink', 'Nofollow link', 'ChatGPT', 'Perplexity', 'Brain Stream Australia']}
+      schemaKeywords={['FAQ', 'business listing', 'plans', 'pricing', 'reviews', 'backlinks', 'AI visibility', 'agency', 'affiliate', 'account']}
       extraGraph={[faqJsonLd]}
       cta={{
-        label: 'Ask a Question',
+        label: 'Ask us a question',
         href: '/contact',
+        description: "Can't find your answer?",
       }}
     >
-      {faqs.map(group => (
-        <IPSection key={group.section} title={group.section}>
+      <nav className="ip-topics" aria-labelledby="faq-topics-label">
+        <p className="ip-topics-label" id="faq-topics-label">Browse FAQs by Topic</p>
+        <ul className="ip-topics-list">
+          {FAQ_GROUPS.map(group => (
+            <li key={group.id}><a href={`#${group.id}`}>{group.title}</a></li>
+          ))}
+        </ul>
+      </nav>
+
+      {FAQ_GROUPS.map(group => (
+        <IPSection key={group.id} id={group.id} title={group.title}>
           {group.items.map(item => (
             <details key={item.q} className="ip-faq">
-              <summary>{item.q}</summary>
-              <div className="ip-faq-body">{item.a}</div>
+              <summary><h3 className="ip-faq-q">{item.q}</h3></summary>
+              <div className="ip-faq-body">
+                <p>{renderLinkedText(item.a, item.links)}</p>
+              </div>
             </details>
           ))}
         </IPSection>
