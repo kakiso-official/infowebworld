@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import Link from 'next/link'
+import SafeMailLink from './SafeMailLink'
 
 /* ═══════════════════════════════════════════════════════════════════════
    Plain-text copy with inline links, for content that is also emitted as
@@ -12,8 +13,11 @@ import Link from 'next/link'
    byte-identical to the string in the JSON-LD. Same approach as the
    homepage FAQ (app/home-sections/HomeFaqSection.tsx).
 
-   Internal paths render as next/link; http(s), mailto: and tel: links as
-   plain anchors (external ones open in a new tab).
+   Internal paths render as next/link; http(s) and tel: links as plain
+   anchors (external ones open in a new tab). mailto: links go through
+   SafeMailLink with a <wbr> before the "@": Cloudflare's email
+   obfuscation would otherwise turn the address into "[email protected]"
+   and a /cdn-cgi/l/email-protection link (a 404 to crawlers).
    ═══════════════════════════════════════════════════════════════════════ */
 
 export type TextLink = { text: string; href: string }
@@ -47,6 +51,15 @@ export function renderLinkedText(text: string, links?: TextLink[]): ReactNode[] 
   return segments.map((seg, i) => {
     if (!seg.href) return <span key={i}>{seg.text}</span>
     if (isInternal(seg.href)) return <Link key={i} href={seg.href}>{seg.text}</Link>
+    if (seg.href.startsWith('mailto:')) {
+      const [user, domain] = seg.href.slice('mailto:'.length).split('@')
+      const at = seg.text.indexOf('@')
+      return (
+        <SafeMailLink key={i} user={user} domain={domain}>
+          {at === -1 ? seg.text : <>{seg.text.slice(0, at)}<wbr />{seg.text.slice(at)}</>}
+        </SafeMailLink>
+      )
+    }
     const external = /^https?:/.test(seg.href)
     return (
       <a
