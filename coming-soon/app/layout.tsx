@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { Nunito, Bricolage_Grotesque, Inter, Righteous, Tilt_Warp, Source_Serif_4, Staatliches } from "next/font/google";
+import { Nunito, Bricolage_Grotesque, Inter, Righteous, Tilt_Warp, Source_Serif_4, Staatliches, Plus_Jakarta_Sans } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import "./styles/chat-widget.css";
+import "./styles/font-preview.css"; // TEMP font preview - see app/styles/font-preview.css
 import { Suspense } from "react";
 import NavigationProgress from "./components/NavigationProgress";
 import ScrollToTop from "./components/ScrollToTop";
@@ -68,6 +69,16 @@ const staatliches = Staatliches({
   weight: "400",
   display: "swap",
   preload: false,
+});
+
+/* TEMP font preview (Oct 2026): the whole site in Plus Jakarta Sans, applied
+   by app/styles/font-preview.css. Variable font, so every weight comes from
+   one file. To revert: delete this, its body className entry, the CSS import
+   above and that file. */
+const jakarta = Plus_Jakarta_Sans({
+  variable: "--font-jakarta",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -152,7 +163,7 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
         <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
       </head>
-      <body className={`${nunito.variable} ${bricolage.variable} ${inter.variable} ${righteous.variable} ${tiltWarp.variable} ${sourceSerif.variable} ${staatliches.variable}`}>
+      <body className={`${nunito.variable} ${bricolage.variable} ${inter.variable} ${righteous.variable} ${tiltWarp.variable} ${sourceSerif.variable} ${staatliches.variable} ${jakarta.variable}`}>
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-C6LY2016NW" strategy="lazyOnload" />
         <Script id="gtag-init" strategy="lazyOnload">{`
           window.dataLayer = window.dataLayer || [];

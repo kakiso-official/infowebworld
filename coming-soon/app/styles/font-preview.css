@@ -1,0 +1,21 @@
+/* ══════════════════════════════════════════════════════════════
+   TEMP font preview (Oct 2026) - the whole site in Plus Jakarta Sans.
+
+   The site's type is spread over Nunito, Bricolage Grotesque and Inter,
+   several of them forced with !important (.cmp-root, blog, compare,
+   dashboard shell, chat widget...) plus inline fontFamily styles. One rule
+   outranks them all: the :not(#iww-font-preview) adds ID-level specificity
+   without excluding anything. Code samples keep their monospace, and the
+   homepage hero's pill buttons and search keep their own Montserrat (and
+   its tag badges their Inter).
+
+   To revert: delete this file, its import in app/layout.tsx and the
+   Plus_Jakarta_Sans instance there.
+   ══════════════════════════════════════════════════════════════ */
+
+html body:not(#iww-font-preview),
+html body *:not(#iww-font-preview):not(code, pre, kbd, samp, code *, pre *, kbd *, samp *, .hm-hero--art .hm-btn, .hm-hero--art .hm-btn *, .hm-hero--art .tlp-hsr-input, .hm-hero--art .hm-hero-badge, .hm-hero--art .hm-hero-badge *),
+html body *:not(#iww-font-preview):not(code, pre, kbd, samp)::before,
+html body *:not(#iww-font-preview):not(code, pre, kbd, samp)::after {
+  font-family: var(--font-jakarta), system-ui, -apple-system, "Segoe UI", sans-serif !important;
+}
