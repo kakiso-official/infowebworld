@@ -1,0 +1,116 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   InfoWebWorld for Developers - buttons (spec 4.4).
+
+   .dv-btn copies the values of the homepage .hm-btn (hero.css) without
+   importing it: the hero CSS is being reverted and nothing in this section
+   may depend on it.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.dv .dv-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 12px 26px;
+  border-radius: 10px;
+  border: 1.5px solid transparent;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease, box-shadow .15s ease;
+}
+.dv .dv-btn:active { transform: translateY(1px); }
+.dv .dv-btn[aria-disabled='true'],
+.dv .dv-btn:disabled {
+  opacity: .55;
+  pointer-events: none;
+  cursor: default;
+}
+.dv .dv-btn svg { flex: 0 0 auto; }
+.dv .dv-btn .dv-btn-ext { font-size: 10px; opacity: .8; }
+.dv .dv-btn .dv-btn-arrow { font-size: 12px; transition: transform .15s ease; }
+.dv .dv-btn:hover .dv-btn-arrow { transform: translateX(2px); }
+
+.dv .dv-btn--primary {
+  background: var(--dv-brand);
+  color: #FFFFFF;
+  box-shadow: 0 8px 18px -12px rgba(var(--dv-brand-rgb), .7);
+}
+.dv .dv-btn--primary:hover { background: var(--dv-brand-hover); color: #FFFFFF; }
+
+.dv .dv-btn--secondary {
+  background: #FFFFFF;
+  color: var(--dv-brand);
+  border-color: rgba(var(--dv-brand-rgb), .28);
+}
+.dv .dv-btn--secondary:hover { background: var(--dv-tint); border-color: rgba(var(--dv-brand-rgb), .4); }
+
+/* Navy bands only. */
+.dv .dv-btn--mint {
+  background: var(--dv-mint);
+  color: var(--dv-mint-ink);
+}
+.dv .dv-btn--mint:hover { background: var(--dv-mint-hover); }
+.dv .dv-btn--mint:focus-visible { outline-color: var(--dv-focus-dark); }
+
+/* Outline button on navy (secondary action next to a mint one). */
+.dv .dv-btn--on-dark {
+  background: transparent;
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, .28);
+}
+.dv .dv-btn--on-dark:hover { background: rgba(255, 255, 255, .08); border-color: rgba(255, 255, 255, .45); }
+.dv .dv-btn--on-dark:focus-visible { outline-color: var(--dv-focus-dark); }
+
+.dv .dv-btn--ghost {
+  min-height: 0;
+  padding: 6px 0;
+  background: transparent;
+  color: var(--dv-brand);
+  border: 0;
+  border-radius: 4px;
+}
+.dv .dv-btn--ghost:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.dv .dv-btn--sm {
+  min-height: 34px;
+  padding: 8px 14px;
+  font-size: 13px;
+  border-radius: 8px;
+  gap: 6px;
+}
+
+/* A row of call-to-action buttons. */
+.dv .dv-btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.dv .dv-btn-row--center { justify-content: center; }
+
+@media (max-width: 620px) {
+  .dv .dv-btn-row--stack {
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .dv .dv-btn-row--stack .dv-btn { width: 100%; }
+}
+
+@media (pointer: coarse) {
+  .dv .dv-btn--sm { min-height: 44px; }
+  .dv .dv-btn--ghost { min-height: 44px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dv .dv-btn, .dv .dv-btn .dv-btn-arrow { transition: none; }
+  .dv .dv-btn:active, .dv .dv-btn:hover .dv-btn-arrow { transform: none; }
+}

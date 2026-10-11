@@ -1,0 +1,84 @@
+[
+  {
+    "id": "domainsdb-info",
+    "path": "auth",
+    "value": "apiKey",
+    "reason": "Live request to the sample endpoint (api.domainsdb.info/v1/domains/search) on 2026-10-11 returns HTTP 401 'API key required: Anonymous access is disabled', contradicting the base public-apis list's auth='none'. Re-checked against the 2026-10-11 re-research pass: still correct, base list unchanged.",
+    "source": "https://api.domainsdb.info/v1/domains/search?domain=example&zone=com"
+  },
+  {
+    "id": "econdb",
+    "path": "auth",
+    "value": "apiKey",
+    "reason": "Live request to the API endpoint (www.econdb.com/api/series/) without a token on 2026-10-11 returns HTTP 401 with header WWW-Authenticate: Token, contradicting the base public-apis list's auth='none'. Re-checked against the 2026-10-11 re-research pass: still correct, base list unchanged.",
+    "source": "https://www.econdb.com/api/series/"
+  },
+  {
+    "id": "econdb",
+    "path": "freeTier.summary",
+    "value": "A live request to the series endpoint without a token returns HTTP 401 (WWW-Authenticate: Token), so basic access requires a registration token, not 'no authentication.' Whether token registration itself is free, and what quota it carries, could not be confirmed from the fetched pages.",
+    "reason": "Corrects an inaccurate free/no-auth claim with what was actually observed. The 2026-10-11 re-research pass left freeTier.summary null, so this detail is not yet superseded.",
+    "source": "https://www.econdb.com/api/series/"
+  },
+  {
+    "id": "citysdk",
+    "path": "exclude",
+    "value": true,
+    "reason": "A live fetch of citysdk.eu (2026-10-11) shows unrelated gambling/casino content in the footer; the 2012 EU research-project domain has almost certainly expired and been re-registered, or been compromised. Not safe to publish under any field-level correction - drop the whole record.",
+    "source": "http://www.citysdk.eu/citysdk-toolkit/"
+  },
+  {
+    "id": "libretranslate",
+    "path": "summary",
+    "value": "Open-source machine translation engine (Argos Translate) supporting 51+ languages when self-hosted; the managed libretranslate.com API is paid-only (no free tier), while self-hosting is free and unlimited.",
+    "reason": "Corrects both the free-tier claim and the language count: a live call to libretranslate.com/languages on 2026-10-11 returned 51 source languages, not the 17 in the old public-apis one-liner, and the hosted FAQ states no free API tier is offered. The 2026-10-11 re-research pass's summary does not mention either fact, so this is not yet superseded.",
+    "source": "https://libretranslate.com/languages"
+  },
+  {
+    "id": "libretranslate",
+    "path": "freeTier.summary",
+    "value": "The managed hosting at libretranslate.com does NOT currently offer a free API tier. Per the official FAQ: 'While we would love to offer low volume keys free of charge, it's just not sustainable for us (we tried in the past).' Paid plans start at $29/mo (Pro, up to 80 translations/min) and $58/mo (Business, up to 200/min), both with a 7-day money-back guarantee. The underlying software is open-source (Argos Translate) and free to self-host with no limits - that is the only genuinely free path to this API.",
+    "reason": "The 2026-10-11 re-research pass's freeTier.summary only says call limits 'are not published', which is weaker and omits the FAQ's explicit no-free-tier statement and self-host alternative. Source (docs.libretranslate.com FAQ) still supports this.",
+    "source": "https://docs.libretranslate.com"
+  },
+  {
+    "id": "hail-history",
+    "path": "baseUrl",
+    "value": "https://whathitmyhouse.com",
+    "reason": "The 2026-10-11 re-research pass reset baseUrl to null ('the fetched docs page... does not show a concrete endpoint path'). A direct fetch of the live site still shows this as the real host.",
+    "source": "https://whathitmyhouse.com"
+  },
+  {
+    "id": "hail-history",
+    "path": "sample",
+    "value": {
+      "method": "GET",
+      "url": "https://whathitmyhouse.com/hail-history?lat=35.4676&lon=-97.5164",
+      "description": "Query hail detections near a latitude/longitude from NOAA's public NEXRAD radar archive",
+      "needsKey": false
+    },
+    "reason": "The 2026-10-11 re-research pass reset sample to null. A direct fetch of the live site documents the real path as GET /hail-history?lat=&lon= with CORS enabled for all origins. Consolidated from three separate sub-field patches (sample.url, sample.description, sample.check) into one full object, because patching only sub-fields onto a null sample would have produced an object missing method/needsKey; the stale sample.check sub-patch is dropped since the build script performs its own fresh live check.",
+    "source": "https://whathitmyhouse.com"
+  },
+  {
+    "id": "hail-history",
+    "path": "confidence",
+    "value": "medium",
+    "reason": "The 2026-10-11 re-research pass's own confidence (low) reflects the missing concrete endpoint, which the baseUrl/sample patches above resolve with a directly-verified real endpoint.",
+    "source": "https://whathitmyhouse.com"
+  },
+  {
+    "id": "anthropic-api",
+    "path": "summary",
+    "value": "Claude language model API for text generation, analysis, and reasoning. Current flagship models (as of Oct 2026) are the Opus 5.5, Sonnet 5.5 and Haiku 5.5 family - 'Claude 3.5 Opus and Sonnet' (the previous wording) is outdated and 'Claude 3.5 Opus' was never a real released model.",
+    "reason": "Live pricing page (claude.com/pricing, fetched 2026-10-11) lists Opus 5.5 / Sonnet 5.5 / Haiku 5.5 as the current model family; Anthropic has never shipped a model called 'Claude 3.5 Opus'. The 2026-10-11 re-research pass still says 'Latest models include Claude 3.5 Opus and Sonnet', so this is not yet superseded.",
+    "source": "https://claude.com/pricing"
+  },
+  {
+    "id": "anthropic-api",
+    "path": "description",
+    "value": "Claude language model API for text generation, analysis, and reasoning. Current flagship models (as of Oct 2026) are the Opus 5.5, Sonnet 5.5 and Haiku 5.5 family.",
+    "reason": "Mirrors the summary correction so both fields agree. anthropic-api is a curated record (no public-apis base row), so unlike a base-sourced API's description (left as the literal MIT one-liner), this curated blurb is fair to correct directly.",
+    "source": "https://claude.com/pricing"
+  }
+]

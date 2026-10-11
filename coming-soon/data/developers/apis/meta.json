@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-11T20:33:48.844Z",
+  "linksCheckedAt": "2026-10-11T20:33:48.844Z",
+  "baseSource": {
+    "repo": "public-apis/public-apis",
+    "license": "MIT",
+    "copyright": "Copyright (c) 2022 public-apis",
+    "fetchedAt": "2026-10-11T15:38:46.595Z"
+  },
+  "counts": {
+    "apis": 1829,
+    "categories": 51,
+    "enriched": 269,
+    "sdks": 135,
+    "officialSdks": 87,
+    "noAuth": 843,
+    "cors": 716,
+    "tryable": 110
+  },
+  "categories": [
+    {
+      "slug": "animals",
+      "name": "Animals"
+    },
+    {
+      "slug": "anime",
+      "name": "Anime"
+    },
+    {
+      "slug": "anti-malware",
+      "name": "Anti-Malware"
+    },
+    {
+      "slug": "art-and-design",
+      "name": "Art & Design"
+    },
+    {
+      "slug": "authentication-and-authorization",
+      "name": "Authentication & Authorization"
+    },
+    {
+      "slug": "blockchain",
+      "name": "Blockchain"
+    },
+    {
+      "slug": "books",
+      "name": "Books"
+    },
+    {
+      "slug": "business",
+      "name": "Business"
+    },
+    {
+      "slug": "calendar",
+      "name": "Calendar"
+    },
+    {
+      "slug": "cloud-storage-and-file-sharing",
+      "name": "Cloud Storage & File Sharing"
+    },
+    {
+      "slug": "continuous-integration",
+      "name": "Continuous Integration"
+    },
+    {
+      "slug": "cryptocurrency",
+      "name": "Cryptocurrency"
+    },
+    {
+      "slug": "currency-exchange",
+      "name": "Currency Exchange"
+    },
+    {
+      "slug": "data-validation",
+      "name": "Data Validation"
+    },
+    {
+      "slug": "development",
+      "name": "Development"
+    },
+    {
+      "slug": "dictionaries",
+      "name": "Dictionaries"
+    },
+    {
+      "slug": "documents-and-productivity",
+      "name": "Documents & Productivity"
+    },
+    {
+      "slug": "email",
+      "name": "Email"
+    },
+    {
+      "slug": "entertainment",
+      "name": "Entertainment"
+    },
+    {
+      "slug": "environment",
+      "name": "Environment"
+    },
+    {
+      "slug": "events",
+      "name": "Events"
+    },
+    {
+      "slug": "finance",
+      "name": "Finance"
+    },
+    {
+      "slug": "food-and-drink",
+      "name": "Food & Drink"
+    },
+    {
+      "slug": "games-and-comics",
+      "name": "Games & Comics"
+    },
+    {
+      "slug": "geocoding",
+      "name": "Geocoding"
+    },
+    {
+      "slug": "government",
+      "name": "Government"
+    },
+    {
+      "slug": "health",
+      "name": "Health"
+    },
+    {
+      "slug": "jobs",
+      "name": "Jobs"
+    },
+    {
+      "slug": "machine-learning",
+      "name": "Machine Learning"
+    },
+    {
+      "slug": "music",
+      "name": "Music"
+    },
+    {
+      "slug": "news",
+      "name": "News"
+    },
+    {
+      "slug": "open-data",
+      "name": "Open Data"
+    },
+    {
+      "slug": "open-source-projects",
+      "name": "Open Source Projects"
+    },
+    {
+      "slug": "patent",
+      "name": "Patent"
+    },
+    {
+      "slug": "personality",
+      "name": "Personality"
+    },
+    {
+      "slug": "phone",
+      "name": "Phone"
+    },
+    {
+      "slug": "photography",
+      "name": "Photography"
+    },
+    {
+      "slug": "programming",
+      "name": "Programming"
+    },
+    {
+      "slug": "science-and-math",
+      "name": "Science & Math"
+    },
+    {
+      "slug": "security",
+      "name": "Security"
+    },
+    {
+      "slug": "shopping",
+      "name": "Shopping"
+    },
+    {
+      "slug": "social",
+      "name": "Social"
+    },
+    {
+      "slug": "sports-and-fitness",
+      "name": "Sports & Fitness"
+    },
+    {
+      "slug": "test-data",
+      "name": "Test Data"
+    },
+    {
+      "slug": "text-analysis",
+      "name": "Text Analysis"
+    },
+    {
+      "slug": "tracking",
+      "name": "Tracking"
+    },
+    {
+      "slug": "transportation",
+      "name": "Transportation"
+    },
+    {
+      "slug": "url-shorteners",
+      "name": "URL Shorteners"
+    },
+    {
+      "slug": "vehicle",
+      "name": "Vehicle"
+    },
+    {
+      "slug": "video",
+      "name": "Video"
+    },
+    {
+      "slug": "weather",
+      "name": "Weather"
+    }
+  ]
+}

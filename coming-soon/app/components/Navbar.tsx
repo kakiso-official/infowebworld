@@ -92,6 +92,7 @@ const PRIMARY_LINKS: { label: string; href: string; sub: string }[] = [
   { label: 'Write a Review',    href: '/write-review',      sub: 'Share your experience with a company' },
   { label: 'Compare Products',  href: '/compare',           sub: 'Side-by-side product comparisons'      },
   { label: 'Compare Companies', href: '/compare-companies', sub: 'Side-by-side company comparisons'       },
+  { label: 'Developers',        href: '/developers',        sub: 'Free APIs, SDKs and open source from real companies' },
 ]
 
 /* ── L2 children of a sector, drawn synchronously from the static taxonomy.

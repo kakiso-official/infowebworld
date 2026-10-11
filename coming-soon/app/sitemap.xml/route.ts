@@ -10,7 +10,10 @@ const BASE = 'https://www.infowebworld.com'
    - sitemap-countries.xml   /countries + country hub + country-sector pages
                              that clear COUNTRY_INDEX_MIN_LISTINGS
    - sitemap-listings.xml    individual /listing and /profile pages
-   - sitemap-blog.xml        published blog posts */
+   - sitemap-blog.xml        published blog posts
+   - sitemap-developers.xml  /developers hubs, open-source company pages, free API
+                             categories and reviewed API pages that pass
+                             lib/developers/indexing.ts */
 const SUB_SITEMAPS = [
   'sitemap-pages.xml',
   'sitemap-sectors.xml',
@@ -18,6 +21,7 @@ const SUB_SITEMAPS = [
   'sitemap-categories.xml',
   'sitemap-listings.xml',
   'sitemap-blog.xml',
+  'sitemap-developers.xml',
 ]
 
 export async function GET() {

@@ -96,6 +96,11 @@ function shouldNoindex(pathname: string): boolean {
   /* Blog index + posts. */
   if (segments[0] === 'blog') return false
 
+  /* InfoWebWorld for Developers (Oct 2026): /developers, /developers/open-source/...,
+     /developers/free-apis/... Each page sets its own meta robots from
+     lib/developers/indexing.ts (index only with enough real, verified data). */
+  if (segments[0] === 'developers') return false
+
   /* Sector standalone routes used by the legacy /sector/<slug> path. */
   if (segments[0] === 'sector' && segments.length === 2) return false
 
@@ -161,7 +166,7 @@ const ISR_PATH_RE = /^\/(listing|profile)\//
 /* Slow-changing public directory surfaces — safe at a 24h edge TTL.
    Blog is deliberately NOT here: new posts should surface within the
    default 1h edge TTL, not a day later. */
-const LONG_CACHE_RE = /^\/(ai-ml|ai-si-directory|software-saas|saas-directory|it-services-agencies|it-directory|startups-innovation|startup-directory|local-businesses|local-businesses-directory|professional-services|professional-service-directory|categories|sector|compare|compare-companies|all|countries|[a-z0-9-]+-business-directory)(\/|$)/
+const LONG_CACHE_RE = /^\/(ai-ml|ai-si-directory|software-saas|saas-directory|it-services-agencies|it-directory|startups-innovation|startup-directory|local-businesses|local-businesses-directory|professional-services|professional-service-directory|categories|sector|compare|compare-companies|all|countries|developers(?!\/search)|[a-z0-9-]+-business-directory)(\/|$)/
 
 /* ── Removed country URL space ──
    The site used to serve /{country}/* URLs (/uk/blog, /us/ai-ml, bare /uk, …).

@@ -1,0 +1,186 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   InfoWebWorld for Developers - code blocks, code tabs and the copy
+   button (spec 4.10), plus the syntax token colours used by the server
+   highlighter (lib/developers/highlight.ts).
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.dv .dv-code {
+  position: relative;
+  min-width: 0;
+  margin: 0;
+  border-radius: var(--dv-r);
+  background: var(--dv-navy);
+  color: var(--dv-code-fg);
+  border: 1px solid var(--dv-navy-line);
+  overflow: hidden;
+  box-shadow: 0 16px 32px -24px rgba(10, 27, 51, .55);
+}
+.dv .dv-code-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 36px;
+  padding: 0 6px 0 16px;
+  background: var(--dv-navy-2);
+  border-bottom: 1px solid var(--dv-navy-line);
+}
+.dv .dv-code-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dv-code-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dv .dv-code-label svg { font-size: 12px; }
+.dv .dv-code-pre {
+  margin: 0;
+  padding: 16px 20px;
+  overflow-x: auto;
+  font-size: 13.5px;
+  line-height: 1.65;
+  tab-size: 2;
+  white-space: pre;
+  color: var(--dv-code-fg);
+  background: transparent;
+  scrollbar-width: thin;
+  scrollbar-color: #33476A transparent;
+}
+.dv .dv-code-pre:focus-visible { outline: 2px solid var(--dv-focus-dark); outline-offset: -2px; }
+.dv .dv-code-pre code { display: block; min-width: max-content; }
+/* Lines are inline and joined by real '\n' text, so selecting and copying
+   by hand keeps the line breaks. */
+.dv .dv-code-line { display: inline; }
+.dv .dv-prompt {
+  color: var(--dv-code-muted);
+  user-select: none;
+  -webkit-user-select: none;
+  margin-right: 1ch;
+}
+.dv .dv-code-note {
+  padding: 10px 16px 12px;
+  border-top: 1px solid var(--dv-navy-line);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--dv-code-muted);
+}
+.dv .dv-code--compact .dv-code-pre { padding: 12px 16px; }
+.dv .dv-code--bare .dv-code-bar { display: none; }
+
+@media (max-width: 768px) {
+  .dv .dv-code-pre { font-size: 13px; white-space: pre-wrap; overflow-wrap: anywhere; padding: 14px 16px; }
+  .dv .dv-code-pre code { min-width: 0; }
+}
+
+/* ── Syntax tokens (all >= 7.7:1 on --dv-navy) ───────────────────────── */
+
+.dv .tk-cmd { color: var(--dv-code-func); font-weight: 600; }
+.dv .tk-flag { color: var(--dv-code-flag); }
+.dv .tk-str { color: var(--dv-code-string); }
+.dv .tk-kw { color: var(--dv-code-keyword); }
+.dv .tk-num { color: var(--dv-code-number); }
+.dv .tk-fn { color: var(--dv-code-func); }
+.dv .tk-key { color: #B9D4FF; }
+.dv .tk-com { color: var(--dv-code-muted); font-style: italic; }
+
+/* ── Copy button ──────────────────────────────────────────────────────── */
+
+.dv .dv-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 4px 10px;
+  border-radius: 7px;
+  border: 1px solid transparent;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+.dv .dv-copy svg { font-size: 12px; }
+.dv .dv-copy--dark { color: var(--dv-code-fg); background: rgba(255, 255, 255, .06); border-color: rgba(255, 255, 255, .1); }
+.dv .dv-copy--dark:hover { background: rgba(255, 255, 255, .14); }
+.dv .dv-copy--dark:focus-visible { outline-color: var(--dv-focus-dark); }
+.dv .dv-copy--light { color: var(--dv-brand); background: #FFFFFF; border-color: var(--dv-line-strong); }
+.dv .dv-copy--light:hover { background: var(--dv-tint); border-color: rgba(var(--dv-brand-rgb), .35); }
+.dv .dv-copy[data-state='copied'] { color: var(--dv-ok-fg); background: var(--dv-ok-bg); border-color: rgba(22, 101, 52, .2); }
+.dv .dv-copy--dark[data-state='copied'] { color: var(--dv-code-string); background: rgba(126, 226, 184, .12); border-color: rgba(126, 226, 184, .3); }
+.dv .dv-copy[data-state='error'] { color: var(--dv-warn-fg); background: var(--dv-warn-bg); }
+.dv .dv-copy--dark[data-state='error'] { color: var(--dv-code-number); background: rgba(255, 184, 107, .12); }
+.dv .dv-copy--icon { width: 32px; padding: 0; }
+@media (pointer: coarse) {
+  .dv .dv-copy { min-height: 44px; min-width: 44px; }
+}
+
+/* Inline "owner/name [copy]" pair. */
+.dv .dv-copyline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  min-width: 0;
+}
+.dv .dv-copyline code { font-size: 13.5px; }
+
+/* ── Code tabs (Quick start) ──────────────────────────────────────────── */
+
+.dv .dv-codetabs { min-width: 0; }
+.dv .dv-codetabs .dv-code-bar { padding-left: 4px; }
+.dv .dv-codetabs-list {
+  display: flex;
+  align-items: stretch;
+  align-self: stretch;
+  gap: 2px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.dv .dv-codetabs-list::-webkit-scrollbar { display: none; }
+.dv .dv-codetab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--dv-code-muted);
+  white-space: nowrap;
+  cursor: pointer;
+  border-radius: 6px 6px 0 0;
+}
+.dv .dv-codetab:hover { color: #FFFFFF; }
+.dv .dv-codetab[aria-selected='true'] { color: #FFFFFF; }
+.dv .dv-codetab[aria-selected='true']::after {
+  content: '';
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: var(--dv-mint);
+}
+.dv .dv-codetab:focus-visible { outline: 2px solid var(--dv-focus-dark); outline-offset: -4px; }
+.dv .dv-codetabs-panel[hidden] { display: none; }
+/* Without JS: every panel shows under its own caption. */
+.dv .dv-codetabs-caption {
+  display: none;
+  padding: 10px 16px 0;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dv-code-muted);
+}

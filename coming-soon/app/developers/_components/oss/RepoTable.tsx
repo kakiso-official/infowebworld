@@ -1,0 +1,81 @@
+import type { GhLanguage } from '@/lib/developers/types'
+import { formatNumber } from '@/lib/developers/format'
+import { ArchivedBadge, GfiBadge, LicenseBadge, StarCount } from '../ui/Badges'
+import LanguageDot from '../ui/LanguageDot'
+import DvTime from '../ui/DvTime'
+import DvExternalLink from '../ui/DvExternalLink'
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Project list for a company page (spec 4.6 table contract): name in
+   <code>, description when present, language and license only when
+   present (missing fields render an empty cell, hidden on phones by
+   tables.css), stars always shown (a real count, never a guessed one).
+
+   There is no internal repository detail page in this build, so each name
+   links straight to the real repository on GitHub (new tab).
+   ═══════════════════════════════════════════════════════════════════════ */
+
+export interface RepoTableRow {
+  slug: string
+  /** The repository's real GitHub URL (opened in a new tab). */
+  href: string
+  name: string
+  description: string | null
+  stars: number
+  primaryLanguage: GhLanguage | null
+  license: string | null
+  pushedAt: string | null
+  goodFirstIssues: number
+  isArchived: boolean
+}
+
+export interface RepoTableProps {
+  rows: readonly RepoTableRow[]
+  dataAt: string
+  caption: string
+  className?: string
+}
+
+export default function RepoTable({ rows, dataAt, caption, className }: RepoTableProps) {
+  if (!rows.length) return null
+  return (
+    <div className={`dv-table-wrap${className ? ` ${className}` : ''}`}>
+      <table className="dv-table" role="table">
+        <caption className="dv-table-caption">{caption}</caption>
+        <thead role="rowgroup">
+          <tr role="row">
+            <th scope="col" role="columnheader">Project</th>
+            <th scope="col" role="columnheader" className="dv-col-low">Language</th>
+            <th scope="col" role="columnheader" className="dv-col-low">License</th>
+            <th scope="col" role="columnheader" className="dv-td-num">Stars</th>
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          {rows.map(r => (
+            <tr role="row" key={r.slug} data-archived={r.isArchived ? '1' : undefined}>
+              <td role="cell" className="dv-td-name">
+                <DvExternalLink href={r.href}><code>{r.name}</code></DvExternalLink>
+                {r.description && <p className="dv-td-desc">{r.description}</p>}
+                <span className="dv-td-sub">
+                  {r.isArchived && <ArchivedBadge />}
+                  <GfiBadge count={r.goodFirstIssues} />
+                  {r.pushedAt && !r.isArchived && <>Updated <DvTime iso={r.pushedAt} format="age" snapshot={dataAt} /></>}
+                </span>
+              </td>
+              <td role="cell" className="dv-td-meta dv-col-low" data-label="Language">
+                {r.primaryLanguage && <LanguageDot name={r.primaryLanguage.name} color={r.primaryLanguage.color} />}
+              </td>
+              <td role="cell" className="dv-td-meta dv-col-low" data-label="License">
+                {r.license && <LicenseBadge spdx={r.license} />}
+              </td>
+              <td role="cell" className="dv-td-metric dv-td-num" data-label="Stars">
+                <StarCount count={r.stars} />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p className="sr-only">{formatNumber(rows.length)} projects listed.</p>
+    </div>
+  )
+}

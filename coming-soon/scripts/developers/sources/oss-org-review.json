@@ -1,0 +1,258 @@
+[
+  {
+    "login": "google-deepmind",
+    "company": "Google",
+    "companySlug": "google",
+    "websiteUrl": "https://www.deepmind.com/",
+    "reason": "Not GitHub-verified. Org website domain (deepmind.com) does not match company website domain (google.com). No InfoWebWorld match proven by domain or name for this org. The company homepage (https://www.google.com) does not link to github.com/google-deepmind.",
+    "status": "pending"
+  },
+  {
+    "login": "googleapis",
+    "company": "Google",
+    "companySlug": "google",
+    "websiteUrl": "https://googleapis.github.io",
+    "reason": "Not GitHub-verified. Org website domain (github.io) does not match company website domain (google.com). No InfoWebWorld match proven by domain or name for this org. The company homepage (https://www.google.com) does not link to github.com/googleapis.",
+    "status": "pending"
+  },
+  {
+    "login": "alibaba",
+    "company": "Alibaba",
+    "companySlug": "alibaba",
+    "websiteUrl": null,
+    "reason": "Not GitHub-verified. Org website domain (none) does not match company website domain (alibabagroup.com). No InfoWebWorld match proven by domain or name for this org. The company homepage could not be fetched to check for a GitHub link.",
+    "status": "pending"
+  },
+  {
+    "login": "moby",
+    "company": "Docker",
+    "companySlug": "docker",
+    "websiteUrl": "https://mobyproject.org/",
+    "reason": "Not GitHub-verified. Org website domain (mobyproject.org) does not match company website domain (docker.com). No InfoWebWorld match proven by domain or name for this org. The company homepage (https://www.docker.com) does not link to github.com/moby.",
+    "status": "pending"
+  },
+  {
+    "login": "storybookjs",
+    "company": "Chromatic",
+    "companySlug": "chromatic",
+    "websiteUrl": "https://storybook.js.org",
+    "reason": "Not GitHub-verified. Org website domain (js.org) does not match company website domain (chromatic.com). No InfoWebWorld match proven by domain or name for this org. The company homepage (https://www.chromatic.com) does not link to github.com/storybookjs.",
+    "status": "pending"
+  },
+  {
+    "login": "Netflix",
+    "company": "Netflix",
+    "companySlug": "netflix",
+    "websiteUrl": "http://netflix.github.io/",
+    "reason": "Not GitHub-verified. Org website domain (github.io) does not match company website domain (netflix.com). No InfoWebWorld match proven by domain or name for this org. The company homepage (https://www.netflix.com) does not link to github.com/Netflix.",
+    "status": "pending"
+  },
+  {
+    "login": "spotify",
+    "company": "Spotify",
+    "companySlug": "spotify",
+    "websiteUrl": "https://spotify.github.io/",
+    "reason": "Not GitHub-verified. Org website domain (github.io) does not match company website domain (spotify.com). No InfoWebWorld match proven by domain or name for this org. The company homepage (https://www.spotify.com) does not link to github.com/spotify.",
+    "status": "pending"
+  },
+  {
+    "login": "mlflow",
+    "company": "Databricks",
+    "companySlug": "databricks",
+    "websiteUrl": "https://www.mlflow.org",
+    "reason": "Not GitHub-verified. Org website domain (mlflow.org) does not match company website domain (databricks.com). No InfoWebWorld match proven by domain or name for this org. The company homepage (https://www.databricks.com) does not link to github.com/mlflow.",
+    "status": "pending"
+  },
+  {
+    "login": "naver",
+    "company": "Naver",
+    "companySlug": "naver",
+    "websiteUrl": "http://developers.naver.com",
+    "reason": "Not GitHub-verified. Org website domain (naver.com) does not match company website domain (navercorp.com). No InfoWebWorld match proven by domain or name for this org. The company homepage (https://www.navercorp.com) does not link to github.com/naver.",
+    "status": "pending"
+  },
+  {
+    "login": "intel",
+    "company": "Intel",
+    "companySlug": "intel",
+    "websiteUrl": null,
+    "reason": "Not GitHub-verified. Org website domain (none) does not match company website domain (intel.com). No InfoWebWorld match proven by domain or name for this org. The company homepage (https://www.intel.com) does not link to github.com/intel.",
+    "status": "pending"
+  },
+  {
+    "login": "dask",
+    "company": "Coiled (Dask)",
+    "companySlug": "coiled",
+    "websiteUrl": "https://dask.org/",
+    "reason": "Not GitHub-verified. Org website domain (dask.org) does not match company website domain (coiled.io). No InfoWebWorld match proven by domain or name for this org. The company homepage (https://www.coiled.io) does not link to github.com/dask.",
+    "status": "pending"
+  },
+  {
+    "login": "Physical-Intelligence",
+    "company": "Physical Intelligence",
+    "companySlug": "physical-intelligence",
+    "websiteUrl": null,
+    "reason": "Not GitHub-verified. Org website domain (none) does not match company website domain (physicalintelligence.company). No InfoWebWorld match proven by domain or name for this org. The company homepage could not be fetched to check for a GitHub link.",
+    "status": "pending"
+  },
+  {
+    "login": "baichuan-inc",
+    "company": "Baichuan AI",
+    "companySlug": "baichuan-ai",
+    "websiteUrl": null,
+    "reason": "Not GitHub-verified. Org website domain (none) does not match company website domain (none). No InfoWebWorld match proven by domain or name for this org. The company has no website on file to check for a GitHub link.",
+    "status": "pending"
+  },
+  {
+    "login": "stepfun-ai",
+    "company": "StepFun",
+    "companySlug": "stepfun",
+    "websiteUrl": null,
+    "reason": "Not GitHub-verified. Org website domain (none) does not match company website domain (none). No InfoWebWorld match proven by domain or name for this org. The company has no website on file to check for a GitHub link.",
+    "status": "pending"
+  },
+  {
+    "login": "Comcast",
+    "company": "Comcast",
+    "companySlug": "comcast",
+    "websiteUrl": "https://comcast.github.io",
+    "reason": "Not GitHub-verified. Org website domain (github.io) does not match company website domain (comcast.com). No InfoWebWorld match proven by domain or name for this org. The company homepage (https://corporate.comcast.com) does not link to github.com/Comcast.",
+    "status": "pending"
+  },
+  {
+    "login": "seek-oss",
+    "company": "Seek",
+    "companySlug": "seek",
+    "websiteUrl": "https://www.seek.com/",
+    "reason": "Not GitHub-verified. Org website domain (seek.com) does not match company website domain (seek.com.au). No InfoWebWorld match proven by domain or name for this org. The company homepage could not be fetched to check for a GitHub link.",
+    "status": "pending"
+  },
+  {
+    "login": "americanexpress",
+    "company": "American Express",
+    "companySlug": "american-express",
+    "websiteUrl": "https://americanexpress.io",
+    "reason": "Not GitHub-verified. Org website domain (americanexpress.io) does not match company website domain (americanexpress.com). No InfoWebWorld match proven by domain or name for this org. The company homepage could not be fetched to check for a GitHub link.",
+    "status": "pending"
+  },
+  {
+    "login": "Samsung",
+    "company": "Samsung",
+    "companySlug": "samsung",
+    "websiteUrl": null,
+    "reason": "Not GitHub-verified. Org website domain (none) does not match company website domain (samsung.com). No InfoWebWorld match proven by domain or name for this org. The company homepage (https://www.samsung.com) does not link to github.com/Samsung.",
+    "status": "pending"
+  },
+  {
+    "login": "gojek",
+    "company": "Gojek",
+    "companySlug": "gojek",
+    "websiteUrl": "https://www.gojek.io",
+    "reason": "Not GitHub-verified. Org website domain (gojek.io) does not match company website domain (gojek.com). No InfoWebWorld match proven by domain or name for this org. The company homepage (https://www.gojek.com) does not link to github.com/gojek.",
+    "status": "pending"
+  },
+  {
+    "login": "ncsoft",
+    "company": "NCSoft",
+    "companySlug": "ncsoft",
+    "websiteUrl": "http://www.nc.com",
+    "reason": "Not GitHub-verified. Org website domain (nc.com) does not match company website domain (ncsoft.com). No InfoWebWorld match proven by domain or name for this org. The company homepage (https://www.ncsoft.com) does not link to github.com/ncsoft.",
+    "status": "pending"
+  },
+  {
+    "login": "gree",
+    "company": "GREE",
+    "companySlug": "gree",
+    "websiteUrl": null,
+    "reason": "Not GitHub-verified. Org website domain (none) does not match company website domain (gree.co.jp). No InfoWebWorld match proven by domain or name for this org. The company homepage (https://gree.co.jp) does not link to github.com/gree.",
+    "status": "pending"
+  },
+  {
+    "login": "zerodha",
+    "company": "Zerodha",
+    "companySlug": "zerodha",
+    "websiteUrl": "https://zerodha.tech/projects",
+    "reason": "Not GitHub-verified. Org website domain (zerodha.tech) does not match company website domain (zerodha.com). No InfoWebWorld match proven by domain or name for this org. The company homepage (https://zerodha.com) does not link to github.com/zerodha.",
+    "status": "pending"
+  },
+  {
+    "login": "kakao",
+    "company": "Kakao",
+    "companySlug": "kakao",
+    "websiteUrl": "http://tech.kakao.com/",
+    "reason": "Not GitHub-verified. Org website domain (kakao.com) does not match company website domain (kakaocorp.com). No InfoWebWorld match proven by domain or name for this org. The company homepage (https://www.kakaocorp.com) does not link to github.com/kakao.",
+    "status": "pending"
+  },
+  {
+    "login": "lamini-ai",
+    "company": "Lamini",
+    "companySlug": "lamini",
+    "websiteUrl": null,
+    "reason": "Not GitHub-verified. Org website domain (none) does not match company website domain (lamini.ai). No InfoWebWorld match proven by domain or name for this org. The company homepage could not be fetched to check for a GitHub link.",
+    "status": "pending"
+  },
+  {
+    "login": "naver-ai",
+    "company": "NAVER AI Lab",
+    "companySlug": "naver-ai-lab",
+    "websiteUrl": "https://www.facebook.com/NAVERAILAB",
+    "reason": "Not GitHub-verified. Org website domain (facebook.com) does not match company website domain (none). No InfoWebWorld match proven by domain or name for this org. The company has no website on file to check for a GitHub link.",
+    "status": "pending"
+  },
+  {
+    "login": "zillow",
+    "company": "Zillow",
+    "companySlug": "zillow",
+    "websiteUrl": "https://zillowgroup.com/",
+    "reason": "Not GitHub-verified. Org website domain (zillowgroup.com) does not match company website domain (zillow.com). No InfoWebWorld match proven by domain or name for this org. The company homepage (https://www.zillow.com) does not link to github.com/zillow.",
+    "status": "pending"
+  },
+  {
+    "login": "krafton-ai",
+    "company": "Krafton",
+    "companySlug": "krafton",
+    "websiteUrl": null,
+    "reason": "Not GitHub-verified. Org website domain (none) does not match company website domain (krafton.com). No InfoWebWorld match proven by domain or name for this org. The company homepage (https://www.krafton.com) does not link to github.com/krafton-ai.",
+    "status": "pending"
+  },
+  {
+    "login": "rakutentech",
+    "company": "Rakuten",
+    "companySlug": "rakuten",
+    "websiteUrl": "https://rakuten.careers/",
+    "reason": "Not GitHub-verified. Org website domain (rakuten.careers) does not match company website domain (rakuten.com). No InfoWebWorld match proven by domain or name for this org. The company homepage (https://www.rakuten.com) does not link to github.com/rakutentech.",
+    "status": "pending"
+  },
+  {
+    "login": "LG-AI-EXAONE",
+    "company": "LG AI Research",
+    "companySlug": "lg-ai-research",
+    "websiteUrl": null,
+    "reason": "Not GitHub-verified. Org website domain (none) does not match company website domain (none). No InfoWebWorld match proven by domain or name for this org. The company has no website on file to check for a GitHub link.",
+    "status": "pending"
+  },
+  {
+    "login": "canva-sdks",
+    "company": "Canva",
+    "companySlug": "canva",
+    "websiteUrl": null,
+    "reason": "Not GitHub-verified. Org website domain (none) does not match company website domain (canva.com). No InfoWebWorld match proven by domain or name for this org. The company homepage could not be fetched to check for a GitHub link.",
+    "status": "pending"
+  },
+  {
+    "login": "pagseguro",
+    "company": "PagSeguro",
+    "companySlug": "pagseguro",
+    "websiteUrl": "https://pagbank.com.br/",
+    "reason": "Not GitHub-verified. Org website domain (pagbank.com.br) does not match company website domain (uol.com.br). No InfoWebWorld match proven by domain or name for this org. The company homepage could not be fetched to check for a GitHub link.",
+    "status": "pending"
+  },
+  {
+    "login": "mercadolibre",
+    "company": "Mercado Libre",
+    "companySlug": "mercado-libre",
+    "websiteUrl": null,
+    "reason": "Not GitHub-verified. Org website domain (none) does not match company website domain (mercadolibre.com). No InfoWebWorld match proven by domain or name for this org. The company homepage (https://www.mercadolibre.com) does not link to github.com/mercadolibre.",
+    "status": "pending"
+  }
+]

@@ -1,0 +1,266 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   InfoWebWorld for Developers - Free APIs & SDKs (spec 3.13-3.18, 4.5-4.11).
+
+   Imported only by the three free-apis pages (not base.css's barrel):
+   category tiles, the API card, the facts list (shared shape for
+   FreeTierPanel/ApiFactsCard/ProviderCard), the Try it panel and the SDK
+   install cards. Everything else (cards, badges, tables, code, tabs,
+   filters) comes from the shared ui.css / tables.css / code.css already
+   imported by the layout.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Category tiles (DvCategoryGrid / DvCategoryTile, 4.5) ──────────────── */
+
+.dv .dv-cat-tile {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  text-decoration: none;
+}
+.dv .dv-cat-tile-body { min-width: 0; flex: 1 1 auto; }
+.dv .dv-cat-tile-name {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--dv-ink);
+  overflow-wrap: anywhere;
+}
+.dv .dv-cat-tile-meta {
+  display: block;
+  margin-top: 4px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--dv-muted);
+}
+.dv .dv-cat-tile-meta strong { color: var(--dv-body); font-weight: 650; }
+.dv .dv-cat-tile-arrow {
+  flex: 0 0 auto;
+  margin-left: auto;
+  align-self: center;
+  color: var(--dv-muted);
+  font-size: 13px;
+  transition: transform .15s ease, color .15s ease;
+}
+.dv .dv-cat-tile:hover .dv-cat-tile-arrow,
+.dv .dv-cat-tile:focus-visible .dv-cat-tile-arrow { transform: translateX(3px); color: var(--dv-brand); }
+
+/* ── API card (ApiCard, 4.5) ─────────────────────────────────────────── */
+
+.dv .dv-api-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+}
+.dv .dv-api-card-head { display: flex; align-items: flex-start; gap: 12px; min-width: 0; }
+.dv .dv-api-card-name {
+  font-size: 15.5px;
+  font-weight: 750;
+  line-height: 1.3;
+  color: var(--dv-ink);
+  overflow-wrap: anywhere;
+}
+.dv .dv-api-card-name a { text-decoration: none; }
+.dv .dv-api-card-head:hover .dv-api-card-name a,
+.dv .dv-card--link:hover .dv-api-card-name { color: var(--dv-brand); }
+.dv .dv-api-card-provider {
+  display: block;
+  margin-top: 2px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--dv-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dv .dv-api-card-ext { margin-left: 6px; font-size: 10px; color: var(--dv-muted); }
+.dv .dv-api-card-desc {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--dv-body);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.dv .dv-api-card-freetier {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--dv-brand-hover);
+  font-weight: 550;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.dv .dv-api-card-sdks { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; margin-top: auto; }
+.dv .dv-sdk-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--dv-tint);
+  color: var(--dv-brand);
+  font-size: 11px;
+  flex: 0 0 auto;
+}
+.dv .dv-sdk-ico--more {
+  width: auto;
+  min-width: 24px;
+  padding: 0 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--dv-muted);
+  background: var(--dv-sunk);
+}
+.dv .dv-api-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 1px solid var(--dv-line-soft);
+  font-size: 12px;
+}
+/* onDark: the card itself stays a white card (4.5); only the band around
+   it is navy, so no colour overrides are needed here. */
+
+/* ── Facts list (shared shape: FreeTierPanel / ApiFactsCard / ProviderCard) ── */
+
+.dv .dv-facts { display: flex; flex-direction: column; }
+.dv .dv-facts-row {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--dv-line-soft);
+  align-items: baseline;
+}
+.dv .dv-facts-row:last-child { border-bottom: 0; padding-bottom: 0; }
+.dv .dv-facts-row:first-child { padding-top: 0; }
+.dv .dv-facts-label { font-size: 13px; font-weight: 600; color: var(--dv-muted); }
+.dv .dv-facts-value { font-size: 14px; line-height: 1.5; color: var(--dv-ink); min-width: 0; overflow-wrap: anywhere; }
+.dv .dv-facts-value a { color: var(--dv-brand); text-decoration: underline; text-decoration-color: rgba(var(--dv-brand-rgb), .35); text-underline-offset: 3px; }
+.dv .dv-facts-value a:hover { text-decoration-color: currentColor; }
+.dv .dv-facts-value--muted { color: var(--dv-muted); font-weight: 500; }
+@media (max-width: 480px) {
+  .dv .dv-facts-row { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+}
+
+/* ── Free tier panel ──────────────────────────────────────────────────── */
+
+.dv .dv-freetier-top { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; }
+.dv .dv-freetier-stat { display: flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 650; }
+.dv .dv-freetier-stat svg { font-size: 15px; }
+.dv .dv-freetier-stat--ok svg { color: var(--dv-dot-ok); }
+.dv .dv-freetier-stat--unknown svg { color: var(--dv-muted); }
+.dv .dv-freetier-summary { margin-top: 14px; font-size: 14.5px; line-height: 1.6; color: var(--dv-body); }
+.dv .dv-freetier-summary--muted { color: var(--dv-muted); }
+.dv .dv-freetier-meta { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; font-size: 13.5px; color: var(--dv-body); }
+.dv .dv-freetier-meta strong { color: var(--dv-ink); font-weight: 650; }
+.dv .dv-freetier-source { margin-top: 14px; font-size: 12.5px; color: var(--dv-muted); }
+.dv .dv-freetier-source a { color: var(--dv-brand); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ── Provider card ────────────────────────────────────────────────────── */
+
+.dv .dv-provider { display: flex; flex-direction: column; gap: 14px; }
+.dv .dv-provider-head { display: flex; align-items: center; gap: 12px; }
+.dv .dv-provider-name { font-size: 15.5px; font-weight: 750; color: var(--dv-ink); }
+.dv .dv-provider-host { display: block; margin-top: 1px; font-size: 12.5px; color: var(--dv-muted); }
+.dv .dv-provider-links { display: flex; flex-direction: column; gap: 9px; }
+.dv .dv-provider-link {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--dv-ink);
+  text-decoration: none;
+}
+.dv .dv-provider-link svg { flex: 0 0 auto; font-size: 13px; color: var(--dv-brand); }
+.dv .dv-provider-link:hover { color: var(--dv-brand); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ── Try it panel ─────────────────────────────────────────────────────── */
+
+.dv .dv-tryit-request {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 12px 14px;
+  background: var(--dv-sunk);
+  border: 1px solid var(--dv-line);
+  border-radius: var(--dv-r-sm);
+}
+.dv .dv-tryit-request code { background: none; padding: 0; font-size: 13px; word-break: break-all; }
+.dv .dv-tryit-note { margin-top: 10px; font-size: 12.5px; color: var(--dv-muted); }
+.dv .dv-tryit-actions { margin-top: 14px; }
+.dv .dv-tryit-result { margin-top: 18px; }
+.dv .dv-tryit-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--dv-body);
+}
+.dv .dv-tryit-dot { width: 9px; height: 9px; border-radius: 50%; flex: 0 0 auto; background: var(--dv-muted); }
+.dv .dv-tryit-dot--ok { background: var(--dv-dot-ok); }
+.dv .dv-tryit-dot--warn { background: var(--dv-dot-stale); }
+.dv .dv-tryit-dot--bad { background: var(--dv-bad-fg); }
+.dv .dv-tryit-status-code { color: var(--dv-ink); font-weight: 750; }
+.dv .dv-tryit-status-sep { color: var(--dv-line-strong); }
+.dv .dv-tryit-copy { margin-left: auto; }
+.dv .dv-tryit-body {
+  max-height: 360px;
+  overflow: auto;
+}
+.dv .dv-tryit-cut { margin-top: 8px; font-size: 12px; color: var(--dv-muted); }
+.dv .dv-tryit-img { display: block; max-width: 100%; border-radius: var(--dv-r-sm); border: 1px solid var(--dv-line); }
+.dv .dv-tryit-placeholder { font-size: 13.5px; color: var(--dv-muted); font-style: italic; }
+
+/* ── SDK install cards (SdkTabs panels) ──────────────────────────────── */
+
+.dv .dv-sdk-install + .dv-sdk-install { margin-top: 20px; }
+.dv .dv-sdk-install-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--dv-muted);
+}
+.dv .dv-sdk-install-meta a { color: var(--dv-brand); text-decoration: underline; text-underline-offset: 3px; }
+.dv .dv-sdk-install-pkg { font-weight: 650; color: var(--dv-ink); }
+
+/* ── Use cases + tags ─────────────────────────────────────────────────── */
+
+.dv .dv-usecases { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.dv .dv-usecases li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.5; color: var(--dv-body); }
+.dv .dv-usecases svg { flex: 0 0 auto; margin-top: 3px; font-size: 13px; color: var(--dv-dot-ok); }
+
+/* ── Sources list ─────────────────────────────────────────────────────── */
+
+.dv .dv-sources-list { margin: 0; padding: 0; list-style: none; counter-reset: dv-src; display: flex; flex-direction: column; gap: 8px; }
+.dv .dv-sources-list li { counter-increment: dv-src; display: flex; gap: 10px; font-size: 13.5px; }
+.dv .dv-sources-list li::before {
+  content: counter(dv-src) '.';
+  flex: 0 0 auto;
+  color: var(--dv-muted);
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+.dv .dv-sources-list a { color: var(--dv-brand); word-break: break-all; text-decoration: underline; text-decoration-color: rgba(var(--dv-brand-rgb), .35); text-underline-offset: 3px; }
+.dv .dv-sources-list a:hover { text-decoration-color: currentColor; }
+
+/* ── Counts sentence (category page) ─────────────────────────────────── */
+
+.dv .dv-counts-sentence strong { color: var(--dv-ink); font-weight: 700; }

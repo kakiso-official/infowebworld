@@ -1,0 +1,259 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   InfoWebWorld for Developers - design tokens (spec 4.1, 4.2, 4.14).
+
+   Everything is scoped under .dv, the <main> rendered by
+   app/developers/layout.tsx, so nothing here can reach another page.
+   Plus Jakarta Sans is forced site-wide by font-preview.css; this file
+   only sets size, weight and tracking, and the monospace stack for the
+   four elements that rule exempts (code, pre, kbd, samp).
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.dv {
+  /* Section brand: Petrol (none of the six sector hues: #5B4DBE #2B6FB5 #156B50 #B14820 #487014 #A93D63) */
+  --dv-brand: #0A6B83;          /* 6.10:1 on #fff */
+  --dv-brand-hover: #085768;    /* 8.16:1 */
+  --dv-brand-rgb: 10, 107, 131;
+  --dv-accent: #0C7C97;         /* 4.83:1 on #fff, 4.54:1 on wash: focus ring, small accents */
+  --dv-wash: #F2F9FB;           /* alternating bands */
+  --dv-tint: #E6F3F7;           /* hover fills, icon tiles */
+  --dv-media: #D9EDF3;
+  --dv-soft: #B9DDE8;           /* borders on tinted things, bar-list fill */
+  --dv-coral: #E8553D;          /* site coral: decorative orb, tiny accents only (never text) */
+
+  /* Text + lines */
+  --dv-ink: #0A1B33;            /* headings, 17.25:1 */
+  --dv-body: #4B5563;           /* 7.56:1 */
+  --dv-muted: #6B7280;          /* 4.83:1, never below 13px */
+  --dv-line: #E5E7EB;
+  --dv-line-soft: #F0F1F3;
+  --dv-line-strong: #CBD5E1;
+  --dv-surface: #FFFFFF;
+  --dv-sunk: #F7F9FB;           /* table head, bar tracks */
+  --dv-row-hover: #F1F7FA;
+
+  /* Navy band + code surface (homepage "Top Featured" navy) */
+  --dv-navy: #0E1A2E;
+  --dv-navy-2: #15243D;         /* code header strip, tabs on navy */
+  --dv-navy-line: #22324D;
+  --dv-mint: #34D89A;           /* CTA on navy */
+  --dv-mint-hover: #2DC78A;
+  --dv-mint-ink: #003B2A;       /* 6.89:1 on mint */
+
+  /* Code / syntax on --dv-navy (all >= 7.7:1) */
+  --dv-code-fg: #E6EDF3;        /* 14.74 */
+  --dv-code-muted: #9FB3C8;     /* comments, prompt "$", 8.09 */
+  --dv-code-string: #7EE2B8;    /* 11.16 */
+  --dv-code-keyword: #C3A6FF;   /* 8.47 */
+  --dv-code-number: #FFB86B;    /* 10.22 */
+  --dv-code-func: #8AB4FF;      /* commands, 8.34 */
+  --dv-code-flag: #F28FAD;      /* CLI flags, HTTP methods, 7.72 */
+  --dv-inline-code-bg: #F3F4F6;
+  --dv-inline-code-fg: #0A1B33;
+  --dv-focus-dark: #8AB4FF;     /* focus ring on navy */
+
+  /* Status pairs (fg on bg >= 6:1) */
+  --dv-ok-fg: #166534;      --dv-ok-bg: #DCFCE7;
+  --dv-warn-fg: #92400E;    --dv-warn-bg: #FEF3C7;
+  --dv-bad-fg: #9F1239;     --dv-bad-bg: #FFE4E6;
+  --dv-info-fg: #1E40AF;    --dv-info-bg: #DBEAFE;
+  --dv-neutral-fg: #374151; --dv-neutral-bg: #F3F4F6;
+  --dv-star: #B45309;       /* star icon + count on white, 5.02 */
+  --dv-dot-ok: #16A34A;
+  --dv-dot-stale: #D97706;
+
+  /* Shape, depth, space, layout */
+  --dv-r-xs: 6px; --dv-r-sm: 8px; --dv-r: 12px; --dv-r-lg: 16px; --dv-r-pill: 999px;
+  --dv-shadow-card: 0 10px 24px -18px rgba(0, 0, 0, .35);   /* info-pages "near shadow" */
+  --dv-shadow-hover: 0 14px 32px -16px rgba(10, 27, 51, .14);
+  --dv-shadow-pop: 0 18px 40px -20px rgba(10, 27, 51, .45); /* dropdowns, sheets */
+  --dv-1: 4px; --dv-2: 8px; --dv-3: 12px; --dv-4: 16px; --dv-5: 20px; --dv-6: 24px;
+  --dv-8: 32px; --dv-10: 40px; --dv-12: 48px; --dv-16: 64px;
+  --dv-band-y: clamp(48px, 7vw, 84px);
+  --dv-band-x: clamp(16px, 4vw, 32px);
+  --dv-max: 1180px;             /* bands, cards */
+  --dv-max-wide: 1240px;        /* table pages */
+  --dv-read: 760px;             /* prose, FAQ */
+  --dv-aside: 340px;
+  --dv-subnav-h: 52px;
+
+  --dv-mono: ui-monospace, "SFMono-Regular", "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+  display: block;
+  background: #FFFFFF;
+  color: var(--dv-ink);
+  font-size: 0.9375rem;
+  line-height: 1.62;
+  /* No overflow here: it would break the sticky sub-nav (2.5). The page
+     itself never scrolls sideways because every grid child is min-width 0
+     and wide content (pre, tables) scrolls inside itself. */
+}
+
+/* Gutters are exactly 16px on small phones (4.3). */
+@media (max-width: 480px) {
+  .dv { --dv-band-x: 16px; }
+}
+
+.dv code, .dv pre, .dv kbd, .dv samp {
+  font-family: var(--dv-mono);
+  font-variant-ligatures: none;
+}
+
+/* Inline code (4.2): repo names, packages, endpoints, SPDX ids. */
+.dv code {
+  font-size: 0.9em;
+  font-weight: 500;
+  background: var(--dv-inline-code-bg);
+  color: var(--dv-inline-code-fg);
+  border-radius: var(--dv-r-xs);
+  padding: 1px 6px;
+  overflow-wrap: anywhere;
+}
+/* Code that is already inside a styled container keeps its parent's look. */
+.dv pre code,
+.dv .dv-code-plain code,
+.dv code.dv-code-plain {
+  background: none;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+}
+
+.dv kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--dv-body);
+  background: #FFFFFF;
+  border: 1px solid var(--dv-line-strong);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+}
+
+.dv a { color: inherit; }
+
+/* Numbers in stats and tables line up (4.2). */
+.dv .dv-num, .dv .dv-stat-n, .dv td, .dv .dv-tabular { font-variant-numeric: tabular-nums; }
+
+/* ── Type scale (4.2) ─────────────────────────────────────────────────── */
+
+.dv .dv-display {
+  font-size: clamp(1.85rem, 1.2rem + 2.6vw, 2.9rem);
+  line-height: 1.08;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  max-width: 22ch;
+  text-wrap: balance;
+  color: var(--dv-ink);
+}
+.dv .dv-h1 {
+  font-size: clamp(1.7rem, 3vw, 2.3rem);
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.028em;
+  max-width: 28ch;
+  text-wrap: balance;
+  color: var(--dv-ink);
+}
+.dv .dv-h2 {
+  font-size: clamp(1.4rem, 2.4vw, 1.85rem);
+  line-height: 1.18;
+  font-weight: 800;
+  letter-spacing: -0.022em;
+  text-wrap: balance;
+  color: var(--dv-ink);
+}
+.dv .dv-h2--col {
+  font-size: 1.25rem;
+  line-height: 1.25;
+  font-weight: 750;
+  letter-spacing: -0.015em;
+}
+.dv .dv-h3 {
+  font-size: 1rem;
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--dv-ink);
+}
+.dv .dv-lead {
+  font-size: clamp(0.95rem, 1.2vw, 1.0625rem);
+  line-height: 1.55;
+  font-weight: 400;
+  color: var(--dv-body);
+  max-width: 65ch;
+}
+.dv .dv-body { font-size: 0.9375rem; line-height: 1.62; color: var(--dv-body); }
+.dv .dv-small { font-size: 0.8125rem; line-height: 1.45; font-weight: 500; }
+.dv .dv-muted { color: var(--dv-muted); }
+.dv .dv-label {
+  font-size: 0.6875rem;
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dv-muted);
+}
+.dv .dv-stat-n {
+  font-size: clamp(1.375rem, 2.4vw, 1.75rem);
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--dv-ink);
+}
+
+@media (max-width: 480px) {
+  .dv .dv-h3 { font-size: 15px; }
+}
+
+/* Plain text links inside copy. */
+.dv .dv-link {
+  color: var(--dv-brand);
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(var(--dv-brand-rgb), .35);
+}
+.dv .dv-link:hover { color: var(--dv-brand-hover); text-decoration-color: currentColor; }
+
+/* ── Focus (4.14): :focus-visible only, never bare :focus ─────────────── */
+
+.dv :where(a, button, summary, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--dv-accent);
+  outline-offset: 2px;
+}
+.dv :where(.dv-on-dark, .dv-band--navy, .dv-code, .dv-terminal) :where(a, button, summary, input, select, textarea, [tabindex]):focus-visible {
+  outline-color: var(--dv-focus-dark);
+}
+
+/* ── Screen-reader helpers ────────────────────────────────────────────── */
+
+.dv .sr-only,
+.dv .dv-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ── Reduced motion (4.14) ────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .dv *, .dv *::before, .dv *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}

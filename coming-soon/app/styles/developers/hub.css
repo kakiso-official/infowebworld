@@ -1,0 +1,63 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   InfoWebWorld for Developers - section hub (/developers) only.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.dv .dv-pathgrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+@media (max-width: 767px) {
+  .dv .dv-pathgrid { grid-template-columns: minmax(0, 1fr); }
+}
+
+.dv .dv-pathcard {
+  border-radius: var(--dv-r-lg);
+  border-top: 3px solid var(--dv-brand);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.dv .dv-pathcard-icon { margin-bottom: 4px; }
+.dv .dv-pathcard-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  color: var(--dv-ink);
+}
+.dv .dv-pathcard-text {
+  margin: 0;
+  color: var(--dv-body);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+.dv .dv-pathcard-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 4px 0 8px;
+  padding: 0;
+  list-style: none;
+}
+.dv .dv-pathcard-stats li {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--dv-brand);
+  background: var(--dv-tint);
+  border-radius: var(--dv-r-pill);
+  padding: 4px 12px;
+}
+.dv .dv-pathcard .dv-btn { align-self: flex-start; margin-top: 6px; }
+
+/* ── Hero terminal "Try it live" link ────────────────────────────────── */
+
+.dv .dv-terminal-link {
+  display: block;
+  padding: 10px 20px 16px;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--dv-mint);
+  text-decoration: none;
+}
+.dv .dv-terminal-link:hover { text-decoration: underline; text-underline-offset: 3px; }

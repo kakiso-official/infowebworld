@@ -1,0 +1,2038 @@
+{
+  "animechan": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "animefacts": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "scanmalware": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "urlhaus": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "art-institute-of-chicago": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "dummyimage": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "auth0": {
+    "sdks": [
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "auth0-js",
+        "official": true,
+        "repoUrl": "https://github.com/auth0/auth0.js",
+        "version": "10.2.1",
+        "lastPublished": "2026-08-06T05:05:07.419Z",
+        "registryUrl": "https://www.npmjs.com/package/auth0-js",
+        "evidence": "package.json name=auth0-js: npm registry.repository.url=\"git://github.com/auth0/auth0.js.git\""
+      },
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "@auth0/auth0-spa-js",
+        "official": true,
+        "repoUrl": "https://github.com/auth0/auth0-spa-js",
+        "version": "2.28.3",
+        "lastPublished": "2026-10-09T05:04:49.605Z",
+        "registryUrl": "https://www.npmjs.com/package/@auth0/auth0-spa-js",
+        "evidence": "package.json name=@auth0/auth0-spa-js: npm registry.repository.url=\"git://github.com/auth0/auth0-spa-js.git\""
+      },
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "auth0-python",
+        "official": true,
+        "repoUrl": "https://github.com/auth0/auth0-python",
+        "version": "6.7.0",
+        "lastPublished": "2026-09-30T12:58:16.625863Z",
+        "registryUrl": "https://pypi.org/project/auth0-python/",
+        "evidence": "pyproject.toml name=auth0-python: pypi project_urls={\"Homepage\":\"https://auth0.com\",\"Repository\":\"https://github.com/auth0/auth0-python\"} home_page=null"
+      },
+      {
+        "language": "Swift",
+        "registry": "swiftpm",
+        "package": "auth0/Auth0.swift",
+        "official": true,
+        "repoUrl": "https://github.com/auth0/Auth0.swift",
+        "version": null,
+        "lastPublished": null,
+        "registryUrl": "https://github.com/auth0/Auth0.swift",
+        "evidence": "Package.swift present: Package.swift present in auth0/Auth0.swift (repo itself is the package)"
+      },
+      {
+        "language": "PHP",
+        "registry": "packagist",
+        "package": "auth0/auth0-php",
+        "official": true,
+        "repoUrl": "https://github.com/auth0/auth0-PHP",
+        "version": "9.4.0",
+        "lastPublished": "2026-09-30T10:35:05+00:00",
+        "registryUrl": "https://packagist.org/packages/auth0/auth0-php",
+        "evidence": "composer.json name=auth0/auth0-php: packagist repository=\"https://github.com/auth0/Auth0-PHP\""
+      },
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "universal-login",
+        "official": false,
+        "repoUrl": "https://github.com/auth0/universal-login",
+        "version": null,
+        "lastPublished": null,
+        "registryUrl": "https://www.npmjs.com/package/universal-login",
+        "evidence": "package.json name=universal-login: npm registry.repository.url=null"
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "chainlink": {
+    "sdks": [
+      {
+        "language": "TypeScript",
+        "registry": "npm",
+        "package": "@chainlink/ccip-tools-ts",
+        "official": true,
+        "repoUrl": "https://github.com/smartcontractkit/ccip-tools-ts",
+        "version": "0.2.12",
+        "lastPublished": "2025-11-06T12:56:12.221Z",
+        "registryUrl": "https://www.npmjs.com/package/@chainlink/ccip-tools-ts",
+        "evidence": "package.json name=@chainlink/ccip-tools-ts: npm registry.repository.url=\"git://github.com/smartcontractkit/ccip-tools-ts.git\""
+      },
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "@chainlink/external-adapter-framework",
+        "official": true,
+        "repoUrl": "https://github.com/smartcontractkit/ea-framework-js",
+        "version": "2.20.0",
+        "lastPublished": "2026-09-16T23:42:20.220Z",
+        "registryUrl": "https://www.npmjs.com/package/@chainlink/external-adapter-framework",
+        "evidence": "package.json name=@chainlink/external-adapter-framework: npm registry.repository.url=\"git://github.com/smartcontractkit/ea-framework-js.git\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "chainpoint": {
+    "sdks": [
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "chainpoint-cli",
+        "official": true,
+        "repoUrl": "https://github.com/chainpoint/chainpoint-cli",
+        "version": "3.0.1",
+        "lastPublished": "2020-04-15T21:51:30.493Z",
+        "registryUrl": "https://www.npmjs.com/package/chainpoint-cli",
+        "evidence": "package.json name=chainpoint-cli: npm registry.repository.url=\"git+https://github.com/chainpoint/chainpoint-cli.git\""
+      },
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "bhn",
+        "official": true,
+        "repoUrl": "https://github.com/chainpoint/bitcoin-header-node",
+        "version": "0.0.2",
+        "lastPublished": "2020-01-10T19:53:34.069Z",
+        "registryUrl": "https://www.npmjs.com/package/bhn",
+        "evidence": "package.json name=bhn: npm registry.repository.url=\"git://github.com/chainpoint/bitcoin-header-node.git\""
+      },
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "chainpoint-validate",
+        "official": true,
+        "repoUrl": "https://github.com/chainpoint/chainpoint-validate-js",
+        "version": "2.3.1",
+        "lastPublished": "2017-09-14T19:22:06.159Z",
+        "registryUrl": "https://www.npmjs.com/package/chainpoint-validate",
+        "evidence": "package.json name=chainpoint-validate: npm registry.repository.url=\"git+https://github.com/chainpoint/chainpoint-validate-js.git\""
+      },
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "chainpoint-js",
+        "official": true,
+        "repoUrl": "https://github.com/chainpoint/chainpoint-js",
+        "version": "1.4.2",
+        "lastPublished": "2022-04-15T16:22:55.727Z",
+        "registryUrl": "https://www.npmjs.com/package/chainpoint-js",
+        "evidence": "package.json name=chainpoint-js: npm registry.repository.url=\"git+https://github.com/chainpoint/chainpoint-js.git\""
+      },
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "chainpoint-client-web",
+        "official": true,
+        "repoUrl": "https://github.com/chainpoint/chainpoint-client-web",
+        "version": "0.0.4-1",
+        "lastPublished": "2018-10-05T22:01:38.990Z",
+        "registryUrl": "https://www.npmjs.com/package/chainpoint-client-web",
+        "evidence": "package.json name=chainpoint-client-web: npm registry.repository.url=\"git+https://github.com/chainpoint/chainpoint-client-web.git\""
+      },
+      {
+        "language": "Go",
+        "registry": "go",
+        "package": "github.com/chainpoint/lightning-go",
+        "official": true,
+        "repoUrl": "https://github.com/chainpoint/lightning-go",
+        "version": "v0.15.2",
+        "lastPublished": "2022-10-07T03:28:09Z",
+        "registryUrl": "https://pkg.go.dev/github.com/chainpoint/lightning-go",
+        "evidence": "go.mod module=github.com/chainpoint/lightning-go: go.mod module path=\"github.com/chainpoint/lightning-go\", matches github.com/chainpoint/lightning-go=true"
+      },
+      {
+        "language": "Go",
+        "registry": "go",
+        "package": "github.com/chainpoint/chainpoint-go",
+        "official": true,
+        "repoUrl": "https://github.com/chainpoint/chainpoint-go",
+        "version": "v0.0.0-20220617221028-f802b6c58267",
+        "lastPublished": "2022-06-17T22:10:28Z",
+        "registryUrl": "https://pkg.go.dev/github.com/chainpoint/chainpoint-go",
+        "evidence": "go.mod module=github.com/chainpoint/chainpoint-go: go.mod module path=\"github.com/chainpoint/chainpoint-go\", matches github.com/chainpoint/chainpoint-go=true"
+      },
+      {
+        "language": "Go",
+        "registry": "go",
+        "package": "github.com/chainpoint/merkletools-go",
+        "official": true,
+        "repoUrl": "https://github.com/chainpoint/merkletools-go",
+        "version": "v1.0.2",
+        "lastPublished": "2022-04-29T20:24:53Z",
+        "registryUrl": "https://pkg.go.dev/github.com/chainpoint/merkletools-go",
+        "evidence": "go.mod module=github.com/chainpoint/merkletools-go: go.mod module path=\"github.com/chainpoint/merkletools-go\", matches github.com/chainpoint/merkletools-go=true"
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "poetrydb": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "india-public-holidays": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "fileup": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "pantry": {
+    "sdks": [
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "pantry-node",
+        "official": true,
+        "repoUrl": "https://github.com/imRohan/pantry-node",
+        "version": "0.1.3",
+        "lastPublished": "2022-04-24T15:09:49.633Z",
+        "registryUrl": "https://www.npmjs.com/package/pantry-node",
+        "evidence": "package.json name=pantry-node: npm registry.repository.url=\"git+https://github.com/imRohan/pantry-node.git\""
+      },
+      {
+        "language": "Ruby",
+        "registry": "rubygems",
+        "package": "sunshine-conversations-client",
+        "official": false,
+        "repoUrl": "https://github.com/imRohan/sunshine-conversations-ruby",
+        "version": "17.0.0",
+        "lastPublished": null,
+        "registryUrl": "https://rubygems.org/gems/sunshine-conversations-client",
+        "evidence": "sunshine-conversations-client.gemspec name=sunshine-conversations-client: rubygems source_code_uri=null homepage_uri=\"https://github.com/zendesk/sunshine-conversations-ruby\""
+      },
+      {
+        "language": "PHP",
+        "registry": "packagist",
+        "package": "seba/pantry",
+        "official": true,
+        "repoUrl": "https://github.com/SebaOfficial/pantry-cloud",
+        "version": "v2.0.3",
+        "lastPublished": "2025-11-18T12:30:47+00:00",
+        "registryUrl": "https://packagist.org/packages/seba/pantry",
+        "evidence": "existing sdks[] entry package=seba/pantry: packagist repository=\"https://github.com/SebaOfficial/pantry-cloud\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "bitrise": {
+    "sdks": [
+      {
+        "language": "Go",
+        "registry": "go",
+        "package": "github.com/bitrise-io/go-android/v2",
+        "official": true,
+        "repoUrl": "https://github.com/bitrise-io/go-android",
+        "version": "v2.0.0-alpha.20",
+        "lastPublished": "2026-10-09T10:21:38Z",
+        "registryUrl": "https://pkg.go.dev/github.com/bitrise-io/go-android/v2",
+        "evidence": "go.mod module=github.com/bitrise-io/go-android/v2: go.mod module path=\"github.com/bitrise-io/go-android/v2\", matches github.com/bitrise-io/go-android=true"
+      },
+      {
+        "language": "Ruby",
+        "registry": "rubygems",
+        "package": "app_store_connect_api_client",
+        "official": false,
+        "repoUrl": "https://github.com/bitrise-io/app-store-connect-api-client",
+        "version": "0.35.0",
+        "lastPublished": null,
+        "registryUrl": "https://rubygems.org/gems/app_store_connect_api_client",
+        "evidence": "app_store_connect_api.gemspec name=app_store_connect_api_client: rubygems source_code_uri=\"https://github.com/zormandi/app_store_connect_api.rb\" homepage_uri=\"https://github.com/zormandi/app_store_connect_api.rb\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "circleci": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "postman-echo": {
+    "sdks": [
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "postman-collection",
+        "official": true,
+        "repoUrl": "https://github.com/postmanlabs/postman-collection",
+        "version": "5.3.1",
+        "lastPublished": "2026-07-21T10:51:51.329Z",
+        "registryUrl": "https://www.npmjs.com/package/postman-collection",
+        "evidence": "package.json name=postman-collection: npm registry.repository.url=\"git+https://github.com/postmanlabs/postman-collection.git\""
+      },
+      {
+        "language": "TypeScript",
+        "registry": "npm",
+        "package": "@postman/api-sdk",
+        "official": true,
+        "repoUrl": "https://github.com/postmanlabs/postman-api-sdk-ts",
+        "version": "1.46.0",
+        "lastPublished": "2026-08-27T17:04:11.201Z",
+        "registryUrl": "https://www.npmjs.com/package/@postman/api-sdk",
+        "evidence": "package.json name=@postman/api-sdk: npm registry.repository.url=\"git+https://github.com/postmanlabs/postman-api-sdk-ts.git\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "24-pull-requests": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "agify-io": {
+    "sdks": [
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "agify",
+        "official": false,
+        "repoUrl": "https://github.com//",
+        "version": "0.2.0",
+        "lastPublished": "2023-01-02T06:44:09.885768Z",
+        "registryUrl": "https://pypi.org/project/agify/",
+        "evidence": "existing sdks[] entry package=agify: pypi project_urls={\"Homepage\":\"https://github.com/Vazno/agify\"} home_page=\"https://github.com/Vazno/agify\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "apis-guru": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "free-dictionary": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "agentpay-doc-tools": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "best-temp-mail": {
+    "sdks": [
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "best-tempmail",
+        "official": false,
+        "repoUrl": "https://github.com//",
+        "version": "1.0.0",
+        "lastPublished": "2026-09-07T16:55:19.774Z",
+        "registryUrl": "https://www.npmjs.com/package/best-tempmail",
+        "evidence": "existing sdks[] entry package=best-tempmail: npm registry.repository.url=\"git+https://github.com/mbilalawan926-sys/best-tempmail-node.git\""
+      },
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "best-tempmail",
+        "official": false,
+        "repoUrl": "https://github.com//",
+        "version": "1.0.0",
+        "lastPublished": "2026-09-07T17:19:30.477824Z",
+        "registryUrl": "https://pypi.org/project/best-tempmail/",
+        "evidence": "existing sdks[] entry package=best-tempmail: pypi project_urls={\"Documentation\":\"https://best-tempmail.com/api\",\"Homepage\":\"https://best-tempmail.com/api\",\"Repository\":\"https://github.com/mbilalawan926-sys/best-tempmail-python\"} home_page=null"
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "corporate-buzz-words": {
+    "sdks": [
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "pdfgeneratorapi",
+        "official": true,
+        "repoUrl": "https://github.com/sameerkumar18/pdfgeneratorapi-python",
+        "version": "0.2",
+        "lastPublished": "2019-05-29T20:53:29.774239Z",
+        "registryUrl": "https://pypi.org/project/pdfgeneratorapi/",
+        "evidence": "setup.py name=pdfgeneratorapi: pypi project_urls={\"Homepage\":\"https://github.com/sameerkumar18/pdfgeneratorapi-python\"} home_page=\"https://github.com/sameerkumar18/pdfgeneratorapi-python\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "jokeapi": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "namomemes": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "binlist": {
+    "sdks": [
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "binlookup",
+        "official": false,
+        "repoUrl": "https://github.com//",
+        "version": "2.0.1",
+        "lastPublished": "2017-04-28T22:02:52.740Z",
+        "registryUrl": "https://www.npmjs.com/package/binlookup",
+        "evidence": "existing sdks[] entry package=binlookup: npm registry.repository.url=\"git+https://github.com/paylike/binlookup.git\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "coffee": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "exactcup": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "foodish": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "open-brewery-db": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "the-report-of-the-week": {
+    "sdks": [
+      {
+        "language": "Go",
+        "registry": "go",
+        "package": "snippetbox.alexedwards.net",
+        "official": false,
+        "repoUrl": "https://github.com/andyklimczak/lets-go",
+        "version": null,
+        "lastPublished": null,
+        "registryUrl": "https://pkg.go.dev/snippetbox.alexedwards.net",
+        "evidence": "go.mod module=snippetbox.alexedwards.net: go.mod module path=\"snippetbox.alexedwards.net\", matches github.com/andyklimczak/lets-go=false"
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "amiiboapi": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "barter-vg": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "call-of-duty-mobile": {
+    "sdks": [
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "@harrify/whatsapp",
+        "official": true,
+        "repoUrl": "https://github.com/Harry260/whatsapp-sdk",
+        "version": "1.2.0",
+        "lastPublished": "2026-09-04T10:30:29.682Z",
+        "registryUrl": "https://www.npmjs.com/package/@harrify/whatsapp",
+        "evidence": "package.json name=@harrify/whatsapp: npm registry.repository.url=\"git+https://github.com/Harry260/Whatsapp-sdk.git\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "crafatar": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "administrative-divisons-db": {
+    "sdks": [
+      {
+        "language": "Go",
+        "registry": "go",
+        "package": "github.com/kamikazechaser/dns-client-bench",
+        "official": true,
+        "repoUrl": "https://github.com/kamikazechaser/dns-client-bench",
+        "version": "v0.0.0-20241109101451-a52dfec199c8",
+        "lastPublished": "2024-11-09T10:14:51Z",
+        "registryUrl": "https://pkg.go.dev/github.com/kamikazechaser/dns-client-bench",
+        "evidence": "go.mod module=github.com/kamikazechaser/dns-client-bench: go.mod module path=\"github.com/kamikazechaser/dns-client-bench\", matches github.com/kamikazechaser/dns-client-bench=true"
+      },
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "plank-client",
+        "official": false,
+        "repoUrl": "https://github.com/kamikazechaser/node-plank-client",
+        "version": null,
+        "lastPublished": null,
+        "registryUrl": "https://www.npmjs.com/package/plank-client",
+        "evidence": "package.json name=plank-client: npm registry.repository.url=null"
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "adresse-data-gouv-fr": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "bdapis": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "cartes-io": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "bidledger": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "brazil": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "covid-19-2": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "covid-19-government-response": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "covid-19-india": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "covid-19-live-data": {
+    "sdks": [
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "now-universal-client",
+        "official": true,
+        "repoUrl": "https://github.com/mathdroid/now-universal-client",
+        "version": "1.3.3",
+        "lastPublished": "2017-08-10T08:26:30.088Z",
+        "registryUrl": "https://www.npmjs.com/package/now-universal-client",
+        "evidence": "package.json name=now-universal-client: npm registry.repository.url=\"git+https://github.com/mathdroid/now-universal-client.git\""
+      },
+      {
+        "language": "TypeScript",
+        "registry": "npm",
+        "package": "discord-ts",
+        "official": false,
+        "repoUrl": "https://github.com/mathdroid/discord-ts",
+        "version": "0.0.0",
+        "lastPublished": "2020-01-21T22:29:53.094Z",
+        "registryUrl": "https://www.npmjs.com/package/discord-ts",
+        "evidence": "package.json name=discord-ts: npm registry.repository.url=null"
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "covid-19-philippines": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "deepcode": {
+    "sdks": [
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "@snyk/code-client",
+        "official": true,
+        "repoUrl": "https://github.com/snyk/code-client",
+        "version": "4.26.2",
+        "lastPublished": "2026-06-15T15:29:34.162Z",
+        "registryUrl": "https://www.npmjs.com/package/@snyk/code-client",
+        "evidence": "package.json name=@snyk/code-client: npm registry.repository.url=\"git+https://github.com/snyk/code-client.git\""
+      },
+      {
+        "language": "Go",
+        "registry": "go",
+        "package": "github.com/snyk/code-client-go",
+        "official": true,
+        "repoUrl": "https://github.com/snyk/code-client-go",
+        "version": "v1.31.9",
+        "lastPublished": "2026-09-28T14:00:29Z",
+        "registryUrl": "https://pkg.go.dev/github.com/snyk/code-client-go",
+        "evidence": "go.mod module=github.com/snyk/code-client-go: go.mod module path=\"github.com/snyk/code-client-go\", matches github.com/snyk/code-client-go=true"
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "statlyte": {
+    "sdks": [
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "statlyte",
+        "official": false,
+        "repoUrl": "https://github.com//",
+        "version": "0.1.1",
+        "lastPublished": "2026-08-08T22:08:15.184Z",
+        "registryUrl": "https://www.npmjs.com/package/statlyte",
+        "evidence": "existing sdks[] entry package=statlyte: npm registry.repository.url=\"git+https://github.com/richardwilkinson9/statlyte-data.git\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "tensorfeed": {
+    "sdks": [
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "tensorfeed",
+        "official": true,
+        "repoUrl": "https://github.com/RipperMercs/tensorfeed",
+        "version": "4.0.0",
+        "lastPublished": "2026-09-17T07:06:30.430Z",
+        "registryUrl": "https://www.npmjs.com/package/tensorfeed",
+        "evidence": "existing sdks[] entry package=tensorfeed: npm registry.repository.url=\"git+https://github.com/RipperMercs/tensorfeed.git\""
+      },
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "tensorfeed",
+        "official": true,
+        "repoUrl": "https://github.com/RipperMercs/tensorfeed",
+        "version": "3.0.0",
+        "lastPublished": "2026-09-17T06:59:53.870801Z",
+        "registryUrl": "https://pypi.org/project/tensorfeed/",
+        "evidence": "existing sdks[] entry package=tensorfeed: pypi project_urls={\"Bug Tracker\":\"https://github.com/RipperMercs/tensorfeed/issues\",\"Changelog\":\"https://tensorfeed.ai/changelog\",\"Documentation\":\"https://tensorfeed.ai/developers/agent-payments\",\"Homepage\":\"https://tensorfeed.ai\",\"Repository\":\"https://github.com/RipperMercs/tensorfeed\"} home_page=null"
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "gaana": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "jiosaavn": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "openwhyd": {
+    "sdks": [
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "openwhyd-api-client",
+        "official": false,
+        "repoUrl": "https://github.com/openwhyd/",
+        "version": "1.0.0",
+        "lastPublished": "2018-12-31T17:42:35.031Z",
+        "registryUrl": "https://www.npmjs.com/package/openwhyd-api-client",
+        "evidence": "existing sdks[] entry package=openwhyd-api-client: npm registry.repository.url=\"git+https://github.com/adrienjoly/npm-openwhyd-api-client.git\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "radio-browser": {
+    "sdks": [
+      {
+        "language": "Dart",
+        "registry": "pub",
+        "package": "radio_browser_api",
+        "official": false,
+        "repoUrl": "https://github.com/ivandotv/radio-browser-api",
+        "version": "2.1.0",
+        "lastPublished": "2026-07-22T18:00:47.355031Z",
+        "registryUrl": "https://pub.dev/packages/radio_browser_api",
+        "evidence": "existing sdks[] entry package=radio_browser_api: pub.dev repository=undefined homepage=\"https://github.com/tomassasovsky/radio-browser-api.dart.git\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "verome": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "florida-man": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "inshorts-news": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "spaceflight-news": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "archive-org": {
+    "sdks": [
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "internetarchive",
+        "official": true,
+        "repoUrl": "https://github.com/jjjake/internetarchive",
+        "version": "5.11.1",
+        "lastPublished": "2026-08-19T17:57:51.745164Z",
+        "registryUrl": "https://pypi.org/project/internetarchive/",
+        "evidence": "existing sdks[] entry package=internetarchive: pypi project_urls={\"Homepage\":\"https://github.com/jjjake/internetarchive\"} home_page=\"https://github.com/jjjake/internetarchive\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "band-atlas": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "callook-info": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "collegecalcai": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "patentsview": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "kavel": {
+    "sdks": [
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "kavel",
+        "official": false,
+        "repoUrl": "https://github.com//",
+        "version": "0.2.0",
+        "lastPublished": "2026-09-14T03:57:28.791486Z",
+        "registryUrl": "https://pypi.org/project/kavel/",
+        "evidence": "existing sdks[] entry package=kavel: pypi project_urls={\"Documentation\":\"https://kavel.readthedocs.io/\",\"Homepage\":\"https://www.kavel.ai/?ref=pypi\",\"Image tools\":\"https://www.kavel.ai/image?ref=pypi\",\"Source\":\"https://github.com/hanshs474/kavel-py\",\"Video tools\":\"https://www.kavel.ai/video?ref=pypi\"} home_page=null"
+      },
+      {
+        "language": "Go",
+        "registry": "go",
+        "package": "github.com/hanshs474/kavel-go",
+        "official": true,
+        "repoUrl": "https://github.com/hanshs474/kavel-go",
+        "version": "v0.2.0",
+        "lastPublished": "2026-09-13T16:34:27Z",
+        "registryUrl": "https://pkg.go.dev/github.com/hanshs474/kavel-go",
+        "evidence": "existing sdks[] entry package=github.com/hanshs474/kavel-go: go.mod module path=\"github.com/hanshs474/kavel-go\", matches github.com/hanshs474/kavel-go=true"
+      },
+      {
+        "language": "Rust",
+        "registry": "crates",
+        "package": "kavel",
+        "official": false,
+        "repoUrl": "https://github.com//",
+        "version": "0.2.0",
+        "lastPublished": "2026-09-14T03:55:08.648659Z",
+        "registryUrl": "https://crates.io/crates/kavel",
+        "evidence": "existing sdks[] entry package=kavel: crates.io repository=\"https://github.com/hanshs474/kavel-rs\""
+      },
+      {
+        "language": "Ruby",
+        "registry": "rubygems",
+        "package": "kavel",
+        "official": false,
+        "repoUrl": "https://github.com//",
+        "version": "0.2.0",
+        "lastPublished": null,
+        "registryUrl": "https://rubygems.org/gems/kavel",
+        "evidence": "existing sdks[] entry package=kavel: rubygems source_code_uri=\"https://github.com/hanshs474/kavel-rb\" homepage_uri=\"https://www.kavel.ai\""
+      },
+      {
+        "language": "Dart",
+        "registry": "pub",
+        "package": "kavel",
+        "official": false,
+        "repoUrl": "https://github.com//",
+        "version": "0.2.0",
+        "lastPublished": "2026-09-14T03:56:31.880684Z",
+        "registryUrl": "https://pub.dev/packages/kavel",
+        "evidence": "existing sdks[] entry package=kavel: pub.dev repository=\"https://github.com/hanshs474/kavel-dart\" homepage=\"https://www.kavel.ai\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "readme-typing-svg": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "arxiv": {
+    "sdks": [
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "arxiv",
+        "official": true,
+        "repoUrl": "https://github.com/lukasschwab/arxiv.py",
+        "version": "4.0.1",
+        "lastPublished": "2026-07-31T23:42:17.815473Z",
+        "registryUrl": "https://pypi.org/project/arxiv/",
+        "evidence": "existing sdks[] entry package=arxiv: pypi project_urls={\"Documentation\":\"https://lukasschwab.me/arxiv.py/\",\"Homepage\":\"https://github.com/lukasschwab/arxiv.py\",\"Issues\":\"https://github.com/lukasschwab/arxiv.py/issues\",\"Repository\":\"https://github.com/lukasschwab/arxiv.py\"} home_page=null"
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "idigbio": {
+    "sdks": [
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "idigbio",
+        "official": true,
+        "repoUrl": "https://github.com/iDigBio/idigbio-python-client",
+        "version": "0.8.5",
+        "lastPublished": "2018-03-16T19:25:22.130763Z",
+        "registryUrl": "https://pypi.org/project/idigbio/",
+        "evidence": "setup.py name=idigbio: pypi project_urls={\"Homepage\":\"http://github.com/idigbio/idigbio-python-client/\"} home_page=\"http://github.com/idigbio/idigbio-python-client/\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "mygene-info": {
+    "sdks": [
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "biothings",
+        "official": true,
+        "repoUrl": "https://github.com/biothings/biothings.api",
+        "version": "1.2.0",
+        "lastPublished": "2026-10-08T22:47:35.828279Z",
+        "registryUrl": "https://pypi.org/project/biothings/",
+        "evidence": "pyproject.toml name=biothings: pypi project_urls={\"changelog\":\"https://github.com/biothings/biothings.api/blob/master/CHANGES.txt\",\"documentation\":\"https://docs.biothings.io\",\"homepage\":\"https://biothings.io\",\"issues\":\"https://github.com/biothings/biothings.api/issues\",\"source\":\"https://github.com/biothings/biothings.api\"} home_page=null"
+      },
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "biothings_client",
+        "official": true,
+        "repoUrl": "https://github.com/biothings/biothings_client.py",
+        "version": "0.5.1",
+        "lastPublished": "2026-07-23T22:14:30.624198Z",
+        "registryUrl": "https://pypi.org/project/biothings_client/",
+        "evidence": "pyproject.toml name=biothings_client: pypi project_urls={\"documentation\":\"https://biothings-clientpy.readthedocs.io\",\"homepage\":\"https://github.com/biothings/biothings_client.py\",\"repository\":\"https://github.com/biothings/biothings_client.py\"} home_page=null"
+      },
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "react-base",
+        "official": false,
+        "repoUrl": "https://github.com/biothings/biostats-python",
+        "version": "0.2.0",
+        "lastPublished": "2015-07-21T11:23:22.798Z",
+        "registryUrl": "https://www.npmjs.com/package/react-base",
+        "evidence": "package.json name=react-base: npm registry.repository.url=\"git+https://github.com/jamesknelson/react-base.git\""
+      },
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "biothings_client",
+        "official": false,
+        "repoUrl": "https://github.com/biothings/biothings_client.js",
+        "version": "1.0.0",
+        "lastPublished": "2017-10-31T00:06:25.053Z",
+        "registryUrl": "https://www.npmjs.com/package/biothings_client",
+        "evidence": "package.json name=biothings_client: npm registry.repository.url=null"
+      },
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "mygene",
+        "official": true,
+        "repoUrl": "https://github.com/biothings/mygene.py",
+        "version": "3.2.2",
+        "lastPublished": "2021-04-05T21:24:30.934280Z",
+        "registryUrl": "https://pypi.org/project/mygene/",
+        "evidence": "existing sdks[] entry package=mygene: pypi project_urls={\"Homepage\":\"https://github.com/biothings/mygene.py\"} home_page=\"https://github.com/biothings/mygene.py\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "4chan": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "bluesky": {
+    "sdks": [
+      {
+        "language": "TypeScript",
+        "registry": "npm",
+        "package": "@bsky/sdk",
+        "official": false,
+        "repoUrl": "https://github.com//",
+        "version": "1.1.5",
+        "lastPublished": "2026-09-29T14:55:50.252Z",
+        "registryUrl": "https://www.npmjs.com/package/@bsky/sdk",
+        "evidence": "existing sdks[] entry package=@bsky/sdk: npm registry.repository.url=\"https://github.com/bluesky-social/bsky\""
+      },
+      {
+        "language": "TypeScript",
+        "registry": "npm",
+        "package": "@bsky/jetstream",
+        "official": false,
+        "repoUrl": "https://github.com//",
+        "version": "1.0.0",
+        "lastPublished": "2026-08-13T15:31:30.308Z",
+        "registryUrl": "https://www.npmjs.com/package/@bsky/jetstream",
+        "evidence": "existing sdks[] entry package=@bsky/jetstream: npm registry.repository.url=\"https://github.com/bluesky-social/bsky\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "ergast-f1": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "football-standings": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "nba-stats": {
+    "sdks": [
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "nba_api",
+        "official": true,
+        "repoUrl": "https://github.com/swar/nba_api",
+        "version": "1.11.4",
+        "lastPublished": "2026-02-20T07:02:39.610483Z",
+        "registryUrl": "https://pypi.org/project/nba_api/",
+        "evidence": "existing sdks[] entry package=nba_api: pypi project_urls={\"Bug Tracker\":\"https://github.com/swar/nba_api/issues\",\"Documentation\":\"https://github.com/swar/nba_api/blob/master/README.md\",\"Homepage\":\"https://github.com/swar/nba_api\",\"Repository\":\"https://github.com/swar/nba_api\"} home_page=\"https://github.com/swar/nba_api\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "dicebear-avatars": {
+    "sdks": [
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "@dicebear/core",
+        "official": false,
+        "repoUrl": "https://github.com//",
+        "version": "10.7.0",
+        "lastPublished": "2026-08-26T20:32:44.003Z",
+        "registryUrl": "https://www.npmjs.com/package/@dicebear/core",
+        "evidence": "existing sdks[] entry package=@dicebear/core: npm registry.repository.url=\"git+https://github.com/dicebear/dicebear.git\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "randomuser": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "libretranslate": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "cloudmersive-natural-language-processing": {
+    "sdks": [
+      {
+        "language": "PHP",
+        "registry": "packagist",
+        "package": "cloudmersive/cloudmersive_validate_api_client",
+        "official": true,
+        "repoUrl": "https://github.com/Cloudmersive/Cloudmersive.APIClient.PHP.Validate",
+        "version": "3.0.1",
+        "lastPublished": "2023-07-02T02:30:17+00:00",
+        "registryUrl": "https://packagist.org/packages/cloudmersive/cloudmersive_validate_api_client",
+        "evidence": "composer.json name=cloudmersive/cloudmersive_validate_api_client: packagist repository=\"https://github.com/Cloudmersive/Cloudmersive.APIClient.PHP.Validate\""
+      },
+      {
+        "language": "PHP",
+        "registry": "packagist",
+        "package": "cloudmersive/cloudmersive_document_convert_api_client",
+        "official": true,
+        "repoUrl": "https://github.com/Cloudmersive/Cloudmersive.APIClient.PHP.DocumentAndDataConvert",
+        "version": "3.2.0",
+        "lastPublished": "2023-12-11T03:55:39+00:00",
+        "registryUrl": "https://packagist.org/packages/cloudmersive/cloudmersive_document_convert_api_client",
+        "evidence": "composer.json name=cloudmersive/cloudmersive_document_convert_api_client: packagist repository=\"https://github.com/Cloudmersive/Cloudmersive.APIClient.PHP.DocumentAndDataConvert\""
+      },
+      {
+        "language": "PHP",
+        "registry": "packagist",
+        "package": "cloudmersive/cloudmersive_virusscan_api_client",
+        "official": true,
+        "repoUrl": "https://github.com/Cloudmersive/Cloudmersive.APIClient.PHP.VirusScan",
+        "version": "3.1.1",
+        "lastPublished": "2023-12-11T03:57:52+00:00",
+        "registryUrl": "https://packagist.org/packages/cloudmersive/cloudmersive_virusscan_api_client",
+        "evidence": "composer.json name=cloudmersive/cloudmersive_virusscan_api_client: packagist repository=\"https://github.com/Cloudmersive/Cloudmersive.APIClient.PHP.VirusScan\""
+      },
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "cloudmersive-nlp-api-client",
+        "official": false,
+        "repoUrl": "https://github.com/Cloudmersive/",
+        "version": "2.1.1",
+        "lastPublished": "2020-09-05T21:07:12.571Z",
+        "registryUrl": "https://www.npmjs.com/package/cloudmersive-nlp-api-client",
+        "evidence": "existing sdks[] entry package=cloudmersive-nlp-api-client: npm registry.repository.url=null"
+      },
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "cloudmersive-nlp-api-client",
+        "official": false,
+        "repoUrl": "https://github.com/Cloudmersive/",
+        "version": "4.0.1",
+        "lastPublished": "2020-06-26T00:34:39.144371Z",
+        "registryUrl": "https://pypi.org/project/cloudmersive-nlp-api-client/",
+        "evidence": "existing sdks[] entry package=cloudmersive-nlp-api-client: pypi project_urls={\"Homepage\":\"https://www.cloudmersive.com/nlp-api\"} home_page=\"https://www.cloudmersive.com/nlp-api\""
+      },
+      {
+        "language": "C#",
+        "registry": "nuget",
+        "package": "Cloudmersive.APIClient.NET.NLP",
+        "official": false,
+        "repoUrl": "https://github.com/Cloudmersive/",
+        "version": "4.1.1",
+        "lastPublished": "2021-06-06T05:10:08.11+00:00",
+        "registryUrl": "https://www.nuget.org/packages/Cloudmersive.APIClient.NET.NLP",
+        "evidence": "existing sdks[] entry package=Cloudmersive.APIClient.NET.NLP: nuget projectUrl=\"https://cloudmersive.com/nlp-api\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "arcnautical": {
+    "sdks": [
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "@arcnautical/mcp",
+        "official": false,
+        "repoUrl": "https://github.com//",
+        "version": "0.2.1",
+        "lastPublished": "2026-09-23T15:50:07.037Z",
+        "registryUrl": "https://www.npmjs.com/package/@arcnautical/mcp",
+        "evidence": "existing sdks[] entry package=@arcnautical/mcp: npm registry.repository.url=\"git+https://github.com/arcnautical/arcnautical-mcp.git\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "bc-ferries": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "community-transit": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "gtfs-scorecard": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "1pt": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "brazilian-vehicles-and-prices": {
+    "sdks": [
+      {
+        "language": "PHP",
+        "registry": "packagist",
+        "package": "deividfortuna/fipe",
+        "official": true,
+        "repoUrl": "https://github.com/deividfortuna/fipe",
+        "version": "2.5.0",
+        "lastPublished": "2024-06-03T21:29:10+00:00",
+        "registryUrl": "https://packagist.org/packages/deividfortuna/fipe",
+        "evidence": "existing sdks[] entry package=deividfortuna/fipe: packagist repository=\"https://github.com/deividfortuna/fipe\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "breaking-bad-quotes": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "dune": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "imdbot": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "lucifer-quotes": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "mcu-countdown": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "movie-quote": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "ron-swanson-quotes": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "stranger-things-quotes": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "open-meteo-2": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "open-meteo-ensemble": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "weather-api": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "cloudflare-workers-ai": {
+    "sdks": [
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "@cloudflare/ai",
+        "official": false,
+        "repoUrl": "https://github.com/cloudflare/ai",
+        "version": "1.2.2",
+        "lastPublished": "2024-05-08T16:25:34.723Z",
+        "registryUrl": "https://www.npmjs.com/package/@cloudflare/ai",
+        "evidence": "existing sdks[] entry package=@cloudflare/ai: npm registry.repository.url=null"
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "github-models": {
+    "sdks": [],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "voyage-ai": {
+    "sdks": [
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "voyageai",
+        "official": false,
+        "repoUrl": "https://github.com/voyage-ai/voyageai-python",
+        "version": "0.5.0",
+        "lastPublished": "2026-07-10T20:13:14.884157Z",
+        "registryUrl": "https://pypi.org/project/voyageai/",
+        "evidence": "existing sdks[] entry package=voyageai: pypi project_urls={} home_page=null"
+      },
+      {
+        "language": "TypeScript",
+        "registry": "npm",
+        "package": "voyageai",
+        "official": true,
+        "repoUrl": "https://github.com/voyage-ai/typescript-sdk",
+        "version": "0.4.0",
+        "lastPublished": "2026-06-15T10:53:58.562Z",
+        "registryUrl": "https://www.npmjs.com/package/voyageai",
+        "evidence": "existing sdks[] entry package=voyageai: npm registry.repository.url=\"git+https://github.com/voyage-ai/typescript-sdk.git\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "deepgram": {
+    "sdks": [
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "deepgram-sdk",
+        "official": true,
+        "repoUrl": "https://github.com/deepgram/deepgram-python-sdk",
+        "version": "7.12.0",
+        "lastPublished": "2026-10-02T09:49:50.230210Z",
+        "registryUrl": "https://pypi.org/project/deepgram-sdk/",
+        "evidence": "existing sdks[] entry package=deepgram-sdk: pypi project_urls={\"Repository\":\"https://github.com/deepgram/deepgram-python-sdk\"} home_page=null"
+      },
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "@deepgram/sdk",
+        "official": true,
+        "repoUrl": "https://github.com/deepgram/deepgram-js-sdk",
+        "version": "5.14.0",
+        "lastPublished": "2026-10-01T16:38:47.137Z",
+        "registryUrl": "https://www.npmjs.com/package/@deepgram/sdk",
+        "evidence": "existing sdks[] entry package=@deepgram/sdk: npm registry.repository.url=\"git+https://github.com/deepgram/deepgram-js-sdk.git\""
+      },
+      {
+        "language": "Go",
+        "registry": "go",
+        "package": "github.com/deepgram/deepgram-go-sdk",
+        "official": true,
+        "repoUrl": "https://github.com/deepgram/deepgram-go-sdk",
+        "version": "v1.9.0",
+        "lastPublished": "2025-04-14T16:08:41Z",
+        "registryUrl": "https://pkg.go.dev/github.com/deepgram/deepgram-go-sdk",
+        "evidence": "existing sdks[] entry package=github.com/deepgram/deepgram-go-sdk: go.mod module path=\"github.com/deepgram/deepgram-go-sdk\", matches github.com/deepgram/deepgram-go-sdk=true"
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "assemblyai": {
+    "sdks": [
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "assemblyai",
+        "official": true,
+        "repoUrl": "https://github.com/AssemblyAI/assemblyai-python-sdk",
+        "version": "1.6.1",
+        "lastPublished": "2026-09-24T17:38:31.886168Z",
+        "registryUrl": "https://pypi.org/project/assemblyai/",
+        "evidence": "existing sdks[] entry package=assemblyai: pypi project_urls={\"API Documentation\":\"https://www.assemblyai.com/docs/\",\"Code\":\"https://github.com/AssemblyAI/assemblyai-python-sdk\",\"Documentation\":\"https://github.com/AssemblyAI/assemblyai-python-sdk/blob/master/README.md\",\"Homepage\":\"https://github.com/AssemblyAI/assemblyai-python-sdk\",\"Issues\":\"https://github.com/AssemblyAI/assemblyai-python-sdk/issues\",\"Website\":\"https://assemblyai.com/\"} home_page=\"https://github.com/AssemblyAI/assemblyai-python-sdk\""
+      },
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "assemblyai",
+        "official": true,
+        "repoUrl": "https://github.com/AssemblyAI/assemblyai-node-sdk",
+        "version": "4.41.5",
+        "lastPublished": "2026-09-24T16:38:47.022Z",
+        "registryUrl": "https://www.npmjs.com/package/assemblyai",
+        "evidence": "existing sdks[] entry package=assemblyai: npm registry.repository.url=\"git+https://github.com/AssemblyAI/assemblyai-node-sdk.git\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "elevenlabs": {
+    "sdks": [
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "elevenlabs",
+        "official": true,
+        "repoUrl": "https://github.com/elevenlabs/elevenlabs-python",
+        "version": "2.71.0",
+        "lastPublished": "2026-10-05T11:46:43.036280Z",
+        "registryUrl": "https://pypi.org/project/elevenlabs/",
+        "evidence": "existing sdks[] entry package=elevenlabs: pypi project_urls={\"Repository\":\"https://github.com/elevenlabs/elevenlabs-python\"} home_page=null"
+      },
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "elevenlabs",
+        "official": true,
+        "repoUrl": "https://github.com/elevenlabs/elevenlabs-js",
+        "version": "1.59.0",
+        "lastPublished": "2025-05-15T12:19:33.822Z",
+        "registryUrl": "https://www.npmjs.com/package/elevenlabs",
+        "evidence": "existing sdks[] entry package=elevenlabs: npm registry.repository.url=\"git+https://github.com/elevenlabs/elevenlabs-js.git\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "supabase": {
+    "sdks": [
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "@supabase/supabase-js",
+        "official": true,
+        "repoUrl": "https://github.com/supabase/supabase-js",
+        "version": "2.117.3",
+        "lastPublished": "2026-10-07T12:34:46.951Z",
+        "registryUrl": "https://www.npmjs.com/package/@supabase/supabase-js",
+        "evidence": "existing sdks[] entry package=@supabase/supabase-js: npm registry.repository.url=\"https://github.com/supabase/supabase-js.git\""
+      },
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "supabase",
+        "official": false,
+        "repoUrl": "https://github.com/supabase-community/supabase-py",
+        "version": "2.32.0",
+        "lastPublished": "2026-10-02T19:18:59.298120Z",
+        "registryUrl": "https://pypi.org/project/supabase/",
+        "evidence": "existing sdks[] entry package=supabase: pypi project_urls={\"changelog\":\"https://github.com/supabase/supabase-py/tree/main/CHANGELOG.md\",\"documentation\":\"https://github.com/supabase/supabase-py/src/supabase\",\"homepage\":\"https://github.com/supabase/supabase-py\",\"repository\":\"https://github.com/supabase/supabase-py\"} home_page=null"
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "stability-ai": {
+    "sdks": [
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "stability-sdk",
+        "official": true,
+        "repoUrl": "https://github.com/Stability-AI/stability-sdk",
+        "version": "0.8.6",
+        "lastPublished": "2024-05-08T15:12:53.519988Z",
+        "registryUrl": "https://pypi.org/project/stability-sdk/",
+        "evidence": "existing sdks[] entry package=stability-sdk: pypi project_urls={\"Download\":\"https://github.com/Stability-AI/stability-sdk/\",\"Homepage\":\"https://beta.dreamstudio.ai/\"} home_page=\"https://beta.dreamstudio.ai/\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "anthropic-api": {
+    "sdks": [
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "anthropic",
+        "official": true,
+        "repoUrl": "https://github.com/anthropics/anthropic-sdk-python",
+        "version": "1.13.0",
+        "lastPublished": "2026-10-09T15:29:08.803597Z",
+        "registryUrl": "https://pypi.org/project/anthropic/",
+        "evidence": "existing sdks[] entry package=anthropic: pypi project_urls={\"Homepage\":\"https://github.com/anthropics/anthropic-sdk-python\",\"Repository\":\"https://github.com/anthropics/anthropic-sdk-python\"} home_page=null"
+      },
+      {
+        "language": "TypeScript",
+        "registry": "npm",
+        "package": "@anthropic-ai/sdk",
+        "official": false,
+        "repoUrl": "https://github.com/anthropics/anthropic-sdk-js",
+        "version": "0.133.0",
+        "lastPublished": "2026-10-09T15:44:11.865Z",
+        "registryUrl": "https://www.npmjs.com/package/@anthropic-ai/sdk",
+        "evidence": "existing sdks[] entry package=@anthropic-ai/sdk: npm registry.repository.url=\"git+https://github.com/anthropics/anthropic-sdk-typescript.git\""
+      },
+      {
+        "language": "Go",
+        "registry": "go",
+        "package": "github.com/anthropics/anthropic-sdk-go",
+        "official": true,
+        "repoUrl": "https://github.com/anthropics/anthropic-sdk-go",
+        "version": "v1.80.0",
+        "lastPublished": "2026-10-09T15:25:43Z",
+        "registryUrl": "https://pkg.go.dev/github.com/anthropics/anthropic-sdk-go",
+        "evidence": "existing sdks[] entry package=github.com/anthropics/anthropic-sdk-go: go.mod module path=\"github.com/anthropics/anthropic-sdk-go\", matches github.com/anthropics/anthropic-sdk-go=true"
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "deepl-api": {
+    "sdks": [
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "deepl",
+        "official": true,
+        "repoUrl": "https://github.com/DeepLcom/deepl-python",
+        "version": "1.32.0",
+        "lastPublished": "2026-08-13T12:58:46.587550Z",
+        "registryUrl": "https://pypi.org/project/deepl/",
+        "evidence": "existing sdks[] entry package=deepl: pypi project_urls={\"Bug Tracker\":\"https://github.com/DeepLcom/deepl-python/issues\",\"Documentation\":\"https://www.deepl.com/docs-api/\",\"Homepage\":\"https://github.com/DeepLcom/deepl-python\",\"Repository\":\"https://github.com/DeepLcom/deepl-python\"} home_page=\"https://github.com/DeepLcom/deepl-python\""
+      },
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "deepl",
+        "official": false,
+        "repoUrl": "https://github.com/DeepLcom/deepl-node",
+        "version": "1.0.13",
+        "lastPublished": "2021-09-22T19:39:22.633Z",
+        "registryUrl": "https://www.npmjs.com/package/deepl",
+        "evidence": "existing sdks[] entry package=deepl: npm registry.repository.url=\"git+https://github.com/funkyremi/deepl.git\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "clerk": {
+    "sdks": [
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "@clerk/clerk-sdk-node",
+        "official": false,
+        "repoUrl": "https://github.com/clerkinc/javascript",
+        "version": "5.1.6",
+        "lastPublished": "2025-01-09T12:09:01.735Z",
+        "registryUrl": "https://www.npmjs.com/package/@clerk/clerk-sdk-node",
+        "evidence": "existing sdks[] entry package=@clerk/clerk-sdk-node: npm registry.repository.url=\"git+https://github.com/clerk/javascript.git\""
+      },
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "clerk-backend-api",
+        "official": false,
+        "repoUrl": "https://github.com/clerkinc/",
+        "version": "7.0.0",
+        "lastPublished": "2026-08-11T13:50:25.109522Z",
+        "registryUrl": "https://pypi.org/project/clerk-backend-api/",
+        "evidence": "existing sdks[] entry package=clerk-backend-api: pypi project_urls={\"Repository\":\"https://github.com/clerk/clerk-sdk-python.git\"} home_page=null"
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "posthog": {
+    "sdks": [
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "posthog",
+        "official": true,
+        "repoUrl": "https://github.com/PostHog/posthog-python",
+        "version": "7.67.0",
+        "lastPublished": "2026-10-09T09:33:04.975772Z",
+        "registryUrl": "https://pypi.org/project/posthog/",
+        "evidence": "existing sdks[] entry package=posthog: pypi project_urls={\"Homepage\":\"https://github.com/posthog/posthog-python\",\"Repository\":\"https://github.com/posthog/posthog-python\"} home_page=\"https://github.com/posthog/posthog-python\""
+      },
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "posthog",
+        "official": false,
+        "repoUrl": "https://github.com/PostHog/posthog-js",
+        "version": null,
+        "lastPublished": null,
+        "registryUrl": "https://www.npmjs.com/package/posthog",
+        "evidence": "existing sdks[] entry package=posthog: npm registry.repository.url=null"
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "sentry": {
+    "sdks": [
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "sentry-sdk",
+        "official": true,
+        "repoUrl": "https://github.com/getsentry/sentry-python",
+        "version": "2.71.0",
+        "lastPublished": "2026-09-28T14:04:00.645842Z",
+        "registryUrl": "https://pypi.org/project/sentry-sdk/",
+        "evidence": "existing sdks[] entry package=sentry-sdk: pypi project_urls={\"Changelog\":\"https://github.com/getsentry/sentry-python/blob/master/CHANGELOG.md\",\"Documentation\":\"https://docs.sentry.io/platforms/python/\",\"Homepage\":\"https://github.com/getsentry/sentry-python\"} home_page=\"https://github.com/getsentry/sentry-python\""
+      },
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "@sentry/node",
+        "official": true,
+        "repoUrl": "https://github.com/getsentry/sentry-javascript",
+        "version": "11.6.0",
+        "lastPublished": "2026-10-08T15:06:02.707Z",
+        "registryUrl": "https://www.npmjs.com/package/@sentry/node",
+        "evidence": "existing sdks[] entry package=@sentry/node: npm registry.repository.url=\"git://github.com/getsentry/sentry-javascript.git\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "vercel-api": {
+    "sdks": [
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "@vercel/node",
+        "official": true,
+        "repoUrl": "https://github.com/vercel/vercel",
+        "version": "23.0.1",
+        "lastPublished": "2026-10-09T19:24:03.111Z",
+        "registryUrl": "https://www.npmjs.com/package/@vercel/node",
+        "evidence": "existing sdks[] entry package=@vercel/node: npm registry.repository.url=\"git+https://github.com/vercel/vercel.git\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "neon": {
+    "sdks": [
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "@neondatabase/serverless",
+        "official": true,
+        "repoUrl": "https://github.com/neondatabase/serverless",
+        "version": "1.2.0",
+        "lastPublished": "2026-10-01T16:42:06.683Z",
+        "registryUrl": "https://www.npmjs.com/package/@neondatabase/serverless",
+        "evidence": "existing sdks[] entry package=@neondatabase/serverless: npm registry.repository.url=\"git+https://github.com/neondatabase/serverless.git\""
+      },
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "psycopg",
+        "official": false,
+        "repoUrl": "https://github.com/neondatabase/",
+        "version": "3.3.6",
+        "lastPublished": "2026-09-18T13:22:55.152101Z",
+        "registryUrl": "https://pypi.org/project/psycopg/",
+        "evidence": "existing sdks[] entry package=psycopg: pypi project_urls={\"Changes\":\"https://psycopg.org/psycopg3/docs/news.html\",\"Code\":\"https://github.com/psycopg/psycopg\",\"Documentation\":\"https://psycopg.org/psycopg3/docs/\",\"Funding\":\"https://github.com/sponsors/dvarrazzo\",\"Homepage\":\"https://psycopg.org/\",\"Issue Tracker\":\"https://github.com/psycopg/psycopg/issues\"} home_page=null"
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "upstash": {
+    "sdks": [
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "@upstash/redis",
+        "official": true,
+        "repoUrl": "https://github.com/upstash/upstash-redis",
+        "version": "1.39.0",
+        "lastPublished": "2026-09-21T08:01:15.152Z",
+        "registryUrl": "https://www.npmjs.com/package/@upstash/redis",
+        "evidence": "existing sdks[] entry package=@upstash/redis: npm registry.repository.url=\"git+ssh://git@github.com/upstash/redis-js.git\""
+      },
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "upstash-redis",
+        "official": false,
+        "repoUrl": "https://github.com/upstash/upstash-python",
+        "version": "1.8.0",
+        "lastPublished": "2026-08-26T09:50:41.960574Z",
+        "registryUrl": "https://pypi.org/project/upstash-redis/",
+        "evidence": "existing sdks[] entry package=upstash-redis: pypi project_urls={\"Homepage\":\"https://github.com/upstash/redis-python\",\"Repository\":\"https://github.com/upstash/redis-python\"} home_page=\"https://github.com/upstash/redis-python\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "pinecone": {
+    "sdks": [
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "pinecone",
+        "official": true,
+        "repoUrl": "https://github.com/pinecone-io/python-sdk",
+        "version": "10.0.0",
+        "lastPublished": "2026-09-03T14:31:22.729023Z",
+        "registryUrl": "https://pypi.org/project/pinecone/",
+        "evidence": "existing sdks[] entry package=pinecone: pypi project_urls={\"Changelog\":\"https://sdk.pinecone.io/python/migration/v10-migration.html\",\"Documentation\":\"https://docs.pinecone.io\",\"Homepage\":\"https://www.pinecone.io\",\"Issues\":\"https://github.com/pinecone-io/python-sdk/issues\",\"Source\":\"https://github.com/pinecone-io/python-sdk\"} home_page=null"
+      },
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "@pinecone-database/pinecone",
+        "official": true,
+        "repoUrl": "https://github.com/pinecone-io/pinecone-ts-client",
+        "version": "9.0.0",
+        "lastPublished": "2026-09-09T12:30:13.296Z",
+        "registryUrl": "https://www.npmjs.com/package/@pinecone-database/pinecone",
+        "evidence": "existing sdks[] entry package=@pinecone-database/pinecone: npm registry.repository.url=\"git+https://github.com/pinecone-io/pinecone-ts-client.git\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "qdrant-cloud": {
+    "sdks": [
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "qdrant-client",
+        "official": true,
+        "repoUrl": "https://github.com/qdrant/qdrant-client",
+        "version": "1.19.1",
+        "lastPublished": "2026-09-16T06:43:13.818619Z",
+        "registryUrl": "https://pypi.org/project/qdrant-client/",
+        "evidence": "existing sdks[] entry package=qdrant-client: pypi project_urls={\"Homepage\":\"https://github.com/qdrant/qdrant-client\",\"Repository\":\"https://github.com/qdrant/qdrant-client\"} home_page=null"
+      },
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "@qdrant/js-client-rest",
+        "official": true,
+        "repoUrl": "https://github.com/qdrant/qdrant-js",
+        "version": "1.19.0",
+        "lastPublished": "2026-08-04T18:30:48.306Z",
+        "registryUrl": "https://www.npmjs.com/package/@qdrant/js-client-rest",
+        "evidence": "existing sdks[] entry package=@qdrant/js-client-rest: npm registry.repository.url=\"https://github.com/qdrant/qdrant-js.git\""
+      },
+      {
+        "language": "Go",
+        "registry": "go",
+        "package": "github.com/qdrant/go-client",
+        "official": true,
+        "repoUrl": "https://github.com/qdrant/go-client",
+        "version": "v1.19.4",
+        "lastPublished": "2026-10-08T07:15:57Z",
+        "registryUrl": "https://pkg.go.dev/github.com/qdrant/go-client",
+        "evidence": "existing sdks[] entry package=github.com/qdrant/go-client: go.mod module path=\"github.com/qdrant/go-client\", matches github.com/qdrant/go-client=true"
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "weaviate-cloud": {
+    "sdks": [
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "weaviate-client",
+        "official": true,
+        "repoUrl": "https://github.com/weaviate/weaviate-python-client",
+        "version": "4.23.1",
+        "lastPublished": "2026-09-07T08:01:25.133533Z",
+        "registryUrl": "https://pypi.org/project/weaviate-client/",
+        "evidence": "existing sdks[] entry package=weaviate-client: pypi project_urls={\"Documentation\":\"https://weaviate-python-client.readthedocs.io\",\"Homepage\":\"https://github.com/weaviate/weaviate-python-client\",\"Source\":\"https://github.com/weaviate/weaviate-python-client\",\"Tracker\":\"https://github.com/weaviate/weaviate-python-client/issues\"} home_page=\"https://github.com/weaviate/weaviate-python-client\""
+      },
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "weaviate-ts-client",
+        "official": true,
+        "repoUrl": "https://github.com/weaviate/typescript-client",
+        "version": "2.2.0",
+        "lastPublished": "2024-05-20T11:27:03.085Z",
+        "registryUrl": "https://www.npmjs.com/package/weaviate-ts-client",
+        "evidence": "existing sdks[] entry package=weaviate-ts-client: npm registry.repository.url=\"git+https://github.com/weaviate/typescript-client.git\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "algolia": {
+    "sdks": [
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "algoliasearch",
+        "official": true,
+        "repoUrl": "https://github.com/algolia/algoliasearch-client-javascript",
+        "version": "5.59.0",
+        "lastPublished": "2026-09-09T15:32:24.363Z",
+        "registryUrl": "https://www.npmjs.com/package/algoliasearch",
+        "evidence": "existing sdks[] entry package=algoliasearch: npm registry.repository.url=\"git+https://github.com/algolia/algoliasearch-client-javascript.git\""
+      },
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "algoliasearch",
+        "official": true,
+        "repoUrl": "https://github.com/algolia/algoliasearch-client-python",
+        "version": "4.47.0",
+        "lastPublished": "2026-09-09T15:25:20.820471Z",
+        "registryUrl": "https://pypi.org/project/algoliasearch/",
+        "evidence": "existing sdks[] entry package=algoliasearch: pypi project_urls={\"Homepage\":\"https://www.algolia.com\",\"Repository\":\"https://github.com/algolia/algoliasearch-client-python\"} home_page=null"
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "mailgun": {
+    "sdks": [
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "mailgun.js",
+        "official": true,
+        "repoUrl": "https://github.com/mailgun/mailgun.js",
+        "version": "14.1.0",
+        "lastPublished": "2026-10-08T09:17:25.906Z",
+        "registryUrl": "https://www.npmjs.com/package/mailgun.js",
+        "evidence": "existing sdks[] entry package=mailgun.js: npm registry.repository.url=\"git://github.com/mailgun/mailgun.js.git\""
+      },
+      {
+        "language": "Ruby",
+        "registry": "rubygems",
+        "package": "mailgun-ruby",
+        "official": true,
+        "repoUrl": "https://github.com/mailgun/mailgun-ruby",
+        "version": "1.4.5",
+        "lastPublished": null,
+        "registryUrl": "https://rubygems.org/gems/mailgun-ruby",
+        "evidence": "existing sdks[] entry package=mailgun-ruby: rubygems source_code_uri=\"https://github.com/mailgun/mailgun-ruby\" homepage_uri=\"https://www.mailgun.com/\""
+      },
+      {
+        "language": "PHP",
+        "registry": "packagist",
+        "package": "mailgun/mailgun-php",
+        "official": true,
+        "repoUrl": "https://github.com/mailgun/mailgun-php",
+        "version": "v4.5.2",
+        "lastPublished": "2026-09-02T11:48:17+00:00",
+        "registryUrl": "https://packagist.org/packages/mailgun/mailgun-php",
+        "evidence": "existing sdks[] entry package=mailgun/mailgun-php: packagist repository=\"https://github.com/mailgun/mailgun-php\""
+      },
+      {
+        "language": "Go",
+        "registry": "go",
+        "package": "github.com/mailgun/mailgun-go/v4",
+        "official": true,
+        "repoUrl": "https://github.com/mailgun/mailgun-go",
+        "version": "v4.23.0",
+        "lastPublished": "2025-03-14T12:21:05Z",
+        "registryUrl": "https://pkg.go.dev/github.com/mailgun/mailgun-go/v4",
+        "evidence": "existing sdks[] entry package=github.com/mailgun/mailgun-go/v4: go.mod module path=\"github.com/mailgun/mailgun-go/v4\", matches github.com/mailgun/mailgun-go=true"
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "resend": {
+    "sdks": [
+      {
+        "language": "TypeScript",
+        "registry": "npm",
+        "package": "resend",
+        "official": true,
+        "repoUrl": "https://github.com/resend/resend-node",
+        "version": "6.32.1",
+        "lastPublished": "2026-10-06T15:33:21.195Z",
+        "registryUrl": "https://www.npmjs.com/package/resend",
+        "evidence": "existing sdks[] entry package=resend: npm registry.repository.url=\"git+https://github.com/resend/resend-node.git\""
+      },
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "resend",
+        "official": false,
+        "repoUrl": "https://github.com/resend/resend-python",
+        "version": "2.49.1",
+        "lastPublished": "2026-10-03T01:10:02.489142Z",
+        "registryUrl": "https://pypi.org/project/resend/",
+        "evidence": "existing sdks[] entry package=resend: pypi project_urls={\"Homepage\":\"https://github.com/resendlabs/resend-python\"} home_page=\"https://github.com/resendlabs/resend-python\""
+      },
+      {
+        "language": "Go",
+        "registry": "go",
+        "package": "github.com/resendlabs/resend-go",
+        "official": false,
+        "repoUrl": "https://github.com/resend/resend-go",
+        "version": "v1.7.0",
+        "lastPublished": "2023-07-11T21:26:33Z",
+        "registryUrl": "https://pkg.go.dev/github.com/resendlabs/resend-go",
+        "evidence": "existing sdks[] entry package=github.com/resendlabs/resend-go: go.mod module path=\"github.com/resendlabs/resend-go\", matches github.com/resend/resend-go=false"
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "cloudinary": {
+    "sdks": [
+      {
+        "language": "TypeScript",
+        "registry": "npm",
+        "package": "next-cloudinary",
+        "official": false,
+        "repoUrl": "https://github.com/cloudinary-labs/next-cloudinary",
+        "version": "6.19.3",
+        "lastPublished": "2026-09-17T11:46:53.961Z",
+        "registryUrl": "https://www.npmjs.com/package/next-cloudinary",
+        "evidence": "existing sdks[] entry package=next-cloudinary: npm registry.repository.url=\"git+https://github.com/cloudinary-community/next-cloudinary.git\""
+      },
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "cloudinary",
+        "official": true,
+        "repoUrl": "https://github.com/cloudinary/pycloudinary",
+        "version": "1.46.3",
+        "lastPublished": "2026-10-04T15:53:30.527688Z",
+        "registryUrl": "https://pypi.org/project/cloudinary/",
+        "evidence": "existing sdks[] entry package=cloudinary: pypi project_urls={\"Changelog\":\"https://raw.githubusercontent.com/cloudinary/pycloudinary/master/CHANGELOG.md\",\"Homepage\":\"https://cloudinary.com\",\"Source\":\"https://github.com/cloudinary/pycloudinary\"} home_page=null"
+      },
+      {
+        "language": "Ruby",
+        "registry": "rubygems",
+        "package": "cloudinary",
+        "official": false,
+        "repoUrl": "https://github.com/cloudinary/cloudinary_gem",
+        "version": "2.4.5",
+        "lastPublished": null,
+        "registryUrl": "https://rubygems.org/gems/cloudinary",
+        "evidence": "existing sdks[] entry package=cloudinary: rubygems source_code_uri=null homepage_uri=\"https://cloudinary.com\""
+      },
+      {
+        "language": "PHP",
+        "registry": "packagist",
+        "package": "cloudinary/cloudinary_php",
+        "official": true,
+        "repoUrl": "https://github.com/cloudinary/cloudinary_php",
+        "version": "3.1.3",
+        "lastPublished": "2026-04-26T16:04:32+00:00",
+        "registryUrl": "https://packagist.org/packages/cloudinary/cloudinary_php",
+        "evidence": "existing sdks[] entry package=cloudinary/cloudinary_php: packagist repository=\"https://github.com/cloudinary/cloudinary_php\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "ably": {
+    "sdks": [
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "ably",
+        "official": false,
+        "repoUrl": "https://github.com/ably/ably-js",
+        "version": "2.29.0",
+        "lastPublished": "2026-09-23T14:29:23.163Z",
+        "registryUrl": "https://www.npmjs.com/package/ably",
+        "evidence": "existing sdks[] entry package=ably: npm registry.repository.url=\"git+https://github.com/ably/ably-pubsub-js.git\""
+      },
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "ably",
+        "official": false,
+        "repoUrl": "https://github.com/ably/ably-python",
+        "version": "3.1.4",
+        "lastPublished": "2026-09-23T16:05:41.895408Z",
+        "registryUrl": "https://pypi.org/project/ably/",
+        "evidence": "existing sdks[] entry package=ably: pypi project_urls={\"Homepage\":\"https://ably.com\",\"Repository\":\"https://github.com/ably/ably-pubsub-python\"} home_page=null"
+      },
+      {
+        "language": "Ruby",
+        "registry": "rubygems",
+        "package": "ably",
+        "official": true,
+        "repoUrl": "https://github.com/ably/ably-ruby",
+        "version": "1.2.8",
+        "lastPublished": null,
+        "registryUrl": "https://rubygems.org/gems/ably",
+        "evidence": "existing sdks[] entry package=ably: rubygems source_code_uri=null homepage_uri=\"http://github.com/ably/ably-ruby\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "mixpanel": {
+    "sdks": [
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "mixpanel-browser",
+        "official": true,
+        "repoUrl": "https://github.com/mixpanel/mixpanel-js",
+        "version": "2.84.0",
+        "lastPublished": "2026-10-06T14:46:29.722Z",
+        "registryUrl": "https://www.npmjs.com/package/mixpanel-browser",
+        "evidence": "existing sdks[] entry package=mixpanel-browser: npm registry.repository.url=\"git+https://github.com/mixpanel/mixpanel-js.git\""
+      },
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "mixpanel",
+        "official": true,
+        "repoUrl": "https://github.com/mixpanel/mixpanel-python",
+        "version": "5.4.0",
+        "lastPublished": "2026-09-02T18:01:13.656172Z",
+        "registryUrl": "https://pypi.org/project/mixpanel/",
+        "evidence": "existing sdks[] entry package=mixpanel: pypi project_urls={\"Homepage\":\"https://github.com/mixpanel/mixpanel-python\"} home_page=null"
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "amplitude": {
+    "sdks": [
+      {
+        "language": "TypeScript",
+        "registry": "npm",
+        "package": "@amplitude/analytics-browser",
+        "official": true,
+        "repoUrl": "https://github.com/amplitude/Amplitude-TypeScript",
+        "version": "2.47.4",
+        "lastPublished": "2026-10-08T19:42:36.353Z",
+        "registryUrl": "https://www.npmjs.com/package/@amplitude/analytics-browser",
+        "evidence": "existing sdks[] entry package=@amplitude/analytics-browser: npm registry.repository.url=\"git+https://github.com/amplitude/Amplitude-TypeScript.git\""
+      },
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "amplitude",
+        "official": false,
+        "repoUrl": "https://github.com/amplitude/Amplitude-Python",
+        "version": "0.1",
+        "lastPublished": null,
+        "registryUrl": "https://pypi.org/project/amplitude/",
+        "evidence": "existing sdks[] entry package=amplitude: pypi project_urls={\"Download\":\"http://repository.tyndale.com/repository/webdev/trunk/amplitude/\"} home_page=\"\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "postmark": {
+    "sdks": [
+      {
+        "language": "TypeScript",
+        "registry": "npm",
+        "package": "postmark",
+        "official": false,
+        "repoUrl": "https://github.com/postmark/postmark-js",
+        "version": "5.1.0",
+        "lastPublished": "2026-07-10T15:04:37.549Z",
+        "registryUrl": "https://www.npmjs.com/package/postmark",
+        "evidence": "existing sdks[] entry package=postmark: npm registry.repository.url=\"git+https://github.com/ActiveCampaign/postmark.js.git\""
+      },
+      {
+        "language": "Ruby",
+        "registry": "rubygems",
+        "package": "postmark",
+        "official": false,
+        "repoUrl": "https://github.com/postmark/postmark-gem",
+        "version": "1.25.1",
+        "lastPublished": null,
+        "registryUrl": "https://rubygems.org/gems/postmark",
+        "evidence": "existing sdks[] entry package=postmark: rubygems source_code_uri=null homepage_uri=\"https://postmarkapp.com\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "brevo": {
+    "sdks": [
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "brevo-python",
+        "official": true,
+        "repoUrl": "https://github.com/getbrevo/brevo-python",
+        "version": "5.0.2",
+        "lastPublished": "2026-08-10T15:46:51.214453Z",
+        "registryUrl": "https://pypi.org/project/brevo-python/",
+        "evidence": "existing sdks[] entry package=brevo-python: pypi project_urls={\"Documentation\":\"https://developers.brevo.com\",\"Homepage\":\"https://brevo.com\",\"Repository\":\"https://github.com/getbrevo/brevo-python\"} home_page=null"
+      },
+      {
+        "language": "PHP",
+        "registry": "packagist",
+        "package": "getbrevo/brevo-php",
+        "official": true,
+        "repoUrl": "https://github.com/getbrevo/brevo-php",
+        "version": "5.0.2",
+        "lastPublished": "2026-08-10T15:43:20+00:00",
+        "registryUrl": "https://packagist.org/packages/getbrevo/brevo-php",
+        "evidence": "existing sdks[] entry package=getbrevo/brevo-php: packagist repository=\"https://github.com/getbrevo/brevo-php\""
+      },
+      {
+        "language": "TypeScript",
+        "registry": "npm",
+        "package": "@getbrevo/brevo",
+        "official": true,
+        "repoUrl": "https://github.com/getbrevo/brevo-node",
+        "version": "6.0.3",
+        "lastPublished": "2026-08-10T15:46:07.267Z",
+        "registryUrl": "https://www.npmjs.com/package/@getbrevo/brevo",
+        "evidence": "existing sdks[] entry package=@getbrevo/brevo: npm registry.repository.url=\"git+https://github.com/getbrevo/brevo-node.git\""
+      },
+      {
+        "language": "Ruby",
+        "registry": "rubygems",
+        "package": "brevo",
+        "official": false,
+        "repoUrl": "https://github.com/getbrevo/brevo-ruby",
+        "version": "4.0.0",
+        "lastPublished": null,
+        "registryUrl": "https://rubygems.org/gems/brevo",
+        "evidence": "existing sdks[] entry package=brevo: rubygems source_code_uri=null homepage_uri=\"https://www.brevo.com/\""
+      },
+      {
+        "language": "Go",
+        "registry": "go",
+        "package": "github.com/getbrevo/brevo-go",
+        "official": true,
+        "repoUrl": "https://github.com/getbrevo/brevo-go",
+        "version": "v1.1.3",
+        "lastPublished": "2025-02-07T11:05:02Z",
+        "registryUrl": "https://pkg.go.dev/github.com/getbrevo/brevo-go",
+        "evidence": "existing sdks[] entry package=github.com/getbrevo/brevo-go: go.mod module path=\"github.com/getbrevo/brevo-go\", matches github.com/getbrevo/brevo-go=true"
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "workos": {
+    "sdks": [
+      {
+        "language": "TypeScript",
+        "registry": "npm",
+        "package": "@workos-inc/node",
+        "official": true,
+        "repoUrl": "https://github.com/workos/workos-node",
+        "version": "11.0.0",
+        "lastPublished": "2026-09-28T19:36:54.507Z",
+        "registryUrl": "https://www.npmjs.com/package/@workos-inc/node",
+        "evidence": "existing sdks[] entry package=@workos-inc/node: npm registry.repository.url=\"git+https://github.com/workos/workos-node.git\""
+      },
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "workos",
+        "official": false,
+        "repoUrl": "https://github.com/workos/workos-python",
+        "version": "10.5.0",
+        "lastPublished": "2026-09-24T14:23:50.750351Z",
+        "registryUrl": "https://pypi.org/project/workos/",
+        "evidence": "existing sdks[] entry package=workos: pypi project_urls={\"Changelog\":\"https://workos.com/docs/sdks/python\",\"Documentation\":\"https://workos.com/docs/reference\",\"Homepage\":\"https://workos.com/docs/sdks/python\"} home_page=null"
+      },
+      {
+        "language": "JavaScript",
+        "registry": "npm",
+        "package": "@workos-inc/authkit-js",
+        "official": true,
+        "repoUrl": "https://github.com/workos/authkit-js",
+        "version": "0.20.4",
+        "lastPublished": "2026-09-29T20:02:38.798Z",
+        "registryUrl": "https://www.npmjs.com/package/@workos-inc/authkit-js",
+        "evidence": "existing sdks[] entry package=@workos-inc/authkit-js: npm registry.repository.url=\"git+ssh://git@github.com/workos/authkit-js.git\""
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  },
+  "appwrite": {
+    "sdks": [
+      {
+        "language": "TypeScript",
+        "registry": "npm",
+        "package": "appwrite",
+        "official": false,
+        "repoUrl": "https://github.com/appwrite/sdk-for-typescript",
+        "version": "28.1.0",
+        "lastPublished": "2026-09-25T10:30:52.235Z",
+        "registryUrl": "https://www.npmjs.com/package/appwrite",
+        "evidence": "existing sdks[] entry package=appwrite: npm registry.repository.url=\"git+https://github.com/appwrite/sdk-for-web.git\""
+      },
+      {
+        "language": "Python",
+        "registry": "pypi",
+        "package": "appwrite",
+        "official": true,
+        "repoUrl": "https://github.com/appwrite/sdk-for-python",
+        "version": "24.2.0",
+        "lastPublished": "2026-10-09T13:32:36.760487Z",
+        "registryUrl": "https://pypi.org/project/appwrite/",
+        "evidence": "existing sdks[] entry package=appwrite: pypi project_urls={\"Download\":\"https://github.com/appwrite/sdk-for-python/archive/24.2.0.tar.gz\",\"Homepage\":\"https://appwrite.io/support\",\"Repository\":\"https://github.com/appwrite/sdk-for-python\"} home_page=\"https://appwrite.io/support\""
+      },
+      {
+        "language": "Go",
+        "registry": "go",
+        "package": "github.com/appwrite/sdk-for-go",
+        "official": true,
+        "repoUrl": "https://github.com/appwrite/sdk-for-go",
+        "version": "v1.0.0",
+        "lastPublished": "2026-03-03T11:20:35Z",
+        "registryUrl": "https://pkg.go.dev/github.com/appwrite/sdk-for-go",
+        "evidence": "existing sdks[] entry package=github.com/appwrite/sdk-for-go: go.mod module path=\"github.com/appwrite/sdk-for-go\", matches github.com/appwrite/sdk-for-go=true"
+      }
+    ],
+    "checkedAt": "2026-10-11T19:55:19.650Z"
+  }
+}
