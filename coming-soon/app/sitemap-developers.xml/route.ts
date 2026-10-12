@@ -8,27 +8,11 @@ export const revalidate = 86400
 
 /* InfoWebWorld for Developers sub-sitemap. indexableUrls() applies the same
    index gates the pages use (lib/developers/indexing.ts), so nothing listed
-   here is noindex. This release ships the hubs, company pages, API categories
-   and reviewed API pages only, so URLs of the page types that are not built
-   yet (repo pages, facets, good first issues, collections, SDKs, methodology)
-   are filtered out until those routes exist. */
-const BUILT: RegExp[] = [
-  /^\/developers$/,
-  /^\/developers\/open-source$/,
-  /^\/developers\/open-source\/[a-z0-9-]+$/,
-  /^\/developers\/free-apis$/,
-  /^\/developers\/free-apis\/[a-z0-9-]+$/,
-  /^\/developers\/free-apis\/[a-z0-9-]+\/[a-z0-9-]+$/,
-]
-const NOT_BUILT = new Set([
-  'repos', 'companies', 'languages', 'topics', 'countries', 'industries', 'good-first-issues',
-  'no-auth', 'cors-enabled', 'ai-llm', 'sdks', 'methodology', 'search', 'page',
-])
-
-function isBuilt(path: string): boolean {
-  if (!BUILT.some(re => re.test(path))) return false
-  return !path.split('/').slice(2).some(seg => NOT_BUILT.has(seg))
-}
+   here is noindex: hubs, methodology, the repo ranking (pages 1-10), the
+   companies index, indexable language/topic/country/industry pages (with
+   their /page/{n}), good first issues, indexable companies and repos, the
+   three API collections, SDK pages, categories and reviewed APIs. The
+   search page is never listed. */
 
 export async function GET() {
   const [oss, apis] = await Promise.all([
@@ -37,7 +21,6 @@ export async function GET() {
   ])
 
   const urls = indexableUrls(oss, apis)
-    .filter(e => isBuilt(e.path))
     .map(e => `  <url>
     <loc>${BASE}${e.path}</loc>
     <lastmod>${e.lastmod}</lastmod>

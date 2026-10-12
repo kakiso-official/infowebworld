@@ -3,9 +3,12 @@ import '@/app/styles/developers/oss.css'
 import type { Metadata } from 'next'
 import { faBuilding, faCodeBranch, faSeedling, faEarthAmericas, faLanguage, faStar } from '@fortawesome/free-solid-svg-icons'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
-import { formatDate, formatNumber } from '@/lib/developers/format'
-import { diverseRepos, companyIwwLink, companyAvatar } from '@/lib/developers/oss'
-import { ossCompanyPath, ossHubPath, PAGE_SIZE } from '@/lib/developers/paths'
+import { countLabel, formatCompact, formatDate, formatNumber } from '@/lib/developers/format'
+import { diverseRepos, companyIwwLink, companyAvatar, newestIssues } from '@/lib/developers/oss'
+import {
+  gfiPath, ossCompaniesPath, ossCompanyPath, ossFacetIndexPath, ossFacetPath, ossHubPath, ossRepoPath, ossReposPath, PAGE_SIZE,
+} from '@/lib/developers/paths'
+import { industryIcon } from '@/lib/developers/taxonomy'
 import { devCrumbs, faqGraphNode, listNode, ossDatasetNode } from '@/lib/developers/jsonld'
 import { devPageMetadata, devUnavailableMetadata, ossHubSeo } from '@/lib/developers/seo'
 import { isDevDataError, getOss } from '@/lib/developers/store'
@@ -20,8 +23,15 @@ import DvSourceNote from '../_components/shell/DvSourceNote'
 import DvNotice from '../_components/shell/DvNotice'
 import DvJsonLd from '../_components/shell/DvJsonLd'
 import RowFilter from '../_components/ui/RowFilter'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import DvBarList from '../_components/ui/DvBarList'
+import DvFacetChips from '../_components/ui/DvFacetChips'
+import DvFlag from '../_components/ui/DvFlag'
+import DvLangBar from '../_components/ui/DvLangBar'
+import LanguageDot from '../_components/ui/LanguageDot'
 import CompanyCard from '../_components/oss/CompanyCard'
 import RepoCard from '../_components/oss/RepoCard'
+import IssueCard, { issueCardData } from '../_components/oss/IssueCard'
 
 export const revalidate = 86400
 
@@ -61,9 +71,13 @@ export default async function OpenSourceHubPage() {
     .slice(0, 8)
 
   const topRepos = diverseRepos(store.reposAll, 9, 2)
+  const languages = store.facets.language.filter(f => f.indexable)
+  const topics = store.facets.topic.filter(f => f.indexable)
+  const countries = store.facets.country.filter(f => f.indexable)
+  const industries = store.facets.industry.filter(f => f.indexable)
+  const issues = newestIssues(store, 3, 1).map(i => issueCardData(store, i)).filter((c): c is NonNullable<typeof c> => c !== null)
 
   const faqs = ossHubFaqs({ reposPerOrg: store.meta.reposPerOrgLimit })
-    .map(f => ({ ...f, links: f.links?.filter(l => l.href === '/business' || l.href === '/contact') }))
 
   return (
     <>
@@ -100,6 +114,20 @@ export default async function OpenSourceHubPage() {
             { label: 'Good first issues', value: store.totals.goodFirstIssues, icon: faSeedling },
           ]}
         />
+        <DvLangBar
+          languages={store.languageShares.map(l => ({
+            name: l.name,
+            color: l.color,
+            pct: l.pct,
+            href: store.facetBySlug.language.get(l.slug)?.indexable ? ossFacetPath('language', l.slug) : undefined,
+          }))}
+          label="Languages across all tracked repositories, by code size"
+        />
+        <DvFacetChips
+          label="Browse by language"
+          items={languages.slice(0, 12).map(f => ({ label: f.name, href: ossFacetPath('language', f.slug), count: f.repos, dot: f.color ?? null }))}
+          more={{ label: 'All languages', href: ossFacetIndexPath('language') }}
+        />
       </DvHero>
 
       <DvBand
@@ -107,6 +135,7 @@ export default async function OpenSourceHubPage() {
         id="dv-oss-companies"
         title="Companies with open source"
         sub="Every company here has at least one public, non-fork repository on GitHub. Filter by industry or browse them all."
+        action={<a className="dv-more" href={ossCompaniesPath()}>All {formatNumber(store.totals.companies)} companies</a>}
       >
         {industryCounts.length > 1 && (
           <RowFilter
@@ -147,8 +176,9 @@ export default async function OpenSourceHubPage() {
           })}
         </div>
         {store.totals.companies > companies.length && (
-          <p className="dv-small dv-muted" style={{ marginTop: 16 }}>
-            Showing the top {formatNumber(companies.length)} of {formatNumber(store.totals.companies)} companies by GitHub stars.
+          <p className="dv-small dv-muted dv-list-note-end">
+            Showing the top {formatNumber(companies.length)} of {formatNumber(store.totals.companies)} companies by GitHub
+            stars. <a href={ossCompaniesPath(2)}>See the next {formatNumber(Math.min(PAGE_SIZE.companies, store.totals.companies - companies.length))}</a>.
           </p>
         )}
       </DvBand>
@@ -159,6 +189,7 @@ export default async function OpenSourceHubPage() {
           id="dv-oss-repos"
           title="Most-starred open source from companies"
           sub="Real projects, real companies, real GitHub numbers."
+          action={<a className="dv-more" href={ossReposPath()}>Top {formatNumber(store.totals.repos)} repositories</a>}
         >
           <div className="dv-grid dv-grid--3">
             {topRepos.map(r => {
@@ -167,7 +198,7 @@ export default async function OpenSourceHubPage() {
                 <RepoCard
                   key={r.id}
                   nameWithOwner={r.nameWithOwner}
-                  href={r.url}
+                  href={ossRepoPath(r.companySlug, r.slug)}
                   description={r.description}
                   stars={r.stars}
                   forks={r.forks}
@@ -183,6 +214,84 @@ export default async function OpenSourceHubPage() {
                 />
               )
             })}
+          </div>
+        </DvBand>
+      )}
+
+      <DvBand tone="white" id="dv-oss-browse" title="Browse open source by language, topic, country and industry">
+        <div className="dv-grid dv-grid--2 dv-oss-browse">
+          <div>
+            <h3 className="dv-h3 dv-browse-title">Top languages</h3>
+            <DvBarList
+              label="Top languages by repositories"
+              unit="repos"
+              items={languages.slice(0, 10).map(f => ({
+                label: f.name,
+                href: ossFacetPath('language', f.slug),
+                value: f.repos,
+                sub: countLabel(f.companies, 'company', 'companies'),
+                lead: <LanguageDot name={f.name} color={f.color ?? null} dotOnly />,
+              }))}
+            />
+            <a className="dv-more" href={ossFacetIndexPath('language')}>All {formatNumber(store.facets.language.length)} languages</a>
+          </div>
+          <div>
+            <h3 className="dv-h3 dv-browse-title">Popular topics</h3>
+            <DvBarList
+              label="Popular topics by repositories"
+              unit="repos"
+              items={topics.slice(0, 10).map(f => ({
+                label: f.name,
+                href: ossFacetPath('topic', f.slug),
+                value: f.repos,
+                sub: countLabel(f.companies, 'company', 'companies'),
+              }))}
+            />
+            <a className="dv-more" href={ossFacetIndexPath('topic')}>All {formatNumber(topics.length)} topics</a>
+          </div>
+          <div>
+            <h3 className="dv-h3 dv-browse-title">Where these companies are based</h3>
+            <DvBarList
+              label="Countries by companies"
+              unit="companies"
+              items={countries.slice(0, 10).map(f => ({
+                label: f.name,
+                href: ossFacetPath('country', f.slug),
+                value: f.companies,
+                sub: `${formatCompact(f.stars)} stars`,
+                lead: f.iso2 ? <DvFlag code={f.iso2} /> : undefined,
+              }))}
+            />
+            <a className="dv-more" href={ossFacetIndexPath('country')}>All {formatNumber(store.facets.country.length)} countries</a>
+          </div>
+          <div>
+            <h3 className="dv-h3 dv-browse-title">Industries</h3>
+            <DvBarList
+              label="Industries by companies"
+              unit="companies"
+              items={industries.slice(0, 10).map(f => ({
+                label: f.name,
+                href: ossFacetPath('industry', f.slug),
+                value: f.companies,
+                sub: `${formatCompact(f.stars)} stars`,
+                lead: <FontAwesomeIcon icon={industryIcon(f.slug)} className="dv-barlist-icon" aria-hidden="true" />,
+              }))}
+            />
+            <a className="dv-more" href={ossFacetIndexPath('industry')}>All {formatNumber(store.facets.industry.length)} industries</a>
+          </div>
+        </div>
+      </DvBand>
+
+      {issues.length > 0 && (
+        <DvBand
+          tone="wash"
+          id="dv-oss-gfi"
+          title="Good first issues"
+          sub="Small, well-described tasks that maintainers marked as a safe place to start."
+          action={<a className="dv-more" href={gfiPath()}>All {formatNumber(store.totals.issues)} good first issues</a>}
+        >
+          <div className="dv-grid dv-grid--3">
+            {issues.map(i => <IssueCard key={i.url} issue={i} dataAt={store.dataAt} />)}
           </div>
         </DvBand>
       )}

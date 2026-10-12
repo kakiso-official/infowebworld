@@ -1,5 +1,6 @@
 'use client'
 
+import { useMemo } from 'react'
 import { faCubes, faGlobe, faLock, faLockOpen } from '@fortawesome/free-solid-svg-icons'
 import RowFilter, { type RowFilterControl, type RowSortOption } from '../ui/RowFilter'
 
@@ -10,12 +11,8 @@ import RowFilter, { type RowFilterControl, type RowSortOption } from '../ui/RowF
    a free-text filter box. Everything is visible and in order without JS;
    this island only toggles `hidden` on the table's data-* rows.
 
-   `controls` and `sorts` are module-level constants, not inline literals:
-   RowFilter's effects depend on them by reference, and RowFilter.tsx
-   defaults a missing `sorts` prop to a brand new `[]` on every one of its
-   OWN re-renders (it calls setCounts() in the same effect, which would
-   re-trigger from that fresh reference every time, looping forever). A
-   stable reference here is what makes that effect settle after one run.
+   `controls` and `sorts` are module-level constants (or memoised), not
+   inline literals: RowFilter's effects depend on them by reference.
    ═══════════════════════════════════════════════════════════════════════ */
 
 const NOUN = { one: 'API', many: 'APIs' } as const
@@ -28,21 +25,29 @@ const CONTROLS: readonly RowFilterControl[] = [
 ]
 
 export interface ApiFilterBarProps {
-  /** id of the <tbody> ApiTable renders its rows into. */
+  /** id of the element holding the rows (ApiTable's <tbody>, ApiCompactList). */
   target: string
   /** Lowercase phrase for the search box ('weather APIs'). */
   scopeLabel: string
+  /** Toggles to leave out because every row already matches them
+   *  ('nokey' on the no-key collection). */
+  omit?: readonly ('nokey' | 'https' | 'cors' | 'sdk')[]
   className?: string
 }
 
-export default function ApiFilterBar({ target, scopeLabel, className }: ApiFilterBarProps) {
+export default function ApiFilterBar({ target, scopeLabel, omit, className }: ApiFilterBarProps) {
+  const controls = useMemo(
+    () => (omit && omit.length ? CONTROLS.filter(c => !(omit as readonly string[]).includes(c.key)) : CONTROLS),
+    [omit],
+  )
+  const search = useMemo(() => ({ label: `Filter ${scopeLabel}`, placeholder: `Filter ${scopeLabel}...` }), [scopeLabel])
   return (
     <RowFilter
       target={target}
       label={`Filter ${scopeLabel}`}
       noun={NOUN}
-      search={{ label: `Filter ${scopeLabel}`, placeholder: `Filter ${scopeLabel}...` }}
-      controls={CONTROLS}
+      search={search}
+      controls={controls}
       sorts={SORTS}
       sticky
       className={className}

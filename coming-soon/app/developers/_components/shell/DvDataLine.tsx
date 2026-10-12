@@ -12,9 +12,8 @@ import { methodologyPath } from '@/lib/developers/paths'
    The dot is green, or amber once the data is more than `staleDays`
    (14) days old, so a freshness claim is only made while it is true.
 
-   The "- How we check" link to /developers/methodology is OFF by default:
-   this build does not ship that page. Pass methodLink explicitly once it
-   does.
+   Every data line ends with "- How we check", a link to
+   /developers/methodology (pass methodLink={false} to leave it out).
    ═══════════════════════════════════════════════════════════════════════ */
 
 export interface DvDataLineProps {
@@ -24,7 +23,7 @@ export interface DvDataLineProps {
   /** In-memory refresh state (6.5); when live, the refresh date is shown. */
   refresh?: RefreshState | null
   staleDays?: number
-  /** Show the "How we check" link (default false: no methodology page here). */
+  /** Show the "How we check" link (default true). */
   methodLink?: boolean
   className?: string
 }
@@ -37,7 +36,7 @@ function isStale(iso: string, days: number): boolean {
 }
 
 export default function DvDataLine({
-  source, date, refresh, staleDays = 14, methodLink = false, className,
+  source, date, refresh, staleDays = 14, methodLink = true, className,
 }: DvDataLineProps) {
   const refreshed = source === 'github' && refresh?.live && refresh.lastOkAt ? refresh.lastOkAt : null
   const shown = refreshed ?? date

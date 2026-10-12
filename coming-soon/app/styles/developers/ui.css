@@ -208,7 +208,7 @@
 .dv .dv-barlist-row {
   position: relative;
   display: grid;
-  grid-template-columns: 24px minmax(0, 1.1fr) minmax(60px, 1fr) auto;
+  grid-template-columns: 24px minmax(0, 1.1fr) minmax(60px, 1fr) minmax(7.5em, auto);
   align-items: center;
   gap: 12px;
   min-height: 40px;
@@ -216,7 +216,7 @@
   border-radius: 8px;
   transition: background-color .15s ease;
 }
-.dv .dv-barlist--plain .dv-barlist-row { grid-template-columns: minmax(0, 1.1fr) minmax(60px, 1fr) auto; }
+.dv .dv-barlist--plain .dv-barlist-row { grid-template-columns: minmax(0, 1.1fr) minmax(60px, 1fr) minmax(7.5em, auto); }
 .dv .dv-barlist-row + .dv-barlist-row { margin-top: 2px; }
 .dv .dv-barlist-row:hover { background: var(--dv-row-hover); }
 .dv .dv-barlist-rank {
@@ -438,6 +438,11 @@
 }
 
 /* ── Filter bar (4.8) ─────────────────────────────────────────────────── */
+
+/* Rows and groups RowFilter hides: a card or list row with its own display
+   (flex, grid) would otherwise ignore the hidden attribute. */
+.dv [data-row][hidden],
+.dv [data-row-group][hidden] { display: none; }
 
 .dv .dv-filter {
   position: relative;
@@ -684,6 +689,21 @@
 
 /* ── External link (3.0) ──────────────────────────────────────────────── */
 
+/* The same Font Awesome arrow-up-right-from-square as DvExternalLink's
+   icon, drawn by one CSS rule: long lists (hundreds of links) use an empty
+   <span class="dv-ext-mark" aria-hidden="true"> instead of an inline SVG
+   on every row. */
+.dv .dv-ext-mark {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-left: 6px;
+  vertical-align: 1px;
+  background: var(--dv-muted);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath d='M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l82.7 0-201.4 201.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3 448 192c0 17.7 14.3 32 32 32s32-14.3 32-32l0-160c0-17.7-14.3-32-32-32L320 0zM80 96C35.8 96 0 131.8 0 176L0 432c0 44.2 35.8 80 80 80l256 0c44.2 0 80-35.8 80-80l0-80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 80c0 8.8-7.2 16-16 16L80 448c-8.8 0-16-7.2-16-16l0-256c0-8.8 7.2-16 16-16l80 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L80 96z'/%3E%3C/svg%3E") no-repeat center / contain;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath d='M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l82.7 0-201.4 201.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3 448 192c0 17.7 14.3 32 32 32s32-14.3 32-32l0-160c0-17.7-14.3-32-32-32L320 0zM80 96C35.8 96 0 131.8 0 176L0 432c0 44.2 35.8 80 80 80l256 0c44.2 0 80-35.8 80-80l0-80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 80c0 8.8-7.2 16-16 16L80 448c-8.8 0-16-7.2-16-16l0-256c0-8.8 7.2-16 16-16l80 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L80 96z'/%3E%3C/svg%3E") no-repeat center / contain;
+}
+
 .dv .dv-ext { display: inline; }
 .dv .dv-ext-icon {
   display: inline-block;
@@ -783,6 +803,29 @@
   background: var(--dv-tint);
   color: var(--dv-brand);
   font-size: calc(var(--dv-tile, 40px) * .42);
+}
+
+/* ── Facts list (ApiFactsCard, RepoFactsCard: a two-column <dl>) ──────── */
+
+.dv .dv-facts { display: flex; flex-direction: column; }
+.dv .dv-facts-row {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--dv-line-soft);
+  align-items: baseline;
+}
+.dv .dv-facts-row:last-child { border-bottom: 0; padding-bottom: 0; }
+.dv .dv-facts-row:first-child { padding-top: 0; }
+.dv .dv-facts-label { font-size: 13px; font-weight: 600; color: var(--dv-muted); }
+.dv .dv-facts-value { font-size: 14px; line-height: 1.5; color: var(--dv-ink); min-width: 0; overflow-wrap: anywhere; }
+.dv .dv-facts-value a { color: var(--dv-brand); text-decoration: underline; text-decoration-color: rgba(var(--dv-brand-rgb), .35); text-underline-offset: 3px; }
+.dv .dv-facts-value a:hover { text-decoration-color: currentColor; }
+.dv .dv-facts-value--muted { color: var(--dv-muted); font-weight: 500; }
+.dv .dv-facts-value .dv-facts-sub { display: block; font-size: 12.5px; color: var(--dv-muted); font-weight: 500; }
+@media (max-width: 480px) {
+  .dv .dv-facts-row { grid-template-columns: minmax(0, 1fr); gap: 4px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

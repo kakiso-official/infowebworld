@@ -1,12 +1,11 @@
 import type { Metadata } from 'next'
-import { faPlug } from '@fortawesome/free-solid-svg-icons'
+import { faCubes, faGlobe, faLockOpen, faPlug, faRobot } from '@fortawesome/free-solid-svg-icons'
 import '@/app/styles/developers/apis.css'
 import { popularSdkApis, tryableNoKeyApis } from '@/lib/developers/apis'
-import type { DevFaq } from '@/lib/developers/copy/faqs'
 import { freeApisHubFaqs } from '@/lib/developers/copy/faqs'
 import { countLabel, formatDate, formatNumber } from '@/lib/developers/format'
 import { apisDatasetNode, devCrumbs, faqGraphNode, listNode } from '@/lib/developers/jsonld'
-import { apiCategoryPath, apiCollectionPath, freeApisPath, methodologyPath, sdkPath } from '@/lib/developers/paths'
+import { apiCategoryPath, apiCollectionPath, freeApisPath, sdkPath } from '@/lib/developers/paths'
 import { devPageMetadata, freeApisHubSeo } from '@/lib/developers/seo'
 import { getApis } from '@/lib/developers/store'
 import { API_TAB_BUCKETS } from '@/lib/developers/taxonomy'
@@ -18,6 +17,8 @@ import DvHero from '../_components/shell/DvHero'
 import DvJsonLd from '../_components/shell/DvJsonLd'
 import DvSourceNote from '../_components/shell/DvSourceNote'
 import DvStatStrip from '../_components/shell/DvStatStrip'
+import DvFacetChips from '../_components/ui/DvFacetChips'
+import SdkLanguageTiles from '../_components/apis/SdkLanguageTiles'
 
 /* ═══════════════════════════════════════════════════════════════════════
    Free APIs hub - /developers/free-apis (spec 3.13).
@@ -26,14 +27,6 @@ import DvStatStrip from '../_components/shell/DvStatStrip'
 export const revalidate = 86400
 
 const PATH = freeApisPath()
-
-/* Pages the surrounding section has not built yet (collections, SDK
-   index, methodology, search): any FAQ link pointing at one of them is
-   dropped so this demo never ships a link to a 404. */
-const UNBUILT_PREFIXES = [methodologyPath(), apiCollectionPath('no-auth'), apiCollectionPath('cors-enabled'), apiCollectionPath('ai-llm'), sdkPath()]
-function keepBuiltLinks(faqs: readonly DevFaq[]): DevFaq[] {
-  return faqs.map(f => ({ ...f, links: f.links?.filter(l => !UNBUILT_PREFIXES.some(p => l.href === p || l.href.startsWith(`${p}/`))) }))
-}
 
 export async function generateMetadata(): Promise<Metadata> {
   const store = await getApis()
@@ -53,7 +46,7 @@ export default async function FreeApisHubPage() {
   const categories = store.categories.map(c => store.categoryStats.get(c.slug)!)
   const noKeyApis = tryableNoKeyApis(store, 6)
   const popular = popularSdkApis(store, API_TAB_BUCKETS[0], 6)
-  const faqs = keepBuiltLinks(freeApisHubFaqs())
+  const faqs = freeApisHubFaqs()
 
   return (
     <>
@@ -89,6 +82,16 @@ export default async function FreeApisHubPage() {
             { label: 'Official SDKs', value: t.officialSdks },
           ]}
         />
+        <DvFacetChips
+          label="Quick filters"
+          scroll={false}
+          items={[
+            { label: 'No API key', href: apiCollectionPath('no-auth'), count: t.noAuth, icon: faLockOpen },
+            { label: 'CORS enabled', href: apiCollectionPath('cors-enabled'), count: t.cors, icon: faGlobe },
+            { label: 'AI and LLM', href: apiCollectionPath('ai-llm'), count: store.collections.aiLlm.length, icon: faRobot },
+            { label: 'Official SDKs', href: sdkPath(), count: t.officialSdks, icon: faCubes },
+          ]}
+        />
       </DvHero>
 
       <DvBand
@@ -103,6 +106,7 @@ export default async function FreeApisHubPage() {
         tone="wash"
         title="Free APIs you can call without a key"
         sub="No signup, no key, no OAuth. Open one of these and press Send in Try it to see a live response."
+        action={<a className="dv-more" href={apiCollectionPath('no-auth')}>All {formatNumber(t.noAuth)} no-key APIs</a>}
       >
         <div className="dv-grid dv-grid--3">
           {noKeyApis.map(api => <ApiCard key={api.id} api={api} />)}
@@ -119,7 +123,18 @@ export default async function FreeApisHubPage() {
         </div>
       </DvBand>
 
-      <DvFaq heading="Free API FAQs" faqs={faqs} />
+      {store.sdkLanguageStats.length > 0 && (
+        <DvBand
+          tone="white"
+          title="Official SDKs by language"
+          sub="Every package was looked up on its registry: install commands, latest versions and publish dates."
+          action={<a className="dv-more" href={sdkPath()}>All SDKs</a>}
+        >
+          <SdkLanguageTiles stats={store.sdkLanguageStats} />
+        </DvBand>
+      )}
+
+      <DvFaq heading="Free API FAQs" faqs={faqs} tone="wash" />
 
       <DvSourceNote mit>
         We link-check every API on this page and re-run the sample request of each reviewed API on a schedule, most

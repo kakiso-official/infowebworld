@@ -3,16 +3,17 @@ import { notFound, permanentRedirect } from 'next/navigation'
 import '@/app/styles/developers/apis.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons'
-import { apiAlternatives, apiAuthType, communitySdks, isApiPageIndexable, officialSdks, type ApisStore } from '@/lib/developers/apis'
-import { apiFaqs, type DevFaq } from '@/lib/developers/copy/faqs'
+import { apiAlternatives, apiAuthType, apiOssCompanySlug, communitySdks, isApiPageIndexable, officialSdks, type ApisStore } from '@/lib/developers/apis'
+import { apiFaqs } from '@/lib/developers/copy/faqs'
 import { countLabel, formatDate } from '@/lib/developers/format'
 import { apiDetailExists } from '@/lib/developers/indexing'
 import { devCrumbs, faqGraphNode, pageIds, webApiNode } from '@/lib/developers/jsonld'
-import { apiCategoryPath, apiCollectionPath, apiPath, methodologyPath, sdkPath } from '@/lib/developers/paths'
+import { apiCategoryPath, apiPath, ossCompanyPath, ossRepoPath, sdkPath } from '@/lib/developers/paths'
+import { companyAvatar } from '@/lib/developers/oss'
 import { apiBaseName, apiDetailSeo, devPageMetadata } from '@/lib/developers/seo'
 import { buildSnippets, isTryable } from '@/lib/developers/snippets'
-import { getApis } from '@/lib/developers/store'
-import { apiCategoryIcon, apiCategoryPhrase } from '@/lib/developers/taxonomy'
+import { getApis, tryGetOss } from '@/lib/developers/store'
+import { apiCategoryIcon, apiCategoryPhrase, languageIcon } from '@/lib/developers/taxonomy'
 import type { FreeApi } from '@/lib/developers/types'
 import ApiCard from '../../../_components/apis/ApiCard'
 import ApiFactsCard from '../../../_components/apis/ApiFactsCard'
@@ -30,6 +31,8 @@ import DvSourceNote from '../../../_components/shell/DvSourceNote'
 import { AuthBadge, CardBadge, CorsBadge, DvBadge, HttpsBadge, VerifiedBadge } from '../../../_components/ui/Badges'
 import { SnippetTabs } from '../../../_components/ui/CodeBlock'
 import DvTime from '../../../_components/ui/DvTime'
+import DvFacetChips from '../../../_components/ui/DvFacetChips'
+import ApiPromo, { type ApiPromoProps } from '../../../_components/ui/ApiPromo'
 
 /* ═══════════════════════════════════════════════════════════════════════
    API detail - /developers/free-apis/{category}/{api} (spec 3.15).
@@ -44,11 +47,6 @@ export function generateStaticParams() {
 }
 
 interface Params { category: string; api: string }
-
-const UNBUILT_PREFIXES = [methodologyPath(), apiCollectionPath('no-auth'), apiCollectionPath('cors-enabled'), apiCollectionPath('ai-llm'), sdkPath()]
-function keepBuiltLinks(faqs: readonly DevFaq[]): DevFaq[] {
-  return faqs.map(f => ({ ...f, links: f.links?.filter(l => !UNBUILT_PREFIXES.some(p => l.href === p || l.href.startsWith(`${p}/`))) }))
-}
 
 function hostOf(url: string): string {
   try {
@@ -100,8 +98,41 @@ export default async function ApiDetailPage({ params }: { params: Promise<Params
   const alternatives = apiAlternatives(store, api, 6)
   const tryable = isTryable(d.sample, d.check)
   const snippets = buildSnippets(d.sample, d.check)
-  const faqs = keepBuiltLinks(apiFaqs(api))
+  const faqs = apiFaqs(api)
   const categoryPhrase = apiCategoryPhrase(api.category.slug, api.category.name)
+
+  /* SDK language pages for this API's official SDKs (every SDK language
+     with at least one package has a page). */
+  const sdkLanguages = [...new Map(official.map(sdk => [sdk.languageSlug, sdk.language])).entries()]
+    .filter(([slug]) => store.sdkLanguageStats.some(st => st.slug === slug))
+
+  /* The provider's open source (2.6 bridge), when its GitHub org is a
+     company in the open-source set. */
+  let ossPromo: Extract<ApiPromoProps, { variant: 'oss' }> | null = null
+  const ossSlug = apiOssCompanySlug(store, api)
+  if (ossSlug) {
+    const oss = await tryGetOss()
+    const company = oss?.companyBySlug.get(ossSlug)
+    const stats = company ? oss!.statsBySlug.get(company.slug) : undefined
+    if (oss && company) {
+      ossPromo = {
+        variant: 'oss',
+        company: {
+          name: company.name,
+          href: ossCompanyPath(company.slug),
+          avatarUrl: companyAvatar(company) || null,
+          trackedRepos: stats?.trackedRepos,
+          stars: stats?.stars,
+        },
+        repos: (oss.reposByCompany.get(company.slug) ?? []).filter(r => !r.isArchived).slice(0, 3).map(r => ({
+          nameWithOwner: r.nameWithOwner,
+          href: ossRepoPath(r.companySlug, r.slug),
+          stars: r.stars,
+          language: r.primaryLanguage,
+        })),
+      }
+    }
+  }
 
   return (
     <>
@@ -212,6 +243,14 @@ export default async function ApiDetailPage({ params }: { params: Promise<Params
                 <SdkTabs sdks={official} label={`Official SDKs for the ${name} API`} />
                 <h3 className="dv-h3" style={{ marginTop: 32, marginBottom: 12 }}>All official SDKs</h3>
                 <SdkTable sdks={official} caption={`Every official SDK for the ${name} API`} />
+                {sdkLanguages.length > 0 && (
+                  <DvFacetChips
+                    className="dv-sdk-langlinks"
+                    label="Official SDKs for other free APIs"
+                    scroll={false}
+                    items={sdkLanguages.map(([slug, language]) => ({ label: `More ${language} SDKs`, href: sdkPath(slug), icon: languageIcon(slug) }))}
+                  />
+                )}
               </>
             )}
             {community.length > 0 && (
@@ -241,6 +280,12 @@ export default async function ApiDetailPage({ params }: { params: Promise<Params
               {d.tags.map(t => <span key={t} className="dv-chip dv-chip--static">{t}</span>)}
             </div>
           )}
+        </DvBand>
+      )}
+
+      {ossPromo && (
+        <DvBand tone="wash" title={`Open source by ${d.provider.name}`}>
+          <ApiPromo {...ossPromo} />
         </DvBand>
       )}
 

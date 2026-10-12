@@ -61,7 +61,10 @@ function toSegments(languages: readonly LangBarItem[], max: number, minPct: numb
   const shown: Segment[] = []
   let other = 0
   for (const r of rows) {
-    if (shown.length < max && r.pct >= minPct) shown.push(r)
+    /* A ready-made "Other" share (languageBreakdown adds one) joins the
+       overflow bucket, so the bar has one Other, always last. */
+    if (r.name === 'Other') other += r.pct
+    else if (shown.length < max && r.pct >= minPct) shown.push(r)
     else other += r.pct
   }
   if (other > 0) shown.push({ name: 'Other', color: LANGUAGE_FALLBACK_COLOR, pct: other, other: true })

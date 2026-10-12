@@ -633,9 +633,19 @@ export function recentlyReleased(store: OssStore, limit = 9, days = 30): OssRepo
     .slice(0, limit)
 }
 
-/** The newest listed good first issues. */
-export function newestIssues(store: OssStore, limit = 6): OssIssue[] {
-  return store.issues.slice(0, limit)
+/** The newest listed good first issues, at most `maxPerCompany` from any
+ *  one company (a teaser should not be one busy repo's backlog). */
+export function newestIssues(store: OssStore, limit = 6, maxPerCompany = Infinity): OssIssue[] {
+  const out: OssIssue[] = []
+  const perCompany = new Map<string, number>()
+  for (const issue of store.issues) {
+    if (out.length >= limit) break
+    const n = perCompany.get(issue.companySlug) ?? 0
+    if (n >= maxPerCompany) continue
+    perCompany.set(issue.companySlug, n + 1)
+    out.push(issue)
+  }
+  return out
 }
 
 /** Counts behind the good-first-issues header (all, or one language). */

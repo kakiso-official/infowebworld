@@ -10,6 +10,7 @@ import {
   faArrowRight, faArrowUpRightFromSquare, faCodeBranch, faCubes, faLayerGroup, faMagnifyingGlass, faPlug, faTag, faXmark,
 } from '@fortawesome/free-solid-svg-icons'
 import type { SearchHit, SearchKind, SearchResponse } from '@/lib/developers/types'
+import { devSearchPath } from '@/lib/developers/paths'
 import OrgAvatar from '../ui/OrgAvatar'
 import DvSkeleton from '../ui/DvSkeleton'
 import SearchSheet from './SearchSheet'
@@ -51,8 +52,8 @@ export interface DvSearchBoxProps {
   className?: string
 }
 
-/* Mirrors app/api/developers/search/route.ts (WP5). Until that route
-   exists the box shows its error state and the form still submits. */
+/* app/api/developers/search/route.ts. When it fails the box shows its
+   error state and the form still submits to the full results page. */
 const SEARCH_API = '/api/developers/search'
 const MIN_CHARS = 2
 const MAX_CHARS = 64
@@ -79,7 +80,7 @@ const KIND_ICON: Record<SearchKind, IconDefinition> = {
 
 const DEFAULT_PLACEHOLDER: Record<DvSearchSize, string> = {
   hero: 'Search APIs, SDKs, companies or repos...',
-  bar: 'Search APIs, repos, companies...',
+  bar: 'Search APIs and repos...',
   sheet: 'Search APIs, SDKs, companies or repos...',
 }
 
@@ -95,15 +96,6 @@ function isHit(value: unknown): value is SearchHit {
   return !!h && typeof h === 'object' && typeof h.label === 'string' && typeof h.href === 'string' && typeof h.kind === 'string'
 }
 
-/* This build ships 6 pages (hub, open-source hub, company, free-apis hub,
-   category, API detail) out of the full section's URL map. The search
-   index covers the whole map, so repo/language/topic hits would point at
-   pages that do not exist here; they are dropped before anything renders. */
-const UNBUILT_KINDS = new Set<SearchKind>(['repo', 'language', 'topic'])
-function isBuiltHit(hit: SearchHit): boolean {
-  return !UNBUILT_KINDS.has(hit.kind)
-}
-
 /* The endpoint is ours, but a bad deploy must not crash the island. */
 function readResponse(json: unknown): SearchResponse | null {
   const r = json as Partial<SearchResponse> | null
@@ -111,7 +103,7 @@ function readResponse(json: unknown): SearchResponse | null {
   const groups = {} as SearchResponse['groups']
   let total = 0
   for (const { key } of GROUPS) {
-    const list = Array.isArray(r.groups[key]) ? (r.groups[key] as unknown[]).filter(isHit).filter(isBuiltHit).slice(0, PER_GROUP) : []
+    const list = Array.isArray(r.groups[key]) ? (r.groups[key] as unknown[]).filter(isHit).slice(0, PER_GROUP) : []
     groups[key] = list
     total += list.length
   }
@@ -443,7 +435,7 @@ export default function DvSearchBox({
     <form
       ref={formRef}
       className="dv-search-form"
-      action="/search"
+      action={devSearchPath()}
       method="get"
       role="search"
       aria-label={size === 'bar' ? 'Developer hub' : 'Developer hub search'}
@@ -548,7 +540,7 @@ export default function DvSearchBox({
                 role="option"
                 aria-selected={active === hits.length}
                 tabIndex={-1}
-                href={`/search?q=${encodeURIComponent(term)}`}
+                href={devSearchPath(term)}
                 className="dv-search-option"
                 onMouseMove={() => { if (active !== hits.length) setActive(hits.length) }}
                 onClick={picked}

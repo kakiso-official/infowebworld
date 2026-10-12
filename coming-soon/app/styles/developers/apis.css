@@ -1,10 +1,10 @@
 /* ═══════════════════════════════════════════════════════════════════════
    InfoWebWorld for Developers - Free APIs & SDKs (spec 3.13-3.18, 4.5-4.11).
 
-   Imported only by the three free-apis pages (not base.css's barrel):
-   category tiles, the API card, the facts list (shared shape for
-   FreeTierPanel/ApiFactsCard/ProviderCard), the Try it panel and the SDK
-   install cards. Everything else (cards, badges, tables, code, tabs,
+   Imported by the free-apis pages and the section hub (not base.css's
+   barrel): category tiles, the API card, the free-tier panel, provider
+   card, Try it panel, SDK install cards, SDK tables and tiles, the
+   compact collection list and the AI comparison table. Everything else (cards, badges, tables, code, tabs,
    filters) comes from the shared ui.css / tables.css / code.css already
    imported by the layout.
    ═══════════════════════════════════════════════════════════════════════ */
@@ -130,27 +130,8 @@
 /* onDark: the card itself stays a white card (4.5); only the band around
    it is navy, so no colour overrides are needed here. */
 
-/* ── Facts list (shared shape: FreeTierPanel / ApiFactsCard / ProviderCard) ── */
-
-.dv .dv-facts { display: flex; flex-direction: column; }
-.dv .dv-facts-row {
-  display: grid;
-  grid-template-columns: 112px minmax(0, 1fr);
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--dv-line-soft);
-  align-items: baseline;
-}
-.dv .dv-facts-row:last-child { border-bottom: 0; padding-bottom: 0; }
-.dv .dv-facts-row:first-child { padding-top: 0; }
-.dv .dv-facts-label { font-size: 13px; font-weight: 600; color: var(--dv-muted); }
-.dv .dv-facts-value { font-size: 14px; line-height: 1.5; color: var(--dv-ink); min-width: 0; overflow-wrap: anywhere; }
-.dv .dv-facts-value a { color: var(--dv-brand); text-decoration: underline; text-decoration-color: rgba(var(--dv-brand-rgb), .35); text-underline-offset: 3px; }
-.dv .dv-facts-value a:hover { text-decoration-color: currentColor; }
-.dv .dv-facts-value--muted { color: var(--dv-muted); font-weight: 500; }
-@media (max-width: 480px) {
-  .dv .dv-facts-row { grid-template-columns: minmax(0, 1fr); gap: 4px; }
-}
+/* The facts list (.dv-facts, ApiFactsCard) lives in ui.css: repo pages use
+   it too (RepoFactsCard). */
 
 /* ── Free tier panel ──────────────────────────────────────────────────── */
 
@@ -264,3 +245,114 @@
 /* ── Counts sentence (category page) ─────────────────────────────────── */
 
 .dv .dv-counts-sentence strong { color: var(--dv-ink); font-weight: 700; }
+
+/* ── Compact grouped API list (ApiCompactList, collection pages) ──────── */
+
+.dv .dv-apigroups { display: flex; flex-direction: column; gap: 28px; margin-top: 8px; }
+.dv .dv-apigroup { scroll-margin-top: calc(var(--dv-subnav-h) + 72px); }
+.dv .dv-apigroup-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 10px;
+  font-size: 1.125rem;
+  font-weight: 750;
+  letter-spacing: -0.01em;
+  color: var(--dv-ink);
+}
+.dv .dv-apigroup-title .dv-icon-tile { --dv-tile: 32px; }
+.dv .dv-apigroup-title a { color: inherit; text-decoration: none; }
+.dv .dv-apigroup-title a:hover { color: var(--dv-brand); text-decoration: underline; text-underline-offset: 3px; }
+.dv .dv-apigroup-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--dv-muted);
+  background: var(--dv-sunk);
+  border-radius: var(--dv-r-pill);
+  padding: 2px 9px;
+  font-variant-numeric: tabular-nums;
+}
+.dv .dv-apilist {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--dv-line);
+  border-radius: var(--dv-r);
+  background: #FFFFFF;
+}
+.dv .dv-apilist-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 20px;
+  align-items: baseline;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--dv-line-soft);
+}
+.dv .dv-apilist-row:last-child { border-bottom: 0; }
+.dv .dv-apilist-row:hover { background: var(--dv-row-hover); }
+.dv .dv-apilist-main { min-width: 0; }
+.dv .dv-apilist-name { font-weight: 700; font-size: 14.5px; color: var(--dv-ink); text-decoration: none; }
+.dv .dv-apilist-name:hover { color: var(--dv-brand); text-decoration: underline; text-underline-offset: 3px; }
+.dv .dv-apilist-tag {
+  margin-left: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--dv-brand);
+  background: var(--dv-tint);
+  border-radius: var(--dv-r-pill);
+  padding: 1px 8px;
+  vertical-align: 1px;
+}
+.dv .dv-apilist-desc {
+  margin: 2px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--dv-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.dv .dv-apilist-facts {
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  text-align: right;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--dv-body);
+  white-space: nowrap;
+}
+.dv .dv-apilist-ok { color: var(--dv-ok-fg); }
+.dv .dv-apilist-warn { color: var(--dv-warn-fg); }
+@media (max-width: 768px) {
+  .dv .dv-apilist-row { grid-template-columns: minmax(0, 1fr); }
+  .dv .dv-apilist-facts { grid-column: 1; grid-row: auto; text-align: left; white-space: normal; }
+}
+
+/* ── AI and LLM comparison (DvCompareTable) ───────────────────────────── */
+
+.dv .dv-comparetable td { font-size: 13.5px; }
+.dv .dv-comparetable .dv-td-name { min-width: 170px; }
+.dv .dv-comparetable td:last-child a { white-space: nowrap; }
+.dv .dv-src {
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--dv-brand);
+  text-decoration: underline;
+  text-decoration-color: rgba(var(--dv-brand-rgb), .35);
+  text-underline-offset: 3px;
+  white-space: nowrap;
+}
+.dv .dv-src:hover { text-decoration-color: currentColor; }
+.dv .dv-compare-sdks { display: flex; flex-wrap: wrap; gap: 4px 10px; }
+.dv .dv-compare-sdk { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; font-weight: 600; }
+.dv .dv-compare-sdk svg { color: var(--dv-brand); font-size: 12px; }
+
+/* ── SDK pages ────────────────────────────────────────────────────────── */
+
+.dv .dv-sdktiles { list-style: none; margin: 0; padding: 0; }
+.dv .dv-sdktable .dv-td-sub .dv-badge { margin-left: 6px; }
+.dv .dv-sdk-otherlangs,
+.dv .dv-sdk-langlinks { margin-top: 18px; }
+.dv .dv-related-title { margin: 20px 0 12px; }

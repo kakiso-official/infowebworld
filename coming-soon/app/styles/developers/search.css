@@ -82,7 +82,7 @@
 }
 
 /* Bar size: 36px in the sub-nav, hint only. */
-.dv .dv-search--bar { width: 300px; }
+.dv .dv-search--bar { width: 210px; }
 .dv .dv-search--bar .dv-search-field {
   height: 36px;
   padding: 0 8px 0 12px;
@@ -96,7 +96,7 @@
 .dv .dv-search--bar .dv-search-submit { display: none; }
 .dv .dv-search--bar .dv-search-list { width: min(440px, calc(100vw - 32px)); left: auto; right: 0; }
 @media (max-width: 1180px) {
-  .dv .dv-search--bar { width: 240px; }
+  .dv .dv-search--bar { width: 180px; }
 }
 .dv .dv-search-trigger { display: none; }
 @media (max-width: 768px) {

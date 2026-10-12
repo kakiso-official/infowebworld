@@ -3,17 +3,24 @@ import '@/app/styles/developers/hub.css'
 import '@/app/styles/developers/oss.css'
 import '@/app/styles/developers/apis.css'
 import type { Metadata } from 'next'
-import { faBuilding, faCodeBranch, faCubes, faLayerGroup, faPlay, faPlug, faSeedling } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faBuilding, faCircleCheck, faCodeBranch, faCubes, faLayerGroup, faLink, faPlay, faPlug, faSeedling, faServer,
+} from '@fortawesome/free-solid-svg-icons'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import { countLabel, formatNumber } from '@/lib/developers/format'
-import { diverseRepos, companyAvatar } from '@/lib/developers/oss'
-import { apiCategoryPath, apiPath, devHubPath, freeApisPath, ossHubPath } from '@/lib/developers/paths'
+import { diverseRepos, companyAvatar, newestIssues } from '@/lib/developers/oss'
+import {
+  apiCategoryPath, apiCollectionPath, apiPath, devHubPath, freeApisPath, gfiPath, methodologyPath, ossFacetPath, ossHubPath,
+  ossRepoPath, ossReposPath, sdkPath, type ApiCollectionSlug,
+} from '@/lib/developers/paths'
+import { isCollectionIndexable, COLLECTION_KEYS } from '@/lib/developers/indexing'
 import { devCrumbs, faqGraphNode, listNode, thing } from '@/lib/developers/jsonld'
 import { devPageMetadata, devUnavailableMetadata, hubSeo } from '@/lib/developers/seo'
 import { tryGetApis, tryGetOss } from '@/lib/developers/store'
 import { popularSdkApis, topCategories } from '@/lib/developers/apis'
 import { API_TAB_BUCKETS } from '@/lib/developers/taxonomy'
-import { hubFaqs, type DevFaq } from '@/lib/developers/copy/faqs'
+import { hubFaqs } from '@/lib/developers/copy/faqs'
 import DvHero from './_components/shell/DvHero'
 import DvHeroBadges from './_components/shell/DvHeroBadges'
 import DvStatStrip from './_components/shell/DvStatStrip'
@@ -24,6 +31,7 @@ import DvSourceNote from './_components/shell/DvSourceNote'
 import DvJsonLd from './_components/shell/DvJsonLd'
 import DvSearchBox from './_components/search/DvSearchBox'
 import RepoCard from './_components/oss/RepoCard'
+import IssueCard, { issueCardData } from './_components/oss/IssueCard'
 import PathCard from './_components/hub/PathCard'
 import HeroTerminal from './_components/hub/HeroTerminal'
 import ApiCard from './_components/apis/ApiCard'
@@ -33,11 +41,11 @@ export const revalidate = 86400
 
 const PATH = devHubPath()
 
-/* Only /business and /contact (outside this section) are safe hub FAQ
-   link targets in this build - no methodology, search or collection pages. */
-function keepBuiltLinks(faqs: readonly DevFaq[]): DevFaq[] {
-  return faqs.map(f => ({ ...f, links: f.links?.filter(l => l.href === '/business' || l.href === '/contact') }))
-}
+const API_QUICK_LINKS: ReadonlyArray<{ slug: ApiCollectionSlug; label: string }> = [
+  { slug: 'no-auth', label: 'No-key APIs' },
+  { slug: 'ai-llm', label: 'AI and LLM APIs' },
+  { slug: 'cors-enabled', label: 'CORS-enabled APIs' },
+]
 
 export async function generateMetadata(): Promise<Metadata> {
   const [oss, apis] = await Promise.all([tryGetOss(), tryGetApis()])
@@ -66,8 +74,28 @@ export default async function DevelopersHubPage() {
   const popularApis = apis ? popularSdkApis(apis, API_TAB_BUCKETS[0], 6) : []
   const heroApi = apis?.heroApi ?? null
   const heroTopRepo = oss?.reposAll[0] ?? null
+  const issues = oss
+    ? newestIssues(oss, 6, 1).map(i => issueCardData(oss, i)).filter((c): c is NonNullable<typeof c> => c !== null)
+    : []
 
-  const faqs = keepBuiltLinks(hubFaqs({ refreshLive: oss?.meta.refresh?.live ?? false }))
+  /* Path card quick links (3.1), each only when its page is indexed. */
+  const apiLinks = apis
+    ? [
+        ...API_QUICK_LINKS
+          .filter(l => isCollectionIndexable(l.slug, apis.collections[COLLECTION_KEYS[l.slug]]))
+          .map(l => ({ href: apiCollectionPath(l.slug), label: l.label })),
+        ...(apis.sdkLanguageStats.some(st => st.slug === 'python' && st.indexable) ? [{ href: sdkPath('python'), label: 'Python SDKs' }] : []),
+      ]
+    : []
+  const ossLinks = oss
+    ? oss.facets.language
+        .filter(f => f.indexable)
+        .slice(0, 3)
+        .map(f => ({ href: ossFacetPath('language', f.slug), label: `${f.name} projects` }))
+        .concat(oss.issues.length ? [{ href: gfiPath(), label: 'Good first issues' }] : [])
+    : []
+
+  const faqs = hubFaqs({ refreshLive: oss?.meta.refresh?.live ?? false })
 
   return (
     <>
@@ -148,6 +176,7 @@ export default async function DevelopersHubPage() {
                 title="Open source from real companies"
                 text="Browse public, non-fork repositories that real companies publish on GitHub: stars, forks, licenses and good first issues, all pulled straight from the GitHub API."
                 stats={[countLabel(oss.totals.companies, 'company', 'companies'), countLabel(oss.totals.repos, 'repository', 'repositories')]}
+                links={ossLinks}
                 action={{ href: ossHubPath(), label: 'Explore open source' }}
               />
             )}
@@ -157,6 +186,7 @@ export default async function DevelopersHubPage() {
                 title="Free APIs and official SDKs"
                 text="Filter free APIs by auth type, HTTPS and CORS, compare free-tier limits, and install the official SDK in your language."
                 stats={[countLabel(apis.totals.apis, 'API'), countLabel(apis.totals.categories, 'category', 'categories'), countLabel(apis.totals.noAuth, 'needs no key', 'need no key')]}
+                links={apiLinks}
                 action={{ href: freeApisPath(), label: 'Browse free APIs' }}
               />
             )}
@@ -182,7 +212,7 @@ export default async function DevelopersHubPage() {
           id="dv-hub-repos"
           title="Most-starred open source from companies"
           sub="Real projects, real companies, real GitHub numbers."
-          action={<a className="dv-more" href={ossHubPath()}>Explore open source</a>}
+          action={<a className="dv-more" href={ossReposPath()}>Top repositories</a>}
         >
           <div className="dv-grid dv-grid--3">
             {topRepos.map(r => {
@@ -191,7 +221,7 @@ export default async function DevelopersHubPage() {
                 <RepoCard
                   key={r.id}
                   nameWithOwner={r.nameWithOwner}
-                  href={r.url}
+                  href={ossRepoPath(r.companySlug, r.slug)}
                   description={r.description}
                   stars={r.stars}
                   forks={r.forks}
@@ -225,6 +255,45 @@ export default async function DevelopersHubPage() {
           </div>
         </DvBand>
       )}
+
+      {issues.length > 0 && (
+        <DvBand
+          tone="wash"
+          id="dv-hub-gfi"
+          title="Good first issues from real companies"
+          sub="Small, well-described tasks that maintainers marked as a safe place to start."
+          action={<a className="dv-more" href={gfiPath()}>See all {formatNumber(oss!.totals.issues)} good first issues</a>}
+        >
+          <div className="dv-grid dv-grid--3">
+            {issues.map(i => <IssueCard key={i.url} issue={i} dataAt={oss!.dataAt} />)}
+          </div>
+        </DvBand>
+      )}
+
+      <DvBand
+        tone="white"
+        id="dv-hub-trust"
+        title="How we check this data"
+        action={<a className="dv-more" href={methodologyPath()}>How we check</a>}
+      >
+        <div className="dv-grid dv-grid--3">
+          <div className="dv-trustcard">
+            <FontAwesomeIcon icon={faServer} className="dv-trustcard-icon" aria-hidden="true" />
+            <h3 className="dv-h3">Straight from the source</h3>
+            <p>GitHub numbers come from GitHub&apos;s own API. API facts come from the provider&apos;s docs and the package registries.</p>
+          </div>
+          <div className="dv-trustcard">
+            <FontAwesomeIcon icon={faCircleCheck} className="dv-trustcard-icon" aria-hidden="true" />
+            <h3 className="dv-h3">Checked, with dates</h3>
+            <p>Every page shows when its data was checked. A fact we could not verify is left blank, never guessed.</p>
+          </div>
+          <div className="dv-trustcard">
+            <FontAwesomeIcon icon={faLink} className="dv-trustcard-icon" aria-hidden="true" />
+            <h3 className="dv-h3">Linked to the real company</h3>
+            <p>Companies listed on InfoWebWorld link to their profile, so you can see who is behind the code.</p>
+          </div>
+        </div>
+      </DvBand>
 
       <DvFaq heading="Developer FAQs" faqs={faqs} />
 

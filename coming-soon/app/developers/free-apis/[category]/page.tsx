@@ -2,15 +2,15 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import '@/app/styles/developers/apis.css'
 import { apiCategoryIntro } from '@/lib/developers/copy/api-categories'
-import type { DevFaq } from '@/lib/developers/copy/faqs'
 import { apiCategoryFaqs } from '@/lib/developers/copy/faqs'
 import { countLabel, formatNumber, joinList } from '@/lib/developers/format'
 import { apiDetailExists } from '@/lib/developers/indexing'
 import { devCrumbs, faqGraphNode, listNode } from '@/lib/developers/jsonld'
-import { apiCategoryPath, apiCollectionPath, apiPath, methodologyPath, sdkPath } from '@/lib/developers/paths'
+import { apiCategoryPath, apiCollectionPath, apiPath } from '@/lib/developers/paths'
 import { apiCategorySeo, devPageMetadata } from '@/lib/developers/seo'
 import { getApis } from '@/lib/developers/store'
-import { apiCategoryIcon } from '@/lib/developers/taxonomy'
+import { apiCategoryIcon, relatedApiCategories } from '@/lib/developers/taxonomy'
+import { faLockOpen } from '@fortawesome/free-solid-svg-icons'
 import ApiCard from '../../_components/apis/ApiCard'
 import ApiFilterBar from '../../_components/apis/ApiFilterBar'
 import ApiTable from '../../_components/apis/ApiTable'
@@ -21,6 +21,8 @@ import DvJsonLd from '../../_components/shell/DvJsonLd'
 import DvPageHeader from '../../_components/shell/DvPageHeader'
 import DvSourceNote from '../../_components/shell/DvSourceNote'
 import DvStatStrip from '../../_components/shell/DvStatStrip'
+import DvFacetChips from '../../_components/ui/DvFacetChips'
+import DvLinkRows from '../../_components/ui/DvLinkRows'
 
 /* ═══════════════════════════════════════════════════════════════════════
    API category - /developers/free-apis/{category} (spec 3.14): every
@@ -35,13 +37,6 @@ export function generateStaticParams() {
 }
 
 interface Params { category: string }
-
-/* Pages the surrounding section has not built yet; see the hub page for
-   why this strips them out of any generated FAQ link. */
-const UNBUILT_PREFIXES = [methodologyPath(), apiCollectionPath('no-auth'), apiCollectionPath('cors-enabled'), apiCollectionPath('ai-llm'), sdkPath()]
-function keepBuiltLinks(faqs: readonly DevFaq[]): DevFaq[] {
-  return faqs.map(f => ({ ...f, links: f.links?.filter(l => !UNBUILT_PREFIXES.some(p => l.href === p || l.href.startsWith(`${p}/`))) }))
-}
 
 async function loadCategory(slug: string) {
   const store = await getApis()
@@ -69,7 +64,10 @@ export default async function ApiCategoryPage({ params }: { params: Promise<Para
   const crumbs = devCrumbs.category({ slug: category, name: stats.name })
 
   const topPicks = apis.filter(a => apiDetailExists(a)).slice(0, 6)
-  const faqs = keepBuiltLinks(apiCategoryFaqs({ slug: category, name: stats.name }, apis))
+  const related = relatedApiCategories(category)
+    .map(slug => store.categoryStats.get(slug))
+    .filter((c): c is NonNullable<typeof c> => !!c)
+  const faqs = apiCategoryFaqs({ slug: category, name: stats.name }, apis)
 
   const countParts = [
     stats.noAuth > 0 && `${formatNumber(stats.noAuth)} need no key`,
@@ -136,7 +134,32 @@ export default async function ApiCategoryPage({ params }: { params: Promise<Para
         <ApiTable apis={apis} bodyId="cat-api-rows" caption={`All ${stats.name} APIs, reviewed APIs first`} />
       </DvBand>
 
-      <DvFaq heading={`Free ${stats.phrase} API FAQs`} faqs={faqs} tone="wash" />
+      {(stats.noAuth > 0 || related.length > 0) && (
+        <DvBand tone="wash" id="dv-category-more" title="Keep exploring" tight>
+          {stats.noAuth > 0 && (
+            <DvLinkRows
+              items={[{
+                href: `${apiCollectionPath('no-auth')}#${category}`,
+                label: `Free ${stats.phrase} APIs without a key`,
+                sub: `${countLabel(stats.noAuth, 'API')} in the no-key list`,
+                icon: faLockOpen,
+              }]}
+            />
+          )}
+          {related.length > 0 && (
+            <>
+              <h3 className="dv-h3 dv-related-title">Related categories</h3>
+              <DvFacetChips
+                label="Related categories"
+                scroll={false}
+                items={related.map(c => ({ label: c.name, href: apiCategoryPath(c.slug), count: c.apis, icon: apiCategoryIcon(c.slug) }))}
+              />
+            </>
+          )}
+        </DvBand>
+      )}
+
+      <DvFaq heading={`Free ${stats.phrase} API FAQs`} faqs={faqs} tone="white" />
 
       <DvSourceNote mit>
         We link-check every API in this category and re-run the sample request of each reviewed one on a schedule.

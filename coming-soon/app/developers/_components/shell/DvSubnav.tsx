@@ -4,19 +4,16 @@ import { useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCode } from '@fortawesome/free-solid-svg-icons'
-import { devHubPath, freeApisPath, ossHubPath } from '@/lib/developers/paths'
+import {
+  apiCollectionPath, devHubPath, freeApisPath, gfiPath, ossCompaniesPath, ossHubPath, sdkPath,
+} from '@/lib/developers/paths'
 import DvSearchBox from '../search/DvSearchBox'
 
 /* ═══════════════════════════════════════════════════════════════════════
    Section sub-navigation (spec 2.5), rendered once by the layout:
 
-   [</> Developers] Overview  Open Source  Free APIs          [ Search / ]
-
-   Demo build: only the pages that actually exist are linked (the full
-   section also has companies/languages/good-first-issues/collections/sdk
-   index pages per the design spec; they are not built here, so they are
-   left out of the nav rather than 404ing). Re-add them once those pages
-   ship.
+   [</> Developers] Overview  Open Source  Companies  Good First Issues
+                    | Free APIs  No-Key APIs  AI and LLM  SDKs     [ Search / ]
 
    - 52px, sticky at top 0 with z-index 40: under the site header (z 60),
      so it shows when the header slides away and is covered when it comes
@@ -42,7 +39,14 @@ const GROUPS: ReadonlyArray<readonly SubnavLink[]> = [
   [
     { label: 'Overview', href: devHubPath(), exact: true },
     { label: 'Open Source', href: ossHubPath() },
+    { label: 'Companies', href: ossCompaniesPath() },
+    { label: 'Good First Issues', href: gfiPath() },
+  ],
+  [
     { label: 'Free APIs', href: freeApisPath() },
+    { label: 'No-Key APIs', href: apiCollectionPath('no-auth') },
+    { label: 'AI and LLM', href: apiCollectionPath('ai-llm') },
+    { label: 'SDKs', href: sdkPath() },
   ],
 ]
 

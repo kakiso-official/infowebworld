@@ -18,11 +18,12 @@
 import { formatDate, formatNumber, joinList } from '../format'
 import { facetCompanies, facetRepos } from '../oss'
 import { apiCollectionPath, gfiPath, methodologyPath, sdkPath, type OssFacetKind } from '../paths'
-import { REGISTRY_LABELS, isTryable } from '../snippets'
+import { REGISTRY_LABELS, installCommand, isTryable } from '../snippets'
 import { apiCategoryPhraseLower } from '../taxonomy'
 import { countryInPhrase } from '../../country-paths'
 import { apiBaseName, noDash } from '../seo'
 import type { OssStore } from '../oss'
+import type { SdkRow } from '../apis'
 import type { FreeApi, IsoDateTime, OssCompany, OssRepo } from '../types'
 
 export interface DevFaq {
@@ -249,6 +250,40 @@ export function sdkIndexFaqs(): DevFaq[] {
       'From the package registries themselves, such as npm and PyPI. We only link a package after its registry page answered our check.',
     ),
   ]
+}
+
+/** /developers/free-apis/sdks/{language}: which APIs have an official SDK
+ *  in the language, how a package installs (a real command from the
+ *  table) and what the community rows are. Each answer only when true. */
+export function sdkLanguageFaqs(language: { name: string }, rows: readonly SdkRow[]): DevFaq[] {
+  const lang = noDash(language.name)
+  const official = rows.filter(r => r.sdk.official)
+  const out: DevFaq[] = []
+
+  const apiNames = [...new Set(official.map(r => apiBaseName(r.apiName)))]
+  if (apiNames.length) {
+    out.push(faq(
+      `Which free APIs have an official ${lang} SDK?`,
+      `${namesList(apiNames, 8)}. Each API page lists the package with its install command and the docs.`,
+    ))
+  }
+
+  const example = official.find(r => installCommand(r.sdk)) ?? rows.find(r => installCommand(r.sdk))
+  const command = example ? installCommand(example.sdk) : null
+  if (example && command) {
+    out.push(faq(
+      `How do I install a ${lang} SDK?`,
+      `Copy the install command from the table. For example, the ${apiBaseName(example.apiName)} SDK installs with ${command.code}.`,
+    ))
+  }
+
+  if (rows.some(r => !r.sdk.official)) {
+    out.push(faq(
+      `Are community ${lang} libraries listed too?`,
+      'Yes, marked Community. Other developers publish them, not the API provider, so check how active a library is before you depend on it.',
+    ))
+  }
+  return out
 }
 
 /* ── Generated: open source ──────────────────────────────────────────── */

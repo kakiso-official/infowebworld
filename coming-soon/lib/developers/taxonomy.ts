@@ -158,10 +158,13 @@ export const LANGUAGE_FALLBACK_COLOR = '#9CA3AF'
 
 /* Words that title-casing would get wrong. Section 3.11's acronym map plus
    the product and brand names that appear as GitHub topics, written the
-   way their owners write them. */
+   way their owners write them. Alias topics keep their own spelling
+   (golang -> Golang, reactjs -> ReactJS, k8s -> K8s): each topic has its
+   own page, and 'go' and 'golang' both reading "Go" gave two pages the
+   same title and H1. */
 const TOPIC_WORDS: Readonly<Record<string, string>> = {
   ai: 'AI', api: 'API', apis: 'APIs', cli: 'CLI', css: 'CSS', gpu: 'GPU', grpc: 'gRPC', http: 'HTTP',
-  ios: 'iOS', iot: 'IoT', json: 'JSON', k8s: 'Kubernetes', llm: 'LLM', llms: 'LLMs', ml: 'ML',
+  ios: 'iOS', iot: 'IoT', json: 'JSON', k8s: 'K8s', llm: 'LLM', llms: 'LLMs', ml: 'ML',
   nlp: 'NLP', orm: 'ORM', rest: 'REST', sdk: 'SDK', sdks: 'SDKs', sql: 'SQL', ui: 'UI', ux: 'UX',
   wasm: 'Wasm', xml: 'XML', graphql: 'GraphQL',
   aws: 'AWS', gcp: 'GCP', ci: 'CI', cd: 'CD', cicd: 'CI/CD', rag: 'RAG', gpt: 'GPT', jwt: 'JWT',
@@ -171,7 +174,7 @@ const TOPIC_WORDS: Readonly<Record<string, string>> = {
   vr: 'VR', db: 'DB', etl: 'ETL', olap: 'OLAP', wasi: 'WASI', ebpf: 'eBPF', webrtc: 'WebRTC',
   websocket: 'WebSocket', websockets: 'WebSockets', javascript: 'JavaScript', typescript: 'TypeScript',
   github: 'GitHub', gitlab: 'GitLab', nodejs: 'Node.js', nextjs: 'Next.js', vuejs: 'Vue.js',
-  reactjs: 'React', golang: 'Go', cpp: 'C++', csharp: 'C#', dotnet: '.NET', macos: 'macOS',
+  reactjs: 'ReactJS', golang: 'Golang', cpp: 'C++', csharp: 'C#', dotnet: '.NET', macos: 'macOS',
   devops: 'DevOps', postgresql: 'PostgreSQL', postgres: 'Postgres', mysql: 'MySQL', mongodb: 'MongoDB',
   sqlite: 'SQLite', redis: 'Redis', webassembly: 'WebAssembly', openai: 'OpenAI', pytorch: 'PyTorch',
   tensorflow: 'TensorFlow', vscode: 'VS Code', npm: 'npm', iac: 'IaC', opentelemetry: 'OpenTelemetry',
@@ -179,7 +182,7 @@ const TOPIC_WORDS: Readonly<Record<string, string>> = {
 }
 
 /** Display name for a GitHub topic: 'machine-learning' -> 'Machine Learning',
- *  'llm' -> 'LLM', 'k8s' -> 'Kubernetes', 'graphql-api' -> 'GraphQL API'. */
+ *  'llm' -> 'LLM', 'golang' -> 'Golang', 'graphql-api' -> 'GraphQL API'. */
 export function humanizeTopic(topic: string): string {
   const whole = own(TOPIC_WORDS, topic)
   if (whole) return whole
@@ -436,8 +439,14 @@ export function relatedApiCategories(slug: string): readonly string[] {
 }
 
 /** Tags that put an enriched API in the AI and LLM collection (3.16),
- *  together with the machine-learning category. */
-export const AI_LLM_TAGS: readonly string[] = ['llm', 'ai', 'generative-ai', 'embeddings', 'speech', 'vision', 'chatbot']
+ *  together with the machine-learning category. A bare 'ai' tag is NOT
+ *  one of them: providers add it to almost anything (analytics, job
+ *  boards, meme generators), so only tags that name a model capability
+ *  count. */
+export const AI_LLM_TAGS: readonly string[] = [
+  'llm', 'generative-ai', 'language-models', 'text-generation', 'embeddings', 'speech', 'text-to-speech',
+  'vision', 'image-generation', 'chatbot',
+]
 
 /** Category slug of the AI and LLM collection's base category. */
 export const AI_LLM_CATEGORY = 'machine-learning'

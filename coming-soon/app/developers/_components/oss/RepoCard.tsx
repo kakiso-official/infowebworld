@@ -6,20 +6,19 @@ import { GfiBadge, LicenseBadge, StarCount } from '../ui/Badges'
 import LanguageDot from '../ui/LanguageDot'
 import OrgAvatar from '../ui/OrgAvatar'
 import DvTime from '../ui/DvTime'
-import DvExternalLink from '../ui/DvExternalLink'
 
 /* ═══════════════════════════════════════════════════════════════════════
    Repository card (spec 4.5): avatar + owner/name + stars, a 2-line
    description, language/forks/license/updated meta, up to 3 topic chips
    and a good-first-issues badge. `variant="onDark"` for navy bands.
 
-   There is no internal repository detail page in this build, so `href`
-   is always the repository's real GitHub URL (opened in a new tab).
+   `href` is our repository page (/developers/open-source/{company}/{repo});
+   the whole card is clickable through the name link (stretched link).
    ═══════════════════════════════════════════════════════════════════════ */
 
 export interface RepoCardProps {
   nameWithOwner: string
-  /** The repository's real GitHub URL. */
+  /** Our repository page. */
   href: string
   description: string | null
   stars: number
@@ -50,7 +49,7 @@ export default function RepoCard({
         <OrgAvatar src={companyAvatarUrl} name={companyName} size={24} />
         <span className="dv-repocard-name">
           <code>
-            {owner}/<b><DvExternalLink href={href} icon={false} className="dv-card-stretch">{name ?? owner}</DvExternalLink></b>
+            {owner}/<b><a href={href} className="dv-card-stretch">{name ?? owner}</a></b>
           </code>
         </span>
         <StarCount count={stars} />

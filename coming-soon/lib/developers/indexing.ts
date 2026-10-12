@@ -61,7 +61,7 @@ export const GATES = {
 
 /** Content date of /developers/methodology (its sitemap lastmod). Bump it
  *  whenever the methodology copy changes. */
-export const METHODOLOGY_UPDATED = '2026-10-11'
+export const METHODOLOGY_UPDATED = '2026-10-12'
 
 /* ── Open source ─────────────────────────────────────────────────────── */
 

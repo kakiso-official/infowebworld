@@ -7,10 +7,10 @@ import { faBuilding, faCodeFork, faGlobe, faSeedling, faStar } from '@fortawesom
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import { formatNumber, joinList } from '@/lib/developers/format'
 import {
-  companyAvatar, companyIwwLink, isCompanyPageIndexable, repoKey, similarCompanies, type OssStore,
+  companyAvatar, companyIwwLink, isCompanyPageIndexable, repoKey, repoLanguageSlug, similarCompanies, type OssStore,
 } from '@/lib/developers/oss'
 import type { OssCompany } from '@/lib/developers/types'
-import { apiPath, normalizeSlugParam, ossCompanyPath } from '@/lib/developers/paths'
+import { apiPath, gfiPath, normalizeSlugParam, ossCompanyPath, ossFacetPath, ossRepoPath } from '@/lib/developers/paths'
 import { devCrumbs, faqGraphNode, listNode, orgNode, softwareSourceCodeNode } from '@/lib/developers/jsonld'
 import { companySeo, devMetadata, devNotFoundMetadata, noDash } from '@/lib/developers/seo'
 import { apisForCompany, officialSdks } from '@/lib/developers/apis'
@@ -34,6 +34,9 @@ import ApiPromo, { type ApiPromoApi } from '../../_components/ui/ApiPromo'
 import IwwBadgeCard from '../../_components/oss/IwwBadgeCard'
 import CompanyCard from '../../_components/oss/CompanyCard'
 import RepoTable, { type RepoTableRow } from '../../_components/oss/RepoTable'
+import RepoFilterBar from '../../_components/oss/RepoFilterBar'
+import IssueCard, { issueCardData } from '../../_components/oss/IssueCard'
+import { languageOptions } from '../../_components/oss/views/options'
 
 export const revalidate = 86400
 export const dynamicParams = true
@@ -128,16 +131,26 @@ export default async function CompanyPage({ params }: { params: Promise<Params> 
 
   const repoRows: RepoTableRow[] = repos.map(r => ({
     slug: r.slug,
-    href: r.url,
+    href: ossRepoPath(company.slug, r.slug),
     name: r.name,
     description: r.description,
     stars: r.stars,
+    forks: r.forks,
     primaryLanguage: r.primaryLanguage,
+    langSlug: repoLanguageSlug(r),
     license: r.license,
     pushedAt: r.pushedAt,
     goodFirstIssues: r.goodFirstIssues,
     isArchived: r.isArchived,
+    topics: r.topics,
   }))
+  const issues = (store.issuesByCompany.get(company.slug) ?? []).slice(0, 6)
+    .map(i => issueCardData(store, i))
+    .filter((c): c is NonNullable<typeof c> => c !== null)
+  const industryHref = store.facetBySlug.industry.has(company.industrySlug) ? ossFacetPath('industry', company.industrySlug) : null
+  const countryHref = company.countrySlug && store.facetBySlug.country.has(company.countrySlug)
+    ? ossFacetPath('country', company.countrySlug)
+    : null
 
   const orgsText = joinList(company.orgs.map(o => o.login))
 
@@ -166,14 +179,24 @@ export default async function CompanyPage({ params }: { params: Promise<Params> 
         media={<OrgAvatar src={companyAvatar(company) || null} name={company.name} size={64} labelled />}
         meta={(
           <>
-            <span className="dv-chip dv-chip--static">
-              <FontAwesomeIcon icon={industryIcon(company.industrySlug)} aria-hidden="true" /> {company.industry}
-            </span>
-            {company.countryName && (
+            {industryHref ? (
+              <a className="dv-chip" href={industryHref}>
+                <FontAwesomeIcon icon={industryIcon(company.industrySlug)} aria-hidden="true" /> {company.industry}
+              </a>
+            ) : (
+              <span className="dv-chip dv-chip--static">
+                <FontAwesomeIcon icon={industryIcon(company.industrySlug)} aria-hidden="true" /> {company.industry}
+              </span>
+            )}
+            {company.countryName && (countryHref ? (
+              <a className="dv-chip" href={countryHref}>
+                {company.hqCountry && <DvFlag code={company.hqCountry} />} {company.countryName}
+              </a>
+            ) : (
               <span className="dv-chip dv-chip--static">
                 {company.hqCountry && <DvFlag code={company.hqCountry} />} {company.countryName}
               </span>
-            )}
+            ))}
             {company.orgs.some(o => o.isVerified) && <VerifiedOrgBadge />}
           </>
         )}
@@ -236,17 +259,42 @@ export default async function CompanyPage({ params }: { params: Promise<Params> 
       />
 
       <DvBand tone="white" id="dv-company-projects" title="Projects" sub={`Public, non-fork repositories tracked from ${noDash(company.name)}'s GitHub organizations, ranked by stars.`}>
-        <RepoTable rows={repoRows} dataAt={store.dataAt} caption={`${formatNumber(repoRows.length)} tracked repositories, sorted by GitHub stars`} />
+        {repoRows.length > 1 && (
+          <RepoFilterBar target="dv-company-repo-rows" languages={languageOptions(repos)} label={`Filter ${noDash(company.name)} projects`} />
+        )}
+        <RepoTable
+          rows={repoRows}
+          dataAt={store.dataAt}
+          bodyId="dv-company-repo-rows"
+          caption={`${formatNumber(repoRows.length)} tracked repositories, sorted by GitHub stars`}
+        />
+      </DvBand>
+
+      <DvBand
+        tone="wash"
+        id="dv-company-gfi"
+        title={`Good first issues at ${noDash(company.name)}`}
+        action={issues.length > 0 ? <a className="dv-more" href={gfiPath()}>All good first issues</a> : undefined}
+      >
+        {issues.length > 0 ? (
+          <div className="dv-grid dv-grid--2 dv-issuegrid">
+            {issues.map(i => <IssueCard key={i.url} issue={i} dataAt={store.dataAt} />)}
+          </div>
+        ) : (
+          <p className="dv-lead">
+            No open good first issues right now. <a href={gfiPath()}>Browse all good first issues</a>.
+          </p>
+        )}
       </DvBand>
 
       {apiPromo && (
-        <DvBand tone="wash" id="dv-company-api" title={`${noDash(company.name)}'s free API`}>
+        <DvBand tone="white" id="dv-company-api" title={`${noDash(company.name)}'s free API`}>
           <ApiPromo variant="api" companyName={noDash(company.name)} api={apiPromo} />
         </DvBand>
       )}
 
       {similar.length > 0 && (
-        <DvBand tone={apiPromo ? 'white' : 'wash'} id="dv-company-similar" title="Similar companies">
+        <DvBand tone={apiPromo ? 'wash' : 'white'} id="dv-company-similar" title="Similar companies">
           <div className="dv-grid dv-grid--3">
             {similar.map(c => {
               const cStats = store.statsBySlug.get(c.slug)!
@@ -271,7 +319,7 @@ export default async function CompanyPage({ params }: { params: Promise<Params> 
         </DvBand>
       )}
 
-      <DvFaq heading={`${noDash(company.name)} open source FAQs`} faqs={faqs} tone="white" />
+      <DvFaq heading={`${noDash(company.name)} open source FAQs`} faqs={faqs} tone={similar.length > 0 && !apiPromo ? 'wash' : 'white'} />
 
       <DvSourceNote>
         GitHub data for {noDash(company.name)} comes from the GitHub GraphQL API. We track up to {store.meta.reposPerOrgLimit}{' '}

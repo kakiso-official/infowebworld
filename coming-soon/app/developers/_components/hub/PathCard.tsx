@@ -6,9 +6,8 @@ import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
 /* ═══════════════════════════════════════════════════════════════════════
    Path card (spec 4.5 DvPathCard): one of the two "ways to start" on the
    section hub. Radius 16, 64px icon tile, a short pitch, a few mini
-   stats and a primary button. The card itself is not a link (only the
-   button is), so it is safe to use even when there is nothing else to
-   click inside it.
+   stats, optional quick links and a primary button. The card itself is
+   not a link (only its links and button are).
    ═══════════════════════════════════════════════════════════════════════ */
 
 const TILE_STYLE = { '--dv-tile': '64px' } as CSSProperties
@@ -19,11 +18,13 @@ export interface PathCardProps {
   text: ReactNode
   /** Short stat phrases, e.g. '560 companies'. */
   stats: readonly string[]
+  /** Quick links into the section ('No-key APIs', 'Python projects'). */
+  links?: ReadonlyArray<{ href: string; label: string }>
   action: { href: string; label: string }
   className?: string
 }
 
-export default function PathCard({ icon, title, text, stats, action, className }: PathCardProps) {
+export default function PathCard({ icon, title, text, stats, links, action, className }: PathCardProps) {
   return (
     <div className={`dv-card dv-pathcard${className ? ` ${className}` : ''}`}>
       <span className="dv-icon-tile dv-pathcard-icon" style={TILE_STYLE} aria-hidden="true">
@@ -34,6 +35,11 @@ export default function PathCard({ icon, title, text, stats, action, className }
       {stats.length > 0 && (
         <ul className="dv-pathcard-stats">
           {stats.map(s => <li key={s}>{s}</li>)}
+        </ul>
+      )}
+      {links && links.length > 0 && (
+        <ul className="dv-pathcard-links" aria-label={`${title}: quick links`}>
+          {links.map(l => <li key={l.href}><a href={l.href}>{l.label}</a></li>)}
         </ul>
       )}
       <a className="dv-btn dv-btn--primary" href={action.href}>

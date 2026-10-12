@@ -1,5 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════════
-   InfoWebWorld for Developers - section hub (/developers) only.
+   InfoWebWorld for Developers - section hub (/developers), methodology and
+   search pages.
    ═══════════════════════════════════════════════════════════════════════ */
 
 .dv .dv-pathgrid {
@@ -61,3 +62,111 @@
   text-decoration: none;
 }
 .dv .dv-terminal-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ── Path card quick links ───────────────────────────────────────────── */
+
+.dv .dv-pathcard-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 0 0 6px;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  font-weight: 650;
+}
+.dv .dv-pathcard-links a { color: var(--dv-brand); text-decoration: underline; text-decoration-color: rgba(var(--dv-brand-rgb), .3); text-underline-offset: 3px; }
+.dv .dv-pathcard-links a:hover { text-decoration-color: currentColor; }
+
+/* ── "How we check this data" cards ──────────────────────────────────── */
+
+.dv .dv-trustcard {
+  padding: 24px;
+  border-radius: var(--dv-r);
+  background: var(--dv-wash);
+}
+.dv .dv-trustcard-icon { font-size: 20px; color: var(--dv-brand); }
+.dv .dv-trustcard .dv-h3 { margin: 12px 0 6px; }
+.dv .dv-trustcard p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--dv-body); }
+
+/* ── Methodology prose ───────────────────────────────────────────────── */
+
+.dv .dv-prose { color: var(--dv-body); font-size: 0.9375rem; line-height: 1.7; }
+.dv .dv-prose h2 {
+  margin: 36px 0 12px;
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  color: var(--dv-ink);
+}
+.dv .dv-prose h2:first-child { margin-top: 0; }
+.dv .dv-prose p { margin: 0 0 14px; }
+.dv .dv-prose ul { margin: 0 0 14px; padding-left: 20px; }
+.dv .dv-prose li { margin: 0 0 8px; }
+.dv .dv-prose li::marker { color: var(--dv-brand); }
+.dv .dv-prose strong { color: var(--dv-ink); font-weight: 700; }
+.dv .dv-prose a { color: var(--dv-brand); text-decoration: underline; text-decoration-color: rgba(var(--dv-brand-rgb), .35); text-underline-offset: 3px; }
+.dv .dv-prose a:hover { text-decoration-color: currentColor; }
+.dv .dv-method-dates { margin-top: 8px; }
+.dv .dv-method-dates .dv-facts-row { grid-template-columns: 160px minmax(0, 1fr); }
+.dv .dv-method-dates .dv-facts-value a { margin-left: 8px; font-size: 13px; }
+
+/* ── Search results page ─────────────────────────────────────────────── */
+
+.dv .dv-results { display: flex; flex-direction: column; gap: 32px; }
+.dv .dv-results-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+  font-size: 1.125rem;
+  font-weight: 750;
+  color: var(--dv-ink);
+}
+.dv .dv-results-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--dv-muted);
+  background: var(--dv-sunk);
+  border-radius: var(--dv-r-pill);
+  padding: 2px 9px;
+}
+.dv .dv-results-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--dv-line);
+  border-radius: var(--dv-r);
+  background: #FFFFFF;
+}
+.dv .dv-results-list li + li { border-top: 1px solid var(--dv-line-soft); }
+.dv .dv-result {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  color: var(--dv-ink);
+  text-decoration: none;
+}
+.dv .dv-result:hover { background: var(--dv-row-hover); }
+.dv .dv-result:hover .dv-result-label { color: var(--dv-brand); text-decoration: underline; text-underline-offset: 3px; }
+.dv .dv-result-media {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--dv-tint);
+  color: var(--dv-brand);
+  font-size: 13px;
+}
+.dv .dv-result-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 auto; }
+.dv .dv-result-label { font-weight: 700; font-size: 14.5px; overflow-wrap: anywhere; }
+.dv .dv-result-label code { background: none; padding: 0; font-size: 13.5px; }
+.dv .dv-result-sub { font-size: 12.5px; color: var(--dv-muted); font-weight: 500; overflow-wrap: anywhere; }
+.dv .dv-result-meta { flex: 0 0 auto; font-size: 12.5px; font-weight: 650; color: var(--dv-body); white-space: nowrap; }
+.dv .dv-search-suggest { margin-top: 20px; }
+.dv .dv-search-suggest .dv-chips-list { justify-content: center; }

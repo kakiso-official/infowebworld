@@ -235,3 +235,7 @@
 @media (prefers-reduced-motion: reduce) {
   .dv .dv-table tbody tr { transition: none; }
 }
+
+/* A secondary link inside a cell (the company of a repo, a country). */
+.dv .dv-table .dv-td-link { color: var(--dv-body); font-weight: 600; text-decoration: none; }
+.dv .dv-table .dv-td-link:hover { color: var(--dv-brand); text-decoration: underline; text-underline-offset: 3px; }

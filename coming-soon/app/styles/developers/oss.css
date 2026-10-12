@@ -1,6 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════════════
-   InfoWebWorld for Developers - open-source pages (hub, company).
-   Imported only by the pages under /developers/open-source.
+   InfoWebWorld for Developers - open-source pages (hub, company, repo,
+   rankings, language/topic/country/industry pages, good first issues).
+   Imported by the pages under /developers/open-source and the section hub.
    ═══════════════════════════════════════════════════════════════════════ */
 
 /* Card grids reuse the shared .dv-grid / .dv-grid--3 utility (shell.css). */
@@ -176,4 +177,204 @@
 @media (prefers-reduced-motion: reduce) {
   .dv .dv-companycard,
   .dv .dv-repocard { transition: none; }
+}
+
+/* ── Ranked tables (RepoRankTable, CompanyTable) ─────────────────────── */
+
+.dv .dv-repotable,
+.dv .dv-cotable { --dv-metric-w: 76px; }
+.dv .dv-repotable .dv-td-name code {
+  background: none;
+  padding: 0;
+  font-size: 13.5px;
+  color: inherit;
+}
+.dv .dv-repotable .dv-td-name code b { font-weight: 750; }
+.dv .dv-repotable .dv-td-name .dv-badge { margin-left: 4px; vertical-align: 1px; }
+.dv .dv-cotable-co { display: flex; align-items: flex-start; gap: 10px; min-width: 0; }
+.dv .dv-cotable-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.dv .dv-cotable-listed {
+  align-self: flex-start;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--dv-brand);
+  background: var(--dv-tint);
+  border-radius: var(--dv-r-pill);
+  padding: 1px 8px;
+}
+.dv .dv-cotable .dv-td-desc { -webkit-line-clamp: 1; }
+.dv .dv-cotable .dv-country { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+
+/* Notes above and below long lists. */
+.dv .dv-list-note { margin: 0 0 14px; }
+.dv .dv-list-note-end { margin: 16px 0 0; }
+
+/* ── Good first issue cards (IssueCard) ───────────────────────────────── */
+
+.dv .dv-issuecard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.dv .dv-issuecard-repo {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--dv-muted);
+}
+.dv .dv-issuecard-repo a { color: var(--dv-body); text-decoration: none; overflow-wrap: anywhere; }
+.dv .dv-issuecard-repo a:hover { color: var(--dv-brand); text-decoration: underline; text-underline-offset: 3px; }
+.dv .dv-issuecard-repo code { font-size: 12.5px; }
+.dv .dv-issuecard-sep { color: var(--dv-line-strong); }
+.dv .dv-issuecard-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.4;
+  color: var(--dv-ink);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.dv .dv-issuecard-title a { color: inherit; text-decoration: none; }
+.dv .dv-issuecard:hover .dv-issuecard-title a { color: var(--dv-brand); }
+.dv .dv-issuecard-labels { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.dv .dv-issuecard-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  margin: auto 0 0;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--dv-muted);
+}
+.dv .dv-issuegrid { align-items: stretch; }
+
+/* ── Contribute steps (ContributeSteps) ───────────────────────────────── */
+
+.dv .dv-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: var(--dv-read);
+}
+.dv .dv-step { display: flex; align-items: flex-start; gap: 14px; }
+.dv .dv-step-n {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--dv-tint);
+  color: var(--dv-brand);
+  font-weight: 800;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.dv .dv-step-body { min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 8px; }
+.dv .dv-step-title { margin: 4px 0 0; font-size: 1rem; font-weight: 700; color: var(--dv-ink); }
+.dv .dv-step-text { margin: 0; font-size: 14.5px; line-height: 1.6; color: var(--dv-body); }
+.dv .dv-step-link { margin: 0; font-size: 14px; font-weight: 650; }
+.dv .dv-step-link a { color: var(--dv-brand); }
+
+/* ── Repository page ──────────────────────────────────────────────────── */
+
+.dv .dv-topic-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0 0; padding: 0; list-style: none; }
+/* A topic without its own page: same shape as the linked chips, quieter. */
+.dv .dv-topic-list .dv-chip--static { border-color: var(--dv-line); background: var(--dv-sunk); color: var(--dv-body); }
+.dv .dv-repo-section { margin: 28px 0 12px; }
+.dv .dv-repo-release { margin: 10px 0 0; }
+.dv .dv-repo-aside-label { margin: 0 0 14px; }
+.dv .dv-repo-aside-company { margin-top: 16px; }
+.dv a.dv-badge--link { text-decoration: none; }
+.dv a.dv-badge--link:hover { border-color: rgba(var(--dv-brand-rgb), .45); background: var(--dv-tint); }
+
+/* Company behind a repository (CompanyMiniCard). */
+.dv .dv-cominicard { display: flex; flex-direction: column; gap: 12px; }
+.dv .dv-cominicard .dv-label { margin: 0; }
+.dv .dv-cominicard-head { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.dv .dv-cominicard-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.dv .dv-cominicard-name { font-size: 15.5px; font-weight: 750; color: var(--dv-ink); text-decoration: none; }
+.dv .dv-cominicard-name:hover { color: var(--dv-brand); text-decoration: underline; text-underline-offset: 3px; }
+.dv .dv-cominicard-meta {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--dv-muted);
+  font-weight: 500;
+}
+.dv .dv-cominicard-meta a { color: var(--dv-body); }
+.dv .dv-cominicard-meta a:hover { color: var(--dv-brand); }
+.dv .dv-cominicard-iww {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: var(--dv-r-sm);
+  background: var(--dv-tint);
+  color: var(--dv-ink);
+  font-size: 13.5px;
+  font-weight: 650;
+  text-decoration: none;
+}
+.dv .dv-cominicard-iww svg { margin-top: 3px; color: var(--dv-brand); }
+.dv .dv-cominicard-iww-cta { color: var(--dv-brand); white-space: nowrap; }
+.dv .dv-cominicard-iww:hover .dv-cominicard-iww-cta { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ── Company pills (CompanyChips) ─────────────────────────────────────── */
+
+.dv .dv-cochips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.dv .dv-cochip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 5px 12px 5px 6px;
+  border: 1px solid var(--dv-line);
+  border-radius: var(--dv-r-pill);
+  background: #FFFFFF;
+  color: var(--dv-ink);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color .15s ease, border-color .15s ease;
+}
+.dv .dv-cochip:hover { background: var(--dv-tint); border-color: rgba(var(--dv-brand-rgb), .3); }
+
+/* ── Facet pages and indexes ──────────────────────────────────────────── */
+
+/* A visible label over a chip row ("Popular topics in TypeScript"). */
+.dv .dv-chiprow-label { margin: 0 0 8px; }
+
+.dv .dv-ph-flag .dv-flag {
+  width: 48px;
+  height: 36px;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px rgba(10, 27, 51, .12);
+  object-fit: cover;
+}
+.dv .dv-barlist-icon { color: var(--dv-brand); font-size: 13px; width: 16px; }
+
+/* Open-source hub: language / topic / country / industry lists. */
+.dv .dv-oss-browse { --dv-grid-gap: 36px 40px; }
+.dv .dv-browse-title { margin: 0 0 12px; }
+.dv .dv-oss-browse .dv-barlist + .dv-more { margin-top: 12px; }
+/* Two lists side by side leave little room: names first, counts in the bar. */
+.dv .dv-oss-browse .dv-barlist-label-sub { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dv .dv-cochip { transition: none; }
 }

@@ -1,9 +1,8 @@
 import type { GhLanguage } from '@/lib/developers/types'
-import { formatNumber } from '@/lib/developers/format'
+import { formatNumber, parseIsoDate } from '@/lib/developers/format'
 import { ArchivedBadge, GfiBadge, LicenseBadge, StarCount } from '../ui/Badges'
 import LanguageDot from '../ui/LanguageDot'
 import DvTime from '../ui/DvTime'
-import DvExternalLink from '../ui/DvExternalLink'
 
 /* ═══════════════════════════════════════════════════════════════════════
    Project list for a company page (spec 4.6 table contract): name in
@@ -11,32 +10,40 @@ import DvExternalLink from '../ui/DvExternalLink'
    present (missing fields render an empty cell, hidden on phones by
    tables.css), stars always shown (a real count, never a guessed one).
 
-   There is no internal repository detail page in this build, so each name
-   links straight to the real repository on GitHub (new tab).
+   Each name links to our repository page. Rows carry the data-* values
+   RepoFilterBar reads (data-lang, data-gfi, data-archived, data-stars,
+   data-forks, data-pushed, data-search); without JS every row shows in
+   stars order, archived ones dimmed.
    ═══════════════════════════════════════════════════════════════════════ */
 
 export interface RepoTableRow {
   slug: string
-  /** The repository's real GitHub URL (opened in a new tab). */
+  /** Our repository page. */
   href: string
   name: string
   description: string | null
   stars: number
+  forks?: number
   primaryLanguage: GhLanguage | null
+  /** Language slug for the filter (data-lang). */
+  langSlug?: string | null
   license: string | null
   pushedAt: string | null
   goodFirstIssues: number
   isArchived: boolean
+  topics?: readonly string[]
 }
 
 export interface RepoTableProps {
   rows: readonly RepoTableRow[]
   dataAt: string
   caption: string
+  /** id of the <tbody> (the RepoFilterBar target). */
+  bodyId?: string
   className?: string
 }
 
-export default function RepoTable({ rows, dataAt, caption, className }: RepoTableProps) {
+export default function RepoTable({ rows, dataAt, caption, bodyId, className }: RepoTableProps) {
   if (!rows.length) return null
   return (
     <div className={`dv-table-wrap${className ? ` ${className}` : ''}`}>
@@ -50,11 +57,22 @@ export default function RepoTable({ rows, dataAt, caption, className }: RepoTabl
             <th scope="col" role="columnheader" className="dv-td-num">Stars</th>
           </tr>
         </thead>
-        <tbody role="rowgroup">
+        <tbody role="rowgroup" id={bodyId}>
           {rows.map(r => (
-            <tr role="row" key={r.slug} data-archived={r.isArchived ? '1' : undefined}>
+            <tr
+              role="row"
+              key={r.slug}
+              data-row=""
+              data-lang={r.langSlug ?? ''}
+              data-gfi={r.goodFirstIssues > 0 ? '1' : '0'}
+              data-archived={r.isArchived ? '1' : '0'}
+              data-stars={r.stars}
+              data-forks={r.forks ?? 0}
+              data-pushed={parseIsoDate(r.pushedAt)?.getTime() ?? 0}
+              data-search={`${r.name} ${r.description ?? ''} ${(r.topics ?? []).join(' ')}`.toLowerCase()}
+            >
               <td role="cell" className="dv-td-name">
-                <DvExternalLink href={r.href}><code>{r.name}</code></DvExternalLink>
+                <a href={r.href}><code>{r.name}</code></a>
                 {r.description && <p className="dv-td-desc">{r.description}</p>}
                 <span className="dv-td-sub">
                   {r.isArchived && <ArchivedBadge />}

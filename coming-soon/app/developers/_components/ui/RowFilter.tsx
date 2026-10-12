@@ -105,6 +105,14 @@ type FilterState = Record<string, string>
 const SEARCH_KEY = 'find'
 const SORT_KEY = 'sort'
 
+/* Stable empty defaults. The effects below depend on `controls` and
+   `sorts` by reference; a fresh [] on every render would re-run them after
+   each setCounts() and loop until React stops it ("Maximum update depth
+   exceeded"). Callers should still pass stable arrays (module constants or
+   useMemo). */
+const NO_CONTROLS: readonly RowFilterControl[] = []
+const NO_SORTS: readonly RowSortOption[] = []
+
 function defaultsOf(controls: readonly RowFilterControl[], sorts: readonly RowSortOption[]): FilterState {
   const state: FilterState = {}
   for (const c of controls) state[c.key] = c.kind === 'toggle' ? (c.defaultOn ? '1' : '0') : ''
@@ -123,7 +131,7 @@ function words(text: string): string[] {
 }
 
 export default function RowFilter({
-  target, noun, controls = [], sorts = [], search, sticky = false, label,
+  target, noun, controls = NO_CONTROLS, sorts = NO_SORTS, search, sticky = false, label,
   emptyTitle, emptyText, className,
 }: RowFilterProps) {
   const uid = useId()

@@ -3,8 +3,9 @@
 
      /developers/free-apis/no-auth        auth === 'none'
      /developers/free-apis/cors-enabled   cors === 'yes' && https
-     /developers/free-apis/ai-llm         enriched AND (category
-                                          machine-learning OR an AI tag)
+     /developers/free-apis/ai-llm         enriched AND not documented as
+                                          non-free AND (category
+                                          machine-learning OR an AI model tag)
 
    One predicate per collection, shared by the collection pages, the hub
    quick-filter counts, the sitemap and search, so a count shown in a chip
@@ -29,10 +30,13 @@ export function isCorsEnabledApi(api: Pick<FreeApi, 'cors' | 'https'>): boolean 
 }
 
 /** Reviewed AI and LLM APIs: the machine-learning category, or any API
- *  whose verified tags include an AI tag. Only enriched APIs qualify, so
- *  every row in the comparison has its free tier and limits checked. */
+ *  whose verified tags include an AI model tag. Only enriched APIs qualify,
+ *  so every row in the comparison has its free tier and limits checked,
+ *  and an API whose provider documents no free tier is left out of a list
+ *  of free APIs. */
 export function isAiLlmApi(api: Pick<FreeApi, 'enriched' | 'details' | 'category'>): boolean {
   if (!api.enriched || !api.details) return false
+  if (api.details.freeTier.available === false) return false
   if (api.category.slug === AI_LLM_CATEGORY) return true
   return api.details.tags.some(tag => AI_LLM_TAGS.includes(tag.toLowerCase()))
 }
