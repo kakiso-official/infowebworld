@@ -1,4 +1,5 @@
 import { buildEmailShell, escapeHtml, avatarBlock, EMAIL_FONTS, EMAIL_SITE } from './email'
+import { publicListingUrl } from '../app/lib/listing-url'
 
 const { F_BODY, F_HEAD } = EMAIL_FONTS
 const SITE = EMAIL_SITE
@@ -15,8 +16,11 @@ interface BaseArgs {
   ownerName: string | null
   /** The listing's company/product name from submissions.company_name. */
   companyName: string
-  /** The listing slug — used for /company/[slug] and /dashboard/listings/[uuid] links. */
+  /** The listing slug, for the public page link (see publicUrl). */
   listingSlug: string
+  /** submissions.listing_mode: 'company' rows live at /profile/<slug>,
+   *  everything else at /listing/<slug>. Missing = product. */
+  listingMode?: string | null
   /** The listing uuid — used for /dashboard/listings/[uuid] link. */
   listingUuid: string
   listingLogoUrl?: string | null
@@ -30,8 +34,10 @@ function greeting(name: string | null | undefined): string {
 function dashUrl(uuid: string): string {
   return `${SITE}/dashboard/listings/${uuid}/engagement`
 }
-function publicUrl(slug: string): string {
-  return `${SITE}/company/${slug}`
+/* The listing's public page. /company/<slug> was retired (b5f3817) and
+   404s, so every "View listing" link in these emails was dead until Oct 12. */
+function publicUrl(a: Pick<BaseArgs, 'listingSlug' | 'listingMode'>): string {
+  return `${SITE}${publicListingUrl(a.listingSlug, a.listingMode)}`
 }
 
 /* ──────────────────────────── Review received ──────────────────────────── */
@@ -93,7 +99,7 @@ export function reviewReceivedEmail(a: ReviewArgs) {
       bodyHtml,
       ctaUrl: dashUrl(a.listingUuid),
       ctaText: 'Open engagement dashboard',
-      ctaSecondaryUrl: `${publicUrl(a.listingSlug)}#insights`,
+      ctaSecondaryUrl: `${publicUrl(a)}#insights`,
       ctaSecondaryText: 'See it on the public listing →',
       footerNote: 'Sent because someone reviewed your listing.',
     }),
@@ -105,7 +111,7 @@ export function reviewReceivedEmail(a: ReviewArgs) {
 ${a.reviewBody}
 
 See all engagement: ${dashUrl(a.listingUuid)}
-Public listing: ${publicUrl(a.listingSlug)}`,
+Public listing: ${publicUrl(a)}`,
   }
 }
 
@@ -192,7 +198,7 @@ export function reactionReceivedEmail(a: ReactionArgs) {
       bodyHtml,
       ctaUrl: dashUrl(a.listingUuid),
       ctaText: 'Open engagement dashboard',
-      ctaSecondaryUrl: publicUrl(a.listingSlug),
+      ctaSecondaryUrl: publicUrl(a),
       ctaSecondaryText: 'View the public listing →',
       footerNote: 'Sent on the FIRST reaction from each user — re-toggles do not re-email.',
     }),
@@ -202,7 +208,7 @@ export function reactionReceivedEmail(a: ReactionArgs) {
 Running totals — Likes: ${a.totalLikes} · Dislikes: ${a.totalDislikes}
 
 Engagement dashboard: ${dashUrl(a.listingUuid)}
-Public listing: ${publicUrl(a.listingSlug)}`,
+Public listing: ${publicUrl(a)}`,
   }
 }
 
@@ -257,7 +263,7 @@ export function followReceivedEmail(a: FollowArgs) {
       bodyHtml,
       ctaUrl: dashUrl(a.listingUuid),
       ctaText: 'Open engagement dashboard',
-      ctaSecondaryUrl: publicUrl(a.listingSlug),
+      ctaSecondaryUrl: publicUrl(a),
       ctaSecondaryText: 'View the public listing →',
       footerNote: 'Sent on the first follow from each user.',
     }),
@@ -319,7 +325,7 @@ export function bookmarkReceivedEmail(a: BookmarkArgs) {
       bodyHtml,
       ctaUrl: dashUrl(a.listingUuid),
       ctaText: 'Open engagement dashboard',
-      ctaSecondaryUrl: publicUrl(a.listingSlug),
+      ctaSecondaryUrl: publicUrl(a),
       ctaSecondaryText: 'View the public listing →',
       footerNote: 'Sent on the first bookmark from each user.',
     }),
@@ -430,7 +436,7 @@ export function inboxLeadReceivedEmail(a: InboxLeadArgs) {
     <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="padding:14px 48px 0">
       <tr>
         <td style="font-family:${F_BODY};font-size:12px;color:#9A9590;line-height:1.6">
-          This lead was captured on <a href="${publicUrl(a.listingSlug)}" style="color:#E8553D;text-decoration:none;font-weight:700">infowebworld.com/company/${escapeHtml(a.listingSlug)}</a> and forwarded to you immediately. Your full lead history lives on the engagement dashboard.
+          This lead was captured on <a href="${publicUrl(a)}" style="color:#E8553D;text-decoration:none;font-weight:700">infowebworld.com${escapeHtml(publicListingUrl(a.listingSlug, a.listingMode))}</a> and forwarded to you immediately. Your full lead history lives on the engagement dashboard.
         </td>
       </tr>
     </table>
@@ -455,7 +461,7 @@ export function inboxLeadReceivedEmail(a: InboxLeadArgs) {
   }
   textParts.push('')
   textParts.push(`Reply: mailto:${a.leadEmail}`)
-  textParts.push(`Source listing: ${publicUrl(a.listingSlug)}`)
+  textParts.push(`Source listing: ${publicUrl(a)}`)
   textParts.push(`Lead dashboard: ${dashUrl(a.listingUuid)}`)
 
   return {
@@ -471,7 +477,7 @@ export function inboxLeadReceivedEmail(a: InboxLeadArgs) {
       bodyHtml,
       ctaUrl: dashUrl(a.listingUuid),
       ctaText: 'See all leads',
-      ctaSecondaryUrl: publicUrl(a.listingSlug),
+      ctaSecondaryUrl: publicUrl(a),
       ctaSecondaryText: 'View the public listing →',
       footerNote: 'Lead captured and forwarded to you by InfoWebWorld.',
     }),
@@ -544,7 +550,7 @@ export function verificationApprovedEmail(a: VerificationApprovedArgs) {
       eyebrow: 'Verification approved',
       title: `${a.companyName} is now Verified`,
       bodyHtml,
-      ctaUrl: publicUrl(a.listingSlug),
+      ctaUrl: publicUrl(a),
       ctaText: 'See the badge on your listing',
       ctaSecondaryUrl: dashUrl(a.listingUuid),
       ctaSecondaryText: 'Open your dashboard →',
@@ -558,7 +564,7 @@ The verified badge is live on your listing now.${adminNote ? `
 Note from our review team:
 ${adminNote}` : ''}
 
-Listing: ${publicUrl(a.listingSlug)}
+Listing: ${publicUrl(a)}
 Dashboard: ${dashUrl(a.listingUuid)}`,
   }
 }

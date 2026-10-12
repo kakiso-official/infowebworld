@@ -27,6 +27,8 @@ interface OwnerLookup {
   user_id: number | null
   uuid: string
   slug: string
+  /** 'company' -> /profile/<slug>, else /listing/<slug> (email links). */
+  listing_mode: string | null
   company_name: string
   logo_url: string | null
   owner_email: string | null
@@ -43,7 +45,8 @@ interface ActorLookup {
 async function loadOwner(listingId: number): Promise<OwnerLookup | null> {
   try {
     return await queryOne<OwnerLookup>(
-      `SELECT s.id, s.user_id, s.uuid, s.slug, s.company_name, s.logo_url,
+      `SELECT s.id, s.user_id, s.uuid, s.slug, COALESCE(s.listing_mode, 'product') AS listing_mode,
+              s.company_name, s.logo_url,
               u.email AS owner_email, u.name AS owner_name
          FROM submissions s
          LEFT JOIN business_users u ON u.id = s.user_id
@@ -111,6 +114,7 @@ export async function notifyOwnerOnReview(args: {
       companyName: o.company_name,
       listingSlug: o.slug,
       listingUuid: o.uuid,
+      listingMode: o.listing_mode,
       listingLogoUrl: o.logo_url,
       reviewerName: actorDisplayName(actor),
       reviewerAvatarUrl: actor?.avatar_url || null,
@@ -151,6 +155,7 @@ export async function notifyOwnerOnReaction(args: {
       companyName: o.company_name,
       listingSlug: o.slug,
       listingUuid: o.uuid,
+      listingMode: o.listing_mode,
       listingLogoUrl: o.logo_url,
       kind: args.kind,
       actorName: actorDisplayName(actor),
@@ -187,6 +192,7 @@ export async function notifyOwnerOnFollow(args: {
       companyName: o.company_name,
       listingSlug: o.slug,
       listingUuid: o.uuid,
+      listingMode: o.listing_mode,
       listingLogoUrl: o.logo_url,
       actorName: actorDisplayName(actor),
       actorAvatarUrl: actor?.avatar_url || null,
@@ -221,6 +227,7 @@ export async function notifyOwnerOnBookmark(args: {
       companyName: o.company_name,
       listingSlug: o.slug,
       listingUuid: o.uuid,
+      listingMode: o.listing_mode,
       listingLogoUrl: o.logo_url,
       actorName: actorDisplayName(actor),
       actorAvatarUrl: actor?.avatar_url || null,
@@ -255,6 +262,7 @@ export async function notifyOwnerOnInboxLead(args: {
       companyName: owner.company_name,
       listingSlug: owner.slug,
       listingUuid: owner.uuid,
+      listingMode: owner.listing_mode,
       listingLogoUrl: owner.logo_url,
       leadEmail: args.leadEmail,
       leadName: args.leadName ?? null,
@@ -300,6 +308,7 @@ export async function notifyOwnerOnVerificationApproved(args: {
       companyName: owner.company_name,
       listingSlug: owner.slug,
       listingUuid: owner.uuid,
+      listingMode: owner.listing_mode,
       listingLogoUrl: owner.logo_url,
       adminNotes: args.adminNotes,
     })
@@ -323,6 +332,7 @@ export async function notifyOwnerOnVerificationRejected(args: {
       companyName: owner.company_name,
       listingSlug: owner.slug,
       listingUuid: owner.uuid,
+      listingMode: owner.listing_mode,
       listingLogoUrl: owner.logo_url,
       adminNotes: args.adminNotes,
     })

@@ -6,7 +6,8 @@ import { requireAdmin } from '@/lib/auth'
 /**
  * POST /api/admin/listings/[slug]/revalidate
  *
- * Manual on-demand rebuild of a single /company/<slug> page. Bypasses the
+ * Manual on-demand rebuild of a single /listing/<slug> or /profile/<slug>
+ * page (picked by the row's listing_mode). Bypasses the
  * 48h auto-revalidation window — use this when an admin has just approved
  * a review, an owner edited their listing, or a moderation decision needs
  * to go live now.

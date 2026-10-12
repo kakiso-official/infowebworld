@@ -196,6 +196,7 @@ const getListingBySlug = cache(async function getListingBySlug(slug: string) {
      FROM submissions s
      LEFT JOIN categories c ON c.id = s.category_id
      WHERE s.category_id = ? AND s.id != ? AND s.status IN ('active','paid')
+       AND COALESCE(s.listing_mode, 'product') = 'product'
      ORDER BY s.created_at DESC LIMIT 4`,
     [listing.category_id, listing.id]
   ).catch(err => {
@@ -205,7 +206,10 @@ const getListingBySlug = cache(async function getListingBySlug(slug: string) {
 
   /* Siblings — same L3 category first; if fewer than 9 results, broaden to
      the L2 parent's children. Used to drive Alternatives, Customers Also
-     Viewed and Popular Comparisons sections in real mode. */
+     Viewed and Popular Comparisons sections in real mode. PRODUCTS ONLY at
+     every step: the cards link to /listing/<slug> and /compare/a-vs-b, and a
+     company-mode row lives at /profile/<slug>, so a company here was a 404
+     "alternative" (Oct 12: /listing/hubspot -> /listing/lightfield). */
   const SIBLING_COLS = `
     s.id, s.slug, s.company_name, s.tagline, s.logo_url, s.website,
     s.starting_price, s.starting_price_period, s.founded_year, s.team_size,
@@ -217,6 +221,7 @@ const getListingBySlug = cache(async function getListingBySlug(slug: string) {
        FROM submissions s
        LEFT JOIN categories c ON c.id = s.category_id
       WHERE s.category_id = ? AND s.id != ? AND s.status IN ('active','paid')
+        AND COALESCE(s.listing_mode, 'product') = 'product'
       ORDER BY s.created_at DESC
       LIMIT 16`,
     [listing.category_id, listing.id]
@@ -243,6 +248,7 @@ const getListingBySlug = cache(async function getListingBySlug(slug: string) {
            FROM submissions s
            LEFT JOIN categories c ON c.id = s.category_id
           WHERE c.parent_id = ? AND s.status IN ('active','paid')
+            AND COALESCE(s.listing_mode, 'product') = 'product'
           ORDER BY s.created_at DESC
           LIMIT 32`,
         [parent.parent_id]
@@ -631,9 +637,16 @@ function buildJsonLd(listing: ListingRow, breadcrumb: BreadcrumbItem[]) {
     }
   }
 
-  // Category
-  if (L.category_name) {
-    business.additionalType = `https://www.infowebworld.com/${L.category_slug}`
+  // Category: its canonical URL under the sector path (the same build the
+  // breadcrumb uses). A bare /{category-slug} only 308-redirects there.
+  if (L.category_name && L.category_slug) {
+    const sector = breadcrumb[0]?.slug
+    const catPath = !sector
+      ? null
+      : sector === L.category_slug
+        ? sectorLandingPath(sector)
+        : sectorCategoryPath(sector, String(L.category_slug))
+    if (catPath) business.additionalType = `https://www.infowebworld.com${catPath}`
   }
 
   // ── 4. FAQPage schema (CRITICAL for AI Overview — 3.2x more likely to appear) ──

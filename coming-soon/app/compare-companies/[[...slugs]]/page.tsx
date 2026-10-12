@@ -22,8 +22,9 @@ import CompareCompaniesPage from '../CompareCompaniesPage'
    alternatives. Fully isolated from the product comparison.
 
    Indexing: genuine 2-4 company comparisons (every slug resolves to a
-   real active company) are index+follow; empty/invalid/single stay
-   noindex (thin or duplicates the /profile page).
+   real active company, all in the same L1 sector) are index+follow;
+   empty/invalid/single/cross-sector stay noindex (thin, a duplicate of
+   the /profile page, or not a real comparison).
    ───────────────────────────────────────────────────────────── */
 
 export const dynamic = 'force-dynamic'
@@ -47,13 +48,15 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   if (slugs.length === 0) return empty
 
   const placeholders = slugs.map(() => '?').join(',')
-  let names: { slug: string; company_name: string }[] = []
+  let names: { slug: string; company_name: string; sector_slug: string | null }[] = []
   try {
-    names = await query<{ slug: string; company_name: string }>(
-      `SELECT slug, company_name FROM submissions
-        WHERE slug IN (${placeholders})
-          AND status IN ('active','paid')
-          AND COALESCE(listing_mode,'product') = 'company'`,
+    names = await query<{ slug: string; company_name: string; sector_slug: string | null }>(
+      `SELECT s.slug, s.company_name, ${SECTOR_CASE} AS sector_slug
+         FROM submissions s
+         ${CAT_JOINS}
+        WHERE s.slug IN (${placeholders})
+          AND s.status IN ('active','paid')
+          AND COALESCE(s.listing_mode,'product') = 'company'`,
       slugs,
     )
   } catch { /* tolerate */ }
@@ -61,6 +64,11 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const bySlug = new Map(names.map((r) => [r.slug, r.company_name]))
   const resolved = slugs.map((s) => bySlug.get(s)).filter((n): n is string => !!n)
   if (resolved.length === 0) return empty
+  /* Company comparisons are same-L1-sector only. A cross-sector pair can
+     still be typed (or linger from an old link) and renders, but it is not
+     a real comparison, so it is never indexed. */
+  const sectors = new Set(names.map((r) => r.sector_slug ?? ''))
+  const sameSector = sectors.size === 1 && !sectors.has('')
 
   const titleNames = resolved.length === 1 ? resolved[0] : resolved.join(' vs ')
   /* Single hyphen, never an em-dash (SEO title rule), and budgeted. */
@@ -75,7 +83,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     title,
     description,
     alternates: { canonical: `${SITE}${buildCompareUrl(slugs)}` },
-    robots: resolved.length >= 2
+    robots: resolved.length >= 2 && sameSector
       ? { index: true, follow: true, googleBot: { index: true, follow: true, 'max-snippet': -1, 'max-image-preview': 'large', 'max-video-preview': -1 } }
       : { index: false, follow: false },
     openGraph: { title, description, url: `${SITE}${buildCompareUrl(slugs)}`, siteName: 'InfoWebWorld', type: 'website' },

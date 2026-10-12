@@ -217,6 +217,10 @@ const getCompanyBySlug = cache(async function getCompanyBySlug(slug: string) {
   }
   const breadcrumb: { name: string; slug: string }[] = []
   let sectorL1Id: number | null = null
+  /* The company's L2/L3 ancestors (its own category when it sits at that
+     level), so the similar-companies fallback can rank by closeness. */
+  let ancestorL2Id: number | null = null
+  let ancestorL3Id: number | null = null
   if (company.category_id) {
     try {
       const anc = await queryOne<AncestryRow>(
@@ -246,6 +250,8 @@ const getCompanyBySlug = cache(async function getCompanyBySlug(slug: string) {
           if (c.id == null || !c.name || !c.slug) continue
           breadcrumb.push({ name: c.name, slug: c.slug })
           if (Number(c.level) === 1) sectorL1Id = Number(c.id)
+          else if (Number(c.level) === 2) ancestorL2Id = Number(c.id)
+          else if (Number(c.level) === 3) ancestorL3Id = Number(c.id)
         }
       }
     } catch (err) {
@@ -303,24 +309,38 @@ const getCompanyBySlug = cache(async function getCompanyBySlug(slug: string) {
         LIMIT 8`,
       company.category_id ? [company.id, company.category_id] : [company.id]
     )
-    /* Broaden to all categories if we found fewer than 4 — better to show
-       cross-sector neighbours than a half-empty grid. */
-    if (similarCompanies.length < 4) {
+    /* Broaden to the rest of the company's L1 sector if we found fewer
+       than 4, closest categories first (same L3, then same L2, then the
+       newest in the sector), so a telehealth company gets clinics, not
+       the sector's newest flooring installers. Never across sectors:
+       these rows also feed the /compare-companies/{a}-vs-{b} links, and a
+       SaaS company "compared" with a flooring installer is a nonsense page
+       (Oct 12 link sweep). No sector known = no broadening. */
+    if (similarCompanies.length < 4 && sectorL1Id) {
       const seen = new Set(similarCompanies.map(s => s.id))
       seen.add(company.id)
       const broader = await query<SimilarCompanyRow>(
-        `SELECT s.id, s.slug, s.company_name, s.tagline, s.logo_url,
+        `WITH RECURSIVE sector_cats AS (
+           SELECT id, CAST(NULL AS UNSIGNED) AS l2_id, CAST(NULL AS UNSIGNED) AS l3_id
+             FROM categories WHERE id = ?
+           UNION ALL
+           SELECT c.id, IF(c.level = 2, c.id, sc.l2_id), IF(c.level = 3, c.id, sc.l3_id)
+             FROM categories c JOIN sector_cats sc ON sc.id = c.parent_id
+         )
+         SELECT s.id, s.slug, s.company_name, s.tagline, s.logo_url,
                 s.min_project_size, s.hourly_rate, s.team_size, s.founded_year,
                 s.city, s.state,
                 c.name AS category_name, c.color AS category_color,
                 co.name AS country_name
            FROM submissions s
+           JOIN sector_cats sc ON sc.id = s.category_id
            LEFT JOIN categories c ON c.id = s.category_id
            LEFT JOIN countries co ON co.id = s.country_id
           WHERE s.listing_mode = 'company'
             AND s.status IN ('active','paid')
-          ORDER BY s.created_at DESC
-          LIMIT 16`
+          ORDER BY (sc.l3_id = ?) DESC, (sc.l2_id = ?) DESC, s.created_at DESC
+          LIMIT 16`,
+        [sectorL1Id, ancestorL3Id ?? 0, ancestorL2Id ?? 0]
       )
       for (const r of broader) {
         if (similarCompanies.length >= 8) break

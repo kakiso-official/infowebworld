@@ -1162,7 +1162,7 @@ function EmailCapture({ slugs }: { slugs: string[] }) {
           </label>
           <div className="cpr-mail-actions">
             <p className="cpr-mail-legal">
-              By proceeding, you agree to our <Link href="/business/terms">Terms Of Use</Link> and <Link href="/privacy">Privacy Policy</Link>.
+              By proceeding, you agree to our <Link href="/terms">Terms Of Use</Link> and <Link href="/privacy">Privacy Policy</Link>.
             </p>
             <button
               type="submit" className="cpr-mail-submit"

@@ -119,7 +119,7 @@ export async function GET(req: Request) {
          LEFT JOIN categories c     ON c.id     = s.category_id
          LEFT JOIN categories cp    ON cp.id    = c.parent_id
          LEFT JOIN categories cgp   ON cgp.id   = cp.parent_id
-         LEFT JOIN categories cggp  ON cggp.id  = cggp.parent_id
+         LEFT JOIN categories cggp  ON cggp.id  = cgp.parent_id
          LEFT JOIN categories cgggp ON cgggp.id = cggp.parent_id
          WHERE s.status IN ('active', 'paid')
            AND COALESCE(s.listing_mode, 'product') IN (${modesIn})

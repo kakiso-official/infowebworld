@@ -43,9 +43,13 @@ export function sectorLandingPath(sectorSlug: string): string {
 
 /** Path of a category (L2-L5) page, e.g. '/saas-directory/crm-platforms'.
  *  Without a sector it falls back to the bare slug, which the catch-all
- *  route redirects to the canonical URL. */
+ *  route redirects to the canonical URL. A listing filed directly under
+ *  the L1 has the sector itself as its category: that page is the sector
+ *  landing ('/it-directory/it-services-agencies' is a 404). */
 export function sectorCategoryPath(sectorSlug: string | null | undefined, categorySlug: string): string {
-  return sectorSlug ? `${sectorLandingPath(sectorSlug)}/${categorySlug}` : `/${categorySlug}`
+  if (!sectorSlug) return `/${categorySlug}`
+  if (categorySlug === sectorSlug) return sectorLandingPath(sectorSlug)
+  return `${sectorLandingPath(sectorSlug)}/${categorySlug}`
 }
 
 /** A sector's "view all sub-categories" index, e.g.

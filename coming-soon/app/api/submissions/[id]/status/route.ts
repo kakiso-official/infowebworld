@@ -1,5 +1,7 @@
 import { NextRequest } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { queryOne, execute } from '@/lib/db'
+import { publicListingUrl } from '@/app/lib/listing-url'
 import { requireAdmin } from '@/lib/auth'
 import { isPaidListingPlan } from '@/lib/user-plan-types'
 import { notifySubmissionApproved, notifySubmissionRejected } from '@/lib/notify-submission'
@@ -91,6 +93,18 @@ export async function PATCH(
           'UPDATE categories SET listing_count = GREATEST(listing_count - 1, 0) WHERE id = ?',
           [categoryId]
         )
+      }
+    }
+
+    /* The public page follows the new status at once. Without this, a slug
+       requested while the listing was still pending keeps its cached 404
+       for the whole 48h ISR window after approval (the sitemap already
+       lists it), and a de-listed page keeps serving until it expires
+       (Oct 12 link sweep). */
+    if (status !== oldStatus) {
+      const pagePath = publicListingUrl(finalSlug || submission.slug, submission.listing_mode)
+      if (pagePath) {
+        try { revalidatePath(pagePath) } catch (err) { console.warn('[status] revalidatePath failed (non-fatal):', err) }
       }
     }
 

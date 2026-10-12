@@ -9,7 +9,8 @@
  * Legacy: until May 2026 products were canonically /company/<slug>;
  * we swapped to /listing/<slug> so the URL matches what the page
  * actually is (a product listing, not the company). /company/<slug>
- * still resolves via 308 permanent redirect to /listing/<slug>.
+ * is retired and 404s (no redirect, see app/company/[slug]/page.tsx),
+ * so never link to it.
  *
  * Use this anywhere you need to render a link to a public listing
  * surface. Branch on `listing_mode`, never hardcode the prefix.
