@@ -1,9 +1,10 @@
 import { NextRequest } from 'next/server'
-import { execute } from '@/lib/db'
+import { execute, queryOne } from '@/lib/db'
 import { createUserSession, userCookieHeader } from '@/lib/user-auth'
 import { upsertOAuthUser, type OAuthProfile } from '@/lib/oauth'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { getClientIp } from '@/lib/tracking'
+import { trackServerEvent } from '@/lib/analytics/server-events'
 
 /**
  * Google One Tap: receive the Google-issued ID token (JWT) from the GSI
@@ -67,11 +68,16 @@ export async function POST(request: NextRequest) {
       return Response.json({ ok: false, error: 'Upsert failed' }, { status: 500 })
     }
 
+    const isNewUser = await isJustCreated(userIdOrErr)
     const token = await createUserSession(userIdOrErr, ip, request.headers.get('user-agent'))
     await execute(
       `UPDATE business_users SET last_login_at = NOW(), last_login_ip = ? WHERE id = ?`,
       [ip, userIdOrErr]
     )
+
+    trackServerEvent(isNewUser ? 'signup_completed' : 'login', {
+      userId: userIdOrErr, props: { method: 'google_one_tap' },
+    })
 
     return Response.json(
       { ok: true },
@@ -83,5 +89,23 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     console.error('[one-tap] error:', err)
     return Response.json({ ok: false, error: 'Server error' }, { status: 500 })
+  }
+}
+
+/* Signup or login? upsertOAuthUser only returns the id, so ask the row itself.
+   A brand-new OAuth account has never logged in (its INSERT leaves
+   last_login_at NULL, while every other signup path sets it) and was created
+   moments ago. Must run BEFORE the handler stamps last_login_at. Best-effort:
+   any failure counts the visit as a login and never blocks the sign-in. */
+async function isJustCreated(userId: number): Promise<boolean> {
+  try {
+    const row = await queryOne<{ fresh: number }>(
+      `SELECT (last_login_at IS NULL AND created_at >= NOW() - INTERVAL 10 MINUTE) AS fresh
+         FROM business_users WHERE id = ? LIMIT 1`,
+      [userId]
+    )
+    return Number(row?.fresh) === 1
+  } catch {
+    return false
   }
 }

@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { execute } from '@/lib/db'
 import { requireUser } from '@/lib/user-auth'
+import { trackServerEvent } from '@/lib/analytics/server-events'
 
 /**
  * Records a successful PayPal capture against the authed user's account.
@@ -52,12 +53,17 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    await execute(
+    const res = await execute(
       `INSERT IGNORE INTO business_user_plan_purchases
          (user_id, plan_slug, amount, currency, paypal_order_id)
        VALUES (?, ?, ?, 'USD', ?)`,
       [user.id, plan, amount, orderId]
     )
+    /* Only a newly recorded order is a purchase; a replayed orderId is
+       ignored by the UNIQUE index (affectedRows 0) and must not count twice. */
+    if (res.affectedRows === 1) {
+      trackServerEvent('purchase', { userId: user.id, value: amount, props: { plan } })
+    }
     return Response.json({ ok: true })
   } catch (err) {
     console.error('POST /api/paypal/capture error:', err)

@@ -4,7 +4,8 @@ import Footer from "./components/Footer";
 
 export default function RootNotFound() {
   return (
-      <div className="nf-wrap">
+      /* data-iww-status: the analytics tracker reports this view as a 404. */
+      <div className="nf-wrap" data-iww-status="404">
         <Navbar />
 
         {/* Floating shapes background */}

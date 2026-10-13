@@ -1,11 +1,9 @@
 /**
- * InfoWebWorld — Visitor Tracking V3
+ * InfoWebWorld - blog view / read-time / share tracking (/api/track/blog-view).
  *
- * - Persistent visitor ID via HttpOnly cookie (set by server, 1 year)
- * - 30-min server-side dedup (same visitor + same page = no new row)
- * - 5s client-side throttle (prevents double-fires from React re-renders)
- * - UTM params extracted from URL
- * - Bot filtering, device/country detection all server-side
+ * Feeds the per-post blog stats. Page views, engagement and everything else
+ * are recorded by the first-party analytics tracker (lib/analytics/client.ts);
+ * the old page_views tracker that lived here was removed in Oct 2026.
  */
 
 function getSessionId(): string {
@@ -28,30 +26,7 @@ function getUtmParams(): Record<string, string> {
 }
 
 // --- Client-side throttle: prevent duplicate fires within 5 seconds ---
-let lastPageTrack: { page: string; time: number } | null = null
 let lastBlogTrack: { slug: string; time: number } | null = null
-
-export function trackPageView(page: string) {
-  if (typeof window === 'undefined') return
-
-  // Skip if same page tracked within 5 seconds (React re-renders, fast nav)
-  const now = Date.now()
-  if (lastPageTrack && lastPageTrack.page === page && now - lastPageTrack.time < 5000) return
-  lastPageTrack = { page, time: now }
-
-  const utm = getUtmParams()
-
-  fetch('/api/track/pageview', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      page,
-      sessionId: getSessionId(),
-      referrer: document.referrer || '',
-      ...utm,
-    }),
-  }).catch(() => {})
-}
 
 export function trackBlogView(slug: string, readSeconds?: number, share?: boolean) {
   if (typeof window === 'undefined') return

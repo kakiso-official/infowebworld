@@ -8,6 +8,7 @@ import { checkRateLimit } from '@/lib/rate-limit'
 import { getClientIp } from '@/lib/tracking'
 import { sendEmail, buildEmailShell, escapeHtml, EMAIL_FONTS } from '@/lib/email'
 import { notifyOnNewClaim } from '@/lib/notify-submission'
+import { trackServerEvent } from '@/lib/analytics/server-events'
 
 /**
  * Listing claim endpoint — public-facing, one route, three modes.
@@ -253,6 +254,8 @@ async function otpVerify(user: SessionUser, listing: ListingRow, body: Record<st
     }),
   }).catch(() => {})
 
+  trackServerEvent('claim_submitted', { userId: user.id, target: listing.slug, props: { method: 'domain_email' } })
+
   return Response.json({
     ok: true,
     claimed: true,
@@ -322,6 +325,8 @@ async function manualClaim(user: SessionUser, listing: ListingRow, body: Record<
       applicantNotes,
     ].filter(Boolean).join(' · ').slice(0, 500) || null,
   })
+
+  trackServerEvent('claim_submitted', { userId: user.id, target: listing.slug, props: { method: 'manual' } })
 
   return Response.json({ ok: true, pending: true, requestId: ins.insertId })
 }

@@ -4,6 +4,7 @@ import { checkRateLimit } from '@/lib/rate-limit'
 import { getClientIp } from '@/lib/tracking'
 import { notifyOwnerOnInboxLead } from '@/lib/notify-owner'
 import { getUserFromRequest } from '@/lib/user-auth'
+import { trackServerEvent } from '@/lib/analytics/server-events'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -76,6 +77,7 @@ export async function POST(request: NextRequest, ctx: { params: Promise<{ slug: 
       listingId, leadEmail: email,
       leadName: name, leadPhone: phone, leadMessage: message, source,
     })
+    trackServerEvent('lead_sent', { userId, target: slug, props: { form: source } })
     return Response.json({ ok: true })
   } catch (err) {
     console.error('POST /api/listings/[slug]/inbox-email error:', err)

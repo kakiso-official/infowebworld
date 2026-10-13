@@ -1,3 +1,5 @@
+import { track } from '@/lib/analytics/client'
+
 /**
  * Fire-and-forget client tracker for outbound "Visit website" clicks.
  *
@@ -22,6 +24,8 @@
 export function trackWebsiteClick(slug: string, campaign: string = 'listing'): void {
   if (typeof window === 'undefined') return
   if (!slug) return
+  // Also into first-party analytics (a key event on the visit's timeline).
+  track('website_click', { target: slug, label: slug, props: { listing: slug, placement: campaign } })
   try {
     const body = JSON.stringify({ slug, campaign })
     const url = '/api/track/website-click'

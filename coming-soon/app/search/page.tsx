@@ -206,7 +206,9 @@ export default async function SearchPage({ searchParams }: PageProps) {
   return (
     <>
       <Navbar />
-      <main className="srch">
+      {/* data-iww-results: the analytics tracker sends the result count with
+          the pageview, which powers the "searches with no results" report. */}
+      <main className="srch" data-iww-results={results ? counts!.total : undefined}>
         {/* ── Hero ── */}
         <section className="srch-hero" aria-label="Search InfoWebWorld">
           <div className="tlp-hero-bg" aria-hidden="true">

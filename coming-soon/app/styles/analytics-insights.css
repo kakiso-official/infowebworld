@@ -1,0 +1,283 @@
+/* ============================================================
+   Analytics insight pages (/iww-hq/analytics: Traffic sources,
+   Pages, Page details, Audience, Performance, Errors, Events).
+   Namespace .an-ix-*. Builds on app/styles/analytics.css: reuse its
+   tokens (--an-text, --an-border, --an-s1...) - only the Web Vitals
+   status colors are new. Light theme only (the admin has no dark mode).
+   ============================================================ */
+
+.an-root {
+  /* Web Vitals ratings - the dataviz status palette (good / warning /
+     critical). Marks only (bars, icons); text stays in ink tokens, and a
+     rating is always paired with an icon and its name. */
+  --an-ix-good: #0ca30c;
+  --an-ix-ni:   #fab219;
+  --an-ix-poor: #d03b3b;
+}
+
+/* ── Headline tiles ────────────────────────────────────────── */
+/* Four answers per row at every desktop width (the kit's KPI strip goes auto-fit at 1680px). */
+.an-root .an-ix-facts { grid-template-columns: repeat(4, minmax(0, 1fr)) }
+.an-ix-fact .an-kpi-value { overflow: hidden; text-overflow: ellipsis }
+.an-ix-fact-text { font-size: clamp(1.05rem, 1.6vw, 1.3rem) !important; letter-spacing: -.015em !important; padding: 3px 0 2px }
+.an-ix-fact-flag { display: inline-flex; align-items: center; gap: 8px; max-width: 100% }
+.an-ix-fact-flag > span:last-child, .an-ix-fact-flag { overflow: hidden; text-overflow: ellipsis }
+.an-ix-fact .an-kpi-hint { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100% }
+
+/* ── Text helpers ──────────────────────────────────────────── */
+.an-ix-lede { margin: 0 0 12px; font-size: 13.5px; line-height: 1.55; color: var(--an-text-2) }
+.an-ix-lede--panel { margin: 0; padding: 0 18px 12px }
+.an-ix-note { margin: 10px 0 0; font-size: 12.5px; color: var(--an-text-3); line-height: 1.5 }
+.an-ix-panel-pad { padding: 0 18px 14px }
+.an-panel-body--flush > .an-ix-note.an-ix-panel-pad,
+.an-panel-body--flush > .an-rv > .an-ix-note.an-ix-panel-pad { padding-top: 12px; border-top: 1px solid var(--an-border); margin: 0 }
+.an-ix-mini-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--an-text-3); margin-bottom: 8px }
+.an-ix-count { font-size: 12.5px; color: var(--an-text-3); font-variant-numeric: tabular-nums }
+.an-ix-banner { border: 1px dashed var(--an-border-strong); border-radius: var(--an-radius); background: var(--an-surface-2) }
+
+/* Loading / error / migration states inside an edge-to-edge (flush) panel keep the card padding. */
+.an-ix-flushstates .an-panel-body--flush > :is(.an-error, .an-migrate, .an-skel-wrap) { margin: 0 18px 16px }
+
+/* ── Name cell (tables) ────────────────────────────────────── */
+.an-ix-name { display: inline-flex; align-items: center; gap: 9px; min-width: 0; max-width: 460px }
+.an-ix-name-icon { display: inline-flex; flex-shrink: 0 }
+.an-ix-name-text { display: flex; flex-direction: column; min-width: 0; gap: 1px }
+.an-ix-name-main { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.an-ix-name-sub { font-size: 12px; color: var(--an-text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.an-ix-name-ext { flex-shrink: 0 }
+.an-ix-target { font-family: ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Menlo, Consolas, monospace !important; font-size: .9em; word-break: break-all }
+.an-ix-term { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 340px }
+.an-ix-star { display: inline-flex; color: var(--an-warn); flex-shrink: 0 }
+.an-ix-star svg { width: 11px; height: 11px }
+
+/* ── Proportion bar ────────────────────────────────────────── */
+.an-ix-prop { display: flex; flex-direction: column; gap: 10px; min-width: 0 }
+.an-ix-prop-track { display: flex; gap: 2px; width: 100% }
+.an-ix-prop-empty { flex: 1; border-radius: 4px; background: var(--an-surface-3) }
+.an-ix-prop-seg {
+  position: relative;
+  min-width: 3px;
+  flex-basis: 0;
+  transition: opacity .12s;
+}
+.an-ix-prop-seg:first-child { border-top-left-radius: 4px; border-bottom-left-radius: 4px }
+.an-ix-prop-seg:last-child { border-top-right-radius: 4px; border-bottom-right-radius: 4px }
+.an-ix-prop-track:hover .an-ix-prop-seg:not(.an-ix-prop-seg--on) { opacity: .55 }
+.an-ix-prop-tt {
+  bottom: calc(100% + 8px); left: 50%;
+  transform: translateX(-50%);
+  min-width: 120px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.an-ix-prop-detail { font-size: 12px; color: var(--an-text-2) }
+.an-ix-prop-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--an-text-2) }
+.an-ix-prop-legend li { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap }
+.an-ix-prop-legend b { color: var(--an-text); font-weight: 700 }
+.an-ix-prop-label { color: var(--an-text-2) }
+
+/* ── Web Vitals ────────────────────────────────────────────── */
+.an-ix-rating-ico { display: inline-flex; align-items: center; flex-shrink: 0 }
+.an-ix-rating-ico svg { width: 12px; height: 12px }
+.an-ix-rating-ico--good { color: var(--an-ix-good) }
+.an-ix-rating-ico--ni { color: #C98A00 }  /* darker than the --an-ix-ni fill: an icon must clear 3:1 on white */
+.an-ix-rating-ico--poor { color: var(--an-ix-poor) }
+.an-ix-rating {
+  display: inline-flex; align-items: center; gap: 5px;
+  height: 22px; padding: 0 9px;
+  border-radius: 999px;
+  font-size: 11.5px; font-weight: 700; white-space: nowrap;
+}
+.an-ix-rating svg { width: 11px; height: 11px }
+.an-ix-rating--good { background: var(--an-good-bg); color: var(--an-good) }
+.an-ix-rating--ni { background: var(--an-warn-bg); color: var(--an-warn) }
+.an-ix-rating--poor { background: var(--an-bad-bg); color: var(--an-bad) }
+.an-ix-vv { display: inline-flex; align-items: center; justify-content: flex-end; gap: 6px }
+
+.an-ix-vitals { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px }
+.an-ix-vitals--compact { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px }
+.an-ix-vital {
+  position: relative;
+  display: flex; flex-direction: column; gap: 10px;
+  min-width: 0;
+  padding: 14px 16px;
+  background: var(--an-surface);
+  border: 1px solid var(--an-border);
+  border-radius: var(--an-radius);
+  box-shadow: var(--an-shadow);
+}
+.an-ix-vital::before {
+  content: ''; position: absolute; left: 16px; right: 16px; top: -1px;
+  height: 3px; border-radius: 0 0 3px 3px; background: transparent;
+}
+.an-ix-vital--good::before { background: var(--an-ix-good) }
+.an-ix-vital--ni::before { background: var(--an-ix-ni) }
+.an-ix-vital--poor::before { background: var(--an-ix-poor) }
+.an-ix-vital--compact { padding: 12px 13px; gap: 8px; background: var(--an-surface-2); box-shadow: none }
+.an-ix-vital-head { display: flex; align-items: center; gap: 6px; min-width: 0 }
+.an-ix-vital-short { font-size: 12px; font-weight: 800; letter-spacing: .04em; color: var(--an-text) }
+.an-ix-vital-name { font-size: 12px; color: var(--an-text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0 }
+.an-ix-vital-core {
+  margin-left: auto;
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em;
+  padding: 2px 6px; border-radius: 5px;
+  background: var(--an-info-bg); color: var(--an-info);
+}
+.an-ix-vital-value { display: flex; align-items: center; gap: 10px; flex-wrap: wrap }
+.an-ix-vital-num { font-size: clamp(1.35rem, 2vw, 1.6rem); font-weight: 750; letter-spacing: -.025em; line-height: 1.1 }
+.an-ix-vital--compact .an-ix-vital-num { font-size: 1.2rem }
+.an-ix-vital--compact .an-ix-vital-name { display: none }
+.an-ix-vital-foot { margin: 0; font-size: 12px; line-height: 1.5; color: var(--an-text-3) }
+.an-ix-vital-none { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--an-text-3) }
+
+/* trend chart annotations */
+.an-ix-zone { pointer-events: none }
+.an-ix-zone--ni { fill: var(--an-ix-ni); fill-opacity: .07 }
+.an-ix-zone--poor { fill: var(--an-ix-poor); fill-opacity: .06 }
+.an-ix-thresh { stroke-width: 1.25; shape-rendering: crispEdges }
+.an-ix-thresh--good { stroke: var(--an-ix-good) }
+.an-ix-thresh--poor { stroke: var(--an-ix-poor) }
+.an-ix-key-line { width: 14px; height: 0; border-top: 2px solid }
+.an-ix-key-line--good { border-color: var(--an-ix-good) }
+.an-ix-key-line--poor { border-color: var(--an-ix-poor) }
+
+/* verdict banner */
+.an-ix-verdict {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 16px 20px;
+  border-radius: var(--an-radius);
+  border: 1px solid var(--an-border);
+  background: var(--an-surface);
+  box-shadow: var(--an-shadow);
+}
+.an-ix-verdict--good { background: var(--an-good-bg); border-color: #BFE3CF }
+.an-ix-verdict--ni { background: var(--an-warn-bg); border-color: #F3DDA4 }
+.an-ix-verdict--poor { background: var(--an-bad-bg); border-color: #F6CACA }
+.an-ix-verdict-icon { display: inline-flex; padding-top: 2px }
+.an-ix-verdict-icon svg { width: 22px; height: 22px }
+.an-ix-verdict--good .an-ix-verdict-icon { color: var(--an-good) }
+.an-ix-verdict--ni .an-ix-verdict-icon { color: var(--an-warn) }
+.an-ix-verdict--poor .an-ix-verdict-icon { color: var(--an-bad) }
+.an-ix-verdict-body { min-width: 0 }
+.an-ix-verdict-title { display: flex; align-items: center; gap: 6px; font-size: 16px; font-weight: 750; letter-spacing: -.01em }
+.an-ix-verdict-text { margin: 4px 0 0; font-size: 13.5px; line-height: 1.55; color: var(--an-text-2) }
+.an-ix-verdict-text b { color: var(--an-text) }
+
+/* ── Layout helpers ────────────────────────────────────────── */
+.an-ix-split { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 20px; align-items: start }
+
+.an-ix-steps { list-style: decimal !important; padding-left: 20px !important; display: flex; flex-direction: column; gap: 8px; font-size: 13px; line-height: 1.5; color: var(--an-text-2) }
+.an-ix-steps b { color: var(--an-text) }
+.an-ix-steps code, .an-ix-explainer code {
+  font-family: ui-monospace, Menlo, Consolas, monospace !important;
+  font-size: 11.5px; padding: 1px 4px; border-radius: 4px; background: var(--an-surface-3);
+}
+
+/* ── Page details ──────────────────────────────────────────── */
+.an-ix-detail-title { display: block; overflow-wrap: anywhere }
+.an-ix-detail-sub { display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap; overflow-wrap: anywhere }
+
+.an-ix-flow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(180px, 220px) auto minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+.an-ix-flow-col { min-width: 0 }
+.an-ix-flow-title { display: flex; align-items: center; gap: 6px; margin: 0 0 8px; font-size: 12.5px; font-weight: 700; color: var(--an-text-2) }
+.an-ix-flow-arrow { display: flex; align-items: center; align-self: center; color: var(--an-text-3) }
+.an-ix-flow-arrow svg { width: 14px; height: 14px }
+.an-ix-flow-mid { align-self: center }
+.an-ix-flow-mid-card {
+  display: flex; flex-direction: column; gap: 8px; align-items: flex-start;
+  padding: 14px;
+  border-radius: var(--an-radius);
+  border: 2px solid var(--an-s1);
+  background: var(--an-info-bg);
+}
+.an-ix-flow-mid-title { font-size: 13.5px; font-weight: 700; line-height: 1.35; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden }
+.an-ix-flow-stats { display: grid; gap: 4px; margin: 0; width: 100% }
+.an-ix-flow-stats div { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px }
+.an-ix-flow-stats dt { color: var(--an-text-2) }
+.an-ix-flow-stats dd { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums }
+
+/* ── Audience ──────────────────────────────────────────────── */
+.an-ix-loyalty { display: flex; flex-direction: column; gap: 22px }
+
+/* ── Errors ────────────────────────────────────────────────── */
+.an-ix-fixlist { display: flex; flex-direction: column }
+.an-ix-fix {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center; gap: 12px;
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--an-border);
+}
+.an-ix-fix:last-child { border-bottom: none }
+.an-ix-fix-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 8px;
+  background: var(--an-bad-bg); color: var(--an-bad);
+}
+.an-ix-fix-icon svg { width: 12px; height: 12px }
+.an-ix-fix-text { font-size: 13.5px; line-height: 1.5; overflow-wrap: anywhere }
+.an-ix-fix-page { font-family: ui-monospace, Menlo, Consolas, monospace !important; font-size: 12.5px; font-weight: 600; color: var(--an-accent-ink) }
+.an-ix-fix-page:hover { text-decoration: underline; text-underline-offset: 2px }
+.an-ix-fix-broken { color: var(--an-bad) }
+.an-ix-fix-hits { font-size: 12.5px; font-weight: 700; white-space: nowrap }
+
+.an-ix-chips { display: flex; flex-wrap: wrap; gap: 4px 6px; white-space: normal; max-width: 560px }
+.an-ix-refchip {
+  display: inline-flex; align-items: center; gap: 5px;
+  max-width: 100%;
+  min-height: 22px; padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11.5px; font-weight: 600; line-height: 1.3;
+  background: var(--an-surface-3); color: var(--an-text-2);
+}
+.an-ix-refchip > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.an-ix-refchip svg { width: 10px; height: 10px; flex-shrink: 0 }
+.an-ix-refchip b { font-variant-numeric: tabular-nums; color: var(--an-text) }
+.an-ix-refchip--internal { background: var(--an-bad-bg); color: var(--an-bad) }
+.an-ix-refchip--internal b { color: var(--an-bad) }
+a.an-ix-refchip:hover { text-decoration: underline; text-underline-offset: 2px }
+.an-ix-broken-path { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 380px; font-weight: 600 }
+.an-ix-errmsg { display: inline-block; max-width: 440px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle }
+
+/* ── Events ────────────────────────────────────────────────── */
+.an-ix-evsplit { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 20px; align-items: start }
+.an-ix-evtitle { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap }
+.an-ix-evtabs { margin: 14px 0 8px; padding-top: 12px; border-top: 1px solid var(--an-border) }
+.an-ix-evhint {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  min-height: 220px; padding: 24px;
+  border: 1px dashed var(--an-border-strong);
+  border-radius: var(--an-radius);
+  background: var(--an-surface-2);
+  color: var(--an-text-3);
+  text-align: center;
+}
+.an-ix-evhint svg { width: 20px; height: 20px }
+.an-ix-evhint p { margin: 0; max-width: 280px; font-size: 13px; line-height: 1.5 }
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .an-ix-split, .an-ix-evsplit { grid-template-columns: minmax(0, 1fr) }
+  .an-ix-evhint { display: none }
+  .an-ix-flow { grid-template-columns: minmax(0, 1fr) }
+  .an-ix-flow-arrow { justify-content: center; transform: rotate(90deg); padding: 2px 0 }
+  .an-ix-flow-mid { align-self: stretch }
+}
+@media (max-width: 600px) {
+  .an-root .an-ix-facts { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+  .an-ix-lede--panel, .an-ix-panel-pad { padding-left: 14px; padding-right: 14px }
+  .an-ix-verdict { padding: 14px; gap: 10px }
+  .an-ix-fix { grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px }
+  .an-ix-fix .an-bl-act { display: none }
+  .an-ix-vitals { grid-template-columns: minmax(0, 1fr) }
+  .an-ix-vitals--compact { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+  .an-ix-name { max-width: 240px }
+}
+
+@media (forced-colors: active) {
+  .an-ix-prop-seg { border: 1px solid CanvasText }
+  .an-ix-thresh { stroke: CanvasText }
+}

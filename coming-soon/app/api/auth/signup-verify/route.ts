@@ -5,6 +5,7 @@ import { queryOne, execute } from '@/lib/db'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { getClientIp } from '@/lib/tracking'
 import { createUserSession, userCookieHeader } from '@/lib/user-auth'
+import { trackServerEvent } from '@/lib/analytics/server-events'
 
 const MAX_ATTEMPTS = 5
 
@@ -112,6 +113,8 @@ export async function POST(request: NextRequest) {
     await execute('DELETE FROM email_otps WHERE email = ?', [email])
 
     const token = await createUserSession(res.insertId, ip, request.headers.get('user-agent'))
+
+    trackServerEvent('signup_completed', { userId: res.insertId, props: { method: 'email' } })
 
     return Response.json(
       {

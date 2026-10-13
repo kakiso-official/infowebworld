@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { query } from '@/lib/db'
+import { anQuery, isMissingTable } from '@/lib/analytics/db'
 import { publicListingUrl } from '../lib/listing-url'
 
 /* ══════════════════════════════════════════════════════════════
@@ -20,6 +21,11 @@ import { publicListingUrl } from '../lib/listing-url'
    All data is pre-fetched server-side; the page is force-dynamic so
    numbers refresh on every nav. Defensive try/catch on every query
    so missing migrations zero-out gracefully.
+
+   Views, countries and referrers come from the first-party analytics
+   tables (an_pageviews + an_sessions, database/migration-analytics-v1.sql);
+   the old page_views table stopped filling on 2026-04-18. Those tables
+   are UTC, so the "days" here are UTC days.
    ══════════════════════════════════════════════════════════════ */
 
 type ListingRow = {
@@ -78,12 +84,20 @@ function relativeTime(input: string): string {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
-function hostOf(url: string): string {
+/* Reads from the analytics tables (separate small pool; dates come back as
+   UTC 'YYYY-MM-DD' strings). Before the analytics migration has run the
+   tables don't exist - that reads as "no views yet", exactly like an empty
+   table, instead of an error. */
+async function anRows<T>(sql: string, params: unknown[]): Promise<T[]> {
   try {
-    const u = new URL(url)
-    return u.hostname.replace(/^www\./, '')
-  } catch { return url.replace(/^https?:\/\/(www\.)?/, '').split('/')[0] || '(direct)' }
+    return await anQuery<T>(sql, params)
+  } catch (err) {
+    if (!isMissingTable(err)) console.warn('[analytics] dashboard traffic query failed:', err)
+    return []
+  }
 }
+
+const DAY_MS = 86_400_000
 
 /* Minimal country-code → English-name lookup. Covers the top ~30
    markets we expect to see in the next 12 months. Falls back to the
@@ -339,17 +353,14 @@ export default async function DashboardAnalytics({ userId, userName }: Props) {
   /* ── Views per listing (last 30d) ── */
   const viewsByPath = new Map<string, { views: number; unique: number }>()
   if (paths.length > 0) {
-    try {
-      const ph = paths.map(() => '?').join(',')
-      const rows = await query<{ page: string; views: number; unique_views: number }>(
-        `SELECT page, COUNT(*) AS views, COUNT(DISTINCT visitor_hash) AS unique_views
-           FROM page_views
-          WHERE page IN (${ph}) AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
-          GROUP BY page`,
-        paths
-      )
-      for (const r of rows) viewsByPath.set(r.page, { views: Number(r.views), unique: Number(r.unique_views) })
-    } catch (err) { console.warn('[analytics] views query failed:', err) }
+    const rows = await anRows<{ page: string; views: number; unique_views: number }>(
+      `SELECT path AS page, COUNT(*) AS views, COUNT(DISTINCT visitor_id) AS unique_views
+         FROM an_pageviews
+        WHERE path IN (?) AND ts >= UTC_TIMESTAMP(3) - INTERVAL 30 DAY
+        GROUP BY path`,
+      [paths]
+    )
+    for (const r of rows) viewsByPath.set(r.page, { views: Number(r.views), unique: Number(r.unique_views) })
   }
 
   /* ── Clicks per listing (last 30d) ── */
@@ -374,17 +385,14 @@ export default async function DashboardAnalytics({ userId, userName }: Props) {
   /* ── Prior-period (30-59 days ago) totals for delta tiles ── */
   let prevViews = 0, prevClicks = 0, prevLeads = 0
   if (paths.length > 0) {
-    try {
-      const ph = paths.map(() => '?').join(',')
-      const [row] = await query<{ n: number }>(
-        `SELECT COUNT(*) AS n FROM page_views
-          WHERE page IN (${ph})
-            AND created_at >= DATE_SUB(NOW(), INTERVAL 60 DAY)
-            AND created_at <  DATE_SUB(NOW(), INTERVAL 30 DAY)`,
-        paths
-      )
-      prevViews = Number(row?.n ?? 0)
-    } catch {}
+    const [row] = await anRows<{ n: number }>(
+      `SELECT COUNT(*) AS n FROM an_pageviews
+        WHERE path IN (?)
+          AND ts >= UTC_TIMESTAMP(3) - INTERVAL 60 DAY
+          AND ts <  UTC_TIMESTAMP(3) - INTERVAL 30 DAY`,
+      [paths]
+    )
+    prevViews = Number(row?.n ?? 0)
   }
   if (ids.length > 0) {
     try {
@@ -410,38 +418,38 @@ export default async function DashboardAnalytics({ userId, userName }: Props) {
 
   /* ── 30-day daily series for the main chart ── */
   const daily = new Map<string, DailyPoint>()
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  /* UTC midnight today: the day keys must line up with DATE(ts) of the
+     UTC analytics rows, whatever timezone the Node process runs in. */
+  const now = new Date()
+  const todayUtcMs = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
   for (let i = 29; i >= 0; i--) {
-    const d = new Date(today)
-    d.setDate(d.getDate() - i)
-    const iso = d.toISOString().slice(0, 10)
+    const iso = new Date(todayUtcMs - i * DAY_MS).toISOString().slice(0, 10)
     daily.set(iso, { date: iso, views: 0, clicks: 0 })
   }
   if (paths.length > 0) {
-    try {
-      const ph = paths.map(() => '?').join(',')
-      const rows = await query<{ d: string; v: number }>(
-        `SELECT DATE(created_at) AS d, COUNT(*) AS v
-           FROM page_views
-          WHERE page IN (${ph}) AND created_at >= DATE_SUB(CURDATE(), INTERVAL 29 DAY)
-          GROUP BY DATE(created_at)`,
-        paths
-      )
-      for (const r of rows) {
-        const slot = daily.get(String(r.d).slice(0, 10))
-        if (slot) slot.views = Number(r.v)
-      }
-    } catch {}
+    const rows = await anRows<{ d: string; v: number }>(
+      `SELECT DATE(ts) AS d, COUNT(*) AS v
+         FROM an_pageviews
+        WHERE path IN (?) AND ts >= UTC_DATE() - INTERVAL 29 DAY
+        GROUP BY DATE(ts)`,
+      [paths]
+    )
+    for (const r of rows) {
+      const slot = daily.get(String(r.d).slice(0, 10))
+      if (slot) slot.views = Number(r.v)
+    }
   }
   if (ids.length > 0) {
     try {
       const ph = ids.map(() => '?').join(',')
       const rows = await query<{ d: string; v: number }>(
-        `SELECT DATE(created_at) AS d, COUNT(*) AS v
+        /* DATE_FORMAT, not DATE(): the main pool returns DATE() as a JS Date,
+           whose String() ("Tue Oct 13…") never matched the YYYY-MM-DD keys,
+           so the clicks line was always 0. */
+        `SELECT DATE_FORMAT(created_at, '%Y-%m-%d') AS d, COUNT(*) AS v
            FROM listing_outbound_clicks
           WHERE listing_id IN (${ph}) AND created_at >= DATE_SUB(CURDATE(), INTERVAL 29 DAY)
-          GROUP BY DATE(created_at)`,
+          GROUP BY d`,
         ids
       )
       for (const r of rows) {
@@ -457,68 +465,55 @@ export default async function DashboardAnalytics({ userId, userName }: Props) {
   const SPARK_DAYS = 7
   for (const p of paths) sparkByPath.set(p, Array(SPARK_DAYS).fill(0))
   if (paths.length > 0) {
-    try {
-      const ph = paths.map(() => '?').join(',')
-      const rows = await query<{ page: string; d: string; v: number }>(
-        `SELECT page, DATE(created_at) AS d, COUNT(*) AS v
-           FROM page_views
-          WHERE page IN (${ph}) AND created_at >= DATE_SUB(CURDATE(), INTERVAL ${SPARK_DAYS - 1} DAY)
-          GROUP BY page, DATE(created_at)`,
-        paths
-      )
-      const startKey = new Date(today)
-      startKey.setDate(startKey.getDate() - (SPARK_DAYS - 1))
-      for (const r of rows) {
-        const arr = sparkByPath.get(r.page)
-        if (!arr) continue
-        const date = new Date(String(r.d).slice(0, 10) + 'T00:00:00Z')
-        const idx = Math.round((date.getTime() - Date.UTC(startKey.getFullYear(), startKey.getMonth(), startKey.getDate())) / 86400000)
-        if (idx >= 0 && idx < SPARK_DAYS) arr[idx] = Number(r.v)
-      }
-    } catch {}
+    const rows = await anRows<{ page: string; d: string; v: number }>(
+      `SELECT path AS page, DATE(ts) AS d, COUNT(*) AS v
+         FROM an_pageviews
+        WHERE path IN (?) AND ts >= UTC_DATE() - INTERVAL ? DAY
+        GROUP BY path, DATE(ts)`,
+      [paths, SPARK_DAYS - 1]
+    )
+    const startMs = todayUtcMs - (SPARK_DAYS - 1) * DAY_MS
+    for (const r of rows) {
+      const arr = sparkByPath.get(r.page)
+      if (!arr) continue
+      const idx = Math.round((Date.parse(String(r.d).slice(0, 10) + 'T00:00:00Z') - startMs) / DAY_MS)
+      if (idx >= 0 && idx < SPARK_DAYS) arr[idx] = Number(r.v)
+    }
   }
 
   /* ── Top countries (last 30d, this user's listings) ── */
   let topCountries: { country: string; count: number }[] = []
   if (paths.length > 0) {
-    try {
-      const ph = paths.map(() => '?').join(',')
-      topCountries = await query<{ country: string; count: number }>(
-        `SELECT COALESCE(country, 'XX') AS country, COUNT(*) AS count
-           FROM page_views
-          WHERE page IN (${ph}) AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
-          GROUP BY country
-          ORDER BY count DESC LIMIT 6`,
-        paths
-      )
-    } catch {}
+    /* Location lives on the visit (an_sessions), so each view takes the
+       country of the visit it belongs to. */
+    topCountries = await anRows<{ country: string; count: number }>(
+      `SELECT COALESCE(s.country, 'XX') AS country, COUNT(*) AS count
+         FROM an_pageviews p
+         JOIN an_sessions s ON s.id = p.session_id
+        WHERE p.path IN (?) AND p.ts >= UTC_TIMESTAMP(3) - INTERVAL 30 DAY
+        GROUP BY COALESCE(s.country, 'XX')
+        ORDER BY count DESC LIMIT 6`,
+      [paths]
+    )
   }
 
   /* ── Top referrers (aggregate by host) ── */
   let topReferrers: { host: string; count: number }[] = []
   if (paths.length > 0) {
-    try {
-      const ph = paths.map(() => '?').join(',')
-      const raw = await query<{ referrer: string; count: number }>(
-        `SELECT referrer, COUNT(*) AS count
-           FROM page_views
-          WHERE page IN (${ph})
-            AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
-            AND referrer IS NOT NULL AND referrer != ''
-          GROUP BY referrer
-          ORDER BY count DESC LIMIT 100`,
-        paths
-      )
-      const agg = new Map<string, number>()
-      for (const r of raw) {
-        const h = hostOf(r.referrer)
-        agg.set(h, (agg.get(h) || 0) + Number(r.count))
-      }
-      topReferrers = [...agg.entries()]
-        .map(([host, count]) => ({ host, count }))
-        .sort((a, b) => b.count - a.count)
-        .slice(0, 6)
-    } catch {}
+    /* Like the old document.referrer-based numbers: every view counts toward
+       the site its visit came from (an_sessions.referrer_host, already a
+       normalized host without "www."). Direct visits have no referrer and
+       are left out, as before. */
+    topReferrers = await anRows<{ host: string; count: number }>(
+      `SELECT s.referrer_host AS host, COUNT(*) AS count
+         FROM an_pageviews p
+         JOIN an_sessions s ON s.id = p.session_id
+        WHERE p.path IN (?) AND p.ts >= UTC_TIMESTAMP(3) - INTERVAL 30 DAY
+          AND s.referrer_host IS NOT NULL AND s.referrer_host <> ''
+        GROUP BY s.referrer_host
+        ORDER BY count DESC LIMIT 6`,
+      [paths]
+    )
   }
 
   /* ── Wire everything per listing ── */

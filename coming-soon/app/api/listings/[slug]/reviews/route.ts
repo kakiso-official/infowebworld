@@ -3,6 +3,7 @@ import { execute, query, queryOne } from '@/lib/db'
 import { requireUser } from '@/lib/user-auth'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { getClientIp } from '@/lib/tracking'
+import { trackServerEvent } from '@/lib/analytics/server-events'
 /* notifyOwnerOnReview no longer fires on submit — moved to admin approval.
    Reviews are now moderated before going public + before the owner is told. */
 
@@ -79,13 +80,19 @@ export async function POST(request: NextRequest, ctx: { params: Promise<{ slug: 
        to an already-approved review reset it to 'pending' so the admin can
        re-vet the new text. The owner is NOT emailed here — that fires from
        the admin approval handler. */
-    await execute(
+    const res = await execute(
       `INSERT INTO reviews (listing_id, user_id, rating, title, body, status)
        VALUES (?, ?, ?, ?, ?, 'pending')
        ON DUPLICATE KEY UPDATE rating = VALUES(rating), title = VALUES(title),
                                body = VALUES(body), status = 'pending'`,
       [listingId, auth.id, rating, title, text]
     )
+    /* The upsert reports affectedRows 1 for a new review and 2 when it
+       rewrote this user's existing one (a byte-identical re-submit can also
+       report 1), so reports can tell first reviews from edits. */
+    trackServerEvent('review_submitted', {
+      userId: auth.id, target: slug, value: rating, props: { edited: res.affectedRows !== 1 },
+    })
     return Response.json({ ok: true, status: 'pending' })
   } catch (err) {
     console.error('POST /api/listings/[slug]/reviews error:', err)

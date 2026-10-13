@@ -30,6 +30,14 @@ import {
 /** No ISR — render dynamically on each request to avoid Vercel ISR write quota */
 export const dynamic = 'force-dynamic'
 
+/* Garbage URLs go to /url-removed (a TRUE 404, see app/url-removed/page.tsx).
+   The original path rides along as ?from= so first-party analytics can report
+   which URL 404'd (lib/analytics/collector-validate.ts); /url-removed never
+   reads it, so that page stays non-streamed. */
+function urlRemoved(segments: string[]): string {
+  return `/url-removed?from=${encodeURIComponent('/' + segments.join('/'))}`
+}
+
 /* ── Known L1 sector slugs ── */
 const L1_SLUGS = new Set([
   'ai-ml', 'software-saas', 'it-services-agencies',
@@ -1926,7 +1934,7 @@ export default async function CategoryDetailRoute({
     /* Another sector's index under this sector's path → its own URL; an
        unknown sector suffix is garbage → TRUE 404. */
     if (viewAllSector2 && L1_SLUGS.has(viewAllSector2)) permanentRedirect(sectorViewAllPath(viewAllSector2))
-    redirect('/url-removed')
+    redirect(urlRemoved(segments))
   }
 
   /* ── Redirect old flat /view-all-sub-categories-{sector} → the nested index ── */
@@ -1963,7 +1971,7 @@ export default async function CategoryDetailRoute({
     if (sector) {
       permanentRedirect(`${sectorLandingPath(sector)}/${segments.join('/')}`)
     }
-    redirect('/url-removed')
+    redirect(urlRemoved(segments))
   }
 
   /* ── Cost guard for sector-prefixed category URLs (mirrors generateMetadata) ──
@@ -1984,7 +1992,7 @@ export default async function CategoryDetailRoute({
         `SELECT id FROM categories WHERE slug = ? AND is_active = 1 LIMIT 1`,
         [categorySlug]
       ).catch(() => ({ id: 0 }))
-      if (!exists) redirect('/url-removed')
+      if (!exists) redirect(urlRemoved(segments))
     }
   }
 

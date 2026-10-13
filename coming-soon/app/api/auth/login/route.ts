@@ -4,6 +4,7 @@ import { queryOne, execute } from '@/lib/db'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { getClientIp } from '@/lib/tracking'
 import { createUserSession, userCookieHeader } from '@/lib/user-auth'
+import { trackServerEvent } from '@/lib/analytics/server-events'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -41,6 +42,8 @@ export async function POST(request: NextRequest) {
 
     const token = await createUserSession(user.id, ip, request.headers.get('user-agent'))
     await execute(`UPDATE business_users SET last_login_at = NOW(), last_login_ip = ? WHERE id = ?`, [ip, user.id])
+
+    trackServerEvent('login', { userId: user.id, props: { method: 'password' } })
 
     return Response.json(
       {

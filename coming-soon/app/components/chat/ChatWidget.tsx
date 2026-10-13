@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { marked } from 'marked'
 import dynamic from 'next/dynamic'
+import { track } from '@/lib/analytics/client'
 
 /* SignupModal pulls in createPortal etc. — load it lazily so the chat widget
    itself stays small for the 95% of visits that never hit the auth gate. */
@@ -74,6 +75,7 @@ export default function ChatWidget() {
     setTimeout(() => { setOpen(false); setPhase('idle') }, 240)
   }
   const openWidget = () => {
+    track('chat_opened')
     setOpen(true)
     setPhase('enter')
     setTimeout(() => setPhase('idle'), 420)

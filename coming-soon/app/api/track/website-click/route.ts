@@ -15,8 +15,9 @@ const DEDUP_MINUTES = 30
  * Records a "Visit website" click from any of our listing surfaces.
  * Body: { slug: string, campaign?: string, userId?: number }
  *
- * - Bot-filtered + IP-rate-limited identically to /api/track/pageview so a
- *   single source can't inflate a listing's number.
+ * - Bot-filtered + IP-rate-limited so a single source can't inflate a
+ *   listing's number. (The click is also sent to first-party analytics as
+ *   a website_click event by app/lib/track-website-click.ts.)
  * - 30-min dedup keyed on (visitor_hash, listing_id) keeps the count
  *   honest — repeated clicks by the same visitor in a short window count
  *   once. Long-tail repeated visits (next day, different campaign) do count.

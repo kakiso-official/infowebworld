@@ -10,6 +10,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import GoogleOneTap from "./components/auth/GoogleOneTap";
 import ChatWidget from "./components/chat/ChatWidget";
 import DeferredClient from "./components/DeferredClient";
+import AnalyticsTracker from "./components/analytics/AnalyticsTracker";
 
 const nunito = Nunito({
   variable: "--font-nunito",
@@ -172,6 +173,10 @@ export default function RootLayout({
           gtag('config', 'G-C6LY2016NW');
         `}</Script>
         <Suspense><NavigationProgress /></Suspense>
+        {/* First-party analytics (lib/analytics/client.ts). Its own Suspense
+            boundary (useSearchParams) and outside DeferredClient, so the
+            landing pageview is sent without waiting for an interaction. */}
+        <Suspense fallback={null}><AnalyticsTracker /></Suspense>
         <Suspense><DeferredClient><GoogleOneTap /></DeferredClient></Suspense>
         {children}
         <ScrollToTop />

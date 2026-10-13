@@ -4,8 +4,9 @@ import {
   consumeState, exchangeCodeForToken, fetchUserProfile, upsertOAuthUser,
 } from '@/lib/oauth'
 import { createUserSession, userCookieHeader } from '@/lib/user-auth'
-import { execute } from '@/lib/db'
+import { execute, queryOne } from '@/lib/db'
 import { getClientIp } from '@/lib/tracking'
+import { trackServerEvent } from '@/lib/analytics/server-events'
 
 const POPUP_PREFIX = '__popup__:'
 
@@ -66,6 +67,7 @@ export async function GET(
     return redirectError(request, 'upsert-failed', isPopup)
   }
 
+  const isNewUser = await isJustCreated(userIdOrErr)
   const ip = await getClientIp()
   const token = await createUserSession(userIdOrErr, ip, request.headers.get('user-agent'))
   await execute(
@@ -74,6 +76,8 @@ export async function GET(
   )
 
   const safeNext = isSafeRedirect(nextUrl) ? nextUrl : '/dashboard'
+
+  trackServerEvent(isNewUser ? 'signup_completed' : 'login', { userId: userIdOrErr, props: { method: provider } })
 
   if (isPopup) {
     return popupSuccessResponse(token, safeNext)
@@ -86,6 +90,24 @@ export async function GET(
 }
 
 /* ─────────────── helpers ─────────────── */
+
+/* Signup or login? upsertOAuthUser only returns the id, so ask the row itself.
+   A brand-new OAuth account has never logged in (its INSERT leaves
+   last_login_at NULL, while every other signup path sets it) and was created
+   moments ago. Must run BEFORE the handler stamps last_login_at. Best-effort:
+   any failure counts the visit as a login and never blocks the sign-in. */
+async function isJustCreated(userId: number): Promise<boolean> {
+  try {
+    const row = await queryOne<{ fresh: number }>(
+      `SELECT (last_login_at IS NULL AND created_at >= NOW() - INTERVAL 10 MINUTE) AS fresh
+         FROM business_users WHERE id = ? LIMIT 1`,
+      [userId]
+    )
+    return Number(row?.fresh) === 1
+  } catch {
+    return false
+  }
+}
 
 function decodeStoredRedirect(raw: string | null): { isPopup: boolean; nextUrl: string } {
   if (!raw) return { isPopup: false, nextUrl: '/dashboard' }

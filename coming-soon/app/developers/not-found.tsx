@@ -72,6 +72,8 @@ export default async function DevelopersNotFound() {
 
   return (
     <>
+      {/* The analytics tracker reports this view as a 404. */}
+      <span data-iww-status="404" hidden />
       <DvHero
         variant="page"
         deco

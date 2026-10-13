@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { refreshAuth } from '@/lib/use-auth'
+import { track } from '@/lib/analytics/client'
 import { I, ic } from '../icons'
 
 type Mode = 'signup' | 'login'
@@ -56,6 +57,7 @@ export default function SignupModal({ open, onClose, nextUrl, onSuccess, initial
       setError(''); setInfo('')
       setEmail(''); setPassword(''); setConfirmPassword(''); setCode('')
       setResendIn(0)
+      track(initialMode === 'login' ? 'login_started' : 'signup_started')
     }
   }, [open, initialMode])
 
@@ -261,7 +263,7 @@ export default function SignupModal({ open, onClose, nextUrl, onSuccess, initial
             busy={busy} error={error}
             onSubmit={submitForm}
             onGoogle={startGoogle}
-            onSwitch={() => { setMode(isSignup ? 'login' : 'signup'); setError('') }}
+            onSwitch={() => { setMode(isSignup ? 'login' : 'signup'); setError(''); track(isSignup ? 'login_started' : 'signup_started') }}
           />
         ) : (
           <OtpStep

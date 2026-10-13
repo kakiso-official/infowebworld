@@ -1,11 +1,16 @@
 import { NextRequest } from 'next/server'
 import { query, queryOne } from '@/lib/db'
 import { requireAdmin } from '@/lib/auth'
+import { anQuery, anQueryOne, isMissingTable } from '@/lib/analytics/db'
 
 export async function GET(request: NextRequest) {
   const guard = await requireAdmin(request)
   if (guard instanceof Response) return guard
   try {
+    /* Traffic stats use the separate analytics pool, so start them now and
+       let them run alongside the queries below (loadTraffic never rejects). */
+    const trafficPromise = loadTraffic()
+
     // --- Submission counts ---
     const submissionCounts = await queryOne<{
       totalSubmissions: number
@@ -24,59 +29,6 @@ export async function GET(request: NextRequest) {
     // --- Waitlist total ---
     const waitlistRow = await queryOne<{ waitlistTotal: number }>(
       'SELECT COUNT(*) as waitlistTotal FROM waitlist'
-    )
-
-    // --- Page view stats (DISTINCT visitor_hash = true unique visitors) ---
-    const viewStats = await queryOne<{
-      totalPageViews: number
-      totalUnique: number
-    }>(
-      `SELECT
-         COUNT(*) as totalPageViews,
-         COUNT(DISTINCT visitor_hash) as totalUnique
-       FROM page_views`
-    )
-
-    const todayStats = await queryOne<{
-      todayViews: number
-      todayUnique: number
-    }>(
-      `SELECT
-         COUNT(*) as todayViews,
-         COUNT(DISTINCT visitor_hash) as todayUnique
-       FROM page_views
-       WHERE DATE(created_at) = CURDATE()`
-    )
-
-    // --- Daily views for last 7 days ---
-    const dailyViews = await query<{ date: string; views: number; unique_views: number }>(
-      `SELECT
-         DATE(created_at) as date,
-         COUNT(*) as views,
-         COUNT(DISTINCT visitor_hash) as unique_views
-       FROM page_views
-       WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
-       GROUP BY DATE(created_at)
-       ORDER BY date ASC`
-    )
-
-    // --- Top pages ---
-    const topPages = await query<{ page: string; views: number }>(
-      `SELECT page, COUNT(*) as views
-       FROM page_views
-       GROUP BY page
-       ORDER BY views DESC
-       LIMIT 6`
-    )
-
-    // --- Top referrers ---
-    const topReferrers = await query<{ referrer: string; count: number }>(
-      `SELECT referrer, COUNT(*) as count
-       FROM page_views
-       WHERE referrer IS NOT NULL AND referrer != ''
-       GROUP BY referrer
-       ORDER BY count DESC
-       LIMIT 6`
     )
 
     // --- Submissions by plan ---
@@ -150,35 +102,7 @@ export async function GET(request: NextRequest) {
       topPosts,
     }
 
-    // --- Devices breakdown (last 30 days) ---
-    const devices = await query<{ device: string; count: number }>(
-      `SELECT COALESCE(device_type, 'unknown') as device, COUNT(*) as count
-       FROM page_views
-       WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
-       GROUP BY device_type
-       ORDER BY count DESC`
-    )
-
-    // --- Countries breakdown (last 30 days, top 10) ---
-    const countries = await query<{ country: string; count: number }>(
-      `SELECT COALESCE(country, 'Unknown') as country, COUNT(*) as count
-       FROM page_views
-       WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
-       GROUP BY country
-       ORDER BY count DESC
-       LIMIT 10`
-    )
-
-    // --- UTM sources breakdown (last 30 days, top 10) ---
-    const utmSources = await query<{ source: string; count: number }>(
-      `SELECT COALESCE(utm_source, 'direct') as source, COUNT(*) as count
-       FROM page_views
-       WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
-         AND utm_source IS NOT NULL AND utm_source != ''
-       GROUP BY utm_source
-       ORDER BY count DESC
-       LIMIT 10`
-    )
+    const traffic = await trafficPromise
 
     const data = {
       ok: true,
@@ -187,21 +111,21 @@ export async function GET(request: NextRequest) {
       pendingSubmissions: submissionCounts?.pendingSubmissions ?? 0,
       confirmedSubmissions: submissionCounts?.confirmedSubmissions ?? 0,
       waitlistTotal: waitlistRow?.waitlistTotal ?? 0,
-      totalPageViews: viewStats?.totalPageViews ?? 0,
-      todayViews: todayStats?.todayViews ?? 0,
-      todayUnique: todayStats?.todayUnique ?? 0,
-      totalUnique: viewStats?.totalUnique ?? 0,
-      dailyViews,
-      topPages,
-      topReferrers,
+      totalPageViews: traffic.totalPageViews,
+      todayViews: traffic.todayViews,
+      todayUnique: traffic.todayUnique,
+      totalUnique: traffic.totalUnique,
+      dailyViews: traffic.dailyViews,
+      topPages: traffic.topPages,
+      topReferrers: traffic.topReferrers,
       byPlan,
       byCat,
       recent,
       waitlistBySrc,
       blogStats,
-      devices,
-      countries,
-      utmSources,
+      devices: traffic.devices,
+      countries: traffic.countries,
+      utmSources: traffic.utmSources,
     }
 
     return Response.json(data, {
@@ -216,5 +140,132 @@ export async function GET(request: NextRequest) {
       { ok: false, error: 'Internal server error.' },
       { status: 500 }
     )
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Traffic numbers for the admin home.
+
+   Source: the first-party analytics tables (database/
+   migration-analytics-v1.sql). The old page_views table stopped
+   filling on 2026-04-18. All an_* times are UTC, so "today" and the
+   7-day chart are UTC days.
+
+   Response shape is unchanged so the admin home keeps rendering:
+     dailyViews   [{ date: 'YYYY-MM-DD', views, unique_views }]
+     topPages     [{ page, views }]          last 30 days
+     topReferrers [{ referrer, count }]      visits, by referring site, last 30 days
+     devices / countries / utmSources [{ device|country|source, count }]
+
+   Each query fails soft: before the migration has run (tables missing)
+   it quietly reads as zero, and any other error is logged and zeroed so
+   traffic stats can never take the whole admin home down.
+   ══════════════════════════════════════════════════════════════ */
+
+const DAY_MS = 86_400_000
+const CHART_DAYS = 7
+
+async function soft<T>(label: string, fallback: T, run: () => Promise<T>): Promise<T> {
+  try {
+    return await run()
+  } catch (err) {
+    if (!isMissingTable(err)) console.error(`Dashboard stats (${label}) error:`, err)
+    return fallback
+  }
+}
+
+async function loadTraffic() {
+  const [lifetime, today, daily, topPages, topReferrers, devices, countries, utmSources] = await Promise.all([
+    /* Lifetime totals come from an_visitors (kept forever, one row per
+       browser with its running pageview count), so they don't shrink when
+       raw pageviews age out after RAW_RETENTION_DAYS. */
+    soft('totals', null, () => anQueryOne<{ totalPageViews: number; totalUnique: number }>(
+      `SELECT COALESCE(SUM(pageviews), 0) AS totalPageViews, COUNT(*) AS totalUnique
+         FROM an_visitors`
+    )),
+    soft('today', null, () => anQueryOne<{ todayViews: number; todayUnique: number }>(
+      `SELECT COUNT(*) AS todayViews, COUNT(DISTINCT visitor_id) AS todayUnique
+         FROM an_pageviews
+        WHERE ts >= UTC_DATE()`
+    )),
+    soft('daily', [], () => anQuery<{ date: string; views: number; unique_views: number }>(
+      `SELECT DATE(ts) AS date, COUNT(*) AS views, COUNT(DISTINCT visitor_id) AS unique_views
+         FROM an_pageviews
+        WHERE ts >= UTC_DATE() - INTERVAL ? DAY
+        GROUP BY DATE(ts)`,
+      [CHART_DAYS - 1]
+    )),
+    soft('top pages', [], () => anQuery<{ page: string; views: number }>(
+      `SELECT path AS page, COUNT(*) AS views
+         FROM an_pageviews
+        WHERE ts >= UTC_TIMESTAMP(3) - INTERVAL 30 DAY
+        GROUP BY path
+        ORDER BY views DESC
+        LIMIT 6`
+    )),
+    /* Visits by referring site. Visits referred by our own pages (source
+       '(internal)', e.g. after an OAuth round-trip) are not referrals. */
+    soft('top referrers', [], () => anQuery<{ referrer: string; count: number }>(
+      `SELECT referrer_host AS referrer, COUNT(*) AS count
+         FROM an_sessions
+        WHERE started_at >= UTC_TIMESTAMP(3) - INTERVAL 30 DAY
+          AND referrer_host IS NOT NULL AND referrer_host <> ''
+          AND source <> '(internal)'
+        GROUP BY referrer_host
+        ORDER BY count DESC
+        LIMIT 6`
+    )),
+    /* Device / country / source live on the visit; SUM(pageviews) keeps
+       these counting page views, like the old per-pageview numbers. */
+    soft('devices', [], () => anQuery<{ device: string; count: number }>(
+      `SELECT device_type AS device, SUM(pageviews) AS count
+         FROM an_sessions
+        WHERE started_at >= UTC_TIMESTAMP(3) - INTERVAL 30 DAY
+        GROUP BY device_type
+        ORDER BY count DESC`
+    )),
+    soft('countries', [], () => anQuery<{ country: string; count: number }>(
+      `SELECT COALESCE(country, 'Unknown') AS country, SUM(pageviews) AS count
+         FROM an_sessions
+        WHERE started_at >= UTC_TIMESTAMP(3) - INTERVAL 30 DAY
+        GROUP BY COALESCE(country, 'Unknown')
+        ORDER BY count DESC
+        LIMIT 10`
+    )),
+    /* Campaign-tagged traffic: visits that carried a utm_campaign or an ad
+       click id. The visit's source is the utm_source when one was given. */
+    soft('campaign sources', [], () => anQuery<{ source: string; count: number }>(
+      `SELECT source, SUM(pageviews) AS count
+         FROM an_sessions
+        WHERE started_at >= UTC_TIMESTAMP(3) - INTERVAL 30 DAY
+          AND (campaign IS NOT NULL OR click_id IS NOT NULL)
+        GROUP BY source
+        ORDER BY count DESC
+        LIMIT 10`
+    )),
+  ])
+
+  /* Zero-fill the chart: exactly CHART_DAYS bars ending today (UTC), so a
+     quiet day shows as 0 instead of silently shifting the bars. */
+  const byDate = new Map(daily.map(r => [String(r.date).slice(0, 10), r]))
+  const now = new Date()
+  const todayUtcMs = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+  const dailyViews = Array.from({ length: CHART_DAYS }, (_, i) => {
+    const date = new Date(todayUtcMs - (CHART_DAYS - 1 - i) * DAY_MS).toISOString().slice(0, 10)
+    const r = byDate.get(date)
+    return { date, views: Number(r?.views ?? 0), unique_views: Number(r?.unique_views ?? 0) }
+  })
+
+  return {
+    totalPageViews: Number(lifetime?.totalPageViews ?? 0),
+    totalUnique: Number(lifetime?.totalUnique ?? 0),
+    todayViews: Number(today?.todayViews ?? 0),
+    todayUnique: Number(today?.todayUnique ?? 0),
+    dailyViews,
+    topPages,
+    topReferrers,
+    devices,
+    countries,
+    utmSources,
   }
 }

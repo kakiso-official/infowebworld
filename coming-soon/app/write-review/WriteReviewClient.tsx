@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback, useRef } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/lib/use-auth'
+import { track } from '@/lib/analytics/client'
 import SignupModal from '../components/auth/SignupModal'
 import CompanyPicker, { type CompanyHit } from './CompanyPicker'
 import VoiceRecorder from './VoiceRecorder'
@@ -94,6 +95,7 @@ export default function WriteReviewClient() {
   }, [])
 
   const handlePickMethod = useCallback((m: Method) => {
+    track('review_started', { label: m })
     setMethod(m)
     if (m === 'voice') setStep('voice-record')
     else { setDraft({ rating: 0, title: '', body: '' }); setStep('review-editor') }

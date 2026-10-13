@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
+import { track } from '@/lib/analytics/client'
 
 interface SavedReview {
   rating: number
@@ -60,6 +61,7 @@ export default function WriteReviewModal({
     setRating(0); setHover(0); setTitle(''); setBody('')
     setSubmitting(false); setDeleting(false); setConfirmingDelete(false)
     setError(''); setSuccess(null); setDidExist(false); setLoadingExisting(false)
+    track('review_started')
   }, [isOpen])
 
   /* Prefill in edit mode by hitting /reviews/me. Skips when previewing. */

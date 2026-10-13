@@ -3,6 +3,7 @@ import nodemailer from 'nodemailer'
 import { execute } from '@/lib/db'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { getClientIp } from '@/lib/tracking'
+import { trackServerEvent } from '@/lib/analytics/server-events'
 
 export async function POST(request: NextRequest) {
   try {
@@ -64,6 +65,9 @@ export async function POST(request: NextRequest) {
        VALUES (?, ?, ?, ?, ?, NOW())`,
       [name.trim(), email.trim().toLowerCase(), subject.trim(), message.trim(), ip]
     )
+    /* The message is stored, so the visitor sees success from here on even
+       if the SMTP copy below fails - that is the conversion. */
+    trackServerEvent('contact_submitted')
 
     // Send email via Gmail SMTP
     const smtpUser = process.env.SMTP_USER

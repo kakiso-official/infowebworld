@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { trackBlogView } from '../../iww-hq/data/visitor-tracking'
+import { track } from '@/lib/analytics/client'
 
 /* Client-only chrome for a (statically rendered) blog post:
    - top reading-progress bar
@@ -44,9 +45,9 @@ export default function BlogReaderInteractions({ slug, title }: { slug: string; 
     cursor: 'pointer', fontFamily: 'inherit', transition: 'all .2s',
   })
 
-  const onCopy = () => { navigator.clipboard.writeText(shareUrl); trackBlogView(slug, undefined, true); setCopied(true); setTimeout(() => setCopied(false), 2000) }
-  const onTwitter = () => { trackBlogView(slug, undefined, true); window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(shareUrl)}`, '_blank') }
-  const onLinkedIn = () => { trackBlogView(slug, undefined, true); window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank') }
+  const onCopy = () => { navigator.clipboard.writeText(shareUrl); trackBlogView(slug, undefined, true); track('share', { target: 'copy_link', label: slug }); setCopied(true); setTimeout(() => setCopied(false), 2000) }
+  const onTwitter = () => { trackBlogView(slug, undefined, true); track('share', { target: 'x', label: slug }); window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(shareUrl)}`, '_blank') }
+  const onLinkedIn = () => { trackBlogView(slug, undefined, true); track('share', { target: 'linkedin', label: slug }); window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank') }
 
   return (
     <>

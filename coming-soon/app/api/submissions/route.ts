@@ -8,6 +8,7 @@ import { getUserFromRequest } from '@/lib/user-auth'
 import { getUserHighestPaidPlan } from '@/lib/user-plan'
 import { TIER_RANK, type PlanTier } from '@/lib/user-plan-types'
 import { notifyOnNewSubmission } from '@/lib/notify-submission'
+import { trackServerEvent } from '@/lib/analytics/server-events'
 
 /**
  * GET /api/submissions — admin moderation feed.
@@ -389,6 +390,17 @@ export async function POST(request: NextRequest) {
       contactEmail: body.email.trim().toLowerCase(),
       category: (body.categorySlug || body.category || null) as string | null,
       listingMode,
+    })
+
+    const categoryKey = body.categorySlug || body.category
+    trackServerEvent('listing_submitted', {
+      userId,
+      target: slug,
+      props: {
+        mode: listingMode,
+        plan: String(requested || 'free').slice(0, 40),
+        category: categoryKey ? String(categoryKey).slice(0, 100) : null,
+      },
     })
 
     return Response.json({ ok: true, uuid, slug, message: 'Submission received' }, { status: 201 })
