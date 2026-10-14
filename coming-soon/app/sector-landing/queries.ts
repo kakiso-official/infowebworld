@@ -5,6 +5,7 @@
  * back to its L1 sector slug.
  */
 import { query } from '@/lib/db'
+import { STRIP_REVIEWER_FILTER } from '@/lib/review-strips'
 import type { PopL2 } from '../test-category-1-page/PopularSection'
 import type { ReviewRow } from '../test-landing-page/NewReviewsSection'
 import type { LaunchRow } from '../test-category-1-page/NewLaunchesSection'
@@ -154,6 +155,7 @@ export async function getSectorReviewsWithTopUp(sectorSlug: string, limit = 8): 
          JOIN submissions    s ON s.id = r.listing_id
         WHERE r.status = 'approved'
           AND s.status IN ('active','paid')
+          ${STRIP_REVIEWER_FILTER}
         ORDER BY r.created_at DESC
         LIMIT ?`,
       [limit + own.length]
@@ -185,7 +187,8 @@ export async function getSectorReviewsWithTopUp(sectorSlug: string, limit = 8): 
   }
 }
 
-/** Latest approved reviews scoped to listings under this sector. */
+/** Latest approved reviews scoped to listings under this sector, minus the
+ *  team's own accounts (lib/review-strips.ts) - this feeds review strips. */
 export async function getLatestSectorReviews(sectorSlug: string, limit = 8): Promise<ReviewRow[]> {
   try {
     const rows = await query<{
@@ -210,6 +213,7 @@ export async function getLatestSectorReviews(sectorSlug: string, limit = 8): Pro
         WHERE r.status = 'approved'
           AND s.status IN ('active','paid')
           AND (c.slug = ? OR cp.slug = ? OR cgp.slug = ? OR cggp.slug = ? OR cgggp.slug = ?)
+          ${STRIP_REVIEWER_FILTER}
         ORDER BY r.created_at DESC
         LIMIT ?`,
       [sectorSlug, sectorSlug, sectorSlug, sectorSlug, sectorSlug, limit]

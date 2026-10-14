@@ -59,6 +59,21 @@ for (const r of STATIC_CATEGORIES) {
   }
 }
 
+/* Where a 3+-segment category URL 308s to. These are leftovers of the old
+   nested links (/{sector}/{L2}/{L3}, e.g. .../climate-energy-sustainability-
+   startups/climate-tech-startups) and every category has a flat URL, so the
+   target is the DEEPEST segment the taxonomy knows, under its own sector -
+   not the L2 in segments[1], which dropped visitors on the parent page.
+   No known deeper slug → the old behaviour (segments[1]). Slugs are unique
+   across the taxonomy, so the map lookup is unambiguous. */
+function nestedCategoryPath(segments: string[], urlSector: string): string {
+  for (let i = segments.length - 1; i >= 2; i--) {
+    const sector = SECTOR_BY_CATEGORY_SLUG.get(segments[i])
+    if (sector) return sectorCategoryPath(sector, segments[i])
+  }
+  return sectorCategoryPath(urlSector, segments[1])
+}
+
 /* Sector accent colors — same palette as SectorAllBrowse's sectorMeta()
    client helper, redeclared here so the server-rendered .va-card grid on
    view-all pages can be tinted via --sec without a client component. */
@@ -1559,7 +1574,7 @@ export async function generateMetadata({
 
     /* Cost guard (see SECTOR_BY_CATEGORY_SLUG): collapse extra path segments
        and wrong-sector aliases to the canonical URL before any DB work. */
-    if (segments.length > 2) permanentRedirect(sectorCategoryPath(sectorSlug, categorySlug))
+    if (segments.length > 2) permanentRedirect(nestedCategoryPath(segments, sectorSlug))
     const trueSector = SECTOR_BY_CATEGORY_SLUG.get(categorySlug)
     if (trueSector && trueSector !== sectorSlug) {
       permanentRedirect(sectorCategoryPath(trueSector, categorySlug))
@@ -1979,7 +1994,7 @@ export default async function CategoryDetailRoute({
      slugs in neither the static taxonomy nor the DB are garbage → TRUE 404
      via /url-removed instead of a 200 soft-404 with the full 14-query render. */
   if (sectorSlug && categorySlug) {
-    if (segments.length > 2) permanentRedirect(sectorCategoryPath(sectorSlug, categorySlug))
+    if (segments.length > 2) permanentRedirect(nestedCategoryPath(segments, sectorSlug))
     const trueSector = SECTOR_BY_CATEGORY_SLUG.get(categorySlug)
     if (trueSector && trueSector !== sectorSlug) {
       permanentRedirect(sectorCategoryPath(trueSector, categorySlug))

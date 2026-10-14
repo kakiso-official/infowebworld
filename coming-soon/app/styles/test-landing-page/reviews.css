@@ -36,11 +36,18 @@
 .tlp-revs-rail {
   display: flex;
   align-items: flex-start;
-  gap: 16px;
   width: max-content;
-  /* Pace: ~55s per loop — leisurely so eyes can catch each card. */
-  animation: tlp-revs-marquee 55s linear infinite;
+  /* Pace: ~9s per card — leisurely so eyes can catch each card, and the
+     same speed whatever the copy length (--tlp-revs-n = cards per copy,
+     set by NewReviewsSection). */
+  animation: tlp-revs-marquee calc(var(--tlp-revs-n, 6) * 9s) linear infinite;
   will-change: transform;
+}
+/* Card spacing as a right margin, not a flex gap: each card then owns
+   exactly 1/(2n) of the rail, so -50% lands the second copy precisely on
+   the first (with a gap the seam jumped by half a gap). */
+.tlp-revs-rail > .tlp-rev {
+  margin-right: 16px;
 }
 .tlp-revs-track:hover .tlp-revs-rail,
 .tlp-revs-track:focus-within .tlp-revs-rail {
@@ -54,6 +61,23 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .tlp-revs-rail { animation: none; }
+}
+
+/* One or two reviews: no marquee, just a centred (wrapping) row. */
+.tlp-revs-track--static {
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+.tlp-revs-track--static .tlp-revs-rail {
+  animation: none;
+  width: auto;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  padding: 0 clamp(18px, 4vw, 32px);
+}
+.tlp-revs-track--static .tlp-revs-rail > .tlp-rev {
+  margin-right: 0;
 }
 
 .tlp-rev {
@@ -200,7 +224,7 @@
 
 @media (max-width: 520px) {
   .tlp-rev { flex-basis: 280px; padding: 18px; }
-  .tlp-revs-rail { animation-duration: 45s; }
+  .tlp-revs-rail { animation-duration: calc(var(--tlp-revs-n, 6) * 7.5s); }
 }
 
 /* Optional subtitle under the section heading (opt-in prop). .tlp-revs-inner

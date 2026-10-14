@@ -62,6 +62,9 @@ export interface PopularSubcategoriesSectionProps {
   /** Extra class on the grid (e.g. "hm-needs-grid--center" to centre a
    *  short last row). */
   gridClassName?: string
+  /** Show the "in {parent category}" line on each card. The homepage turns
+   *  it off (Oct 2026 SEO request); the sector directories keep it. */
+  showParent?: boolean
 }
 
 export default function PopularSubcategoriesSection({
@@ -74,6 +77,7 @@ export default function PopularSubcategoriesSection({
   icons,
   accent,
   gridClassName,
+  showParent = true,
 }: PopularSubcategoriesSectionProps) {
   return (
     <section className="hm-needs" aria-labelledby="hm-needs-h">
@@ -117,10 +121,12 @@ export default function PopularSubcategoriesSection({
                       </span>
                     )}
                     <h3 className="hm-needs-card-name">{item.name}</h3>
-                    <p className="hm-needs-card-meta">
-                      <span className="hm-needs-dot" aria-hidden="true" />
-                      in {item.parentName}
-                    </p>
+                    {showParent && (
+                      <p className="hm-needs-card-meta">
+                        <span className="hm-needs-dot" aria-hidden="true" />
+                        in {item.parentName}
+                      </p>
+                    )}
                     {countLabel && (
                       <p className="hm-needs-card-count">{countLabel}</p>
                     )}

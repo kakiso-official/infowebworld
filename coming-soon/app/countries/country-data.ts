@@ -22,6 +22,7 @@
 import { query, queryOne } from '@/lib/db'
 import { unstable_cache } from 'next/cache'
 import { countryDisplayName, countrySlug, COUNTRY_PAGE_MIN_LISTINGS, SECTOR_ORDER } from '@/lib/country-paths'
+import { STRIP_REVIEWER_FILTER } from '@/lib/review-strips'
 import type { ReviewRow } from '../test-landing-page/NewReviewsSection'
 
 export type CountryInfo = {
@@ -496,6 +497,7 @@ async function fetchCountryReviews(countryId: number, sector: string | null, lim
           AND s.status IN ('active', 'paid')
           AND s.country_id = ?
           ${sectorFilter}
+          ${STRIP_REVIEWER_FILTER}
         ORDER BY r.created_at DESC
         LIMIT ?`,
       [...binds, limit]
@@ -522,7 +524,7 @@ async function fetchCountryReviews(countryId: number, sector: string | null, lim
 
 export const getCountryReviews = unstable_cache(
   fetchCountryReviews,
-  ['country-dir-v1-reviews'],
+  ['country-dir-v2-reviews'],
   { revalidate: 600 }
 )
 

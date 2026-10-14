@@ -18,6 +18,8 @@ import HomeFaqSection from './home-sections/HomeFaqSection'
 import { buildHomeFaqJsonLd } from './home-sections/home-faq-data'
 import { CATEGORIES } from './config/categories-data'
 import { sectorLandingPath } from '@/lib/sector-paths'
+import { COUNTRIES_INDEX_PATH } from '@/lib/country-paths'
+import { STRIP_REVIEWER_FILTER } from '@/lib/review-strips'
 import { query } from '@/lib/db'
 import { unstable_cache } from 'next/cache'
 import './styles/test-landing-page.css'
@@ -285,7 +287,8 @@ async function getFirmsForSector(sectorSlug: string): Promise<FirmRow[]> {
 }
 
 /* Most recent approved reviews across the directory, joined to the listing
-   identity + reviewer identity. */
+   identity + reviewer identity. The team's own accounts are left out
+   (lib/review-strips.ts). */
 async function getLatestReviews(limit = 8): Promise<ReviewRow[]> {
   try {
     const rows = await query<{
@@ -304,6 +307,7 @@ async function getLatestReviews(limit = 8): Promise<ReviewRow[]> {
          JOIN submissions    s ON s.id = r.listing_id
         WHERE r.status = 'approved'
           AND s.status IN ('active','paid')
+          ${STRIP_REVIEWER_FILTER}
         ORDER BY r.created_at DESC
         LIMIT ?`,
       [limit]
@@ -390,7 +394,7 @@ async function getPopularAiTools(limit = 6): Promise<PopFirmRow[]> {
    function args; short revalidate keeps content fresh and lets a transient
    empty result self-heal quickly. */
 const getCachedFirmsForSector = unstable_cache(getFirmsForSector, ['home-firms-v1'], { revalidate: 600 })
-const getCachedLatestReviews  = unstable_cache(getLatestReviews,  ['home-reviews-v1'], { revalidate: 600 })
+const getCachedLatestReviews  = unstable_cache(getLatestReviews,  ['home-reviews-v2'], { revalidate: 600 })
 const getCachedPopularAi      = unstable_cache(getPopularAiTools, ['home-popular-ai-v1'], { revalidate: 600 })
 
 export default async function Home() {
@@ -441,8 +445,8 @@ export default async function Home() {
         <HeroSearchClient />
         <CategoriesSection />
         <TopFirmsSection sectors={LANDING_SECTORS} firmsBySector={firmsBySector} />
-        <PopularSubcategoriesSection items={popularSubcats} />
-        <CountriesSection countries={countries} />
+        <PopularSubcategoriesSection items={popularSubcats} showParent={false} />
+        <CountriesSection countries={countries} pillHref={COUNTRIES_INDEX_PATH} />
         <ComparisonTableSection />
         <NewReviewsSection
           reviews={reviews}

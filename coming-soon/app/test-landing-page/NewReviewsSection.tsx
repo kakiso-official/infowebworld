@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar, faUser } from '@fortawesome/free-solid-svg-icons'
@@ -37,6 +38,16 @@ export interface NewReviewsSectionProps {
 }
 
 type Props = NewReviewsSectionProps
+
+/* Marquee sizing. The rail loops by sliding one copy of the cards (-50%),
+   so one copy must be wider than the screen or a blank gap opens before
+   the loop restarts - 4-6 reviews made a 1,300-2,000px copy, narrower than
+   a wide monitor (Oct 14 SEO report). Each copy therefore repeats the
+   reviews until it holds MIN_CARDS_PER_COPY cards (~3,300px). One or two
+   reviews don't scroll at all: the same card sliding past again and again
+   reads as filler, so they sit in a static centred row. */
+const MIN_CARDS_PER_COPY = 10
+const MIN_REVIEWS_TO_SCROLL = 3
 
 function listingHref(r: ReviewRow): string {
   return (r.listing_mode === 'company' ? '/profile/' : '/listing/') + r.listing_slug
@@ -88,6 +99,15 @@ export default function NewReviewsSection({
   subtitle,
   ctaLabel = 'Write a review',
 }: Props) {
+  const scrolls = reviews.length >= MIN_REVIEWS_TO_SCROLL
+  const copy = scrolls
+    ? Array.from({ length: Math.ceil(MIN_CARDS_PER_COPY / reviews.length) }, () => reviews).flat()
+    : reviews
+  const cards = scrolls ? [...copy, ...copy] : reviews
+  /* --tlp-revs-n (cards per copy) sets the loop duration in CSS, so the
+     scroll speed stays the same however many cards a copy holds. */
+  const railStyle = scrolls ? ({ '--tlp-revs-n': copy.length } as CSSProperties) : undefined
+
   return (
     <section className="tlp-revs" aria-labelledby="tlp-revs-h">
       <div className="tlp-revs-inner">
@@ -103,15 +123,19 @@ export default function NewReviewsSection({
           </div>
         ) : (
           <>
-            {/* Marquee strip — cards rendered TWICE so when the rail
+            {/* Marquee strip — the copy (reviews repeated to at least
+                MIN_CARDS_PER_COPY cards) is rendered TWICE so when the rail
                 translates by -50% the second copy lands where the first
                 started, creating a seamless infinite loop. Pause on
-                hover so users can read a specific card. Each card has
-                a fixed height for a uniform row regardless of body
-                length. */}
-            <div className="tlp-revs-track" aria-label="Latest verified reviews">
-              <div className="tlp-revs-rail">
-                {[...reviews, ...reviews].map((r, idx) => {
+                hover so users can read a specific card. Every card past
+                the first set is a repeat: aria-hidden and out of the tab
+                order. */}
+            <div
+              className={'tlp-revs-track' + (scrolls ? '' : ' tlp-revs-track--static')}
+              aria-label="Latest verified reviews"
+            >
+              <div className="tlp-revs-rail" style={railStyle}>
+                {cards.map((r, idx) => {
                   const isClone = idx >= reviews.length
                   return (
                     <article

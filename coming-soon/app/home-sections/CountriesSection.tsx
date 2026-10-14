@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import { faArrowRight, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import type { CountryCount } from './countries-data'
 import { countryHubPath, countrySectorPath, countrySlug } from '@/lib/country-paths'
 
@@ -13,8 +13,9 @@ import { countryHubPath, countrySectorPath, countrySlug } from '@/lib/country-pa
    directory passes sector-scoped counts plus its own heading/sub/pill.
 
    One button below the tiles: "Show all {n} countries" opens the rest in
-   place (Oct 2026 SEO spec: one button, not two - the separate "Browse all
-   countries" link to /countries was dropped; the footer links there).
+   place (Oct 2026 SEO spec: one button, not two). The all-countries page
+   (/countries) is reached through the count pill instead: pass `pillHref`
+   and the pill becomes that link (the homepage does; Oct 14 SEO request).
    ════════════════════════════════════════════════════════════════════════ */
 
 const VISIBLE_COUNT = 12
@@ -30,6 +31,8 @@ export interface CountriesSectionProps {
   sub?: string
   /** Live-mode pill text; "{n}" becomes the formatted country count. */
   pillTemplate?: string
+  /** Makes the count pill a link, e.g. to the /countries index. */
+  pillHref?: string
   /** Scopes every tile's link to one sector's country page
    *  (/{country}-business-directory/{sector path}) instead of the country hub. */
   sectorSlug?: string
@@ -40,6 +43,7 @@ export default function CountriesSection({
   heading = 'Businesses Near You, Businesses Around the World',
   sub = 'Browse verified listings by country, from local shops and agencies to global software companies.',
   pillTemplate = 'Verified listings from {n} countries',
+  pillHref,
   sectorSlug,
 }: CountriesSectionProps) {
   if (!countries.length) return null
@@ -71,7 +75,14 @@ export default function CountriesSection({
           </p>
           {isLive && (
             <p className="hm-geo-pill">
-              <span>{pillTemplate.replace('{n}', countries.length.toLocaleString('en-US'))}</span>
+              {pillHref ? (
+                <Link href={pillHref} className="hm-geo-pill-link">
+                  {pillTemplate.replace('{n}', countries.length.toLocaleString('en-US'))}
+                  <FontAwesomeIcon icon={faArrowRight} className="hm-geo-pill-arrow" aria-hidden="true" />
+                </Link>
+              ) : (
+                <span>{pillTemplate.replace('{n}', countries.length.toLocaleString('en-US'))}</span>
+              )}
             </p>
           )}
         </div>

@@ -21,7 +21,7 @@ export const getDirectoryListingTotal = unstable_cache(
 /* The sector's own reviews first, topped up from the rest of the directory. */
 export const getDirectoryReviews = unstable_cache(
   (sector: string, limit: number) => getSectorReviewsWithTopUp(sector, limit),
-  ['sector-dir-reviews-v1'],
+  ['sector-dir-reviews-v2'],
   { revalidate: 600 }
 )
 

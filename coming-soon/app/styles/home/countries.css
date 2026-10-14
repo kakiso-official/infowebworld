@@ -42,7 +42,8 @@
   justify-content: center;
 }
 
-.hm-geo-pill span {
+.hm-geo-pill span,
+.hm-geo-pill-link {
   display: inline-flex;
   align-items: center;
   padding: 6px 16px;
@@ -53,6 +54,33 @@
   font-weight: 700;
   letter-spacing: -0.005em;
   color: var(--hm-c-brand, #003B2A);
+}
+
+/* Pill as a link to /countries (homepage) - same pill, plus an arrow and
+   the chips' hover border. */
+.hm-geo-pill-link {
+  gap: 7px;
+  text-decoration: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.hm-geo-pill-arrow {
+  font-size: 10.5px;
+  transition: transform 0.15s ease;
+}
+
+.hm-geo-pill-link:hover {
+  background: var(--hm-c-tint, #F1F8F3);
+  border-color: rgba(var(--hm-c-brand-rgb, 0, 59, 42), 0.3);
+}
+
+.hm-geo-pill-link:hover .hm-geo-pill-arrow {
+  transform: translateX(2px);
+}
+
+.hm-geo-pill-link:focus-visible {
+  outline: 2px solid var(--hm-c-accent, #0E8F6E);
+  outline-offset: 2px;
 }
 
 /* Tile grid - 6/row desktop, 4/row <=1180px, 3/row <=980px (tablet),
@@ -259,6 +287,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .hm-geo-pill-link,
+  .hm-geo-pill-arrow {
+    transition: none;
+  }
   .hm-geo-more-summary {
     transition: none;
   }

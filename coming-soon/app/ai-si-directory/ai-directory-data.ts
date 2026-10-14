@@ -28,7 +28,7 @@ export const getAiListingTotal = unstable_cache(
    first, topped up with the newest reviews from the rest of the directory. */
 export const getAiReviews = unstable_cache(
   (limit: number = 8) => getSectorReviewsWithTopUp(SECTOR, limit),
-  ['ai-dir-reviews-v2'],
+  ['ai-dir-reviews-v3'],
   { revalidate: 600 }
 )
 
